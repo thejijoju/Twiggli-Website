@@ -1,0 +1,38 @@
+---
+import ImageSlot from './ImageSlot.astro';
+import { brand, navLinks, secondaryLinks, socialLinks, copyright } from '../data/site.ts';
+---
+
+<footer id="footer" class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="footer-logo" aria-label={`${brand.name} — home`}>
+        <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
+      </a>
+      <span class="footer-brand-name">{brand.name}</span>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <p class="footer-col-title">Product</p>
+        <div class="footer-links">
+          {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Explore</p>
+        <div class="footer-links">
+          {secondaryLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Follow</p>
+        <div class="footer-links">
+          {socialLinks.map((s) => <a href={s.href}>{s.label}</a>)}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-note">{copyright}</p>
+  </div>
+</footer>

@@ -1,0 +1,73 @@
+---
+import ImageSlot from './ImageSlot.astro';
+import { phoneCards, phoneFilters } from '../data/content.ts';
+
+/** The hero's device visual. The two props mirror the export's editable
+ *  props (`heroLayout`, `frontScreen`); the defaults here are the export's
+ *  defaults, so the rendered result matches the design as shipped. */
+interface Props {
+  /** 'overlap' shows the second, dark phone behind and to the left. */
+  layout?: 'overlap' | 'single';
+  /** What the front phone shows: the workshop feed, or a single photo. */
+  screen?: 'listing' | 'photo';
+  backPhoto?: string;
+  frontPhoto?: string;
+}
+
+const {
+  layout = 'overlap',
+  screen = 'listing',
+  backPhoto,
+  frontPhoto,
+} = Astro.props;
+---
+
+<div class="hero-visual">
+  {layout !== 'single' && (
+    <div class="phone-back">
+      <div class="phone-back-notch"></div>
+      <div class="phone-back-screen grayscale">
+        <ImageSlot src={backPhoto} shape="rect" placeholder="Drop a workshop photo" alt="" />
+      </div>
+    </div>
+  )}
+
+  <div class="phone-front">
+    <div class="phone-bar">
+      <div class="phone-bar-notch"></div>
+      <div class="phone-time">9:41</div>
+    </div>
+
+    {screen !== 'photo' ? (
+      <div class="phone-screen">
+        <div class="input phone-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          What do you want to do?
+        </div>
+        <div class="phone-tags">
+          {phoneFilters.map((filter, i) => (
+            <span class:list={['tag', i === 0 ? 'tag-accent' : 'tag-outline']}>{filter}</span>
+          ))}
+        </div>
+        <div class="phone-cards">
+          {phoneCards.map((card) => (
+            <div>
+              <div class="phone-card-media grayscale">
+                <ImageSlot shape="rect" placeholder={card.title} alt="" />
+              </div>
+              <p class="phone-card-title">{card.title}</p>
+              <p class="phone-card-meta">{card.meta}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div class="phone-photo grayscale">
+        <ImageSlot src={frontPhoto} shape="rect" placeholder="Drop a workshop photo" alt="" />
+      </div>
+    )}
+  </div>
+</div>

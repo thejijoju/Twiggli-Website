@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import PhoneMockup from '../components/PhoneMockup.astro';
+import AppDownloadCta from '../components/AppDownloadCta.astro';
+import { steps } from '../data/content.ts';
+
+/* Copy on this page reuses the export's "How it works" steps verbatim. The
+   lede is PLACEHOLDER — replace with the real page copy. */
+---
+
+<Base
+  title="How it works — Twiggli"
+  description="Browse real videos of workshops near you, book in a couple of taps, and show up."
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">How it works</span>
+      <h1 class="page-title">From a video to a workshop, in a couple of taps</h1>
+      <p class="page-lede">
+        Twiggli shows you what is actually happening around Berlin — filmed by the people running
+        it. Find something you like, book it, and turn up.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {steps.map((step) => (
+        <div class="step">
+          <p class="step-num">{step.num}</p>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-copy">{step.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">In the app</span>
+        <h2 class="split-title">Everything nearby, filtered the way you search</h2>
+        <p class="split-copy">
+          Filter by today, tomorrow, free or paid, and see how far each workshop is from you. Every
+          listing is a video, so you know what you are booking before you book it.
+        </p>
+        <div class="split-actions">
+          <a href="/hosts/" class="btn btn-primary">Get Started</a>
+        </div>
+      </div>
+      <PhoneMockup layout="single" screen="listing" />
+    </section>
+  </div>
+
+  <AppDownloadCta />
+</Base>

@@ -1,0 +1,27 @@
+---
+import ImageSlot from './ImageSlot.astro';
+import SocialIcon from './SocialIcon.astro';
+import { brand, navLinks, socialLinks } from '../data/site.ts';
+
+/** Flat child order is deliberate: .nav's 16px gap applies between siblings,
+ *  so grouping the links into a wrapper would change the spacing the design
+ *  exported. Logo and brand are anchors here (the prototype left them inert)
+ *  without adding or removing a flex child. */
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrent = (href: string) => (href.replace(/\/+$/, '') || '/') === path;
+---
+
+<nav class="nav">
+  <a href="/" class="nav-logo" aria-label={`${brand.name} — home`}>
+    <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
+  </a>
+  <a href="/" class="nav-brand">{brand.name}</a>
+  {navLinks.map((link) => (
+    <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
+  ))}
+  <div class="nav-social">
+    {socialLinks.map((s) => (
+      <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
+    ))}
+  </div>
+</nav>

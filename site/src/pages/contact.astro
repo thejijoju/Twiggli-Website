@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import AppDownloadCta from '../components/AppDownloadCta.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import { socialLinks } from '../data/site.ts';
+
+/* PLACEHOLDER page. The form posts nowhere yet — wire `action` to your form
+   handler (Formspree, a serverless function, your own API) before launch. */
+---
+
+<Base
+  title="Contact — Twiggli"
+  description="Get in touch about hosting, corporate events, or anything else."
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Contact</span>
+      <h1 class="page-title">Talk to us</h1>
+      <p class="page-lede">
+        Hosting a workshop, booking something for your team, or just curious — send us a note and we
+        will come back to you.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <div class="form-grid">
+        <form class="form-rows" method="post" action="#">
+          <div class="field">
+            <label for="name">Name</label>
+            <input class="input" type="text" id="name" name="name" required />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input class="input" type="email" id="email" name="email" required />
+          </div>
+          <div class="field">
+            <label for="topic">What is this about?</label>
+            <select class="input" id="topic" name="topic">
+              <option>Hosting a workshop</option>
+              <option>Corporate events</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea class="input" id="message" name="message" rows="5" required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary">Send message</button>
+          </div>
+        </form>
+
+        <div class="form-aside">
+          <span class="kicker kicker-tight">Elsewhere</span>
+          <p>
+            We are on all the usual places, and we read our messages there too.
+          </p>
+          <div class="nav-social" style="margin-left:0">
+            {socialLinks.map((s) => (
+              <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} size={20} /></a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <AppDownloadCta />
+</Base>

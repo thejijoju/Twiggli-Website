@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import HostGrid from '../components/HostGrid.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import AppDownloadCta from '../components/AppDownloadCta.astro';
+import { hosts } from '../data/content.ts';
+
+/* The 17 host entries are PLACEHOLDER — see src/data/content.ts. */
+---
+
+<Base
+  title="Our hosts — Twiggli"
+  description="The people running workshops on Twiggli across Berlin."
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Our hosts</span>
+      <h1 class="page-title">The people behind the workshops</h1>
+      <p class="page-lede">
+        Every workshop on Twiggli is run by someone local who does this for a living, or for the
+        love of it. Here is who you will meet.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <HostGrid hosts={hosts} />
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">Host &amp; earn</span>
+        <h2 class="split-title">Host workshops for free — and start earning</h2>
+        <p class="split-copy">
+          Turn your skill into income. List a dance class, a cooking session or a hike, set your
+          price — or make it free — and Twiggli brings the people. No listing fees, no equipment to
+          buy.
+        </p>
+        <div class="split-actions">
+          <a href="/host/" class="btn btn-primary">Become a host</a>
+        </div>
+      </div>
+      <div class="media-4x3 grayscale">
+        <ImageSlot shape="rect" placeholder="Drop a host/workshop photo" alt="" />
+      </div>
+    </section>
+  </div>
+
+  <AppDownloadCta />
+</Base>

@@ -1,0 +1,109 @@
+---
+/**
+ * Image slot — the production stand-in for the design's <image-slot>.
+ *
+ * The prototype's element was an editor affordance: drag a file onto it and
+ * it persisted to a JSON sidecar. None of that belongs in a shipped site, so
+ * what survives here is the part that is visual — the empty state (tinted
+ * frame, dashed ring, icon, caption) rendered pixel-for-pixel from
+ * image-slot.js, plus a real <img> once `src` is given.
+ *
+ * Give every slot a `src` as the real photography lands; the placeholder is
+ * what shows until then.
+ */
+interface Props {
+  src?: string;
+  alt?: string;
+  placeholder?: string;
+  shape?: 'rect' | 'rounded' | 'circle' | 'pill';
+  radius?: number;
+  /** Framing when a src is present. */
+  fit?: 'cover' | 'contain';
+  class?: string;
+}
+
+const {
+  src,
+  alt = '',
+  placeholder = 'Drop an image',
+  shape = 'rounded',
+  radius = 12,
+  fit = 'cover',
+  class: className,
+} = Astro.props;
+
+const borderRadius =
+  shape === 'circle' ? '50%' :
+  shape === 'pill' ? '9999px' :
+  shape === 'rounded' ? `${radius}px` :
+  '0';
+---
+
+<div class:list={['slot', className]} style={`--slot-radius:${borderRadius};--slot-fit:${fit}`}>
+  {src ? (
+    <img class="slot-img" src={src} alt={alt} loading="lazy" decoding="async" />
+  ) : (
+    <>
+      <div class="slot-empty" aria-hidden="true">
+        <svg
+          width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <path d="m21 15-5-5L5 21" />
+        </svg>
+        <div class="slot-cap">{placeholder}</div>
+      </div>
+      <span class="slot-ring" aria-hidden="true"></span>
+    </>
+  )}
+</div>
+
+<style>
+  .slot {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: rgba(127, 127, 127, 0.08);
+    border-radius: var(--slot-radius);
+    font: 13px/1.3 system-ui, -apple-system, sans-serif;
+  }
+  .slot-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: var(--slot-fit);
+  }
+  .slot-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    padding: 12px;
+    user-select: none;
+  }
+  .slot-empty svg { opacity: 0.45; }
+  .slot-cap {
+    max-width: 90%;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    opacity: 0.75;
+  }
+  .slot-ring {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 1.5px dashed currentColor;
+    border-radius: var(--slot-radius);
+    opacity: 0.35;
+  }
+</style>

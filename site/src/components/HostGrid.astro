@@ -1,0 +1,28 @@
+---
+import ImageSlot from './ImageSlot.astro';
+import type { Host } from '../data/content.ts';
+
+interface Props {
+  hosts: Host[];
+}
+const { hosts } = Astro.props;
+---
+
+<div class="hosts-grid">
+  {hosts.map((host) => (
+    <div class="host">
+      <div class="host-avatar grayscale">
+        <ImageSlot
+          src={host.photo}
+          shape="circle"
+          placeholder="Host photo"
+          alt={host.photo ? `${host.name}, ${host.specialty}` : ''}
+        />
+      </div>
+      <div>
+        <p class="host-name">{host.name}</p>
+        <p class="host-specialty">{host.specialty}</p>
+      </div>
+    </div>
+  ))}
+</div>

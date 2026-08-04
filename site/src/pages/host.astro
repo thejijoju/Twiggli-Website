@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import AppDownloadCta from '../components/AppDownloadCta.astro';
+
+/* The "Host & earn" section copy is verbatim from the export. The three
+   points below it are PLACEHOLDER — replace with the real host pitch. */
+const points = [
+  {
+    num: '01',
+    title: 'List it in minutes',
+    copy: 'Film a short video, set a date and a price — or make it free — and publish. No listing fees.',
+  },
+  {
+    num: '02',
+    title: 'We bring the people',
+    copy: 'Your workshop shows up in the feed for people nearby who are looking for exactly this.',
+  },
+  {
+    num: '03',
+    title: 'Get paid',
+    copy: 'Bookings and payments run through the app, so you can focus on running the session.',
+  },
+];
+---
+
+<Base
+  title="Host with Twiggli — host workshops for free and start earning"
+  description="Turn your skill into income. List a workshop for free and Twiggli brings the people."
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Host &amp; earn</span>
+      <h1 class="page-title">Host workshops for free — and start earning</h1>
+      <p class="page-lede">
+        Turn your skill into income. List a dance class, a cooking session or a hike, set your price
+        — or make it free — and Twiggli brings the people. No listing fees, no equipment to buy.
+      </p>
+      <div class="hero-actions">
+        <a href="/contact/" class="btn btn-primary">Become a host</a>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {points.map((point) => (
+        <div class="step">
+          <p class="step-num">{point.num}</p>
+          <h3 class="step-title">{point.title}</h3>
+          <p class="step-copy">{point.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-media-first">
+      <div class="media-4x3 grayscale">
+        <ImageSlot shape="rect" placeholder="Drop a host/workshop photo" alt="" />
+      </div>
+      <div>
+        <span class="kicker kicker-tight">Who hosts</span>
+        <h2 class="split-title">Anything you can teach, someone wants to learn</h2>
+        <p class="split-copy">
+          Dancers, climbers, cooks, ceramicists, photographers, cyclists. If it works as an hour or
+          an afternoon with a group, it works on Twiggli.
+        </p>
+        <div class="split-actions">
+          <a href="/hosts/" class="btn btn-primary">See our hosts</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <AppDownloadCta />
+</Base>
