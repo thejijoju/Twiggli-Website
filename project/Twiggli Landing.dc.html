@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-14d5e008-95ef-49ef-aa60-3344eee7910b/styles.css">
+<script src="_ds/modernist-14d5e008-95ef-49ef-aa60-3344eee7910b/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+body { margin: 0; text-wrap: pretty; }
+a { color: var(--color-accent-700); }
+a:hover { color: var(--color-accent); }
+</style>
+</helmet>
+
+<div style="background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);min-height:100vh">
+
+<nav class="nav" style="padding:20px 48px">
+  <image-slot id="logo" src="uploads/LogoApple.jpg" placeholder="Logo" shape="rect" style="width:36px;height:36px;flex:none"></image-slot>
+  <span class="nav-brand">Twiggli</span>
+  <a href="#" aria-current="page">Home</a>
+  <a href="#hosts">Get Started</a>
+  <a href="#footer">Contact</a>
+  <div style="display:flex;align-items:center;gap:14px;margin-left:8px">
+    <a href="#" aria-label="Instagram" style="display:flex;color:inherit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg></a>
+    <a href="#" aria-label="Facebook" style="display:flex;color:inherit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+    <a href="#" aria-label="YouTube" style="display:flex;color:inherit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17z"/><path d="m10 15 5-3-5-3z"/></svg></a>
+    <a href="#" aria-label="LinkedIn" style="display:flex;color:inherit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+  </div>
+</nav>
+
+<div style="max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,72px)">
+
+  <section style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;padding:72px 0 64px">
+    <div>
+      <h1 style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:clamp(40px,4.6vw,64px);line-height:1.08;letter-spacing:-0.02em;margin:0">
+        <span style="display:block">Discover Berlin's most unique experiences —</span>
+        <span style="display:block">through video</span>
+      </h1>
+      <div style="margin-top:32px;font-size:17px;line-height:1.6;max-width:52ch">
+        <p style="margin:0 0 18px"><strong>🎉 Find Workshops. Host Workshops for free.</strong></p>
+        <p style="margin:0 0 18px">Discover exciting activities nearby or create your own and start earning 🎉.</p>
+        <p style="margin:0 0 18px">Whether you want to join the fun or monetize your passion, Twiggli makes it easy.</p>
+        <p style="margin:0">📱 <strong>Ready to dive in?</strong> Download now on Apple Store and Google Play!</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:32px">
+        <button type="button" class="btn btn-primary">Get Started</button>
+        <button type="button" class="btn btn-ghost">See how it works</button>
+      </div>
+    </div>
+
+    <div style="position:relative;min-height:560px">
+      <sc-if value="{{ isOverlap }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;left:0;top:20px;width:250px;height:520px;background:var(--color-text);border:2px solid var(--color-text);z-index:1">
+          <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);width:90px;height:18px;background:var(--color-bg);z-index:2"></div>
+          <div class="grayscale" style="position:absolute;inset:2px;overflow:hidden">
+            <image-slot id="phone-back-photo" shape="rect" placeholder="Drop a workshop photo"></image-slot>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="position:absolute;right:0;top:0;width:280px;height:580px;background:var(--color-bg);border:2px solid var(--color-text);z-index:3;display:flex;flex-direction:column">
+        <div style="position:relative;padding:10px 14px 8px;border-bottom:2px solid var(--color-divider)">
+          <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);width:100px;height:16px;background:var(--color-text)"></div>
+          <div style="font-size:11px;font-feature-settings:'tnum' 1;text-align:right;margin-bottom:8px">9:41</div>
+        </div>
+
+        <sc-if value="{{ isListing }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:10px 12px;display:flex;flex-direction:column;gap:10px;overflow:hidden;flex:1">
+            <div class="input" style="display:flex;align-items:center;gap:6px;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              What do you want to do?
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="tag tag-accent">All</span>
+              <span class="tag tag-outline">Today</span>
+              <span class="tag tag-outline">Tomorrow</span>
+              <span class="tag tag-outline">Free</span>
+              <span class="tag tag-outline">Paid</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div>
+                <div class="grayscale" style="aspect-ratio:1/1"><image-slot id="phone-front-1" shape="rect" placeholder="Bachata lessons"></image-slot></div>
+                <p style="font-size:11px;font-weight:600;margin:6px 0 2px">Bachata lessons</p>
+                <p style="font-size:10px;color:color-mix(in srgb, var(--color-text) 60%, transparent);margin:0">Mon, Oct 16 · 5 km away</p>
+              </div>
+              <div>
+                <div class="grayscale" style="aspect-ratio:1/1"><image-slot id="phone-front-2" shape="rect" placeholder="Bouldering course"></image-slot></div>
+                <p style="font-size:11px;font-weight:600;margin:6px 0 2px">Bouldering course</p>
+                <p style="font-size:10px;color:color-mix(in srgb, var(--color-text) 60%, transparent);margin:0">Mon, Oct 16 · 2 km away</p>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isPhoto }}" hint-placeholder-val="{{ false }}">
+          <div class="grayscale" style="flex:1;overflow:hidden">
+            <image-slot id="phone-front-photo" shape="rect" placeholder="Drop a workshop photo"></image-slot>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <hr style="height:2px;border:0;margin:0;background:var(--color-divider)">
+
+  <section style="padding:64px 0" id="how-it-works">
+    <span style="display:block;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-accent-700);margin:0 0 24px">How it works</span>
+    <sc-for list="{{ steps }}" as="step" hint-placeholder-count="3">
+      <div style="display:grid;grid-template-columns:minmax(56px,120px) minmax(0,320px) minmax(0,1fr);gap:24px;align-items:baseline;padding:28px 0;border-top:2px solid var(--color-divider)">
+        <p style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:15px;margin:0;font-feature-settings:'tnum' 1">{{ step.num }}</p>
+        <h3 style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:22px;margin:0">{{ step.title }}</h3>
+        <p style="font-size:15.5px;line-height:1.6;margin:0;max-width:52ch;color:color-mix(in srgb, var(--color-text) 78%, transparent)">{{ step.copy }}</p>
+      </div>
+    </sc-for>
+  </section>
+
+  <hr style="height:2px;border:0;margin:0;background:var(--color-divider)">
+
+  <section style="display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:center;padding:64px 0">
+    <div class="grayscale" style="aspect-ratio:4/3"><image-slot id="host-photo" shape="rect" placeholder="Drop a host/workshop photo"></image-slot></div>
+    <div>
+      <span style="display:block;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-accent-700);margin:0 0 14px">Host & earn</span>
+      <h2 style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:32px;line-height:1.25;margin:0">Host workshops for free — and start earning</h2>
+      <p style="font-size:15.5px;line-height:1.6;margin:16px 0 0;max-width:48ch;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Turn your skill into income. List a dance class, a cooking session or a hike, set your price — or make it free — and Twiggli brings the people. No listing fees, no equipment to buy.</p>
+      <div style="margin-top:24px">
+        <button type="button" class="btn btn-primary">Become a host</button>
+      </div>
+    </div>
+  </section>
+
+  <hr style="height:2px;border:0;margin:0;background:var(--color-divider)">
+
+  <section style="padding:64px 0" id="hosts">
+    <span style="display:block;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-accent-700);margin:0 0 24px">Our hosts</span>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px 20px">
+      <sc-for list="{{ hosts }}" as="host" hint-placeholder-count="17">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px">
+          <div class="grayscale" style="width:88px;height:88px"><image-slot id="host-{{ host.id }}" shape="circle" placeholder="Host photo" style="width:88px;height:88px"></image-slot></div>
+          <div>
+            <p style="font-size:14px;font-weight:600;margin:0">{{ host.name }}</p>
+            <p style="font-size:12px;margin:2px 0 0;color:color-mix(in srgb, var(--color-text) 65%, transparent)">{{ host.specialty }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <hr style="height:2px;border:0;margin:0;background:var(--color-divider)">
+
+  <section style="display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:center;padding:64px 0" id="corporate">
+    <div>
+      <span style="display:block;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-accent-700);margin:0 0 14px">Corporate events</span>
+      <h2 style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:32px;line-height:1.25;margin:0">Team-building workshops for companies</h2>
+      <p style="font-size:15.5px;line-height:1.6;margin:16px 0 0;max-width:48ch;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Book a private workshop for your team — cooking, climbing, dance and more, run by our vetted hosts at your office or a venue nearby. We handle the logistics for groups of any size.</p>
+      <div style="margin-top:24px">
+        <button type="button" class="btn btn-primary">Get a corporate quote</button>
+      </div>
+    </div>
+    <div class="grayscale" style="aspect-ratio:4/3"><image-slot id="corporate-photo" shape="rect" placeholder="Drop a corporate event photo"></image-slot></div>
+  </section>
+
+</div>
+
+<section style="background:var(--color-accent);color:var(--color-bg)">
+  <div style="max-width:1200px;margin:0 auto;padding:56px clamp(20px,5vw,72px)">
+    <h3 style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:clamp(30px,3.8vw,46px);line-height:1.1;margin:0">📱 Ready to dive in? Download now on Apple Store and Google Play!</h3>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <button type="button" class="btn btn-ghost" style="color:var(--color-bg);border-color:var(--color-bg)">Download on the App Store</button>
+      <button type="button" class="btn btn-ghost" style="color:var(--color-bg);border-color:var(--color-bg)">Get it on Google Play</button>
+    </div>
+  </div>
+</section>
+
+<footer id="footer" style="border-top:2px solid var(--color-divider)">
+  <div style="max-width:1200px;margin:0 auto;padding:40px clamp(20px,5vw,72px);display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <image-slot id="logo-footer" src="uploads/LogoApple.jpg" placeholder="Logo" shape="rect" style="width:28px;height:28px;flex:none"></image-slot>
+      <span style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:16px">Twiggli</span>
+    </div>
+    <div style="display:flex;gap:56px;flex-wrap:wrap">
+      <div>
+        <p style="font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 12px">Product</p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+          <a href="#">Home</a>
+          <a href="#hosts">Get Started</a>
+          <a href="#footer">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 12px">Follow</p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+          <a href="#">YouTube</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="border-top:2px solid var(--color-divider)">
+    <p style="max-width:1200px;margin:0 auto;padding:20px clamp(20px,5vw,72px);font-size:13px;color:color-mix(in srgb, var(--color-text) 65%, transparent)">© 2026 Twiggli. All rights reserved.</p>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;overlap&quot;,&quot;options&quot;:[&quot;overlap&quot;,&quot;single&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero visual&quot;},&quot;frontScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;listing&quot;,&quot;options&quot;:[&quot;listing&quot;,&quot;photo&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero visual&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const heroLayout = this.props.heroLayout ?? 'overlap';
+    const frontScreen = this.props.frontScreen ?? 'listing';
+    return {
+      isOverlap: heroLayout !== 'single',
+      isListing: frontScreen !== 'photo',
+      isPhoto: frontScreen === 'photo',
+      steps: [
+        { num: '01', title: 'Browse videos', copy: 'Scroll real videos of workshops and activities happening near you, not staged photos.' },
+        { num: '02', title: 'Book your spot', copy: 'Reserve a free or paid activity in a couple of taps, right from the app.' },
+        { num: '03', title: 'Show up and enjoy', copy: 'Meet your host, learn something new, and meet people around Berlin.' },
+      ],
+      hosts: Array.from({ length: 17 }, (_, i) => ({
+        id: i + 1,
+        name: 'Host name',
+        specialty: 'Workshop type',
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>
