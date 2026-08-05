@@ -24,6 +24,38 @@
    default (--radius-md: 0) for this one component, per request. */
 .btn { border-radius: 999px; }
 
+/* ── Accent color ──────────────────────────────────────────────────────
+   Moved from the system's red to #4b39ef. The 100–900 ramp is regenerated
+   in OKLCH at the new hue, holding each step's lightness/chroma from the
+   original ramp — the "same step, same visual weight" rule the design
+   system's readme describes — so every accent-tinted surface (tags, hover
+   states, the .fill-in highlight, kickers) stays in sync with the buttons
+   instead of just the primary color changing. accent-2 mirrors accent, per
+   the system being a mono scheme. */
+:root {
+  --color-accent: #4b39ef;
+  --color-accent-100: #f2f5ff;
+  --color-accent-200: #e2e7ff;
+  --color-accent-300: #c8d1ff;
+  --color-accent-400: #a4b1ff;
+  --color-accent-500: #7e8bff;
+  --color-accent-600: #5f63f6;
+  --color-accent-700: #4849c3;
+  --color-accent-800: #32348b;
+  --color-accent-900: #222554;
+
+  --color-accent-2: #4b39ef;
+  --color-accent-2-100: #f2f5ff;
+  --color-accent-2-200: #e2e7ff;
+  --color-accent-2-300: #c8d1ff;
+  --color-accent-2-400: #a4b1ff;
+  --color-accent-2-500: #7e8bff;
+  --color-accent-2-600: #5f63f6;
+  --color-accent-2-700: #4849c3;
+  --color-accent-2-800: #32348b;
+  --color-accent-2-900: #222554;
+}
+
 body { margin: 0; text-wrap: pretty; }
 a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent); }
