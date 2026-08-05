@@ -1,0 +1,33 @@
+---
+import { withBase } from '../lib/url.ts';
+
+/** Storage key checked by the no-flash script in Base.astro's <head> —
+ *  keep the two in sync if this ever changes. */
+const STORAGE_KEY = 'twiggli-cookie-consent';
+---
+
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie notice">
+  <div class="cookie-banner-inner">
+    <p class="cookie-banner-text">
+      We only use the storage necessary to run Twiggli — keeping you signed in, remembering this
+      choice, and keeping the site secure. See our
+      <a href={`${withBase('/privacy-policy/')}#cookies`}>Privacy Policy</a> for details.
+    </p>
+    <div class="cookie-banner-actions">
+      <button type="button" class="btn btn-secondary" data-cookie-choice="necessary">
+        Necessary only
+      </button>
+      <button type="button" class="btn btn-primary" data-cookie-choice="all">Accept all</button>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ STORAGE_KEY }}>
+  const banner = document.getElementById('cookie-banner');
+  banner?.querySelectorAll('[data-cookie-choice]').forEach((button) => {
+    button.addEventListener('click', () => {
+      localStorage.setItem(STORAGE_KEY, button.dataset.cookieChoice);
+      document.documentElement.classList.add('cookie-consent-set');
+    });
+  });
+</script>

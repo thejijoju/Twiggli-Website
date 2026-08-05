@@ -56,7 +56,7 @@ const {
           {phoneCards.map((card) => (
             <div>
               <div class="phone-card-media grayscale">
-                <ImageSlot shape="rect" placeholder={card.title} alt="" />
+                <ImageSlot src={card.photo} shape="rect" placeholder={card.title} alt="" />
               </div>
               <p class="phone-card-title">{card.title}</p>
               <p class="phone-card-meta">{card.meta}</p>

@@ -1,6 +1,8 @@
 /** Page content. Copy here is verbatim from the Claude Design export;
  *  anything marked PLACEHOLDER is filler awaiting real content. */
 
+import { withBase } from '../lib/url.ts';
+
 export type Step = { num: string; title: string; copy: string };
 
 export const steps: Step[] = [
@@ -38,10 +40,32 @@ export const hosts: Host[] = Array.from({ length: 17 }, (_, i) => ({
   specialty: 'Workshop type',
 }));
 
-/** The two sample cards inside the phone mockup. */
+/** The sample cards inside the phone mockup. */
 export const phoneCards = [
-  { id: 'phone-front-1', title: 'Bachata lessons', meta: 'Mon, Oct 16 · 5 km away' },
-  { id: 'phone-front-2', title: 'Bouldering course', meta: 'Mon, Oct 16 · 2 km away' },
+  {
+    id: 'phone-front-1',
+    title: 'Bachata lessons',
+    meta: 'Mon, Oct 16 · 5 km away',
+    photo: withBase('/img/hero/bachata.jpg'),
+  },
+  {
+    id: 'phone-front-2',
+    title: 'Bouldering course',
+    meta: 'Mon, Oct 16 · 2 km away',
+    photo: withBase('/img/hero/bouldering.jpg'),
+  },
+  {
+    id: 'phone-front-3',
+    title: 'Cooking workshop',
+    meta: 'Wed, Oct 18 · 3 km away',
+    photo: withBase('/img/hero/cooking.jpg'),
+  },
+  {
+    id: 'phone-front-4',
+    title: 'Hiking meetup',
+    meta: 'Sat, Oct 21 · 8 km away',
+    photo: withBase('/img/hero/hiking.jpg'),
+  },
 ];
 
 export const phoneFilters = ['All', 'Today', 'Tomorrow', 'Free', 'Paid'];

@@ -1,6 +1,7 @@
 ---
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import { brand } from '../data/site.ts';
 import '../styles/modernist.css';
 import '../styles/site.css';
@@ -19,6 +20,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      try {
+        if (localStorage.getItem('twiggli-cookie-consent')) {
+          document.documentElement.classList.add('cookie-consent-set');
+        }
+      } catch {}
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
@@ -40,5 +48,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
       </main>
       <Footer />
     </div>
+    <CookieBanner />
   </body>
 </html>

@@ -29,7 +29,7 @@ import { withBase } from '../lib/url.ts';
         </div>
       </div>
 
-      <PhoneMockup layout="overlap" screen="listing" />
+      <PhoneMockup layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
     </section>
 
     <hr class="rule" />
@@ -49,7 +49,12 @@ import { withBase } from '../lib/url.ts';
 
     <section class="split split-media-first" id="host">
       <div class="media-4x3 grayscale">
-        <ImageSlot shape="rect" placeholder="Drop a host/workshop photo" alt="" />
+        <ImageSlot
+          src={withBase('/img/hero/hiking.jpg')}
+          shape="rect"
+          placeholder="Drop a host/workshop photo"
+          alt=""
+        />
       </div>
       <div>
         <span class="kicker kicker-tight">Host &amp; earn</span>
@@ -88,7 +93,12 @@ import { withBase } from '../lib/url.ts';
         </div>
       </div>
       <div class="media-4x3 grayscale">
-        <ImageSlot shape="rect" placeholder="Drop a corporate event photo" alt="" />
+        <ImageSlot
+          src={withBase('/img/hero/cooking.jpg')}
+          shape="rect"
+          placeholder="Drop a corporate event photo"
+          alt=""
+        />
       </div>
     </section>
   </div>

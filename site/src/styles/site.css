@@ -460,6 +460,36 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 78%, transparent);
 }
 
+/* — cookie banner — */
+.cookie-consent-set .cookie-banner { display: none; }
+.cookie-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  background: var(--color-bg);
+  border-top: 2px solid var(--color-divider);
+}
+.cookie-banner-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px clamp(20px, 5vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cookie-banner-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 68ch;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+.cookie-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; flex: none; }
+
 /* — contact form — */
 .form-grid {
   display: grid;
