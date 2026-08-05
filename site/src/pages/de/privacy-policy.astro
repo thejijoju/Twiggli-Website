@@ -1,0 +1,238 @@
+---
+import LegalPage from '../../layouts/LegalPage.astro';
+import { withBase } from '../../lib/url.ts';
+
+/**
+ * DRAFT. German translation of privacy-policy.astro — keep the two in step
+ * when the English source changes. Structured to the GDPR's (DSGVO)
+ * disclosure duties (Art. 13/14) with the German specifics that apply to a
+ * Berlin operator: § 25 TDDDG for cookies and device storage, and the
+ * Berlin supervisory authority for complaints.
+ *
+ * A privacy policy has to describe what the product ACTUALLY does. The
+ * processor list, retention periods and app permissions below are the
+ * shape of the disclosure, not verified facts about Twiggli — confirm each
+ * one against the real stack before publishing.
+ */
+const toc = [
+  { id: 'controller', label: '1. Wer verantwortlich ist' },
+  { id: 'data', label: '2. Was wir erheben' },
+  { id: 'purposes', label: '3. Warum, und auf welcher Rechtsgrundlage' },
+  { id: 'cookies', label: '4. Cookies und Gerätespeicher' },
+  { id: 'sharing', label: '5. Mit wem wir Daten teilen' },
+  { id: 'hosts', label: '6. Zwischen Gastgebern und Teilnehmenden' },
+  { id: 'transfers', label: '7. Übermittlung außerhalb des EWR' },
+  { id: 'retention', label: '8. Wie lange wir Daten speichern' },
+  { id: 'permissions', label: '9. App-Berechtigungen' },
+  { id: 'rights', label: '10. Deine Rechte' },
+  { id: 'children', label: '11. Kinder' },
+  { id: 'changes', label: '12. Änderungen dieser Richtlinie' },
+];
+---
+
+<LegalPage
+  title="Datenschutzerklärung — Twiggli"
+  kicker="Rechtliches"
+  heading="Datenschutzerklärung"
+  description="Welche personenbezogenen Daten Twiggli erhebt, warum, und welche Rechte du daran hast."
+  lede="Dies erklärt, was wir erheben, wenn du die Twiggli-App oder -Website nutzt, was wir damit tun, wer sonst noch Zugriff darauf hat, und wie du sie zurückbekommst oder löschen lassen kannst."
+  toc={toc}
+  lang="de"
+>
+  <div class="legal-notice" slot="notice">
+    <p><strong>Entwurf — muss mit der tatsächlichen Funktionsweise des Produkts abgeglichen werden.</strong></p>
+    <p>
+      Eine Datenschutzerklärung beschreibt reale Verarbeitungsvorgänge und kann daher nicht von
+      außen fertiggestellt werden. Gleiche jeden genannten Auftragsverarbeiter, jede
+      Aufbewahrungsfrist und jede App-Berechtigung mit eurem tatsächlichen Stack ab, fülle die
+      markierten Felder aus und lasse den Text vor der Veröffentlichung prüfen.
+    </p>
+  </div>
+
+  <h2 id="controller">1. Wer verantwortlich ist</h2>
+  <p>
+    Verantwortlicher für die hier beschriebenen personenbezogenen Daten ist
+    <span class="fill-in">[Firmenname]</span>,
+    <span class="fill-in">[Adresse]</span>, Deutschland —
+    <span class="fill-in">[E-Mail-Adresse]</span>. Die vollständigen Angaben findest du in
+    unserem <a href={withBase('/impressum/')}>Impressum</a>.
+  </p>
+  <p>
+    Kontakt für Datenschutzfragen: <span class="fill-in">[E-Mail-Adresse, oder Name und
+    Kontaktdaten eurer/eures Datenschutzbeauftragten, falls bestellt]</span>.
+  </p>
+
+  <h2 id="data">2. Was wir erheben</h2>
+  <h3>Daten, die du uns gibst</h3>
+  <ul>
+    <li><strong>Konto:</strong> Name, E-Mail-Adresse, Passwort (gehasht gespeichert), optional ein
+      Foto, Stadt und kurze Bio.</li>
+    <li><strong>Gastgeberprofil:</strong> was du anbietest, deine Einträge, sowie die Videos und
+      Fotos, die du hochlädst.</li>
+    <li><strong>Buchungen:</strong> welche Workshops du gebucht hast, wann, für wie viele Personen,
+      und jede Notiz, die du dem Gastgeber schickst.</li>
+    <li><strong>Zahlungen:</strong> abgewickelt über unseren Zahlungsdienstleister. Wir erhalten
+      Bestätigung, Betrag und eine maskierte Referenz — nicht deine vollständige Kartennummer.</li>
+    <li><strong>Nachrichten und Support:</strong> was du uns oder einem Gastgeber über die App
+      schreibst.</li>
+  </ul>
+  <h3>Automatisch erhobene Daten</h3>
+  <ul>
+    <li><strong>Nutzung:</strong> aufgerufene Seiten und Angebote, Suchanfragen, Taps, und
+      wann.</li>
+    <li><strong>Gerät und Verbindung:</strong> Gerätetyp, Betriebssystem, App-Version, Browser,
+      Sprache und IP-Adresse.</li>
+    <li><strong>Ungefährer Standort:</strong> um dir Workshops in deiner Nähe zu zeigen. Genauer
+      Standort nur mit deiner Berechtigung — siehe Abschnitt 9.</li>
+  </ul>
+
+  <h2 id="purposes">3. Warum, und auf welcher Rechtsgrundlage</h2>
+  <dl>
+    <dt>Betrieb deines Kontos und deiner Buchungen</dt>
+    <dd>Erforderlich zur Vertragserfüllung, Art. 6 Abs. 1 lit. b DSGVO.</dd>
+    <dt>Zahlungsabwicklung und Auszahlung an Gastgeber</dt>
+    <dd>Vertragserfüllung, Art. 6 Abs. 1 lit. b, sowie unsere gesetzlichen Buchführungspflichten,
+      Art. 6 Abs. 1 lit. c.</dd>
+    <dt>Anzeige von Workshops in deiner Nähe</dt>
+    <dd>Vertragserfüllung, Art. 6 Abs. 1 lit. b, oder deine Einwilligung, wenn genauer Standort
+      genutzt wird, Art. 6 Abs. 1 lit. a.</dd>
+    <dt>Sicherheit der Plattform — Betrug, gefälschte Angebote, Missbrauch</dt>
+    <dd>Unser berechtigtes Interesse an einer vertrauenswürdigen Plattform, Art. 6 Abs. 1 lit. f.</dd>
+    <dt>Produktverbesserung durch Nutzungsstatistiken</dt>
+    <dd>Deine Einwilligung, sofern Cookies oder ähnliche Technologien genutzt werden,
+      Art. 6 Abs. 1 lit. a; andernfalls unser berechtigtes Interesse, Art. 6 Abs. 1 lit. f.</dd>
+    <dt>Marketing-E-Mails</dt>
+    <dd>Deine Einwilligung, Art. 6 Abs. 1 lit. a. Jede E-Mail enthält einen Abmeldelink.</dd>
+    <dt>Erfüllung gesetzlicher Pflichten</dt>
+    <dd>Art. 6 Abs. 1 lit. c — insbesondere steuer- und handelsrechtliche
+      Aufbewahrungspflichten.</dd>
+  </dl>
+
+  <h2 id="cookies">4. Cookies und Gerätespeicher</h2>
+  <p>
+    Cookies und vergleichbare Speicherung auf deinem Gerät werden über das technisch notwendige
+    Maß hinaus nur mit deiner Einwilligung nach § 25 Abs. 1 TDDDG eingesetzt. Technisch
+    notwendige Speicherung — Anmeldestatus, Speicherung deiner Cookie-Auswahl, Sicherheit —
+    benötigt keine Einwilligung nach § 25 Abs. 2 TDDDG.
+  </p>
+  <p>
+    Du kannst deine Auswahl jederzeit ändern oder widerrufen über
+    <span class="fill-in">[Link zu deinen Cookie-Einstellungen]</span>. Ein Widerruf hat keine
+    Auswirkung auf bereits erfolgte Verarbeitung.
+  </p>
+  <p>
+    Aktuell eingesetzte, nicht notwendige Tools: <span class="fill-in">[jedes Analyse- oder
+    Marketing-Tool auflisten, Anbieter und was gespeichert wird — oder angeben, dass keine
+    genutzt werden]</span>.
+  </p>
+
+  <h2 id="sharing">5. Mit wem wir Daten teilen</h2>
+  <p>
+    Wir verkaufen keine personenbezogenen Daten. Wir teilen sie nur, wo es für den Betrieb des
+    Dienstes nötig ist:
+  </p>
+  <ul>
+    <li><strong>Gastgeber</strong> — die Details deiner Buchung. Siehe Abschnitt 6.</li>
+    <li><strong>Zahlungsdienstleister</strong> —
+      <span class="fill-in">[Anbietername]</span>, für Zahlungsabwicklung und Auszahlungen an
+      Gastgeber.</li>
+    <li><strong>Hosting und Infrastruktur</strong> —
+      <span class="fill-in">[Anbietername und Region]</span>.</li>
+    <li><strong>E-Mail und Benachrichtigungen</strong> —
+      <span class="fill-in">[Anbietername]</span>.</li>
+    <li><strong>Analyse</strong> — <span class="fill-in">[Anbietername, oder
+      „keine"]</span>.</li>
+    <li><strong>Behörden</strong> — soweit wir gesetzlich dazu verpflichtet sind, oder zur
+      Geltendmachung oder Verteidigung von Rechtsansprüchen.</li>
+  </ul>
+  <p>
+    Anbieter, die in unserem Auftrag handeln, sind durch einen Auftragsverarbeitungsvertrag nach
+    Art. 28 DSGVO gebunden.
+  </p>
+
+  <h2 id="hosts">6. Zwischen Gastgebern und Teilnehmenden</h2>
+  <p>
+    Wenn du buchst, erhält der Gastgeber, was er für die Durchführung braucht: deinen Namen, die
+    Personenzahl und jede Notiz, die du geschickt hast. Kontaktdaten werden nur geteilt, wo der
+    Workshop es erfordert, und der Gastgeber darf sie ausschließlich für diesen Workshop
+    verwenden.
+  </p>
+  <p>
+    Wenn du selbst Gastgeber bist, sehen Teilnehmende dein öffentliches Profil — deinen Namen,
+    Foto, Bio und deine Angebote. Deine Adresse wird nur bei Workshops angezeigt, die du an einem
+    von dir veröffentlichten Ort anbietest.
+  </p>
+
+  <h2 id="transfers">7. Übermittlung außerhalb des EWR</h2>
+  <p>
+    Wir versuchen, Daten innerhalb der EU zu halten. Verarbeitet ein Anbieter Daten außerhalb des
+    EWR, stützen wir uns auf einen Angemessenheitsbeschluss oder auf die Standardvertragsklauseln
+    der Europäischen Kommission zusammen mit zusätzlichen Schutzmaßnahmen.
+  </p>
+  <p>
+    Anbieter, bei denen aktuell eine Übermittlung stattfindet: <span class="fill-in">[auflisten,
+    oder angeben, dass es keine gibt]</span>.
+  </p>
+
+  <h2 id="retention">8. Wie lange wir Daten speichern</h2>
+  <ul>
+    <li><strong>Kontodaten:</strong> solange dein Konto besteht, danach Löschung innerhalb von
+      <span class="fill-in">[30]</span> Tagen nach Schließung.</li>
+    <li><strong>Buchungs- und Zahlungsunterlagen:</strong> bis zu 10 Jahre, wie es deutsches
+      Steuer- und Handelsrecht vorschreibt.</li>
+    <li><strong>Von dir veröffentlichte Inhalte:</strong> bis du sie löschst, oder dein Konto
+      geschlossen wird.</li>
+    <li><strong>Nutzungs- und Analysedaten:</strong>
+      <span class="fill-in">[Zeitraum]</span>.</li>
+    <li><strong>Support-Nachrichten:</strong> <span class="fill-in">[Zeitraum]</span>.</li>
+  </ul>
+
+  <h2 id="permissions">9. App-Berechtigungen</h2>
+  <p>
+    Die App fragt diese nur ab, wenn eine Funktion sie benötigt, und du kannst jede davon in den
+    Geräteeinstellungen widerrufen:
+  </p>
+  <ul>
+    <li><strong>Standort</strong> — um Workshops nach Entfernung zu sortieren.</li>
+    <li><strong>Kamera und Fotomediathek</strong> — um ein Workshop-Video aufzunehmen oder
+      hochzuladen, oder ein Profilfoto festzulegen.</li>
+    <li><strong>Benachrichtigungen</strong> — Buchungsbestätigungen und Erinnerungen.</li>
+  </ul>
+
+  <h2 id="rights">10. Deine Rechte</h2>
+  <p>Nach der DSGVO kannst du von uns verlangen, dass wir:</p>
+  <ul>
+    <li>dir mitteilen, welche Daten wir über dich gespeichert haben, und dir eine Kopie geben
+      (Art. 15);</li>
+    <li>Falsches berichtigen (Art. 16);</li>
+    <li>deine Daten löschen (Art. 17);</li>
+    <li>die Verarbeitung einschränken (Art. 18);</li>
+    <li>sie in einem übertragbaren Format herausgeben (Art. 20);</li>
+    <li>die auf berechtigtem Interesse beruhende Verarbeitung einstellen — einschließlich
+      Profiling (Art. 21).</li>
+  </ul>
+  <p>
+    Beruht eine Verarbeitung auf Einwilligung, kannst du sie jederzeit mit Wirkung für die Zukunft
+    widerrufen.
+  </p>
+  <p>
+    Schreib an <span class="fill-in">[E-Mail-Adresse]</span> und wir antworten innerhalb eines
+    Monats. Du kannst dich auch bei einer Aufsichtsbehörde beschweren. Für uns zuständig ist die
+    Berliner Beauftragte für Datenschutz und Informationsfreiheit, du kannst dich aber auch an
+    die Behörde an deinem Wohn- oder Arbeitsort wenden.
+  </p>
+
+  <h2 id="children">11. Kinder</h2>
+  <p>
+    Twiggli ist nicht für Kinder unter 16 Jahren bestimmt. Wir erheben wissentlich keine Daten von
+    ihnen. Falls du glaubst, dass ein Kind uns personenbezogene Daten übermittelt hat, kontaktiere
+    uns bitte und wir löschen sie.
+  </p>
+
+  <h2 id="changes">12. Änderungen dieser Richtlinie</h2>
+  <p>
+    Wir aktualisieren diese Richtlinie, wenn sich das Produkt oder die Rechtslage ändert. Das
+    Datum oben zeigt die aktuelle Version. Wirkt sich eine Änderung wesentlich darauf aus, wie wir
+    deine Daten nutzen, informieren wir dich vorher in der App oder per E-Mail.
+  </p>
+</LegalPage>

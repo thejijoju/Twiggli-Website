@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
+import AppDownloadCta from '../../components/AppDownloadCta.astro';
+import { withBase } from '../../lib/url.ts';
+
+const lang = 'de';
+
+/* The "Corporate events" section copy is verbatim from the export. The
+   three points are PLACEHOLDER — replace with the real corporate pitch. */
+const points = [
+  {
+    num: '01',
+    title: 'Sag uns, was ihr braucht',
+    copy: 'Teamgröße, Termin, Budget, und ob es im Büro oder irgendwo in der Stadt stattfinden soll.',
+  },
+  {
+    num: '02',
+    title: 'Wir vermitteln einen Gastgeber',
+    copy: 'Wir wählen aus unseren geprüften Gastgebern aus und kommen mit passenden Optionen für Gruppe und Räumlichkeiten zurück.',
+  },
+  {
+    num: '03',
+    title: 'Wir übernehmen die Logistik',
+    copy: 'Material, Location und Terminplanung sind geregelt. Euer Team muss nur erscheinen.',
+  },
+];
+---
+
+<Base
+  title="Firmenevents — Twiggli"
+  description="Private Team-Workshops für Unternehmen, geleitet von geprüften Gastgebern in ganz Berlin."
+  lang={lang}
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Firmenevents</span>
+      <h1 class="page-title">Team-Workshops für Unternehmen</h1>
+      <p class="page-lede">
+        Buche einen privaten Workshop für dein Team — Kochen, Klettern, Tanzen und mehr, geleitet
+        von unseren geprüften Gastgebern in eurem Büro oder an einem Ort in deiner Nähe. Wir
+        kümmern uns um die Logistik, egal wie groß die Gruppe ist.
+      </p>
+      <div class="hero-actions">
+        <a href={withBase('/de/contact/')} class="btn btn-primary">Firmenangebot anfragen</a>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {points.map((point) => (
+        <div class="step">
+          <p class="step-num">{point.num}</p>
+          <h3 class="step-title">{point.title}</h3>
+          <p class="step-copy">{point.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-media-first">
+      <div class="media-4x3 grayscale">
+        <ImageSlot shape="rect" placeholder="Firmenevent-Foto hier einfügen" alt="" />
+      </div>
+      <div>
+        <span class="kicker kicker-tight">Jede Gruppengröße</span>
+        <h2 class="split-title">Vom Sechser-Team bis zum Firmen-Offsite</h2>
+        <p class="split-copy">
+          Eine einzelne Session oder eine Reihe, ein Raum oder mehrere parallel. Sag uns die
+          Gruppengröße und wir sagen dir, was passt.
+        </p>
+        <div class="split-actions">
+          <a href={withBase('/de/contact/')} class="btn btn-primary">Firmenangebot anfragen</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <AppDownloadCta lang={lang} />
+</Base>

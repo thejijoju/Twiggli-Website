@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import HostGrid from '../../components/HostGrid.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
+import AppDownloadCta from '../../components/AppDownloadCta.astro';
+import { getHosts } from '../../data/content.ts';
+import { withBase } from '../../lib/url.ts';
+
+const lang = 'de';
+const hosts = getHosts(lang);
+
+/* The 17 host entries are PLACEHOLDER — see src/data/content.ts. */
+---
+
+<Base
+  title="Unsere Gastgeber — Twiggli"
+  description="Die Menschen, die Workshops auf Twiggli in ganz Berlin anbieten."
+  lang={lang}
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Unsere Gastgeber</span>
+      <h1 class="page-title">Die Menschen hinter den Workshops</h1>
+      <p class="page-lede">
+        Jeder Workshop auf Twiggli wird von jemandem vor Ort geleitet, der davon lebt oder es aus
+        Leidenschaft macht. Hier siehst du, wen du treffen wirst.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <HostGrid hosts={hosts} />
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">Gastgeber &amp; verdienen</span>
+        <h2 class="split-title">Workshops kostenlos anbieten — und Geld verdienen</h2>
+        <p class="split-copy">
+          Verwandle dein Können in Einkommen. Biete einen Tanzkurs, eine Kochsession oder eine
+          Wanderung an, lege deinen Preis fest — oder mach es kostenlos — und Twiggli bringt die
+          Leute. Keine Gebühren, keine Ausrüstung nötig.
+        </p>
+        <div class="split-actions">
+          <a href={withBase('/de/host/')} class="btn btn-primary">Gastgeber werden</a>
+        </div>
+      </div>
+      <div class="media-4x3 grayscale">
+        <ImageSlot shape="rect" placeholder="Gastgeber-/Workshop-Foto hier einfügen" alt="" />
+      </div>
+    </section>
+  </div>
+
+  <AppDownloadCta lang={lang} />
+</Base>

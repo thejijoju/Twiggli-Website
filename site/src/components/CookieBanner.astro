@@ -1,23 +1,46 @@
 ---
-import { withBase } from '../lib/url.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
 
 /** Storage key checked by the no-flash script in Base.astro's <head> —
  *  keep the two in sync if this ever changes. */
 const STORAGE_KEY = 'twiggli-cookie-consent';
+
+const copy = {
+  en: {
+    label: 'Cookie notice',
+    text: 'We only use the storage necessary to run Twiggli — keeping you signed in, remembering this choice, and keeping the site secure. See our',
+    privacyLink: 'Privacy Policy',
+    suffix: 'for details.',
+    necessary: 'Necessary only',
+    acceptAll: 'Accept all',
+  },
+  de: {
+    label: 'Cookie-Hinweis',
+    text: 'Wir verwenden nur den Speicher, der für den Betrieb von Twiggli notwendig ist — um dich angemeldet zu halten, diese Auswahl zu speichern und die Seite abzusichern. Details in unserer',
+    privacyLink: 'Datenschutzerklärung',
+    suffix: '.',
+    necessary: 'Nur Notwendige',
+    acceptAll: 'Alle akzeptieren',
+  },
+}[lang];
 ---
 
-<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie notice">
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label={copy.label}>
   <div class="cookie-banner-inner">
     <p class="cookie-banner-text">
-      We only use the storage necessary to run Twiggli — keeping you signed in, remembering this
-      choice, and keeping the site secure. See our
-      <a href={`${withBase('/privacy-policy/')}#cookies`}>Privacy Policy</a> for details.
+      {copy.text}
+      {' '}<a href={`${href(lang, '/privacy-policy/')}#cookies`}>{copy.privacyLink}</a> {copy.suffix}
     </p>
     <div class="cookie-banner-actions">
       <button type="button" class="btn btn-secondary" data-cookie-choice="necessary">
-        Necessary only
+        {copy.necessary}
       </button>
-      <button type="button" class="btn btn-primary" data-cookie-choice="all">Accept all</button>
+      <button type="button" class="btn btn-primary" data-cookie-choice="all">{copy.acceptAll}</button>
     </div>
   </div>
 </div>

@@ -1,9 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import { withBase } from '../lib/url.ts';
+
+const lang = 'en';
 ---
 
-<Base title="Page not found — Twiggli" description="That page does not exist.">
+<Base title="Page not found — Twiggli" description="That page does not exist." lang={lang}>
   <div class="container">
     <section class="page-head">
       <span class="kicker">404</span>

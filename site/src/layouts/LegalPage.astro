@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
-import { legalUpdated } from '../data/site.ts';
+import { getSiteData } from '../data/site.ts';
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
 interface Props {
   title: string;
@@ -12,20 +13,24 @@ interface Props {
    *  entry's `id` must match the <h2 id> in the page body. */
   toc?: { id: string; label: string }[];
   updated?: string;
+  lang?: Lang;
 }
 
 const {
-  title, kicker, heading, description, lede, toc = [], updated = legalUpdated,
+  title, kicker, heading, description, lede, toc = [], updated, lang = DEFAULT_LANG,
 } = Astro.props;
+const { legalUpdated } = getSiteData(lang);
+const lastUpdatedLabel = { en: 'Last updated:', de: 'Zuletzt aktualisiert:' }[lang];
+const onThisPageLabel = { en: 'On this page', de: 'Auf dieser Seite' }[lang];
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} lang={lang}>
   <div class="container">
     <section class="page-head">
       <span class="kicker">{kicker}</span>
       <h1 class="page-title">{heading}</h1>
       {lede && <p class="page-lede">{lede}</p>}
-      <p class="legal-meta">Last updated: {updated}</p>
+      <p class="legal-meta">{lastUpdatedLabel} {updated ?? legalUpdated}</p>
     </section>
 
     <hr class="rule" />
@@ -34,7 +39,7 @@ const {
       <slot name="notice" />
 
       {toc.length > 0 && (
-        <nav class="legal-toc" aria-label="On this page">
+        <nav class="legal-toc" aria-label={onThisPageLabel}>
           <ol>
             {toc.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
           </ol>

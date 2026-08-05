@@ -3,8 +3,11 @@ import Base from '../layouts/Base.astro';
 import HostGrid from '../components/HostGrid.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
-import { hosts } from '../data/content.ts';
+import { getHosts } from '../data/content.ts';
 import { withBase } from '../lib/url.ts';
+
+const lang = 'en';
+const hosts = getHosts(lang);
 
 /* The 17 host entries are PLACEHOLDER — see src/data/content.ts. */
 ---
@@ -12,6 +15,7 @@ import { withBase } from '../lib/url.ts';
 <Base
   title="Our hosts — Twiggli"
   description="The people running workshops on Twiggli across Berlin."
+  lang={lang}
 >
   <div class="container">
     <section class="page-head">
@@ -50,5 +54,5 @@ import { withBase } from '../lib/url.ts';
     </section>
   </div>
 
-  <AppDownloadCta />
+  <AppDownloadCta lang={lang} />
 </Base>

@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import PhoneMockup from '../../components/PhoneMockup.astro';
+import AppDownloadCta from '../../components/AppDownloadCta.astro';
+import { getSteps } from '../../data/content.ts';
+import { appUrl } from '../../data/site.ts';
+
+const lang = 'de';
+const steps = getSteps(lang);
+
+/* Copy on this page reuses the export's "How it works" steps verbatim. The
+   lede is PLACEHOLDER — replace with the real page copy. */
+---
+
+<Base
+  title="So funktioniert’s — Twiggli"
+  description="Entdecke echte Videos von Workshops in deiner Nähe, buche in wenigen Taps und erscheine."
+  lang={lang}
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">So funktioniert&rsquo;s</span>
+      <h1 class="page-title">Vom Video zum Workshop, in wenigen Taps</h1>
+      <p class="page-lede">
+        Twiggli zeigt dir, was in Berlin wirklich passiert — gefilmt von den Leuten, die es
+        anbieten. Finde etwas, das dir gefällt, buche es und erscheine.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {steps.map((step) => (
+        <div class="step">
+          <p class="step-num">{step.num}</p>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-copy">{step.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">In der App</span>
+        <h2 class="split-title">Alles in deiner Nähe, gefiltert wie du suchst</h2>
+        <p class="split-copy">
+          Filtere nach heute, morgen, kostenlos oder kostenpflichtig, und sieh, wie weit jeder
+          Workshop von dir entfernt ist. Jeder Eintrag ist ein Video, damit du weißt, was du
+          buchst, bevor du buchst.
+        </p>
+        <div class="split-actions">
+          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Jetzt starten</a>
+        </div>
+      </div>
+      <PhoneMockup lang={lang} layout="single" screen="listing" />
+    </section>
+  </div>
+
+  <AppDownloadCta lang={lang} />
+</Base>

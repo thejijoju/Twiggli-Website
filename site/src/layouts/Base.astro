@@ -2,21 +2,34 @@
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
-import { brand } from '../data/site.ts';
+import { getSiteData } from '../data/site.ts';
+import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
 import '../styles/modernist.css';
 import '../styles/site.css';
 
 interface Props {
   title: string;
   description?: string;
+  lang?: Lang;
 }
 
-const { title, description = brand.tagline } = Astro.props;
+const { title, description, lang = DEFAULT_LANG } = Astro.props;
+const { brand } = getSiteData(lang);
+const pageDescription = description ?? brand.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+
+// The same page in the other language, for the hreflang alternates below —
+// same logic LangSwitch.astro uses to compute it.
+const base = import.meta.env.BASE_URL;
+let bare = Astro.url.pathname;
+if (bare.startsWith(base)) bare = `/${bare.slice(base.length)}`;
+bare = bare.replace(/^\/de(\/|$)/, '/') || '/';
+const enUrl = new URL(href('en', bare), Astro.site ?? Astro.url.origin);
+const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,17 +38,38 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
         if (localStorage.getItem('twiggli-cookie-consent')) {
           document.documentElement.classList.add('cookie-consent-set');
         }
-      } catch {}
+        // First-visit language detection: if the visitor hasn't picked a
+        // language before (LangSwitch.astro records that choice) and their
+        // browser prefers German, send them to the /de/ equivalent of this
+        // page. Runs once, only away from an already-German page, and never
+        // fights a stored preference — see LangSwitch.astro and this same
+        // path-stripping logic in Base.astro / LangSwitch.astro.
+        var storedLang = localStorage.getItem('twiggli-lang');
+        var deployBase = '/Twiggli-Website/';
+        var path = location.pathname;
+        var rel = path.indexOf(deployBase) === 0 ? path.slice(deployBase.length) : path.replace(/^\//, '');
+        var onGerman = rel === 'de' || rel.indexOf('de/') === 0;
+        if (!storedLang && !onGerman) {
+          var prefers = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+          if (prefers.indexOf('de') === 0) {
+            location.replace(deployBase + 'de/' + rel);
+          }
+        }
+      } catch (e) {}
     </script>
     <title>{title}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonical.href} />
+    <link rel="alternate" hreflang="en" href={enUrl.href} />
+    <link rel="alternate" hreflang="de" href={deUrl.href} />
+    <link rel="alternate" hreflang="x-default" href={enUrl.href} />
     <link rel="icon" href={brand.logo} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={brand.name} />
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical.href} />
+    <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,12 +80,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
   </head>
   <body>
     <div class="page">
-      <Nav />
+      <Nav lang={lang} />
       <main>
         <slot />
       </main>
-      <Footer />
+      <Footer lang={lang} />
     </div>
-    <CookieBanner />
+    <CookieBanner lang={lang} />
   </body>
 </html>

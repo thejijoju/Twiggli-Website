@@ -5,12 +5,17 @@ import PhoneMockup from '../components/PhoneMockup.astro';
 import HostGrid from '../components/HostGrid.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
 import StoreButtons from '../components/StoreButtons.astro';
-import { steps, hosts } from '../data/content.ts';
-import { brand, appUrl } from '../data/site.ts';
+import { getSteps, getHosts } from '../data/content.ts';
+import { getSiteData, appUrl } from '../data/site.ts';
 import { withBase } from '../lib/url.ts';
+
+const lang = 'en';
+const { brand } = getSiteData(lang);
+const steps = getSteps(lang);
+const hosts = getHosts(lang);
 ---
 
-<Base title={`${brand.name} — ${brand.tagline}`}>
+<Base title={`${brand.name} — ${brand.tagline}`} lang={lang}>
   <div class="container">
     <section class="hero">
       <div>
@@ -24,14 +29,14 @@ import { withBase } from '../lib/url.ts';
           <p>Whether you want to join the fun or monetize your passion, Twiggli makes it easy.</p>
           <p>📱 <strong>Ready to dive in?</strong> Download now on Apple Store and Google Play!</p>
         </div>
-        <StoreButtons tone="default" class="hero-stores" />
+        <StoreButtons lang={lang} tone="default" class="hero-stores" />
         <div class="hero-actions">
           <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
           <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
         </div>
       </div>
 
-      <PhoneMockup layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
+      <PhoneMockup lang={lang} layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
     </section>
 
     <section class="section" id="how-it-works">
@@ -103,5 +108,5 @@ import { withBase } from '../lib/url.ts';
     </section>
   </div>
 
-  <AppDownloadCta />
+  <AppDownloadCta lang={lang} />
 </Base>

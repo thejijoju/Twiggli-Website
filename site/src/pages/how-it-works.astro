@@ -2,8 +2,11 @@
 import Base from '../layouts/Base.astro';
 import PhoneMockup from '../components/PhoneMockup.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
-import { steps } from '../data/content.ts';
+import { getSteps } from '../data/content.ts';
 import { appUrl } from '../data/site.ts';
+
+const lang = 'en';
+const steps = getSteps(lang);
 
 /* Copy on this page reuses the export's "How it works" steps verbatim. The
    lede is PLACEHOLDER — replace with the real page copy. */
@@ -12,6 +15,7 @@ import { appUrl } from '../data/site.ts';
 <Base
   title="How it works — Twiggli"
   description="Browse real videos of workshops near you, book in a couple of taps, and show up."
+  lang={lang}
 >
   <div class="container">
     <section class="page-head">
@@ -49,9 +53,9 @@ import { appUrl } from '../data/site.ts';
           <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
         </div>
       </div>
-      <PhoneMockup layout="single" screen="listing" />
+      <PhoneMockup lang={lang} layout="single" screen="listing" />
     </section>
   </div>
 
-  <AppDownloadCta />
+  <AppDownloadCta lang={lang} />
 </Base>

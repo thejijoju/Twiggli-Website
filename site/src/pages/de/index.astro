@@ -1,0 +1,112 @@
+---
+import Base from '../../layouts/Base.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
+import PhoneMockup from '../../components/PhoneMockup.astro';
+import HostGrid from '../../components/HostGrid.astro';
+import AppDownloadCta from '../../components/AppDownloadCta.astro';
+import StoreButtons from '../../components/StoreButtons.astro';
+import { getSteps, getHosts } from '../../data/content.ts';
+import { getSiteData, appUrl } from '../../data/site.ts';
+import { withBase } from '../../lib/url.ts';
+
+const lang = 'de';
+const { brand } = getSiteData(lang);
+const steps = getSteps(lang);
+const hosts = getHosts(lang);
+---
+
+<Base title={`${brand.name} — ${brand.tagline}`} lang={lang}>
+  <div class="container">
+    <section class="hero">
+      <div>
+        <h1 class="hero-title">
+          <span>Entdecke Berlins einzigartigste Erlebnisse —</span>
+          <span>im Video</span>
+        </h1>
+        <div class="hero-copy">
+          <p><strong>🎉 Workshops entdecken. Workshops kostenlos anbieten.</strong></p>
+          <p>Entdecke spannende Aktivitäten in deiner Nähe oder erstelle deine eigene und verdiene dabei 🎉.</p>
+          <p>Ob du einfach mitmachen oder deine Leidenschaft zu Geld machen willst — Twiggli macht es einfach.</p>
+          <p>📱 <strong>Bereit loszulegen?</strong> Jetzt im App Store und bei Google Play herunterladen!</p>
+        </div>
+        <StoreButtons lang={lang} tone="default" class="hero-stores" />
+        <div class="hero-actions">
+          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Jetzt starten</a>
+          <a href="#how-it-works" class="btn btn-ghost">So funktioniert&rsquo;s</a>
+        </div>
+      </div>
+
+      <PhoneMockup lang={lang} layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
+    </section>
+
+    <section class="section" id="how-it-works">
+      <span class="kicker">So funktioniert&rsquo;s</span>
+      {steps.map((step) => (
+        <div class="step">
+          <p class="step-num">{step.num}</p>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-copy">{step.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-media-first" id="host">
+      <div class="media-4x3 grayscale">
+        <ImageSlot
+          src={withBase('/img/hero/hiking.jpg')}
+          shape="rect"
+          placeholder="Gastgeber-/Workshop-Foto hier einfügen"
+          alt=""
+        />
+      </div>
+      <div>
+        <span class="kicker kicker-tight">Gastgeber &amp; verdienen</span>
+        <h2 class="split-title">Workshops kostenlos anbieten — und Geld verdienen</h2>
+        <p class="split-copy">
+          Verwandle dein Können in Einkommen. Biete einen Tanzkurs, eine Kochsession oder eine
+          Wanderung an, lege deinen Preis fest — oder mach es kostenlos — und Twiggli bringt die
+          Leute. Keine Gebühren, keine Ausrüstung nötig.
+        </p>
+        <div class="split-actions">
+          <a href={withBase('/de/host/')} class="btn btn-primary">Gastgeber werden</a>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section" id="hosts">
+      <span class="kicker">Unsere Gastgeber</span>
+      <HostGrid hosts={hosts} layout="carousel" />
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first" id="corporate">
+      <div>
+        <span class="kicker kicker-tight">Firmenevents</span>
+        <h2 class="split-title">Team-Workshops für Unternehmen</h2>
+        <p class="split-copy">
+          Buche einen privaten Workshop für dein Team — Kochen, Klettern, Tanzen und mehr, geleitet
+          von unseren geprüften Gastgebern in eurem Büro oder an einem Ort in deiner Nähe. Wir
+          kümmern uns um die Logistik, egal wie groß die Gruppe ist.
+        </p>
+        <div class="split-actions">
+          <a href={withBase('/de/corporate/')} class="btn btn-primary">Firmenangebot anfragen</a>
+        </div>
+      </div>
+      <div class="media-4x3 grayscale">
+        <ImageSlot
+          src={withBase('/img/hero/cooking.jpg')}
+          shape="rect"
+          placeholder="Firmenevent-Foto hier einfügen"
+          alt=""
+        />
+      </div>
+    </section>
+  </div>
+
+  <AppDownloadCta lang={lang} />
+</Base>

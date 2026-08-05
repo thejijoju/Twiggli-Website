@@ -1,8 +1,15 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import SocialIcon from './SocialIcon.astro';
-import { brand, navLinks, socialLinks } from '../data/site.ts';
-import { withBase } from '../lib/url.ts';
+import LangSwitch from './LangSwitch.astro';
+import { getSiteData } from '../data/site.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { brand, navLinks, socialLinks } = getSiteData(lang);
 
 /** Flat child order is deliberate: .nav's 16px gap applies between siblings,
  *  so grouping the links into a wrapper would change the spacing the design
@@ -14,10 +21,10 @@ const isCurrent = (link: (typeof navLinks)[number]) =>
 ---
 
 <nav class="nav">
-  <a href={withBase('/')} class="nav-logo" aria-label={`${brand.name} — home`}>
+  <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
     <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
   </a>
-  <a href={withBase('/')} class="nav-brand">{brand.name}</a>
+  <a href={href(lang, '/')} class="nav-brand">{brand.name}</a>
   {navLinks.map((link) => (
     <a
       href={link.href}
@@ -31,4 +38,5 @@ const isCurrent = (link: (typeof navLinks)[number]) =>
       <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
     ))}
   </div>
+  <LangSwitch lang={lang} />
 </nav>

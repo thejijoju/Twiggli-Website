@@ -1,10 +1,10 @@
 ---
-import Base from '../layouts/Base.astro';
-import AppDownloadCta from '../components/AppDownloadCta.astro';
-import SocialIcon from '../components/SocialIcon.astro';
-import { getSiteData } from '../data/site.ts';
+import Base from '../../layouts/Base.astro';
+import AppDownloadCta from '../../components/AppDownloadCta.astro';
+import SocialIcon from '../../components/SocialIcon.astro';
+import { getSiteData } from '../../data/site.ts';
 
-const lang = 'en';
+const lang = 'de';
 const { socialLinks } = getSiteData(lang);
 
 /* PLACEHOLDER page. The form posts nowhere yet — wire `action` to your form
@@ -12,17 +12,17 @@ const { socialLinks } = getSiteData(lang);
 ---
 
 <Base
-  title="Contact — Twiggli"
-  description="Get in touch about hosting, corporate events, or anything else."
+  title="Kontakt — Twiggli"
+  description="Melde dich bei uns — für Gastgeber-Anfragen, Firmenevents oder alles andere."
   lang={lang}
 >
   <div class="container">
     <section class="page-head">
-      <span class="kicker">Contact</span>
-      <h1 class="page-title">Talk to us</h1>
+      <span class="kicker">Kontakt</span>
+      <h1 class="page-title">Sprich mit uns</h1>
       <p class="page-lede">
-        Hosting a workshop, booking something for your team, or just curious — send us a note and we
-        will come back to you.
+        Du willst einen Workshop anbieten, etwas für dein Team buchen, oder bist einfach neugierig
+        — schick uns eine Nachricht und wir melden uns bei dir.
       </p>
     </section>
 
@@ -36,30 +36,31 @@ const { socialLinks } = getSiteData(lang);
             <input class="input" type="text" id="name" name="name" required />
           </div>
           <div class="field">
-            <label for="email">Email</label>
+            <label for="email">E-Mail</label>
             <input class="input" type="email" id="email" name="email" required />
           </div>
           <div class="field">
-            <label for="topic">What is this about?</label>
+            <label for="topic">Worum geht es?</label>
             <select class="input" id="topic" name="topic">
-              <option>Hosting a workshop</option>
-              <option>Corporate events</option>
-              <option>Something else</option>
+              <option>Workshop anbieten</option>
+              <option>Firmenevents</option>
+              <option>Etwas anderes</option>
             </select>
           </div>
           <div class="field">
-            <label for="message">Message</label>
+            <label for="message">Nachricht</label>
             <textarea class="input" id="message" name="message" rows="5" required></textarea>
           </div>
           <div>
-            <button type="submit" class="btn btn-primary">Send message</button>
+            <button type="submit" class="btn btn-primary">Nachricht senden</button>
           </div>
         </form>
 
         <div class="form-aside">
-          <span class="kicker kicker-tight">Elsewhere</span>
+          <span class="kicker kicker-tight">Anderswo</span>
           <p>
-            We are on all the usual places, and we read our messages there too.
+            Wir sind auf allen gängigen Kanälen vertreten, und wir lesen unsere Nachrichten auch
+            dort.
           </p>
           <div class="nav-social" style="margin-left:0">
             {socialLinks.map((s) => (

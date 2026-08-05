@@ -1,39 +1,54 @@
 /** Site-wide chrome: nav, footer columns, social, store links.
  *  Edit here, not in the components. */
 
-import { withBase } from '../lib/url.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
 
-export const brand = {
-  name: 'Twiggli',
-  logo: withBase('/img/logo.jpg'),
-  tagline: "Discover Berlin's most unique experiences — through video",
-};
+export type NavLink = { label: string; href: string; external?: boolean };
 
 /** The booking/host web app. Every "Get Started" on the site points here. */
 export const appUrl = 'https://app.twiggli.com/';
 
-export type NavLink = { label: string; href: string; external?: boolean };
+const brandCopy = {
+  en: {
+    name: 'Twiggli',
+    tagline: "Discover Berlin's most unique experiences — through video",
+  },
+  de: {
+    name: 'Twiggli',
+    tagline: 'Entdecke Berlins einzigartigste Erlebnisse — im Video',
+  },
+};
 
-export const navLinks: NavLink[] = [
-  { label: 'Home', href: withBase('/') },
-  { label: 'Get Started', href: appUrl, external: true },
-  { label: 'Bookings for Corporate', href: withBase('/corporate/') },
-  { label: 'Contact', href: withBase('/contact/') },
-];
+const navLabels = {
+  en: { home: 'Home', getStarted: 'Get Started', corporate: 'Bookings for Corporate', contact: 'Contact' },
+  de: { home: 'Startseite', getStarted: 'Jetzt starten', corporate: 'Für Unternehmen', contact: 'Kontakt' },
+};
 
-/** Pages linked from the footer only — the nav in the design holds a short
- *  row and widening it further would push it into wrapping on laptops. */
-export const secondaryLinks: NavLink[] = [
-  { label: 'How it works', href: withBase('/how-it-works/') },
-  { label: 'Our hosts', href: withBase('/hosts/') },
-  { label: 'Host with Twiggli', href: withBase('/host/') },
-];
+const secondaryLabels = {
+  en: { howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli' },
+  de: { howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden' },
+};
 
-export const legalLinks: NavLink[] = [
-  { label: 'Terms of Service', href: withBase('/terms-of-service/') },
-  { label: 'Privacy Policy', href: withBase('/privacy-policy/') },
-  { label: 'Impressum', href: withBase('/impressum/') },
-];
+const legalLabels = {
+  en: { terms: 'Terms of Service', privacy: 'Privacy Policy', impressum: 'Impressum' },
+  de: { terms: 'Nutzungsbedingungen', privacy: 'Datenschutzerklärung', impressum: 'Impressum' },
+};
+
+const storeLabels = {
+  en: { appStore: 'Download on the App Store', googlePlay: 'Get it on Google Play' },
+  de: { appStore: 'Laden im App Store', googlePlay: 'Jetzt bei Google Play' },
+};
+
+const copyrightText = {
+  en: '© 2026 Twiggli. All rights reserved.',
+  de: '© 2026 Twiggli. Alle Rechte vorbehalten.',
+};
+
+/** Shown on the legal pages. Update when the documents change. */
+const legalUpdatedText = {
+  en: '5 August 2026',
+  de: '5. August 2026',
+};
 
 export const socialLinks = [
   { label: 'Instagram', href: '#', icon: 'instagram' },
@@ -43,29 +58,54 @@ export const socialLinks = [
 ] as const;
 
 /**
- * App store listings.
- *
- * `badge` is optional: leave it empty and the design's text button renders.
- * Drop the OFFICIAL artwork into public/img/ and set the path to switch to
- * real badges — Apple and Google both licence those specifically for this
- * use, and both forbid redrawing their marks by hand, so use their files:
- *   Apple  → developer.apple.com/app-store/marketing/guidelines/
- *   Google → play.google.com/intl/en_us/badges/
+ * Official Apple / Google badge artwork, one per language — both stores
+ * ship localized marks (labels baked into the SVG), so the badge itself
+ * switches with the site language, not just its alt text.
  */
-export const storeLinks = {
-  appStore: {
-    label: 'Download on the App Store',
-    href: '#',
-    badge: '',
-  },
-  googlePlay: {
-    label: 'Get it on Google Play',
-    href: '#',
-    badge: '',
-  },
+const storeBadges = {
+  en: { appStore: '/img/store/app-store-badge-en.svg', googlePlay: '/img/store/google-play-badge-en.svg' },
+  de: { appStore: '/img/store/app-store-badge-de.svg', googlePlay: '/img/store/google-play-badge-de.svg' },
 };
 
-export const copyright = '© 2026 Twiggli. All rights reserved.';
+/** Everything the chrome (Nav, Footer, CookieBanner, StoreButtons) needs,
+ *  resolved for one language. Impressum is a single German-only page
+ *  shared by both language versions of the site — see impressum.astro —
+ *  so its link always points at the root path, never /de/impressum/. */
+export function getSiteData(lang: Lang) {
+  const brand = { ...brandCopy[lang], logo: withBase('/img/logo.jpg') };
 
-/** Shown on the legal pages. Update when the documents change. */
-export const legalUpdated = '5 August 2026';
+  const navLinks: NavLink[] = [
+    { label: navLabels[lang].home, href: href(lang, '/') },
+    { label: navLabels[lang].getStarted, href: appUrl, external: true },
+    { label: navLabels[lang].corporate, href: href(lang, '/corporate/') },
+    { label: navLabels[lang].contact, href: href(lang, '/contact/') },
+  ];
+
+  const secondaryLinks: NavLink[] = [
+    { label: secondaryLabels[lang].howItWorks, href: href(lang, '/how-it-works/') },
+    { label: secondaryLabels[lang].hosts, href: href(lang, '/hosts/') },
+    { label: secondaryLabels[lang].host, href: href(lang, '/host/') },
+  ];
+
+  const legalLinks: NavLink[] = [
+    { label: legalLabels[lang].terms, href: href(lang, '/terms-of-service/') },
+    { label: legalLabels[lang].privacy, href: href(lang, '/privacy-policy/') },
+    { label: legalLabels[lang].impressum, href: href('en', '/impressum/') },
+  ];
+
+  const storeLinks = {
+    appStore: { label: storeLabels[lang].appStore, href: '#', badge: withBase(storeBadges[lang].appStore) },
+    googlePlay: { label: storeLabels[lang].googlePlay, href: '#', badge: withBase(storeBadges[lang].googlePlay) },
+  };
+
+  return {
+    brand,
+    navLinks,
+    secondaryLinks,
+    legalLinks,
+    socialLinks,
+    storeLinks,
+    copyright: copyrightText[lang],
+    legalUpdated: legalUpdatedText[lang],
+  };
+}

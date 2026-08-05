@@ -4,6 +4,8 @@ import ImageSlot from '../components/ImageSlot.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
 import { withBase } from '../lib/url.ts';
 
+const lang = 'en';
+
 /* The "Corporate events" section copy is verbatim from the export. The
    three points are PLACEHOLDER — replace with the real corporate pitch. */
 const points = [
@@ -28,6 +30,7 @@ const points = [
 <Base
   title="Corporate events — Twiggli"
   description="Private team-building workshops for companies, run by vetted hosts across Berlin."
+  lang={lang}
 >
   <div class="container">
     <section class="page-head">
@@ -74,5 +77,5 @@ const points = [
     </section>
   </div>
 
-  <AppDownloadCta />
+  <AppDownloadCta lang={lang} />
 </Base>

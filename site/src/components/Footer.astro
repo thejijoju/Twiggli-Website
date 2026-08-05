@@ -1,27 +1,36 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import StoreButtons from './StoreButtons.astro';
-import {
-  brand, navLinks, secondaryLinks, legalLinks, socialLinks, copyright,
-} from '../data/site.ts';
-import { withBase } from '../lib/url.ts';
+import { getSiteData } from '../data/site.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { brand, navLinks, secondaryLinks, legalLinks, socialLinks, copyright } = getSiteData(lang);
+
+const columnLabels = {
+  en: { getApp: 'Get the app', product: 'Product', explore: 'Explore', follow: 'Follow', legal: 'Legal' },
+  de: { getApp: 'App herunterladen', product: 'Produkt', explore: 'Entdecken', follow: 'Folgen', legal: 'Rechtliches' },
+}[lang];
 ---
 
 <footer id="footer" class="footer">
   <div class="footer-inner">
     <div class="footer-brand-block">
       <div class="footer-brand">
-        <a href={withBase('/')} class="footer-logo" aria-label={`${brand.name} — home`}>
+        <a href={href(lang, '/')} class="footer-logo" aria-label={`${brand.name} — home`}>
           <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
         </a>
         <span class="footer-brand-name">{brand.name}</span>
       </div>
-      <p class="footer-col-title footer-get-app">Get the app</p>
-      <StoreButtons tone="default" class="footer-stores" />
+      <p class="footer-col-title footer-get-app">{columnLabels.getApp}</p>
+      <StoreButtons lang={lang} tone="default" class="footer-stores" />
     </div>
     <div class="footer-cols">
       <div>
-        <p class="footer-col-title">Product</p>
+        <p class="footer-col-title">{columnLabels.product}</p>
         <div class="footer-links">
           {navLinks.map((link) => (
             <a
@@ -33,19 +42,19 @@ import { withBase } from '../lib/url.ts';
         </div>
       </div>
       <div>
-        <p class="footer-col-title">Explore</p>
+        <p class="footer-col-title">{columnLabels.explore}</p>
         <div class="footer-links">
           {secondaryLinks.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>
       </div>
       <div>
-        <p class="footer-col-title">Follow</p>
+        <p class="footer-col-title">{columnLabels.follow}</p>
         <div class="footer-links">
           {socialLinks.map((s) => <a href={s.href}>{s.label}</a>)}
         </div>
       </div>
       <div>
-        <p class="footer-col-title">Legal</p>
+        <p class="footer-col-title">{columnLabels.legal}</p>
         <div class="footer-links">
           {legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>

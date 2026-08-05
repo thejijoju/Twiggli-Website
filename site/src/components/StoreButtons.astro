@@ -1,20 +1,20 @@
 ---
-import { storeLinks } from '../data/site.ts';
+import { getSiteData } from '../data/site.ts';
+import type { Lang } from '../lib/url.ts';
 
 /**
- * App Store / Google Play links.
- *
- * Renders the design's text buttons until official badge artwork is dropped
- * into public/img/ and wired up in data/site.ts — see the note there. The
- * marks are trademarked and both stores supply the files for exactly this
- * purpose, so nothing here draws them by hand.
+ * App Store / Google Play links, with the official localized badge for the
+ * current language (see data/site.ts) — both stores ship separate artwork
+ * per locale, so the badge image itself switches, not just its alt text.
  */
 interface Props {
+  lang: Lang;
   /** 'accent' sits on the red band; 'default' on the page background. */
   tone?: 'accent' | 'default';
   class?: string;
 }
-const { tone = 'accent', class: className } = Astro.props;
+const { lang, tone = 'accent', class: className } = Astro.props;
+const { storeLinks } = getSiteData(lang);
 const stores = [storeLinks.appStore, storeLinks.googlePlay];
 ---
 

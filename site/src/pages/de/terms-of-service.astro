@@ -1,0 +1,272 @@
+---
+import LegalPage from '../../layouts/LegalPage.astro';
+import { withBase } from '../../lib/url.ts';
+
+/**
+ * DRAFT. German translation of terms-of-service.astro — keep the two in
+ * step when the English source changes. Written in plain language for a
+ * Berlin-based workshop marketplace. Every <span class="fill-in"> is a
+ * value only the operator knows. Have a German lawyer review before
+ * publishing — the platform / intermediary construction in section 2 and
+ * the withdrawal-right carve-out in section 12 are the two clauses that
+ * most need checking against how Twiggli actually contracts and charges.
+ */
+const toc = [
+  { id: 'about', label: '1. Wer wir sind' },
+  { id: 'what-twiggli-is', label: '2. Was Twiggli ist' },
+  { id: 'account', label: '3. Dein Konto' },
+  { id: 'booking', label: '4. Einen Workshop buchen' },
+  { id: 'payment', label: '5. Preise und Zahlung' },
+  { id: 'cancellation', label: '6. Stornierung und Erstattung' },
+  { id: 'hosting', label: '7. Wenn du einen Workshop anbietest' },
+  { id: 'content', label: '8. Videos und Inhalte, die du postest' },
+  { id: 'conduct', label: '9. Was du nicht tun darfst' },
+  { id: 'availability', label: '10. Verfügbarkeit des Dienstes' },
+  { id: 'liability', label: '11. Unsere Haftung' },
+  { id: 'withdrawal', label: '12. Widerrufsrecht' },
+  { id: 'termination', label: '13. Sperrung und Kündigung' },
+  { id: 'changes', label: '14. Änderungen dieser Bedingungen' },
+  { id: 'law', label: '15. Anwendbares Recht und Streitigkeiten' },
+];
+---
+
+<LegalPage
+  title="Nutzungsbedingungen — Twiggli"
+  kicker="Rechtliches"
+  heading="Nutzungsbedingungen"
+  description="Die Regeln für die Nutzung von Twiggli, für Teilnehmende und Gastgeber gleichermaßen."
+  lede="Diese Bedingungen gelten für die Nutzung der Twiggli-App und -Website — beim Buchen eines Workshops und beim Anbieten eines eigenen. Bitte lies Abschnitt 2: Twiggli vermittelt dich an Gastgeber, aber der Workshop selbst ist ein Vertrag zwischen dir und dem Gastgeber."
+  toc={toc}
+  lang="de"
+>
+  <div class="legal-notice" slot="notice">
+    <p><strong>Entwurf — noch nicht anwaltlich geprüft.</strong></p>
+    <p>
+      Dieser Text wurde als klarer, verständlicher Ausgangspunkt verfasst, nicht als
+      Rechtsberatung. Markierte Felder brauchen noch echte Werte, und ein deutscher Anwalt sollte
+      ihn vor dem Livegang prüfen — insbesondere die Abschnitte 2, 5, 6, 11 und 12.
+    </p>
+  </div>
+
+  <h2 id="about">1. Wer wir sind</h2>
+  <p>
+    Twiggli wird betrieben von <span class="fill-in">[Firmenname]</span>,
+    <span class="fill-in">[Adresse]</span>, Deutschland. Du erreichst uns unter
+    <span class="fill-in">[E-Mail-Adresse]</span>. Die vollständigen Angaben findest du in
+    unserem <a href={withBase('/impressum/')}>Impressum</a>.
+  </p>
+  <p>
+    In diesen Bedingungen bezeichnen „Twiggli", „wir" und „uns" dieses Unternehmen. „Du" meint
+    jede Person, die unsere App oder Website nutzt — egal ob du einen Workshop buchst oder
+    anbietest.
+  </p>
+
+  <h2 id="what-twiggli-is">2. Was Twiggli ist</h2>
+  <p>
+    Twiggli ist ein Marktplatz. Gastgeber veröffentlichen Workshops und Aktivitäten;
+    Teilnehmende finden und buchen sie. Wir stellen die Plattform, den Video-Feed, den
+    Buchungsablauf und die Zahlungsabwicklung bereit.
+  </p>
+  <p>
+    <strong>Wir führen die Workshops nicht selbst durch.</strong> Wenn du buchst, kommt der
+    Vertrag für diesen Workshop zwischen dir und dem Gastgeber zustande. Der Gastgeber
+    entscheidet, was passiert, wo es stattfindet, wer qualifiziert ist, es durchzuführen, und was
+    es kostet. Wir sind nicht Vertragspartei, und wir sind weder Arbeitgeber noch Vertreter oder
+    Partner des Gastgebers.
+  </p>
+  <p>
+    Wir prüfen Gastgeber, bevor sie veröffentlichen können, können aber Qualität, Sicherheit oder
+    Rechtmäßigkeit eines einzelnen Workshops nicht garantieren. Nutze dein eigenes Urteilsvermögen
+    und sag uns Bescheid, wenn etwas schiefgeht.
+  </p>
+
+  <h2 id="account">3. Dein Konto</h2>
+  <ul>
+    <li>Du brauchst ein Konto, um zu buchen oder anzubieten. Du musst mindestens 18 Jahre alt
+      sein, oder die Zustimmung und Beteiligung eines Erziehungsberechtigten haben.</li>
+    <li>Gib korrekte Angaben und halte sie aktuell. Buchungen und Erstattungen hängen davon ab,
+      dass wir dich erreichen können.</li>
+    <li>Behalte deine Zugangsdaten für dich. Sag uns umgehend Bescheid, wenn du vermutest, dass
+      jemand anderes Zugriff auf dein Konto hat.</li>
+    <li>Ein Konto pro Person. Erstelle kein Konto für jemand anderen ohne dessen Wissen.</li>
+  </ul>
+
+  <h2 id="booking">4. Einen Workshop buchen</h2>
+  <p>
+    Ein Angebot ist eine Einladung zur Buchung, kein bindendes Angebot im rechtlichen Sinn. Deine
+    Buchung wird verbindlich, wenn wir sie bestätigen — per E-Mail, in der App, oder beides. Bis
+    dahin kann der Gastgeber noch ablehnen, oder der Platz kann an jemand anderen vergeben werden.
+  </p>
+  <p>
+    Prüfe das Angebot vor der Buchung: Datum, Treffpunkt, was enthalten ist, was du mitbringen
+    musst, sowie eventuelle Alters-, Fitness- oder Ausrüstungsanforderungen. Hat der Gastgeber
+    Teilnahmebedingungen festgelegt, gelten sie für deine Buchung.
+  </p>
+  <p>
+    Erscheine pünktlich. Gastgeber sind nicht verpflichtet, einen Platz für eine verspätete
+    Ankunft freizuhalten, und ein verpasster Workshop wird nicht automatisch erstattet — siehe
+    Abschnitt 6.
+  </p>
+
+  <h2 id="payment">5. Preise und Zahlung</h2>
+  <p>
+    Preise werden in Euro angezeigt und enthalten Mehrwertsteuer, soweit sie anfällt. Der Preis,
+    den du beim Bezahlvorgang siehst, ist der Preis, den du zahlst.
+  </p>
+  <p>
+    Zahlungen werden von <span class="fill-in">[Zahlungsdienstleister]</span> abgewickelt. Wir
+    speichern deine vollständigen Kartendaten nicht. Zusätzlich zu unseren gelten die
+    Bedingungen unseres Zahlungsdienstleisters.
+  </p>
+  <p>
+    Einen Workshop anzubieten ist kostenlos. Bei einer abgeschlossenen kostenpflichtigen Buchung
+    ziehen wir eine Servicegebühr von <span class="fill-in">[Gebühr in %]</span> von der
+    Auszahlung des Gastgebers ab. Gastgeber werden <span class="fill-in">[Auszahlungszeitraum,
+    z. B. innerhalb von 7 Tagen nach dem Workshop]</span> ausgezahlt.
+  </p>
+  <p>
+    Kostenlose Workshops sind für niemanden mit Gebühren verbunden. Ein Gastgeber kann
+    Teilnehmende dennoch bitten, Materialkosten direkt zu übernehmen, dies muss aber klar im
+    Angebot angegeben sein.
+  </p>
+
+  <h2 id="cancellation">6. Stornierung und Erstattung</h2>
+  <h3>Wenn du stornierst</h3>
+  <p>
+    Du kannst eine Buchung in der App stornieren. Was du zurückbekommst, hängt vom Zeitpunkt der
+    Stornierung ab:
+  </p>
+  <ul>
+    <li>Mehr als <span class="fill-in">[X]</span> Stunden vor Beginn: volle Erstattung.</li>
+    <li>Weniger als <span class="fill-in">[X]</span> Stunden vor Beginn:
+      <span class="fill-in">[teilweise Erstattung / keine Erstattung]</span>.</li>
+    <li>Nichterscheinen: keine Erstattung.</li>
+  </ul>
+  <h3>Wenn der Gastgeber storniert</h3>
+  <p>
+    Du erhältst automatisch eine volle Erstattung auf dein ursprüngliches Zahlungsmittel.
+    Storniert ein Gastgeber wiederholt oder kurzfristig, können wir seine Angebote entfernen.
+  </p>
+  <h3>Wenn sich der Workshop ändert</h3>
+  <p>
+    Ändert ein Gastgeber nach deiner Buchung etwas Wesentliches — Datum, Ort, oder was die
+    Session tatsächlich beinhaltet — kannst du für eine volle Erstattung stornieren.
+  </p>
+
+  <h2 id="hosting">7. Wenn du einen Workshop anbietest</h2>
+  <p>Wenn du einen Workshop veröffentlichst, bestätigst du, dass:</p>
+  <ul>
+    <li>du rechtlich befugt bist, ihn durchzuführen, und über jede dafür nötige Lizenz,
+      Genehmigung oder Qualifikation verfügst.</li>
+    <li>dein Angebot korrekt ist — einschließlich Preis, Dauer, Ort, Gruppengröße und was
+      Teilnehmende mitbringen müssen.</li>
+    <li>du das Recht hast, jedes hochgeladene Video und Foto zu verwenden.</li>
+    <li>du über eine angemessene Versicherung für die Aktivität verfügst und für die Sicherheit
+      deiner Session verantwortlich bist.</li>
+    <li>du dich selbst um deine Steuern kümmerst. Wir sind nicht dein Arbeitgeber, und
+      Gastgeber-Einkommen musst du selbst versteuern. Bietest du gewerblich an, musst du das
+      angeben — dann gelten Verbraucherschutzregeln für deine Teilnehmenden.</li>
+  </ul>
+  <p>
+    Erscheine zu deinen eigenen Workshops. Musst du absagen, tu es so früh wie möglich und
+    informiere deine Teilnehmenden direkt.
+  </p>
+
+  <h2 id="content">8. Videos und Inhalte, die du postest</h2>
+  <p>
+    Deine Inhalte bleiben deine. Indem du sie auf Twiggli veröffentlichst, räumst du uns eine
+    nicht-exklusive, weltweite, gebührenfreie Lizenz ein, sie zu hosten, anzuzeigen, in der
+    Größe anzupassen und zu verbreiten, um die Plattform zu betreiben und zu bewerben. Diese
+    Lizenz endet, wenn du den Inhalt löschst, außer wo wir Kopien aus rechtlichen Gründen oder in
+    üblichen Backups aufbewahren müssen.
+  </p>
+  <p>
+    Poste nur, wozu du das Recht hast. Filmst du Teilnehmende, hol vorher ihre Zustimmung ein.
+    Wir entfernen Inhalte, die Rechte Dritter verletzen — schreib an
+    <span class="fill-in">[E-Mail-Adresse]</span>, um etwas zu melden.
+  </p>
+
+  <h2 id="conduct">9. Was du nicht tun darfst</h2>
+  <ul>
+    <li>Gegen geltendes Recht verstoßen, oder Twiggli nutzen, um etwas Illegales oder Unsicheres
+      zu organisieren.</li>
+    <li>Inhalte posten, die irreführend, hasserfüllt, belästigend, sexuell explizit oder
+      gewalttätig sind.</li>
+    <li>Buchungen oder Zahlungen außerhalb der Plattform abwickeln, um unsere Gebühren zu
+      umgehen.</li>
+    <li>Gefälschte Angebote oder Bewertungen posten, oder sich als jemand anderes ausgeben.</li>
+    <li>Unsere Systeme scrapen, zurückentwickeln, überlasten oder zu manipulieren versuchen.</li>
+    <li>Personenbezogene Daten aus einer Buchung für etwas anderes als die Durchführung dieses
+      Workshops nutzen.</li>
+  </ul>
+
+  <h2 id="availability">10. Verfügbarkeit des Dienstes</h2>
+  <p>
+    Wir bemühen uns, Twiggli am Laufen zu halten, versprechen aber keine unterbrechungsfreie
+    Verfügbarkeit. Wir können Funktionen ändern, den Dienst für Wartungsarbeiten pausieren, oder
+    Teile davon einstellen. Ist eine Änderung wesentlich und betrifft dich, geben wir angemessenen
+    Vorlauf.
+  </p>
+
+  <h2 id="liability">11. Unsere Haftung</h2>
+  <p>
+    Wir haften uneingeschränkt für vorsätzlich oder grob fahrlässig verursachte Schäden, für
+    Verletzungen von Leben, Körper oder Gesundheit, sowie nach dem deutschen
+    Produkthaftungsgesetz.
+  </p>
+  <p>
+    Bei einfacher Fahrlässigkeit haften wir nur, wenn wir eine wesentliche Vertragspflicht
+    verletzen, auf deren Einhaltung du vertrauen durftest — und dann nur für vorhersehbare,
+    vertragstypische Schäden.
+  </p>
+  <p>
+    Darüber hinaus haften wir nicht. Insbesondere haften wir nicht für Vorfälle bei einem
+    Workshop, da wir ihn nicht selbst durchführen — das liegt zwischen dir und dem Gastgeber.
+    Nichts hier schränkt Rechte ein, die dir nach zwingendem Verbraucherrecht zustehen.
+  </p>
+
+  <h2 id="withdrawal">12. Widerrufsrecht</h2>
+  <p>
+    Verbraucher in der EU haben normalerweise 14 Tage, um einen online geschlossenen Vertrag zu
+    widerrufen. Dieses Recht gilt <strong>nicht</strong> für Freizeitdienstleistungen, die für
+    einen bestimmten Termin oder Zeitraum gebucht werden — was die meisten Workshops auf Twiggli
+    betrifft (§ 312g Abs. 2 Nr. 9 BGB).
+  </p>
+  <p>
+    Stattdessen gilt unsere Stornierungsregelung aus Abschnitt 6, die oft großzügiger ist. Sollte
+    das Widerrufsrecht bei einem Kauf bei uns doch anwendbar sein, informieren wir dich beim
+    Bezahlvorgang und stellen dir die übliche Widerrufsbelehrung zur Verfügung.
+  </p>
+
+  <h2 id="termination">13. Sperrung und Kündigung</h2>
+  <p>
+    Du kannst dein Konto jederzeit schließen. Bereits erfolgte Buchungen bleiben bestehen — erfülle
+    sie oder storniere sie zuerst ordnungsgemäß.
+  </p>
+  <p>
+    Wir können ein Konto sperren oder schließen, das gegen diese Bedingungen verstößt, andere
+    Nutzende gefährdet, oder bei dem wir gesetzlich zum Handeln verpflichtet sind. Soweit
+    angemessen, teilen wir dir den Grund mit und geben dir Gelegenheit zur Stellungnahme.
+  </p>
+
+  <h2 id="changes">14. Änderungen dieser Bedingungen</h2>
+  <p>
+    Wir können diese Bedingungen aktualisieren. Betrifft dich eine Änderung wesentlich,
+    benachrichtigen wir dich mindestens <span class="fill-in">[30]</span> Tage vorher per E-Mail
+    oder in der App. Akzeptierst du die Änderung nicht, kannst du dein Konto vorher schließen. Die
+    weitere Nutzung von Twiggli nach diesem Datum gilt als Zustimmung zu den neuen Bedingungen.
+  </p>
+
+  <h2 id="law">15. Anwendbares Recht und Streitigkeiten</h2>
+  <p>
+    Es gilt deutsches Recht. Bist du Verbraucher, entzieht dir das nicht den Schutz zwingender
+    Vorschriften deines Wohnsitzlandes.
+  </p>
+  <p>
+    Wir sind nicht verpflichtet, an einem Streitbeilegungsverfahren vor einer
+    Verbraucherschlichtungsstelle teilzunehmen, und tun dies derzeit auch nicht.
+  </p>
+  <p>
+    Fragen zu diesen Bedingungen: <span class="fill-in">[E-Mail-Adresse]</span>.
+  </p>
+</LegalPage>

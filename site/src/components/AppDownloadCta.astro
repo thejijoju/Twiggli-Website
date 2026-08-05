@@ -1,12 +1,21 @@
 ---
 import StoreButtons from './StoreButtons.astro';
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
-/** The accent band that closes every page. Copy is verbatim from the export. */
+interface Props {
+  lang?: Lang;
+}
+const { lang = DEFAULT_LANG } = Astro.props;
+
+const title = {
+  en: '📱 Ready to dive in? Download now on Apple Store and Google Play!',
+  de: '📱 Bereit loszulegen? Jetzt im App Store und bei Google Play herunterladen!',
+}[lang];
 ---
 
 <section class="cta-band">
   <div class="container-padded">
-    <h3 class="cta-title">📱 Ready to dive in? Download now on Apple Store and Google Play!</h3>
-    <StoreButtons tone="accent" class="cta-actions" />
+    <h3 class="cta-title">{title}</h3>
+    <StoreButtons lang={lang} tone="accent" class="cta-actions" />
   </div>
 </section>
