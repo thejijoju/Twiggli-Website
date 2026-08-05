@@ -56,7 +56,7 @@ a:hover { color: var(--color-accent); }
 .section { padding: 64px 0; }
 
 /* — nav — */
-.nav { padding: 20px 48px; }
+.nav { padding: 20px 48px; border-bottom: none; }
 .nav-logo { display: block; width: 36px; height: 36px; flex: none; }
 /* .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
 .nav a.nav-brand { font-size: 18px; }
@@ -68,7 +68,7 @@ a:hover { color: var(--color-accent); }
   gap: 14px;
   margin-left: 8px;
 }
-.nav-social a { display: flex; color: inherit; }
+.nav-social a { display: flex; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
 .nav-social a:hover { color: var(--color-accent); }
 
 /* — hero — */
