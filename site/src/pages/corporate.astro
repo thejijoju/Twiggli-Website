@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
+import { withBase } from '../lib/url.ts';
 
 /* The "Corporate events" section copy is verbatim from the export. The
    three points are PLACEHOLDER — replace with the real corporate pitch. */
@@ -37,7 +38,7 @@ const points = [
         hosts at your office or a venue nearby. We handle the logistics for groups of any size.
       </p>
       <div class="hero-actions">
-        <a href="/contact/" class="btn btn-primary">Get a corporate quote</a>
+        <a href={withBase('/contact/')} class="btn btn-primary">Get a corporate quote</a>
       </div>
     </section>
 
@@ -67,7 +68,7 @@ const points = [
           will tell you what fits.
         </p>
         <div class="split-actions">
-          <a href="/contact/" class="btn btn-primary">Get a corporate quote</a>
+          <a href={withBase('/contact/')} class="btn btn-primary">Get a corporate quote</a>
         </div>
       </div>
     </section>

@@ -2,6 +2,7 @@
 import ImageSlot from './ImageSlot.astro';
 import SocialIcon from './SocialIcon.astro';
 import { brand, navLinks, socialLinks } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
 
 /** Flat child order is deliberate: .nav's 16px gap applies between siblings,
  *  so grouping the links into a wrapper would change the spacing the design
@@ -13,10 +14,10 @@ const isCurrent = (link: (typeof navLinks)[number]) =>
 ---
 
 <nav class="nav">
-  <a href="/" class="nav-logo" aria-label={`${brand.name} — home`}>
+  <a href={withBase('/')} class="nav-logo" aria-label={`${brand.name} — home`}>
     <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
   </a>
-  <a href="/" class="nav-brand">{brand.name}</a>
+  <a href={withBase('/')} class="nav-brand">{brand.name}</a>
   {navLinks.map((link) => (
     <a
       href={link.href}

@@ -6,6 +6,7 @@ import HostGrid from '../components/HostGrid.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
 import { steps, hosts } from '../data/content.ts';
 import { brand, appUrl } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
 ---
 
 <Base title={`${brand.name} — ${brand.tagline}`}>
@@ -59,7 +60,7 @@ import { brand, appUrl } from '../data/site.ts';
           buy.
         </p>
         <div class="split-actions">
-          <a href="/host/" class="btn btn-primary">Become a host</a>
+          <a href={withBase('/host/')} class="btn btn-primary">Become a host</a>
         </div>
       </div>
     </section>
@@ -83,7 +84,7 @@ import { brand, appUrl } from '../data/site.ts';
           size.
         </p>
         <div class="split-actions">
-          <a href="/corporate/" class="btn btn-primary">Get a corporate quote</a>
+          <a href={withBase('/corporate/')} class="btn btn-primary">Get a corporate quote</a>
         </div>
       </div>
       <div class="media-4x3 grayscale">

@@ -4,13 +4,14 @@ import StoreButtons from './StoreButtons.astro';
 import {
   brand, navLinks, secondaryLinks, legalLinks, socialLinks, copyright,
 } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
 ---
 
 <footer id="footer" class="footer">
   <div class="footer-inner">
     <div class="footer-brand-block">
       <div class="footer-brand">
-        <a href="/" class="footer-logo" aria-label={`${brand.name} — home`}>
+        <a href={withBase('/')} class="footer-logo" aria-label={`${brand.name} — home`}>
           <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
         </a>
         <span class="footer-brand-name">{brand.name}</span>

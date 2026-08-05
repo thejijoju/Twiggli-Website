@@ -1,5 +1,6 @@
 ---
 import LegalPage from '../layouts/LegalPage.astro';
+import { withBase } from '../lib/url.ts';
 
 /**
  * DRAFT. Structured to the GDPR's disclosure duties (Art. 13/14) with the
@@ -51,7 +52,7 @@ const toc = [
     <span class="fill-in">[legal company name]</span>,
     <span class="fill-in">[address]</span>, Germany —
     <span class="fill-in">[email address]</span>. Company details are in our
-    <a href="/impressum/">Impressum</a>.
+    <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
     Data protection contact: <span class="fill-in">[email address, or the name

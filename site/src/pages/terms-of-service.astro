@@ -1,5 +1,6 @@
 ---
 import LegalPage from '../layouts/LegalPage.astro';
+import { withBase } from '../lib/url.ts';
 
 /**
  * DRAFT. Written from scratch in plain language for a Berlin-based workshop
@@ -51,7 +52,7 @@ const toc = [
     Twiggli is operated by <span class="fill-in">[legal company name]</span>,
     <span class="fill-in">[address]</span>, Germany. You can reach us at
     <span class="fill-in">[email address]</span>. Full company details are in
-    our <a href="/impressum/">Impressum</a>.
+    our <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
     In these terms, "Twiggli", "we" and "us" mean that company. "You" means

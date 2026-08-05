@@ -4,6 +4,7 @@ import HostGrid from '../components/HostGrid.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
 import { hosts } from '../data/content.ts';
+import { withBase } from '../lib/url.ts';
 
 /* The 17 host entries are PLACEHOLDER — see src/data/content.ts. */
 ---
@@ -40,7 +41,7 @@ import { hosts } from '../data/content.ts';
           buy.
         </p>
         <div class="split-actions">
-          <a href="/host/" class="btn btn-primary">Become a host</a>
+          <a href={withBase('/host/')} class="btn btn-primary">Become a host</a>
         </div>
       </div>
       <div class="media-4x3 grayscale">

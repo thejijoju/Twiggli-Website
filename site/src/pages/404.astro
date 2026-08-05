@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url.ts';
 ---
 
 <Base title="Page not found — Twiggli" description="That page does not exist.">
@@ -11,8 +12,8 @@ import Base from '../layouts/Base.astro';
         The link may be old, or the workshop may have wrapped up. Head back to the start.
       </p>
       <div class="hero-actions">
-        <a href="/" class="btn btn-primary">Back to home</a>
-        <a href="/hosts/" class="btn btn-ghost">See our hosts</a>
+        <a href={withBase('/')} class="btn btn-primary">Back to home</a>
+        <a href={withBase('/hosts/')} class="btn btn-ghost">See our hosts</a>
       </div>
     </section>
   </div>
