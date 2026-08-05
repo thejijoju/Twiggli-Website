@@ -4,6 +4,7 @@ import ImageSlot from '../components/ImageSlot.astro';
 import PhoneMockup from '../components/PhoneMockup.astro';
 import HostGrid from '../components/HostGrid.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
+import StoreButtons from '../components/StoreButtons.astro';
 import { steps, hosts } from '../data/content.ts';
 import { brand, appUrl } from '../data/site.ts';
 import { withBase } from '../lib/url.ts';
@@ -23,6 +24,7 @@ import { withBase } from '../lib/url.ts';
           <p>Whether you want to join the fun or monetize your passion, Twiggli makes it easy.</p>
           <p>📱 <strong>Ready to dive in?</strong> Download now on Apple Store and Google Play!</p>
         </div>
+        <StoreButtons tone="default" class="hero-stores" />
         <div class="hero-actions">
           <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
           <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
@@ -31,8 +33,6 @@ import { withBase } from '../lib/url.ts';
 
       <PhoneMockup layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
     </section>
-
-    <hr class="rule" />
 
     <section class="section" id="how-it-works">
       <span class="kicker">How it works</span>

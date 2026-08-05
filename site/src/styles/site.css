@@ -20,6 +20,10 @@
   --font-heading-weight: 700;
 }
 
+/* Buttons round to a full pill, breaking from the system's sharp-corner
+   default (--radius-md: 0) for this one component, per request. */
+.btn { border-radius: 999px; }
+
 body { margin: 0; text-wrap: pretty; }
 a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent); }
@@ -96,6 +100,7 @@ a:hover { color: var(--color-accent); }
 }
 .hero-copy p { margin: 0 0 18px; }
 .hero-copy p:last-child { margin: 0; }
+.hero-stores { margin-top: 20px; }
 .hero-actions {
   display: flex;
   gap: 12px;
