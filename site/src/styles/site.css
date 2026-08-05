@@ -10,6 +10,19 @@
    phone. Breakpoints only ever collapse columns — no desktop value moves.
    ───────────────────────────────────────────────────────────────────── */
 
+/* ── Typeface ──────────────────────────────────────────────────────────
+   The design system ships Archivo (loaded by modernist.css). To move the
+   whole site onto a different family, add the @font-face or provider link
+   in Base.astro's <head> and set both variables here — nothing else in the
+   codebase names a font.
+
+   :root {
+     --font-heading: "Your Font", system-ui, sans-serif;
+     --font-body: "Your Font", system-ui, sans-serif;
+     --font-heading-weight: 800;
+   }
+   ──────────────────────────────────────────────────────────────────── */
+
 body { margin: 0; text-wrap: pretty; }
 a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent); }
@@ -334,6 +347,101 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
+/* — store buttons — */
+.store-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.store-badge { display: block; }
+.store-badge img { height: 48px; width: auto; }
+/* .btn-ghost is accent-on-page; on the page background the store buttons
+   need the same outlined treatment the accent band gives them. */
+.btn-store {
+  color: var(--color-text);
+  border-color: var(--color-divider);
+  padding-inline: calc(var(--space-3) * 1.2);
+}
+.btn-store:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.btn-store:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+
+/* — footer brand block — */
+.footer-brand-block { display: flex; flex-direction: column; gap: 16px; }
+.footer-get-app { margin: 8px 0 0; }
+.footer-stores { gap: 8px; }
+.footer-stores .btn { font-size: 13px; }
+
+/* — legal / prose pages — */
+.prose {
+  max-width: 74ch;
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-text) 85%, transparent);
+  padding-bottom: 64px;
+}
+.prose h2 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 44px 0 14px;
+  color: var(--color-text);
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h3 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 17px;
+  margin: 28px 0 8px;
+  color: var(--color-text);
+}
+.prose p { margin: 0 0 16px; }
+.prose ul, .prose ol { margin: 0 0 16px; padding-left: 22px; }
+.prose li { margin: 0 0 8px; }
+.prose strong { font-weight: 600; color: var(--color-text); }
+.prose dl { margin: 0 0 16px; }
+.prose dt { font-weight: 600; color: var(--color-text); margin-top: 12px; }
+.prose dd { margin: 2px 0 0; }
+
+/* Table of contents at the head of each legal document. */
+.legal-toc {
+  border-top: 2px solid var(--color-divider);
+  border-bottom: 2px solid var(--color-divider);
+  padding: 20px 0;
+  margin: 0 0 40px;
+}
+.legal-toc ol {
+  margin: 0;
+  padding-left: 20px;
+  columns: 2;
+  column-gap: 40px;
+  font-size: 14px;
+}
+.legal-toc li { margin: 0 0 6px; break-inside: avoid; }
+.legal-meta {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  margin: 20px 0 0;
+}
+
+/* Every value the operator must supply before publishing is wrapped in
+   this, so unfilled fields are impossible to miss on the rendered page. */
+.fill-in {
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
+  border-bottom: 1.5px solid var(--color-accent-400);
+  padding: 0 4px;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+.legal-notice {
+  border: 2px solid var(--color-accent);
+  padding: 16px 18px;
+  margin: 0 0 40px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.legal-notice p { margin: 0 0 10px; }
+.legal-notice p:last-child { margin: 0; }
+.legal-notice strong { color: var(--color-accent-700); }
+
 /* — page headers (subpages) — */
 .page-head { padding: 64px 0 48px; }
 .page-title {
@@ -384,6 +492,7 @@ a:hover { color: var(--color-accent); }
 
 @media (max-width: 760px) {
   .section, .split { padding: 48px 0; }
+  .legal-toc ol { columns: 1; }
   .step {
     grid-template-columns: minmax(0, 1fr);
     gap: 8px;

@@ -1,0 +1,34 @@
+---
+import { storeLinks } from '../data/site.ts';
+
+/**
+ * App Store / Google Play links.
+ *
+ * Renders the design's text buttons until official badge artwork is dropped
+ * into public/img/ and wired up in data/site.ts — see the note there. The
+ * marks are trademarked and both stores supply the files for exactly this
+ * purpose, so nothing here draws them by hand.
+ */
+interface Props {
+  /** 'accent' sits on the red band; 'default' on the page background. */
+  tone?: 'accent' | 'default';
+  class?: string;
+}
+const { tone = 'accent', class: className } = Astro.props;
+const stores = [storeLinks.appStore, storeLinks.googlePlay];
+---
+
+<div class:list={['store-buttons', className]}>
+  {stores.map((store) => (
+    store.badge ? (
+      <a href={store.href} class="store-badge" aria-label={store.label}>
+        <img src={store.badge} alt={store.label} height="48" loading="lazy" />
+      </a>
+    ) : (
+      <a
+        href={store.href}
+        class:list={['btn', 'btn-ghost', tone === 'accent' ? 'btn-on-accent' : 'btn-store']}
+      >{store.label}</a>
+    )
+  ))}
+</div>

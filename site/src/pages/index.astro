@@ -5,7 +5,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
 import HostGrid from '../components/HostGrid.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
 import { steps, hosts } from '../data/content.ts';
-import { brand } from '../data/site.ts';
+import { brand, appUrl } from '../data/site.ts';
 ---
 
 <Base title={`${brand.name} — ${brand.tagline}`}>
@@ -23,7 +23,7 @@ import { brand } from '../data/site.ts';
           <p>📱 <strong>Ready to dive in?</strong> Download now on Apple Store and Google Play!</p>
         </div>
         <div class="hero-actions">
-          <a href="/hosts/" class="btn btn-primary">Get Started</a>
+          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
           <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
         </div>
       </div>

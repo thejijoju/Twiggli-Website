@@ -8,7 +8,8 @@ import { brand, navLinks, socialLinks } from '../data/site.ts';
  *  exported. Logo and brand are anchors here (the prototype left them inert)
  *  without adding or removing a flex child. */
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
-const isCurrent = (href: string) => (href.replace(/\/+$/, '') || '/') === path;
+const isCurrent = (link: (typeof navLinks)[number]) =>
+  !link.external && (link.href.replace(/\/+$/, '') || '/') === path;
 ---
 
 <nav class="nav">
@@ -17,7 +18,12 @@ const isCurrent = (href: string) => (href.replace(/\/+$/, '') || '/') === path;
   </a>
   <a href="/" class="nav-brand">{brand.name}</a>
   {navLinks.map((link) => (
-    <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
+    <a
+      href={link.href}
+      aria-current={isCurrent(link) ? 'page' : undefined}
+      target={link.external ? '_blank' : undefined}
+      rel={link.external ? 'noopener' : undefined}
+    >{link.label}</a>
   ))}
   <div class="nav-social">
     {socialLinks.map((s) => (

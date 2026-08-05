@@ -1,0 +1,233 @@
+---
+import LegalPage from '../layouts/LegalPage.astro';
+
+/**
+ * DRAFT. Structured to the GDPR's disclosure duties (Art. 13/14) with the
+ * German specifics that apply to a Berlin operator: § 25 TDDDG for cookies
+ * and device storage, and the Berlin supervisory authority for complaints.
+ *
+ * A privacy policy has to describe what the product ACTUALLY does. The
+ * processor list, retention periods and app permissions below are the
+ * shape of the disclosure, not verified facts about Twiggli — confirm each
+ * one against the real stack before publishing.
+ */
+const toc = [
+  { id: 'controller', label: '1. Who is responsible' },
+  { id: 'data', label: '2. What we collect' },
+  { id: 'purposes', label: '3. Why, and on what legal basis' },
+  { id: 'cookies', label: '4. Cookies and device storage' },
+  { id: 'sharing', label: '5. Who we share data with' },
+  { id: 'hosts', label: '6. Between hosts and participants' },
+  { id: 'transfers', label: '7. Transfers outside the EEA' },
+  { id: 'retention', label: '8. How long we keep it' },
+  { id: 'permissions', label: '9. App permissions' },
+  { id: 'rights', label: '10. Your rights' },
+  { id: 'children', label: '11. Children' },
+  { id: 'changes', label: '12. Changes to this policy' },
+];
+---
+
+<LegalPage
+  title="Privacy Policy — Twiggli"
+  kicker="Legal"
+  heading="Privacy Policy"
+  description="What personal data Twiggli collects, why, and what rights you have over it."
+  lede="This explains what we collect when you use the Twiggli app or website, what we do with it, who else sees it, and how to get it back or have it deleted."
+  toc={toc}
+>
+  <div class="legal-notice" slot="notice">
+    <p><strong>Draft — must be checked against what the product actually does.</strong></p>
+    <p>
+      A privacy policy is a description of real processing, so it cannot be
+      finished from the outside. Confirm every processor, retention period and
+      app permission listed here against your actual stack, fill in the
+      highlighted fields, and have it reviewed before publishing.
+    </p>
+  </div>
+
+  <h2 id="controller">1. Who is responsible</h2>
+  <p>
+    The controller for the personal data described here is
+    <span class="fill-in">[legal company name]</span>,
+    <span class="fill-in">[address]</span>, Germany —
+    <span class="fill-in">[email address]</span>. Company details are in our
+    <a href="/impressum/">Impressum</a>.
+  </p>
+  <p>
+    Data protection contact: <span class="fill-in">[email address, or the name
+    and contact details of your Datenschutzbeauftragte(r) if you have appointed
+    one]</span>.
+  </p>
+
+  <h2 id="data">2. What we collect</h2>
+  <h3>Data you give us</h3>
+  <ul>
+    <li><strong>Account:</strong> name, email address, password (stored hashed),
+      and optionally a photo, city and short bio.</li>
+    <li><strong>Host profile:</strong> what you teach, your listings, and the
+      videos and photos you upload.</li>
+    <li><strong>Bookings:</strong> which workshops you booked, when, for how many
+      people, and any note you send the host.</li>
+    <li><strong>Payments:</strong> handled by our payment provider. We receive
+      confirmation, amount and a masked reference — not your full card number.</li>
+    <li><strong>Messages and support:</strong> what you write to us or to a host
+      through the app.</li>
+  </ul>
+  <h3>Data collected automatically</h3>
+  <ul>
+    <li><strong>Usage:</strong> pages and listings viewed, searches, taps, and
+      when.</li>
+    <li><strong>Device and connection:</strong> device type, operating system, app
+      version, browser, language, and IP address.</li>
+    <li><strong>Approximate location:</strong> to show workshops near you. Precise
+      location only if you grant the permission — see section 9.</li>
+  </ul>
+
+  <h2 id="purposes">3. Why, and on what legal basis</h2>
+  <dl>
+    <dt>Running your account and your bookings</dt>
+    <dd>Necessary to perform our contract with you — Art. 6(1)(b) GDPR.</dd>
+    <dt>Taking payments and paying out hosts</dt>
+    <dd>Contract performance, Art. 6(1)(b), and our legal accounting duties,
+      Art. 6(1)(c).</dd>
+    <dt>Showing you workshops near you</dt>
+    <dd>Contract performance, Art. 6(1)(b), or your consent where precise
+      location is used, Art. 6(1)(a).</dd>
+    <dt>Keeping the platform safe — fraud, fake listings, abuse</dt>
+    <dd>Our legitimate interest in a platform people can trust, Art. 6(1)(f).</dd>
+    <dt>Improving the product through usage statistics</dt>
+    <dd>Your consent where this uses cookies or similar technologies,
+      Art. 6(1)(a); otherwise our legitimate interest, Art. 6(1)(f).</dd>
+    <dt>Marketing emails</dt>
+    <dd>Your consent, Art. 6(1)(a). Every email has an unsubscribe link.</dd>
+    <dt>Meeting legal obligations</dt>
+    <dd>Art. 6(1)(c) — tax and commercial record-keeping in particular.</dd>
+  </dl>
+
+  <h2 id="cookies">4. Cookies and device storage</h2>
+  <p>
+    Cookies and comparable storage on your device are only used beyond what is
+    strictly necessary with your consent, under § 25(1) TDDDG. Strictly necessary
+    storage — keeping you logged in, remembering your consent choice, security —
+    needs no consent under § 25(2) TDDDG.
+  </p>
+  <p>
+    You can change or withdraw your choice at any time via
+    <span class="fill-in">[link to your cookie settings]</span>. Withdrawing does
+    not affect processing that already happened.
+  </p>
+  <p>
+    Current non-essential tools: <span class="fill-in">[list each analytics or
+    marketing tool, its provider, and what it stores — or state that none are
+    used]</span>.
+  </p>
+
+  <h2 id="sharing">5. Who we share data with</h2>
+  <p>
+    We do not sell personal data. We share it only where it is needed to run the
+    service:
+  </p>
+  <ul>
+    <li><strong>Hosts</strong> — the details of your booking. See section 6.</li>
+    <li><strong>Payment provider</strong> —
+      <span class="fill-in">[provider name]</span>, to take payments and pay
+      out hosts.</li>
+    <li><strong>Hosting and infrastructure</strong> —
+      <span class="fill-in">[provider name and region]</span>.</li>
+    <li><strong>Email and notifications</strong> —
+      <span class="fill-in">[provider name]</span>.</li>
+    <li><strong>Analytics</strong> — <span class="fill-in">[provider name, or
+      "none"]</span>.</li>
+    <li><strong>Authorities</strong> — where we are legally required to, or to
+      establish or defend legal claims.</li>
+  </ul>
+  <p>
+    Providers acting on our instructions are bound by a data processing agreement
+    under Art. 28 GDPR.
+  </p>
+
+  <h2 id="hosts">6. Between hosts and participants</h2>
+  <p>
+    When you book, the host receives what they need to run the session: your name,
+    the number of people, and any note you sent. Contact details are shared only
+    where the workshop requires it, and the host may not use any of it for
+    anything other than that workshop.
+  </p>
+  <p>
+    When you host, participants see your public profile — your name, photo, bio
+    and listings. Your address is shown only for workshops you choose to run at a
+    location you have published.
+  </p>
+
+  <h2 id="transfers">7. Transfers outside the EEA</h2>
+  <p>
+    We try to keep data in the EU. Where a provider processes data outside the
+    EEA, we rely on an adequacy decision, or on the European Commission's Standard
+    Contractual Clauses together with additional safeguards.
+  </p>
+  <p>
+    Providers that currently involve a transfer: <span class="fill-in">[list, or
+    state that there are none]</span>.
+  </p>
+
+  <h2 id="retention">8. How long we keep it</h2>
+  <ul>
+    <li><strong>Account data:</strong> while your account is open, then deleted
+      within <span class="fill-in">[30]</span> days of closure.</li>
+    <li><strong>Booking and payment records:</strong> up to 10 years, as German
+      tax and commercial law requires.</li>
+    <li><strong>Content you posted:</strong> until you delete it, or your account
+      closes.</li>
+    <li><strong>Usage and analytics data:</strong>
+      <span class="fill-in">[period]</span>.</li>
+    <li><strong>Support messages:</strong> <span class="fill-in">[period]</span>.</li>
+  </ul>
+
+  <h2 id="permissions">9. App permissions</h2>
+  <p>
+    The app asks for these only when the feature needs them, and you can revoke
+    any of them in your device settings:
+  </p>
+  <ul>
+    <li><strong>Location</strong> — to sort workshops by distance.</li>
+    <li><strong>Camera and photo library</strong> — to record or upload a
+      workshop video, or set a profile photo.</li>
+    <li><strong>Notifications</strong> — booking confirmations and reminders.</li>
+  </ul>
+
+  <h2 id="rights">10. Your rights</h2>
+  <p>Under the GDPR you can ask us to:</p>
+  <ul>
+    <li>tell you what data we hold about you, and give you a copy (Art. 15);</li>
+    <li>correct anything wrong (Art. 16);</li>
+    <li>delete your data (Art. 17);</li>
+    <li>restrict how we use it (Art. 18);</li>
+    <li>hand it over in a portable format (Art. 20);</li>
+    <li>stop processing based on legitimate interest — including profiling
+      (Art. 21).</li>
+  </ul>
+  <p>
+    Where processing rests on consent, you can withdraw it at any time, with
+    effect from that point onwards.
+  </p>
+  <p>
+    Write to <span class="fill-in">[email address]</span> and we will respond
+    within one month. You can also complain to a supervisory authority. Ours is
+    the Berliner Beauftragte für Datenschutz und Informationsfreiheit, though you
+    may complain to the authority where you live or work instead.
+  </p>
+
+  <h2 id="children">11. Children</h2>
+  <p>
+    Twiggli is not intended for children under 16. We do not knowingly collect
+    their data. If you believe a child has given us personal data, contact us and
+    we will delete it.
+  </p>
+
+  <h2 id="changes">12. Changes to this policy</h2>
+  <p>
+    We update this policy when the product or the law changes. The date at the top
+    shows the current version. If a change materially affects how we use your
+    data, we will tell you in the app or by email before it takes effect.
+  </p>
+</LegalPage>

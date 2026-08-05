@@ -1,0 +1,47 @@
+---
+import Base from './Base.astro';
+import { legalUpdated } from '../data/site.ts';
+
+interface Props {
+  title: string;
+  kicker: string;
+  heading: string;
+  description?: string;
+  lede?: string;
+  /** Section headings, in order, rendered as the table of contents. Each
+   *  entry's `id` must match the <h2 id> in the page body. */
+  toc?: { id: string; label: string }[];
+  updated?: string;
+}
+
+const {
+  title, kicker, heading, description, lede, toc = [], updated = legalUpdated,
+} = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{kicker}</span>
+      <h1 class="page-title">{heading}</h1>
+      {lede && <p class="page-lede">{lede}</p>}
+      <p class="legal-meta">Last updated: {updated}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <div class="section prose">
+      <slot name="notice" />
+
+      {toc.length > 0 && (
+        <nav class="legal-toc" aria-label="On this page">
+          <ol>
+            {toc.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
+          </ol>
+        </nav>
+      )}
+
+      <slot />
+    </div>
+  </div>
+</Base>

@@ -1,21 +1,34 @@
 ---
 import ImageSlot from './ImageSlot.astro';
-import { brand, navLinks, secondaryLinks, socialLinks, copyright } from '../data/site.ts';
+import StoreButtons from './StoreButtons.astro';
+import {
+  brand, navLinks, secondaryLinks, legalLinks, socialLinks, copyright,
+} from '../data/site.ts';
 ---
 
 <footer id="footer" class="footer">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <a href="/" class="footer-logo" aria-label={`${brand.name} — home`}>
-        <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
-      </a>
-      <span class="footer-brand-name">{brand.name}</span>
+    <div class="footer-brand-block">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label={`${brand.name} — home`}>
+          <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
+        </a>
+        <span class="footer-brand-name">{brand.name}</span>
+      </div>
+      <p class="footer-col-title footer-get-app">Get the app</p>
+      <StoreButtons tone="default" class="footer-stores" />
     </div>
     <div class="footer-cols">
       <div>
         <p class="footer-col-title">Product</p>
         <div class="footer-links">
-          {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener' : undefined}
+            >{link.label}</a>
+          ))}
         </div>
       </div>
       <div>
@@ -28,6 +41,12 @@ import { brand, navLinks, secondaryLinks, socialLinks, copyright } from '../data
         <p class="footer-col-title">Follow</p>
         <div class="footer-links">
           {socialLinks.map((s) => <a href={s.href}>{s.label}</a>)}
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Legal</p>
+        <div class="footer-links">
+          {legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>
       </div>
     </div>

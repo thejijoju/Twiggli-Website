@@ -1,5 +1,5 @@
-/** Site-wide chrome: nav, footer columns, social links. Edit here, not in
- *  the components — Nav and Footer both read from this file. */
+/** Site-wide chrome: nav, footer columns, social, store links.
+ *  Edit here, not in the components. */
 
 export const brand = {
   name: 'Twiggli',
@@ -7,21 +7,30 @@ export const brand = {
   tagline: "Discover Berlin's most unique experiences — through video",
 };
 
-export type NavLink = { label: string; href: string };
+/** The booking/host web app. Every "Get Started" on the site points here. */
+export const appUrl = 'https://app.twiggli.com/';
 
-/** The three links the design ships in the nav bar. */
+export type NavLink = { label: string; href: string; external?: boolean };
+
 export const navLinks: NavLink[] = [
   { label: 'Home', href: '/' },
-  { label: 'Get Started', href: '/hosts/' },
+  { label: 'Get Started', href: appUrl, external: true },
+  { label: 'Bookings for Corporate', href: '/corporate/' },
   { label: 'Contact', href: '/contact/' },
 ];
 
-/** Additional pages, linked from the footer only — the nav in the design
- *  holds exactly three links and widening it would change its layout. */
+/** Pages linked from the footer only — the nav in the design holds a short
+ *  row and widening it further would push it into wrapping on laptops. */
 export const secondaryLinks: NavLink[] = [
   { label: 'How it works', href: '/how-it-works/' },
+  { label: 'Our hosts', href: '/hosts/' },
   { label: 'Host with Twiggli', href: '/host/' },
-  { label: 'Corporate events', href: '/corporate/' },
+];
+
+export const legalLinks: NavLink[] = [
+  { label: 'Terms of Service', href: '/terms-of-service/' },
+  { label: 'Privacy Policy', href: '/privacy-policy/' },
+  { label: 'Impressum', href: '/impressum/' },
 ];
 
 export const socialLinks = [
@@ -31,4 +40,30 @@ export const socialLinks = [
   { label: 'LinkedIn', href: '#', icon: 'linkedin' },
 ] as const;
 
+/**
+ * App store listings.
+ *
+ * `badge` is optional: leave it empty and the design's text button renders.
+ * Drop the OFFICIAL artwork into public/img/ and set the path to switch to
+ * real badges — Apple and Google both licence those specifically for this
+ * use, and both forbid redrawing their marks by hand, so use their files:
+ *   Apple  → developer.apple.com/app-store/marketing/guidelines/
+ *   Google → play.google.com/intl/en_us/badges/
+ */
+export const storeLinks = {
+  appStore: {
+    label: 'Download on the App Store',
+    href: '#',
+    badge: '',
+  },
+  googlePlay: {
+    label: 'Get it on Google Play',
+    href: '#',
+    badge: '',
+  },
+};
+
 export const copyright = '© 2026 Twiggli. All rights reserved.';
+
+/** Shown on the legal pages. Update when the documents change. */
+export const legalUpdated = '5 August 2026';

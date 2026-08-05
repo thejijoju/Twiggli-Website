@@ -1,20 +1,12 @@
 ---
-/** The accent band that closes every page. Copy is verbatim from the export.
- *  Swap the two buttons for real store badges once the app listings are
- *  live — the hrefs are the only thing that needs to change. */
-interface Props {
-  appStoreHref?: string;
-  googlePlayHref?: string;
-}
-const { appStoreHref = '#', googlePlayHref = '#' } = Astro.props;
+import StoreButtons from './StoreButtons.astro';
+
+/** The accent band that closes every page. Copy is verbatim from the export. */
 ---
 
 <section class="cta-band">
   <div class="container-padded">
     <h3 class="cta-title">📱 Ready to dive in? Download now on Apple Store and Google Play!</h3>
-    <div class="cta-actions">
-      <a href={appStoreHref} class="btn btn-ghost btn-on-accent">Download on the App Store</a>
-      <a href={googlePlayHref} class="btn btn-ghost btn-on-accent">Get it on Google Play</a>
-    </div>
+    <StoreButtons tone="accent" class="cta-actions" />
   </div>
 </section>

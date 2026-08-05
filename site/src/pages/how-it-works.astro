@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PhoneMockup from '../components/PhoneMockup.astro';
 import AppDownloadCta from '../components/AppDownloadCta.astro';
 import { steps } from '../data/content.ts';
+import { appUrl } from '../data/site.ts';
 
 /* Copy on this page reuses the export's "How it works" steps verbatim. The
    lede is PLACEHOLDER — replace with the real page copy. */
@@ -45,7 +46,7 @@ import { steps } from '../data/content.ts';
           listing is a video, so you know what you are booking before you book it.
         </p>
         <div class="split-actions">
-          <a href="/hosts/" class="btn btn-primary">Get Started</a>
+          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
         </div>
       </div>
       <PhoneMockup layout="single" screen="listing" />

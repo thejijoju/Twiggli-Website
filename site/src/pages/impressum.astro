@@ -1,0 +1,138 @@
+---
+import LegalPage from '../layouts/LegalPage.astro';
+
+/**
+ * DRAFT. Structured to § 5 DDG (which replaced § 5 TMG in May 2024) and
+ * § 18(2) MStV. Written in German on purpose: the Impressum obligation comes
+ * from German law and is conventionally served in German even on an
+ * English-language site.
+ *
+ * Every field is a placeholder — none of this data can be guessed. Which
+ * fields are actually required depends on the legal form (a GmbH must give
+ * its managing directors, register court and HRB number; a sole trader does
+ * not have those).
+ *
+ * Deliberately NOT included: a link to the EU Online Dispute Resolution
+ * platform. That platform was shut down on 20 July 2025 and the regulation
+ * behind it repealed, so the once-standard ODR paragraph is now obsolete and
+ * linking it would point users at a dead service. The § 36 VSBG statement
+ * below is what remains required.
+ */
+const toc = [
+  { id: 'anbieter', label: 'Angaben gemäß § 5 DDG' },
+  { id: 'kontakt', label: 'Kontakt' },
+  { id: 'register', label: 'Registereintrag' },
+  { id: 'ust', label: 'Umsatzsteuer-ID' },
+  { id: 'verantwortlich', label: 'Redaktionell verantwortlich' },
+  { id: 'streitschlichtung', label: 'Verbraucherstreitbeilegung' },
+  { id: 'haftung', label: 'Haftung für Inhalte und Links' },
+  { id: 'urheberrecht', label: 'Urheberrecht' },
+];
+---
+
+<LegalPage
+  title="Impressum — Twiggli"
+  kicker="Legal"
+  heading="Impressum"
+  description="Anbieterkennzeichnung gemäß § 5 DDG."
+  lede="Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG) und § 18 Abs. 2 Medienstaatsvertrag (MStV)."
+  toc={toc}
+>
+  <div class="legal-notice" slot="notice">
+    <p><strong>Draft — every field below still needs your real company data.</strong></p>
+    <p>
+      An Impressum is a legal requirement in Germany and an incomplete one is
+      itself a liability (it is a common subject of Abmahnungen). None of this
+      information can be filled in for you. Which fields apply depends on your
+      legal form — a GmbH needs the managing directors, register court and HRB
+      number; a sole trader does not.
+    </p>
+  </div>
+
+  <h2 id="anbieter">Angaben gemäß § 5 DDG</h2>
+  <p>
+    <span class="fill-in">[Firmenname, z. B. Twiggli GmbH]</span><br />
+    <span class="fill-in">[Straße und Hausnummer]</span><br />
+    <span class="fill-in">[PLZ und Ort]</span><br />
+    Deutschland
+  </p>
+  <p>
+    <strong>Vertreten durch:</strong><br />
+    <span class="fill-in">[Name des Geschäftsführers / der Geschäftsführerin]</span>
+  </p>
+
+  <h2 id="kontakt">Kontakt</h2>
+  <dl>
+    <dt>E-Mail</dt>
+    <dd><span class="fill-in">[E-Mail-Adresse]</span></dd>
+    <dt>Telefon</dt>
+    <dd><span class="fill-in">[Telefonnummer]</span></dd>
+  </dl>
+  <p>
+    Eine Telefonnummer ist nicht zwingend, es muss aber ein zweiter, unmittelbarer
+    Kommunikationsweg neben der E-Mail-Adresse bestehen — etwa ein
+    Kontaktformular mit zugesicherter Antwortzeit.
+  </p>
+
+  <h2 id="register">Registereintrag</h2>
+  <dl>
+    <dt>Registergericht</dt>
+    <dd><span class="fill-in">[Amtsgericht, z. B. Amtsgericht Berlin-Charlottenburg]</span></dd>
+    <dt>Registernummer</dt>
+    <dd><span class="fill-in">[HRB-Nummer]</span></dd>
+  </dl>
+
+  <h2 id="ust">Umsatzsteuer-Identifikationsnummer</h2>
+  <p>
+    Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />
+    <span class="fill-in">[DE-Nummer]</span>
+  </p>
+
+  <h2 id="verantwortlich">Redaktionell verantwortlich</h2>
+  <p>
+    Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br />
+    <span class="fill-in">[Name]</span><br />
+    <span class="fill-in">[Anschrift, sofern abweichend]</span>
+  </p>
+
+  <h2 id="streitschlichtung">Verbraucherstreitbeilegung</h2>
+  <p>
+    Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor
+    einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG).
+  </p>
+  <p>
+    Hinweis: Die Europäische Online-Streitbeilegungsplattform (OS-Plattform) wurde
+    zum 20. Juli 2025 eingestellt. Ein Link darauf ist nicht mehr erforderlich und
+    sollte entfernt werden, falls er an anderer Stelle noch vorhanden ist.
+  </p>
+
+  <h2 id="haftung">Haftung für Inhalte und Links</h2>
+  <p>
+    Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den
+    allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet,
+    übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach
+    Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+    Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen
+    nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche
+    Haftung ist erst ab dem Zeitpunkt der Kenntnis einer konkreten
+    Rechtsverletzung möglich. Bei Bekanntwerden entsprechender Rechtsverletzungen
+    entfernen wir diese Inhalte umgehend.
+  </p>
+  <p>
+    Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte
+    wir keinen Einfluss haben. Für diese fremden Inhalte kann daher keine Gewähr
+    übernommen werden. Für die Inhalte der verlinkten Seiten ist stets der
+    jeweilige Anbieter oder Betreiber verantwortlich. Bei Bekanntwerden von
+    Rechtsverletzungen entfernen wir derartige Links umgehend.
+  </p>
+
+  <h2 id="urheberrecht">Urheberrecht</h2>
+  <p>
+    Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten
+    unterliegen dem deutschen Urheberrecht. Beiträge Dritter — insbesondere von
+    Gastgeberinnen und Gastgebern hochgeladene Videos und Fotos — sind als solche
+    gekennzeichnet beziehungsweise dem jeweiligen Profil zugeordnet. Sollten Sie
+    auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen
+    entsprechenden Hinweis an <span class="fill-in">[E-Mail-Adresse]</span>.
+  </p>
+</LegalPage>

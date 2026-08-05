@@ -44,6 +44,34 @@ Two deliberate departures:
   affordance (drag a file on it, persist to a JSON sidecar). What ships is its
   empty state, rendered pixel-for-pixel, plus a real `<img>` when given a `src`.
 
+## Legal pages
+
+`/terms-of-service`, `/privacy-policy` and `/impressum` are **drafts written
+from scratch**, not copies of the current site — twiggli.com returns 403 to
+automated fetches, so the existing text could not be retrieved.
+
+Every operator-supplied value renders as a highlighted `.fill-in` span, so
+unfilled fields are visible on the page itself rather than buried in source.
+Each page also carries a red-bordered draft notice; delete the
+`slot="notice"` block once a lawyer has signed the document off.
+
+Two things worth knowing:
+
+- The Impressum is in German by design — the obligation comes from German law
+  (§ 5 DDG, § 18(2) MStV) and is conventionally served in German even on an
+  English site.
+- It deliberately omits the EU Online Dispute Resolution link that used to be
+  boilerplate. That platform shut down on 20 July 2025 and the regulation
+  behind it was repealed, so linking it would point users at a dead service.
+  The § 36 VSBG statement is what remains required.
+
+## Typeface
+
+The design system ships Archivo, loaded by `modernist.css`. To move the site
+onto a different family, add the font to `Base.astro`'s `<head>` and set
+`--font-heading` / `--font-body` in the block at the top of `site.css`.
+Nothing else in the codebase names a font.
+
 ## What still needs real content
 
 - **Photography.** Every `ImageSlot` without a `src` renders the dashed
@@ -55,5 +83,9 @@ Two deliberate departures:
   `/contact` reuse the export's copy where it exists; anything else is marked
   `PLACEHOLDER` in the source.
 - **The contact form** posts nowhere. Point its `action` at a form handler.
-- **Store links.** `AppDownloadCta` takes `appStoreHref` / `googlePlayHref`,
-  both `#` today. Real store badge artwork should replace the text buttons.
+- **Store links.** `storeLinks` in `src/data/site.ts` holds both hrefs (`#`
+  today). Set `badge` on either entry to swap the text button for real badge
+  artwork — download the official files from Apple and Google rather than
+  redrawing the marks, which both forbid.
+- **Legal fields.** 39 highlighted `.fill-in` values across the three legal
+  pages, plus a lawyer's review.

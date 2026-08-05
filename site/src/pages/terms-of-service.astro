@@ -1,0 +1,269 @@
+---
+import LegalPage from '../layouts/LegalPage.astro';
+
+/**
+ * DRAFT. Written from scratch in plain language for a Berlin-based workshop
+ * marketplace. Every <span class="fill-in"> is a value only the operator
+ * knows. Have a German lawyer review before publishing — the platform /
+ * intermediary construction in section 2 and the withdrawal-right carve-out
+ * in section 12 are the two clauses that most need checking against how
+ * Twiggli actually contracts and charges.
+ */
+const toc = [
+  { id: 'about', label: '1. Who we are' },
+  { id: 'what-twiggli-is', label: '2. What Twiggli is' },
+  { id: 'account', label: '3. Your account' },
+  { id: 'booking', label: '4. Booking a workshop' },
+  { id: 'payment', label: '5. Prices and payment' },
+  { id: 'cancellation', label: '6. Cancellations and refunds' },
+  { id: 'hosting', label: '7. If you host a workshop' },
+  { id: 'content', label: '8. Videos and content you post' },
+  { id: 'conduct', label: '9. What you may not do' },
+  { id: 'availability', label: '10. Availability of the service' },
+  { id: 'liability', label: '11. Our liability' },
+  { id: 'withdrawal', label: '12. Right of withdrawal' },
+  { id: 'termination', label: '13. Suspension and termination' },
+  { id: 'changes', label: '14. Changes to these terms' },
+  { id: 'law', label: '15. Governing law and disputes' },
+];
+---
+
+<LegalPage
+  title="Terms of Service — Twiggli"
+  kicker="Legal"
+  heading="Terms of Service"
+  description="The rules for using Twiggli, for both participants and hosts."
+  lede="These terms cover using the Twiggli app and website — booking a workshop, and running one. Please read section 2: Twiggli connects you with hosts, but the workshop itself is a contract between you and the host."
+  toc={toc}
+>
+  <div class="legal-notice" slot="notice">
+    <p><strong>Draft — not yet reviewed by a lawyer.</strong></p>
+    <p>
+      This document was written as a clear, plain-language starting point, not
+      as legal advice. Highlighted fields still need real values, and a German
+      lawyer should review it before it goes live — particularly sections 2, 5,
+      6, 11 and 12.
+    </p>
+  </div>
+
+  <h2 id="about">1. Who we are</h2>
+  <p>
+    Twiggli is operated by <span class="fill-in">[legal company name]</span>,
+    <span class="fill-in">[address]</span>, Germany. You can reach us at
+    <span class="fill-in">[email address]</span>. Full company details are in
+    our <a href="/impressum/">Impressum</a>.
+  </p>
+  <p>
+    In these terms, "Twiggli", "we" and "us" mean that company. "You" means
+    anyone using our app or website — whether you are booking a workshop or
+    running one.
+  </p>
+
+  <h2 id="what-twiggli-is">2. What Twiggli is</h2>
+  <p>
+    Twiggli is a marketplace. Hosts publish workshops and activities; participants
+    find and book them. We provide the platform, the video feed, the booking flow
+    and the payment handling.
+  </p>
+  <p>
+    <strong>We do not run the workshops.</strong> When you book, the contract for
+    that workshop is between you and the host. The host decides what happens, where
+    it happens, who is qualified to run it and what it costs. We are not a party to
+    that contract, and we are not the host's employer, agent or partner.
+  </p>
+  <p>
+    We check hosts before they can publish, but we cannot guarantee the quality,
+    safety or legality of any individual workshop. Use your judgement, and tell us
+    if something goes wrong.
+  </p>
+
+  <h2 id="account">3. Your account</h2>
+  <ul>
+    <li>You need an account to book or to host. You must be at least 18, or have
+      a parent or guardian's consent and involvement.</li>
+    <li>Give accurate details and keep them current. Bookings and refunds depend
+      on us being able to reach you.</li>
+    <li>Keep your login credentials to yourself. Tell us promptly if you think
+      someone else has access to your account.</li>
+    <li>One account per person. Don't create an account for someone else without
+      their knowledge.</li>
+  </ul>
+
+  <h2 id="booking">4. Booking a workshop</h2>
+  <p>
+    A listing is an invitation to book, not a binding offer. Your booking becomes
+    binding when we confirm it — by email, in the app, or both. Until then, the
+    host may still decline or the spot may go to someone else.
+  </p>
+  <p>
+    Check the listing before you book: the date, the meeting point, what is
+    included, what you need to bring, and any age, fitness or equipment
+    requirements. If the host has set participation conditions, they apply to
+    your booking.
+  </p>
+  <p>
+    Turn up on time. Hosts are not obliged to hold a place for a late arrival, and
+    a missed workshop is not automatically refundable — see section 6.
+  </p>
+
+  <h2 id="payment">5. Prices and payment</h2>
+  <p>
+    Prices are shown in euros and include VAT where it applies. The price you see
+    at checkout is the price you pay.
+  </p>
+  <p>
+    Payments are processed by <span class="fill-in">[payment provider]</span>. We
+    do not store your full card details. Your payment provider's terms apply
+    alongside ours.
+  </p>
+  <p>
+    Listing a workshop is free. When a paid booking completes, we deduct a service
+    fee of <span class="fill-in">[fee %]</span> from the host's payout. Hosts are
+    paid out <span class="fill-in">[payout schedule, e.g. within 7 days of the
+    workshop taking place]</span>.
+  </p>
+  <p>
+    Free workshops carry no fee for anyone. A host may still ask participants to
+    cover materials directly, but that must be stated clearly in the listing.
+  </p>
+
+  <h2 id="cancellation">6. Cancellations and refunds</h2>
+  <h3>If you cancel</h3>
+  <p>
+    You can cancel a booking in the app. What you get back depends on when you
+    cancel:
+  </p>
+  <ul>
+    <li>More than <span class="fill-in">[X]</span> hours before the start: full
+      refund.</li>
+    <li>Less than <span class="fill-in">[X]</span> hours before the start:
+      <span class="fill-in">[partial refund / no refund]</span>.</li>
+    <li>No-show: no refund.</li>
+  </ul>
+  <h3>If the host cancels</h3>
+  <p>
+    You get a full refund, automatically, to your original payment method. If a
+    host cancels repeatedly or at short notice, we may remove their listings.
+  </p>
+  <h3>If the workshop changes</h3>
+  <p>
+    If a host materially changes a workshop after you book — the date, the
+    location, or what the session actually is — you may cancel for a full refund.
+  </p>
+
+  <h2 id="hosting">7. If you host a workshop</h2>
+  <p>When you publish a workshop, you confirm that:</p>
+  <ul>
+    <li>You are legally allowed to run it, and you hold any licence, permit or
+      qualification it requires.</li>
+    <li>Your listing is accurate — including the price, the duration, the
+      location, the group size and what participants need to bring.</li>
+    <li>You have the right to use every video and photo you upload.</li>
+    <li>You have appropriate insurance for the activity, and you are responsible
+      for the safety of your session.</li>
+    <li>You handle your own taxes. We are not your employer, and hosting income is
+      yours to declare. If you host as a business, you must say so — consumer
+      protection rules will then apply to your participants.</li>
+  </ul>
+  <p>
+    Show up to your own workshops. If you must cancel, do it as early as you can
+    and tell your participants directly.
+  </p>
+
+  <h2 id="content">8. Videos and content you post</h2>
+  <p>
+    Your content stays yours. By posting it on Twiggli you give us a
+    non-exclusive, worldwide, royalty-free licence to host, display, resize and
+    distribute it for the purpose of running and promoting the platform. That
+    licence ends when you delete the content, except where we must keep copies for
+    legal reasons or in ordinary backups.
+  </p>
+  <p>
+    Only post what you have the right to post. If you film participants, get their
+    agreement first. We remove content that infringes someone else's rights —
+    write to <span class="fill-in">[email address]</span> to report something.
+  </p>
+
+  <h2 id="conduct">9. What you may not do</h2>
+  <ul>
+    <li>Break the law, or use Twiggli to arrange something illegal or unsafe.</li>
+    <li>Post content that is misleading, hateful, harassing, sexually explicit or
+      violent.</li>
+    <li>Take bookings or payments off-platform to avoid our fees.</li>
+    <li>Post fake listings, fake reviews, or impersonate someone else.</li>
+    <li>Scrape, reverse-engineer, overload or attempt to break our systems.</li>
+    <li>Use anyone's personal data from a booking for anything other than running
+      that workshop.</li>
+  </ul>
+
+  <h2 id="availability">10. Availability of the service</h2>
+  <p>
+    We aim to keep Twiggli running, but we don't promise it will be available
+    without interruption. We may change features, pause the service for
+    maintenance, or discontinue parts of it. Where a change is significant and
+    affects you, we will give reasonable notice.
+  </p>
+
+  <h2 id="liability">11. Our liability</h2>
+  <p>
+    We are fully liable for damage caused intentionally or through gross
+    negligence, for injury to life, body or health, and under the German Product
+    Liability Act.
+  </p>
+  <p>
+    For ordinary negligence, we are liable only where we breach an obligation that
+    is essential to the contract and that you can reasonably rely on us to meet —
+    and then only for foreseeable, typical damage.
+  </p>
+  <p>
+    Beyond that, we are not liable. In particular, we are not liable for what
+    happens at a workshop, since we do not run it — that is between you and the
+    host. Nothing here limits rights you have under mandatory consumer law.
+  </p>
+
+  <h2 id="withdrawal">12. Right of withdrawal</h2>
+  <p>
+    Consumers in the EU normally have 14 days to withdraw from a contract made
+    online. That right does <strong>not</strong> apply to leisure services booked
+    for a specific date or period — which covers most workshops on Twiggli
+    (§ 312g(2) no. 9 of the German Civil Code).
+  </p>
+  <p>
+    Our cancellation policy in section 6 applies instead, and it is often more
+    generous. Where the withdrawal right does apply to something you buy from us,
+    we will tell you at checkout and give you the standard withdrawal instructions.
+  </p>
+
+  <h2 id="termination">13. Suspension and termination</h2>
+  <p>
+    You can close your account at any time. Bookings already made still stand —
+    honour them or cancel them properly first.
+  </p>
+  <p>
+    We may suspend or close an account that breaks these terms, that puts other
+    users at risk, or that we are legally required to act on. Where it is
+    reasonable to do so, we will tell you why and give you a chance to respond.
+  </p>
+
+  <h2 id="changes">14. Changes to these terms</h2>
+  <p>
+    We may update these terms. If a change materially affects you, we will notify
+    you at least <span class="fill-in">[30]</span> days beforehand by email or in
+    the app. If you don't accept the change, you can close your account before it
+    takes effect. Continuing to use Twiggli after that date means you accept the
+    new terms.
+  </p>
+
+  <h2 id="law">15. Governing law and disputes</h2>
+  <p>
+    German law applies. If you are a consumer, this does not deprive you of the
+    protection of mandatory law in your country of residence.
+  </p>
+  <p>
+    We are not obliged to take part in dispute resolution proceedings before a
+    consumer arbitration board, and we do not currently do so.
+  </p>
+  <p>
+    Questions about these terms: <span class="fill-in">[email address]</span>.
+  </p>
+</LegalPage>
