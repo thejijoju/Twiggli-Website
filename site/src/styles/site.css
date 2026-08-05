@@ -278,6 +278,54 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
+/* — hosts carousel — a continuously drifting reel of tall mobile-card
+   slots, for the homepage teaser. Pauses on hover so it can be read, and
+   drops the motion entirely under prefers-reduced-motion. */
+.host-carousel {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 24px,
+    black calc(100% - 24px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 24px,
+    black calc(100% - 24px),
+    transparent
+  );
+}
+.host-track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: host-scroll 40s linear infinite;
+}
+.host-carousel:hover .host-track { animation-play-state: paused; }
+.host-card {
+  flex: none;
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.host-card-media { aspect-ratio: 9 / 16; width: 100%; }
+.host-card .host-name { margin-top: 4px; }
+
+@keyframes host-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .host-track { animation: none; }
+  .host-carousel { overflow-x: auto; }
+}
+
 /* — app download band — */
 .cta-band {
   background: var(--color-accent);

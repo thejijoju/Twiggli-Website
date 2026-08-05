@@ -4,25 +4,52 @@ import type { Host } from '../data/content.ts';
 
 interface Props {
   hosts: Host[];
+  /** 'grid' is the static wrapping layout (the /hosts/ directory).
+   *  'carousel' is a continuously drifting reel of tall mobile-card slots,
+   *  for the homepage teaser. */
+  layout?: 'grid' | 'carousel';
 }
-const { hosts } = Astro.props;
+const { hosts, layout = 'grid' } = Astro.props;
+// The carousel loops seamlessly by scrolling exactly one duplicated copy.
+const trackHosts = layout === 'carousel' ? [...hosts, ...hosts] : hosts;
 ---
 
-<div class="hosts-grid">
-  {hosts.map((host) => (
-    <div class="host">
-      <div class="host-avatar grayscale">
-        <ImageSlot
-          src={host.photo}
-          shape="circle"
-          placeholder="Host photo"
-          alt={host.photo ? `${host.name}, ${host.specialty}` : ''}
-        />
-      </div>
-      <div>
-        <p class="host-name">{host.name}</p>
-        <p class="host-specialty">{host.specialty}</p>
-      </div>
+{layout === 'carousel' ? (
+  <div class="host-carousel">
+    <div class="host-track">
+      {trackHosts.map((host, i) => (
+        <div class="host-card" aria-hidden={i >= hosts.length ? 'true' : undefined}>
+          <div class="host-card-media grayscale">
+            <ImageSlot
+              src={host.photo}
+              shape="rect"
+              placeholder="Host reel"
+              alt={host.photo ? `${host.name}, ${host.specialty}` : ''}
+            />
+          </div>
+          <p class="host-name">{host.name}</p>
+          <p class="host-specialty">{host.specialty}</p>
+        </div>
+      ))}
     </div>
-  ))}
-</div>
+  </div>
+) : (
+  <div class="hosts-grid">
+    {hosts.map((host) => (
+      <div class="host">
+        <div class="host-avatar grayscale">
+          <ImageSlot
+            src={host.photo}
+            shape="circle"
+            placeholder="Host photo"
+            alt={host.photo ? `${host.name}, ${host.specialty}` : ''}
+          />
+        </div>
+        <div>
+          <p class="host-name">{host.name}</p>
+          <p class="host-specialty">{host.specialty}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
