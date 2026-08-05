@@ -11,17 +11,14 @@
    ───────────────────────────────────────────────────────────────────── */
 
 /* ── Typeface ──────────────────────────────────────────────────────────
-   The design system ships Archivo (loaded by modernist.css). To move the
-   whole site onto a different family, add the @font-face or provider link
-   in Base.astro's <head> and set both variables here — nothing else in the
-   codebase names a font.
-
-   :root {
-     --font-heading: "Your Font", system-ui, sans-serif;
-     --font-body: "Your Font", system-ui, sans-serif;
-     --font-heading-weight: 800;
-   }
-   ──────────────────────────────────────────────────────────────────── */
+   The design system ships Archivo (loaded by modernist.css). Moved to
+   Source Sans Pro instead — the provider link lives in Base.astro's
+   <head>; these two variables are the only place a font is named. */
+:root {
+  --font-heading: "Source Sans Pro", system-ui, sans-serif;
+  --font-body: "Source Sans Pro", system-ui, sans-serif;
+  --font-heading-weight: 700;
+}
 
 body { margin: 0; text-wrap: pretty; }
 a { color: var(--color-accent-700); }
