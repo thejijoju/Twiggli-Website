@@ -95,7 +95,7 @@ a:hover { color: var(--color-accent); }
 .nav { padding: 20px 48px; border-bottom: none; }
 .nav-logo { display: block; width: 36px; height: 36px; flex: none; }
 /* .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
-.nav a.nav-brand { font-size: 18px; }
+.nav a.nav-brand { font-size: 20px; }
 .nav a.nav-brand:hover { color: var(--color-accent); }
 .footer-logo { display: block; }
 .nav-social {
@@ -118,7 +118,7 @@ a:hover { color: var(--color-accent); }
 .hero-title {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: clamp(40px, 4.6vw, 64px);
+  font-size: clamp(42px, 4.6vw, 66px);
   line-height: 1.08;
   letter-spacing: -0.02em;
   margin: 0;
@@ -126,7 +126,7 @@ a:hover { color: var(--color-accent); }
 .hero-title span { display: block; }
 .hero-copy {
   margin-top: 32px;
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.6;
   max-width: 52ch;
 }
@@ -197,7 +197,7 @@ a:hover { color: var(--color-accent); }
   background: var(--color-text);
 }
 .phone-time {
-  font-size: 11px;
+  font-size: 13px;
   font-feature-settings: 'tnum' 1;
   text-align: right;
   margin-bottom: 8px;
@@ -214,15 +214,15 @@ a:hover { color: var(--color-accent); }
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 14px;
   color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
 .phone-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .phone-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .phone-card-media { aspect-ratio: 1 / 1; }
-.phone-card-title { font-size: 11px; font-weight: 600; margin: 6px 0 2px; }
+.phone-card-title { font-size: 13px; font-weight: 600; margin: 6px 0 2px; }
 .phone-card-meta {
-  font-size: 10px;
+  font-size: 12px;
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 60%, transparent);
 }
@@ -231,7 +231,7 @@ a:hover { color: var(--color-accent); }
 /* — section headings — */
 .kicker {
   display: block;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-accent-700);
@@ -251,18 +251,18 @@ a:hover { color: var(--color-accent); }
 .step-num {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 15px;
+  font-size: 17px;
   margin: 0;
   font-feature-settings: 'tnum' 1;
 }
 .step-title {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 22px;
+  font-size: 24px;
   margin: 0;
 }
 .step-copy {
-  font-size: 15.5px;
+  font-size: 17.5px;
   line-height: 1.6;
   margin: 0;
   max-width: 52ch;
@@ -281,12 +281,12 @@ a:hover { color: var(--color-accent); }
 .split-title {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 32px;
+  font-size: 34px;
   line-height: 1.25;
   margin: 0;
 }
 .split-copy {
-  font-size: 15.5px;
+  font-size: 17.5px;
   line-height: 1.6;
   margin: 16px 0 0;
   max-width: 48ch;
@@ -308,9 +308,9 @@ a:hover { color: var(--color-accent); }
   gap: 10px;
 }
 .host-avatar { width: 88px; height: 88px; }
-.host-name { font-size: 14px; font-weight: 600; margin: 0; }
+.host-name { font-size: 16px; font-weight: 600; margin: 0; }
 .host-specialty {
-  font-size: 12px;
+  font-size: 14px;
   margin: 2px 0 0;
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
@@ -371,7 +371,7 @@ a:hover { color: var(--color-accent); }
 .cta-title {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: clamp(30px, 3.8vw, 46px);
+  font-size: clamp(32px, 3.8vw, 48px);
   line-height: 1.1;
   margin: 0;
 }
@@ -403,12 +403,12 @@ a:hover { color: var(--color-accent); }
 .footer-brand-name {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 16px;
+  font-size: 18px;
 }
 .footer-logo { width: 28px; height: 28px; flex: none; }
 .footer-cols { display: flex; gap: 56px; flex-wrap: wrap; }
 .footer-col-title {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--color-text) 55%, transparent);
@@ -418,14 +418,14 @@ a:hover { color: var(--color-accent); }
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 14px;
+  font-size: 16px;
 }
 .footer-bottom { border-top: 2px solid var(--color-divider); }
 .footer-note {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px clamp(20px, 5vw, 72px);
-  font-size: 13px;
+  font-size: 15px;
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
@@ -447,12 +447,12 @@ a:hover { color: var(--color-accent); }
 .footer-brand-block { display: flex; flex-direction: column; gap: 16px; }
 .footer-get-app { margin: 8px 0 0; }
 .footer-stores { gap: 8px; }
-.footer-stores .btn { font-size: 13px; }
+.footer-stores .btn { font-size: 15px; }
 
 /* — legal / prose pages — */
 .prose {
   max-width: 74ch;
-  font-size: 15.5px;
+  font-size: 17.5px;
   line-height: 1.7;
   color: color-mix(in srgb, var(--color-text) 85%, transparent);
   padding-bottom: 64px;
@@ -460,7 +460,7 @@ a:hover { color: var(--color-accent); }
 .prose h2 {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1.2;
   letter-spacing: -0.015em;
   margin: 44px 0 14px;
@@ -470,7 +470,7 @@ a:hover { color: var(--color-accent); }
 .prose h3 {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 17px;
+  font-size: 19px;
   margin: 28px 0 8px;
   color: var(--color-text);
 }
@@ -494,11 +494,11 @@ a:hover { color: var(--color-accent); }
   padding-left: 20px;
   columns: 2;
   column-gap: 40px;
-  font-size: 14px;
+  font-size: 16px;
 }
 .legal-toc li { margin: 0 0 6px; break-inside: avoid; }
 .legal-meta {
-  font-size: 13px;
+  font-size: 15px;
   color: color-mix(in srgb, var(--color-text) 60%, transparent);
   margin: 20px 0 0;
 }
@@ -517,7 +517,7 @@ a:hover { color: var(--color-accent); }
   border: 2px solid var(--color-accent);
   padding: 16px 18px;
   margin: 0 0 40px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
 }
 .legal-notice p { margin: 0 0 10px; }
@@ -529,13 +529,13 @@ a:hover { color: var(--color-accent); }
 .page-title {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: clamp(34px, 4vw, 52px);
+  font-size: clamp(36px, 4vw, 54px);
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin: 0;
 }
 .page-lede {
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.6;
   margin: 20px 0 0;
   max-width: 56ch;
@@ -565,7 +565,7 @@ a:hover { color: var(--color-accent); }
 }
 .cookie-banner-text {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
   max-width: 68ch;
   color: color-mix(in srgb, var(--color-text) 78%, transparent);
@@ -581,7 +581,7 @@ a:hover { color: var(--color-accent); }
   padding: 0 0 64px;
 }
 .form-rows { display: flex; flex-direction: column; gap: 16px; max-width: 48ch; }
-.form-aside p { font-size: 15.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 78%, transparent); }
+.form-aside p { font-size: 17.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 78%, transparent); }
 
 /* ── responsive ────────────────────────────────────────────────────────
    Not in the export — added so the layout holds below desktop. Each rule
@@ -610,7 +610,7 @@ a:hover { color: var(--color-accent); }
     gap: 8px;
     padding: 24px 0;
   }
-  .split-title { font-size: 28px; }
+  .split-title { font-size: 30px; }
   .footer-cols { gap: 40px; }
 }
 
