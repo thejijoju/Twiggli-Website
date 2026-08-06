@@ -5,6 +5,7 @@ import PhoneMockup from '../../components/PhoneMockup.astro';
 import HostGrid from '../../components/HostGrid.astro';
 import AppDownloadCta from '../../components/AppDownloadCta.astro';
 import StoreButtons from '../../components/StoreButtons.astro';
+import Newsletter from '../../components/Newsletter.astro';
 import { getSteps, getHosts } from '../../data/content.ts';
 import { getSiteData, appUrl } from '../../data/site.ts';
 import { withBase } from '../../lib/url.ts';
@@ -23,10 +24,10 @@ const hosts = getHosts(lang);
           <span>Entdecke Berlins einzigartigste Erlebnisse —</span>
           <span>im Video</span>
         </h1>
-        <div class="hero-copy">
-          <p><strong>🎉 Workshops entdecken. Workshops kostenlos anbieten.</strong></p>
+        <div class="hero-copy quote-card">
+          <p><strong>🎉 Workshops entdecken. Workshops <span class="mark">kostenlos</span> anbieten.</strong></p>
           <p>Entdecke spannende Aktivitäten in deiner Nähe oder erstelle deine eigene und verdiene dabei 🎉.</p>
-          <p>Ob du einfach mitmachen oder deine Leidenschaft zu Geld machen willst — Twiggli macht es einfach.</p>
+          <p>Ob du einfach mitmachen oder deine Leidenschaft zu Geld machen willst — <span class="mark">Twiggli</span> macht es einfach.</p>
           <p>📱 <strong>Bereit loszulegen?</strong> Jetzt im App Store und bei Google Play herunterladen!</p>
         </div>
         <StoreButtons lang={lang} tone="default" class="hero-stores" />
@@ -106,6 +107,10 @@ const hosts = getHosts(lang);
         />
       </div>
     </section>
+
+    <hr class="rule" />
+
+    <Newsletter lang={lang} />
   </div>
 
   <AppDownloadCta lang={lang} />

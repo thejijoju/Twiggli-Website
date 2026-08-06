@@ -1,0 +1,51 @@
+---
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang?: Lang;
+}
+const { lang = DEFAULT_LANG } = Astro.props;
+
+const copy = {
+  en: {
+    kicker: 'Newsletter',
+    heading: 'Stay in the loop',
+    lede: 'New workshops, new hosts, and Berlin picks worth knowing about — straight to your inbox. No spam, unsubscribe anytime.',
+    label: 'Email address',
+    placeholder: 'you@email.com',
+    button: 'Subscribe',
+  },
+  de: {
+    kicker: 'Newsletter',
+    heading: 'Bleib auf dem Laufenden',
+    lede: 'Neue Workshops, neue Gastgeber und Berlin-Tipps, die sich lohnen — direkt in dein Postfach. Kein Spam, jederzeit abbestellbar.',
+    label: 'E-Mail-Adresse',
+    placeholder: 'du@email.com',
+    button: 'Abonnieren',
+  },
+}[lang];
+
+/* PLACEHOLDER — the form posts nowhere yet. Wire `action` to a real
+   newsletter provider (Mailchimp, Brevo, a serverless function) before
+   launch, same as the contact form on contact.astro. */
+---
+
+<section class="section newsletter">
+  <span class="kicker kicker-tight">{copy.kicker}</span>
+  <h2 class="split-title">{copy.heading}</h2>
+  <p class="split-copy">{copy.lede}</p>
+  <form class="newsletter-form" method="post" action="#">
+    <div class="field newsletter-field">
+      <label for="newsletter-email" class="sr-only">{copy.label}</label>
+      <input
+        class="input"
+        type="email"
+        id="newsletter-email"
+        name="email"
+        placeholder={copy.placeholder}
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">{copy.button}</button>
+  </form>
+</section>

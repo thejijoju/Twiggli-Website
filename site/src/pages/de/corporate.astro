@@ -2,9 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
 import AppDownloadCta from '../../components/AppDownloadCta.astro';
+import HostGrid from '../../components/HostGrid.astro';
+import { getHosts } from '../../data/content.ts';
 import { withBase } from '../../lib/url.ts';
 
 const lang = 'de';
+const hosts = getHosts(lang);
 
 /* The "Corporate events" section copy is verbatim from the export. The
    three points are PLACEHOLDER — replace with the real corporate pitch. */
@@ -56,6 +59,17 @@ const points = [
           <p class="step-copy">{point.copy}</p>
         </div>
       ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section" id="hosts">
+      <span class="kicker">Unsere Gastgeber</span>
+      <p class="section-lede">
+        Schau dir unsere geprüften Gastgeber an und finde ein Gefühl dafür, wer die Session für
+        euer Team leiten könnte.
+      </p>
+      <HostGrid hosts={hosts} layout="carousel" />
     </section>
 
     <hr class="rule" />

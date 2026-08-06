@@ -153,6 +153,29 @@ a:hover { color: var(--color-accent); }
 }
 .hero-copy p { margin: 0 0 18px; }
 .hero-copy p:last-child { margin: 0; }
+.hero-copy.quote-card { padding: 32px 36px; }
+
+/* — highlight mark — a purple-on-white callout for a key word or short
+   phrase inside a sentence. box-decoration-break keeps a multi-line
+   highlight looking like separate rounded chips per line, not one block. */
+.mark {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: 0.05em 0.35em;
+  border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* — quote card — the recognizable "screenshot quote" look: a white card
+   lifted off the page with a soft shadow. Deliberately breaks from the
+   system's flat, shadowless, sharp-corner default — used sparingly, for
+   copy that should read as a standout statement rather than page text. */
+.quote-card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+}
 /* Match the hero copy's width and let the two badges share it evenly —
    scaled up proportionally (width set, height follows via the image's own
    aspect ratio) rather than stretched, so the official artwork isn't
@@ -268,6 +291,35 @@ a:hover { color: var(--color-accent); }
   margin: 0 0 24px;
 }
 .kicker-tight { margin: 0 0 14px; }
+.section-lede {
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 56ch;
+  margin: -8px 0 24px;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* — newsletter — */
+.newsletter-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  max-width: 480px;
+}
+.newsletter-field { flex: 1; min-width: 200px; }
 
 /* — how it works — */
 .step {
