@@ -11,32 +11,33 @@ interface Props {
 const { lang } = Astro.props;
 const { brand, navLinks, socialLinks } = getSiteData(lang);
 
-/** Flat child order is deliberate: .nav's 16px gap applies between siblings,
- *  so grouping the links into a wrapper would change the spacing the design
- *  exported. Logo and brand are anchors here (the prototype left them inert)
- *  without adding or removing a flex child. */
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const isCurrent = (link: (typeof navLinks)[number]) =>
   !link.external && (link.href.replace(/\/+$/, '') || '/') === path;
 ---
 
 <nav class="nav">
-  <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
-    <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
-  </a>
-  <a href={href(lang, '/')} class="nav-brand">{brand.name}</a>
-  {navLinks.map((link) => (
-    <a
-      href={link.href}
-      aria-current={isCurrent(link) ? 'page' : undefined}
-      target={link.external ? '_blank' : undefined}
-      rel={link.external ? 'noopener' : undefined}
-    >{link.label}</a>
-  ))}
-  <div class="nav-social">
-    {socialLinks.map((s) => (
-      <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
-    ))}
+  <div class="nav-brand-block">
+    <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
+      <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
+    </a>
+    <a href={href(lang, '/')} class="nav-brand">{brand.name}</a>
   </div>
-  <LangSwitch lang={lang} />
+  <div class="nav-center">
+    {navLinks.map((link) => (
+      <a
+        href={link.href}
+        aria-current={isCurrent(link) ? 'page' : undefined}
+        target={link.external ? '_blank' : undefined}
+        rel={link.external ? 'noopener' : undefined}
+        class:list={{ 'nav-link-emphasis': link.emphasis }}
+      >{link.label}</a>
+    ))}
+    <div class="nav-social">
+      {socialLinks.map((s) => (
+        <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
+      ))}
+    </div>
+    <LangSwitch lang={lang} />
+  </div>
 </nav>

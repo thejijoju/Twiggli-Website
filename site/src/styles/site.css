@@ -92,17 +92,38 @@ a:hover { color: var(--color-accent); }
 .section { padding: 64px 0; }
 
 /* — nav — */
-.nav { padding: 20px 48px; border-bottom: none; }
+.nav {
+  padding: 20px 48px;
+  border-bottom: none;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+.nav-brand-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-self: start;
+}
+/* The link/icon/language cluster centers independently of the brand
+   block's width, with 1cm between each item — logo and wordmark stay a
+   tight lockup at their own smaller gap above. */
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 1cm;
+  justify-self: center;
+}
 .nav-logo { display: block; width: 36px; height: 36px; flex: none; }
 /* .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
 .nav a.nav-brand { font-size: 20px; }
 .nav a.nav-brand:hover { color: var(--color-accent); }
+.nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
 .footer-logo { display: block; }
 .nav-social {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-left: 8px;
 }
 .nav-social a { display: flex; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
 .nav-social a:hover { color: var(--color-accent); }
@@ -132,7 +153,16 @@ a:hover { color: var(--color-accent); }
 }
 .hero-copy p { margin: 0 0 18px; }
 .hero-copy p:last-child { margin: 0; }
-.hero-stores { margin-top: 20px; }
+/* Match the hero copy's width and let the two badges share it evenly —
+   scaled up proportionally (width set, height follows via the image's own
+   aspect ratio) rather than stretched, so the official artwork isn't
+   distorted. */
+.hero-stores {
+  margin-top: 20px;
+  max-width: 52ch;
+}
+.hero-stores .store-badge { flex: 1; }
+.hero-stores .store-badge img { width: 100%; height: auto; }
 .hero-actions {
   display: flex;
   gap: 12px;
@@ -617,9 +647,14 @@ a:hover { color: var(--color-accent); }
 @media (max-width: 720px) {
   .nav {
     padding: 16px 20px;
+    display: flex;
     flex-wrap: wrap;
     gap: 12px;
     row-gap: 10px;
+  }
+  .nav-center {
+    gap: 12px;
+    flex-wrap: wrap;
   }
 }
 
