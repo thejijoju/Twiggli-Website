@@ -153,7 +153,7 @@ a:hover { color: var(--color-accent); }
 }
 .hero-copy p { margin: 0 0 18px; }
 .hero-copy p:last-child { margin: 0; }
-.hero-copy.quote-card { padding: 32px 36px; }
+.hero-panel.quote-card { padding: 40px 44px 44px; }
 
 /* — highlight mark — a purple-on-white callout for a key word or short
    phrase inside a sentence. box-decoration-break keeps a multi-line
