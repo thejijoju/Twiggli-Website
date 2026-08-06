@@ -3,7 +3,6 @@ import Base from '../layouts/Base.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import PhoneMockup from '../components/PhoneMockup.astro';
 import HostGrid from '../components/HostGrid.astro';
-import AppDownloadCta from '../components/AppDownloadCta.astro';
 import StoreButtons from '../components/StoreButtons.astro';
 import Newsletter from '../components/Newsletter.astro';
 import { getSteps, getHosts } from '../data/content.ts';
@@ -19,21 +18,23 @@ const hosts = getHosts(lang);
 <Base title={`${brand.name} — ${brand.tagline}`} lang={lang}>
   <div class="container">
     <section class="hero">
-      <div class="hero-panel quote-card">
+      <div class="hero-panel">
         <h1 class="hero-title">
           <span>Discover Berlin's most unique experiences —</span>
           <span>through video</span>
         </h1>
-        <div class="hero-copy">
-          <p><strong>🎉 Find Workshops. Host Workshops <span class="mark">for free</span>.</strong></p>
-          <p>Discover exciting activities nearby or create your own and start earning 🎉.</p>
-          <p>Whether you want to join the fun or monetize your passion, <span class="mark">Twiggli</span> makes it easy.</p>
-          <p>📱 <strong>Ready to dive in?</strong> Download now on Apple Store and Google Play!</p>
-        </div>
-        <StoreButtons lang={lang} tone="default" class="hero-stores" />
-        <div class="hero-actions">
-          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
-          <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+        <div class="hero-quote quote-card">
+          <div class="hero-copy">
+            <p><strong>🎉 Find Workshops. Host Workshops <span class="mark">for free</span>.</strong></p>
+            <p>Discover exciting activities nearby or create your own and start earning 🎉.</p>
+            <p>Whether you want to join the fun or monetize your passion, <span class="mark">Twiggli</span> makes it easy.</p>
+            <p>📱 <strong>Ready to dive in?</strong> Download now on Apple Store and Google Play!</p>
+          </div>
+          <StoreButtons lang={lang} tone="default" class="hero-stores" />
+          <div class="hero-actions">
+            <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
+            <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+          </div>
         </div>
       </div>
 
@@ -80,7 +81,7 @@ const hosts = getHosts(lang);
 
     <section class="section" id="hosts">
       <span class="kicker">Our hosts</span>
-      <HostGrid hosts={hosts} layout="carousel" />
+      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
     </section>
 
     <hr class="rule" />
@@ -112,6 +113,4 @@ const hosts = getHosts(lang);
 
     <Newsletter lang={lang} />
   </div>
-
-  <AppDownloadCta lang={lang} />
 </Base>

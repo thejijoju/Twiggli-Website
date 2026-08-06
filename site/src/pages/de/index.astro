@@ -3,7 +3,6 @@ import Base from '../../layouts/Base.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
 import PhoneMockup from '../../components/PhoneMockup.astro';
 import HostGrid from '../../components/HostGrid.astro';
-import AppDownloadCta from '../../components/AppDownloadCta.astro';
 import StoreButtons from '../../components/StoreButtons.astro';
 import Newsletter from '../../components/Newsletter.astro';
 import { getSteps, getHosts } from '../../data/content.ts';
@@ -19,21 +18,23 @@ const hosts = getHosts(lang);
 <Base title={`${brand.name} — ${brand.tagline}`} lang={lang}>
   <div class="container">
     <section class="hero">
-      <div class="hero-panel quote-card">
+      <div class="hero-panel">
         <h1 class="hero-title">
           <span>Entdecke Berlins einzigartigste Erlebnisse —</span>
           <span>im Video</span>
         </h1>
-        <div class="hero-copy">
-          <p><strong>🎉 Workshops entdecken. Workshops <span class="mark">kostenlos</span> anbieten.</strong></p>
-          <p>Entdecke spannende Aktivitäten in deiner Nähe oder erstelle deine eigene und verdiene dabei 🎉.</p>
-          <p>Ob du einfach mitmachen oder deine Leidenschaft zu Geld machen willst — <span class="mark">Twiggli</span> macht es einfach.</p>
-          <p>📱 <strong>Bereit loszulegen?</strong> Jetzt im App Store und bei Google Play herunterladen!</p>
-        </div>
-        <StoreButtons lang={lang} tone="default" class="hero-stores" />
-        <div class="hero-actions">
-          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Jetzt starten</a>
-          <a href="#how-it-works" class="btn btn-ghost">So funktioniert&rsquo;s</a>
+        <div class="hero-quote quote-card">
+          <div class="hero-copy">
+            <p><strong>🎉 Workshops entdecken. Workshops <span class="mark">kostenlos</span> anbieten.</strong></p>
+            <p>Entdecke spannende Aktivitäten in deiner Nähe oder erstelle deine eigene und verdiene dabei 🎉.</p>
+            <p>Ob du einfach mitmachen oder deine Leidenschaft zu Geld machen willst — <span class="mark">Twiggli</span> macht es einfach.</p>
+            <p>📱 <strong>Bereit loszulegen?</strong> Jetzt im App Store und bei Google Play herunterladen!</p>
+          </div>
+          <StoreButtons lang={lang} tone="default" class="hero-stores" />
+          <div class="hero-actions">
+            <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Jetzt starten</a>
+            <a href="#how-it-works" class="btn btn-ghost">So funktioniert&rsquo;s</a>
+          </div>
         </div>
       </div>
 
@@ -80,7 +81,7 @@ const hosts = getHosts(lang);
 
     <section class="section" id="hosts">
       <span class="kicker">Unsere Gastgeber</span>
-      <HostGrid hosts={hosts} layout="carousel" />
+      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
     </section>
 
     <hr class="rule" />
@@ -112,6 +113,4 @@ const hosts = getHosts(lang);
 
     <Newsletter lang={lang} />
   </div>
-
-  <AppDownloadCta lang={lang} />
 </Base>

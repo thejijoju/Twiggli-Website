@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
-import AppDownloadCta from '../../components/AppDownloadCta.astro';
 import HostGrid from '../../components/HostGrid.astro';
 import { getHosts } from '../../data/content.ts';
 import { withBase } from '../../lib/url.ts';
@@ -69,7 +68,7 @@ const points = [
         Schau dir unsere geprüften Gastgeber an und finde ein Gefühl dafür, wer die Session für
         euer Team leiten könnte.
       </p>
-      <HostGrid hosts={hosts} layout="carousel" />
+      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
     </section>
 
     <hr class="rule" />
@@ -91,6 +90,4 @@ const points = [
       </div>
     </section>
   </div>
-
-  <AppDownloadCta lang={lang} />
 </Base>

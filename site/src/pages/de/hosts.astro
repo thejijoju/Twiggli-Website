@@ -2,7 +2,6 @@
 import Base from '../../layouts/Base.astro';
 import HostGrid from '../../components/HostGrid.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
-import AppDownloadCta from '../../components/AppDownloadCta.astro';
 import { getHosts } from '../../data/content.ts';
 import { withBase } from '../../lib/url.ts';
 
@@ -53,6 +52,4 @@ const hosts = getHosts(lang);
       </div>
     </section>
   </div>
-
-  <AppDownloadCta lang={lang} />
 </Base>

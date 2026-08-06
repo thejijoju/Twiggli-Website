@@ -1,8 +1,9 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import StoreButtons from './StoreButtons.astro';
+import SocialIcon from './SocialIcon.astro';
 import { getSiteData } from '../data/site.ts';
-import { href, type Lang } from '../lib/url.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
 
 interface Props {
   lang: Lang;
@@ -11,57 +12,76 @@ const { lang } = Astro.props;
 const { brand, navLinks, secondaryLinks, legalLinks, socialLinks, copyright } = getSiteData(lang);
 
 const columnLabels = {
-  en: { getApp: 'Get the app', product: 'Product', explore: 'Explore', follow: 'Follow', legal: 'Legal' },
-  de: { getApp: 'App herunterladen', product: 'Produkt', explore: 'Entdecken', follow: 'Folgen', legal: 'Rechtliches' },
+  en: { product: 'Product', explore: 'Explore' },
+  de: { product: 'Produkt', explore: 'Entdecken' },
+}[lang];
+
+const cta = {
+  en: {
+    title: '📱 Ready to dive in? Download now on Apple Store and Google Play!',
+  },
+  de: {
+    title: '📱 Bereit loszulegen? Jetzt im App Store und bei Google Play herunterladen!',
+  },
 }[lang];
 ---
 
 <footer id="footer" class="footer">
   <div class="footer-inner">
-    <div class="footer-brand-block">
+    <div class="footer-main">
       <div class="footer-brand">
         <a href={href(lang, '/')} class="footer-logo" aria-label={`${brand.name} — home`}>
           <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
         </a>
         <span class="footer-brand-name">{brand.name}</span>
       </div>
-      <p class="footer-col-title footer-get-app">{columnLabels.getApp}</p>
-      <StoreButtons lang={lang} tone="default" class="footer-stores" />
+      <div class="footer-cols">
+        <div>
+          <p class="footer-col-title">{columnLabels.product}</p>
+          <div class="footer-links">
+            {navLinks.map((link) => (
+              <a
+                href={link.href}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener' : undefined}
+              >{link.label}</a>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">{columnLabels.explore}</p>
+          <div class="footer-links">
+            {secondaryLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="footer-cols">
-      <div>
-        <p class="footer-col-title">{columnLabels.product}</p>
-        <div class="footer-links">
-          {navLinks.map((link) => (
-            <a
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener' : undefined}
-            >{link.label}</a>
-          ))}
-        </div>
+
+    <div class="footer-cta-card">
+      <div class="footer-cta-media grayscale">
+        <ImageSlot src={withBase('/img/hero/forest.jpg')} shape="rect" placeholder="" alt="" />
       </div>
-      <div>
-        <p class="footer-col-title">{columnLabels.explore}</p>
-        <div class="footer-links">
-          {secondaryLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-        </div>
-      </div>
-      <div>
-        <p class="footer-col-title">{columnLabels.follow}</p>
-        <div class="footer-links">
-          {socialLinks.map((s) => <a href={s.href}>{s.label}</a>)}
-        </div>
-      </div>
-      <div>
-        <p class="footer-col-title">{columnLabels.legal}</p>
-        <div class="footer-links">
-          {legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-        </div>
+      <div class="footer-cta-overlay">
+        <p class="footer-cta-title">{cta.title}</p>
+        <StoreButtons lang={lang} tone="accent" class="footer-cta-stores" />
       </div>
     </div>
   </div>
+
   <div class="footer-bottom">
-    <p class="footer-note">{copyright}</p>
+    <div class="footer-bottom-inner">
+      <p class="footer-note">{copyright}</p>
+      <div class="footer-legal-inline">
+        {legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-social-bar">
+    <div class="footer-social-icons">
+      {socialLinks.map((s) => (
+        <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
+      ))}
+    </div>
   </div>
 </footer>

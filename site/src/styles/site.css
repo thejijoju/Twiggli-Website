@@ -146,14 +146,13 @@ a:hover { color: var(--color-accent); }
 }
 .hero-title span { display: block; }
 .hero-copy {
-  margin-top: 32px;
   font-size: 19px;
   line-height: 1.6;
   max-width: 52ch;
 }
 .hero-copy p { margin: 0 0 18px; }
 .hero-copy p:last-child { margin: 0; }
-.hero-panel.quote-card { padding: 40px 44px 44px; }
+.hero-quote.quote-card { margin-top: 32px; padding: 32px 36px; }
 
 /* — highlight mark — a purple-on-white callout for a key word or short
    phrase inside a sentence. box-decoration-break keeps a multi-line
@@ -281,13 +280,19 @@ a:hover { color: var(--color-accent); }
 }
 .phone-photo { flex: 1; overflow: hidden; }
 
-/* — section headings — */
+/* — section headings — kicker labels used to render as thin, light-accent
+   text that was hard to read against the page background. Restyled as a
+   solid pill (reusing the .mark treatment) for guaranteed contrast. */
 .kicker {
-  display: block;
-  font-size: 15px;
-  letter-spacing: 0.08em;
+  display: inline-block;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-accent-700);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  padding: 6px 14px;
+  border-radius: 999px;
   margin: 0 0 24px;
 }
 .kicker-tight { margin: 0 0 14px; }
@@ -397,119 +402,189 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
-/* — hosts carousel — a continuously drifting reel of tall mobile-card
-   slots, for the homepage teaser. Pauses on hover so it can be read, and
-   drops the motion entirely under prefers-reduced-motion. */
-.host-carousel {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 24px,
-    black calc(100% - 24px),
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 24px,
-    black calc(100% - 24px),
-    transparent
-  );
-}
-.host-track {
+/* — hosts coverflow — a centre-focused reel: the active card sits large
+   and sharp in the middle, neighbours shrink and fade toward the edges
+   (scale/opacity are set per-card by HostGrid's scroll-linked script).
+   Click a side card to snap it to centre; click the centred card to
+   reveal its (placeholder) video state. */
+.host-coverflow {
   display: flex;
-  gap: 16px;
-  width: max-content;
-  animation: host-scroll 40s linear infinite;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 40px 0;
 }
-.host-carousel:hover .host-track { animation-play-state: paused; }
-.host-card {
+.host-coverflow::-webkit-scrollbar { display: none; }
+.host-coverflow-spacer { flex: none; width: calc(50% - 95px); }
+.host-coverflow-card {
   flex: none;
-  width: 170px;
+  width: 190px;
+  scroll-snap-align: center;
+  cursor: pointer;
+  text-align: center;
+  transform-origin: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.host-coverflow-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: var(--shadow-lg);
+}
+.host-coverflow-card.is-active .host-coverflow-media {
+  box-shadow: 0 24px 56px color-mix(in srgb, #2d2b2b 34%, transparent);
+}
+.host-coverflow-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 52px;
+  height: 52px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, #000 45%, transparent);
+  color: #fff;
+  transition: opacity 0.2s ease;
 }
-.host-card-media { aspect-ratio: 9 / 16; width: 100%; }
-.host-card .host-name { margin-top: 4px; }
-
-@keyframes host-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+.host-coverflow-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  background: color-mix(in srgb, #0a0a0e 92%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
+.host-coverflow-card.is-playing .host-coverflow-play { opacity: 0; }
+.host-coverflow-card.is-playing .host-coverflow-video-placeholder {
+  opacity: 1;
+  pointer-events: auto;
+}
+.host-coverflow-card .host-name { margin-top: 12px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .host-track { animation: none; }
-  .host-carousel { overflow-x: auto; }
+  .host-coverflow { scroll-behavior: auto; }
+  .host-coverflow-card { transition: none; }
 }
 
-/* — app download band — */
-.cta-band {
-  background: var(--color-accent);
-  color: var(--color-bg);
-}
-.cta-title {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: clamp(32px, 3.8vw, 48px);
-  line-height: 1.1;
-  margin: 0;
-}
-.cta-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 28px;
-}
-/* .btn-ghost's accent-tinted hover is invisible on the accent band — the
+/* .btn-ghost's accent-tinted hover is invisible on a dark background — the
    export set only colour and border-colour, so the hover state is restated
-   here against the band's own background. */
+   here for use against dark surfaces (the footer CTA card). */
 .btn-on-accent { color: var(--color-bg); border-color: var(--color-bg); }
 .btn-on-accent:hover { background: color-mix(in srgb, var(--color-bg) 15%, transparent); }
 .btn-on-accent:active { background: color-mix(in srgb, var(--color-bg) 25%, transparent); }
 
-/* — footer — */
-.footer { border-top: 2px solid var(--color-divider); }
+/* — footer — a dark band, deliberately breaking from the page's light
+   theme to read as a distinct close to the page. Nav columns sit beside an
+   app-download photo card; a copyright/legal bar and a darker social-icon
+   bar stack underneath it. */
+.footer { background: #121116; color: #cfced6; }
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px clamp(20px, 5vw, 72px);
+  padding: 56px clamp(20px, 5vw, 72px) 40px;
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
   justify-content: space-between;
 }
-.footer-brand { display: flex; align-items: center; gap: 10px; }
+.footer-main { display: flex; flex-wrap: wrap; gap: 56px; flex: 1 1 260px; }
+.footer-brand { display: flex; align-items: center; gap: 10px; flex: none; }
 .footer-brand-name {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
   font-size: 18px;
+  color: #fff;
 }
 .footer-logo { width: 28px; height: 28px; flex: none; }
 .footer-cols { display: flex; gap: 56px; flex-wrap: wrap; }
 .footer-col-title {
-  font-size: 14px;
-  letter-spacing: 0.06em;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
-  margin: 0 0 12px;
+  color: color-mix(in srgb, #fff 50%, transparent);
+  margin: 0 0 14px;
 }
 .footer-links {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   font-size: 16px;
 }
-.footer-bottom { border-top: 2px solid var(--color-divider); }
-.footer-note {
+.footer-links a { color: #cfced6; }
+.footer-links a:hover { color: #fff; }
+
+/* — footer CTA card — the "Ready to dive in?" app-download prompt as a
+   photo card, echoing the Roblox-style footer's "Join Now" graphic. */
+.footer-cta-card {
+  position: relative;
+  flex: 1 1 320px;
+  max-width: 420px;
+  min-height: 220px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.footer-cta-media { position: absolute; inset: 0; width: 100%; height: 100%; }
+.footer-cta-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(10, 10, 14, 0.1) 0%, rgba(10, 10, 14, 0.88) 100%);
+}
+.footer-cta-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 20px;
+  line-height: 1.3;
+  color: #fff;
+  margin: 0;
+}
+.footer-cta-stores { gap: 8px; }
+.footer-cta-stores .store-badge img { height: 40px; }
+
+.footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.footer-bottom-inner {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px clamp(20px, 5vw, 72px);
-  font-size: 15px;
-  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  align-items: center;
+  justify-content: space-between;
 }
+.footer-note { font-size: 15px; color: color-mix(in srgb, #fff 55%, transparent); margin: 0; }
+.footer-legal-inline { display: flex; gap: 24px; flex-wrap: wrap; font-size: 15px; }
+.footer-legal-inline a { color: color-mix(in srgb, #fff 65%, transparent); }
+.footer-legal-inline a:hover { color: #fff; }
+
+.footer-social-bar { background: #0b0a0d; }
+.footer-social-icons {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px clamp(20px, 5vw, 72px);
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.footer-social-icons a { display: flex; color: color-mix(in srgb, #fff 55%, transparent); }
+.footer-social-icons a:hover { color: #fff; }
 
 /* — store buttons — */
 .store-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -524,12 +599,6 @@ a:hover { color: var(--color-accent); }
 }
 .btn-store:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .btn-store:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
-
-/* — footer brand block — */
-.footer-brand-block { display: flex; flex-direction: column; gap: 16px; }
-.footer-get-app { margin: 8px 0 0; }
-.footer-stores { gap: 8px; }
-.footer-stores .btn { font-size: 15px; }
 
 /* — legal / prose pages — */
 .prose {
@@ -722,4 +791,6 @@ a:hover { color: var(--color-accent); }
   }
   .hosts-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
   .footer-inner { gap: 32px; }
+  .footer-cta-card { max-width: none; min-height: 260px; }
+  .footer-bottom-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
 }

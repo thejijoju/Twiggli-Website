@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import AppDownloadCta from '../components/AppDownloadCta.astro';
 import SocialIcon from '../components/SocialIcon.astro';
 import { getSiteData } from '../data/site.ts';
 
@@ -70,6 +69,4 @@ const { socialLinks } = getSiteData(lang);
       </div>
     </section>
   </div>
-
-  <AppDownloadCta lang={lang} />
 </Base>
