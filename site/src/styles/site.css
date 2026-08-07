@@ -152,7 +152,7 @@ a:hover { color: var(--color-accent); }
 }
 .hero-copy p { margin: 0 0 18px; }
 .hero-copy p:last-child { margin: 0; }
-.hero-quote.quote-card { margin-top: 32px; padding: 32px 36px; }
+.hero-quote { margin-top: 32px; }
 
 /* — highlight mark — a purple-on-white callout for a key word or short
    phrase inside a sentence. box-decoration-break keeps a multi-line
@@ -166,15 +166,6 @@ a:hover { color: var(--color-accent); }
   -webkit-box-decoration-break: clone;
 }
 
-/* — quote card — the recognizable "screenshot quote" look: a white card
-   lifted off the page with a soft shadow. Deliberately breaks from the
-   system's flat, shadowless, sharp-corner default — used sparingly, for
-   copy that should read as a standout statement rather than page text. */
-.quote-card {
-  background: #fff;
-  border-radius: 24px;
-  box-shadow: var(--shadow-lg);
-}
 /* Match the hero copy's width and let the two badges share it evenly —
    scaled up proportionally (width set, height follows via the image's own
    aspect ratio) rather than stretched, so the official artwork isn't
