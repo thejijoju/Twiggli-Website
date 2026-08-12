@@ -41,6 +41,13 @@ const hosts = getHosts(lang);
       <PhoneMockup lang={lang} layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
     </section>
 
+    <section class="section" id="hosts">
+      <span class="kicker">Our hosts</span>
+      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
+    </section>
+
+    <hr class="rule" />
+
     <section class="section" id="how-it-works">
       <span class="kicker">How it works</span>
       {steps.map((step) => (
@@ -75,13 +82,6 @@ const hosts = getHosts(lang);
           <a href={withBase('/host/')} class="btn btn-primary">Become a host</a>
         </div>
       </div>
-    </section>
-
-    <hr class="rule" />
-
-    <section class="section" id="hosts">
-      <span class="kicker">Our hosts</span>
-      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
     </section>
 
     <hr class="rule" />

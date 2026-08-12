@@ -33,6 +33,12 @@
    instead of just the primary color changing. accent-2 mirrors accent, per
    the system being a mono scheme. */
 :root {
+  /* Page background moved from the system's warm grey (#f3f2f2) to white.
+     --color-surface lifts off it in the other direction (a hair darker) so
+     inputs and cards still read as distinct from the page. */
+  --color-bg: #ffffff;
+  --color-surface: #f2f1f1;
+
   --color-accent: #361ed6;
   --color-accent-100: #f2f5ff;
   --color-accent-200: #e1e7ff;
