@@ -9,8 +9,8 @@ interface Props {
    *  'carousel' is a center-focused "coverflow" reel — the active card sits
    *  large and sharp in the middle, neighbours shrink and fade toward the
    *  edges. Click a side card to bring it to centre; click the centred card
-   *  to play its preview (PLACEHOLDER — no host video assets exist yet, so
-   *  this just reveals a "video coming soon" state). */
+   *  to play its reel. Cards without a reel yet keep the placeholder slot
+   *  and a "coming soon" state. */
   layout?: 'grid' | 'carousel';
   lang?: Lang;
 }
@@ -26,18 +26,31 @@ const videoPlaceholder = {
   <div class="host-coverflow" data-host-coverflow>
     <div class="host-coverflow-spacer" aria-hidden="true"></div>
     {hosts.map((host) => (
-      <div class="host-coverflow-card" tabindex="0" role="button" aria-label={`${host.name}, ${host.specialty}`}>
+      <div
+        class="host-coverflow-card"
+        tabindex="0"
+        role="button"
+        data-has-video={host.video ? 'true' : undefined}
+        aria-label={`${host.name}, ${host.specialty}`}
+      >
         <div class="host-coverflow-media">
-          <ImageSlot
-            src={host.photo}
-            shape="rect"
-            placeholder="Host reel"
-            alt=""
-          />
+          {host.video ? (
+            <video
+              class="host-coverflow-video"
+              src={host.video}
+              poster={host.poster}
+              muted
+              loop
+              playsinline
+              preload="none"
+            ></video>
+          ) : (
+            <ImageSlot src={host.photo} shape="rect" placeholder="Host reel" alt="" />
+          )}
           <span class="host-coverflow-play" aria-hidden="true">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
           </span>
-          <div class="host-coverflow-video-placeholder">{videoPlaceholder}</div>
+          {!host.video && <div class="host-coverflow-video-placeholder">{videoPlaceholder}</div>}
         </div>
         <p class="host-name">{host.name}</p>
         <p class="host-specialty">{host.specialty}</p>
@@ -69,11 +82,22 @@ const videoPlaceholder = {
 <script>
   // Center-focused "coverflow" carousel: on scroll, scale/fade each card by
   // its distance from the track's centre. Click a side card to snap-scroll
-  // it to centre; click the already-centred card to reveal the (placeholder)
-  // video state. Runs once per `.host-coverflow` instance on the page.
+  // it to centre; click the already-centred card to play its reel (or reveal
+  // the "coming soon" state where there is no reel yet). A card scrolled away
+  // from the centre stops and rewinds, so only one reel ever plays at a time.
+  // Runs once per `.host-coverflow` instance on the page.
   function initCoverflow(track: HTMLElement) {
     const cards = Array.from(track.querySelectorAll<HTMLElement>('.host-coverflow-card'));
     if (!cards.length) return;
+
+    const videoOf = (card: HTMLElement) =>
+      card.querySelector<HTMLVideoElement>('.host-coverflow-video');
+
+    const stop = (card: HTMLElement) => {
+      card.classList.remove('is-playing');
+      const v = videoOf(card);
+      if (v) { v.pause(); v.currentTime = 0; }
+    };
 
     let raf = 0;
     const update = () => {
@@ -86,7 +110,7 @@ const videoPlaceholder = {
         card.style.transform = `scale(${1 - norm * 0.32})`;
         card.style.opacity = String(1 - norm * 0.7);
         card.classList.toggle('is-active', norm < 0.12);
-        if (norm >= 0.12) card.classList.remove('is-playing');
+        if (norm >= 0.12 && card.classList.contains('is-playing')) stop(card);
       });
     };
     const onScroll = () => {
@@ -99,11 +123,21 @@ const videoPlaceholder = {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     cards.forEach((card) => {
       const activate = () => {
-        if (card.classList.contains('is-active')) {
-          card.classList.toggle('is-playing');
-        } else {
+        if (!card.classList.contains('is-active')) {
           card.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+          return;
         }
+        if (card.classList.contains('is-playing')) {
+          stop(card);
+          return;
+        }
+        cards.forEach((other) => { if (other !== card) stop(other); });
+        card.classList.add('is-playing');
+        const v = videoOf(card);
+        // Muted + playsinline, so autoplay policies allow this; the promise
+        // still rejects on some browsers, and an un-played card should not
+        // sit there claiming to be playing.
+        if (v) v.play().catch(() => card.classList.remove('is-playing'));
       };
       card.addEventListener('click', activate);
       card.addEventListener('keydown', (e) => {

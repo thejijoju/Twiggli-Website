@@ -51,6 +51,10 @@ export type Host = {
   /** Path under /public, e.g. '/img/hosts/anna.jpg'. Empty renders the
    *  placeholder slot from the design. */
   photo?: string;
+  /** A reel under /public/video. When set, the carousel card plays this
+   *  instead of showing a still — `poster` is the frame shown until it does. */
+  video?: string;
+  poster?: string;
 };
 
 const hostPlaceholder: Record<Lang, { name: string; specialty: string }> = {
@@ -58,10 +62,33 @@ const hostPlaceholder: Record<Lang, { name: string; specialty: string }> = {
   de: { name: 'Name des Gastgebers', specialty: 'Workshop-Art' },
 };
 
-/** PLACEHOLDER — the design shipped 17 unnamed slots. Replace name,
- *  specialty and photo per host; the grid sizes itself to the list length. */
-export const getHosts = (lang: Lang): Host[] =>
-  Array.from({ length: 17 }, (_, i) => ({ id: i + 1, ...hostPlaceholder[lang] }));
+/** The reels that have real footage so far. Everything past these falls back
+ *  to the placeholder slot. PLACEHOLDER names/specialties — replace as the
+ *  real host details land. */
+const hostReels: Record<Lang, { name: string; specialty: string; video: string; poster: string }[]> = {
+  en: [
+    { name: 'Host name', specialty: 'Art workshop', video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+    { name: 'Host name', specialty: 'Workshop type', video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
+    { name: 'Host name', specialty: 'Workshop type', video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
+  ],
+  de: [
+    { name: 'Name des Gastgebers', specialty: 'Kunst-Workshop', video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+    { name: 'Name des Gastgebers', specialty: 'Workshop-Art', video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
+    { name: 'Name des Gastgebers', specialty: 'Workshop-Art', video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
+  ],
+};
+
+/** PLACEHOLDER — the design shipped 17 unnamed slots. The first few now carry
+ *  real reels; the rest stay empty until their footage arrives. */
+export const getHosts = (lang: Lang): Host[] => {
+  const reels = hostReels[lang];
+  return Array.from({ length: 17 }, (_, i) => {
+    const reel = reels[i];
+    return reel
+      ? { id: i + 1, name: reel.name, specialty: reel.specialty, video: withBase(reel.video), poster: withBase(reel.poster) }
+      : { id: i + 1, ...hostPlaceholder[lang] };
+  });
+};
 
 const phoneCardsCopy = {
   en: [
