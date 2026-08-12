@@ -12,11 +12,11 @@
 
 /* ── Typeface ──────────────────────────────────────────────────────────
    The design system ships Archivo (loaded by modernist.css). Moved to
-   Source Sans Pro instead — the provider link lives in Base.astro's
+   Roboto instead — the provider link lives in Base.astro's
    <head>; these two variables are the only place a font is named. */
 :root {
-  --font-heading: "Source Sans Pro", system-ui, sans-serif;
-  --font-body: "Source Sans Pro", system-ui, sans-serif;
+  --font-heading: "Roboto", system-ui, sans-serif;
+  --font-body: "Roboto", system-ui, sans-serif;
   --font-heading-weight: 700;
 }
 
