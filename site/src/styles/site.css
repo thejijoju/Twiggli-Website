@@ -113,10 +113,22 @@ a:hover { color: var(--color-accent); }
 }
 .nav-logo { display: block; width: 36px; height: 36px; flex: none; }
 /* .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
-.nav a.nav-brand { font-size: 20px; }
+.nav a.nav-brand { font-size: 20px; letter-spacing: 0.06em; }
 .nav a.nav-brand:hover { color: var(--color-accent); }
+.nav-end a { letter-spacing: 0.045em; }
 .nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
 .footer-logo { display: block; }
+
+/* The current page reads as a solid rule under the label rather than the
+   system's hairline text-decoration underline. */
+.nav a[aria-current='page'] {
+  text-decoration: none;
+  border-bottom: 3px solid var(--color-text);
+  padding-bottom: 3px;
+}
+
+.lang-switch { display: flex; align-items: center; gap: 6px; }
+.lang-switch a.lang-active { font-weight: 800; color: var(--color-text); }
 
 /* The one solid black pill in the chrome — the primary app-download action. */
 .nav a.nav-cta {
