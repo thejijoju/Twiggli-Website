@@ -1,19 +1,24 @@
 ---
 import ImageSlot from './ImageSlot.astro';
-import SocialIcon from './SocialIcon.astro';
 import LangSwitch from './LangSwitch.astro';
-import { getSiteData } from '../data/site.ts';
+import { getSiteData, appUrl } from '../data/site.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const { brand, navLinks, socialLinks } = getSiteData(lang);
+const { brand, navLinks } = getSiteData(lang);
 
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const isCurrent = (link: (typeof navLinks)[number]) =>
   !link.external && (link.href.replace(/\/+$/, '') || '/') === path;
+
+const ctaLabel = { en: 'Download the app', de: 'App herunterladen' }[lang];
+
+/* The "Get Started" entry is promoted to the black CTA pill on the right,
+   so it is dropped from the inline link list to avoid showing twice. */
+const inlineLinks = navLinks.filter((link) => !link.external);
 ---
 
 <nav class="nav">
@@ -23,21 +28,21 @@ const isCurrent = (link: (typeof navLinks)[number]) =>
     </a>
     <a href={href(lang, '/')} class="nav-brand">{brand.name}</a>
   </div>
-  <div class="nav-center">
-    {navLinks.map((link) => (
+  <div class="nav-end">
+    {inlineLinks.map((link) => (
       <a
         href={link.href}
         aria-current={isCurrent(link) ? 'page' : undefined}
-        target={link.external ? '_blank' : undefined}
-        rel={link.external ? 'noopener' : undefined}
         class:list={{ 'nav-link-emphasis': link.emphasis }}
       >{link.label}</a>
     ))}
-    <div class="nav-social">
-      {socialLinks.map((s) => (
-        <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
-      ))}
-    </div>
     <LangSwitch lang={lang} />
+    <a href={appUrl} class="nav-cta" target="_blank" rel="noopener">
+      {ctaLabel}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 17 17 7" />
+        <path d="M8 7h9v9" />
+      </svg>
+    </a>
   </div>
 </nav>

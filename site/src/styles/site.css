@@ -91,28 +91,25 @@ a:hover { color: var(--color-accent); }
 }
 .section { padding: 64px 0; }
 
-/* — nav — */
+/* — nav — brand lockup on the left, links and the CTA pill pushed to the
+   right edge. Social icons live in the footer only. */
 .nav {
-  padding: 20px 48px;
+  padding: 20px clamp(20px, 5vw, 72px);
   border-bottom: none;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 32px;
 }
 .nav-brand-block {
   display: flex;
   align-items: center;
   gap: 16px;
-  justify-self: start;
 }
-/* The link/icon/language cluster centers independently of the brand
-   block's width, with 1cm between each item — logo and wordmark stay a
-   tight lockup at their own smaller gap above. */
-.nav-center {
+.nav-end {
   display: flex;
   align-items: center;
-  gap: 1cm;
-  justify-self: center;
+  gap: 28px;
 }
 .nav-logo { display: block; width: 36px; height: 36px; flex: none; }
 /* .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
@@ -120,6 +117,24 @@ a:hover { color: var(--color-accent); }
 .nav a.nav-brand:hover { color: var(--color-accent); }
 .nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
 .footer-logo { display: block; }
+
+/* The one solid black pill in the chrome — the primary app-download action. */
+.nav a.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.nav a.nav-cta:hover { background: color-mix(in srgb, var(--color-text) 82%, transparent); }
+
+/* Social icon row — the contact page's "Elsewhere" cluster. */
 .nav-social {
   display: flex;
   align-items: center;
@@ -759,15 +774,15 @@ a:hover { color: var(--color-accent); }
 @media (max-width: 720px) {
   .nav {
     padding: 16px 20px;
-    display: flex;
     flex-wrap: wrap;
     gap: 12px;
     row-gap: 10px;
   }
-  .nav-center {
-    gap: 12px;
+  .nav-end {
+    gap: 14px;
     flex-wrap: wrap;
   }
+  .nav a.nav-cta { padding: 10px 18px; font-size: 14px; }
 }
 
 @media (max-width: 520px) {
