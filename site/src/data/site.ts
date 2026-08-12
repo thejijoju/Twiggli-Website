@@ -72,7 +72,9 @@ const storeBadges = {
  *  shared by both language versions of the site — see impressum.astro —
  *  so its link always points at the root path, never /de/impressum/. */
 export function getSiteData(lang: Lang) {
-  const brand = { ...brandCopy[lang], logo: withBase('/img/logo.jpg') };
+  /* PNG, not JPEG — the mark's rounded corners need real transparency, or
+     they render as white notches against the page and the dark footer. */
+  const brand = { ...brandCopy[lang], logo: withBase('/img/logo.png') };
 
   const navLinks: NavLink[] = [
     { label: navLabels[lang].home, href: href(lang, '/') },
