@@ -36,12 +36,16 @@ const hosts = getHosts(lang);
       <HeroVideoGrid hosts={hosts} lang={lang} />
     </section>
 
-    <section class="section" id="hosts">
-      <span class="kicker">Unsere Gastgeber</span>
-      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
-    </section>
+  </div>
 
-    <hr class="rule" />
+  <section class="section hosts-band" id="hosts">
+    <div class="container">
+      <span class="kicker">Unsere Gastgeber</span>
+    </div>
+    <HostGrid hosts={hosts} layout="carousel" lang={lang} />
+  </section>
+
+  <div class="container">
 
     <section class="section" id="how-it-works">
       <span class="kicker">So funktioniert&rsquo;s</span>

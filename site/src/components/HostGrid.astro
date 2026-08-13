@@ -99,18 +99,26 @@ const videoPlaceholder = {
       if (v) { v.pause(); v.currentTime = 0; }
     };
 
+    // One card-plus-gap. Distance is measured in these rather than as a
+    // fraction of the track, so a card two places out looks the same however
+    // wide the viewport is — the falloff is what makes five cards read as
+    // 2 / 1 big / 2.
+    const step = () =>
+      cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : 1;
+
     let raf = 0;
     const update = () => {
       const trackRect = track.getBoundingClientRect();
       const center = trackRect.left + trackRect.width / 2;
+      const s = step() || 1;
       cards.forEach((card) => {
         const r = card.getBoundingClientRect();
         const dist = Math.abs(r.left + r.width / 2 - center);
-        const norm = Math.min(dist / (trackRect.width / 2 || 1), 1);
-        card.style.transform = `scale(${1 - norm * 0.32})`;
-        card.style.opacity = String(1 - norm * 0.7);
-        card.classList.toggle('is-active', norm < 0.12);
-        if (norm >= 0.12 && card.classList.contains('is-playing')) stop(card);
+        const norm = dist / s;
+        card.style.transform = `scale(${Math.max(1 - norm * 0.16, 0.56)})`;
+        card.style.opacity = String(Math.max(1 - norm * 0.2, 0.4));
+        card.classList.toggle('is-active', norm < 0.5);
+        if (norm >= 0.5 && card.classList.contains('is-playing')) stop(card);
       });
     };
     const onScroll = () => {
@@ -147,6 +155,19 @@ const videoPlaceholder = {
         }
       });
     });
+
+    // Open on the third card, so the default view is two cards, the big one,
+    // then two more — rather than the first card centred with nothing left
+    // of it.
+    const openOn = Math.min(2, cards.length - 1);
+    const settle = () => {
+      track.scrollLeft = openOn * (step() || 0);
+      update();
+    };
+    settle();
+    // Re-run once the reel posters have decoded; their height can shift the
+    // layout and leave the opening position slightly off.
+    window.addEventListener('load', settle, { once: true });
 
     update();
   }
