@@ -244,15 +244,6 @@ a:hover { color: var(--color-accent); }
   margin-top: 32px;
 }
 
-/* Solid black pill — the same treatment as the nav's download CTA. */
-.btn.btn-dark {
-  background: var(--color-text);
-  color: var(--color-bg);
-  border-color: var(--color-text);
-  font-weight: 700;
-}
-.btn.btn-dark:hover { background: color-mix(in srgb, var(--color-text) 82%, transparent); }
-
 /* — hero video quad — four reels in a 2x2 square, replacing the phone
    mockup as the hero's visual. Square tiles keep the block itself square;
    the reels are vertical, so they are centre-cropped to fit. */

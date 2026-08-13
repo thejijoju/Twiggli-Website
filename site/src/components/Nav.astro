@@ -14,7 +14,7 @@ const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const isCurrent = (link: (typeof navLinks)[number]) =>
   !link.external && (link.href.replace(/\/+$/, '') || '/') === path;
 
-const ctaLabel = { en: 'Download the app', de: 'App herunterladen' }[lang];
+const ctaLabel = { en: 'Get started', de: 'Jetzt starten' }[lang];
 
 /* The "Get Started" entry is promoted to the black CTA pill on the right,
    so it is dropped from the inline link list to avoid showing twice. */
