@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ImageSlot from '../components/ImageSlot.astro';
-import PhoneMockup from '../components/PhoneMockup.astro';
+import HeroVideoGrid from '../components/HeroVideoGrid.astro';
 import HostGrid from '../components/HostGrid.astro';
 import StoreButtons from '../components/StoreButtons.astro';
 import Newsletter from '../components/Newsletter.astro';
@@ -37,8 +37,7 @@ const hosts = getHosts(lang);
           </div>
         </div>
       </div>
-
-      <PhoneMockup lang={lang} layout="overlap" screen="listing" backPhoto={withBase('/img/hero/forest.jpg')} />
+      <HeroVideoGrid hosts={hosts} lang={lang} />
     </section>
 
     <section class="section" id="hosts">

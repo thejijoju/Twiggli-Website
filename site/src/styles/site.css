@@ -216,6 +216,46 @@ a:hover { color: var(--color-accent); }
   margin-top: 32px;
 }
 
+/* — hero video quad — four reels in a 2x2 square, replacing the phone
+   mockup as the hero's visual. Square tiles keep the block itself square;
+   the reels are vertical, so they are centre-cropped to fit. */
+.hero-quad {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.hero-quad-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.hero-quad-tile[data-mode='click'] { cursor: pointer; }
+.hero-quad-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-quad-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, #000 45%, transparent);
+  color: #fff;
+  transition: opacity 0.2s ease;
+}
+.hero-quad-tile.is-playing .hero-quad-play { opacity: 0; }
+
 /* — hero phone mockups — */
 .hero-visual {
   position: relative;
@@ -440,10 +480,10 @@ a:hover { color: var(--color-accent); }
   padding: 40px 0;
 }
 .host-coverflow::-webkit-scrollbar { display: none; }
-.host-coverflow-spacer { flex: none; width: calc(50% - 95px); }
+.host-coverflow-spacer { flex: none; width: calc(50% - 127px); }
 .host-coverflow-card {
   flex: none;
-  width: 190px;
+  width: 253px;
   scroll-snap-align: center;
   cursor: pointer;
   text-align: center;

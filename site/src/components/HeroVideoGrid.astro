@@ -1,0 +1,106 @@
+---
+import ImageSlot from './ImageSlot.astro';
+import type { Host } from '../data/content.ts';
+import { DEFAULT_LANG, withBase, type Lang } from '../lib/url.ts';
+
+/**
+ * The hero's visual: four reels in a 2x2 square. The first two loop on their
+ * own (muted, as autoplay policies require); the last two wait for a click,
+ * and play with sound since a click is the user gesture that permits it.
+ *
+ * Tiles are filled from whichever hosts have reels. Until there are four,
+ * the remaining tiles fall back to a still — drop another reel into
+ * data/content.ts and it takes the next tile automatically.
+ */
+interface Props {
+  hosts: Host[];
+  lang?: Lang;
+}
+const { hosts, lang = DEFAULT_LANG } = Astro.props;
+
+const reels = hosts.filter((h) => h.video).slice(0, 4);
+const fallbackStills = [
+  '/img/hero/bachata.jpg',
+  '/img/hero/bouldering.jpg',
+  '/img/hero/cooking.jpg',
+  '/img/hero/hiking.jpg',
+];
+
+// Tiles 0 and 1 autoplay; 2 and 3 are click-to-play.
+const tiles = Array.from({ length: 4 }, (_, i) => ({
+  reel: reels[i],
+  still: withBase(fallbackStills[i]),
+  auto: i < 2,
+}));
+
+const playLabel = { en: 'Play reel', de: 'Reel abspielen' }[lang];
+---
+
+<div class="hero-quad" data-hero-quad>
+  {tiles.map((tile) => (
+    <div
+      class="hero-quad-tile"
+      data-mode={tile.reel ? (tile.auto ? 'auto' : 'click') : undefined}
+      tabindex={tile.reel && !tile.auto ? 0 : undefined}
+      role={tile.reel && !tile.auto ? 'button' : undefined}
+      aria-label={tile.reel && !tile.auto ? playLabel : undefined}
+    >
+      {tile.reel ? (
+        <video
+          class="hero-quad-video"
+          src={tile.reel.video}
+          poster={tile.reel.poster}
+          muted={tile.auto}
+          loop
+          playsinline
+          preload={tile.auto ? 'auto' : 'none'}
+          autoplay={tile.auto}
+        ></video>
+      ) : (
+        <ImageSlot src={tile.still} shape="rect" placeholder="Reel" alt="" />
+      )}
+      {tile.reel && !tile.auto && (
+        <span class="hero-quad-play" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+        </span>
+      )}
+    </div>
+  ))}
+</div>
+
+<script>
+  // Click-to-play tiles: play with sound on click, pause on a second click,
+  // and stop any other tile that is already playing so two reels never talk
+  // over each other. The autoplay tiles are left to the browser.
+  document.querySelectorAll<HTMLElement>('[data-hero-quad]').forEach((grid) => {
+    const clickTiles = Array.from(
+      grid.querySelectorAll<HTMLElement>('.hero-quad-tile[data-mode="click"]'),
+    );
+    clickTiles.forEach((tile) => {
+      const video = tile.querySelector<HTMLVideoElement>('.hero-quad-video');
+      if (!video) return;
+      const toggle = () => {
+        if (!video.paused) {
+          video.pause();
+          tile.classList.remove('is-playing');
+          return;
+        }
+        clickTiles.forEach((other) => {
+          if (other === tile) return;
+          other.querySelector<HTMLVideoElement>('.hero-quad-video')?.pause();
+          other.classList.remove('is-playing');
+        });
+        tile.classList.add('is-playing');
+        video.play().catch(() => tile.classList.remove('is-playing'));
+      };
+      tile.addEventListener('click', toggle);
+      tile.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+      video.addEventListener('pause', () => tile.classList.remove('is-playing'));
+    });
+  });
+</script>
