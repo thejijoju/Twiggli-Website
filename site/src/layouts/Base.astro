@@ -11,9 +11,12 @@ interface Props {
   title: string;
   description?: string;
   lang?: Lang;
+  /** Keep the page out of search results — for transactional landing pages
+   *  (payment return URLs) that are meaningless without their flow. */
+  noindex?: boolean;
 }
 
-const { title, description, lang = DEFAULT_LANG } = Astro.props;
+const { title, description, lang = DEFAULT_LANG, noindex = false } = Astro.props;
 const { brand } = getSiteData(lang);
 const pageDescription = description ?? brand.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
@@ -60,6 +63,7 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
     </script>
     <title>{title}</title>
     <meta name="description" content={pageDescription} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical.href} />
     <link rel="alternate" hreflang="en" href={enUrl.href} />
     <link rel="alternate" hreflang="de" href={deUrl.href} />

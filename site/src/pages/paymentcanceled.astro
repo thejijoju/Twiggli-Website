@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSiteData, appUrl } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
+
+const lang = 'en';
+const { brand } = getSiteData(lang);
+
+/* Stripe Checkout's `cancel_url` lands here when someone backs out of a
+   payment. The path is fixed by the Stripe configuration in the app — do not
+   rename it without changing that too, or cancelled payments 404. */
+---
+
+<Base
+  title={`Payment cancelled — ${brand.name}`}
+  description="Your payment was cancelled and you have not been charged."
+  lang={lang}
+  noindex
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Payment cancelled</span>
+      <h1 class="page-title">No payment was taken</h1>
+      <p class="page-lede">
+        You cancelled before the payment went through, so nothing has been charged and your spot
+        was not booked. You can head back to the app and try again whenever you are ready.
+      </p>
+      <div class="hero-actions">
+        <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Back to Twiggli</a>
+        <a href={withBase('/contact/')} class="btn btn-ghost">Get help</a>
+      </div>
+    </section>
+  </div>
+</Base>

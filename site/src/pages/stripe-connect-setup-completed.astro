@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSiteData, appUrl } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
+
+const lang = 'en';
+const { brand } = getSiteData(lang);
+
+/* Stripe Connect's onboarding `return_url` lands here once a host finishes
+   the payout setup flow. The path is fixed by the Stripe configuration in the
+   app — do not rename it without changing that too, or hosts finishing
+   onboarding 404.
+
+   Stripe returns here whether or not onboarding actually completed, so the
+   copy deliberately does not promise that payouts are live. */
+---
+
+<Base
+  title={`Payout setup complete — ${brand.name}`}
+  description="Your Stripe payout setup is finished. Head back to Twiggli to start hosting."
+  lang={lang}
+  noindex
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Payout setup</span>
+      <h1 class="page-title">You&rsquo;re all set</h1>
+      <p class="page-lede">
+        Thanks — you have finished the Stripe setup steps. Head back to Twiggli to publish your
+        workshop and start taking bookings. If Stripe still needs anything from you, the app will
+        tell you what is outstanding.
+      </p>
+      <div class="hero-actions">
+        <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">Back to Twiggli</a>
+        <a href={withBase('/contact/')} class="btn btn-ghost">Get help</a>
+      </div>
+    </section>
+  </div>
+</Base>
