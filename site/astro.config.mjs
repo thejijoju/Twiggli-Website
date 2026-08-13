@@ -1,10 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// Deployed to GitHub Pages at https://thejijoju.github.io/Twiggli-Website/ for now.
-// Once www.twiggli.com is pointed at a real host, switch `site` back and drop `base`.
+// Served from https://www.twiggli.com — the domain is pointed at GitHub Pages
+// by public/CNAME plus the DNS records at the registrar. No `base`: the site
+// sits at the domain root, not under a repository path.
 export default defineConfig({
-  site: 'https://thejijoju.github.io',
-  base: '/Twiggli-Website/',
+  site: 'https://www.twiggli.com',
   build: { format: 'directory' },
 });

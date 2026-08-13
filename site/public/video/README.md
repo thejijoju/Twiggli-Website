@@ -2,8 +2,8 @@
 
 Drop host reels here. Everything under `site/public/` is copied verbatim
 into the build and served from the site root, so a file saved as
-`site/public/video/reel-1.mp4` is fetched at `/Twiggli-Website/video/reel-1.mp4`
-— in code, `withBase('/video/reel-1.mp4')`.
+`site/public/video/reel-1.mp4` is fetched at `/video/reel-1.mp4` — in code,
+`withBase('/video/reel-1.mp4')`.
 
 ## Naming
 

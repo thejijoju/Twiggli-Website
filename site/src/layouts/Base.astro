@@ -33,7 +33,7 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline>
+    <script is:inline define:vars={{ deployBase: base }}>
       try {
         if (localStorage.getItem('twiggli-cookie-consent')) {
           document.documentElement.classList.add('cookie-consent-set');
@@ -44,8 +44,9 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
         // page. Runs once, only away from an already-German page, and never
         // fights a stored preference — see LangSwitch.astro and this same
         // path-stripping logic in Base.astro / LangSwitch.astro.
+        // deployBase comes from BASE_URL above rather than a literal, so it
+        // cannot drift out of sync with astro.config.mjs.
         var storedLang = localStorage.getItem('twiggli-lang');
-        var deployBase = '/Twiggli-Website/';
         var path = location.pathname;
         var rel = path.indexOf(deployBase) === 0 ? path.slice(deployBase.length) : path.replace(/^\//, '');
         var onGerman = rel === 'de' || rel.indexOf('de/') === 0;
