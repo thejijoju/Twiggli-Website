@@ -193,10 +193,7 @@ a:hover { color: var(--color-accent); }
 .hero-title span { display: inline; }
 .hero-title span + span::before { content: ' '; }
 .hero-copy {
-  font-family: var(--font-body); /* Roboto — the headline is the only exception */
-  font-size: 14.4px;
-  font-weight: 500;
-  font-style: normal;
+  font-size: 19px;
   line-height: 1.6;
   max-width: 52ch;
 }
