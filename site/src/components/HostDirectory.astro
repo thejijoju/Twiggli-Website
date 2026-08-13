@@ -14,8 +14,8 @@ interface Props {
 const { hosts, lang = DEFAULT_LANG } = Astro.props;
 
 const labels = {
-  en: { group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', play: 'Play reel' },
-  de: { group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', play: 'Reel abspielen' },
+  en: { studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', play: 'Play reel' },
+  de: { studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', play: 'Reel abspielen' },
 }[lang];
 ---
 
@@ -49,6 +49,7 @@ const labels = {
       <p class="maker-blurb">{host.blurb}</p>
 
       <dl class="maker-meta">
+        {host.studio && <div><dt>{labels.studio}</dt><dd>{host.studio}</dd></div>}
         <div><dt>{labels.group}</dt><dd>{host.group}</dd></div>
         <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
         <div><dt>{labels.place}</dt><dd>{host.place}</dd></div>

@@ -518,12 +518,12 @@ a:hover { color: var(--color-accent); }
   mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
 }
 /* Half a card, so the centred card sits dead centre of the track. */
-.host-coverflow-spacer { flex: none; width: calc(50% - 99.5px); }
+.host-coverflow-spacer { flex: none; width: calc(50% - 132.5px); }
 .host-coverflow-card {
   flex: none;
-  /* 5 cards + 4 gaps = 1043px, inside the 1056px container measure — so the
-     default five-card view is bounded by the page padding on both sides. */
-  width: 199px;
+  /* A third larger than the 199px that fitted five across the container, so
+     the outermost pair now runs past the edge and is faded by the mask. */
+  width: 265px;
   scroll-snap-align: center;
   cursor: pointer;
   text-align: center;
