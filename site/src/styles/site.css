@@ -1017,3 +1017,10 @@ a:hover { color: var(--color-accent); }
   text-decoration: none;
 }
 .maker-index a:hover { background: var(--color-accent); color: var(--color-bg); }
+
+/* The reel is a teaser — this sends people to the full directory. */
+.hosts-band-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}

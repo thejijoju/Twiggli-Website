@@ -45,6 +45,9 @@ const hosts = getHosts(lang);
     <div class="container">
       <HostGrid hosts={hosts} layout="carousel" lang={lang} />
     </div>
+    <div class="container hosts-band-actions">
+      <a href={withBase('/hosts/')} class="btn btn-primary">Meet all {hosts.length} hosts</a>
+    </div>
   </section>
 
   <div class="container">

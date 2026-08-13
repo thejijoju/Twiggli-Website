@@ -67,6 +67,9 @@ const points = [
         Browse our vetted hosts and get a feel for who could run your team's session.
       </p>
       <HostGrid hosts={hosts} layout="carousel" lang={lang} />
+      <div class="hosts-band-actions">
+        <a href={withBase('/hosts/')} class="btn btn-primary">Meet all {hosts.length} hosts</a>
+      </div>
     </section>
 
     <hr class="rule" />
