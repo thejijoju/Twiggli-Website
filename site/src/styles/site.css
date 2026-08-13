@@ -117,18 +117,8 @@ a:hover { color: var(--color-accent); }
   align-items: center;
   gap: 28px;
 }
-.nav-logo { display: block; width: 36px; height: 36px; flex: none; }
-/* Wordmark: all caps, heavy, and tightly set — the tracking the other nav
-   links carry is deliberately not applied here.
-   .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
-.nav a.nav-brand {
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0;
-}
-.nav a.nav-brand:hover { color: var(--color-accent); }
+/* The mark stands alone in the nav — no wordmark beside it. */
+.nav-logo { display: block; width: 71px; height: 71px; flex: none; }
 .nav-end a { letter-spacing: 0.045em; }
 .nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
 .footer-logo { display: block; }
@@ -180,15 +170,22 @@ a:hover { color: var(--color-accent); }
 /* The hero headline runs heavier and larger than the rest of the headings —
    900 rather than the shared 700, so it is the one piece of type that reads
    as the page's anchor. Roboto 900 is in the font link in Base.astro. */
+/* Matched to the previous site's h1, from its computed styles: Source Sans
+   Pro 700 at 62.752px, -0.62752px tracking (-0.01em) and 67.4709px leading
+   (1.075). Expressed as ratios so they hold as the size scales down, and
+   capped at the original 62.752px — the old site sized this fluidly too.
+   This is the one element not set in Roboto. */
 .hero-title {
   /* Spans both hero columns, so the headline runs the full width of the
      container — the container's own side padding is the only margin. */
   grid-column: 1 / -1;
-  font-family: var(--font-heading);
-  font-weight: 900;
-  font-size: clamp(50px, 5.8vw, 84px);
-  line-height: 1.03;
-  letter-spacing: -0.035em;
+  font-family: "Source Sans Pro", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(38px, 4.36vw, 62.752px);
+  line-height: 1.07527; /* 67.4709 / 62.752 */
+  letter-spacing: -0.01em; /* -0.62752 / 62.752 */
+  color: rgb(50, 39, 59);
+  overflow-wrap: break-word;
   margin: 0;
 }
 /* Inline, so the headline wraps across the full width instead of breaking at

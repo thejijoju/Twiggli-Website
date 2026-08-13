@@ -23,10 +23,11 @@ const inlineLinks = navLinks.filter((link) => !link.external);
 
 <nav class="nav">
   <div class="nav-brand-block">
+    {/* Mark only — the wordmark is not repeated here. The link keeps an
+        aria-label so it still announces as "Twiggli — home". */}
     <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
       <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
     </a>
-    <a href={href(lang, '/')} class="nav-brand">{brand.name}</a>
   </div>
   <div class="nav-end">
     {inlineLinks.map((link) => (
