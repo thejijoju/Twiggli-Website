@@ -910,3 +910,100 @@ a:hover { color: var(--color-accent); }
   .footer-cta-card { max-width: none; min-height: 260px; }
   .footer-bottom-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
+
+/* — maker directory — one card per host on /hosts/. The brochure photo
+   strips are wide, so the card leads with a banner rather than an avatar;
+   hosts with a reel play it in place of the still. */
+.maker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 44px 32px;
+}
+.maker { scroll-margin-top: 90px; }
+.maker-media {
+  position: relative;
+  aspect-ratio: 531 / 163;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.maker-media img,
+.maker-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.maker:has(.maker-video) .maker-media { cursor: pointer; }
+.maker-play {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, #000 55%, transparent);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.maker.is-playing .maker-play { opacity: 0; }
+.maker-name {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 24px;
+  margin: 16px 0 0;
+}
+.maker-specialty {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+  margin: 6px 0 0;
+}
+.maker-blurb {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 12px 0 0;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+.maker-meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 14px;
+  margin: 16px 0 0;
+  font-size: 14px;
+}
+.maker-meta > div { display: contents; }
+.maker-meta dt {
+  font-size: 12px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+  padding-top: 2px;
+}
+.maker-meta dd { margin: 0; }
+
+/* — maker index — the jump list above the directory. */
+.maker-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+.maker-index a {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.maker-index a:hover { background: var(--color-accent); color: var(--color-bg); }

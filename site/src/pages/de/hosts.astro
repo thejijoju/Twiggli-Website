@@ -1,35 +1,42 @@
 ---
 import Base from '../../layouts/Base.astro';
-import HostGrid from '../../components/HostGrid.astro';
-import ImageSlot from '../../components/ImageSlot.astro';
+import HostDirectory from '../../components/HostDirectory.astro';
 import { getHosts } from '../../data/content.ts';
 import { withBase } from '../../lib/url.ts';
 
 const lang = 'de';
 const hosts = getHosts(lang);
-
-/* The 17 host entries are PLACEHOLDER — see src/data/content.ts. */
 ---
 
 <Base
   title="Unsere Gastgeber — Twiggli"
-  description="Die Menschen, die Workshops auf Twiggli in ganz Berlin anbieten."
+  description="Die unabhängigen Berliner Maker, die Workshops auf Twiggli anbieten — Keramik, Druck, Food, Fotografie, Graffiti und mehr."
   lang={lang}
 >
   <div class="container">
     <section class="page-head">
       <span class="kicker">Unsere Gastgeber</span>
-      <h1 class="page-title">Die Menschen hinter den Workshops</h1>
+      <h1 class="page-title">Handgemacht, überall in der Stadt</h1>
       <p class="page-lede">
-        Jeder Workshop auf Twiggli wird von jemandem vor Ort geleitet, der davon lebt oder es aus
-        Leidenschaft macht. Hier siehst du, wen du treffen wirst.
+        Jeder Workshop auf Twiggli wird von einem unabhängigen Berliner Maker geleitet — im eigenen
+        Atelier, in eurem Büro oder draußen. {hosts.length} davon, alle in Berlin. Schau dich um und
+        sag uns, mit wem ihr einen Tag verbringen möchtet.
       </p>
+      <div class="hero-actions">
+        <a href={withBase('/de/contact/')} class="btn btn-primary">Einen Tag für euer Team buchen</a>
+      </div>
     </section>
 
     <hr class="rule" />
 
     <section class="section">
-      <HostGrid hosts={hosts} />
+      <nav class="maker-index" aria-label="Zu einem Gastgeber springen">
+        {hosts.map((host) => <a href={`#${host.slug}`}>{host.name}</a>)}
+      </nav>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <HostDirectory hosts={hosts} lang={lang} />
     </section>
 
     <hr class="rule" />
@@ -39,8 +46,8 @@ const hosts = getHosts(lang);
         <span class="kicker kicker-tight">Gastgeber &amp; verdienen</span>
         <h2 class="split-title">Workshops kostenlos anbieten — und Geld verdienen</h2>
         <p class="split-copy">
-          Verwandle dein Können in Einkommen. Biete einen Tanzkurs, eine Kochsession oder eine
-          Wanderung an, lege deinen Preis fest — oder mach es kostenlos — und Twiggli bringt die
+          Verwandle dein Können in Einkommen. Biete einen Kurs, eine Kochsession oder einen
+          Spaziergang an, lege deinen Preis fest — oder mach es kostenlos — und Twiggli bringt die
           Leute. Keine Gebühren, keine Ausrüstung nötig.
         </p>
         <div class="split-actions">
@@ -48,7 +55,8 @@ const hosts = getHosts(lang);
         </div>
       </div>
       <div class="media-4x3 grayscale">
-        <ImageSlot shape="rect" placeholder="Gastgeber-/Workshop-Foto hier einfügen" alt="" />
+        <img src={withBase('/img/hosts/dominik-wide.jpg')} alt="" loading="lazy"
+             style="width:100%;height:100%;object-fit:cover" />
       </div>
     </section>
   </div>

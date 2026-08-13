@@ -1,0 +1,88 @@
+---
+import type { Host } from '../data/content.ts';
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+
+/**
+ * The full maker directory: one card per host, with the brochure photo strip
+ * as a banner and the practical details a team lead needs before enquiring.
+ * Hosts with a reel play it in place of the still.
+ */
+interface Props {
+  hosts: Host[];
+  lang?: Lang;
+}
+const { hosts, lang = DEFAULT_LANG } = Astro.props;
+
+const labels = {
+  en: { group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', play: 'Play reel' },
+  de: { group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', play: 'Reel abspielen' },
+}[lang];
+---
+
+<div class="maker-grid">
+  {hosts.map((host) => (
+    <article class="maker" id={host.slug}>
+      <div class="maker-media">
+        {host.video ? (
+          <video
+            class="maker-video"
+            src={host.video}
+            poster={host.poster}
+            muted
+            loop
+            playsinline
+            preload="none"
+            aria-label={`${host.name} — ${labels.play}`}
+          ></video>
+        ) : (
+          <img src={host.wide} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
+        )}
+        {host.video && (
+          <button class="maker-play" type="button" aria-label={`${host.name} — ${labels.play}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          </button>
+        )}
+      </div>
+
+      <h2 class="maker-name">{host.name}</h2>
+      <p class="maker-specialty">{host.specialty}</p>
+      <p class="maker-blurb">{host.blurb}</p>
+
+      <dl class="maker-meta">
+        <div><dt>{labels.group}</dt><dd>{host.group}</dd></div>
+        <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
+        <div><dt>{labels.place}</dt><dd>{host.place}</dd></div>
+        <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
+      </dl>
+    </article>
+  ))}
+</div>
+
+<script>
+  // Reels on the directory play on click and stop when another starts, so two
+  // never run at once. Everything else here is a still.
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
+  const stopAll = (except?: HTMLElement) =>
+    cards.forEach((c) => {
+      if (c === except) return;
+      c.querySelector<HTMLVideoElement>('.maker-video')?.pause();
+      c.classList.remove('is-playing');
+    });
+
+  cards.forEach((card) => {
+    const video = card.querySelector<HTMLVideoElement>('.maker-video');
+    if (!video) return;
+    const toggle = () => {
+      if (!video.paused) {
+        video.pause();
+        card.classList.remove('is-playing');
+        return;
+      }
+      stopAll(card);
+      card.classList.add('is-playing');
+      video.play().catch(() => card.classList.remove('is-playing'));
+    };
+    card.querySelector('.maker-media')?.addEventListener('click', toggle);
+    video.addEventListener('pause', () => card.classList.remove('is-playing'));
+  });
+</script>
