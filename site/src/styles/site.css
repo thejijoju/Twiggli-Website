@@ -165,19 +165,28 @@ a:hover { color: var(--color-accent); }
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 56px;
+  gap: 40px 56px;
   align-items: center;
   padding: 72px 0 64px;
 }
+/* The hero headline runs heavier and larger than the rest of the headings —
+   900 rather than the shared 700, so it is the one piece of type that reads
+   as the page's anchor. Roboto 900 is in the font link in Base.astro. */
 .hero-title {
+  /* Spans both hero columns, so the headline runs the full width of the
+     container — the container's own side padding is the only margin. */
+  grid-column: 1 / -1;
   font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: clamp(42px, 4.6vw, 66px);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-weight: 900;
+  font-size: clamp(50px, 5.8vw, 84px);
+  line-height: 1.03;
+  letter-spacing: -0.035em;
   margin: 0;
 }
-.hero-title span { display: block; }
+/* Inline, so the headline wraps across the full width instead of breaking at
+   a fixed point; the space keeps the two halves apart when they share a line. */
+.hero-title span { display: inline; }
+.hero-title span + span::before { content: ' '; }
 .hero-copy {
   font-size: 19px;
   line-height: 1.6;
@@ -203,12 +212,12 @@ a:hover { color: var(--color-accent); }
    scaled up proportionally (width set, height follows via the image's own
    aspect ratio) rather than stretched, so the official artwork isn't
    distorted. */
-.hero-stores {
-  margin-top: 20px;
-  max-width: 52ch;
-}
-.hero-stores .store-badge { flex: 1; }
-.hero-stores .store-badge img { width: 100%; height: auto; }
+/* Badges are sized by height rather than stretched to the copy width, so the
+   official artwork keeps its own proportions. 1.5cm is the requested height;
+   width follows from each badge's aspect ratio. */
+.hero-stores { margin-top: 20px; }
+.hero-stores .store-badge { flex: none; }
+.hero-stores .store-badge img { height: 1.5cm; width: auto; }
 .hero-actions {
   display: flex;
   gap: 12px;
