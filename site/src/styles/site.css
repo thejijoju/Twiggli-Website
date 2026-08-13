@@ -118,8 +118,16 @@ a:hover { color: var(--color-accent); }
   gap: 28px;
 }
 .nav-logo { display: block; width: 36px; height: 36px; flex: none; }
-/* .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
-.nav a.nav-brand { font-size: 20px; letter-spacing: 0.06em; }
+/* Wordmark: all caps, heavy, and tightly set — the tracking the other nav
+   links carry is deliberately not applied here.
+   .nav a's 14px would otherwise win over .nav-brand on the brand anchor. */
+.nav a.nav-brand {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
 .nav a.nav-brand:hover { color: var(--color-accent); }
 .nav-end a { letter-spacing: 0.045em; }
 .nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
@@ -215,13 +223,21 @@ a:hover { color: var(--color-accent); }
 /* Badges are sized by height rather than stretched to the copy width, so the
    official artwork keeps its own proportions. 1.5cm is the requested height;
    width follows from each badge's aspect ratio. */
-.hero-stores { margin-top: 2.5cm; }
+/* Badges and CTAs centre on the copy above them: same 52ch measure as
+   .hero-copy, so they align to the text block rather than the wider column. */
+.hero-stores {
+  margin-top: 1.5cm;
+  max-width: 52ch;
+  justify-content: center;
+}
 .hero-stores .store-badge { flex: none; }
 .hero-stores .store-badge img { height: 1.5cm; width: auto; }
 .hero-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  justify-content: center;
+  max-width: 52ch;
   margin-top: 32px;
 }
 
@@ -582,10 +598,14 @@ a:hover { color: var(--color-accent); }
 }
 .footer-main { display: flex; flex-wrap: wrap; gap: 56px; flex: 1 1 260px; }
 .footer-brand { display: flex; align-items: center; gap: 10px; flex: none; }
+/* Same wordmark treatment as the nav, so the lockup reads identically at
+   both ends of the page. */
 .footer-brand-name {
   font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
+  font-weight: 900;
   font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0;
   color: #fff;
 }
 .footer-logo { width: 28px; height: 28px; flex: none; }
