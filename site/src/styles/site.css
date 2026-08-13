@@ -503,6 +503,7 @@ a:hover { color: var(--color-accent); }
 
 .host-coverflow {
   display: flex;
+  gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -513,13 +514,16 @@ a:hover { color: var(--color-accent); }
 /* Fades the outer cards into the band, so the reel looks like it continues
    past the edge rather than being cut off. */
 .host-coverflow {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
 }
-.host-coverflow-spacer { flex: none; width: calc(50% - 127px); }
+/* Half a card, so the centred card sits dead centre of the track. */
+.host-coverflow-spacer { flex: none; width: calc(50% - 99.5px); }
 .host-coverflow-card {
   flex: none;
-  width: 253px;
+  /* 5 cards + 4 gaps = 1043px, inside the 1056px container measure — so the
+     default five-card view is bounded by the page padding on both sides. */
+  width: 199px;
   scroll-snap-align: center;
   cursor: pointer;
   text-align: center;
