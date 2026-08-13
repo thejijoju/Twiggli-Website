@@ -369,20 +369,30 @@ a:hover { color: var(--color-accent); }
 }
 .phone-photo { flex: 1; overflow: hidden; }
 
-/* — section headings — kicker labels used to render as thin, light-accent
-   text that was hard to read against the page background. Restyled as a
-   solid pill (reusing the .mark treatment) for guaranteed contrast. */
+/* — section headings — a label, not a button. The earlier solid pill read as
+   a clickable control; this keeps the weight and dark accent that made it
+   legible, and marks it with a short rule instead of a filled background. */
 .kicker {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-weight: 800;
   font-size: 13px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-accent);
-  padding: 6px 14px;
-  border-radius: 999px;
+  color: var(--color-accent-800);
+  background: none;
+  padding: 0;
+  border-radius: 0;
   margin: 0 0 24px;
+}
+.kicker::before {
+  content: '';
+  flex: none;
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
 }
 .kicker-tight { margin: 0 0 14px; }
 .section-lede {
