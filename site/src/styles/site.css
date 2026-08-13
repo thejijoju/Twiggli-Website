@@ -193,7 +193,10 @@ a:hover { color: var(--color-accent); }
 .hero-title span { display: inline; }
 .hero-title span + span::before { content: ' '; }
 .hero-copy {
-  font-size: 19px;
+  font-family: var(--font-body); /* Roboto — the headline is the only exception */
+  font-size: 14.4px;
+  font-weight: 500;
+  font-style: normal;
   line-height: 1.6;
   max-width: 52ch;
 }
@@ -220,12 +223,15 @@ a:hover { color: var(--color-accent); }
 /* Badges are sized by height rather than stretched to the copy width, so the
    official artwork keeps its own proportions. 1.5cm is the requested height;
    width follows from each badge's aspect ratio. */
-/* Badges and CTAs centre on the copy above them: same 52ch measure as
-   .hero-copy, so they align to the text block rather than the wider column. */
-.hero-stores {
+/* Badges sit left, 1cm apart, sized by height so the official artwork keeps
+   its own proportions. */
+/* Compound selector: .store-buttons is declared further down and would
+   otherwise win the gap at equal specificity. */
+.store-buttons.hero-stores {
   margin-top: 1.5cm;
   max-width: 52ch;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 1cm;
 }
 .hero-stores .store-badge { flex: none; }
 .hero-stores .store-badge img { height: 1.5cm; width: auto; }
@@ -233,10 +239,19 @@ a:hover { color: var(--color-accent); }
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   max-width: 52ch;
   margin-top: 32px;
 }
+
+/* Solid black pill — the same treatment as the nav's download CTA. */
+.btn.btn-dark {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+  font-weight: 700;
+}
+.btn.btn-dark:hover { background: color-mix(in srgb, var(--color-text) 82%, transparent); }
 
 /* — hero video quad — four reels in a 2x2 square, replacing the phone
    mockup as the hero's visual. Square tiles keep the block itself square;
