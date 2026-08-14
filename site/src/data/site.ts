@@ -25,8 +25,8 @@ const navLabels = {
 };
 
 const secondaryLabels = {
-  en: { howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli' },
-  de: { howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden' },
+  en: { howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli', blog: 'Blog' },
+  de: { howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden', blog: 'Blog' },
 };
 
 const legalLabels = {
@@ -87,6 +87,7 @@ export function getSiteData(lang: Lang) {
     { label: secondaryLabels[lang].howItWorks, href: href(lang, '/how-it-works/') },
     { label: secondaryLabels[lang].hosts, href: href(lang, '/hosts/') },
     { label: secondaryLabels[lang].host, href: href(lang, '/host/') },
+    { label: secondaryLabels[lang].blog, href: href(lang, '/blog/') },
   ];
 
   const legalLinks: NavLink[] = [

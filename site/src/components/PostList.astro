@@ -1,0 +1,27 @@
+---
+import { formatDate, postSlug, type Post } from '../lib/blog.ts';
+import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+
+interface Props {
+  posts: Post[];
+  lang?: Lang;
+}
+const { posts, lang = DEFAULT_LANG } = Astro.props;
+const readMore = { en: 'Read', de: 'Lesen' }[lang];
+---
+
+<div class="post-list">
+  {posts.map((post) => (
+    <article class="post-card">
+      <a class="post-card-link" href={href(lang, `/blog/${postSlug(post)}/`)}>
+        <p class="post-meta">
+          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time>
+          {post.data.category && <span class="post-cat">{post.data.category}</span>}
+        </p>
+        <h2 class="post-card-title">{post.data.title}</h2>
+        <p class="post-card-desc">{post.data.description}</p>
+        <span class="post-card-more">{readMore} &rarr;</span>
+      </a>
+    </article>
+  ))}
+</div>

@@ -1,0 +1,32 @@
+---
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { getPosts, postSlug, formatDate } from '../../../lib/blog.ts';
+import { withBase } from '../../../lib/url.ts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts('de');
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+}
+
+const lang = 'de';
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base title={`${post.data.title} — Twiggli`} description={post.data.description} lang={lang}>
+  <div class="container">
+    <article class="post">
+      <p class="post-meta">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time>
+        {post.data.category && <span class="post-cat">{post.data.category}</span>}
+      </p>
+      <h1 class="post-title">{post.data.title}</h1>
+      <p class="post-lede">{post.data.description}</p>
+      <div class="prose post-body">
+        <Content />
+      </div>
+      <p class="post-back"><a href={withBase('/de/blog/')}>&larr; Alle Beiträge</a></p>
+    </article>
+  </div>
+</Base>

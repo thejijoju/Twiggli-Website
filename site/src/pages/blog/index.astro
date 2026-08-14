@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts } from '../../lib/blog.ts';
+
+const lang = 'en';
+const posts = await getPosts(lang);
+---
+
+<Base
+  title="Blog — Twiggli"
+  description="Workshop guides, Berlin picks and notes on running a good team session."
+  lang={lang}
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Blog</span>
+      <h1 class="page-title">Notes from the workshop</h1>
+      <p class="page-lede">
+        Guides to what is worth doing in Berlin, what makes a team session land, and the makers
+        behind it all.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {posts.length ? <PostList posts={posts} lang={lang} />
+        : <p class="section-lede">No posts yet — the first one is on its way.</p>}
+    </section>
+  </div>
+</Base>
