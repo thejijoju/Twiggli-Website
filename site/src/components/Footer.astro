@@ -1,7 +1,6 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import StoreButtons from './StoreButtons.astro';
-import SocialIcon from './SocialIcon.astro';
 import { getSiteData } from '../data/site.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
@@ -9,7 +8,7 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const { brand, navLinks, secondaryLinks, legalLinks, socialLinks, copyright } = getSiteData(lang);
+const { brand, navLinks, secondaryLinks, legalLinks, copyright } = getSiteData(lang);
 
 const columnLabels = {
   en: { product: 'Product', explore: 'Explore' },
@@ -77,11 +76,4 @@ const cta = {
     </div>
   </div>
 
-  <div class="footer-social-bar">
-    <div class="footer-social-icons">
-      {socialLinks.map((s) => (
-        <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
-      ))}
-    </div>
-  </div>
 </footer>

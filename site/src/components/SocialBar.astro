@@ -1,0 +1,20 @@
+---
+import SocialIcon from './SocialIcon.astro';
+import { getSiteData } from '../data/site.ts';
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+
+/** The dark social strip. Sits above the nav, at the very top of the page. */
+interface Props {
+  lang?: Lang;
+}
+const { lang = DEFAULT_LANG } = Astro.props;
+const { socialLinks } = getSiteData(lang);
+---
+
+<div class="social-bar">
+  <div class="social-bar-icons">
+    {socialLinks.map((s) => (
+      <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
+    ))}
+  </div>
+</div>

@@ -1,5 +1,6 @@
 ---
 import Nav from '../components/Nav.astro';
+import SocialBar from '../components/SocialBar.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import { getSiteData } from '../data/site.ts';
@@ -85,6 +86,7 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
   </head>
   <body>
     <div class="page">
+      <SocialBar lang={lang} />
       <Nav lang={lang} />
       <main>
         <slot />

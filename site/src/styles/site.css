@@ -201,14 +201,20 @@ a:hover { color: var(--color-accent); }
 .hero-copy p:last-child { margin: 0; }
 .hero-quote { margin-top: 32px; }
 
-/* — highlight mark — a purple-on-white callout for a key word or short
-   phrase inside a sentence. box-decoration-break keeps a multi-line
-   highlight looking like separate rounded chips per line, not one block. */
+/* — highlight mark — a hand-drawn marker swipe behind a key word, rather than
+   a rounded rectangle. The SVG carries the character: wobbling top and bottom
+   edges, chisel ends that overshoot the word slightly, a second darker pass
+   where a real highlighter overlaps its own stroke, and a pale streak where
+   the tip skips. Tilted 1.2 degrees inside the viewBox so the angle survives
+   the preserveAspectRatio="none" stretch to whatever width the word needs.
+   The fill is hard-coded — a data URI cannot read a custom property — so it
+   must be updated alongside --color-accent. */
 .mark {
-  background: var(--color-accent);
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" preserveAspectRatio="none"><g transform="rotate(-1.2 120 24)"><path d="M1,12 C26,5 54,10 84,6.5 C112,3.5 143,9.5 170,5.5 C192,2.5 219,8 239,4 L238,38 C214,45.5 186,39.5 158,42.5 C128,45.5 99,39 70,42.5 C44,45.5 20,40.5 2,44 Z" fill="%236a3eec"/><path d="M8,29 C56,34.5 108,28 156,31.5 C182,33.5 206,29.5 232,32 L231,40 C198,44 152,38 104,40.5 C70,42 36,39.5 9,37.5 Z" fill="%235a2fd8" opacity="0.5"/><path d="M22,9 C70,5 128,8 196,4.5 L196,7 C130,10.5 72,8 22,11.5 Z" fill="%23ffffff" opacity="0.18"/></g></svg>');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   color: var(--color-bg);
-  padding: 0.05em 0.35em;
-  border-radius: 6px;
+  padding: 0.12em 0.5em 0.18em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -702,8 +708,9 @@ a:hover { color: var(--color-accent); }
 .footer-legal-inline a { color: color-mix(in srgb, #fff 65%, transparent); }
 .footer-legal-inline a:hover { color: #fff; }
 
-.footer-social-bar { background: #0b0a0d; }
-.footer-social-icons {
+/* Dark social strip, pinned above the nav at the top of the page. */
+.social-bar { background: #0b0a0d; }
+.social-bar-icons {
   max-width: 1200px;
   margin: 0 auto;
   padding: 18px clamp(20px, 5vw, 72px);
@@ -711,8 +718,8 @@ a:hover { color: var(--color-accent); }
   justify-content: center;
   gap: 20px;
 }
-.footer-social-icons a { display: flex; color: color-mix(in srgb, #fff 55%, transparent); }
-.footer-social-icons a:hover { color: #fff; }
+.social-bar-icons a { display: flex; color: color-mix(in srgb, #fff 55%, transparent); }
+.social-bar-icons a:hover { color: #fff; }
 
 /* — store buttons — */
 .store-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
