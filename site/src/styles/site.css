@@ -39,27 +39,27 @@
   --color-bg: #ffffff;
   --color-surface: #f2f1f1;
 
-  --color-accent: #361ed6;
-  --color-accent-100: #f2f5ff;
-  --color-accent-200: #e1e7ff;
-  --color-accent-300: #c7d2ff;
-  --color-accent-400: #a1b2ff;
-  --color-accent-500: #798dff;
-  --color-accent-600: #5865f7;
-  --color-accent-700: #424bc3;
-  --color-accent-800: #2e368b;
-  --color-accent-900: #1f2654;
+  --color-accent: #6a3eec;
+  --color-accent-100: #f4f4ff;
+  --color-accent-200: #e6e5fe;
+  --color-accent-300: #d1cffd;
+  --color-accent-400: #b2acfc;
+  --color-accent-500: #9285fa;
+  --color-accent-600: #775af1;
+  --color-accent-700: #5b42be;
+  --color-accent-800: #403088;
+  --color-accent-900: #292352;
 
-  --color-accent-2: #361ed6;
-  --color-accent-2-100: #f2f5ff;
-  --color-accent-2-200: #e1e7ff;
-  --color-accent-2-300: #c7d2ff;
-  --color-accent-2-400: #a1b2ff;
-  --color-accent-2-500: #798dff;
-  --color-accent-2-600: #5865f7;
-  --color-accent-2-700: #424bc3;
-  --color-accent-2-800: #2e368b;
-  --color-accent-2-900: #1f2654;
+  --color-accent-2: #6a3eec;
+  --color-accent-2-100: #f4f4ff;
+  --color-accent-2-200: #e6e5fe;
+  --color-accent-2-300: #d1cffd;
+  --color-accent-2-400: #b2acfc;
+  --color-accent-2-500: #9285fa;
+  --color-accent-2-600: #775af1;
+  --color-accent-2-700: #5b42be;
+  --color-accent-2-800: #403088;
+  --color-accent-2-900: #292352;
 }
 
 body { margin: 0; text-wrap: pretty; }
@@ -506,10 +506,12 @@ a:hover { color: var(--color-accent); }
    (scale/opacity are set per-card by HostGrid's scroll-linked script).
    Click a side card to snap it to centre; click the centred card to
    reveal its (placeholder) video state. */
-/* Full-width warm band, so the hosts reel reads as its own moment on the
-   page rather than another block on white. The section sits outside
-   .container for this; its kicker keeps its own container inside. */
-.hosts-band { background: #fdf9e7; }
+/* Full-width tinted bands, so these sections read as their own moments on
+   the page rather than more blocks on white. Each sits outside .container
+   for this; their kickers keep their own container inside.
+   The warm band runs at half opacity over the white page. */
+.hosts-band { background: rgba(253, 249, 231, 0.5); }
+.steps-band { background: rgba(248, 239, 253, 1); }
 
 .host-coverflow {
   display: flex;
