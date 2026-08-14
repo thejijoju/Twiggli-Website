@@ -176,9 +176,9 @@ a:hover { color: var(--color-accent); }
    capped at the original 62.752px — the old site sized this fluidly too.
    This is the one element not set in Roboto. */
 .hero-title {
-  /* Spans both hero columns, so the headline runs the full width of the
-     container — the container's own side padding is the only margin. */
-  grid-column: 1 / -1;
+  /* Sits in the left column on the copy's own measure, so it never runs
+     across the video grid beside it. */
+  max-width: 52ch;
   font-family: "Source Sans Pro", system-ui, sans-serif;
   font-weight: 700;
   font-size: clamp(38px, 4.36vw, 62.752px);
@@ -205,12 +205,12 @@ a:hover { color: var(--color-accent); }
    a rounded rectangle. The SVG carries the character: wobbling top and bottom
    edges, chisel ends that overshoot the word slightly, a second darker pass
    where a real highlighter overlaps its own stroke, and a pale streak where
-   the tip skips. Tilted 1.2 degrees inside the viewBox so the angle survives
-   the preserveAspectRatio="none" stretch to whatever width the word needs.
+   the tip skips. Deliberately level — the wobble carries the hand-drawn feel
+   without the stroke drifting upward across the line.
    The fill is hard-coded — a data URI cannot read a custom property — so it
    must be updated alongside --color-accent. */
 .mark {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" preserveAspectRatio="none"><g transform="rotate(-1.2 120 24)"><path d="M1,12 C26,5 54,10 84,6.5 C112,3.5 143,9.5 170,5.5 C192,2.5 219,8 239,4 L238,38 C214,45.5 186,39.5 158,42.5 C128,45.5 99,39 70,42.5 C44,45.5 20,40.5 2,44 Z" fill="%236a3eec"/><path d="M8,29 C56,34.5 108,28 156,31.5 C182,33.5 206,29.5 232,32 L231,40 C198,44 152,38 104,40.5 C70,42 36,39.5 9,37.5 Z" fill="%235a2fd8" opacity="0.5"/><path d="M22,9 C70,5 128,8 196,4.5 L196,7 C130,10.5 72,8 22,11.5 Z" fill="%23ffffff" opacity="0.18"/></g></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" preserveAspectRatio="none"><g><path d="M1,12 C26,5 54,10 84,6.5 C112,3.5 143,9.5 170,5.5 C192,2.5 219,8 239,4 L238,38 C214,45.5 186,39.5 158,42.5 C128,45.5 99,39 70,42.5 C44,45.5 20,40.5 2,44 Z" fill="%236a3eec"/><path d="M8,29 C56,34.5 108,28 156,31.5 C182,33.5 206,29.5 232,32 L231,40 C198,44 152,38 104,40.5 C70,42 36,39.5 9,37.5 Z" fill="%235a2fd8" opacity="0.5"/><path d="M22,9 C70,5 128,8 196,4.5 L196,7 C130,10.5 72,8 22,11.5 Z" fill="%23ffffff" opacity="0.18"/></g></svg>');
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: var(--color-bg);
@@ -375,17 +375,19 @@ a:hover { color: var(--color-accent); }
 }
 .phone-photo { flex: 1; overflow: hidden; }
 
-/* — section headings — a label, not a button. The earlier solid pill read as
-   a clickable control; this keeps the weight and dark accent that made it
-   legible, and marks it with a short rule instead of a filled background. */
+/* — section headings — these are the headers for their sections, so they run
+   larger than the body text beneath them, and well short of the hero h1. The
+   short accent rule keeps them from reading as buttons. */
 .kicker {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: clamp(22px, 2.1vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-transform: none;
   color: var(--color-accent-800);
   background: none;
   padding: 0;
@@ -395,12 +397,22 @@ a:hover { color: var(--color-accent); }
 .kicker::before {
   content: '';
   flex: none;
-  width: 26px;
-  height: 3px;
+  width: 30px;
+  height: 4px;
   border-radius: 2px;
   background: var(--color-accent);
 }
-.kicker-tight { margin: 0 0 14px; }
+/* Where a real headline follows (the split sections), the label steps back to
+   an eyebrow — otherwise a 30px label sits directly above a 34px heading and
+   the two compete. */
+.kicker-tight {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+.kicker-tight::before { width: 22px; height: 3px; }
 .section-lede {
   font-size: 17px;
   line-height: 1.6;
