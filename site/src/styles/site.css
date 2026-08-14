@@ -100,6 +100,12 @@ a:hover { color: var(--color-accent); }
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
 .nav {
+  /* Same measure as .container, so the nav's right cluster lands on the same
+     vertical line as the page content below it. Without this the nav ran the
+     full viewport width and nothing in the header aligned with anything else. */
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
   padding: 20px clamp(20px, 5vw, 72px);
   border-bottom: none;
   display: flex;
@@ -164,9 +170,7 @@ a:hover { color: var(--color-accent); }
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 40px 56px;
-  /* Both columns start at the top, so the reel's top rule lines up with the
-     headline rather than floating at the vertical centre. */
-  align-items: start;
+  align-items: center;
   padding: 72px 0 64px;
 }
 /* The hero headline runs heavier and larger than the rest of the headings —
@@ -252,14 +256,14 @@ a:hover { color: var(--color-accent); }
 /* — hero video quad — four reels in a 2x2 square, replacing the phone
    mockup as the hero's visual. Square tiles keep the block itself square;
    the reels are vertical, so they are centre-cropped to fit. */
-/* Ruled above and below, which brackets the reel and lets its top edge sit
-   level with the headline beside it. */
+/* Heavy rules bracket the reel top and bottom; the group sits centred against
+   the copy column rather than pinned to its top. */
 .hero-quad {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  border-top: 2px solid var(--color-divider);
-  border-bottom: 2px solid var(--color-divider);
+  border-top: 3mm solid var(--color-text);
+  border-bottom: 3mm solid var(--color-text);
   padding: 28px 0;
 }
 .hero-quad-tile {
