@@ -1,12 +1,11 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// TEMPORARY — parked back on the GitHub Pages URL so the site can be previewed
-// before the domain is cut over. To go live on www.twiggli.com, restore:
-//   site: 'https://www.twiggli.com',  (drop `base`)
-// and put public/CNAME back with `www.twiggli.com`. See git history.
+// Served from https://www.twiggli.com — the domain is live, pointed at GitHub
+// Pages by public/CNAME plus the registrar's DNS. No `base`: the site sits at
+// the domain root, not under a repository path. Do not reintroduce `base`
+// while the domain is live; it makes every asset 404 at the root.
 export default defineConfig({
-  site: 'https://thejijoju.github.io',
-  base: '/Twiggli-Website/',
+  site: 'https://www.twiggli.com',
   build: { format: 'directory' },
 });
