@@ -164,7 +164,9 @@ a:hover { color: var(--color-accent); }
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 40px 56px;
-  align-items: center;
+  /* Both columns start at the top, so the reel's top rule lines up with the
+     headline rather than floating at the vertical centre. */
+  align-items: start;
   padding: 72px 0 64px;
 }
 /* The hero headline runs heavier and larger than the rest of the headings —
@@ -250,10 +252,15 @@ a:hover { color: var(--color-accent); }
 /* — hero video quad — four reels in a 2x2 square, replacing the phone
    mockup as the hero's visual. Square tiles keep the block itself square;
    the reels are vertical, so they are centre-cropped to fit. */
+/* Ruled above and below, which brackets the reel and lets its top edge sit
+   level with the headline beside it. */
 .hero-quad {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  border-top: 2px solid var(--color-divider);
+  border-bottom: 2px solid var(--color-divider);
+  padding: 28px 0;
 }
 .hero-quad-tile {
   position: relative;
