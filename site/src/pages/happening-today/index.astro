@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import DayPicker from '../../components/DayPicker.astro';
+import { DAYS_AHEAD } from '../../data/sessions.ts';
+import { withBase } from '../../lib/url.ts';
+
+const lang = 'en';
+---
+
+<Base
+  title="Happening today — Twiggli"
+  description="Every workshop running in Berlin today and over the next three weeks. Pick a day and see what is on."
+  lang={lang}
+>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">Happening today</span>
+      <h1 class="page-title">What is on in Berlin</h1>
+      <p class="page-lede">
+        Today and the next {DAYS_AHEAD - 1} days, hosted by independent Berlin makers. Pick a day to
+        see what is running.
+      </p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <DayPicker lang={lang} />
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">Book a spot</span>
+        <h2 class="split-title">Booking happens in the app</h2>
+        <p class="split-copy">
+          Sessions fill fast, and spots are held the moment you tap book. Get the app to reserve a
+          place, message the host and see everything running near you.
+        </p>
+        <div class="split-actions">
+          <a href={withBase('/hosts/')} class="btn btn-primary">Meet the hosts</a>
+        </div>
+      </div>
+      <div class="media-4x3 grayscale">
+        <img src={withBase('/img/hosts/qian-wide.jpg')} alt="" loading="lazy"
+             style="width:100%;height:100%;object-fit:cover" />
+      </div>
+    </section>
+  </div>
+</Base>

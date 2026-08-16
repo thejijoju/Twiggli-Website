@@ -20,13 +20,22 @@ const brandCopy = {
 };
 
 const navLabels = {
-  en: { home: 'Home', getStarted: 'Get Started', corporate: 'Bookings for Corporate', contact: 'Contact' },
-  de: { home: 'Startseite', getStarted: 'Jetzt starten', corporate: 'Für Unternehmen', contact: 'Kontakt' },
+  en: {
+    home: 'Home', getStarted: 'Get Started', happening: 'Happening today',
+    corporate: 'Bookings for Corporate', blog: 'Blog', contact: 'Contact',
+  },
+  de: {
+    home: 'Startseite', getStarted: 'Jetzt starten', happening: 'Heute los',
+    corporate: 'Für Unternehmen', blog: 'Blog', contact: 'Kontakt',
+  },
 };
 
+/* Blog and Happening today live in the header (navLinks), which the footer
+   already renders as its "Product" column — so they are deliberately absent
+   here to avoid listing them twice in the footer. */
 const secondaryLabels = {
-  en: { howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli', blog: 'Blog' },
-  de: { howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden', blog: 'Blog' },
+  en: { howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli' },
+  de: { howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden' },
 };
 
 const legalLabels = {
@@ -79,7 +88,9 @@ export function getSiteData(lang: Lang) {
   const navLinks: NavLink[] = [
     { label: navLabels[lang].home, href: href(lang, '/') },
     { label: navLabels[lang].getStarted, href: appUrl, external: true },
+    { label: navLabels[lang].happening, href: href(lang, '/happening-today/') },
     { label: navLabels[lang].corporate, href: href(lang, '/corporate/'), emphasis: true },
+    { label: navLabels[lang].blog, href: href(lang, '/blog/') },
     { label: navLabels[lang].contact, href: href(lang, '/contact/') },
   ];
 
@@ -87,7 +98,6 @@ export function getSiteData(lang: Lang) {
     { label: secondaryLabels[lang].howItWorks, href: href(lang, '/how-it-works/') },
     { label: secondaryLabels[lang].hosts, href: href(lang, '/hosts/') },
     { label: secondaryLabels[lang].host, href: href(lang, '/host/') },
-    { label: secondaryLabels[lang].blog, href: href(lang, '/blog/') },
   ];
 
   const legalLinks: NavLink[] = [

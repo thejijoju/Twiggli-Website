@@ -1,0 +1,111 @@
+---
+import { getSessions, DAYS_AHEAD } from '../data/sessions.ts';
+import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+
+interface Props { lang?: Lang }
+const { lang = DEFAULT_LANG } = Astro.props;
+
+const sessions = getSessions(lang);
+const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
+
+const t = {
+  en: { spots: 'spots left', book: 'Book', none: 'Nothing scheduled for this day yet.',
+        today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day' },
+  de: { spots: 'Plätze frei', book: 'Buchen', none: 'Für diesen Tag ist noch nichts geplant.',
+        today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen' },
+}[lang];
+---
+
+<div
+  class="daypicker"
+  data-daypicker
+  data-locale={lang === 'de' ? 'de-DE' : 'en-GB'}
+  data-today={t.today}
+  data-tomorrow={t.tomorrow}
+>
+  <div class="daystrip" role="tablist" aria-label={t.pick}>
+    {days.map((offset) => (
+      <button
+        class="daychip"
+        type="button"
+        role="tab"
+        data-offset={offset}
+        aria-selected={offset === 0 ? 'true' : 'false'}
+      >
+        {/* filled in by the script — the date depends on the visitor's clock,
+            not on when the site was built */}
+        <span class="daychip-dow"></span>
+        <span class="daychip-num"></span>
+      </button>
+    ))}
+  </div>
+
+  <div class="daysessions">
+    {days.map((offset) => {
+      const forDay = sessions.filter((s) => s.dayOffset === offset);
+      return (
+        <div class="daygroup" data-day={offset} hidden={offset !== 0}>
+          {forDay.length ? (
+            <ul class="session-list">
+              {forDay.map((s) => (
+                <li class="session">
+                  <span class="session-time">{s.time}</span>
+                  <span class="session-main">
+                    <a class="session-title" href={href(lang, `/hosts/#${s.host.slug}`)}>{s.title}</a>
+                    <span class="session-host">{s.host.name} · {s.place}</span>
+                  </span>
+                  <span class="session-spots">{s.spots} {t.spots}</span>
+                  <span class="session-price">{s.price}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="section-lede">{t.none}</p>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  // The build is static, so the calendar cannot know what "today" is. Every
+  // chip's date is resolved here against the visitor's own clock, and the
+  // groups underneath are plain show/hide — which means the schedule is in the
+  // HTML for search engines and still readable if this never runs.
+  document.querySelectorAll<HTMLElement>('[data-daypicker]').forEach((root) => {
+    const locale = root.dataset.locale || 'en-GB';
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.daychip'));
+    const groups = Array.from(root.querySelectorAll<HTMLElement>('.daygroup'));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    chips.forEach((chip) => {
+      const offset = Number(chip.dataset.offset || 0);
+      const date = new Date(today);
+      date.setDate(date.getDate() + offset);
+
+      const dow = chip.querySelector('.daychip-dow');
+      const num = chip.querySelector('.daychip-num');
+      if (dow) {
+        dow.textContent =
+          offset === 0 ? root.dataset.today || 'Today'
+          : offset === 1 ? root.dataset.tomorrow || 'Tomorrow'
+          : date.toLocaleDateString(locale, { weekday: 'short' });
+      }
+      if (num) num.textContent = date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+
+      chip.setAttribute(
+        'aria-label',
+        date.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }),
+      );
+      if (date.getDay() === 0 || date.getDay() === 6) chip.classList.add('is-weekend');
+
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.setAttribute('aria-selected', String(c === chip)));
+        groups.forEach((g) => { g.hidden = g.dataset.day !== String(offset); });
+        chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+    });
+  });
+</script>

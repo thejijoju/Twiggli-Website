@@ -923,6 +923,12 @@ a:hover { color: var(--color-accent); }
   .footer-cols { gap: 40px; }
 }
 
+/* Five inline links plus the language switch and the CTA pill is a wide
+   cluster — tighten it before it collides with the logo. */
+@media (max-width: 1080px) {
+  .nav-end { gap: 18px; font-size: 15px; }
+}
+
 @media (max-width: 720px) {
   .nav {
     padding: 16px 20px;
@@ -1149,3 +1155,128 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 80%, transparent);
 }
 .post-back { margin-top: 48px; font-weight: 700; }
+
+/* — happening today — an inline calendar strip: one chip per day, scrollable
+   sideways on narrow screens, with the day's sessions listed underneath. The
+   chips carry no dates in the markup; the page script fills them from the
+   visitor's clock, because a statically built page cannot know what today is. */
+.daystrip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 4px 0 14px;
+  /* Fade the right edge so it reads as "there is more" rather than a clipped row. */
+  mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+}
+.daystrip::-webkit-scrollbar { height: 6px; }
+.daystrip::-webkit-scrollbar-thumb {
+  background: var(--color-divider);
+  border-radius: 999px;
+}
+.daychip {
+  flex: none;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 76px;
+  padding: 12px 14px;
+  border: 2px solid var(--color-divider);
+  border-radius: 14px;
+  background: var(--color-bg);
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.daychip:hover { border-color: var(--color-accent-400); }
+.daychip-dow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+}
+.daychip-num {
+  font-size: 17px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+/* Weekends read warmer, so the eye finds Saturday without counting across. */
+.daychip.is-weekend .daychip-dow { color: var(--color-accent-700); }
+.daychip[aria-selected='true'] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+.daychip[aria-selected='true'] .daychip-dow { color: rgba(255, 255, 255, 0.82); }
+
+.daysessions { margin-top: 24px; }
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--color-divider);
+}
+.session {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 18px 4px;
+  border-bottom: 2px solid var(--color-divider);
+}
+.session-time {
+  font-weight: 800;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+.session-main { display: block; min-width: 0; }
+.session-title {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 19px;
+  line-height: 1.3;
+  color: inherit;
+  text-decoration: none;
+}
+.session-title:hover { color: var(--color-accent-700); text-decoration: underline; }
+.session-host {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+.session-spots {
+  font-size: 14px;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+.session-price {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  /* Four columns do not fit a phone: the title spans the full width and the
+     spot count and price drop to a second row beneath it, still indented past
+     the time so the row reads as one block. */
+  .session {
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    gap: 8px 14px;
+  }
+  .session-main { grid-column: 2 / 4; grid-row: 1; }
+  .session-time { grid-column: 1; grid-row: 1; align-self: start; }
+  .session-spots { grid-column: 2; grid-row: 2; font-size: 13px; }
+  .session-price { grid-column: 3; grid-row: 2; justify-self: end; font-size: 14px; }
+}
