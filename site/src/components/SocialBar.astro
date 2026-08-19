@@ -13,8 +13,14 @@ const { socialLinks } = getSiteData(lang);
 
 <div class="social-bar">
   <div class="social-bar-icons">
+    {/* Live accounts open in a new tab; the '#' placeholders must not. */}
     {socialLinks.map((s) => (
-      <a href={s.href} aria-label={s.label}><SocialIcon name={s.icon} /></a>
+      <a
+        href={s.href}
+        aria-label={s.label}
+        target={s.href.startsWith('http') ? '_blank' : undefined}
+        rel={s.href.startsWith('http') ? 'noopener' : undefined}
+      ><SocialIcon name={s.icon} /></a>
     ))}
   </div>
 </div>

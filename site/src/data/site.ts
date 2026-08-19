@@ -59,10 +59,14 @@ const legalUpdatedText = {
   de: '5. August 2026',
 };
 
+/* '#' means the account does not exist yet — the icon renders but goes
+   nowhere. Swap in the real URL as each one is set up. */
 export const socialLinks = [
-  { label: 'Instagram', href: '#', icon: 'instagram' },
-  { label: 'Facebook', href: '#', icon: 'facebook' },
-  { label: 'YouTube', href: '#', icon: 'youtube' },
+  { label: 'Instagram', href: 'https://www.instagram.com/twiggli.app/', icon: 'instagram' },
+  { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61566072013440', icon: 'facebook' },
+  /* This points at a single Short, not the channel — swap in the channel URL
+     (youtube.com/@handle) once there is one, so the icon lands on the profile. */
+  { label: 'YouTube', href: 'https://www.youtube.com/shorts/H_93j1DbGFs', icon: 'youtube' },
   { label: 'LinkedIn', href: '#', icon: 'linkedin' },
 ] as const;
 
