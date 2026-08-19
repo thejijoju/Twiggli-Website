@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ImageSlot from '../components/ImageSlot.astro';
-import HeroVideoGrid from '../components/HeroVideoGrid.astro';
+import PhoneMockup from '../components/PhoneMockup.astro';
 import HostGrid from '../components/HostGrid.astro';
 import StoreButtons from '../components/StoreButtons.astro';
 import Newsletter from '../components/Newsletter.astro';
@@ -33,7 +33,7 @@ const hosts = getHosts(lang);
           <StoreButtons lang={lang} tone="default" class="hero-stores" />
         </div>
       </div>
-      <HeroVideoGrid hosts={hosts} lang={lang} />
+      <PhoneMockup lang={lang} screen="video" />
     </section>
 
   </div>

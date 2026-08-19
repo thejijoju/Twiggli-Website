@@ -1,30 +1,40 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import { getPhoneCards, getPhoneFilters } from '../data/content.ts';
-import type { Lang } from '../lib/url.ts';
+import { withBase, type Lang } from '../lib/url.ts';
 
-/** The hero's device visual. The two props mirror the export's editable
- *  props (`heroLayout`, `frontScreen`); the defaults here are the export's
- *  defaults, so the rendered result matches the design as shipped. */
+/** The hero's device visual, rebuilt to match the app's real home screen:
+ *  rounded dark bezels, the search pill with its filter controls, the day
+ *  chips, a two-column feed whose thumbnails play reels, and the bottom nav
+ *  with the purple “+” button. The feed is staggered like the app's — card 1
+ *  runs tall with its full info block, card 2 shows info only (its thumbnail
+ *  is scrolled off the top), cards 3 and 4 are media cropped by the nav. */
 interface Props {
   lang: Lang;
-  /** 'overlap' shows the second, dark phone behind and to the left. */
+  /** 'overlap' shows the second phone behind and to the left. */
   layout?: 'overlap' | 'single';
-  /** What the front phone shows: the workshop feed, or a single photo. */
-  screen?: 'listing' | 'photo';
+  /** What the front phone shows: a reel filling the whole screen bar the
+   *  bottom nav (the app's video feed), the workshop feed, or a photo. */
+  screen?: 'video' | 'listing' | 'photo';
   backPhoto?: string;
   frontPhoto?: string;
+  /** The reel for screen="video". Swap in real footage here. */
+  frontVideo?: string;
+  frontPoster?: string;
 }
 
 const {
   lang,
   layout = 'overlap',
   screen = 'listing',
-  backPhoto,
+  backPhoto = withBase('/img/hero/forest.jpg'),
   frontPhoto,
+  frontVideo = withBase('/video/reel-1.mp4'),
+  frontPoster = withBase('/video/reel-1-poster.jpg'),
 } = Astro.props;
 
-const phoneCards = getPhoneCards(lang);
+const cards = getPhoneCards(lang);
+const [feature, infoCard, mediaA, mediaB] = cards;
 const phoneFilters = getPhoneFilters(lang);
 const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du machen?' }[lang];
 ---
@@ -32,44 +42,73 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
 <div class="hero-visual">
   {layout !== 'single' && (
     <div class="phone-back">
-      <div class="phone-back-notch"></div>
-      <div class="phone-back-screen grayscale">
-        <ImageSlot src={backPhoto} shape="rect" placeholder="Drop a workshop photo" alt="" />
+      <div class="phone-back-screen">
+        <div class="phone-back-photo grayscale">
+          <ImageSlot src={backPhoto} shape="rect" placeholder="Drop a workshop photo" alt="" />
+        </div>
+        <div class="phone-nav phone-back-nav" aria-hidden="true">
+          <svg class="phone-nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5" /><path d="M5.5 8.8V21h13V8.8" /><path d="M9.8 21v-6.5h4.4V21" /></svg>
+          <svg class="phone-nav-icon" viewBox="0 0 24 24"><path d="M4 6h7M4 10h5" /><circle cx="14.5" cy="12.5" r="4.5" /><path d="m17.8 15.8 2.7 2.7" /></svg>
+        </div>
       </div>
     </div>
   )}
 
   <div class="phone-front">
-    <div class="phone-bar">
-      <div class="phone-bar-notch"></div>
-      <div class="phone-time">9:41</div>
+    <div class="phone-notch" aria-hidden="true"></div>
+    <div class:list={['phone-status', screen === 'video' && 'phone-status-overlay']} aria-hidden="true">
+      <span class="phone-time">9:41</span>
+      <span class="phone-status-icons">
+        <svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="0.8" /><rect x="5" y="4.5" width="3" height="7.5" rx="0.8" /><rect x="10" y="2" width="3" height="10" rx="0.8" /><rect x="15" y="0" width="3" height="12" rx="0.8" /></svg>
+        <svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.6a2 2 0 0 1 2 1.9L8 12l-2-.5a2 2 0 0 1 2-1.9Z" /><path d="M2.8 7.2a7.4 7.4 0 0 1 10.4 0l-1.5 1.5a5.3 5.3 0 0 0-7.4 0Z" /><path d="M.2 4.4a11.2 11.2 0 0 1 15.6 0l-1.5 1.5a9 9 0 0 0-12.6 0Z" /></svg>
+        <svg viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4" /><rect x="2" y="2" width="18" height="8" rx="1.8" fill="currentColor" /><path d="M23 4v4a2 2 0 0 0 0-4Z" fill="currentColor" opacity="0.4" /></svg>
+      </span>
     </div>
 
-    {screen !== 'photo' ? (
+    {screen === 'video' ? (
+      /* The app's video feed: one reel fills the screen, edge to edge, with
+         only the bottom nav (and the status bar overlaid) around it. */
+      <div class="phone-screen-video">
+        <video
+          class="phone-card-video"
+          src={frontVideo}
+          poster={frontPoster}
+          muted
+          loop
+          playsinline
+          preload="none"
+          aria-hidden="true"
+        ></video>
+      </div>
+    ) : screen !== 'photo' ? (
       <div class="phone-screen">
-        <div class="input phone-search">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <div class="phone-search">
+          <svg class="phone-search-glass" viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
           </svg>
-          {searchPlaceholder}
+          <span class="phone-search-hint">{searchPlaceholder}</span>
+          <svg class="phone-search-aux" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>
+          <svg class="phone-search-aux" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
         </div>
         <div class="phone-tags">
-          {phoneFilters.map((filter, i) => (
-            <span class:list={['tag', i === 0 ? 'tag-accent' : 'tag-outline']}>{filter}</span>
+          {phoneFilters.map((filter) => (
+            <span class="phone-tag">{filter}</span>
           ))}
         </div>
-        <div class="phone-cards">
-          {phoneCards.map((card) => (
-            <div>
-              {/* Keeps the mockup's existing grayscale treatment — the medium
-                  changes from still to clip, the look does not. */}
-              <div class="phone-card-media grayscale">
-                {card.video ? (
+
+        {/* The app's feed is a staggered two-column grid, so each column is
+            its own stack: the tall video card ends level with the info-only
+            card, and the two cropped media cards run off behind the nav. */}
+        <div class="phone-feed">
+          <div class="phone-feed-col">
+            <div class="phone-card">
+              <div class="phone-card-media phone-card-media-tall">
+                {feature.video ? (
                   <video
                     class="phone-card-video"
-                    src={card.video}
-                    poster={card.poster}
+                    src={feature.video}
+                    poster={feature.poster}
                     muted
                     loop
                     playsinline
@@ -77,13 +116,82 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                     aria-hidden="true"
                   ></video>
                 ) : (
-                  <ImageSlot src={card.photo} shape="rect" placeholder={card.title} alt="" />
+                  <ImageSlot src={feature.photo} shape="rect" placeholder={feature.title} alt="" />
                 )}
               </div>
-              <p class="phone-card-title">{card.title}</p>
-              <p class="phone-card-meta">{card.meta}</p>
+              <div class="phone-card-info">
+                <div class="phone-card-head">
+                  <p class="phone-card-title">{feature.title}</p>
+                  <svg class="phone-card-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
+                </div>
+                <div class="phone-card-when"><span>{feature.date}</span><span>{feature.time}</span></div>
+                <span class="phone-card-distance">{feature.distance}</span>
+                <hr class="phone-card-rule" />
+                <p class="phone-card-host">{feature.host}</p>
+                <div class="phone-card-rating">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4L12 17.4l-5.8 3 1.1-6.4-4.7-4.6 6.5-.9Z" /></svg>
+                  <strong>{feature.rating}</strong>
+                  <span>({feature.ratingCount})</span>
+                </div>
+              </div>
             </div>
-          ))}
+            <div class="phone-card">
+              <div class="phone-card-media">
+                {mediaA.video ? (
+                  <video
+                    class="phone-card-video"
+                    src={mediaA.video}
+                    poster={mediaA.poster}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    aria-hidden="true"
+                  ></video>
+                ) : (
+                  <ImageSlot src={mediaA.photo} shape="rect" placeholder={mediaA.title} alt="" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div class="phone-feed-col phone-feed-col-offset">
+            <div class="phone-card phone-card-info-only">
+              <div class="phone-card-info">
+                <div class="phone-card-head">
+                  <p class="phone-card-title">{infoCard.title}</p>
+                  <svg class="phone-card-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
+                </div>
+                <div class="phone-card-when"><span>{infoCard.date}</span><span>{infoCard.time}</span></div>
+                <span class="phone-card-distance">{infoCard.distance}</span>
+                <hr class="phone-card-rule" />
+                <p class="phone-card-host">{infoCard.host}</p>
+                <div class="phone-card-rating">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4L12 17.4l-5.8 3 1.1-6.4-4.7-4.6 6.5-.9Z" /></svg>
+                  <strong>{infoCard.rating}</strong>
+                  <span>({infoCard.ratingCount})</span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-card">
+              <div class="phone-card-media">
+                {mediaB.video ? (
+                  <video
+                    class="phone-card-video"
+                    src={mediaB.video}
+                    poster={mediaB.poster}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    aria-hidden="true"
+                  ></video>
+                ) : (
+                  <ImageSlot src={mediaB.photo} shape="rect" placeholder={mediaB.title} alt="" />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     ) : (
@@ -91,6 +199,20 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
         <ImageSlot src={frontPhoto} shape="rect" placeholder="Drop a workshop photo" alt="" />
       </div>
     )}
+
+    <div class="phone-nav" aria-hidden="true">
+      <svg class="phone-nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5" /><path d="M5.5 8.8V21h13V8.8" /><path d="M9.8 21v-6.5h4.4V21" /></svg>
+      <svg class="phone-nav-icon" viewBox="0 0 24 24"><path d="M4 6h7M4 10h5" /><circle cx="14.5" cy="12.5" r="4.5" /><path d="m17.8 15.8 2.7 2.7" /></svg>
+      <span class="phone-nav-plus">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+      </span>
+      <span class="phone-nav-chat">
+        <svg class="phone-nav-icon" viewBox="0 0 24 24"><path d="M21 12.5a7.5 7.5 0 0 1-10.9 6.7L6 20.5l1.3-4.1A7.5 7.5 0 1 1 21 12.5Z" /><path d="M8.5 11h.01M12.5 11h.01M16.5 11h.01" /></svg>
+        <span class="phone-nav-badge">3</span>
+      </span>
+      <svg class="phone-nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" /><path d="M5 20.2a7.2 7.2 0 0 1 14 0" /></svg>
+    </div>
+    <div class="phone-home-bar" aria-hidden="true"></div>
   </div>
 </div>
 

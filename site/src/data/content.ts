@@ -298,43 +298,72 @@ export const filterCopy = {
   },
 } as const;
 
-const phoneCardsCopy = {
+/** A listing card inside the phone mockup, mirroring the app's real feed:
+ *  a media thumbnail plus the booking facts a card shows under it. The two
+ *  cropped cards at the bottom of the screen carry no info block (the app's
+ *  bottom nav cuts them off), so everything past `title` is optional. */
+export type PhoneCard = {
+  id: string;
+  title: string;
+  date?: string;
+  time?: string;
+  distance?: string;
+  host?: string;
+  rating?: string;
+  ratingCount?: string;
+  photo?: string;
+  video?: string;
+  poster?: string;
+};
+
+const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
+  // Card 1's copy names what its reel actually shows (a painting session) —
+  // pairing a "Bachata" title with painting footage would have the mockup
+  // showing a video of the wrong thing. Card 2 is info-only (its thumbnail
+  // sits scrolled off the top of the feed, as in the app), so its copy is
+  // free to stay the screenshot's.
   en: [
-    { id: 'phone-front-1', title: 'Collective painting', meta: 'Mon, Oct 16 · 5 km away', photo: '/img/hero/bachata.jpg' },
-    { id: 'phone-front-2', title: 'Bouldering course', meta: 'Mon, Oct 16 · 2 km away', photo: '/img/hero/bouldering.jpg' },
-    { id: 'phone-front-3', title: 'Cooking workshop', meta: 'Wed, Oct 18 · 3 km away', photo: '/img/hero/cooking.jpg' },
-    { id: 'phone-front-4', title: 'Hiking meetup', meta: 'Sat, Oct 21 · 8 km away', photo: '/img/hero/hiking.jpg' },
+    { id: 'phone-front-1', title: 'Collective painting', date: 'Mon, Oct 16', time: '9AM–10.30AM',
+      distance: '5 km away', host: 'Rebeca', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Bouldering course', date: 'Mon, Oct 16', time: '4PM–6PM',
+      distance: '2 km away', host: 'Pauline D.', rating: '4.8', ratingCount: '4' },
+    { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Hiking meetup', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
-    { id: 'phone-front-1', title: 'Kollektive Malerei', meta: 'Mo., 16. Okt. · 5 km entfernt', photo: '/img/hero/bachata.jpg' },
-    { id: 'phone-front-2', title: 'Boulderkurs', meta: 'Mo., 16. Okt. · 2 km entfernt', photo: '/img/hero/bouldering.jpg' },
-    { id: 'phone-front-3', title: 'Kochworkshop', meta: 'Mi., 18. Okt. · 3 km entfernt', photo: '/img/hero/cooking.jpg' },
-    { id: 'phone-front-4', title: 'Wander-Treffen', meta: 'Sa., 21. Okt. · 8 km entfernt', photo: '/img/hero/hiking.jpg' },
+    { id: 'phone-front-1', title: 'Kollektive Malerei', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
+      distance: '5 km entfernt', host: 'Rebeca', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Boulderkurs', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
+      distance: '2 km entfernt', host: 'Pauline D.', rating: '4,8', ratingCount: '4' },
+    { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Wander-Treffen', photo: '/img/hero/hiking.jpg' },
   ],
 };
 
 /** Reels inside the phone mockup, by card id. A card with an entry here
- *  plays its clip in the thumbnail; one without stays a still. Add an entry
- *  as footage lands — nothing else needs changing.
+ *  plays its clip in the thumbnail; one without stays a still. This is the
+ *  swap point for real footage: drop `reel-N.mp4` + poster into
+ *  `public/video/`, point the card's entry at it, and the mockup plays it —
+ *  nothing else needs changing.
  *
- *  Only the first card has one, deliberately. All three reels we hold are
- *  painting sessions, so filling every card would leave the mockup claiming
- *  Twiggli is a painting app, and pairing them with the bachata or hiking
- *  cards would show a video of the wrong thing — worse than the still it
- *  replaced. One live card next to three stills reads as a feed either way.
- *  Once there is footage of a dance class or a climb, add it here and
- *  restore that card's original title. */
+ *  The three reels we hold fill the three visible media slots. They are all
+ *  painting sessions, so until per-activity footage lands, only card 1's
+ *  title matches its clip; cards 3 and 4 show media alone (their info block
+ *  is cropped by the app's bottom nav), which keeps the mismatch invisible.
+ *  Card 2 is info-only and needs no reel. */
 const phoneReels: Record<string, { video: string; poster: string }> = {
   'phone-front-1': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+  'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
+  'phone-front-4': { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
 };
 
 /** The sample cards inside the phone mockup. */
-export const getPhoneCards = (lang: Lang) =>
+export const getPhoneCards = (lang: Lang): PhoneCard[] =>
   phoneCardsCopy[lang].map((card) => {
     const reel = phoneReels[card.id];
     return {
       ...card,
-      photo: withBase(card.photo),
+      photo: card.photo ? withBase(card.photo) : undefined,
       ...(reel
         ? { video: withBase(reel.video), poster: withBase(reel.poster) }
         : {}),
