@@ -241,25 +241,39 @@ async function scrape(source) {
       .map((m) => m[0]);
     console.log(`[${source.slug}] scheduler-ish urls: ${[...new Set(embeds)].slice(0, 10).join(' | ') || 'none'}`);
 
-    // Probe the first embedded scheduler frame and describe what it serves,
-    // so its parser can be written from the next run's log.
-    const probeUrl = [...frames, ...embeds].find((u) => /acuity|scheduling|booking/i.test(u));
-    if (probeUrl) {
-      try {
-        const probe = await fetch(probeUrl, { headers: { 'user-agent': UA, accept: 'text/html' } });
-        const body = await probe.text();
-        console.log(`[${source.slug}] probe ${probeUrl}: HTTP ${probe.status}, ${body.length} bytes`);
-        const monthDates = [...body.matchAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:,\s*20\d{2})?/g)]
-          .map((m) => m[0]);
-        console.log(`[${source.slug}] probe month-name dates: ${[...new Set(monthDates)].slice(0, 15).join(' | ') || 'none'}`);
-        const probeIso = [...new Set([...body.matchAll(/20\d{2}-\d{2}-\d{2}[T ]?\d{0,2}:?\d{0,2}/g)].map((m) => m[0]))];
-        console.log(`[${source.slug}] probe ISO-ish dates: ${probeIso.slice(0, 15).join(' | ') || 'none'}`);
-        const first = monthDates.length ? body.indexOf(monthDates[0]) : -1;
-        if (first >= 0) {
-          console.log(`[${source.slug}] probe context: …${body.slice(Math.max(0, first - 400), first + 200).replace(/\s+/g, ' ')}…`);
+    // The site embeds Acuity Scheduling (Squarespace's acuity component).
+    // The widget is built client-side from an owner id in the page config;
+    // Acuity's own schedule.php page is server-rendered, so probe it and
+    // log candidate class/date pairs for the parser.
+    const ownerCandidates = [
+      ...[...html.matchAll(/owner=(\d{4,12})/g)].map((m) => m[1]),
+      ...[...html.matchAll(/"ownerI[dD]"\s*:\s*"?(\d{4,12})/g)].map((m) => m[1]),
+      ...[...html.matchAll(/acuity[^"{}<>]{0,60}?(\d{7,10})/gi)].map((m) => m[1]),
+    ];
+    console.log(`[${source.slug}] acuity owner candidates: ${[...new Set(ownerCandidates)].join(', ') || 'none'}`);
+    const owner = ownerCandidates[0];
+    if (owner) {
+      for (const base of ['https://app.squarespacescheduling.com', 'https://app.acuityscheduling.com']) {
+        try {
+          const probeUrl = `${base}/schedule.php?owner=${owner}`;
+          const probe = await fetch(probeUrl, { headers: { 'user-agent': UA, accept: 'text/html' }, redirect: 'follow' });
+          const body = await probe.text();
+          console.log(`[${source.slug}] probe ${probeUrl}: HTTP ${probe.status}, ${body.length} bytes`);
+          const monthDates = [...body.matchAll(/(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:,\s*20\d{2})?/g)]
+            .map((m) => m[0]);
+          console.log(`[${source.slug}] probe month-name dates: ${[...new Set(monthDates)].slice(0, 15).join(' | ') || 'none'}`);
+          const times = [...new Set([...body.matchAll(/\b\d{1,2}:\d{2}\s*(?:am|pm)?\b/gi)].map((m) => m[0]))];
+          console.log(`[${source.slug}] probe times: ${times.slice(0, 15).join(' | ') || 'none'}`);
+          const classMarkers = [...new Set([...body.matchAll(/class[-_ ]?(?:name|signup|list|time)[^"']{0,40}/gi)].map((m) => m[0]))];
+          console.log(`[${source.slug}] probe class markers: ${classMarkers.slice(0, 10).join(' | ') || 'none'}`);
+          const first = monthDates.length ? body.indexOf(monthDates[0]) : -1;
+          if (first >= 0) {
+            console.log(`[${source.slug}] probe context: …${body.slice(Math.max(0, first - 600), first + 300).replace(/\s+/g, ' ')}…`);
+            break;
+          }
+        } catch (probeErr) {
+          console.log(`[${source.slug}] probe failed: ${probeErr.message}`);
         }
-      } catch (probeErr) {
-        console.log(`[${source.slug}] probe failed: ${probeErr.message}`);
       }
     }
   }
