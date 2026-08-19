@@ -64,9 +64,10 @@ const legalUpdatedText = {
 export const socialLinks = [
   { label: 'Instagram', href: 'https://www.instagram.com/twiggli.app/', icon: 'instagram' },
   { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61566072013440', icon: 'facebook' },
-  /* This points at a single Short, not the channel — swap in the channel URL
-     (youtube.com/@handle) once there is one, so the icon lands on the profile. */
-  { label: 'YouTube', href: 'https://www.youtube.com/shorts/H_93j1DbGFs', icon: 'youtube' },
+  /* The '?si=' share token is dropped on purpose: it tags every visitor as
+     having arrived from one particular share link, which skews the channel's
+     traffic-source stats. The bare handle URL works the same. */
+  { label: 'YouTube', href: 'https://www.youtube.com/@twiggliapp', icon: 'youtube' },
   /* The public company page, not the /admin/dashboard/ URL — that one only
      resolves for page admins and 404s for everyone else. */
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/105193590/', icon: 'linkedin' },
