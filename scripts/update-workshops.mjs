@@ -281,10 +281,19 @@ function fromGermanDates(html, source) {
     januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
     juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
   };
-  const text = stripTags(html);
-  const out = [];
   const re =
     /(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag),?\s*(\d{1,2})\.\s*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*(20\d{2})/gi;
+
+  // Try the visible text first; when a booking widget keeps its dates in
+  // embedded JSON inside a script block, fall back to the raw markup — the
+  // date strings still match there.
+  let text = stripTags(html);
+  if (!re.test(text)) {
+    text = decodeEntities(html);
+    console.log(`[${source.slug}] no dates in visible text — scanning raw markup`);
+  }
+  re.lastIndex = 0;
+  const out = [];
 
   for (const m of text.matchAll(re)) {
     const date = `${m[3]}-${MONTHS[m[2].toLowerCase()]}-${m[1].padStart(2, '0')}`;
@@ -368,6 +377,17 @@ async function scrape(source) {
     for (const w of dated) {
       console.log(`[${source.slug}] dated: "${w.title}" ${w.date} ${w.time} ${w.price ?? 'no price'}`);
     }
+    if (!dated.length) {
+      // Describe how the page mentions dates at all, for parser tuning.
+      for (const marker of ['Samstag', 'Sonntag', '2026', 'Datum']) {
+        const i = html.indexOf(marker);
+        console.log(
+          i < 0
+            ? `[${source.slug}] marker "${marker}": absent`
+            : `[${source.slug}] marker "${marker}": …${html.slice(Math.max(0, i - 150), i + 200).replace(/\s+/g, ' ')}…`,
+        );
+      }
+    }
     const inRange = dated
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
       .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
@@ -409,10 +429,13 @@ async function scrape(source) {
     // Acuity's own schedule.php page is server-rendered, so probe it and
     // log candidate class/date pairs for the parser.
     const ownerCandidates = [
+      // Squarespace's acuity block carries the account in data-user-id.
+      ...[...html.matchAll(/data-user-id="(\d{4,12})"/g)].map((m) => m[1]),
       ...[...html.matchAll(/owner=(\d{4,12})/g)].map((m) => m[1]),
       ...[...html.matchAll(/"ownerI[dD]"\s*:\s*"?(\d{4,12})/g)].map((m) => m[1]),
-      ...[...html.matchAll(/acuity[^"{}<>]{0,60}?(\d{7,10})/gi)].map((m) => m[1]),
     ];
+    const typeIds = [...new Set([...html.matchAll(/data-appointment-type-id="(\d{4,12})"/g)].map((m) => m[1]))];
+    console.log(`[${source.slug}] acuity appointment types on page: ${typeIds.join(', ') || 'none'}`);
     console.log(`[${source.slug}] acuity owner candidates: ${[...new Set(ownerCandidates)].join(', ') || 'none'}`);
     if (!ownerCandidates.length) {
       // Show how the page references acuity, to find where the account id
@@ -429,7 +452,8 @@ async function scrape(source) {
     if (owner) {
       for (const base of ['https://app.squarespacescheduling.com', 'https://app.acuityscheduling.com']) {
         try {
-          const probeUrl = `${base}/schedule.php?owner=${owner}`;
+          const typePart = typeIds.length ? `&appointmentType=${typeIds[0]}` : '';
+          const probeUrl = `${base}/schedule.php?owner=${owner}${typePart}`;
           const probe = await fetch(probeUrl, { headers: { 'user-agent': UA, accept: 'text/html' }, redirect: 'follow' });
           const body = await probe.text();
           console.log(`[${source.slug}] probe ${probeUrl}: HTTP ${probe.status}, ${body.length} bytes`);
