@@ -1,20 +1,28 @@
 {
-  "updated": "2026-08-19T12:45:00.000Z",
+  "updated": "2026-08-19T12:44:57.045Z",
   "sources": [
     {
       "slug": "qian",
       "url": "https://www.claygarden.studio/pottery-classes",
-      "status": "seeded manually — refreshed weekly by scripts/update-workshops.mjs",
+      "status": "failed: no upcoming events parsed",
       "count": 1
     },
     {
       "slug": "qian",
       "url": "https://www.claygarden.studio/special-workshops",
-      "status": "seeded manually — refreshed weekly by scripts/update-workshops.mjs",
+      "status": "failed: no upcoming events parsed",
       "count": 4
     }
   ],
   "workshops": [
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/special-workshops",
+      "title": "Tea & Pottery Workshop",
+      "date": "2026-09-20",
+      "time": "13:00",
+      "url": "https://www.claygarden.studio/special-workshops"
+    },
     {
       "slug": "qian",
       "sourceUrl": "https://www.claygarden.studio/pottery-classes",
@@ -24,14 +32,6 @@
       "duration": "2 h",
       "price": "€65",
       "url": "https://www.claygarden.studio/pottery-classes"
-    },
-    {
-      "slug": "qian",
-      "sourceUrl": "https://www.claygarden.studio/special-workshops",
-      "title": "Tea & Pottery Workshop",
-      "date": "2026-09-20",
-      "time": "13:00",
-      "url": "https://www.claygarden.studio/special-workshops"
     },
     {
       "slug": "qian",
