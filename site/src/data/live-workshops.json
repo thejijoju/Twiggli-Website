@@ -14,6 +14,72 @@
       "count": 4
     }
   ],
+  "recurring": [
+    {
+      "slug": "nina",
+      "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
+      "title": "Urban ART Club",
+      "weekdays": ["thu", "fri"],
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€59",
+      "district": "Mitte",
+      "url": "https://www.ninakranzart.com/privat-freizeit"
+    },
+    {
+      "slug": "nina",
+      "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
+      "title": "Kunstworkshop & Frühstück",
+      "weekdays": ["sat"],
+      "time": "09:30",
+      "duration": "2.5 h",
+      "price": "€59",
+      "district": "Mitte",
+      "url": "https://www.ninakranzart.com/privat-freizeit"
+    },
+    {
+      "slug": "nina",
+      "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
+      "title": "Sommer-Malkurs an der Havel",
+      "weekdays": ["tue"],
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€89",
+      "district": "Spandau",
+      "url": "https://www.ninakranzart.com/privat-freizeit"
+    },
+    {
+      "slug": "nina",
+      "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
+      "title": "Klang & Farbe",
+      "weekdays": ["fri"],
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€40",
+      "district": "Spandau",
+      "url": "https://www.ninakranzart.com/privat-freizeit"
+    },
+    {
+      "slug": "nina",
+      "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
+      "title": "Klangentspannung für Schwangere",
+      "weekdays": ["mon"],
+      "time": "18:00",
+      "duration": "1 h",
+      "district": "Spandau",
+      "url": "https://www.ninakranzart.com/privat-freizeit"
+    },
+    {
+      "slug": "nina",
+      "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
+      "title": "Klangentspannung",
+      "weekdays": ["wed"],
+      "time": "17:00",
+      "duration": "1 h",
+      "district": "Spandau",
+      "url": "https://www.ninakranzart.com/privat-freizeit"
+    }
+  ],
   "workshops": [
     {
       "slug": "qian",

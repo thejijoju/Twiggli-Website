@@ -239,11 +239,12 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
-  // The three clips are all painting sessions, so they sit with the painting
-  // hosts. UNCONFIRMED — if these were shot with specific makers, move the
-  // slug here and the carousel and directory both follow.
+  // reel-1/reel-3 are unattributed painting-session clips sitting with the
+  // painting hosts. UNCONFIRMED — if these were shot with specific makers,
+  // move the slug here and the carousel and directory both follow.
   rebeca: { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
-  nina: { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
+  // Nina Kranz's own reel, supplied by her.
+  nina: { video: '/video/nina.mp4', poster: '/video/nina-poster.jpg' },
   pia: { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
 };
 

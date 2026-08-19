@@ -35,6 +35,9 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
 const SOURCES = [
   { slug: 'qian', name: 'Qian — Clay Garden pottery classes', url: 'https://www.claygarden.studio/pottery-classes' },
   { slug: 'qian', name: 'Qian — Clay Garden special workshops', url: 'https://www.claygarden.studio/special-workshops' },
+  // Weekly-recurring German schedule ("Dienstags I 18 - 20 Uhr I …"); the
+  // parser emits `recurring` entries the site expands into dated sessions.
+  { slug: 'nina', name: 'Nina Kranz — Kurse', url: 'https://www.ninakranzart.com/privat-freizeit', mode: 'recurring-de' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
@@ -182,6 +185,72 @@ async function fromWixBookings(source, html) {
   return events;
 }
 
+/** Parser for German weekly-schedule pages: lines shaped like
+ *  "<Title> Dienstags I 18 - 20 Uhr I Berlin Spandau  89€ pro Person".
+ *  Emits recurring entries (weekday + time), not dated ones. */
+function fromGermanRecurring(html, source) {
+  const DE_DAYS = { mo: 'mon', di: 'tue', mi: 'wed', do: 'thu', fr: 'fri', sa: 'sat', so: 'sun' };
+  const text = stripTags(html);
+  const results = [];
+  const re =
+    /((?:Mo(?:ntag)?|Di(?:enstag)?|Mi(?:ttwoch)?|Do(?:nnerstag)?|Fr(?:eitag)?|Sa(?:mstag)?|So(?:nntag)?)s?\.?(?:\s*(?:&|und)\s*(?:Mo|Di|Mi|Do|Fr|Sa|So)[a-zäöü]*\.?s?)*)\s*[I|l]\s*(\d{1,2}(?:[:.]\d{2})?)\s*(?:-|–|bis)\s*(\d{1,2}(?:[:.]\d{2})?)\s*Uhr/gi;
+
+  const toTime = (raw) => {
+    const [h, m = '00'] = raw.replace('.', ':').split(':');
+    return `${h.padStart(2, '0')}:${m.padEnd(2, '0')}`;
+  };
+  const toHours = (raw) => {
+    const [h, m = '0'] = raw.replace('.', ':').split(':');
+    return Number(h) + Number(m) / 60;
+  };
+
+  for (const m of text.matchAll(re)) {
+    const weekdays = [
+      ...new Set(
+        m[1]
+          .split(/&|und/i)
+          .map((d) => DE_DAYS[d.trim().slice(0, 2).toLowerCase()])
+          .filter(Boolean),
+      ),
+    ];
+    if (!weekdays.length) continue;
+
+    // The class name is the text right before the weekday, back to the end
+    // of the previous sentence — or the previous class's price tail.
+    const before = text.slice(Math.max(0, m.index - 90), m.index);
+    const title = before.split(/[.!?—€]|Spendenbasis|\s{3,}/).pop()?.trim();
+    if (!title || title.length < 3 || title.length > 70) continue;
+
+    const after = text.slice(m.index + m[0].length, m.index + m[0].length + 140);
+    const district = after.match(/Berlin\s+([A-ZÄÖÜ][A-Za-zäöüß]+(?:\s+St\.\s*[A-ZÄÖÜ][A-Za-zäöüß]+)?)/)?.[1];
+    const price = after.match(/(\d{1,4})\s*€|€\s*(\d{1,4})/);
+    const hours = toHours(m[3]) - toHours(m[2]);
+    const duration =
+      hours > 0 ? `${Number.isInteger(hours) ? hours : hours.toFixed(1)} h` : undefined;
+
+    results.push({
+      slug: source.slug,
+      sourceUrl: source.url,
+      title,
+      weekdays,
+      time: toTime(m[2]),
+      ...(duration ? { duration } : {}),
+      ...(price ? { price: `€${price[1] ?? price[2]}` } : {}),
+      ...(district ? { district } : {}),
+      url: source.url,
+    });
+  }
+
+  // Dedupe repeats of the same class line elsewhere on the page.
+  const seenKeys = new Set();
+  return results.filter((r) => {
+    const key = `${r.title}|${r.time}|${r.weekdays.join()}`;
+    if (seenKeys.has(key)) return false;
+    seenKeys.add(key);
+    return true;
+  });
+}
+
 /** Strategy 3: <time datetime> elements, titled by the nearest preceding heading. */
 function fromTimeTags(html, sourceUrl) {
   const out = [];
@@ -211,6 +280,17 @@ async function scrape(source) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
   console.log(`[${source.slug}] fetched ${html.length} bytes`);
+
+  if (source.mode === 'recurring-de') {
+    const recurring = fromGermanRecurring(html, source);
+    for (const r of recurring) {
+      console.log(
+        `[${source.slug}] recurring: "${r.title}" ${r.weekdays.join('+')} ${r.time} ${r.duration ?? ''} ${r.price ?? 'no price'} ${r.district ?? ''}`,
+      );
+    }
+    console.log(`[${source.slug}] recurring classes parsed: ${recurring.length}`);
+    return { workshops: [], recurring };
+  }
 
   const ld = fromJsonLd(html, source.url);
   console.log(`[${source.slug}] json-ld events: ${ld.length}`);
@@ -282,41 +362,61 @@ async function scrape(source) {
     .filter((w) => w.date >= todayISO && w.date <= maxISO)
     .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
   console.log(`[${source.slug}] kept ${inWindow.length} within ${KEEP_DAYS} days`);
-  return inWindow;
+  return { workshops: inWindow, recurring: [] };
+}
+
+// Local test hook: PARSE_TEST=<html file> runs only the German-recurring
+// parser against that file and prints the result, touching nothing.
+if (process.env.PARSE_TEST) {
+  const html = readFileSync(process.env.PARSE_TEST, 'utf8');
+  console.log(JSON.stringify(fromGermanRecurring(html, { slug: 'test', url: 'test' }), null, 2));
+  process.exit(0);
 }
 
 const previous = (() => {
   try {
     return JSON.parse(readFileSync(OUT, 'utf8'));
   } catch {
-    return { workshops: [], sources: [] };
+    return { workshops: [], recurring: [], sources: [] };
   }
 })();
 
 const workshops = [];
+const recurringOut = [];
 const statuses = [];
 for (const source of SOURCES) {
   try {
     const found = await scrape(source);
-    if (found.length) {
-      workshops.push(...found);
-      statuses.push({ slug: source.slug, url: source.url, status: 'ok', count: found.length });
+    const total = found.workshops.length + found.recurring.length;
+    if (total) {
+      workshops.push(...found.workshops);
+      recurringOut.push(...found.recurring);
+      statuses.push({ slug: source.slug, url: source.url, status: 'ok', count: total });
     } else {
       throw new Error('no upcoming events parsed');
     }
   } catch (err) {
-    // Keep this source's previous future entries rather than blanking them.
+    // Keep this source's previous entries rather than blanking them.
     // Matched by sourceUrl, so one failing page never clobbers or
     // duplicates a sibling page's fresh results for the same host.
-    const kept = (previous.workshops ?? []).filter((w) => w.sourceUrl === source.url && w.date >= todayISO);
-    workshops.push(...kept);
-    statuses.push({ slug: source.slug, url: source.url, status: `failed: ${err.message}`, count: kept.length });
-    console.error(`[${source.slug}] FAILED (${err.message}) — kept ${kept.length} previous entries`);
+    const keptDated = (previous.workshops ?? []).filter((w) => w.sourceUrl === source.url && w.date >= todayISO);
+    const keptRecurring = (previous.recurring ?? []).filter((r) => r.sourceUrl === source.url);
+    workshops.push(...keptDated);
+    recurringOut.push(...keptRecurring);
+    statuses.push({
+      slug: source.slug,
+      url: source.url,
+      status: `failed: ${err.message}`,
+      count: keptDated.length + keptRecurring.length,
+    });
+    console.error(
+      `[${source.slug}] FAILED (${err.message}) — kept ${keptDated.length + keptRecurring.length} previous entries`,
+    );
   }
 }
 
-// The Wix API returns the whole site's schedule, so two source pages on
-// one domain surface the same events — dedupe before writing.
+// Two source pages on one domain can surface the same events (e.g. a
+// site-wide booking API) — dedupe before writing.
 const seen = new Set();
 const unique = workshops.filter((w) => {
   const key = `${w.slug}|${w.date}|${w.time}|${w.title}`;
@@ -326,8 +426,20 @@ const unique = workshops.filter((w) => {
 });
 unique.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
 
+const seenRec = new Set();
+const uniqueRecurring = recurringOut.filter((r) => {
+  const key = `${r.slug}|${r.title}|${r.time}|${[...r.weekdays].sort().join()}`;
+  if (seenRec.has(key)) return false;
+  seenRec.add(key);
+  return true;
+});
+
 writeFileSync(
   OUT,
-  JSON.stringify({ updated: new Date().toISOString(), sources: statuses, workshops: unique }, null, 2) + '\n',
+  JSON.stringify(
+    { updated: new Date().toISOString(), sources: statuses, recurring: uniqueRecurring, workshops: unique },
+    null,
+    2,
+  ) + '\n',
 );
-console.log(`wrote ${unique.length} workshops to ${OUT}`);
+console.log(`wrote ${unique.length} workshops + ${uniqueRecurring.length} recurring classes to ${OUT}`);

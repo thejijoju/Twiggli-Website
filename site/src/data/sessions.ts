@@ -35,7 +35,7 @@ export type Session = {
   price?: string;
 };
 
-/** Shape written by scripts/update-workshops.mjs. */
+/** Shapes written by scripts/update-workshops.mjs. */
 type LiveWorkshop = {
   slug: string;
   sourceUrl: string;
@@ -46,6 +46,17 @@ type LiveWorkshop = {
   price?: string;
   district?: string;
   url: string;
+};
+
+/** A weekly-recurring class (e.g. "Dienstags 18–20 Uhr") — expanded into a
+ *  dated session on every matching weekday of the visible window at build
+ *  time, so the daily rebuild keeps it rolling forever. */
+type LiveRecurring = Omit<LiveWorkshop, 'date'> & {
+  weekdays: string[]; // 'mon'…'sun'
+};
+
+const WEEKDAY_INDEX: Record<string, number> = {
+  sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6,
 };
 
 const DISTRICTS = [
@@ -101,14 +112,40 @@ function liveSessions(hosts: Host[]): Session[] {
       ...(w.price ? { price: w.price } : {}),
     });
   }
+
+  // Weekly-recurring classes: one session per matching weekday in the
+  // window. berlinTodayMs is UTC midnight of the Berlin date, so getUTCDay
+  // on it (plus whole days) is the Berlin weekday.
+  for (const r of ((liveData as { recurring?: LiveRecurring[] }).recurring ?? [])) {
+    const host = bySlug.get(r.slug);
+    if (!host) continue;
+    const wanted = new Set(r.weekdays.map((d) => WEEKDAY_INDEX[d]));
+    for (let dayOffset = 0; dayOffset < DAYS_AHEAD; dayOffset++) {
+      const dow = new Date(today + dayOffset * 86400000).getUTCDay();
+      if (!wanted.has(dow)) continue;
+      sessions.push({
+        id: `rec-${r.slug}-${hash(r.title)}-${dayOffset}`,
+        dayOffset,
+        time: r.time,
+        host,
+        title: r.title,
+        place: host.place,
+        district: r.district ?? host.studio ?? host.place,
+        bookUrl: r.url,
+        ...(r.duration ? { duration: r.duration } : {}),
+        ...(r.price ? { price: r.price } : {}),
+      });
+    }
+  }
   return sessions;
 }
 
 /** Hosts with any real scraped schedule at all — even entries beyond the
  *  strip — never show invented placeholder sessions. */
-const liveHostSlugs = new Set(
-  ((liveData.workshops ?? []) as LiveWorkshop[]).map((w) => w.slug),
-);
+const liveHostSlugs = new Set([
+  ...((liveData.workshops ?? []) as LiveWorkshop[]).map((w) => w.slug),
+  ...(((liveData as { recurring?: LiveRecurring[] }).recurring ?? []).map((r) => r.slug)),
+]);
 
 export function getSessions(lang: Lang): Session[] {
   const hosts = getHosts(lang);
