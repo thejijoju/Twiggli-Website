@@ -1,0 +1,5 @@
+# The update-workshops workflow installs playwright here at run time; none
+# of it belongs in the repository.
+node_modules/
+package.json
+package-lock.json

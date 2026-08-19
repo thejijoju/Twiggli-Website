@@ -33,8 +33,14 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
  *  site/src/data/content.ts; `url` is both the page scraped and where the
  *  feed's Book button sends people. Add a line per host as pages are found. */
 const SOURCES = [
-  { slug: 'qian', name: 'Qian — Clay Garden pottery classes', url: 'https://www.claygarden.studio/pottery-classes' },
-  { slug: 'qian', name: 'Qian — Clay Garden special workshops', url: 'https://www.claygarden.studio/special-workshops' },
+  // Each page carries one Acuity class widget, so title and fallback price
+  // come from config; dates arrive via the headless render of the widget.
+  { slug: 'qian', name: 'Qian — Clay Garden pottery classes', mode: 'dates-de',
+    url: 'https://www.claygarden.studio/pottery-classes',
+    title: 'Handbuilding Class with Clay Garden Studio', price: '€65' },
+  { slug: 'qian', name: 'Qian — Clay Garden special workshops', mode: 'dates-de',
+    url: 'https://www.claygarden.studio/special-workshops',
+    title: 'Tea & Pottery Workshop' },
   // Weekly-recurring German schedule ("Dienstags I 18 - 20 Uhr I …"); the
   // parser emits `recurring` entries the site expands into dated sessions.
   { slug: 'nina', name: 'Nina Kranz — Kurse', url: 'https://www.ninakranzart.com/privat-freizeit', mode: 'recurring-de' },
@@ -273,40 +279,58 @@ function fromGermanRecurring(html, source) {
   });
 }
 
-/** Parser for German dated-list pages: "Samstag, 29. August 2026", with the
- *  start time ("18 Uhr" / "18:00") looked for around each date. A date with
- *  no time nearby is skipped and logged — better absent than wrong. */
+/** Parser for dated-list pages: "Samstag, 29. August 2026" (German) or
+ *  "Friday, September 25, 2026" (English), with the start time ("18 Uhr" /
+ *  "18:00" / "6:00 PM") looked for around each date. A date with no time
+ *  nearby is skipped and logged — better absent than wrong. */
 function fromGermanDates(html, source) {
   const MONTHS = {
     januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
     juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
+    january: '01', february: '02', march: '03', may: '05', june: '06',
+    july: '07', october: '10', december: '12',
   };
-  const re =
-    /(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag),?\s*(\d{1,2})\.\s*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*(20\d{2})/gi;
+  const MONTH_NAMES =
+    'Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|January|February|March|May|June|July|October|December';
+  // German "25. September 2026" and English "September 25, 2026".
+  const re = new RegExp(
+    `(?:(\\d{1,2})\\.\\s*(${MONTH_NAMES})|(${MONTH_NAMES})\\s+(\\d{1,2}),?)\\s*(20\\d{2})`,
+    'gi',
+  );
 
   // Try the visible text first; when a booking widget keeps its dates in
   // embedded JSON inside a script block, fall back to the raw markup — the
-  // date strings still match there.
+  // date strings still match there. \uXXXX escapes hide umlauts in JSON.
+  const unescapeUmlauts = (s) =>
+    s.replace(/\\u00e4/gi, 'ä').replace(/\\u00f6/gi, 'ö').replace(/\\u00fc/gi, 'ü').replace(/\\u00df/gi, 'ß');
   let text = stripTags(html);
   if (!re.test(text)) {
-    text = decodeEntities(html);
+    text = unescapeUmlauts(decodeEntities(html));
     console.log(`[${source.slug}] no dates in visible text — scanning raw markup`);
   }
   re.lastIndex = 0;
   const out = [];
 
   for (const m of text.matchAll(re)) {
-    const date = `${m[3]}-${MONTHS[m[2].toLowerCase()]}-${m[1].padStart(2, '0')}`;
-    const around =
-      text.slice(Math.max(0, m.index - 80), m.index) +
-      ' § ' +
-      text.slice(m.index + m[0].length, m.index + m[0].length + 160);
-    const timeMatch = around.match(/(\d{1,2}):(\d{2})(?!\s*€)|(\d{1,2})\s*Uhr/);
-    const time = timeMatch
-      ? timeMatch[3] != null
-        ? `${timeMatch[3].padStart(2, '0')}:00`
-        : `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`
-      : source.defaultTime;
+    const day = m[1] ?? m[4];
+    const month = MONTHS[(m[2] ?? m[3]).toLowerCase()];
+    const date = `${m[5]}-${month}-${day.padStart(2, '0')}`;
+    const beforeCtx = text.slice(Math.max(0, m.index - 80), m.index);
+    const afterCtx = text.slice(m.index + m[0].length, m.index + m[0].length + 160);
+    const around = `${beforeCtx} § ${afterCtx}`;
+    const TIME_RE = /(\d{1,2}):(\d{2})(?!\s*€)\s*(am|pm)?|(\d{1,2})\s*(?:Uhr|(am|pm))/i;
+    // The time after the date belongs to it; one before may belong to the
+    // previous entry in a list, so it is only a fallback.
+    const timeMatch = afterCtx.match(TIME_RE) ?? beforeCtx.match(TIME_RE);
+    let time = source.defaultTime;
+    if (timeMatch) {
+      let h = Number(timeMatch[4] ?? timeMatch[1]);
+      const min = timeMatch[4] != null ? '00' : timeMatch[2];
+      const ampm = (timeMatch[3] ?? timeMatch[5])?.toLowerCase();
+      if (ampm === 'pm' && h < 12) h += 12;
+      if (ampm === 'am' && h === 12) h = 0;
+      time = `${String(h).padStart(2, '0')}:${min}`;
+    }
     if (!time) {
       console.log(`[${source.slug}] date ${date} has no start time nearby — skipped. Context: …${around.replace(/\s+/g, ' ')}…`);
       continue;
@@ -349,6 +373,39 @@ function fromTimeTags(html, sourceUrl) {
   return out;
 }
 
+/** Render a page in headless Chromium and return the HTML of the page and
+ *  every iframe — the only way to see schedules that booking widgets
+ *  (Acuity, Regiondo, …) draw client-side. Playwright is installed by the
+ *  workflow; when it's absent (local runs) this quietly returns null. */
+async function renderAllFrames(url, slug) {
+  try {
+    const { chromium } = await import('playwright');
+    const browser = await chromium.launch({ args: ['--no-sandbox'] });
+    try {
+      const page = await browser.newPage();
+      await page.goto(url, { waitUntil: 'load', timeout: 60000 });
+      // Widgets fetch their schedule after load — give them a moment.
+      await page.waitForTimeout(8000);
+      const parts = [];
+      for (const frame of page.frames()) {
+        try {
+          parts.push(await frame.content());
+        } catch {
+          /* cross-origin frame that never loaded — skip */
+        }
+      }
+      const combined = parts.join('\n');
+      console.log(`[${slug}] headless render: ${page.frames().length} frames, ${combined.length} bytes`);
+      return combined;
+    } finally {
+      await browser.close();
+    }
+  } catch (err) {
+    console.log(`[${slug}] headless render unavailable: ${err.message.split('\n')[0]}`);
+    return null;
+  }
+}
+
 async function scrape(source) {
   const res = await fetch(source.url, {
     redirect: 'follow',
@@ -373,7 +430,12 @@ async function scrape(source) {
   }
 
   if (source.mode === 'dates-de') {
-    const dated = fromGermanDates(html, source);
+    let dated = fromGermanDates(html, source);
+    if (!dated.length) {
+      // The schedule is drawn client-side — render the page for real.
+      const rendered = await renderAllFrames(source.url, source.slug);
+      if (rendered) dated = fromGermanDates(rendered, source);
+    }
     for (const w of dated) {
       console.log(`[${source.slug}] dated: "${w.title}" ${w.date} ${w.time} ${w.price ?? 'no price'}`);
     }
