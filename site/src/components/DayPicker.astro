@@ -1,6 +1,6 @@
 ---
 import { getSessions, DAYS_AHEAD, type Session } from '../data/sessions.ts';
-import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
 /** The schedule feed, styled after the app's search screen: a search pill
  *  with a location chunk, price filter chips, a borderless day strip, and
@@ -106,8 +106,10 @@ const dayLabel = (offset: number) =>
                       >
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
-                            the app — and falls back to the still. */}
-                        <a class="session-thumb" href={href(lang, `/corporatebookings/#${s.host.slug}`)} tabindex="-1" aria-hidden="true">
+                            the app — and falls back to the still. Thumbnail
+                            and title both lead where the Book button does:
+                            the host's own site for real sessions. */}
+                        <a class="session-thumb" href={s.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
                           {s.host.video ? (
                             <video
                               class="session-video"
@@ -124,7 +126,7 @@ const dayLabel = (offset: number) =>
                         </a>
                         <span class="session-main">
                           <span class="session-duration">{s.duration ?? s.host.duration}</span>
-                          <a class="session-title" href={href(lang, `/corporatebookings/#${s.host.slug}`)}>{s.title}</a>
+                          <a class="session-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
                           <span class="session-host">{s.host.name} · {s.district}</span>
                         </span>
                         <span class="session-side">
