@@ -345,6 +345,32 @@ function fromGermanDates(html, source) {
     });
   }
 
+  // Last resort, only when no written-out dates exist: numeric German
+  // dates ("22.08.2026") — riskier, since any date on the page matches.
+  if (!out.length) {
+    for (const m of text.matchAll(/\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/g)) {
+      const date = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+      const afterCtx = text.slice(m.index + m[0].length, m.index + m[0].length + 160);
+      const beforeCtx = text.slice(Math.max(0, m.index - 80), m.index);
+      const TIME_RE = /(\d{1,2}):(\d{2})(?!\s*€)\s*(am|pm)?|(\d{1,2})\s*(?:Uhr|(am|pm))/i;
+      const tm = afterCtx.match(TIME_RE) ?? beforeCtx.match(TIME_RE);
+      const time = tm
+        ? `${String(Number(tm[4] ?? tm[1]) + ((tm[3] ?? tm[5])?.toLowerCase() === 'pm' && Number(tm[4] ?? tm[1]) < 12 ? 12 : 0)).padStart(2, '0')}:${tm[4] != null ? '00' : tm[2]}`
+        : source.defaultTime;
+      if (!time) {
+        console.log(`[${source.slug}] numeric date ${date} has no time nearby — skipped`);
+        continue;
+      }
+      out.push({
+        title: source.title ?? 'Workshop',
+        date,
+        time,
+        ...(source.price ? { price: source.price } : {}),
+        url: source.url,
+      });
+    }
+  }
+
   // The same date can appear more than once on a page — keep the first.
   const seenDates = new Set();
   return out.filter((w) => {
@@ -431,22 +457,27 @@ async function scrape(source) {
 
   if (source.mode === 'dates-de') {
     let dated = fromGermanDates(html, source);
+    let rendered = null;
     if (!dated.length) {
       // The schedule is drawn client-side — render the page for real.
-      const rendered = await renderAllFrames(source.url, source.slug);
+      rendered = await renderAllFrames(source.url, source.slug);
       if (rendered) dated = fromGermanDates(rendered, source);
     }
     for (const w of dated) {
       console.log(`[${source.slug}] dated: "${w.title}" ${w.date} ${w.time} ${w.price ?? 'no price'}`);
     }
     if (!dated.length) {
-      // Describe how the page mentions dates at all, for parser tuning.
-      for (const marker of ['Samstag', 'Sonntag', '2026', 'Datum']) {
-        const i = html.indexOf(marker);
+      // Describe how the page mentions dates at all, for parser tuning —
+      // against the rendered content when we have it.
+      const hay = rendered ?? html;
+      const numeric = [...new Set([...hay.matchAll(/\b\d{1,2}\.\d{1,2}\.20\d{2}\b/g)].map((m) => m[0]))];
+      console.log(`[${source.slug}] numeric dates in ${rendered ? 'rendered' : 'raw'} content: ${numeric.slice(0, 15).join(', ') || 'none'}`);
+      for (const marker of ['Samstag', 'Sonntag', '2026', 'Datum', 'regiondo-dates', 'select']) {
+        const i = hay.indexOf(marker);
         console.log(
           i < 0
             ? `[${source.slug}] marker "${marker}": absent`
-            : `[${source.slug}] marker "${marker}": …${html.slice(Math.max(0, i - 150), i + 200).replace(/\s+/g, ' ')}…`,
+            : `[${source.slug}] marker "${marker}": …${hay.slice(Math.max(0, i - 150), i + 250).replace(/\s+/g, ' ')}…`,
         );
       }
     }
