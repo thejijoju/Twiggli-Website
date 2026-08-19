@@ -57,7 +57,12 @@ const decodeEntities = (s) =>
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ');
 
-const stripTags = (s) => decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+const stripTags = (s) =>
+  decodeEntities(
+    s.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]*>/g, ' '),
+  )
+    .replace(/\s+/g, ' ')
+    .trim();
 
 /** Strategy 1: walk every JSON-LD block for schema.org Event-ish objects. */
 function fromJsonLd(html, sourceUrl) {
@@ -216,9 +221,10 @@ function fromGermanRecurring(html, source) {
     if (!weekdays.length) continue;
 
     // The class name is the text right before the weekday, back to the end
-    // of the previous sentence — or the previous class's price tail.
+    // of the previous sentence, the previous class's price tail, or page
+    // furniture like "Mehr Infos" / "Termine & Infos" buttons.
     const before = text.slice(Math.max(0, m.index - 90), m.index);
-    const title = before.split(/[.!?—€]|Spendenbasis|\s{3,}/).pop()?.trim();
+    const title = before.split(/[.!?—€{}();|]|Spendenbasis|Infos|buchen|\s{3,}/).pop()?.trim();
     if (!title || title.length < 3 || title.length > 70) continue;
 
     const after = text.slice(m.index + m[0].length, m.index + m[0].length + 140);
@@ -331,6 +337,17 @@ async function scrape(source) {
       ...[...html.matchAll(/acuity[^"{}<>]{0,60}?(\d{7,10})/gi)].map((m) => m[1]),
     ];
     console.log(`[${source.slug}] acuity owner candidates: ${[...new Set(ownerCandidates)].join(', ') || 'none'}`);
+    if (!ownerCandidates.length) {
+      // Show how the page references acuity, to find where the account id
+      // actually lives.
+      let shown = 0;
+      for (const m of html.matchAll(/acuity/gi)) {
+        if (shown >= 5) break;
+        const ctx = html.slice(Math.max(0, m.index - 120), m.index + 180).replace(/\s+/g, ' ');
+        if (/styles\.css|visitor\.js|embed\.js/.test(ctx) && shown > 0) continue;
+        console.log(`[${source.slug}] acuity context ${++shown}: …${ctx}…`);
+      }
+    }
     const owner = ownerCandidates[0];
     if (owner) {
       for (const base of ['https://app.squarespacescheduling.com', 'https://app.acuityscheduling.com']) {
