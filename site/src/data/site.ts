@@ -98,14 +98,14 @@ export function getSiteData(lang: Lang) {
     { label: navLabels[lang].happening, href: href(lang, '/happening-today/') },
     /* Points at /hosts/, which is the corporate page — the pitch and the
        directory of makers who can run the session are one page now. */
-    { label: navLabels[lang].corporate, href: href(lang, '/hosts/'), emphasis: true },
+    { label: navLabels[lang].corporate, href: href(lang, '/corporatebookings/'), emphasis: true },
     { label: navLabels[lang].blog, href: href(lang, '/blog/') },
     { label: navLabels[lang].contact, href: href(lang, '/contact/') },
   ];
 
   const secondaryLinks: NavLink[] = [
     { label: secondaryLabels[lang].howItWorks, href: href(lang, '/how-it-works/') },
-    { label: secondaryLabels[lang].hosts, href: href(lang, '/hosts/') },
+    { label: secondaryLabels[lang].hosts, href: href(lang, '/corporatebookings/') },
     { label: secondaryLabels[lang].host, href: href(lang, '/host/') },
   ];
 

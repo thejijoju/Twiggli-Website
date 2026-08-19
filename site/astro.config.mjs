@@ -9,12 +9,15 @@ export default defineConfig({
   site: 'https://www.twiggli.com',
   build: { format: 'directory' },
 
-  // /corporate/ was folded into /hosts/, which now carries the corporate
-  // pitch. The old URL is live and may be linked or indexed, so it forwards
-  // rather than 404s. GitHub Pages serves static files only — Astro emits a
-  // meta-refresh stub with a canonical link for these, not a 301.
+  // The corporate pitch lived at /corporate/, then /hosts/, and now
+  // /corporatebookings/. Both old URLs are live and may be linked or
+  // indexed, so they forward rather than 404. GitHub Pages serves static
+  // files only — Astro emits a meta-refresh stub with a canonical link for
+  // these, not a 301.
   redirects: {
-    '/corporate/': '/hosts/',
-    '/de/corporate/': '/de/hosts/',
+    '/corporate/': '/corporatebookings/',
+    '/de/corporate/': '/de/corporatebookings/',
+    '/hosts/': '/corporatebookings/',
+    '/de/hosts/': '/de/corporatebookings/',
   },
 });

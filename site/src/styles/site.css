@@ -1136,7 +1136,14 @@ a:hover { color: var(--color-accent); }
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 44px 32px;
 }
-.maker { scroll-margin-top: 90px; }
+/* Flex column so the request button can pin to the card's bottom edge.
+   Grid rows stretch cards in a row to equal height, so the three buttons
+   per row all sit on one line however long each blurb runs. */
+.maker {
+  scroll-margin-top: 90px;
+  display: flex;
+  flex-direction: column;
+}
 .maker-media {
   position: relative;
   aspect-ratio: 531 / 163;
@@ -1195,7 +1202,9 @@ a:hover { color: var(--color-accent); }
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 6px 14px;
-  margin: 16px 0 0;
+  /* The bottom margin is the minimum gap above the request button; the
+     button's auto margin then absorbs whatever height the row adds. */
+  margin: 16px 0 20px;
   font-size: 14px;
 }
 .maker-meta > div { display: contents; }
@@ -1214,7 +1223,8 @@ a:hover { color: var(--color-accent); }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: auto;
+  align-self: center;
   padding: 10px 20px;
   border-radius: 999px;
   background: var(--color-text);
