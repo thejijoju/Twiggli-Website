@@ -228,9 +228,40 @@ async function scrape(source) {
   }
   if (!found.length) {
     // Diagnostics for the Actions log, so the parser can be tuned without
-    // re-fetching by hand: which ISO-looking dates exist in the page at all?
+    // re-fetching by hand: platform markers, embedded frames/scripts, and
+    // any ISO-looking dates in the page.
     const isoDates = [...new Set([...html.matchAll(/20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}/g)].map((m) => m[0]))];
     console.log(`[${source.slug}] no structured events; raw ISO datetimes in page: ${isoDates.slice(0, 20).join(', ') || 'none'}`);
+    const markers = ['wix', 'squarespace', 'acuity', 'shopify', 'webflow', 'jimdo', 'wordpress', 'eversports', 'bookwhen', 'calendly', 'momoyoga']
+      .filter((m) => new RegExp(m, 'i').test(html));
+    console.log(`[${source.slug}] platform markers: ${markers.join(', ') || 'none'}`);
+    const frames = [...html.matchAll(/<iframe[^>]*src=["']([^"']+)["']/gi)].map((m) => m[1]);
+    console.log(`[${source.slug}] iframes: ${frames.slice(0, 10).join(' | ') || 'none'}`);
+    const embeds = [...html.matchAll(/https?:\/\/[^\s"'<>]*(?:acuity|scheduling|booking|widget|embed)[^\s"'<>]*/gi)]
+      .map((m) => m[0]);
+    console.log(`[${source.slug}] scheduler-ish urls: ${[...new Set(embeds)].slice(0, 10).join(' | ') || 'none'}`);
+
+    // Probe the first embedded scheduler frame and describe what it serves,
+    // so its parser can be written from the next run's log.
+    const probeUrl = [...frames, ...embeds].find((u) => /acuity|scheduling|booking/i.test(u));
+    if (probeUrl) {
+      try {
+        const probe = await fetch(probeUrl, { headers: { 'user-agent': UA, accept: 'text/html' } });
+        const body = await probe.text();
+        console.log(`[${source.slug}] probe ${probeUrl}: HTTP ${probe.status}, ${body.length} bytes`);
+        const monthDates = [...body.matchAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:,\s*20\d{2})?/g)]
+          .map((m) => m[0]);
+        console.log(`[${source.slug}] probe month-name dates: ${[...new Set(monthDates)].slice(0, 15).join(' | ') || 'none'}`);
+        const probeIso = [...new Set([...body.matchAll(/20\d{2}-\d{2}-\d{2}[T ]?\d{0,2}:?\d{0,2}/g)].map((m) => m[0]))];
+        console.log(`[${source.slug}] probe ISO-ish dates: ${probeIso.slice(0, 15).join(' | ') || 'none'}`);
+        const first = monthDates.length ? body.indexOf(monthDates[0]) : -1;
+        if (first >= 0) {
+          console.log(`[${source.slug}] probe context: …${body.slice(Math.max(0, first - 400), first + 200).replace(/\s+/g, ' ')}…`);
+        }
+      } catch (probeErr) {
+        console.log(`[${source.slug}] probe failed: ${probeErr.message}`);
+      }
+    }
   }
 
   const inWindow = found
