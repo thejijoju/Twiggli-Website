@@ -62,8 +62,23 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
         <div class="phone-cards">
           {phoneCards.map((card) => (
             <div>
+              {/* Keeps the mockup's existing grayscale treatment — the medium
+                  changes from still to clip, the look does not. */}
               <div class="phone-card-media grayscale">
-                <ImageSlot src={card.photo} shape="rect" placeholder={card.title} alt="" />
+                {card.video ? (
+                  <video
+                    class="phone-card-video"
+                    src={card.video}
+                    poster={card.poster}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    aria-hidden="true"
+                  ></video>
+                ) : (
+                  <ImageSlot src={card.photo} shape="rect" placeholder={card.title} alt="" />
+                )}
               </div>
               <p class="phone-card-title">{card.title}</p>
               <p class="phone-card-meta">{card.meta}</p>
@@ -78,3 +93,31 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
     )}
   </div>
 </div>
+
+<script>
+  /* The mockup's thumbnails are clips, so the phone shows the app doing the
+     thing the page is describing rather than a frozen screenshot.
+
+     They start only when the phone scrolls into view and stop when it leaves:
+     a mockup playing three videos off-screen costs the visitor bandwidth for
+     something nobody is looking at. `muted` + `playsinline` are what let a
+     clip autoplay at all — iOS blocks anything with sound, and without
+     playsinline it takes over the screen. preload="none" means the poster is
+     all that loads until then. */
+  const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.phone-card-video'));
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (videos.length && !still) {
+    const phone = document.querySelector('.phone-front');
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        for (const video of videos) {
+          if (entry.isIntersecting) video.play().catch(() => {});
+          else video.pause();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    if (phone) observer.observe(phone);
+  }
+</script>

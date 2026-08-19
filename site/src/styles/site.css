@@ -387,7 +387,15 @@ a:hover { color: var(--color-accent); }
 }
 .phone-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .phone-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.phone-card-media { aspect-ratio: 1 / 1; }
+.phone-card-media { aspect-ratio: 1 / 1; overflow: hidden; }
+/* The reels are 9:16; the thumbnail is square. object-fit crops rather than
+   letterboxes, so a portrait clip fills the card the way the app's would. */
+.phone-card-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .phone-card-title { font-size: 13px; font-weight: 600; margin: 6px 0 2px; }
 .phone-card-meta {
   font-size: 12px;

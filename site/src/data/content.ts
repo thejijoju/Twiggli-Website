@@ -300,22 +300,46 @@ export const filterCopy = {
 
 const phoneCardsCopy = {
   en: [
-    { id: 'phone-front-1', title: 'Bachata lessons', meta: 'Mon, Oct 16 · 5 km away', photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-1', title: 'Collective painting', meta: 'Mon, Oct 16 · 5 km away', photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Bouldering course', meta: 'Mon, Oct 16 · 2 km away', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Cooking workshop', meta: 'Wed, Oct 18 · 3 km away', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Hiking meetup', meta: 'Sat, Oct 21 · 8 km away', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
-    { id: 'phone-front-1', title: 'Bachata-Kurs', meta: 'Mo., 16. Okt. · 5 km entfernt', photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-1', title: 'Kollektive Malerei', meta: 'Mo., 16. Okt. · 5 km entfernt', photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Boulderkurs', meta: 'Mo., 16. Okt. · 2 km entfernt', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Kochworkshop', meta: 'Mi., 18. Okt. · 3 km entfernt', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Wander-Treffen', meta: 'Sa., 21. Okt. · 8 km entfernt', photo: '/img/hero/hiking.jpg' },
   ],
 };
 
+/** Reels inside the phone mockup, by card id. A card with an entry here
+ *  plays its clip in the thumbnail; one without stays a still. Add an entry
+ *  as footage lands — nothing else needs changing.
+ *
+ *  Only the first card has one, deliberately. All three reels we hold are
+ *  painting sessions, so filling every card would leave the mockup claiming
+ *  Twiggli is a painting app, and pairing them with the bachata or hiking
+ *  cards would show a video of the wrong thing — worse than the still it
+ *  replaced. One live card next to three stills reads as a feed either way.
+ *  Once there is footage of a dance class or a climb, add it here and
+ *  restore that card's original title. */
+const phoneReels: Record<string, { video: string; poster: string }> = {
+  'phone-front-1': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+};
+
 /** The sample cards inside the phone mockup. */
 export const getPhoneCards = (lang: Lang) =>
-  phoneCardsCopy[lang].map((card) => ({ ...card, photo: withBase(card.photo) }));
+  phoneCardsCopy[lang].map((card) => {
+    const reel = phoneReels[card.id];
+    return {
+      ...card,
+      photo: withBase(card.photo),
+      ...(reel
+        ? { video: withBase(reel.video), poster: withBase(reel.poster) }
+        : {}),
+    };
+  });
 
 const phoneFiltersCopy: Record<Lang, string[]> = {
   en: ['All', 'Today', 'Tomorrow', 'Free', 'Paid'],
