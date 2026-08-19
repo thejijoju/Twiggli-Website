@@ -412,6 +412,28 @@ async function renderAllFrames(url, slug) {
       await page.goto(url, { waitUntil: 'load', timeout: 60000 });
       // Widgets fetch their schedule after load — give them a moment.
       await page.waitForTimeout(8000);
+      // Consent managers (Complianz on WordPress, Squarespace's own) hold
+      // embedded booking scripts until cookies are accepted, so the widget
+      // stays empty for a browser that never clicks. Accept, then wait for
+      // the unblocked script to draw the schedule.
+      const consentSelectors = [
+        '#cmplz-btn-accept', '.cmplz-accept', '.cc-allow', '#onetrust-accept-btn-handler',
+        'button:has-text("Alle akzeptieren")', 'button:has-text("Akzeptieren")',
+        'button:has-text("Accept all")', 'button:has-text("Accept")',
+      ];
+      for (const selector of consentSelectors) {
+        try {
+          const button = page.locator(selector).first();
+          if (await button.isVisible({ timeout: 400 })) {
+            await button.click();
+            console.log(`[${slug}] accepted cookie consent via ${selector}`);
+            await page.waitForTimeout(8000);
+            break;
+          }
+        } catch {
+          /* selector not on this page — try the next */
+        }
+      }
       const parts = [];
       for (const frame of page.frames()) {
         try {
