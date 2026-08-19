@@ -67,7 +67,9 @@ export const socialLinks = [
   /* This points at a single Short, not the channel — swap in the channel URL
      (youtube.com/@handle) once there is one, so the icon lands on the profile. */
   { label: 'YouTube', href: 'https://www.youtube.com/shorts/H_93j1DbGFs', icon: 'youtube' },
-  { label: 'LinkedIn', href: '#', icon: 'linkedin' },
+  /* The public company page, not the /admin/dashboard/ URL — that one only
+     resolves for page admins and 404s for everyone else. */
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/105193590/', icon: 'linkedin' },
 ] as const;
 
 /**
