@@ -736,13 +736,16 @@ a:hover { color: var(--color-accent); }
 .social-bar-icons {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 18px clamp(20px, 5vw, 72px);
+  /* Side padding is the page gutter less 15%. */
+  padding: 18px clamp(17px, 4.25vw, 61.2px);
   display: flex;
   justify-content: center;
   gap: 20px;
 }
-.social-bar-icons a { display: flex; color: color-mix(in srgb, #fff 55%, transparent); }
-.social-bar-icons a:hover { color: #fff; }
+/* Full white, not a dimmed tint — the icons are the only thing in the strip
+   and read as disabled at anything less. Hover shifts to the accent instead. */
+.social-bar-icons a { display: flex; color: #fff; }
+.social-bar-icons a:hover { color: var(--color-accent-400); }
 
 /* — store buttons — */
 .store-buttons { display: flex; gap: 12px; flex-wrap: wrap; }

@@ -25,11 +25,16 @@ const viewBox = name === 'instagram' ? '0 0 32 32' : '0 0 24 24';
   {name === 'facebook' && (
     <path d="M15.5 8.5h-2c-.6 0-1 .4-1 1v2h3l-.4 3h-2.6v8h-3v-8H7v-3h2.5V9c0-2.5 1.5-4 4-4h2v3z" />
   )}
+  {/* One path, evenodd: the play triangle is a hole punched through the
+      rounded rect, so it shows whatever is behind the icon. Filling it with a
+      colour instead would make it vanish wherever that colour matched the
+      body of the mark — which is exactly what happens on the black strip once
+      the icons go full white. */}
   {name === 'youtube' && (
-    <>
-      <rect x="2" y="5" width="20" height="14" rx="4" />
-      <path d="M10 8.5v7l6-3.5z" fill="var(--color-bg)" />
-    </>
+    <path
+      fill-rule="evenodd"
+      d="M6 5h12a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4zm4 3.5v7l6-3.5z"
+    />
   )}
   {name === 'linkedin' && (
     <>
