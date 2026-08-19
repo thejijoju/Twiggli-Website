@@ -112,6 +112,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   faye:         { activity: 'craft',       groupRange: [8, 18],   hourRange: [2.5, 4] },
   dominik:      { activity: 'art',         groupRange: [6, 100],  hourRange: [2, 4] },
   ana:          { activity: 'wellbeing',   groupRange: [8, 20],   hourRange: [1.5, 6] },
+  // PLACEHOLDER ranges — Karen-Rose's group sizes and formats are unconfirmed.
+  'karen-rose': { activity: 'craft',       groupRange: [4, 12],   hourRange: [2, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -177,6 +179,11 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ana', name: 'Ana', specialty: 'Breathwork, movement & voice', studio: 'Resonant Body',
       blurb: 'An embodied wellbeing practice combining breathwork, movement, voice, somatic awareness and creative exploration. Playful, accessible exercises help teams reconnect and reduce stress.',
       group: '8–20', duration: '1.5–6 h', place: 'Your office / a Berlin studio', languages: 'EN · DE · ES · FR · PT' },
+    // PLACEHOLDER copy pending her materials — the workshop itself is real
+    // (karen-rose.com), photos and reel to follow.
+    { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Organic natural cosmetics',
+      blurb: 'Hands-on organic natural cosmetics workshops in Berlin — blend and pour your own creams, balms and skincare from natural ingredients, and take everything you make home with you.',
+      group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -233,6 +240,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ana', name: 'Ana', specialty: 'Atemarbeit, Bewegung & Stimme', studio: 'Resonant Body',
       blurb: 'Eine verkörperte Wellbeing-Praxis aus Atemarbeit, Bewegung, Stimme und somatischer Wahrnehmung. Zugängliche Übungen bauen Stress ab und stärken den Zusammenhalt.',
       group: '8–20', duration: '1,5–6 Std.', place: 'Euer Büro / ein Berliner Studio', languages: 'EN · DE · ES · FR · PT' },
+    { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Bio-Naturkosmetik',
+      blurb: 'Bio-Naturkosmetik-Workshops zum Selbermachen in Berlin — rühre und gieße deine eigenen Cremes, Balsame und Pflegeprodukte aus natürlichen Zutaten und nimm alles mit nach Hause.',
+      group: '4–12', duration: '2–3 Std.', place: 'Berlin', languages: 'DE' },
   ],
 };
 

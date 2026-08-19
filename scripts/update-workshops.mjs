@@ -38,11 +38,19 @@ const SOURCES = [
   // Weekly-recurring German schedule ("Dienstags I 18 - 20 Uhr I …"); the
   // parser emits `recurring` entries the site expands into dated sessions.
   { slug: 'nina', name: 'Nina Kranz — Kurse', url: 'https://www.ninakranzart.com/privat-freizeit', mode: 'recurring-de' },
+  // German dated list ("Samstag, 29. August 2026"). One product per page,
+  // so title and price come from this config when the page yields none.
+  { slug: 'karen-rose', name: 'Karen-Rose — Bio Naturkosmetik', mode: 'dates-de',
+    url: 'https://karen-rose.com/events-2/?re-product-id=227019',
+    title: 'Bio Naturkosmetik Workshop', price: '€65' },
+  { slug: 'karen-rose', name: 'Karen-Rose — Keramikgießen | Terrazzo', mode: 'dates-de',
+    url: 'https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product',
+    title: 'Keramikgießen | Terrazzo Workshop', price: '€59' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
  *  than the site's day strip so entries roll into view between runs. */
-const KEEP_DAYS = 90;
+const KEEP_DAYS = 110;
 
 const TZ = 'Europe/Berlin';
 
@@ -265,6 +273,55 @@ function fromGermanRecurring(html, source) {
   });
 }
 
+/** Parser for German dated-list pages: "Samstag, 29. August 2026", with the
+ *  start time ("18 Uhr" / "18:00") looked for around each date. A date with
+ *  no time nearby is skipped and logged — better absent than wrong. */
+function fromGermanDates(html, source) {
+  const MONTHS = {
+    januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
+    juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
+  };
+  const text = stripTags(html);
+  const out = [];
+  const re =
+    /(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag),?\s*(\d{1,2})\.\s*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*(20\d{2})/gi;
+
+  for (const m of text.matchAll(re)) {
+    const date = `${m[3]}-${MONTHS[m[2].toLowerCase()]}-${m[1].padStart(2, '0')}`;
+    const around =
+      text.slice(Math.max(0, m.index - 80), m.index) +
+      ' § ' +
+      text.slice(m.index + m[0].length, m.index + m[0].length + 160);
+    const timeMatch = around.match(/(\d{1,2}):(\d{2})(?!\s*€)|(\d{1,2})\s*Uhr/);
+    const time = timeMatch
+      ? timeMatch[3] != null
+        ? `${timeMatch[3].padStart(2, '0')}:00`
+        : `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`
+      : source.defaultTime;
+    if (!time) {
+      console.log(`[${source.slug}] date ${date} has no start time nearby — skipped. Context: …${around.replace(/\s+/g, ' ')}…`);
+      continue;
+    }
+    const priceMatch = around.match(/(\d{1,3})(?:,\d{2})?\s*€/);
+    out.push({
+      title: source.title ?? 'Workshop',
+      date,
+      time,
+      ...(priceMatch ? { price: `€${priceMatch[1]}` } : source.price ? { price: source.price } : {}),
+      url: source.url,
+    });
+  }
+
+  // The same date can appear more than once on a page — keep the first.
+  const seenDates = new Set();
+  return out.filter((w) => {
+    const key = `${w.date}|${w.time}`;
+    if (seenDates.has(key)) return false;
+    seenDates.add(key);
+    return true;
+  });
+}
+
 /** Strategy 3: <time datetime> elements, titled by the nearest preceding heading. */
 function fromTimeTags(html, sourceUrl) {
   const out = [];
@@ -304,6 +361,18 @@ async function scrape(source) {
     }
     console.log(`[${source.slug}] recurring classes parsed: ${recurring.length}`);
     return { workshops: [], recurring };
+  }
+
+  if (source.mode === 'dates-de') {
+    const dated = fromGermanDates(html, source);
+    for (const w of dated) {
+      console.log(`[${source.slug}] dated: "${w.title}" ${w.date} ${w.time} ${w.price ?? 'no price'}`);
+    }
+    const inRange = dated
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
+    console.log(`[${source.slug}] dated entries kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
   }
 
   const ld = fromJsonLd(html, source.url);
@@ -394,7 +463,9 @@ async function scrape(source) {
 // parser against that file and prints the result, touching nothing.
 if (process.env.PARSE_TEST) {
   const html = readFileSync(process.env.PARSE_TEST, 'utf8');
-  console.log(JSON.stringify(fromGermanRecurring(html, { slug: 'test', url: 'test' }), null, 2));
+  const testSource = { slug: 'test', url: 'test', title: 'Test Workshop', price: '€65' };
+  const fn = process.env.PARSE_TEST_MODE === 'dates-de' ? fromGermanDates : fromGermanRecurring;
+  console.log(JSON.stringify(fn(html, testSource), null, 2));
   process.exit(0);
 }
 

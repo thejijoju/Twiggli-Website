@@ -73,9 +73,9 @@ const hash = (s: string): number => {
 
 const START_TIMES = ['10:00', '11:30', '14:00', '16:00', '18:30', '19:00'];
 
-/** Widened from 21 so real scraped workshops a couple of months out (Clay
- *  Garden's run 5–9 weeks ahead) still land on the strip. */
-export const DAYS_AHEAD = 70;
+/** Widened from 21 so real scraped workshops a few months out (Clay
+ *  Garden's and Karen-Rose's run 5–12 weeks ahead) still land on the strip. */
+export const DAYS_AHEAD = 90;
 
 /** Today in Berlin, as a UTC-midnight timestamp — the base the scraped
  *  absolute dates are converted to day offsets against. Build-time, so the
