@@ -125,7 +125,9 @@ a:hover { color: var(--color-accent); }
 }
 /* The mark stands alone in the nav — no wordmark beside it. */
 .nav-logo { display: block; width: 71px; height: 71px; flex: none; }
-.nav-end a { letter-spacing: 0.045em; }
+/* Nav links track normally — the widened 0.045em got too loose once the
+   header grew to five links. */
+.nav-end a { letter-spacing: normal; }
 .nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
 .footer-logo { display: block; }
 
