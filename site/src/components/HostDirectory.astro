@@ -6,6 +6,9 @@ import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
  * The full maker directory: one card per host, with the brochure photo strip
  * as a banner and the practical details a team lead needs before enquiring.
  * Hosts with a reel play it in place of the still.
+ *
+ * Each card carries its facets as data attributes so HostFilters can match
+ * on them without re-deriving anything client-side.
  */
 interface Props {
   hosts: Host[];
@@ -21,7 +24,15 @@ const labels = {
 
 <div class="maker-grid">
   {hosts.map((host) => (
-    <article class="maker" id={host.slug}>
+    <article
+      class="maker"
+      id={host.slug}
+      data-activity={host.activity}
+      data-group-min={host.groupRange[0]}
+      data-group-max={host.groupRange[1]}
+      data-hours-min={host.hourRange[0]}
+      data-hours-max={host.hourRange[1]}
+    >
       <div class="maker-media">
         {host.video ? (
           <video

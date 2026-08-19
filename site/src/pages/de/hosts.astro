@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import HostDirectory from '../../components/HostDirectory.astro';
+import HostFilters from '../../components/HostFilters.astro';
 import { getHosts } from '../../data/content.ts';
 import { withBase } from '../../lib/url.ts';
 
@@ -9,33 +10,28 @@ const hosts = getHosts(lang);
 ---
 
 <Base
-  title="Unsere Gastgeber — Twiggli"
-  description="Die unabhängigen Berliner Maker, die Workshops auf Twiggli anbieten — Keramik, Druck, Food, Fotografie, Graffiti und mehr."
+  title="Firmenevents — Twiggli"
+  description="Private Team-Workshops für Unternehmen, geleitet von unabhängigen Berliner Makern — Keramik, Druck, Food, Fotografie und mehr."
   lang={lang}
 >
   <div class="container">
     <section class="page-head">
-      <span class="kicker">Unsere Gastgeber</span>
-      <h1 class="page-title">Handgemacht, überall in der Stadt</h1>
+      <span class="kicker">Firmenevents</span>
+      <h1 class="page-title">Team-Workshops für Unternehmen</h1>
       <p class="page-lede">
-        Jeder Workshop auf Twiggli wird von einem unabhängigen Berliner Maker geleitet — im eigenen
-        Atelier, in eurem Büro oder draußen. {hosts.length} davon, alle in Berlin. Schau dich um und
-        sag uns, mit wem ihr einen Tag verbringen möchtet.
+        Buche einen privaten Workshop für dein Team — Kochen, Klettern, Tanzen und mehr, geleitet
+        von unseren geprüften Gastgebern in eurem Büro oder an einem Ort in deiner Nähe. Wir
+        kümmern uns um die Logistik, egal wie groß die Gruppe ist.
       </p>
       <div class="hero-actions">
-        <a href={withBase('/de/contact/')} class="btn btn-primary">Einen Tag für euer Team buchen</a>
+        <a href={withBase('/de/contact/')} class="btn btn-primary">Firmenangebot anfragen</a>
       </div>
     </section>
 
     <hr class="rule" />
 
     <section class="section">
-      <nav class="maker-index" aria-label="Zu einem Gastgeber springen">
-        {hosts.map((host) => <a href={`#${host.slug}`}>{host.name}</a>)}
-      </nav>
-    </section>
-
-    <section class="section" style="padding-top:0">
+      <HostFilters lang={lang} />
       <HostDirectory hosts={hosts} lang={lang} />
     </section>
 

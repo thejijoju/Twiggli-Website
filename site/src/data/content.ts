@@ -68,11 +68,58 @@ export type Host = {
    *  instead of showing a still — `poster` is the frame shown until it does. */
   video?: string;
   poster?: string;
+  /** Machine-readable versions of `specialty`, `group` and `duration`, for
+   *  the directory filters. See `facets` below for why they are separate. */
+  activity: ActivityKey;
+  /** Smallest and largest group the host will take, across all their
+   *  formats. `[1, 100]` for someone doing intimate studio sessions and
+   *  large mobile ones alike. */
+  groupRange: [number, number];
+  /** Session length in hours, shortest to longest format. */
+  hourRange: [number, number];
+};
+
+export type ActivityKey =
+  | 'ceramics' | 'art' | 'craft' | 'food' | 'photography' | 'wellbeing';
+
+/** The filterable facts about each host, keyed by slug.
+ *
+ *  These live apart from `hostsCopy` because they are language-neutral: the
+ *  prose in `group` ('Up to 8 · 4–30', 'Bis 8 · 4–30') is written for a human
+ *  reading a card, and parsing a range back out of it would mean parsing two
+ *  languages' worth of prose. The numbers below are the same in both, and the
+ *  prose stays free to say whatever reads best.
+ *
+ *  Ranges are the union across a host's formats — Celina runs up to 20 in the
+ *  studio and 50–100 mobile, so she is [1, 100] and shows up whether a team
+ *  is looking for something small or something company-wide. */
+const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>> = {
+  qian:         { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [2, 2] },
+  rebeca:       { activity: 'art',         groupRange: [3, 24],   hourRange: [2, 3] },
+  nicole:       { activity: 'craft',       groupRange: [2, 12],   hourRange: [2.5, 5] },
+  celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
+  evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [3, 3] },
+  nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
+  helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
+  jem:          { activity: 'food',        groupRange: [1, 40],   hourRange: [3, 4] },
+  'loom-lab':   { activity: 'ceramics',    groupRange: [4, 6],    hourRange: [4, 4] },
+  maximiliana:  { activity: 'art',         groupRange: [3, 12],   hourRange: [3, 3] },
+  pia:          { activity: 'art',         groupRange: [4, 20],   hourRange: [2, 2] },
+  sarah:        { activity: 'wellbeing',   groupRange: [3, 12],   hourRange: [1, 7] },
+  anne:         { activity: 'photography', groupRange: [5, 20],   hourRange: [1.5, 2] },
+  sabine:       { activity: 'photography', groupRange: [1, 12],   hourRange: [4, 5] },
+  angelo:       { activity: 'food',        groupRange: [6, 14],   hourRange: [3, 3] },
+  faye:         { activity: 'craft',       groupRange: [8, 18],   hourRange: [2.5, 4] },
+  dominik:      { activity: 'art',         groupRange: [6, 100],  hourRange: [2, 4] },
+  ana:          { activity: 'wellbeing',   groupRange: [8, 20],   hourRange: [1.5, 6] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
  *  attach by slug as footage lands — see `reels` below. */
-type HostCopy = Omit<Host, 'id' | 'photo' | 'wide' | 'video' | 'poster'>;
+type HostCopy = Omit<
+  Host,
+  'id' | 'photo' | 'wide' | 'video' | 'poster' | 'activity' | 'groupRange' | 'hourRange'
+>;
 
 const hostsCopy: Record<Lang, HostCopy[]> = {
   en: [
@@ -205,6 +252,7 @@ export const getHosts = (lang: Lang): Host[] =>
     const reel = reels[h.slug];
     return {
       ...h,
+      ...facets[h.slug],
       id: i + 1,
       photo: withBase(`/img/hosts/${h.slug}.jpg`),
       wide: withBase(`/img/hosts/${h.slug}-wide.jpg`),
@@ -213,6 +261,42 @@ export const getHosts = (lang: Lang): Host[] =>
         : {}),
     };
   });
+
+/** The filter vocabulary, in both languages. Bucket ids are matched against
+ *  a host's ranges in HostFilters — the labels are only ever shown, never
+ *  compared, so they can be reworded freely. */
+export const filterCopy = {
+  en: {
+    activityLabel: 'Activity',
+    groupLabel: 'Group size',
+    durationLabel: 'Length',
+    all: 'All',
+    clear: 'Clear filters',
+    count: (n: number) => (n === 1 ? '1 host' : `${n} hosts`),
+    empty: 'No host matches all three filters. Try widening one.',
+    activities: {
+      ceramics: 'Ceramics', art: 'Art & print', craft: 'Craft & making',
+      food: 'Food & drink', photography: 'Photography', wellbeing: 'Wellbeing',
+    },
+    groups: { small: 'Up to 10', medium: '10–30', large: '30+' },
+    durations: { short: 'Up to 2 h', medium: '2–4 h', long: 'Half day or more' },
+  },
+  de: {
+    activityLabel: 'Aktivität',
+    groupLabel: 'Gruppengröße',
+    durationLabel: 'Dauer',
+    all: 'Alle',
+    clear: 'Filter zurücksetzen',
+    count: (n: number) => (n === 1 ? '1 Gastgeber' : `${n} Gastgeber`),
+    empty: 'Kein Gastgeber passt zu allen drei Filtern. Erweitere einen davon.',
+    activities: {
+      ceramics: 'Keramik', art: 'Kunst & Druck', craft: 'Handwerk',
+      food: 'Essen & Trinken', photography: 'Fotografie', wellbeing: 'Wohlbefinden',
+    },
+    groups: { small: 'Bis 10', medium: '10–30', large: '30+' },
+    durations: { short: 'Bis 2 Std.', medium: '2–4 Std.', long: 'Ab einem halben Tag' },
+  },
+} as const;
 
 const phoneCardsCopy = {
   en: [

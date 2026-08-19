@@ -96,7 +96,9 @@ export function getSiteData(lang: Lang) {
     { label: navLabels[lang].home, href: href(lang, '/') },
     { label: navLabels[lang].getStarted, href: appUrl, external: true },
     { label: navLabels[lang].happening, href: href(lang, '/happening-today/') },
-    { label: navLabels[lang].corporate, href: href(lang, '/corporate/'), emphasis: true },
+    /* Points at /hosts/, which is the corporate page — the pitch and the
+       directory of makers who can run the session are one page now. */
+    { label: navLabels[lang].corporate, href: href(lang, '/hosts/'), emphasis: true },
     { label: navLabels[lang].blog, href: href(lang, '/blog/') },
     { label: navLabels[lang].contact, href: href(lang, '/contact/') },
   ];

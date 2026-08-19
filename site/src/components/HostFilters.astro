@@ -1,0 +1,117 @@
+---
+import { filterCopy } from '../data/content.ts';
+import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+
+/**
+ * Filters for the maker directory: activity, group size, session length.
+ *
+ * These replace an A–Z index of host names. A team lead planning a session
+ * knows the group they have and the afternoon they can spare — they do not
+ * know that the person they want is called Maximiliana, so a name index only
+ * helps someone who already knows the answer.
+ *
+ * The three filters are ANDed. Each is a row of radio inputs rather than
+ * buttons: a group of radios is exactly "pick one of these", so arrow keys,
+ * labels and the reset all work without scripting them.
+ */
+interface Props {
+  lang?: Lang;
+}
+const { lang = DEFAULT_LANG } = Astro.props;
+const t = filterCopy[lang];
+
+const groupIds = ['small', 'medium', 'large'] as const;
+const durationIds = ['short', 'medium', 'long'] as const;
+const activityIds = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing'] as const;
+
+const rows = [
+  { name: 'activity', label: t.activityLabel, options: activityIds.map((id) => ({ id, label: t.activities[id] })) },
+  { name: 'group', label: t.groupLabel, options: groupIds.map((id) => ({ id, label: t.groups[id] })) },
+  { name: 'hours', label: t.durationLabel, options: durationIds.map((id) => ({ id, label: t.durations[id] })) },
+];
+---
+
+<form class="filters" id="host-filters" aria-label={t.activityLabel}>
+  {rows.map((row) => (
+    <fieldset class="filter-row">
+      <legend class="filter-legend">{row.label}</legend>
+      <div class="filter-chips">
+        <label class="chip">
+          <input type="radio" name={row.name} value="" checked />
+          <span>{t.all}</span>
+        </label>
+        {row.options.map((opt) => (
+          <label class="chip">
+            <input type="radio" name={row.name} value={opt.id} />
+            <span>{opt.label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  ))}
+
+  <div class="filter-status">
+    <p class="filter-count" role="status" aria-live="polite" data-one={t.count(1)} data-many={t.count(0)}></p>
+    <button type="reset" class="filter-clear" hidden>{t.clear}</button>
+  </div>
+</form>
+
+<p class="filter-empty" hidden>{t.empty}</p>
+
+<script>
+  /* Bucket edges live here, next to the code that compares them, rather than
+     in the labels — "Up to 10" is prose and may be reworded, [0, 10] is the
+     rule. A host matches a bucket when their range OVERLAPS it, not when it
+     is contained: someone who takes 6–100 people can host a group of 8, and
+     hiding them from the "up to 10" filter would be wrong. */
+  const GROUPS: Record<string, [number, number]> = {
+    small: [0, 10],
+    medium: [10, 30],
+    large: [30, Infinity],
+  };
+  const HOURS: Record<string, [number, number]> = {
+    short: [0, 2],
+    medium: [2, 4],
+    long: [4, Infinity],
+  };
+
+  const form = document.querySelector<HTMLFormElement>('#host-filters');
+  const empty = document.querySelector<HTMLElement>('.filter-empty');
+  const count = document.querySelector<HTMLElement>('.filter-count');
+  const clear = document.querySelector<HTMLButtonElement>('.filter-clear');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
+
+  if (form && cards.length) {
+    const overlaps = (a: [number, number], b: [number, number]) => a[0] <= b[1] && a[1] >= b[0];
+    const num = (el: HTMLElement, key: string) => Number(el.dataset[key]);
+
+    const apply = () => {
+      const data = new FormData(form);
+      const activity = String(data.get('activity') ?? '');
+      const group = String(data.get('group') ?? '');
+      const hours = String(data.get('hours') ?? '');
+
+      let shown = 0;
+      for (const card of cards) {
+        const ok =
+          (!activity || card.dataset.activity === activity) &&
+          (!group || overlaps([num(card, 'groupMin'), num(card, 'groupMax')], GROUPS[group])) &&
+          (!hours || overlaps([num(card, 'hoursMin'), num(card, 'hoursMax')], HOURS[hours]));
+        card.hidden = !ok;
+        if (ok) shown++;
+      }
+
+      if (empty) empty.hidden = shown > 0;
+      if (count) {
+        const many = count.dataset.many ?? '';
+        count.textContent = shown === 1 ? (count.dataset.one ?? '') : many.replace('0', String(shown));
+      }
+      if (clear) clear.hidden = !activity && !group && !hours;
+    };
+
+    form.addEventListener('change', apply);
+    /* 'reset' fires before the inputs revert, so read them on the next tick. */
+    form.addEventListener('reset', () => setTimeout(apply, 0));
+    apply();
+  }
+</script>

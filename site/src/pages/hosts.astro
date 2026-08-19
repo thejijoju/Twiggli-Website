@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import HostDirectory from '../components/HostDirectory.astro';
+import HostFilters from '../components/HostFilters.astro';
 import { getHosts } from '../data/content.ts';
 import { withBase } from '../lib/url.ts';
 
@@ -9,33 +10,27 @@ const hosts = getHosts(lang);
 ---
 
 <Base
-  title="Our hosts — Twiggli"
-  description="The independent Berlin makers running workshops on Twiggli — ceramics, printmaking, food, photography, graffiti and more."
+  title="Corporate events — Twiggli"
+  description="Private team-building workshops for companies, run by independent Berlin makers — ceramics, printmaking, food, photography and more."
   lang={lang}
 >
   <div class="container">
     <section class="page-head">
-      <span class="kicker">Our hosts</span>
-      <h1 class="page-title">Made by hand, across the city</h1>
+      <span class="kicker">Corporate events</span>
+      <h1 class="page-title">Team-building workshops for companies</h1>
       <p class="page-lede">
-        Every workshop on Twiggli is run by an independent Berlin maker — in their own atelier, at
-        your office, or outdoors. {hosts.length} of them, all in Berlin. Browse the makers below,
-        then tell us who you would like to spend a day with.
+        Book a private workshop for your team — cooking, climbing, dance and more, run by our vetted
+        hosts at your office or a venue nearby. We handle the logistics for groups of any size.
       </p>
       <div class="hero-actions">
-        <a href={withBase('/contact/')} class="btn btn-primary">Book a day for your team</a>
+        <a href={withBase('/contact/')} class="btn btn-primary">Get a corporate quote</a>
       </div>
     </section>
 
     <hr class="rule" />
 
     <section class="section">
-      <nav class="maker-index" aria-label="Jump to a host">
-        {hosts.map((host) => <a href={`#${host.slug}`}>{host.name}</a>)}
-      </nav>
-    </section>
-
-    <section class="section" style="padding-top:0">
+      <HostFilters lang={lang} />
       <HostDirectory hosts={hosts} lang={lang} />
     </section>
 
