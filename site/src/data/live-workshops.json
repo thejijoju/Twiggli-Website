@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-19T12:56:06.929Z",
+  "updated": "2026-08-19T13:05:03.618Z",
   "sources": [
     {
       "slug": "qian",
@@ -12,14 +12,23 @@
       "url": "https://www.claygarden.studio/special-workshops",
       "status": "failed: no upcoming events parsed",
       "count": 4
+    },
+    {
+      "slug": "nina",
+      "url": "https://www.ninakranzart.com/privat-freizeit",
+      "status": "ok",
+      "count": 6
     }
   ],
   "recurring": [
     {
       "slug": "nina",
       "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
-      "title": "Urban ART Club",
-      "weekdays": ["thu", "fri"],
+      "title": "8; } } Urban ART Club",
+      "weekdays": [
+        "thu",
+        "fri"
+      ],
       "time": "18:00",
       "duration": "2 h",
       "price": "€59",
@@ -29,8 +38,10 @@
     {
       "slug": "nina",
       "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
-      "title": "Kunstworkshop & Frühstück",
-      "weekdays": ["sat"],
+      "title": "Mehr Infos Kunstworkshop & Frühstück",
+      "weekdays": [
+        "sat"
+      ],
       "time": "09:30",
       "duration": "2.5 h",
       "price": "€59",
@@ -40,8 +51,10 @@
     {
       "slug": "nina",
       "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
-      "title": "Sommer-Malkurs an der Havel",
-      "weekdays": ["tue"],
+      "title": "Mehr Infos Sommer-Malkurs an der Havel in Berlin",
+      "weekdays": [
+        "tue"
+      ],
       "time": "18:00",
       "duration": "2 h",
       "price": "€89",
@@ -51,8 +64,10 @@
     {
       "slug": "nina",
       "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
-      "title": "Klang & Farbe",
-      "weekdays": ["fri"],
+      "title": "Mehr Infos Klang & Farbe",
+      "weekdays": [
+        "fri"
+      ],
       "time": "17:00",
       "duration": "2 h",
       "price": "€40",
@@ -62,8 +77,10 @@
     {
       "slug": "nina",
       "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
-      "title": "Klangentspannung für Schwangere",
-      "weekdays": ["mon"],
+      "title": "Termine & Infos Klangentspannung für Schwangere",
+      "weekdays": [
+        "mon"
+      ],
       "time": "18:00",
       "duration": "1 h",
       "district": "Spandau",
@@ -72,11 +89,13 @@
     {
       "slug": "nina",
       "sourceUrl": "https://www.ninakranzart.com/privat-freizeit",
-      "title": "Klangentspannung",
-      "weekdays": ["wed"],
+      "title": "Mehr Infos Klangentspannung",
+      "weekdays": [
+        "wed"
+      ],
       "time": "17:00",
       "duration": "1 h",
-      "district": "Spandau",
+      "district": "Spandau St. Wilhelm",
       "url": "https://www.ninakranzart.com/privat-freizeit"
     }
   ],
