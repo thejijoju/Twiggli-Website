@@ -1,6 +1,6 @@
 ---
 import type { Host } from '../data/content.ts';
-import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 
 /**
  * The full maker directory: one card per host, with the brochure photo strip
@@ -17,8 +17,8 @@ interface Props {
 const { hosts, lang = DEFAULT_LANG } = Astro.props;
 
 const labels = {
-  en: { studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', play: 'Play reel' },
-  de: { studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', play: 'Reel abspielen' },
+  en: { studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', play: 'Play reel', request: 'Request event' },
+  de: { studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', play: 'Reel abspielen', request: 'Event anfragen' },
 }[lang];
 ---
 
@@ -66,6 +66,13 @@ const labels = {
         <div><dt>{labels.place}</dt><dd>{host.place}</dd></div>
         <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
       </dl>
+
+      {/* Lands on the contact form with this host in the query string, so
+          the form can pre-fill the enquiry. */}
+      <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
+        {labels.request}
+      </a>
     </article>
   ))}
 </div>

@@ -1211,6 +1211,36 @@ a:hover { color: var(--color-accent); }
 }
 .maker-meta dd { margin: 0; }
 
+/* The per-host enquiry action: a solid black pill with a paper-plane
+   glyph, echoing the nav's app-download CTA. */
+.maker-request {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+.maker-request:hover {
+  background: color-mix(in srgb, var(--color-text) 82%, transparent);
+  color: var(--color-bg);
+}
+.maker-request svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* — maker index — the jump list above the directory. */
 /* — directory filters — replaced the A–Z name index. Chips are labels
    wrapping radio inputs: the input is hidden from sight but still focusable

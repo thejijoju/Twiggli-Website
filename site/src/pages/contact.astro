@@ -74,4 +74,19 @@ const { socialLinks } = getSiteData(lang);
       </div>
     </section>
   </div>
+
+  {/* "Request event" buttons on /hosts/ land here with ?host=<name>: pick
+      the corporate topic and start the message for the visitor. is:inline
+      because it's plain DOM glue — no imports, nothing to bundle. */}
+  <script is:inline>
+    (() => {
+      const host = new URLSearchParams(location.search).get('host');
+      if (!host) return;
+      const topic = document.getElementById('topic');
+      if (topic) topic.value = 'Corporate events';
+      const message = document.getElementById('message');
+      if (message && !message.value)
+        message.value = `Hi! I'd like to request an event with ${host}.`;
+    })();
+  </script>
 </Base>

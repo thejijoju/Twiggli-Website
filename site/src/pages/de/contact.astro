@@ -75,4 +75,19 @@ const { socialLinks } = getSiteData(lang);
       </div>
     </section>
   </div>
+
+  {/* "Event anfragen"-Buttons auf /de/hosts/ landen hier mit ?host=<name>:
+      Thema vorwählen und die Nachricht für den Besucher beginnen. is:inline,
+      weil es reines DOM-Glue ist — keine Imports, nichts zu bundeln. */}
+  <script is:inline>
+    (() => {
+      const host = new URLSearchParams(location.search).get('host');
+      if (!host) return;
+      const topic = document.getElementById('topic');
+      if (topic) topic.value = 'Firmenevents';
+      const message = document.getElementById('message');
+      if (message && !message.value)
+        message.value = `Hallo! Ich möchte ein Event mit ${host} anfragen.`;
+    })();
+  </script>
 </Base>
