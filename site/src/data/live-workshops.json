@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-19T13:12:34.950Z",
+  "updated": "2026-08-19T13:23:58.874Z",
   "sources": [
     {
       "slug": "qian",
@@ -18,6 +18,18 @@
       "url": "https://www.ninakranzart.com/privat-freizeit",
       "status": "ok",
       "count": 6
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/?re-product-id=227019",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     }
   ],
   "recurring": [
