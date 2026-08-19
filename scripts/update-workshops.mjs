@@ -14,9 +14,11 @@
  * host, so a broken remote page can never blank the site.
  *
  * Extraction strategies, in order:
- *   1. schema.org JSON-LD Event objects (Wix, Squarespace and most
- *      booking widgets emit these).
- *   2. <time datetime="..."> elements, paired with the nearest heading.
+ *   1. schema.org JSON-LD Event objects (many booking widgets emit these).
+ *   2. Wix Bookings visitor API — Wix pages render their schedule
+ *      client-side, so the HTML carries no dates at all; the same-domain
+ *      /_api/ endpoints serve them with a visitor token the site hands out.
+ *   3. <time datetime="..."> elements, paired with the nearest heading.
  * Every run logs what each strategy found so a failing source can be
  * diagnosed from the Actions log alone.
  */
@@ -95,7 +97,92 @@ function fromJsonLd(html, sourceUrl) {
     .filter(Boolean);
 }
 
-/** Strategy 2: <time datetime> elements, titled by the nearest preceding heading. */
+const UA = 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)';
+
+/** Wix Bookings app id — constant across all Wix sites. */
+const WIX_BOOKINGS_APP = '13d21c63-b5ec-5912-8397-c3a5ddb27a97';
+
+/** Strategy 2: the Wix Bookings visitor API. A Wix page's schedule is
+ *  rendered client-side, so the dates never appear in the HTML; the site's
+ *  own /_api/ endpoints serve them to any visitor holding the instance
+ *  token that GET /_api/v1/access-tokens hands out. Returns null when the
+ *  page isn't Wix, [] when it is but nothing could be read. */
+async function fromWixBookings(source, html) {
+  if (!/wix\.com|wixstatic|parastorage|thunderbolt/i.test(html)) return null;
+  const origin = new URL(source.url).origin;
+  const jsonHeaders = { 'user-agent': UA, accept: 'application/json' };
+
+  const tokRes = await fetch(`${origin}/_api/v1/access-tokens`, { headers: jsonHeaders });
+  console.log(`[${source.slug}] wix access-tokens: HTTP ${tokRes.status}`);
+  if (!tokRes.ok) return [];
+  const tokens = await tokRes.json();
+  const instance = tokens?.apps?.[WIX_BOOKINGS_APP]?.instance;
+  if (!instance) {
+    console.log(`[${source.slug}] wix: no bookings token; app ids present: ${Object.keys(tokens?.apps ?? {}).join(', ') || 'none'}`);
+    return [];
+  }
+
+  const authHeaders = { ...jsonHeaders, authorization: instance, 'content-type': 'application/json' };
+
+  const svcRes = await fetch(`${origin}/_api/bookings/v2/services/query`, {
+    method: 'POST',
+    headers: authHeaders,
+    body: JSON.stringify({ query: { paging: { limit: 100 } } }),
+  });
+  console.log(`[${source.slug}] wix services query: HTTP ${svcRes.status}`);
+  if (!svcRes.ok) {
+    console.log(`[${source.slug}] wix services body: ${(await svcRes.text()).slice(0, 300)}`);
+    return [];
+  }
+  const svcJson = await svcRes.json();
+  const services = svcJson.services ?? [];
+  console.log(
+    `[${source.slug}] wix services: ${services.map((s) => `${s.name} (${s.type ?? '?'}) [${s.id}]`).join('; ') || 'none'}`,
+  );
+  if (!services.length) return [];
+
+  const from = new Date().toISOString();
+  const to = new Date(Date.now() + KEEP_DAYS * 86400000).toISOString();
+  const avRes = await fetch(`${origin}/_api/bookings/v2/availability/query`, {
+    method: 'POST',
+    headers: authHeaders,
+    body: JSON.stringify({
+      query: {
+        filter: { serviceId: { $in: services.map((s) => s.id) }, startDate: from, endDate: to },
+      },
+    }),
+  });
+  console.log(`[${source.slug}] wix availability query: HTTP ${avRes.status}`);
+  if (!avRes.ok) {
+    console.log(`[${source.slug}] wix availability body: ${(await avRes.text()).slice(0, 300)}`);
+    return [];
+  }
+  const avJson = await avRes.json();
+  const entries = avJson.availabilityEntries ?? [];
+  console.log(`[${source.slug}] wix availability entries: ${entries.length}`);
+
+  const byId = new Map(services.map((s) => [s.id, s]));
+  const events = [];
+  for (const entry of entries) {
+    const slot = entry.slot ?? entry;
+    const start = Date.parse(slot.startDate ?? '');
+    if (Number.isNaN(start)) continue;
+    if (entry.bookable === false) continue;
+    const service = byId.get(slot.serviceId);
+    const priceValue = service?.payment?.fixed?.price?.value;
+    const servicePage = service?.urls?.servicePage?.url;
+    events.push({
+      title: service?.name ?? 'Workshop',
+      date: berlinDate(start),
+      time: berlinTime(start),
+      ...(priceValue != null ? { price: `€${Math.round(Number(priceValue))}` } : {}),
+      url: typeof servicePage === 'string' && servicePage.startsWith('http') ? servicePage : source.url,
+    });
+  }
+  return events;
+}
+
+/** Strategy 3: <time datetime> elements, titled by the nearest preceding heading. */
 function fromTimeTags(html, sourceUrl) {
   const out = [];
   for (const m of html.matchAll(/<time[^>]*datetime=["']([^"']+)["'][^>]*>/gi)) {
@@ -128,6 +215,13 @@ async function scrape(source) {
   const ld = fromJsonLd(html, source.url);
   console.log(`[${source.slug}] json-ld events: ${ld.length}`);
   let found = ld;
+  if (!found.length) {
+    const wix = await fromWixBookings(source, html);
+    if (wix !== null) {
+      console.log(`[${source.slug}] wix bookings events: ${wix.length}`);
+      found = wix;
+    }
+  }
   if (!found.length) {
     found = fromTimeTags(html, source.url);
     console.log(`[${source.slug}] <time> elements: ${found.length}`);
@@ -176,10 +270,19 @@ for (const source of SOURCES) {
   }
 }
 
-workshops.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+// The Wix API returns the whole site's schedule, so two source pages on
+// one domain surface the same events — dedupe before writing.
+const seen = new Set();
+const unique = workshops.filter((w) => {
+  const key = `${w.slug}|${w.date}|${w.time}|${w.title}`;
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+unique.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
 
 writeFileSync(
   OUT,
-  JSON.stringify({ updated: new Date().toISOString(), sources: statuses, workshops }, null, 2) + '\n',
+  JSON.stringify({ updated: new Date().toISOString(), sources: statuses, workshops: unique }, null, 2) + '\n',
 );
-console.log(`wrote ${workshops.length} workshops to ${OUT}`);
+console.log(`wrote ${unique.length} workshops to ${OUT}`);
