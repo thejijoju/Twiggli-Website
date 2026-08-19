@@ -1,6 +1,5 @@
 ---
 import { getSessions, DAYS_AHEAD, type Session } from '../data/sessions.ts';
-import { appUrl } from '../data/site.ts';
 import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
 /** The schedule feed, styled after the app's search screen: a search pill
@@ -103,7 +102,7 @@ const dayLabel = (offset: number) =>
                       <li
                         class="session"
                         data-search={`${s.title} ${s.host.name} ${s.place} ${s.district}`.toLowerCase()}
-                        data-price={s.price.startsWith('€') ? 'paid' : 'free'}
+                        data-price={(s.price ?? '€').startsWith('€') ? 'paid' : 'free'}
                       >
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
@@ -124,18 +123,20 @@ const dayLabel = (offset: number) =>
                           )}
                         </a>
                         <span class="session-main">
-                          <span class="session-duration">{s.host.duration}</span>
+                          <span class="session-duration">{s.duration ?? s.host.duration}</span>
                           <a class="session-title" href={href(lang, `/corporatebookings/#${s.host.slug}`)}>{s.title}</a>
                           <span class="session-host">{s.host.name} · {s.district}</span>
                         </span>
                         <span class="session-side">
-                          <span class="session-fare">
-                            <span class="session-price">{s.price}</span>
-                            <span class="session-spots">{s.spots} {t.spots}</span>
-                          </span>
-                          {/* Booking happens in the app, so the button
-                              leads there. */}
-                          <a class="session-book" href={appUrl} target="_blank" rel="noopener">{t.book}</a>
+                          {(s.price || typeof s.spots === 'number') && (
+                            <span class="session-fare">
+                              {s.price && <span class="session-price">{s.price}</span>}
+                              {typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>}
+                            </span>
+                          )}
+                          {/* Placeholder sessions book in the app; real
+                              scraped ones book on the host's own page. */}
+                          <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
                         </span>
                       </li>
                     ))}

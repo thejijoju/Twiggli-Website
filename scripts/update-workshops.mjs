@@ -1,0 +1,185 @@
+/**
+ * Weekly workshop-feed updater.
+ *
+ * Fetches each configured host's public schedule page, extracts upcoming
+ * classes/workshops, and writes them to site/src/data/live-workshops.json.
+ * The site build (site/src/data/sessions.ts) shows these real sessions in
+ * the /happening-today/ feed, with the Book button leading to the host's
+ * own booking page instead of the app.
+ *
+ * Run by .github/workflows/update-workshops.yml on a weekly cron (and by
+ * hand via workflow_dispatch). Designed to degrade safely: a source that
+ * fails to fetch or parse keeps its previous entries (minus past dates)
+ * and the feed falls back to the generated placeholder schedule for that
+ * host, so a broken remote page can never blank the site.
+ *
+ * Extraction strategies, in order:
+ *   1. schema.org JSON-LD Event objects (Wix, Squarespace and most
+ *      booking widgets emit these).
+ *   2. <time datetime="..."> elements, paired with the nearest heading.
+ * Every run logs what each strategy found so a failing source can be
+ * diagnosed from the Actions log alone.
+ */
+
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/live-workshops.json');
+
+/** Hosts whose public schedules we check. `slug` must match a host slug in
+ *  site/src/data/content.ts; `url` is both the page scraped and where the
+ *  feed's Book button sends people. Add a line per host as pages are found. */
+const SOURCES = [
+  { slug: 'qian', name: 'Qian — Clay Garden pottery classes', url: 'https://www.claygarden.studio/pottery-classes' },
+  { slug: 'qian', name: 'Qian — Clay Garden special workshops', url: 'https://www.claygarden.studio/special-workshops' },
+];
+
+/** How far ahead a scraped session may be and still be kept. Slightly wider
+ *  than the site's day strip so entries roll into view between runs. */
+const KEEP_DAYS = 90;
+
+const TZ = 'Europe/Berlin';
+
+const berlinDate = (d) => new Date(d).toLocaleDateString('en-CA', { timeZone: TZ }); // YYYY-MM-DD
+const berlinTime = (d) =>
+  new Date(d).toLocaleTimeString('de-DE', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+const todayISO = berlinDate(Date.now());
+const maxISO = berlinDate(Date.now() + KEEP_DAYS * 86400000);
+
+const decodeEntities = (s) =>
+  s
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ');
+
+const stripTags = (s) => decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+
+/** Strategy 1: walk every JSON-LD block for schema.org Event-ish objects. */
+function fromJsonLd(html, sourceUrl) {
+  const events = [];
+  const walk = (node) => {
+    if (Array.isArray(node)) return node.forEach(walk);
+    if (!node || typeof node !== 'object') return;
+    const types = [].concat(node['@type'] ?? []);
+    if (types.some((t) => typeof t === 'string' && /event/i.test(t)) && node.startDate) {
+      events.push(node);
+    }
+    Object.values(node).forEach(walk);
+  };
+  for (const m of html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      walk(JSON.parse(decodeEntities(m[1].trim())));
+    } catch {
+      /* malformed block — skip */
+    }
+  }
+  return events
+    .map((e) => {
+      const start = Date.parse(e.startDate);
+      if (Number.isNaN(start)) return null;
+      const offer = [].concat(e.offers ?? [])[0];
+      const price =
+        offer?.price != null && offer.price !== ''
+          ? Number(offer.price) === 0
+            ? 'Free'
+            : `€${Math.round(Number(offer.price))}`
+          : undefined;
+      return {
+        title: stripTags(String(e.name ?? 'Workshop')),
+        date: berlinDate(start),
+        time: berlinTime(start),
+        ...(price ? { price } : {}),
+        url: typeof e.url === 'string' && e.url.startsWith('http') ? e.url : sourceUrl,
+      };
+    })
+    .filter(Boolean);
+}
+
+/** Strategy 2: <time datetime> elements, titled by the nearest preceding heading. */
+function fromTimeTags(html, sourceUrl) {
+  const out = [];
+  for (const m of html.matchAll(/<time[^>]*datetime=["']([^"']+)["'][^>]*>/gi)) {
+    const start = Date.parse(m[1]);
+    if (Number.isNaN(start)) continue;
+    const before = html.slice(Math.max(0, m.index - 3000), m.index);
+    const heading = [...before.matchAll(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/gi)].pop();
+    out.push({
+      title: heading ? stripTags(heading[1]) : 'Workshop',
+      date: berlinDate(start),
+      time: berlinTime(start),
+      url: sourceUrl,
+    });
+  }
+  return out;
+}
+
+async function scrape(source) {
+  const res = await fetch(source.url, {
+    redirect: 'follow',
+    headers: {
+      'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)',
+      accept: 'text/html,application/xhtml+xml',
+    },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const html = await res.text();
+  console.log(`[${source.slug}] fetched ${html.length} bytes`);
+
+  const ld = fromJsonLd(html, source.url);
+  console.log(`[${source.slug}] json-ld events: ${ld.length}`);
+  let found = ld;
+  if (!found.length) {
+    found = fromTimeTags(html, source.url);
+    console.log(`[${source.slug}] <time> elements: ${found.length}`);
+  }
+  if (!found.length) {
+    // Diagnostics for the Actions log, so the parser can be tuned without
+    // re-fetching by hand: which ISO-looking dates exist in the page at all?
+    const isoDates = [...new Set([...html.matchAll(/20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}/g)].map((m) => m[0]))];
+    console.log(`[${source.slug}] no structured events; raw ISO datetimes in page: ${isoDates.slice(0, 20).join(', ') || 'none'}`);
+  }
+
+  const inWindow = found
+    .filter((w) => w.date >= todayISO && w.date <= maxISO)
+    .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
+  console.log(`[${source.slug}] kept ${inWindow.length} within ${KEEP_DAYS} days`);
+  return inWindow;
+}
+
+const previous = (() => {
+  try {
+    return JSON.parse(readFileSync(OUT, 'utf8'));
+  } catch {
+    return { workshops: [], sources: [] };
+  }
+})();
+
+const workshops = [];
+const statuses = [];
+for (const source of SOURCES) {
+  try {
+    const found = await scrape(source);
+    if (found.length) {
+      workshops.push(...found);
+      statuses.push({ slug: source.slug, url: source.url, status: 'ok', count: found.length });
+    } else {
+      throw new Error('no upcoming events parsed');
+    }
+  } catch (err) {
+    // Keep this source's previous future entries rather than blanking them.
+    // Matched by sourceUrl, so one failing page never clobbers or
+    // duplicates a sibling page's fresh results for the same host.
+    const kept = (previous.workshops ?? []).filter((w) => w.sourceUrl === source.url && w.date >= todayISO);
+    workshops.push(...kept);
+    statuses.push({ slug: source.slug, url: source.url, status: `failed: ${err.message}`, count: kept.length });
+    console.error(`[${source.slug}] FAILED (${err.message}) — kept ${kept.length} previous entries`);
+  }
+}
+
+workshops.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+
+writeFileSync(
+  OUT,
+  JSON.stringify({ updated: new Date().toISOString(), sources: statuses, workshops }, null, 2) + '\n',
+);
+console.log(`wrote ${workshops.length} workshops to ${OUT}`);

@@ -4,6 +4,11 @@ on:
   push:
     branches: [claude/new-session-c5222r]
     paths: [site/**, .github/workflows/deploy.yml]
+  schedule:
+    # Daily rebuild: the schedule pages bake "today" in at build time (day
+    # offsets, the happening-today strip), so a fresh build every morning
+    # keeps real workshop dates true between weekly feed checks.
+    - cron: '30 2 * * *'
   workflow_dispatch:
 
 permissions:
