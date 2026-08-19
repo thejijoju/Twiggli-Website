@@ -326,7 +326,7 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
     { id: 'phone-front-1', title: 'Collective painting', date: 'Mon, Oct 16', time: '9AM–10.30AM',
       distance: '5 km away', host: 'Rebeca', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Bouldering course', date: 'Mon, Oct 16', time: '4PM–6PM',
-      distance: '2 km away', host: 'Pauline D.', rating: '4.8', ratingCount: '4' },
+      distance: '2 km away', host: 'Pauline D.', rating: '4.8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Hiking meetup', photo: '/img/hero/hiking.jpg' },
   ],
@@ -334,7 +334,7 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
     { id: 'phone-front-1', title: 'Kollektive Malerei', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
       distance: '5 km entfernt', host: 'Rebeca', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Boulderkurs', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
-      distance: '2 km entfernt', host: 'Pauline D.', rating: '4,8', ratingCount: '4' },
+      distance: '2 km entfernt', host: 'Pauline D.', rating: '4,8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Wander-Treffen', photo: '/img/hero/hiking.jpg' },
   ],
@@ -346,15 +346,18 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
  *  `public/video/`, point the card's entry at it, and the mockup plays it —
  *  nothing else needs changing.
  *
- *  The three reels we hold fill the three visible media slots. They are all
- *  painting sessions, so until per-activity footage lands, only card 1's
- *  title matches its clip; cards 3 and 4 show media alone (their info block
- *  is cropped by the app's bottom nav), which keeps the mismatch invisible.
- *  Card 2 is info-only and needs no reel. */
+ *  All four feed cards show video, per request, but we only hold three
+ *  reels — so reel-1 also fills card 4, placed diagonal to card 1 (and
+ *  card 3 diagonal to the back phone's reel-2) to keep the repeats as far
+ *  apart as the grid allows. All three clips are painting sessions, so
+ *  until per-activity footage lands only card 1's title matches its clip;
+ *  cards 3 and 4 show media alone (their info is cropped by the app's
+ *  bottom nav), which keeps the mismatch invisible. */
 const phoneReels: Record<string, { video: string; poster: string }> = {
   'phone-front-1': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+  'phone-front-2': { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
   'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
-  'phone-front-4': { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
+  'phone-front-4': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
 };
 
 /** The sample cards inside the phone mockup. */

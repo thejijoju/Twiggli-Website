@@ -293,9 +293,9 @@ a:hover { color: var(--color-accent); }
   display: flex;
   flex-direction: column;
 }
-/* Only a sliver of this photo shows past the front phone, like the app
-   render's back device: a cropped feed image at the top of the screen. */
-.phone-back-photo { height: 34%; overflow: hidden; }
+/* The back phone plays the app's full-screen video feed; only its left
+   edge shows past the front phone. */
+.phone-back-media { flex: 1; overflow: hidden; }
 .phone-back-nav {
   margin-top: auto;
   justify-content: flex-start;
@@ -432,7 +432,6 @@ a:hover { color: var(--color-accent); }
   align-items: start;
 }
 .phone-feed-col { display: flex; flex-direction: column; gap: 10px; }
-.phone-feed-col-offset { justify-content: flex-end; height: 100%; }
 .phone-card-media {
   aspect-ratio: 1 / 1.05;
   overflow: hidden;

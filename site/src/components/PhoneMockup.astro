@@ -5,20 +5,21 @@ import { withBase, type Lang } from '../lib/url.ts';
 
 /** The hero's device visual, rebuilt to match the app's real home screen:
  *  rounded dark bezels, the search pill with its filter controls, the day
- *  chips, a two-column feed whose thumbnails play reels, and the bottom nav
- *  with the purple “+” button. The feed is staggered like the app's — card 1
- *  runs tall with its full info block, card 2 shows info only (its thumbnail
- *  is scrolled off the top), cards 3 and 4 are media cropped by the nav. */
+ *  chips, a four-card feed whose thumbnails all play reels, and the bottom
+ *  nav with the purple “+” button. The back phone plays one reel full-screen
+ *  (the app's video feed) — only its left edge shows past the front phone. */
 interface Props {
   lang: Lang;
   /** 'overlap' shows the second phone behind and to the left. */
   layout?: 'overlap' | 'single';
-  /** What the front phone shows: a reel filling the whole screen bar the
-   *  bottom nav (the app's video feed), the workshop feed, or a photo. */
-  screen?: 'video' | 'listing' | 'photo';
-  backPhoto?: string;
+  /** What the front phone shows: the workshop feed, a reel filling the
+   *  whole screen bar the bottom nav (the app's video feed), or a photo. */
+  screen?: 'listing' | 'video' | 'photo';
   frontPhoto?: string;
-  /** The reel for screen="video". Swap in real footage here. */
+  /** The full-screen reels: `backVideo` on the back phone, `frontVideo`
+   *  when screen="video". Swap in real footage here. */
+  backVideo?: string;
+  backPoster?: string;
   frontVideo?: string;
   frontPoster?: string;
 }
@@ -27,8 +28,9 @@ const {
   lang,
   layout = 'overlap',
   screen = 'listing',
-  backPhoto = withBase('/img/hero/forest.jpg'),
   frontPhoto,
+  backVideo = withBase('/video/reel-2.mp4'),
+  backPoster = withBase('/video/reel-2-poster.jpg'),
   frontVideo = withBase('/video/reel-1.mp4'),
   frontPoster = withBase('/video/reel-1-poster.jpg'),
 } = Astro.props;
@@ -43,8 +45,17 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
   {layout !== 'single' && (
     <div class="phone-back">
       <div class="phone-back-screen">
-        <div class="phone-back-photo grayscale">
-          <ImageSlot src={backPhoto} shape="rect" placeholder="Drop a workshop photo" alt="" />
+        <div class="phone-back-media">
+          <video
+            class="phone-card-video"
+            src={backVideo}
+            poster={backPoster}
+            muted
+            loop
+            playsinline
+            preload="none"
+            aria-hidden="true"
+          ></video>
         </div>
         <div class="phone-nav phone-back-nav" aria-hidden="true">
           <svg class="phone-nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5" /><path d="M5.5 8.8V21h13V8.8" /><path d="M9.8 21v-6.5h4.4V21" /></svg>
@@ -98,8 +109,8 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
         </div>
 
         {/* The app's feed is a staggered two-column grid, so each column is
-            its own stack: the tall video card ends level with the info-only
-            card, and the two cropped media cards run off behind the nav. */}
+            its own stack: card 1 runs tall, card 2 square, and the two
+            bottom media cards crop off behind the nav at different heights. */}
         <div class="phone-feed">
           <div class="phone-feed-col">
             <div class="phone-card">
@@ -155,8 +166,24 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
             </div>
           </div>
 
-          <div class="phone-feed-col phone-feed-col-offset">
-            <div class="phone-card phone-card-info-only">
+          <div class="phone-feed-col">
+            <div class="phone-card">
+              <div class="phone-card-media">
+                {infoCard.video ? (
+                  <video
+                    class="phone-card-video"
+                    src={infoCard.video}
+                    poster={infoCard.poster}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    aria-hidden="true"
+                  ></video>
+                ) : (
+                  <ImageSlot src={infoCard.photo} shape="rect" placeholder={infoCard.title} alt="" />
+                )}
+              </div>
               <div class="phone-card-info">
                 <div class="phone-card-head">
                   <p class="phone-card-title">{infoCard.title}</p>
@@ -230,7 +257,9 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (videos.length && !still) {
-    const phone = document.querySelector('.phone-front');
+    // Observe the whole visual, not just the front phone — the back
+    // phone's full-screen reel needs to start and stop with the rest.
+    const phone = document.querySelector('.hero-visual');
     const observer = new IntersectionObserver(
       ([entry]) => {
         for (const video of videos) {
