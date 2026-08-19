@@ -224,7 +224,15 @@ function fromGermanRecurring(html, source) {
     // of the previous sentence, the previous class's price tail, or page
     // furniture like "Mehr Infos" / "Termine & Infos" buttons.
     const before = text.slice(Math.max(0, m.index - 90), m.index);
-    const title = before.split(/[.!?—€{}();|]|Spendenbasis|Infos|buchen|\s{3,}/).pop()?.trim();
+    // ALL-CAPS words are section headers ("AKTUELLE ANGEBOTE"), not class
+    // names — treat them as boundaries too, then shed leading dashes and a
+    // stray leading "Berlin" from a header tail.
+    const title = before
+      .split(/[.!?—€{}();|]|Spendenbasis|Infos|buchen|\b[A-ZÄÖÜẞ]{4,}\b|\s{3,}/)
+      .pop()
+      ?.replace(/^[\s\-–—:·]+/, '')
+      .replace(/^Berlin\s+/, '')
+      .trim();
     if (!title || title.length < 3 || title.length > 70) continue;
 
     const after = text.slice(m.index + m[0].length, m.index + m[0].length + 140);
