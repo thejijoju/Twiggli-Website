@@ -1,19 +1,43 @@
 ---
-import { getSessions, DAYS_AHEAD } from '../data/sessions.ts';
+import { getSessions, DAYS_AHEAD, type Session } from '../data/sessions.ts';
+import { appUrl } from '../data/site.ts';
 import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
+/** The schedule feed, styled after the app's search screen: a search pill
+ *  with a location chunk, price filter chips, a borderless day strip, and
+ *  the day's sessions grouped under bold time headers. The search input and
+ *  chips filter the list live, client-side. */
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 
 const sessions = getSessions(lang);
 const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 
+/** Sessions arrive sorted by time, so grouping keeps that order. */
+const byTime = (list: Session[]): [string, Session[]][] => {
+  const groups = new Map<string, Session[]>();
+  for (const s of list) {
+    if (!groups.has(s.time)) groups.set(s.time, []);
+    groups.get(s.time)!.push(s);
+  }
+  return [...groups.entries()];
+};
+
 const t = {
   en: { spots: 'spots left', book: 'Book', none: 'Nothing scheduled for this day yet.',
-        today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day' },
+        noMatch: 'Nothing matches — try another search or filter.',
+        today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
+        search: 'What do you want to do?', city: 'Berlin',
+        all: 'All', free: 'Free', paid: 'Paid' },
   de: { spots: 'Plätze frei', book: 'Buchen', none: 'Für diesen Tag ist noch nichts geplant.',
-        today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen' },
+        noMatch: 'Nichts gefunden — versuch eine andere Suche oder einen anderen Filter.',
+        today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
+        search: 'Was möchtest du machen?', city: 'Berlin',
+        all: 'Alle', free: 'Kostenlos', paid: 'Kostenpflichtig' },
 }[lang];
+
+const dayLabel = (offset: number) =>
+  offset === 0 ? t.today : offset === 1 ? t.tomorrow : null;
 ---
 
 <div
@@ -23,6 +47,28 @@ const t = {
   data-today={t.today}
   data-tomorrow={t.tomorrow}
 >
+  <label class="feed-search">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.35-4.35" />
+    </svg>
+    <input class="feed-search-input" type="search" placeholder={t.search} aria-label={t.search} />
+    <span class="feed-search-loc">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+      {t.city}
+    </span>
+  </label>
+
+  <div class="feed-pills" role="group">
+    <button class="feed-pill is-active" type="button" data-price-filter="all">{t.all}</button>
+    <button class="feed-pill" type="button" data-price-filter="free">{t.free}</button>
+    <button class="feed-pill" type="button" data-price-filter="paid">{t.paid}</button>
+  </div>
+
+  <span class="daystrip-month" data-month aria-hidden="true"></span>
   <div class="daystrip" role="tablist" aria-label={t.pick}>
     {days.map((offset) => (
       <button
@@ -46,21 +92,60 @@ const t = {
       return (
         <div class="daygroup" data-day={offset} hidden={offset !== 0}>
           {forDay.length ? (
-            <ul class="session-list">
-              {forDay.map((s) => (
-                <li class="session">
-                  <span class="session-time">{s.time}</span>
-                  <span class="session-main">
-                    <a class="session-title" href={href(lang, `/hosts/#${s.host.slug}`)}>{s.title}</a>
-                    <span class="session-host">{s.host.name} · {s.place}</span>
-                  </span>
-                  <span class="session-spots">{s.spots} {t.spots}</span>
-                  <span class="session-price">{s.price}</span>
-                </li>
+            <>
+              {byTime(forDay).map(([time, list], groupIndex) => (
+                <section class="timegroup">
+                  <h3 class="timegroup-head">
+                    {groupIndex === 0 && dayLabel(offset) ? `${dayLabel(offset)} · ${time}` : time}
+                  </h3>
+                  <ul class="session-list">
+                    {list.map((s) => (
+                      <li
+                        class="session"
+                        data-search={`${s.title} ${s.host.name} ${s.place} ${s.district}`.toLowerCase()}
+                        data-price={s.price.startsWith('€') ? 'paid' : 'free'}
+                      >
+                        {/* The thumbnail plays the host's reel where footage
+                            exists — the card shows the session moving, per
+                            the app — and falls back to the still. */}
+                        <a class="session-thumb" href={href(lang, `/corporatebookings/#${s.host.slug}`)} tabindex="-1" aria-hidden="true">
+                          {s.host.video ? (
+                            <video
+                              class="session-video"
+                              src={s.host.video}
+                              poster={s.host.poster}
+                              muted
+                              loop
+                              playsinline
+                              preload="none"
+                            ></video>
+                          ) : (
+                            <img src={s.host.photo} alt="" loading="lazy" decoding="async" />
+                          )}
+                        </a>
+                        <span class="session-main">
+                          <span class="session-duration">{s.host.duration}</span>
+                          <a class="session-title" href={href(lang, `/corporatebookings/#${s.host.slug}`)}>{s.title}</a>
+                          <span class="session-host">{s.host.name} · {s.district}</span>
+                        </span>
+                        <span class="session-side">
+                          <span class="session-fare">
+                            <span class="session-price">{s.price}</span>
+                            <span class="session-spots">{s.spots} {t.spots}</span>
+                          </span>
+                          {/* Booking happens in the app, so the button
+                              leads there. */}
+                          <a class="session-book" href={appUrl} target="_blank" rel="noopener">{t.book}</a>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               ))}
-            </ul>
+              <p class="daypicker-empty" data-empty hidden>{t.noMatch}</p>
+            </>
           ) : (
-            <p class="section-lede">{t.none}</p>
+            <p class="daypicker-empty">{t.none}</p>
           )}
         </div>
       );
@@ -77,8 +162,12 @@ const t = {
     const locale = root.dataset.locale || 'en-GB';
     const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.daychip'));
     const groups = Array.from(root.querySelectorAll<HTMLElement>('.daygroup'));
+    const monthEl = root.querySelector<HTMLElement>('[data-month]');
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
+    const monthOf = (date: Date) => date.toLocaleDateString(locale, { month: 'short' });
+    if (monthEl) monthEl.textContent = monthOf(today);
 
     chips.forEach((chip) => {
       const offset = Number(chip.dataset.offset || 0);
@@ -102,10 +191,67 @@ const t = {
       if (date.getDay() === 0 || date.getDay() === 6) chip.classList.add('is-weekend');
 
       chip.addEventListener('click', () => {
-        chips.forEach((c) => c.setAttribute('aria-selected', String(c === chip)));
+        chips.forEach((c) => {
+          c.setAttribute('aria-selected', String(c === chip));
+          // Days before the selected one grey out, like the app's strip —
+          // the eye reads position at a glance without boxes around dates.
+          c.classList.toggle('is-before', Number(c.dataset.offset || 0) < offset);
+        });
         groups.forEach((g) => { g.hidden = g.dataset.day !== String(offset); });
+        if (monthEl) monthEl.textContent = monthOf(date);
         chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       });
     });
+
+    // Live filtering, like the app: the search box matches title, host and
+    // place; the chips narrow by price. A time header disappears with its
+    // last matching session, and an empty day shows the no-match line.
+    const searchInput = root.querySelector<HTMLInputElement>('.feed-search-input');
+    const pills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-price-filter]'));
+    let priceFilter = 'all';
+
+    const applyFilters = () => {
+      const query = (searchInput?.value || '').trim().toLowerCase();
+      root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
+        const matchesQuery = !query || (li.dataset.search || '').includes(query);
+        const matchesPrice = priceFilter === 'all' || li.dataset.price === priceFilter;
+        li.hidden = !(matchesQuery && matchesPrice);
+      });
+      root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
+        group.hidden = !group.querySelector('.session:not([hidden])');
+      });
+      groups.forEach((day) => {
+        const empty = day.querySelector<HTMLElement>('[data-empty]');
+        if (empty) empty.hidden = !!day.querySelector('.timegroup:not([hidden])');
+      });
+    };
+
+    searchInput?.addEventListener('input', applyFilters);
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        priceFilter = pill.dataset.priceFilter || 'all';
+        pills.forEach((p) => p.classList.toggle('is-active', p === pill));
+        applyFilters();
+      });
+    });
+
+    // Reel thumbnails play only while on screen — a hidden day group has no
+    // box, so its clips never load or run; switching day or scrolling away
+    // pauses them again.
+    const reels = Array.from(root.querySelectorAll<HTMLVideoElement>('.session-video'));
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reels.length && !still) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const video = entry.target as HTMLVideoElement;
+            if (entry.isIntersecting) video.play().catch(() => {});
+            else video.pause();
+          }
+        },
+        { threshold: 0.4 },
+      );
+      reels.forEach((video) => observer.observe(video));
+    }
   });
 </script>

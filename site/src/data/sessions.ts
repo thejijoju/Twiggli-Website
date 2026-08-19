@@ -20,9 +20,17 @@ export type Session = {
   host: Host;
   title: string;
   place: string;
+  /** Berlin district, shown on the feed card. PLACEHOLDER — picked
+   *  deterministically until sessions carry a real venue. */
+  district: string;
   spots: number;
   price: string;
 };
+
+const DISTRICTS = [
+  'Mitte', 'Prenzlauer Berg', 'Kreuzberg', 'Neukölln', 'Friedrichshain',
+  'Charlottenburg', 'Schöneberg', 'Wedding', 'Moabit', 'Lichtenberg',
+];
 
 /** Deterministic, so a rebuild does not reshuffle the schedule. */
 const hash = (s: string): number => {
@@ -54,6 +62,7 @@ export function getSessions(lang: Lang): Session[] {
         host,
         title: host.specialty,
         place: host.place,
+        district: DISTRICTS[seed % DISTRICTS.length],
         spots: 2 + (seed % 9),
         price: priced ? `€${25 + (seed % 6) * 10}` : free,
       });

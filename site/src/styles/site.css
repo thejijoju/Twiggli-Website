@@ -1441,106 +1441,231 @@ a:hover { color: var(--color-accent); }
 }
 .post-back { margin-top: 48px; font-weight: 700; }
 
-/* — happening today — an inline calendar strip: one chip per day, scrollable
-   sideways on narrow screens, with the day's sessions listed underneath. The
-   chips carry no dates in the markup; the page script fills them from the
-   visitor's clock, because a statically built page cannot know what today is. */
+/* — happening today — restyled after the app's search screen: a search
+   pill with a location chunk, price filter chips, a clean borderless day
+   strip, and sessions grouped under bold time headers. No hairlines —
+   whitespace and type weight do the separating. */
+.feed-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 620px;
+  padding: 14px 22px;
+  border: 2px solid var(--color-divider);
+  border-radius: 999px;
+  cursor: text;
+}
+.feed-search:focus-within { border-color: var(--color-accent); }
+.feed-search svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+.feed-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: 17px;
+  color: inherit;
+}
+.feed-search-input::placeholder { color: color-mix(in srgb, var(--color-text) 42%, transparent); }
+.feed-search-loc {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-left: 18px;
+  border-left: 2px solid var(--color-divider);
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+}
+.feed-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.feed-pill {
+  padding: 9px 18px;
+  border: 2px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-bg);
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.feed-pill:hover { border-color: var(--color-accent-400); }
+.feed-pill.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+/* The day strip: no boxes around dates, like the app — days before the
+   selected one grey out, the selected one carries the accent. */
+.daystrip-month {
+  display: block;
+  margin: 36px 0 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+}
 .daystrip {
   display: flex;
-  gap: 10px;
+  gap: 4px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding: 4px 0 14px;
+  padding: 6px 0 10px;
   /* Fade the right edge so it reads as "there is more" rather than a clipped row. */
   mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
 }
-.daystrip::-webkit-scrollbar { height: 6px; }
-.daystrip::-webkit-scrollbar-thumb {
-  background: var(--color-divider);
-  border-radius: 999px;
-}
+.daystrip::-webkit-scrollbar { height: 0; }
 .daychip {
   flex: none;
   scroll-snap-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
-  min-width: 76px;
-  padding: 12px 14px;
-  border: 2px solid var(--color-divider);
-  border-radius: 14px;
-  background: var(--color-bg);
+  gap: 3px;
+  min-width: 72px;
+  padding: 10px 10px 12px;
+  border: 0;
+  background: none;
   font-family: inherit;
   color: inherit;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease, opacity 0.15s ease;
 }
-.daychip:hover { border-color: var(--color-accent-400); }
 .daychip-dow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+  font-size: 15px;
+  font-weight: 800;
 }
 .daychip-num {
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
-/* Weekends read warmer, so the eye finds Saturday without counting across. */
-.daychip.is-weekend .daychip-dow { color: var(--color-accent-700); }
-.daychip[aria-selected='true'] {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: #fff;
-}
-.daychip[aria-selected='true'] .daychip-dow { color: rgba(255, 255, 255, 0.82); }
+.daychip:hover .daychip-dow { color: var(--color-accent); }
+/* Days before the selected one grey out — position reads at a glance. */
+.daychip.is-before .daychip-dow,
+.daychip.is-before .daychip-num { color: color-mix(in srgb, var(--color-text) 32%, transparent); }
+.daychip[aria-selected='true'] .daychip-dow,
+.daychip[aria-selected='true'] .daychip-num { color: var(--color-accent); }
 
-.daysessions { margin-top: 24px; }
+.daysessions { margin-top: 16px; }
+.daypicker-empty {
+  margin: 40px 0 0;
+  font-size: 17px;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+.timegroup { margin-top: 40px; }
+.timegroup-head {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+}
 .session-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 2px solid var(--color-divider);
+  display: grid;
+  gap: 24px;
 }
 .session {
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr) auto auto;
+  grid-template-columns: 84px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px 20px;
-  padding: 18px 4px;
-  border-bottom: 2px solid var(--color-divider);
+  gap: 6px 20px;
 }
-.session-time {
-  font-weight: 800;
-  font-size: 17px;
-  font-variant-numeric: tabular-nums;
+.session-thumb {
+  display: block;
+  width: 84px;
+  height: 84px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.session-thumb img,
+.session-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .session-main { display: block; min-width: 0; }
+.session-duration {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--color-text) 52%, transparent);
+}
 .session-title {
   display: block;
+  margin-top: 2px;
   font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: 19px;
-  line-height: 1.3;
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1.25;
   color: inherit;
   text-decoration: none;
 }
-.session-title:hover { color: var(--color-accent-700); text-decoration: underline; }
+.session-title:hover { color: var(--color-accent-700); }
 .session-host {
   display: block;
-  margin-top: 2px;
-  font-size: 15px;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  margin-top: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: color-mix(in srgb, var(--color-text) 48%, transparent);
 }
-.session-spots {
+.session-side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.session-fare {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+/* Booking happens in the app — the row's action leads there. Solid black
+   pill, same family as the directory's request button. */
+.session-book {
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 700;
   font-size: 14px;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  text-decoration: none;
+}
+.session-book:hover {
+  background: color-mix(in srgb, var(--color-text) 82%, transparent);
+  color: var(--color-bg);
+}
+.session-spots {
+  font-size: 13px;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
 .session-price {
   padding: 5px 12px;
@@ -1553,15 +1678,11 @@ a:hover { color: var(--color-accent); }
 }
 
 @media (max-width: 720px) {
-  /* Four columns do not fit a phone: the title spans the full width and the
-     spot count and price drop to a second row beneath it, still indented past
-     the time so the row reads as one block. */
-  .session {
-    grid-template-columns: 64px minmax(0, 1fr) auto;
-    gap: 8px 14px;
-  }
-  .session-main { grid-column: 2 / 4; grid-row: 1; }
-  .session-time { grid-column: 1; grid-row: 1; align-self: start; }
-  .session-spots { grid-column: 2; grid-row: 2; font-size: 13px; }
-  .session-price { grid-column: 3; grid-row: 2; justify-self: end; font-size: 14px; }
+  .feed-search { padding: 12px 18px; }
+  .feed-search-loc { display: none; }
+  .session { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 14px; }
+  .session-side { flex-direction: column; align-items: flex-end; gap: 8px; }
+  .session-thumb { width: 64px; height: 64px; border-radius: 12px; }
+  .session-title { font-size: 17px; }
+  .timegroup-head { font-size: 22px; }
 }
