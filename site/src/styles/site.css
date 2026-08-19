@@ -18,6 +18,14 @@
   --font-heading: "Roboto", system-ui, sans-serif;
   --font-body: "Roboto", system-ui, sans-serif;
   --font-heading-weight: 700;
+
+  /* ── Page gutter ────────────────────────────────────────────────────
+     The single left/right inset for every full-width band: .container,
+     the nav, the footer, the social strip, the cookie bar. They must all
+     resolve to the same number or nothing on the page lines up
+     vertically, so it lives here rather than being repeated per rule.
+     Reduced 15% from the export's clamp(20px, 5vw, 72px). */
+  --gutter: clamp(17px, 4.25vw, 61.2px);
 }
 
 /* Buttons round to a full pill, breaking from the system's sharp-corner
@@ -82,12 +90,12 @@ a:hover { color: var(--color-accent); }
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 72px);
+  padding: 0 var(--gutter);
 }
 .container-padded {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 56px clamp(20px, 5vw, 72px);
+  padding: 56px var(--gutter);
 }
 .rule {
   height: 2px;
@@ -106,7 +114,7 @@ a:hover { color: var(--color-accent); }
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
-  padding: 20px clamp(20px, 5vw, 72px);
+  padding: 20px var(--gutter);
   border-bottom: none;
   display: flex;
   align-items: center;
@@ -648,7 +656,7 @@ a:hover { color: var(--color-accent); }
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 56px clamp(20px, 5vw, 72px) 40px;
+  padding: 56px var(--gutter) 40px;
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
@@ -721,7 +729,7 @@ a:hover { color: var(--color-accent); }
 .footer-bottom-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px clamp(20px, 5vw, 72px);
+  padding: 20px var(--gutter);
   display: flex;
   flex-wrap: wrap;
   gap: 16px 32px;
@@ -738,8 +746,7 @@ a:hover { color: var(--color-accent); }
 .social-bar-icons {
   max-width: 1200px;
   margin: 0 auto;
-  /* Side padding is the page gutter less 15%. */
-  padding: 18px clamp(17px, 4.25vw, 61.2px);
+  padding: 18px var(--gutter);
   display: flex;
   justify-content: center;
   gap: 20px;
@@ -870,7 +877,7 @@ a:hover { color: var(--color-accent); }
 .cookie-banner-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px clamp(20px, 5vw, 72px);
+  padding: 16px var(--gutter);
   display: flex;
   align-items: center;
   justify-content: space-between;

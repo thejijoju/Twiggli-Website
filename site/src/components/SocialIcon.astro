@@ -3,15 +3,35 @@
  *  fills in currentColor, so they inherit white in the dark social strip and
  *  the text colour on the contact page.
  *
- *  Instagram is drawn on a 32-unit grid and the rest on 24 — each mark keeps
- *  the box it was authored in rather than being rescaled, since the artwork
- *  fills a comparable share of either box and lands at the same visual weight. */
+ *  The four marks come from different sources and none of them centres its
+ *  own artwork: Facebook's 'f' hangs 1.75 units below the middle of its box,
+ *  YouTube's badge is wider than it is tall, and Instagram is drawn on a
+ *  32-unit grid where the rest use 24. Left alone they render at different
+ *  sizes and sit at different heights, so the row reads as four unrelated
+ *  stickers rather than one line.
+ *
+ *  So each viewBox below is not the authored one — it is a square centred on
+ *  that glyph's measured ink, sized to 4/3 of the ink's longest side. That
+ *  puts every mark's centre on the same line and fits each into an identical
+ *  13.5px optical square inside the 18px box, whatever its own proportions.
+ *  Re-measure with getBBox() if a path ever changes. */
 interface Props {
   name: 'instagram' | 'facebook' | 'youtube' | 'linkedin';
   size?: number;
 }
 const { name, size = 18 } = Astro.props;
-const viewBox = name === 'instagram' ? '0 0 32 32' : '0 0 24 24';
+
+const viewBoxes = {
+  /* ink 4,4 → 27.9,27.9 (23.9 square), already centred on its 32 grid */
+  instagram: '0 0 31.867 31.867',
+  /* ink 7,5 → 15.5,22.5: tall and narrow, and low in the box */
+  facebook: '-0.417 2.083 23.333 23.333',
+  /* ink 2,5 → 22,19: the widest mark, so width is what gets normalised */
+  youtube: '-1.333 -1.333 26.667 26.667',
+  /* ink 3,3 → 21,21 (18 square), already centred */
+  linkedin: '0 0 24 24',
+};
+const viewBox = viewBoxes[name];
 ---
 
 <svg width={size} height={size} viewBox={viewBox} fill="currentColor" aria-hidden="true">
