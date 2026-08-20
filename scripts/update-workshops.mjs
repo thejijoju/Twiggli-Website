@@ -64,6 +64,10 @@ const SOURCES = [
   { slug: 'karen-rose', name: 'Karen-Rose — Terrazzo Schmuck', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=320775',
     title: 'Terrazzo Schmuck', titleEn: 'Terrazzo Jewelry', price: '€59', duration: '3 h' },
+  { slug: 'karen-rose', name: 'Karen-Rose — Shampoo Naturkosmetik', mode: 'dates-de',
+    url: 'https://karen-rose.com/events-2/?re-product-id=229220',
+    title: 'Shampoo Naturkosmetik Workshop', titleEn: 'Shampoo Natural Cosmetics Workshop',
+    price: '€55', duration: '3 h' },
   // TEMP url: the general events page until this workshop's own
   // re-product-id link is known — it is both the seed's protection (a
   // failing source keeps its previous entries) and the Book target.
