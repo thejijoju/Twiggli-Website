@@ -105,6 +105,20 @@ const SOURCES = [
     title: 'DIY Kaffeerösten', titleEn: 'DIY Coffee Roasting', price: '€59',
     district: 'Prenzlauer Berg',
     bookUrl: 'https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/' },
+  // Sarah's workshop pages list dates as table rows ("23.08.2026 …
+  // 11 - 13 Uhr … Hier buchen"), each row linking its own PayPal checkout.
+  { slug: 'sarah', name: 'Sarah Niklowitz — Sunday Morning Pages & Brunch', mode: 'dated-time-list',
+    url: 'https://sarahniklowitz.de/sunday-morning-pages-brunch/',
+    startMarker: 'Next Dates',
+    title: 'Sunday Morning Pages & Brunch', price: '€39',
+    district: 'Prenzlauer Berg' },
+  // Currently lists only past dates ("neue Termine folgen in Kürze") —
+  // watched weekly so her next round appears by itself. Runs online.
+  { slug: 'sarah', name: 'Sarah Niklowitz — Journaling für Beginner', mode: 'dated-time-list',
+    url: 'https://sarahniklowitz.de/journaling-fuer-beginner/',
+    startMarker: 'Nächste Termine',
+    title: 'Journaling für Beginner', titleEn: 'Journaling for Beginners',
+    duration: '2.5–3 h', district: 'Online' },
   // Each listing page links every date to its own checkout.<domain> ticket
   // page, which carries the authoritative date, time, title and price.
   { slug: 'monk-garden', name: 'The Monk Garden — Pilzwanderungen', mode: 'checkout-links-de',
@@ -350,6 +364,53 @@ function fromDatedTimeList(html, source) {
       url: source.bookUrl ?? source.url,
     });
   }
+  if (out.length) return out;
+
+  // Fallback for hour-only ranges laid out in table rows ("23.08.2026 …
+  // 11 - 13 Uhr … Hier buchen", Sarah's format): parse per date slice in
+  // the raw markup, so each entry keeps its own booking link (PayPal or
+  // checkout host) instead of one shared page.
+  let hay = html;
+  if (source.startMarker) {
+    const i = hay.indexOf(source.startMarker);
+    if (i >= 0) hay = hay.slice(i);
+  }
+  if (source.endMarker) {
+    const j = hay.indexOf(source.endMarker);
+    if (j > 0) hay = hay.slice(0, j);
+  }
+  const dates = [...hay.matchAll(/(\d{2})\.(\d{2})\.(20\d{2})\b/g)];
+  dates.forEach((m, idx) => {
+    const month = Number(m[2]);
+    if (month < 1 || month > 12 || Number(m[1]) > 31) return;
+    const date = `${m[3]}-${m[2]}-${m[1]}`;
+    const raw = hay.slice(m.index, idx + 1 < dates.length ? dates[idx + 1].index : hay.length);
+    const row = stripTags(raw).slice(0, 200);
+    const range = row.match(/(\d{1,2})(?:[.:](\d{2}))?\s*[-–]\s*(\d{1,2})(?:[.:](\d{2}))?\s*Uhr/);
+    const single = range ? null : row.match(/(\d{1,2})(?:[.:](\d{2}))?\s*Uhr/);
+    const t = range ?? single;
+    if (!t) return;
+    const time = `${String(t[1]).padStart(2, '0')}:${t[2] ?? '00'}`;
+    if (seen.has(`${date} ${time}`)) return;
+    seen.add(`${date} ${time}`);
+    const span = range ? Number(range[3]) + Number(range[4] ?? 0) / 60 - (Number(range[1]) + Number(range[2] ?? 0) / 60) : 0;
+    const rowPrice = row.match(/(\d+)\s*(?:€|Euro)\b/);
+    const link = raw.match(/https?:\/\/(?:www\.)?(?:paypal\.com|checkout\.[a-z0-9.-]+)\/[^\s"'<>]+/);
+    console.log(`[${source.slug}] dated-time-list (row): ${date} ${time} (${span || '?'} h) ${link ? 'own link' : 'page'}`);
+    out.push({
+      title: source.title,
+      ...(source.titleEn ? { titleEn: source.titleEn } : {}),
+      date,
+      time,
+      ...(span > 0 && span <= 12
+        ? { duration: `${Math.round(span * 2) / 2} h` }
+        : source.duration
+          ? { duration: source.duration }
+          : {}),
+      ...(rowPrice ? { price: `€${rowPrice[1]}` } : source.price ? { price: source.price } : {}),
+      url: link ? decodeEntities(link[0]) : (source.bookUrl ?? source.url),
+    });
+  });
   return out;
 }
 
