@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T22:26:31.285Z",
+  "updated": "2026-08-20T22:46:43.912Z",
   "sources": [
     {
       "slug": "qian",
@@ -84,6 +84,12 @@
       "url": "https://www.coffeeandbananas.com/",
       "status": "ok",
       "count": 8
+    },
+    {
+      "slug": "ceramic-kingdom",
+      "url": "https://www.ceramickingdomberlin.com/sitemap.xml",
+      "status": "failed: HTTP 406",
+      "count": 0
     },
     {
       "slug": "bumerang",
