@@ -57,7 +57,7 @@ const SOURCES = [
   // failing source keeps its previous entries) and the Book target.
   { slug: 'karen-rose', name: 'Karen-Rose — Seife Sieden', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/',
-    title: 'Seife Sieden Workshop', price: '€99', duration: '3 h' },
+    title: 'Seife Sieden Workshop', titleEn: 'Soap Making Workshop', price: '€99', duration: '3 h' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
@@ -346,6 +346,7 @@ function fromGermanDates(html, source) {
       title: source.title ?? 'Workshop',
       date,
       time,
+      ...(source.titleEn ? { titleEn: source.titleEn } : {}),
       ...(source.duration ? { duration: source.duration } : {}),
       ...(priceMatch ? { price: `€${priceMatch[1]}` } : source.price ? { price: source.price } : {}),
       url: source.url,
@@ -372,6 +373,7 @@ function fromGermanDates(html, source) {
         title: source.title ?? 'Workshop',
         date,
         time,
+        ...(source.titleEn ? { titleEn: source.titleEn } : {}),
         ...(source.duration ? { duration: source.duration } : {}),
         ...(source.price ? { price: source.price } : {}),
         url: source.url,

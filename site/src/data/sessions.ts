@@ -39,6 +39,8 @@ type LiveWorkshop = {
   slug: string;
   sourceUrl: string;
   title: string;
+  /** English page title; `title` (the host's own wording) serves German. */
+  titleEn?: string;
   date: string; // YYYY-MM-DD, Europe/Berlin
   time?: string; // HH:MM; absent when only the booking page shows it
   duration?: string;
@@ -79,7 +81,7 @@ export const berlinTodayMs = (): number =>
  *  scripts/update-workshops.mjs. A host with real sessions in the window
  *  drops out of the placeholder rotation entirely, and their Book button
  *  leads to the host's own booking page. */
-function liveSessions(hosts: Host[]): Session[] {
+function liveSessions(hosts: Host[], lang: Lang): Session[] {
   const today = berlinTodayMs();
   const bySlug = new Map(hosts.map((h) => [h.slug, h]));
   const sessions: Session[] = [];
@@ -94,7 +96,7 @@ function liveSessions(hosts: Host[]): Session[] {
       dayOffset,
       time: w.time,
       host,
-      title: w.title,
+      title: lang === 'en' && w.titleEn ? w.titleEn : w.title,
       place: host.place,
       // Real listings never get an invented district — the studio name is
       // accurate where the scrape carries no location.
@@ -120,7 +122,7 @@ function liveSessions(hosts: Host[]): Session[] {
         dayOffset,
         time: r.time,
         host,
-        title: r.title,
+        title: lang === 'en' && r.titleEn ? r.titleEn : r.title,
         place: host.place,
         district: r.district ?? host.studio ?? host.place,
         bookUrl: r.url,
@@ -139,7 +141,7 @@ function liveSessions(hosts: Host[]): Session[] {
 export function getSessions(lang: Lang): Session[] {
   const hosts = getHosts(lang);
   // Timeless sessions sort after timed ones within their day.
-  return liveSessions(hosts).sort(
+  return liveSessions(hosts, lang).sort(
     (a, b) => a.dayOffset - b.dayOffset || (a.time ?? '~').localeCompare(b.time ?? '~'),
   );
 }
