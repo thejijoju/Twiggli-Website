@@ -455,11 +455,12 @@ async function fromShopifyCowlendar(source) {
       console.log(`[${source.slug}] cowlendar: ${p.handle} page: ${err.message.split('\n')[0]}`);
       continue;
     }
-    // The calendar id is a 24-hex token in the embed; try each candidate
-    // against the availability endpoint until one answers with slots.
+    // Product pages embed every shop calendar's 24-hex id, so the first
+    // valid answer may be another workshop's calendar (valid but empty for
+    // this product's duration). Keep trying candidates until one actually
+    // yields bookable slots.
     const candidates = [...new Set([...html.matchAll(/\b[0-9a-f]{24}\b/g)].map((m) => m[0]))].slice(0, 8);
-    const seen = new Set();
-    let matched = false;
+    let best = null;
     for (const id of candidates) {
       let slots = [];
       let ok = true;
@@ -478,15 +479,16 @@ async function fromShopifyCowlendar(source) {
         await new Promise((r2) => setTimeout(r2, 200));
       }
       if (!ok) continue;
-      matched = true;
+      const seen = new Set();
+      const entries = [];
       for (const s of slots) {
         const m = /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})$/.exec(s?.slot_start ?? '');
         if (!m || s.is_bookable === false || s.qty_left === 0) continue;
         if (m[1] > lastISO || seen.has(s.slot_start)) continue;
         seen.add(s.slot_start);
         const hours = Number(s.slot_duration ?? minutes) / 60;
-        out.push({
-          title: p.title.replace(/\s*\d+\s*min\b/i, '').replace(/\s*1[.,]5h\b/i, '').trim(),
+        entries.push({
+          title: p.title.replace(/\s*\d+\s*min\b/i, '').replace(/\s*1[.,]5\s*h\b/i, '').trim(),
           date: m[1],
           time: m[2],
           duration: `${Math.round(hours * 2) / 2} h`,
@@ -494,10 +496,13 @@ async function fromShopifyCowlendar(source) {
           url: productUrl,
         });
       }
-      console.log(`[${source.slug}] cowlendar: "${p.title}" calendar ${id}: ${seen.size} bookable slots ≤ ${lastISO}`);
-      break;
+      if (!best || entries.length > best.entries.length) best = { id, entries };
+      if (entries.length) break; // this calendar answers for this product
     }
-    if (!matched) {
+    if (best) {
+      out.push(...best.entries);
+      console.log(`[${source.slug}] cowlendar: "${p.title}" calendar ${best.id}: ${best.entries.length} bookable slots ≤ ${lastISO}`);
+    } else {
       console.log(`[${source.slug}] cowlendar: "${p.title}": no working calendar id among ${candidates.length} candidates`);
     }
   }
