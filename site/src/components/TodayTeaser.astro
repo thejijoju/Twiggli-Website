@@ -74,7 +74,7 @@ const calendarHref = href(lang, '/happening-today/');
             ) : (
               <img src={s.host.photo} alt="" loading="lazy" decoding="async" />
             )}
-            <span class="today-when">{dayLabel(s.dayOffset)} · {s.time}</span>
+            <span class="today-when">{s.time ? `${dayLabel(s.dayOffset)} · ${s.time}` : dayLabel(s.dayOffset)}</span>
             {s.price && <span class="today-price">{s.price}</span>}
           </span>
           <span class="today-title">{s.title}</span>

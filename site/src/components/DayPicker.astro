@@ -16,19 +16,20 @@ const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 const byTime = (list: Session[]): [string, Session[]][] => {
   const groups = new Map<string, Session[]>();
   for (const s of list) {
-    if (!groups.has(s.time)) groups.set(s.time, []);
-    groups.get(s.time)!.push(s);
+    const key = s.time ?? '';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(s);
   }
   return [...groups.entries()];
 };
 
 const t = {
-  en: { spots: 'spots left', book: 'Book', none: 'Nothing scheduled for this day yet.',
+  en: { spots: 'spots left', book: 'Book', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
         noMatch: 'Nothing matches — try another search or filter.',
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
         search: 'What do you want to do?', city: 'Berlin',
         all: 'All', free: 'Free', paid: 'Paid' },
-  de: { spots: 'Plätze frei', book: 'Buchen', none: 'Für diesen Tag ist noch nichts geplant.',
+  de: { spots: 'Plätze frei', book: 'Buchen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'Nichts gefunden — versuch eine andere Suche oder einen anderen Filter.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
         search: 'Was möchtest du machen?', city: 'Berlin',
@@ -95,7 +96,9 @@ const dayLabel = (offset: number) =>
               {byTime(forDay).map(([time, list], groupIndex) => (
                 <section class="timegroup">
                   <h3 class="timegroup-head">
-                    {groupIndex === 0 && dayLabel(offset) ? `${dayLabel(offset)} · ${time}` : time}
+                    {groupIndex === 0 && dayLabel(offset)
+                      ? `${dayLabel(offset)} · ${time || t.timeTba}`
+                      : time || t.timeTba}
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (

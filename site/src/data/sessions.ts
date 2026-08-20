@@ -15,7 +15,9 @@ import liveData from './live-workshops.json';
 export type Session = {
   id: string;
   dayOffset: number;
-  time: string;
+  /** Absent when the host's booking page reveals the time only during
+   *  checkout — the card then says so instead of inventing an hour. */
+  time?: string;
   host: Host;
   title: string;
   place: string;
@@ -38,7 +40,7 @@ type LiveWorkshop = {
   sourceUrl: string;
   title: string;
   date: string; // YYYY-MM-DD, Europe/Berlin
-  time: string; // HH:MM
+  time?: string; // HH:MM; absent when only the booking page shows it
   duration?: string;
   price?: string;
   district?: string;
@@ -88,7 +90,7 @@ function liveSessions(hosts: Host[]): Session[] {
     const dayOffset = Math.round((Date.parse(w.date) - today) / 86400000);
     if (dayOffset < 0 || dayOffset >= DAYS_AHEAD) continue;
     sessions.push({
-      id: `live-${w.slug}-${w.date}-${w.time}`,
+      id: `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`,
       dayOffset,
       time: w.time,
       host,
@@ -136,7 +138,8 @@ function liveSessions(hosts: Host[]): Session[] {
  *  invented filler. */
 export function getSessions(lang: Lang): Session[] {
   const hosts = getHosts(lang);
+  // Timeless sessions sort after timed ones within their day.
   return liveSessions(hosts).sort(
-    (a, b) => a.dayOffset - b.dayOffset || a.time.localeCompare(b.time),
+    (a, b) => a.dayOffset - b.dayOffset || (a.time ?? '~').localeCompare(b.time ?? '~'),
   );
 }
