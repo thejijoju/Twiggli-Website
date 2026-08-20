@@ -49,26 +49,26 @@ const SOURCES = [
   // so title and price come from this config when the page yields none.
   { slug: 'karen-rose', name: 'Karen-Rose — Bio Naturkosmetik', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=227019',
-    title: 'Bio Naturkosmetik Workshop', price: '€65', duration: '3 h' },
+    title: 'Bio Naturkosmetik Workshop', price: '€65', duration: '3 h', district: 'Treptow' },
   { slug: 'karen-rose', name: 'Karen-Rose — Keramikgießen | Terrazzo', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product',
     title: 'Keramikgießen | Terrazzo Workshop', titleEn: 'Ceramic Casting | Terrazzo Workshop',
-    price: '€59', duration: '3 h' },
+    price: '€59', duration: '3 h', district: 'Treptow' },
   { slug: 'karen-rose', name: 'Karen-Rose — Duftkerzen', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=229230',
     title: 'Duftkerzen Workshop (vegan + nachhaltig)',
-    titleEn: 'Scented Candle Workshop (vegan + sustainable)', price: '€55', duration: '2 h' },
+    titleEn: 'Scented Candle Workshop (vegan + sustainable)', price: '€55', duration: '2 h', district: 'Treptow' },
   { slug: 'karen-rose', name: 'Karen-Rose — Naturkosmetik Essentials', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=264518',
     title: 'Bio Naturkosmetik Workshop - Essentials',
-    titleEn: 'Organic Natural Cosmetics Workshop - Essentials', price: '€49', duration: '2 h' },
+    titleEn: 'Organic Natural Cosmetics Workshop - Essentials', price: '€49', duration: '2 h', district: 'Treptow' },
   { slug: 'karen-rose', name: 'Karen-Rose — Terrazzo Schmuck', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=320775',
-    title: 'Terrazzo Schmuck', titleEn: 'Terrazzo Jewelry', price: '€59', duration: '3 h' },
+    title: 'Terrazzo Schmuck', titleEn: 'Terrazzo Jewelry', price: '€59', duration: '3 h', district: 'Treptow' },
   { slug: 'karen-rose', name: 'Karen-Rose — Shampoo Naturkosmetik', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=229220',
     title: 'Shampoo Naturkosmetik Workshop', titleEn: 'Shampoo Natural Cosmetics Workshop',
-    price: '€55', duration: '3 h' },
+    price: '€55', duration: '3 h', district: 'Treptow' },
   // Shopify shop: the collection's products.json carries every workshop,
   // its dated sessions (variants titled "DD.MM.YYYY - HH:MM"), per-date
   // price and availability — fully automatic, nothing configured per
@@ -136,7 +136,7 @@ const SOURCES = [
   // failing source keeps its previous entries) and the Book target.
   { slug: 'karen-rose', name: 'Karen-Rose — Seife Sieden', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/',
-    title: 'Seife Sieden Workshop', titleEn: 'Soap Making Workshop', price: '€99', duration: '3 h' },
+    title: 'Seife Sieden Workshop', titleEn: 'Soap Making Workshop', price: '€99', duration: '3 h', district: 'Treptow' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
