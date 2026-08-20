@@ -108,9 +108,15 @@ const SOURCES = [
   // Squarespace site booking through Konfetti — the sitemap finds every
   // course page, each page's embedded widget names its Konfetti event, and
   // the calendar API serves the dates with live tickets left.
-  { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom — all classes', mode: 'konfetti',
+  { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom — taster widgets (Konfetti)', mode: 'konfetti',
     url: 'https://www.ceramickingdomberlin.com/sitemap.xml',
-    pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)',
+    pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)|/try-',
+    district: 'Neukölln' },
+  // Their regular courses book through Acuity (the class pages embed
+  // schedule.php?owner=13975065) — same public catalog + availability API
+  // as Senlë's, covering every category in one pass.
+  { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom — course catalog (Acuity)', mode: 'acuity',
+    owner: '13975065', url: 'https://app.acuityscheduling.com/schedule.php?owner=13975065',
     district: 'Neukölln' },
   // One Shopify product per workshop date; the date lives in the product
   // description ("Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr"), which the
