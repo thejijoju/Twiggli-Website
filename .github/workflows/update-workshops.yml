@@ -7,7 +7,7 @@ name: Update workshops feed
 
 on:
   schedule:
-    - cron: '0 6 * * 1' # Mondays 06:00 UTC — once a week
+    - cron: '0 4 * * *' # daily 04:00 UTC — keeps dates and spots-left fresh
   workflow_dispatch:
 
 permissions:
