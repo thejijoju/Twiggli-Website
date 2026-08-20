@@ -57,6 +57,10 @@ const SOURCES = [
     url: 'https://karen-rose.com/events-2/?re-product-id=229230',
     title: 'Duftkerzen Workshop (vegan + nachhaltig)',
     titleEn: 'Scented Candle Workshop (vegan + sustainable)', price: '€55', duration: '2 h' },
+  { slug: 'karen-rose', name: 'Karen-Rose — Naturkosmetik Essentials', mode: 'dates-de',
+    url: 'https://karen-rose.com/events-2/?re-product-id=264518',
+    title: 'Bio Naturkosmetik Workshop – Essentials',
+    titleEn: 'Organic Natural Cosmetics Workshop – Essentials', price: '€49', duration: '2 h' },
   // TEMP url: the general events page until this workshop's own
   // re-product-id link is known — it is both the seed's protection (a
   // failing source keeps its previous entries) and the Book target.
