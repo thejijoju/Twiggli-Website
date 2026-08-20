@@ -46,6 +46,8 @@ type LiveWorkshop = {
   duration?: string;
   price?: string;
   district?: string;
+  /** Live spots left, where the host's booking API reports it. */
+  spots?: number;
   url: string;
 };
 
@@ -104,6 +106,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       bookUrl: w.url,
       ...(w.duration ? { duration: w.duration } : {}),
       ...(w.price ? { price: w.price } : {}),
+      ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),
     });
   }
 

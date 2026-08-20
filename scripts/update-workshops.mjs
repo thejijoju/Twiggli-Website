@@ -455,11 +455,18 @@ async function fromShopifyCowlendar(source) {
       console.log(`[${source.slug}] cowlendar: ${p.handle} page: ${err.message.split('\n')[0]}`);
       continue;
     }
-    // Product pages embed every shop calendar's 24-hex id, so the first
-    // valid answer may be another workshop's calendar (valid but empty for
-    // this product's duration). Keep trying candidates until one actually
-    // yields bookable slots.
-    const candidates = [...new Set([...html.matchAll(/\b[0-9a-f]{24}\b/g)].map((m) => m[0]))].slice(0, 8);
+    // The page embeds Cowlendar's own product_handle → service_id map (as
+    // escaped JSON inside a script string) — the authoritative calendar id
+    // for this product. Bare 24-hex candidates stay as a fallback.
+    const cfg = html.replace(/\\/g, '');
+    const idByHandle = new Map(
+      [...cfg.matchAll(/"product_handle":"([^"]+)","service_id":"([0-9a-f]{24})"/g)].map((m) => [m[1], m[2]]),
+    );
+    const mapped = idByHandle.get(p.handle);
+    const candidates = mapped
+      ? [mapped]
+      : [...new Set([...html.matchAll(/\b[0-9a-f]{24}\b/g)].map((m) => m[0]))].slice(0, 8);
+    if (!mapped) console.log(`[${source.slug}] cowlendar: "${p.title}": no service_id mapping — falling back to ${candidates.length} candidates`);
     let best = null;
     for (const id of candidates) {
       let slots = [];
@@ -493,6 +500,7 @@ async function fromShopifyCowlendar(source) {
           time: m[2],
           duration: `${Math.round(hours * 2) / 2} h`,
           ...(price ? { price } : {}),
+          ...(Number.isFinite(s.qty_left) ? { spots: s.qty_left } : {}),
           url: productUrl,
         });
       }
@@ -612,6 +620,7 @@ async function fromAcuity(source) {
           title: stripTags(String(t.name)),
           date: berlinDate(ms),
           time: berlinTime(ms),
+          ...(Number.isFinite(slot.slotsAvailable) ? { spots: slot.slotsAvailable } : {}),
           ...(minutes > 0 && minutes <= 720 ? { duration: `${Math.round((minutes / 60) * 2) / 2} h` } : {}),
           ...(Number.isFinite(priceNum) && priceNum > 0 ? { price: `€${Math.round(priceNum)}` } : {}),
           // Deep link straight into this class's date picker.
