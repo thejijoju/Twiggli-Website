@@ -686,14 +686,40 @@ async function fromKonfetti(source) {
   for (const page of pages) {
     let html = '';
     try {
-      const r = await fetch(page, { headers: { 'user-agent': UA } });
-      if (!r.ok) continue;
+      const r = await fetch(page, { headers: { 'user-agent': UA, accept: 'text/html,*/*;q=0.8' } });
+      if (!r.ok) {
+        console.log(`[${source.slug}] konfetti: page HTTP ${r.status} ${page}`);
+        continue;
+      }
       html = await r.text();
-    } catch {
+    } catch (e) {
+      console.log(`[${source.slug}] konfetti: page fetch failed ${page}: ${e.message}`);
       continue;
     }
-    const ids = [...new Set([...html.matchAll(/eventDescriptionId=([a-z0-9]+)/gi)].map((m) => m[1]))];
-    if (!ids.length) continue;
+    // The widget id hides in whatever form Squarespace stored the embed —
+    // a plain iframe URL, a data attribute, or JSON with escaped slashes and
+    // unicode-escaped '=' — so match every spelling on an unescaped copy.
+    const unescaped = decodeEntities(html.replace(/\\u003d/gi, '=').replace(/\\/g, ''));
+    const ids = [
+      ...new Set(
+        [
+          ...unescaped.matchAll(/eventDescriptionId=([a-z0-9]{4,})/gi),
+          ...unescaped.matchAll(/event-description-id["'\s:=]+([a-z0-9]{4,})/gi),
+        ].map((m) => m[1]),
+      ),
+    ];
+    if (!ids.length) {
+      const hits = [...unescaped.matchAll(/konfetti/gi)].slice(0, 3);
+      for (const h of hits) {
+        console.log(
+          `[${source.slug}] konfetti: no id on ${page.split('/').pop()} — context: ${unescaped
+            .slice(Math.max(0, h.index - 100), h.index + 140)
+            .replace(/\s+/g, ' ')}`,
+        );
+      }
+      if (!hits.length) console.log(`[${source.slug}] konfetti: no "konfetti" mention at all on ${page.split('/').pop()} (${html.length} bytes)`);
+      continue;
+    }
     const title =
       stripTags(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '').trim() ||
       decodeEntities(html.match(/<title>([^<]*)/i)?.[1] ?? '').split('—')[0].trim();
