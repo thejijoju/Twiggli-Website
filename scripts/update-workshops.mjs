@@ -149,6 +149,13 @@ function fromJsonLd(html, sourceUrl) {
       // Offers may be a flat Offer or an AggregateOffer whose price sits in
       // lowPrice or in a nested offers[] (Wix Events emits the latter).
       const offer = [].concat(e.offers ?? [])[0];
+      // Skip events every ticket type of which is sold out (Wix Events
+      // marks both the aggregate and its nested offers) — the Book button
+      // must never lead to a dead ticket page.
+      const availabilities = [offer?.availability, ...[].concat(offer?.offers ?? []).map((o) => o?.availability)]
+        .filter(Boolean)
+        .map(String);
+      if (availabilities.length && availabilities.every((a) => /soldout/i.test(a))) return null;
       const rawPrice = [offer?.price, offer?.lowPrice, [].concat(offer?.offers ?? [])[0]?.price]
         .find((p) => p != null && p !== '');
       const price =
