@@ -14,10 +14,15 @@ const sessions = getSessions(lang);
 const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 
 // Only activities that actually have sessions get a pill — no dead filters.
-const ACTIVITY_ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing'];
+const ACTIVITY_ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'];
 const present = new Set(sessions.map((s) => s.host.activity));
 const activities = ACTIVITY_ORDER.filter((a) => present.has(a));
 const activityLabels = filterCopy[lang].activities;
+
+/** A venue qualifier after the district ("Spandau St. Wilhelm") folds into
+ *  its district so the filter stays a clean list of places. */
+const districtOf = (s: Session): string => s.district.replace(/\s+St\.\s.*$/, '');
+const districts = [...new Set(sessions.map(districtOf))].sort((a, b) => a.localeCompare(b));
 
 /** Sessions arrive sorted by time, so grouping keeps that order. */
 const byTime = (list: Session[]): [string, Session[]][] => {
@@ -34,11 +39,11 @@ const t = {
   en: { spots: 'spots left', book: 'Book', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
         noMatch: 'Nothing in this activity on this day — try another.',
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
-        filter: 'Filter by activity', all: 'All' },
+        filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All' },
   de: { spots: 'Plätze frei', book: 'Buchen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
-        filter: 'Nach Aktivität filtern', all: 'Alle' },
+        filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle' },
 }[lang];
 
 const dayLabel = (offset: number) =>
@@ -70,12 +75,22 @@ const dayLabel = (offset: number) =>
     ))}
   </div>
 
-  {/* The one filter: activity, as discreet outlined pills in the accent —
-      after themakery.de's category pills, in Twiggli purple. */}
+  {/* Two discreet filter rows in the accent, after themakery.de's category
+      pills: what to do, and where. They combine. */}
   <div class="activity-pills" role="group" aria-label={t.filter}>
     <button class="activity-pill is-active" type="button" data-activity-filter="all">{t.all}</button>
     {activities.map((a) => (
       <button class="activity-pill" type="button" data-activity-filter={a}>{activityLabels[a]}</button>
+    ))}
+  </div>
+  <div class="activity-pills district-pills" role="group" aria-label={t.filterDistrict}>
+    <svg class="district-pin" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+    <button class="activity-pill is-active" type="button" data-district-filter="all">{t.all}</button>
+    {districts.map((d) => (
+      <button class="activity-pill" type="button" data-district-filter={d}>{d}</button>
     ))}
   </div>
 
@@ -95,7 +110,7 @@ const dayLabel = (offset: number) =>
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (
-                      <li class="session" data-activity={s.host.activity}>
+                      <li class="session" data-activity={s.host.activity} data-district={districtOf(s)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
                             the app — and falls back to the still. Thumbnail
@@ -199,15 +214,19 @@ const dayLabel = (offset: number) =>
       });
     });
 
-    // Live filtering: the activity pills narrow the list. A time header
-    // disappears with its last matching session, and an empty day shows the
-    // no-match line.
-    const pills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-activity-filter]'));
+    // Live filtering: the activity and district pill rows combine. A time
+    // header disappears with its last matching session, and an empty day
+    // shows the no-match line.
+    const activityPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-activity-filter]'));
+    const districtPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-district-filter]'));
     let activityFilter = 'all';
+    let districtFilter = 'all';
 
     const applyFilters = () => {
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
-        li.hidden = activityFilter !== 'all' && li.dataset.activity !== activityFilter;
+        const matchesActivity = activityFilter === 'all' || li.dataset.activity === activityFilter;
+        const matchesDistrict = districtFilter === 'all' || li.dataset.district === districtFilter;
+        li.hidden = !(matchesActivity && matchesDistrict);
       });
       root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
         group.hidden = !group.querySelector('.session:not([hidden])');
@@ -218,10 +237,17 @@ const dayLabel = (offset: number) =>
       });
     };
 
-    pills.forEach((pill) => {
+    activityPills.forEach((pill) => {
       pill.addEventListener('click', () => {
         activityFilter = pill.dataset.activityFilter || 'all';
-        pills.forEach((p) => p.classList.toggle('is-active', p === pill));
+        activityPills.forEach((p) => p.classList.toggle('is-active', p === pill));
+        applyFilters();
+      });
+    });
+    districtPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        districtFilter = pill.dataset.districtFilter || 'all';
+        districtPills.forEach((p) => p.classList.toggle('is-active', p === pill));
         applyFilters();
       });
     });

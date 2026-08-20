@@ -37,10 +37,11 @@ const SOURCES = [
   // come from config; dates arrive via the headless render of the widget.
   { slug: 'qian', name: 'Qian — Clay Garden pottery classes', mode: 'dates-de',
     url: 'https://www.claygarden.studio/pottery-classes',
-    title: 'Handbuilding Class with Clay Garden Studio', price: '€65' },
+    title: 'Handbuilding Class with Clay Garden Studio', price: '€65',
+    district: 'Prenzlauer Berg' },
   { slug: 'qian', name: 'Qian — Clay Garden special workshops', mode: 'dates-de',
     url: 'https://www.claygarden.studio/special-workshops',
-    title: 'Tea & Pottery Workshop' },
+    title: 'Tea & Pottery Workshop', district: 'Prenzlauer Berg' },
   // Weekly-recurring German schedule ("Dienstags I 18 - 20 Uhr I …"); the
   // parser emits `recurring` entries the site expands into dated sessions.
   { slug: 'nina', name: 'Nina Kranz — Kurse', url: 'https://www.ninakranzart.com/privat-freizeit', mode: 'recurring-de' },
@@ -1155,7 +1156,12 @@ async function scrape(source) {
     }
     const inRange = dated
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
-      .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district && !w.district ? { district: source.district } : {}),
+      }));
     console.log(`[${source.slug}] dated entries kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
