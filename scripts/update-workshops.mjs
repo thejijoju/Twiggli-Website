@@ -75,6 +75,13 @@ const SOURCES = [
   { slug: 'galleria-lucia', name: 'Galleria Lucia — workshops', mode: 'shopify',
     url: 'https://www.gallerialucia.com/collections/workshops/products.json?limit=250',
     district: 'Lichtenberg' },
+  // Wix Events: the events sitemap lists every event-detail page, and each
+  // page carries a schema.org Event JSON-LD block (exact start/end, price,
+  // status). Fully automatic — events Jem adds appear on their own;
+  // cancelled or closed ones are skipped.
+  { slug: 'jem', name: 'Jem — Fischtal Foodlab events', mode: 'wix-events-sitemap',
+    url: 'https://www.fischtal-foodlab.com/event-pages-sitemap.xml',
+    district: 'Zehlendorf' },
   // TEMP url: the general events page until this workshop's own
   // re-product-id link is known — it is both the seed's protection (a
   // failing source keeps its previous entries) and the Book target.
@@ -130,17 +137,31 @@ function fromJsonLd(html, sourceUrl) {
     .map((e) => {
       const start = Date.parse(e.startDate);
       if (Number.isNaN(start)) return null;
+      // Cancelled / closed events stay in the page's markup — skip them so
+      // the Book button never leads to a dead registration.
+      if (/cancelled|postponed/i.test(String(e.eventStatus ?? ''))) return null;
+      const end = Date.parse(e.endDate ?? '');
+      const hours = (end - start) / 3600000;
+      const duration =
+        !Number.isNaN(end) && hours > 0 && hours <= 12
+          ? `${Math.round(hours * 2) / 2} h`
+          : undefined;
+      // Offers may be a flat Offer or an AggregateOffer whose price sits in
+      // lowPrice or in a nested offers[] (Wix Events emits the latter).
       const offer = [].concat(e.offers ?? [])[0];
+      const rawPrice = [offer?.price, offer?.lowPrice, [].concat(offer?.offers ?? [])[0]?.price]
+        .find((p) => p != null && p !== '');
       const price =
-        offer?.price != null && offer.price !== ''
-          ? Number(offer.price) === 0
+        rawPrice != null
+          ? Number(rawPrice) === 0
             ? 'Free'
-            : `€${Math.round(Number(offer.price))}`
+            : `€${Math.round(Number(rawPrice))}`
           : undefined;
       return {
         title: stripTags(String(e.name ?? 'Workshop')),
         date: berlinDate(start),
         time: berlinTime(start),
+        ...(duration ? { duration } : {}),
         ...(price ? { price } : {}),
         url: typeof e.url === 'string' && e.url.startsWith('http') ? e.url : sourceUrl,
       };
@@ -550,6 +571,54 @@ async function scrape(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'wix-events-sitemap') {
+    // `html` is the site's Wix Events sitemap: every event-detail page ever
+    // published, past ones included. Each live page carries a schema.org
+    // Event JSON-LD block with exact start/end, price and status, so the
+    // whole schedule — new events included — reads without configuration.
+    const pages = [...new Set([...html.matchAll(/<loc>\s*([^<\s]+?)\s*<\/loc>/gi)].map((m) => m[1]))]
+      .filter((u) => /\/event-details-registration\//.test(u) && !/\/form$/.test(u));
+    console.log(`[${source.slug}] event pages in sitemap: ${pages.length}`);
+    const workshops = [];
+    const seen = new Set();
+    for (const pageUrl of pages) {
+      // Many URLs embed their event's date — skip clearly past ones without
+      // fetching. Undated URLs are fetched; the date filter below decides.
+      const embedded = pageUrl.match(/(20\d{2}-\d{2}-\d{2})-\d{2}-\d{2}$/);
+      if (embedded && embedded[1] < todayISO) continue;
+      try {
+        const pres = await fetch(pageUrl, {
+          redirect: 'follow',
+          headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' },
+        });
+        if (!pres.ok) {
+          console.log(`[${source.slug}] ${pageUrl}: HTTP ${pres.status}`);
+          continue;
+        }
+        for (const ev of fromJsonLd(await pres.text(), pageUrl)) {
+          if (ev.date < todayISO || ev.date > maxISO) continue;
+          // The same event can sit at more than one sitemap URL.
+          const key = `${ev.title}|${ev.date}|${ev.time}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          console.log(`[${source.slug}] event: "${ev.title}" ${ev.date} ${ev.time} ${ev.duration ?? ''} ${ev.price ?? 'no price'}`);
+          workshops.push({
+            slug: source.slug,
+            sourceUrl: source.url,
+            ...ev,
+            ...(source.district ? { district: source.district } : {}),
+            url: pageUrl,
+          });
+        }
+      } catch (err) {
+        console.log(`[${source.slug}] ${pageUrl}: ${err.message.split('\n')[0]}`);
+      }
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    console.log(`[${source.slug}] wix events kept: ${workshops.length}`);
+    return { workshops, recurring: [] };
+  }
+
   if (source.mode === 'recurring-de') {
     const recurring = fromGermanRecurring(html, source);
     for (const r of recurring) {
@@ -687,7 +756,12 @@ async function scrape(source) {
 if (process.env.PARSE_TEST) {
   const html = readFileSync(process.env.PARSE_TEST, 'utf8');
   const testSource = { slug: 'test', url: 'test', title: 'Test Workshop', price: '€65' };
-  const fn = process.env.PARSE_TEST_MODE === 'dates-de' ? fromGermanDates : fromGermanRecurring;
+  const fn =
+    process.env.PARSE_TEST_MODE === 'dates-de'
+      ? fromGermanDates
+      : process.env.PARSE_TEST_MODE === 'json-ld'
+        ? (h) => fromJsonLd(h, 'test')
+        : fromGermanRecurring;
   console.log(JSON.stringify(fn(html, testSource), null, 2));
   process.exit(0);
 }
