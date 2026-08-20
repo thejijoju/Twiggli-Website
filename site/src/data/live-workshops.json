@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T22:06:46.495Z",
+  "updated": "2026-08-20T22:26:31.285Z",
   "sources": [
     {
       "slug": "qian",
@@ -84,6 +84,12 @@
       "url": "https://www.coffeeandbananas.com/",
       "status": "ok",
       "count": 8
+    },
+    {
+      "slug": "bumerang",
+      "url": "https://berliner-bumerang.de/products.json?limit=250",
+      "status": "ok",
+      "count": 1
     },
     {
       "slug": "sarah",
@@ -3998,6 +4004,17 @@
       "price": "€65",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "bumerang",
+      "sourceUrl": "https://berliner-bumerang.de/products.json?limit=250",
+      "title": "Bumerang-Workshop",
+      "date": "2026-10-11",
+      "time": "10:00",
+      "duration": "7 h",
+      "price": "€129",
+      "district": "Lichtenberg",
+      "url": "https://berliner-bumerang.de/products/kopie-von-september-bumerang-workshop"
     },
     {
       "slug": "karen-rose",
