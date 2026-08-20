@@ -1,16 +1,23 @@
 ---
 import { getSessions, DAYS_AHEAD, type Session } from '../data/sessions.ts';
+import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
-/** The schedule feed, styled after the app's search screen: a search pill
- *  with a location chunk, price filter chips, a borderless day strip, and
- *  the day's sessions grouped under bold time headers. The search input and
- *  chips filter the list live, client-side. */
+/** The schedule feed, styled after the app's search screen: the borderless
+ *  day strip right at the top, one row of activity pills under it (the only
+ *  filter), and the day's sessions grouped under bold time headers. The
+ *  pills filter the list live, client-side. */
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 
 const sessions = getSessions(lang);
 const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
+
+// Only activities that actually have sessions get a pill — no dead filters.
+const ACTIVITY_ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing'];
+const present = new Set(sessions.map((s) => s.host.activity));
+const activities = ACTIVITY_ORDER.filter((a) => present.has(a));
+const activityLabels = filterCopy[lang].activities;
 
 /** Sessions arrive sorted by time, so grouping keeps that order. */
 const byTime = (list: Session[]): [string, Session[]][] => {
@@ -25,15 +32,13 @@ const byTime = (list: Session[]): [string, Session[]][] => {
 
 const t = {
   en: { spots: 'spots left', book: 'Book', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
-        noMatch: 'Nothing matches — try another search or filter.',
+        noMatch: 'Nothing in this activity on this day — try another.',
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
-        search: 'What do you want to do?', city: 'Berlin',
-        all: 'All', free: 'Free', paid: 'Paid' },
+        filter: 'Filter by activity', all: 'All' },
   de: { spots: 'Plätze frei', book: 'Buchen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
-        noMatch: 'Nichts gefunden — versuch eine andere Suche oder einen anderen Filter.',
+        noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
-        search: 'Was möchtest du machen?', city: 'Berlin',
-        all: 'Alle', free: 'Kostenlos', paid: 'Kostenpflichtig' },
+        filter: 'Nach Aktivität filtern', all: 'Alle' },
 }[lang];
 
 const dayLabel = (offset: number) =>
@@ -47,27 +52,6 @@ const dayLabel = (offset: number) =>
   data-today={t.today}
   data-tomorrow={t.tomorrow}
 >
-  <label class="feed-search">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.35-4.35" />
-    </svg>
-    <input class="feed-search-input" type="search" placeholder={t.search} aria-label={t.search} />
-    <span class="feed-search-loc">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-      {t.city}
-    </span>
-  </label>
-
-  <div class="feed-pills" role="group">
-    <button class="feed-pill is-active" type="button" data-price-filter="all">{t.all}</button>
-    <button class="feed-pill" type="button" data-price-filter="free">{t.free}</button>
-    <button class="feed-pill" type="button" data-price-filter="paid">{t.paid}</button>
-  </div>
-
   <span class="daystrip-month" data-month aria-hidden="true"></span>
   <div class="daystrip" role="tablist" aria-label={t.pick}>
     {days.map((offset) => (
@@ -83,6 +67,15 @@ const dayLabel = (offset: number) =>
         <span class="daychip-dow"></span>
         <span class="daychip-num"></span>
       </button>
+    ))}
+  </div>
+
+  {/* The one filter: activity, as discreet outlined pills in the accent —
+      after themakery.de's category pills, in Twiggli purple. */}
+  <div class="activity-pills" role="group" aria-label={t.filter}>
+    <button class="activity-pill is-active" type="button" data-activity-filter="all">{t.all}</button>
+    {activities.map((a) => (
+      <button class="activity-pill" type="button" data-activity-filter={a}>{activityLabels[a]}</button>
     ))}
   </div>
 
@@ -102,11 +95,7 @@ const dayLabel = (offset: number) =>
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (
-                      <li
-                        class="session"
-                        data-search={`${s.title} ${s.host.name} ${s.place} ${s.district}`.toLowerCase()}
-                        data-price={(s.price ?? '€').startsWith('€') ? 'paid' : 'free'}
-                      >
+                      <li class="session" data-activity={s.host.activity}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
                             the app — and falls back to the still. Thumbnail
@@ -209,19 +198,15 @@ const dayLabel = (offset: number) =>
       });
     });
 
-    // Live filtering, like the app: the search box matches title, host and
-    // place; the chips narrow by price. A time header disappears with its
-    // last matching session, and an empty day shows the no-match line.
-    const searchInput = root.querySelector<HTMLInputElement>('.feed-search-input');
-    const pills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-price-filter]'));
-    let priceFilter = 'all';
+    // Live filtering: the activity pills narrow the list. A time header
+    // disappears with its last matching session, and an empty day shows the
+    // no-match line.
+    const pills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-activity-filter]'));
+    let activityFilter = 'all';
 
     const applyFilters = () => {
-      const query = (searchInput?.value || '').trim().toLowerCase();
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
-        const matchesQuery = !query || (li.dataset.search || '').includes(query);
-        const matchesPrice = priceFilter === 'all' || li.dataset.price === priceFilter;
-        li.hidden = !(matchesQuery && matchesPrice);
+        li.hidden = activityFilter !== 'all' && li.dataset.activity !== activityFilter;
       });
       root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
         group.hidden = !group.querySelector('.session:not([hidden])');
@@ -232,10 +217,9 @@ const dayLabel = (offset: number) =>
       });
     };
 
-    searchInput?.addEventListener('input', applyFilters);
     pills.forEach((pill) => {
       pill.addEventListener('click', () => {
-        priceFilter = pill.dataset.priceFilter || 'all';
+        activityFilter = pill.dataset.activityFilter || 'all';
         pills.forEach((p) => p.classList.toggle('is-active', p === pill));
         applyFilters();
       });

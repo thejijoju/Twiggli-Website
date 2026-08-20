@@ -1,7 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import DayPicker from '../../../components/DayPicker.astro';
-import { DAYS_AHEAD } from '../../../data/sessions.ts';
 
 const lang = 'de';
 ---
@@ -15,13 +14,9 @@ const lang = 'de';
     <section class="page-head">
       <span class="kicker">Heute los</span>
       <h1 class="page-title">Was in Berlin läuft</h1>
-      <p class="page-lede">
-        Heute und die nächsten {DAYS_AHEAD - 1} Tage, angeboten von unabhängigen Berliner
-        Gastgeberinnen und Gastgebern. Wähle einen Tag und sieh, was läuft.
-      </p>
     </section>
 
-    <section class="section">
+    <section class="section section-flush">
       <DayPicker lang={lang} />
     </section>
 

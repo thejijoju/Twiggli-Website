@@ -104,6 +104,9 @@ a:hover { color: var(--color-accent); }
   background: var(--color-divider);
 }
 .section { padding: 64px 0; }
+/* For pages whose head is just a title and the content should start right
+   under it — the schedule's calendar strip sits high on the page. */
+.section-flush { padding-top: 0; }
 
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
@@ -1531,65 +1534,23 @@ a:hover { color: var(--color-accent); }
    pill with a location chunk, price filter chips, a clean borderless day
    strip, and sessions grouped under bold time headers. No hairlines —
    whitespace and type weight do the separating. */
-.feed-search {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: 620px;
-  padding: 14px 22px;
-  border: 2px solid var(--color-divider);
+/* The one filter: activity pills after themakery.de's category row —
+   thin-outlined, rounded, in the accent purple; the active one fills. */
+.activity-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.activity-pill {
+  padding: 8px 17px;
+  border: 1.5px solid var(--color-accent-300);
   border-radius: 999px;
-  cursor: text;
-}
-.feed-search:focus-within { border-color: var(--color-accent); }
-.feed-search svg {
-  flex: none;
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  color: color-mix(in srgb, var(--color-text) 45%, transparent);
-}
-.feed-search-input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: none;
+  background: transparent;
   font: inherit;
-  font-size: 17px;
-  color: inherit;
-}
-.feed-search-input::placeholder { color: color-mix(in srgb, var(--color-text) 42%, transparent); }
-.feed-search-loc {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding-left: 18px;
-  border-left: 2px solid var(--color-divider);
-  font-weight: 700;
-  font-size: 16px;
-  white-space: nowrap;
-  color: color-mix(in srgb, var(--color-text) 72%, transparent);
-}
-.feed-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-.feed-pill {
-  padding: 9px 18px;
-  border: 2px solid var(--color-divider);
-  border-radius: 999px;
-  background: var(--color-bg);
-  font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
-  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  color: var(--color-accent-700);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
-.feed-pill:hover { border-color: var(--color-accent-400); }
-.feed-pill.is-active {
+.activity-pill:hover { border-color: var(--color-accent); }
+.activity-pill.is-active {
   background: var(--color-accent);
   border-color: var(--color-accent);
   color: #fff;
@@ -1598,7 +1559,7 @@ a:hover { color: var(--color-accent); }
    selected one grey out, the selected one carries the accent. */
 .daystrip-month {
   display: block;
-  margin: 36px 0 0;
+  margin: 0;
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -1764,8 +1725,6 @@ a:hover { color: var(--color-accent); }
 }
 
 @media (max-width: 720px) {
-  .feed-search { padding: 12px 18px; }
-  .feed-search-loc { display: none; }
   .session { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 14px; }
   .session-side { flex-direction: column; align-items: flex-end; gap: 8px; }
   .session-thumb { width: 64px; height: 64px; border-radius: 12px; }
