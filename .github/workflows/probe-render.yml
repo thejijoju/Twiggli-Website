@@ -44,7 +44,7 @@ jobs:
           const page = await browser.newPage({ viewport: { width: 1280, height: 2200 } });
           page.on('response', async (res) => {
             const u = res.url();
-            if (/acuity|squarespacescheduling|regiondo|bookwhen|calendly/i.test(u) && !/\.(css|js|png|svg|woff2?|jpe?g|gif|ico)(\?|$)/i.test(u)) {
+            if (/acuity|squarespacescheduling|regiondo|bookwhen|calendly|cowlendar|eversports|sesami|appointo/i.test(u) && !/\.(css|js|png|svg|woff2?|jpe?g|gif|ico)(\?|$)/i.test(u)) {
               let body = '';
               try {
                 const ct = res.headers()['content-type'] ?? '';
