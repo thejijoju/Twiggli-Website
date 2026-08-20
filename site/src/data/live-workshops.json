@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T18:07:50.051Z",
+  "updated": "2026-08-20T19:51:27.661Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,8 +64,14 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 3
+    },
+    {
+      "slug": "angelo",
+      "url": "https://www.coffeeandbananas.com/",
+      "status": "ok",
+      "count": 8
     },
     {
       "slug": "beat-etage",
@@ -74,7 +80,7 @@
       "count": 7
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "url": "https://www.senle.studio/scheduling",
       "status": "ok",
       "count": 8
@@ -185,6 +191,18 @@
   ],
   "workshops": [
     {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-20",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -206,6 +224,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-21",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -215,6 +245,18 @@
       "price": "€71",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-22",
+      "time": "10:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "karen-rose",
@@ -283,7 +325,7 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-08-23",
@@ -337,6 +379,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-26",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -345,6 +399,18 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-27",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",
@@ -358,7 +424,7 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Sip Into Scent - Scent x Drink Pairing",
       "date": "2026-08-27",
@@ -390,6 +456,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-28",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -409,6 +487,18 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-08-29",
+      "time": "10:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "karen-rose",
@@ -508,7 +598,7 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-08-30",
@@ -570,6 +660,18 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-02",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",
@@ -734,7 +836,7 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-09-06",
@@ -811,7 +913,7 @@
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab II: Blending & Expression",
       "date": "2026-09-13",
@@ -868,7 +970,7 @@
       "time": "15:00"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-09-19",
@@ -954,7 +1056,7 @@
       "district": "Zehlendorf"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-10-04",
@@ -1006,7 +1108,7 @@
       "url": "https://www.claygarden.studio/special-workshops"
     },
     {
-      "slug": "senle",
+      "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-10-18",
