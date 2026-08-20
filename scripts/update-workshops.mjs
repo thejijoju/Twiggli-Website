@@ -82,6 +82,15 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
+  // Regiondo-hosted shop pages (unlike Karen-Rose's embedded widget) are
+  // server-rendered with an Event JSON-LD block carrying the course's next
+  // start date and price — the default strategy reads them. The 2027
+  // courses enter the feed automatically once inside the keep window;
+  // until then these report "no upcoming events", which is expected.
+  { slug: 'kohfink', name: 'Imkerei Kohfink — Einsteigerkurse',
+    url: 'https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse' },
+  { slug: 'kohfink', name: 'Imkerei Kohfink — Theoriekurs',
+    url: 'https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei' },
   // Wix Events: the events sitemap lists every event-detail page, and each
   // page carries a schema.org Event JSON-LD block (exact start/end, price,
   // status). Fully automatic — events Jem adds appear on their own;
