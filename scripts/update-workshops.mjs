@@ -105,6 +105,13 @@ const SOURCES = [
     title: 'DIY Kaffeerösten', titleEn: 'DIY Coffee Roasting', price: '€59',
     district: 'Prenzlauer Berg',
     bookUrl: 'https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/' },
+  // Squarespace site booking through Konfetti — the sitemap finds every
+  // course page, each page's embedded widget names its Konfetti event, and
+  // the calendar API serves the dates with live tickets left.
+  { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom — all classes', mode: 'konfetti',
+    url: 'https://www.ceramickingdomberlin.com/sitemap.xml',
+    pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)',
+    district: 'Neukölln' },
   // One Shopify product per workshop date; the date lives in the product
   // description ("Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr"), which the
   // shopify mode's body-date fallback reads.
@@ -636,6 +643,98 @@ async function fromCheckoutLinks(html, source) {
       console.log(`[${source.slug}] ${link}: ${err.message.split('\n')[0]}`);
     }
     await new Promise((r2) => setTimeout(r2, 300));
+  }
+  return out;
+}
+
+/** Strategy for sites booking through Konfetti (gokonfetti.com): course
+ *  pages embed a booking iframe carrying an eventDescriptionId, and the
+ *  widget reads its dates from a public JSON API — verified live against
+ *  Ceramic Kingdom's scheduler:
+ *  GET api.gokonfetti.com/v1/store/events/<id>/calendar?month=YYYY-MM
+ *  answers plain unauthenticated fetches with per-day dates (UTC start/end,
+ *  tickets left, price in cents). The site's sitemap finds the course
+ *  pages; pages without a widget just contribute nothing. */
+async function fromKonfetti(source) {
+  const res = await fetch(source.url, { headers: { 'user-agent': UA } });
+  if (!res.ok) {
+    console.log(`[${source.slug}] konfetti: sitemap HTTP ${res.status}`);
+    return [];
+  }
+  const xml = await res.text();
+  const pat = source.pagePattern ? new RegExp(source.pagePattern) : /./;
+  const pages = [...new Set([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => decodeEntities(m[1])))].filter(
+    (u) => pat.test(u),
+  );
+  console.log(`[${source.slug}] konfetti: ${pages.length} candidate pages from sitemap`);
+
+  const horizon = source.maxDays ?? KEEP_DAYS;
+  const lastISO = berlinDate(Date.parse(todayISO) + horizon * 86400000);
+  const months = [];
+  for (
+    let d = new Date(`${todayISO.slice(0, 7)}-01T00:00:00Z`);
+    d.toISOString().slice(0, 7) <= lastISO.slice(0, 7);
+    d.setUTCMonth(d.getUTCMonth() + 1)
+  ) {
+    months.push(d.toISOString().slice(0, 7));
+  }
+
+  const out = [];
+  const seenEvents = new Set();
+  for (const page of pages) {
+    let html = '';
+    try {
+      const r = await fetch(page, { headers: { 'user-agent': UA } });
+      if (!r.ok) continue;
+      html = await r.text();
+    } catch {
+      continue;
+    }
+    const ids = [...new Set([...html.matchAll(/eventDescriptionId=([a-z0-9]+)/gi)].map((m) => m[1]))];
+    if (!ids.length) continue;
+    const title =
+      stripTags(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '').trim() ||
+      decodeEntities(html.match(/<title>([^<]*)/i)?.[1] ?? '').split('—')[0].trim();
+    for (const id of ids) {
+      if (seenEvents.has(id)) continue;
+      seenEvents.add(id);
+      let kept = 0;
+      for (const ym of months) {
+        let days;
+        try {
+          const av = await fetch(`https://api.gokonfetti.com/v1/store/events/${id}/calendar?month=${ym}`, {
+            headers: { 'user-agent': UA, accept: 'application/json' },
+          });
+          if (!av.ok) continue;
+          days = await av.json();
+        } catch {
+          continue;
+        }
+        for (const day of Object.values(days ?? {})) {
+          for (const s of day?.dates ?? []) {
+            if (s?.status !== 'OPEN') continue;
+            if (s.available_tickets_quantity === 0) continue;
+            const startMs = Date.parse(s.start ?? '');
+            if (Number.isNaN(startMs)) continue;
+            const endMs = Date.parse(s.end ?? '');
+            const span = Number.isNaN(endMs) ? 0 : (endMs - startMs) / 3600000;
+            const cents = Number(s.product?.price?.amount);
+            out.push({
+              title,
+              date: berlinDate(startMs),
+              time: berlinTime(startMs),
+              ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+              ...(Number.isFinite(cents) && cents > 0 ? { price: `€${Math.round(cents / 100)}` } : {}),
+              ...(Number.isFinite(s.available_tickets_quantity) ? { spots: s.available_tickets_quantity } : {}),
+              url: page,
+            });
+            kept++;
+          }
+        }
+        await new Promise((r2) => setTimeout(r2, 200));
+      }
+      console.log(`[${source.slug}] konfetti: "${title}" [${id}] → ${kept} open dates`);
+    }
   }
   return out;
 }
@@ -1277,6 +1376,20 @@ async function scrape(source) {
         ...(source.district ? { district: source.district } : {}),
       }));
     console.log(`[${source.slug}] dated-time-list sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'konfetti') {
+    const found = await fromKonfetti(source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] konfetti sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 

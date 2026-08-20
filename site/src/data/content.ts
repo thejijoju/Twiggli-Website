@@ -125,6 +125,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   'monk-garden': { activity: 'food',       groupRange: [10, 20],  hourRange: [2.5, 3] },
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
   bumerang:      { activity: 'craft',      groupRange: [1, 10],   hourRange: [7, 7] },
+  'ceramic-kingdom': { activity: 'ceramics', groupRange: [1, 7],  hourRange: [2, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -222,6 +223,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'bumerang', name: 'Berliner Bumerang', specialty: 'Boomerang building', studio: 'Berliner Bumerang Werkstatt',
       blurb: 'Christian Kliem’s boomerang workshop in the Kaskelkiez. Build two boomerangs of your own — one indoor, one outdoor — with rasps, files and sandpaper only, no power tools, then learn the throwing theory so it actually comes back. A full day of handcraft for ages 8 to 99.',
       group: 'Small groups', duration: '7 h', place: 'Kaskelstr. 46, Berlin', languages: 'DE' },
+    // Copy from ceramickingdomberlin.com; photos and reel to follow.
+    { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Pottery school & open studio', studio: 'Ceramic Kingdom',
+      blurb: 'Madeline Stillwell’s ceramics school in the Reuterkiez. Wheel-throwing from taster to intermediate, handbuilding, mold making and slip casting, glaze chemistry, sgraffito — even 3D printing in clay. Small classes of about seven, taught in English and German, with open studio time and kiln firing for those who keep going.',
+      group: 'Up to 7', duration: '2–4 h', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -302,6 +307,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'bumerang', name: 'Berliner Bumerang', specialty: 'Bumerangbau', studio: 'Berliner Bumerang Werkstatt',
       blurb: 'Christian Kliems Bumerang-Werkstatt im Kaskelkiez. Zwei eigene Bumerangs bauen — einen für drinnen, einen für draußen — nur mit Raspeln, Feilen und Schleifpapier, ganz ohne Strom, dazu die Wurftheorie, damit er auch wirklich zurückkommt. Ein ganzer Tag Handwerk für Menschen von 8 bis 99.',
       group: 'Kleine Gruppen', duration: '7 Std.', place: 'Kaskelstr. 46, Berlin', languages: 'DE' },
+    { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Töpferschule & offene Werkstatt', studio: 'Ceramic Kingdom',
+      blurb: 'Madeline Stillwells Keramikschule im Reuterkiez. Drehscheibe vom Schnupperkurs bis zur Mittelstufe, Aufbautechnik, Formenbau und Schlickerguss, Glasurchemie, Sgraffito — sogar 3D-Druck mit Ton. Kleine Kurse mit etwa sieben Plätzen auf Englisch und Deutsch, dazu offene Werkstatt und Brennservice für alle, die dranbleiben.',
+      group: 'Bis 7', duration: '2–4 Std.', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
   ],
 };
 
