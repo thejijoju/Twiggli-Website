@@ -5,13 +5,13 @@ import PhoneMockup from '../../components/PhoneMockup.astro';
 import HostGrid from '../../components/HostGrid.astro';
 import StoreButtons from '../../components/StoreButtons.astro';
 import Newsletter from '../../components/Newsletter.astro';
-import { getSteps, getHosts } from '../../data/content.ts';
+import TodayTeaser from '../../components/TodayTeaser.astro';
+import { getHosts } from '../../data/content.ts';
 import { getSiteData, appUrl } from '../../data/site.ts';
 import { withBase } from '../../lib/url.ts';
 
 const lang = 'de';
 const { brand } = getSiteData(lang);
-const steps = getSteps(lang);
 const hosts = getHosts(lang);
 ---
 
@@ -50,18 +50,7 @@ const hosts = getHosts(lang);
     </div>
   </section>
 
-  <section class="section steps-band" id="how-it-works">
-    <div class="container">
-      <span class="kicker">So funktioniert&rsquo;s</span>
-      {steps.map((step) => (
-        <div class="step">
-          <p class="step-num">{step.num}</p>
-          <h3 class="step-title">{step.title}</h3>
-          <p class="step-copy">{step.copy}</p>
-        </div>
-      ))}
-    </div>
-  </section>
+  <TodayTeaser lang={lang} />
 
   <div class="container">
 

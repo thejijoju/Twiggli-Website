@@ -70,7 +70,7 @@ export const DAYS_AHEAD = 90;
 /** Today in Berlin, as a UTC-midnight timestamp — the base the scraped
  *  absolute dates are converted to day offsets against. Build-time, so the
  *  deploy workflow rebuilds the site daily to keep offsets true. */
-const berlinTodayMs = (): number =>
+export const berlinTodayMs = (): number =>
   Date.parse(new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' }));
 
 /** Real sessions scraped weekly from hosts' public schedules — see

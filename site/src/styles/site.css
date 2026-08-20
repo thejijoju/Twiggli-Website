@@ -709,6 +709,92 @@ a:hover { color: var(--color-accent); }
 .hosts-band { background: rgba(253, 249, 231, 0.5); }
 .steps-band { background: rgba(248, 239, 253, 1); }
 
+/* — homepage "Happening today" teaser — a taste of the live calendar:
+   reel-playing cards for the next few real sessions, and the full
+   calendar one tap away. Same tinted band as the old steps section. */
+.today-band { background: rgba(248, 239, 253, 1); }
+.today-lede {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 52ch;
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+}
+.today-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 36px;
+}
+.today-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.today-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.today-media img,
+.today-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.today-card:hover .today-media img,
+.today-card:hover .today-video { transform: scale(1.03); }
+.today-when {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 92%, transparent);
+  font-size: 13px;
+  font-weight: 700;
+}
+.today-price {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 14px;
+  font-weight: 700;
+}
+.today-title {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.25;
+}
+.today-card:hover .today-title { color: var(--color-accent-700); }
+.today-host {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 52%, transparent);
+}
+.today-actions { margin-top: 36px; }
+
+@media (max-width: 980px) {
+  .today-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .today-media { aspect-ratio: 16 / 10; }
+}
+
 .host-coverflow {
   display: flex;
   gap: 12px;
