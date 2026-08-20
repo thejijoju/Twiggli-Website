@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T21:46:04.904Z",
+  "updated": "2026-08-20T22:06:46.495Z",
   "sources": [
     {
       "slug": "qian",
@@ -84,6 +84,18 @@
       "url": "https://www.coffeeandbananas.com/",
       "status": "ok",
       "count": 8
+    },
+    {
+      "slug": "sarah",
+      "url": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+      "status": "ok",
+      "count": 5
+    },
+    {
+      "slug": "sarah",
+      "url": "https://sarahniklowitz.de/journaling-fuer-beginner/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "monk-garden",
@@ -214,18 +226,6 @@
     }
   ],
   "workshops": [
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-08-20",
-      "time": "17:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
-    },
     {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
@@ -565,6 +565,17 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "sarah",
+      "sourceUrl": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+      "title": "Sunday Morning Pages & Brunch",
+      "date": "2026-08-23",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€39",
+      "url": "https://www.paypal.com/ncp/payment/YVVSZE5K74R8U",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",
@@ -1546,6 +1557,18 @@
       "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-03",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",
@@ -3898,6 +3921,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "sarah",
+      "sourceUrl": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+      "title": "Sunday Morning Pages & Brunch",
+      "date": "2026-10-04",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€39",
+      "url": "https://www.paypal.com/ncp/payment/4JXJEWHN48CUE",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Foundations of Scent",
@@ -4008,6 +4042,17 @@
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding"
+    },
+    {
+      "slug": "sarah",
+      "sourceUrl": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+      "title": "Sunday Morning Pages & Brunch",
+      "date": "2026-10-18",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€39",
+      "url": "https://www.paypal.com/ncp/payment/XNUDNT79FE6GL",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "qian",
@@ -4140,6 +4185,17 @@
       "district": "Wedding"
     },
     {
+      "slug": "sarah",
+      "sourceUrl": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+      "title": "Sunday Morning Pages & Brunch",
+      "date": "2026-11-08",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€39",
+      "url": "https://www.paypal.com/ncp/payment/C3FRWWECFL4FQ",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Gemüse Fermentieren",
@@ -4260,6 +4316,17 @@
       "price": "€65",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "sarah",
+      "sourceUrl": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+      "title": "Sunday Morning Pages & Brunch",
+      "date": "2026-11-29",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€39",
+      "url": "https://www.paypal.com/ncp/payment/DQFENB3CJBA6L",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "pastamadre",
