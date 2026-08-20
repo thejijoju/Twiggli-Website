@@ -258,7 +258,13 @@ async function fromAcuity(source) {
   }
   const html = await res.text();
 
-  const types = extractJsonAfterKey(html, 'appointmentTypes');
+  // Either a flat array or an object keyed by category name.
+  const rawTypes = extractJsonAfterKey(html, 'appointmentTypes');
+  const types = Array.isArray(rawTypes)
+    ? rawTypes
+    : rawTypes && typeof rawTypes === 'object'
+      ? Object.values(rawTypes).flat()
+      : null;
   if (!Array.isArray(types) || !types.length) {
     const i = html.search(/appointmentTypes/i);
     console.log(
