@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T14:44:05.886Z",
+  "updated": "2026-08-20T15:11:59.005Z",
   "sources": [
     {
       "slug": "qian",
@@ -59,7 +59,13 @@
       "slug": "galleria-lucia",
       "url": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "status": "ok",
-      "count": 45
+      "count": 40
+    },
+    {
+      "slug": "jem",
+      "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "status": "ok",
+      "count": 11
     },
     {
       "slug": "karen-rose",
@@ -151,17 +157,6 @@
     {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-08-20",
-      "time": "18:00",
-      "duration": "1.5–2 h",
-      "price": "€71",
-      "district": "Lichtenberg",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
       "date": "2026-08-21",
       "time": "13:00",
@@ -190,16 +185,6 @@
       "price": "€71",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-08-22",
-      "time": "10:30",
-      "price": "€59",
-      "district": "Lichtenberg",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
       "slug": "karen-rose",
@@ -214,17 +199,6 @@
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
     },
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Design your own scented candle with crystals, Workshop in Berlin",
-      "date": "2026-08-22",
-      "time": "13:00",
-      "duration": "1.5–2 h",
-      "price": "€66",
-      "district": "Lichtenberg",
-      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
-    },
-    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=320775",
       "title": "Terrazzo Schmuck",
@@ -237,25 +211,15 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=320775"
     },
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sushi workshop: roll your own sushi in Berlin",
       "date": "2026-08-22",
       "time": "16:00",
-      "price": "€59",
-      "district": "Lichtenberg",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-08-22",
-      "time": "18:30",
-      "duration": "1.5–2 h",
-      "price": "€71",
-      "district": "Lichtenberg",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+      "duration": "3.5 h",
+      "price": "€75",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin",
+      "district": "Zehlendorf"
     },
     {
       "slug": "galleria-lucia",
@@ -471,6 +435,17 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
+      "date": "2026-08-30",
+      "time": "14:30",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-7",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -653,6 +628,17 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Fizzy ferments: Kombucha, Kefir and Wild Sodas",
+      "date": "2026-09-05",
+      "time": "16:00",
+      "duration": "3 h",
+      "price": "€60",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/fizzy-ferments-kombucha-kefir-and-wild-sodas",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -706,6 +692,17 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Kimchi selber machen!",
+      "date": "2026-09-11",
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/kimchi-selber-machen-3",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "title": "Keramikgießen | Terrazzo Workshop",
@@ -728,6 +725,17 @@
       "price": "€59",
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=320775"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Let's make Kimchi!",
+      "date": "2026-09-13",
+      "time": "15:00",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-7",
+      "district": "Zehlendorf"
     },
     {
       "slug": "karen-rose",
@@ -759,6 +767,17 @@
       "date": "2026-09-20",
       "time": "13:00",
       "url": "https://www.claygarden.studio/special-workshops"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sushi workshop: roll your own sushi in Berlin",
+      "date": "2026-09-24",
+      "time": "18:00",
+      "duration": "3.5 h",
+      "price": "€75",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin-2",
+      "district": "Zehlendorf"
     },
     {
       "slug": "qian",
@@ -793,6 +812,28 @@
       "price": "€49",
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=264518"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
+      "date": "2026-09-27",
+      "time": "14:30",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-4",
+      "district": "Zehlendorf"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
+      "date": "2026-10-10",
+      "time": "15:00",
+      "duration": "3.5 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin",
+      "district": "Zehlendorf"
     },
     {
       "slug": "karen-rose",
@@ -853,6 +894,17 @@
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Let's make Kimchi!",
+      "date": "2026-11-20",
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-8",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/",
       "title": "Seife Sieden Workshop",
@@ -863,6 +915,28 @@
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/",
       "titleEn": "Soap Making Workshop"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
+      "date": "2026-11-22",
+      "time": "14:30",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-8",
+      "district": "Zehlendorf"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
+      "date": "2026-11-28",
+      "time": "15:00",
+      "duration": "3.5 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
+      "district": "Zehlendorf"
     }
   ]
 }
