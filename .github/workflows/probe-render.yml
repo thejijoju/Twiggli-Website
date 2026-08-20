@@ -1,0 +1,90 @@
+name: Probe a page with a real browser
+
+# On-demand helper: renders a URL in headless Chromium on the Actions runner,
+# logs every scheduling-platform network call the page makes (URL, status and
+# a body snippet), optionally clicks a selector, and prints each frame's
+# visible text. Read-only; touches nothing. Used to reverse-engineer booking
+# widgets that draw their dates client-side.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to render'
+        required: true
+        type: string
+      click:
+        description: 'Optional selector to click after load (searched in every frame)'
+        required: false
+        type: string
+        default: ''
+
+permissions: {}
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright >/dev/null 2>&1
+          npx playwright install --with-deps chromium
+      - name: Render and describe
+        env:
+          PROBE_URL: ${{ inputs.url }}
+          PROBE_CLICK: ${{ inputs.click }}
+        run: |
+          node - <<'EOF'
+          const { chromium } = await import('playwright');
+          const browser = await chromium.launch();
+          const page = await browser.newPage({ viewport: { width: 1280, height: 2200 } });
+          page.on('response', async (res) => {
+            const u = res.url();
+            if (/acuity|squarespacescheduling|regiondo|bookwhen|calendly/i.test(u) && !/\.(css|js|png|svg|woff2?|jpe?g|gif|ico)(\?|$)/i.test(u)) {
+              let body = '';
+              try {
+                const ct = res.headers()['content-type'] ?? '';
+                if (/json|html|text/i.test(ct)) body = (await res.text()).replace(/\s+/g, ' ').slice(0, 800);
+              } catch { /* stream already consumed or binary */ }
+              console.log(`\n[net] ${res.status()} ${res.request().method()} ${u}\n      ${body}`);
+            }
+          });
+          await page.goto(process.env.PROBE_URL, { waitUntil: 'networkidle', timeout: 45000 }).catch((e) => console.log('goto:', e.message.split('\n')[0]));
+          await page.waitForTimeout(5000);
+          for (const sel of ['#onetrust-accept-btn-handler', '.cmplz-accept', 'button:has-text("Accept")', 'button:has-text("Alle akzeptieren")', 'button:has-text("Zustimmen")']) {
+            try {
+              const b = page.locator(sel).first();
+              if (await b.isVisible({ timeout: 400 })) {
+                await b.click();
+                console.log('clicked consent:', sel);
+                await page.waitForTimeout(4000);
+              }
+            } catch { /* not present */ }
+          }
+          if (process.env.PROBE_CLICK) {
+            for (const frame of page.frames()) {
+              try {
+                const b = frame.locator(process.env.PROBE_CLICK).first();
+                if (await b.isVisible({ timeout: 800 })) {
+                  await b.click();
+                  console.log(`clicked "${process.env.PROBE_CLICK}" in ${frame.url().slice(0, 90)}`);
+                  await page.waitForTimeout(6000);
+                  break;
+                }
+              } catch { /* keep looking in other frames */ }
+            }
+          }
+          await page.waitForTimeout(4000);
+          for (const frame of page.frames()) {
+            const text = await frame.evaluate(() => document.body?.innerText ?? '').catch(() => '');
+            if (text.trim()) {
+              console.log(`\n=== frame ${frame.url().slice(0, 110)} ===`);
+              console.log(text.replace(/\n{3,}/g, '\n\n').slice(0, 9000));
+            }
+          }
+          await browser.close();
+          EOF
