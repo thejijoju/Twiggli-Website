@@ -1538,13 +1538,13 @@ a:hover { color: var(--color-accent); }
    thin-outlined, rounded, in the accent purple; the active one fills. */
 .activity-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
 .activity-pill {
-  padding: 8px 17px;
+  padding: 6px 14px;
   border: 1.5px solid var(--color-accent-300);
   border-radius: 999px;
   background: transparent;
   font: inherit;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-accent-700);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
