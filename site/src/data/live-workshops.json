@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T16:47:36.151Z",
+  "updated": "2026-08-20T18:07:50.051Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,8 +64,14 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 3
+    },
+    {
+      "slug": "beat-etage",
+      "url": "https://beat-etage.de/workshops/",
+      "status": "ok",
+      "count": 7
     },
     {
       "slug": "senle",
@@ -89,7 +95,7 @@
       "slug": "jem",
       "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "status": "ok",
-      "count": 8
+      "count": 10
     },
     {
       "slug": "karen-rose",
@@ -427,6 +433,17 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-08-29",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/d0d53672-e1c2-4064-aa51-fc3ab20430b2",
+      "district": "Treptow"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/",
       "title": "Seife Sieden Workshop",
@@ -760,6 +777,28 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Handpan Workshop",
+      "date": "2026-09-12",
+      "time": "14:30",
+      "duration": "2 h",
+      "price": "€75",
+      "url": "https://beat-etage.de/workshops/",
+      "district": "Treptow"
+    },
+    {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Cajon Workshop",
+      "date": "2026-09-12",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€50",
+      "url": "https://beat-etage.de/workshops/",
+      "district": "Treptow"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "title": "Keramikgießen | Terrazzo Workshop",
@@ -881,6 +920,17 @@
       "titleEn": "Soap Making Workshop"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-09-26",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/2c373cd4-eaac-411f-852e-f37030dcbc0a",
+      "district": "Treptow"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=264518",
       "title": "Bio Naturkosmetik Workshop - Essentials",
@@ -913,6 +963,17 @@
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
       "district": "Friedrichshain"
+    },
+    {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-10-10",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/e4c213e6-303a-4a2d-8d34-d3a9babbfc3c",
+      "district": "Treptow"
     },
     {
       "slug": "jem",
@@ -983,6 +1044,17 @@
       "time": "11:00"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-11-07",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/9128313b-82f3-4b84-a2d0-bf81627ec072",
+      "district": "Treptow"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "title": "Keramikgießen | Terrazzo Workshop",
@@ -1038,6 +1110,39 @@
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/",
       "titleEn": "Soap Making Workshop"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
+      "date": "2026-11-22",
+      "time": "14:30",
+      "duration": "3 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-8",
+      "district": "Zehlendorf"
+    },
+    {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-11-28",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/275c74ba-764b-4948-967e-72dbce19a57e",
+      "district": "Treptow"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
+      "date": "2026-11-28",
+      "time": "15:00",
+      "duration": "3.5 h",
+      "price": "€65",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
+      "district": "Zehlendorf"
     },
     {
       "slug": "kohfink",
