@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T20:50:44.764Z",
+  "updated": "2026-08-20T21:02:40.721Z",
   "sources": [
     {
       "slug": "qian",
@@ -71,7 +71,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 312
+      "count": 222
     },
     {
       "slug": "pastamadre",
@@ -228,22 +228,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-21",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-21",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 6,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -255,6 +245,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -266,6 +257,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -277,18 +269,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-21",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -309,18 +291,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-21",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -331,6 +303,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -342,6 +315,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -353,6 +327,7 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -371,12 +346,13 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-21",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 8,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -415,6 +391,18 @@
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-08-22",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=320775",
       "title": "Terrazzo Schmuck",
@@ -429,33 +417,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-22",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-22",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-08-22",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -467,6 +434,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -478,6 +446,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -491,17 +460,6 @@
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-22",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
     },
     {
       "slug": "jem",
@@ -522,18 +480,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-22",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -544,6 +492,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -555,6 +504,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -566,18 +516,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-22",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 8,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -617,6 +569,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-08-23",
       "time": "16:00",
+      "spots": 9,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -668,33 +621,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-26",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-26",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-08-26",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -706,6 +638,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -717,50 +650,19 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-26",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-26",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-26",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-08-26",
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -772,6 +674,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -783,6 +686,7 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -797,17 +701,6 @@
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
       "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-26",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -822,22 +715,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-27",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-27",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 8,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -849,6 +732,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -860,6 +744,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -871,40 +756,20 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-27",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
       "date": "2026-08-27",
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-27",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -915,6 +780,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -926,6 +792,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -937,6 +804,7 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -953,17 +821,6 @@
       "district": "Prenzlauer Berg"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-27",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -975,15 +832,40 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-08-27",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Sip Into Scent - Scent x Drink Pairing",
       "date": "2026-08-27",
       "time": "18:00",
+      "spots": 12,
       "duration": "2 h",
       "price": "€45",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97092490/calendar/13025469",
       "district": "Friedrichshain"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-08-27",
+      "time": "18:30",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -999,22 +881,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-28",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-28",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1026,6 +898,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1037,6 +910,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1048,18 +922,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-28",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -1080,18 +944,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-28",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -1102,6 +956,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1113,6 +968,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1124,6 +980,7 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1142,12 +999,13 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-28",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -1206,6 +1064,18 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-08-29",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 8,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "beat-etage",
       "sourceUrl": "https://beat-etage.de/workshops/",
       "title": "Djembe & Dundun Workshop",
@@ -1219,33 +1089,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-29",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-29",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-08-29",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1257,6 +1106,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1268,6 +1118,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1295,17 +1146,6 @@
       "titleEn": "Soap Making Workshop"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-29",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -1323,18 +1163,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 8,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-29",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -1345,6 +1175,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1356,6 +1187,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1367,18 +1199,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-29",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -1440,6 +1274,7 @@
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-08-30",
       "time": "16:00",
+      "spots": 9,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
@@ -1501,33 +1336,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-02",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-02",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-02",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1539,6 +1353,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1550,50 +1365,19 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-02",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-02",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-02",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-02",
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1605,6 +1389,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1616,6 +1401,7 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1632,17 +1418,6 @@
       "district": "Prenzlauer Berg"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-02",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -1655,22 +1430,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-03",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-03",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1682,6 +1447,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1693,6 +1459,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1704,18 +1471,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-03",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -1726,18 +1483,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-03",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -1748,6 +1495,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1759,6 +1507,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1770,18 +1519,8 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-03",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -1794,6 +1533,30 @@
       "price": "€71",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-03",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-09-03",
+      "time": "18:30",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -1809,22 +1572,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-04",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-04",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1836,6 +1589,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1847,6 +1601,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1858,18 +1613,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-04",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -1890,18 +1635,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-04",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -1912,6 +1647,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1923,6 +1659,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1934,18 +1671,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-04",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 5,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2005,6 +1744,18 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-05",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -2018,33 +1769,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-05",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-05",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-05",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2056,6 +1786,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2067,6 +1798,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2080,17 +1812,6 @@
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-05",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -2121,18 +1842,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-05",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2143,6 +1854,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2154,6 +1866,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2165,18 +1878,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-05",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2217,6 +1932,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-09-06",
       "time": "14:00",
+      "spots": 13,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -2257,33 +1973,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-09",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-09",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-09",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2295,6 +1990,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2306,40 +2002,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-09",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-09",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-09",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2350,6 +2014,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2361,6 +2026,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2372,29 +2038,8 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-09",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-10",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
     {
@@ -2402,9 +2047,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-10",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2416,6 +2062,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2427,6 +2074,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2438,18 +2086,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-10",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -2460,18 +2098,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-10",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2482,6 +2110,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2493,6 +2122,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2504,28 +2134,31 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-10",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-11",
-      "time": "15:00",
+      "date": "2026-09-10",
+      "time": "18:30",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -2534,9 +2167,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-11",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2548,6 +2182,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2559,6 +2194,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2570,18 +2206,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-11",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -2592,18 +2218,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-11",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2614,6 +2230,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2625,6 +2242,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2636,18 +2254,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-11",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2660,6 +2280,18 @@
       "price": "€65",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/kimchi-selber-machen-3",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-12",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "beat-etage",
@@ -2675,33 +2307,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-12",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-12",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-12",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2713,6 +2324,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2724,6 +2336,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2741,34 +2354,13 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-12",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
       "date": "2026-09-12",
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2779,6 +2371,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2790,6 +2383,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2801,6 +2395,7 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2818,12 +2413,13 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-12",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2844,6 +2440,7 @@
       "title": "Incense Lab II: Blending & Expression",
       "date": "2026-09-13",
       "time": "14:00",
+      "spots": 8,
       "duration": "3 h",
       "price": "€106",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541614/calendar/13025469",
@@ -2886,33 +2483,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-16",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-16",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-16",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2924,6 +2500,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2935,40 +2512,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-16",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-16",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-16",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -2979,6 +2524,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2990,6 +2536,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3001,29 +2548,8 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-16",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-17",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
     {
@@ -3031,9 +2557,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-17",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3045,6 +2572,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3056,6 +2584,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3067,18 +2596,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-17",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -3089,18 +2608,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-17",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3111,6 +2620,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3122,6 +2632,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3133,28 +2644,31 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-17",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-18",
-      "time": "15:00",
+      "date": "2026-09-17",
+      "time": "18:30",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3163,9 +2677,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-18",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3177,6 +2692,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3188,6 +2704,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3199,18 +2716,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-18",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -3221,18 +2728,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-18",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3243,6 +2740,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3254,6 +2752,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3265,18 +2764,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-18",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3292,6 +2793,18 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=229220"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-19",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -3305,33 +2818,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-19",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-19",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-19",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3343,6 +2835,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3354,6 +2847,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3369,22 +2863,12 @@
       "district": "Wedding"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-19",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-09-19",
       "time": "16:00",
+      "spots": 16,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
@@ -3398,18 +2882,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-19",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3420,6 +2894,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3431,6 +2906,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3442,18 +2918,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-19",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3479,33 +2957,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-23",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-23",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-23",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3517,6 +2974,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3528,40 +2986,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-23",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-23",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-23",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3572,6 +2998,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3583,6 +3010,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3594,29 +3022,8 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-23",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-24",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
     {
@@ -3624,9 +3031,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-24",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3638,6 +3046,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3649,6 +3058,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3660,18 +3070,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-24",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -3682,18 +3082,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-24",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3704,6 +3094,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3715,6 +3106,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3726,18 +3118,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-24",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3755,10 +3149,11 @@
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-25",
-      "time": "15:00",
+      "date": "2026-09-24",
+      "time": "18:30",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3767,9 +3162,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-25",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3781,6 +3177,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3792,6 +3189,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3803,18 +3201,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-25",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -3825,18 +3213,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-25",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -3847,6 +3225,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3858,6 +3237,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3869,18 +3249,8 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-25",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -3895,6 +3265,18 @@
       "district": "Prenzlauer Berg"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-25",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/",
       "title": "Seife Sieden Workshop",
@@ -3905,6 +3287,18 @@
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/",
       "titleEn": "Soap Making Workshop"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-26",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "beat-etage",
@@ -3920,33 +3314,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-26",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-26",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-26",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3958,6 +3331,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3969,6 +3343,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3987,34 +3362,13 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-26",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
       "date": "2026-09-26",
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-26",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4025,6 +3379,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4036,6 +3391,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4047,18 +3403,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-09-26",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4075,33 +3433,12 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-30",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-30",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
       "date": "2026-09-30",
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4113,6 +3450,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4124,40 +3462,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-30",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-30",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-30",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4168,6 +3474,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4179,6 +3486,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4190,29 +3498,8 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-30",
-      "time": "17:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-10-01",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
     {
@@ -4220,9 +3507,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-01",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4234,6 +3522,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4245,6 +3534,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4256,18 +3546,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-10-01",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -4278,18 +3558,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-10-01",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4300,6 +3570,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4311,6 +3582,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4322,28 +3594,31 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-01",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-10-02",
-      "time": "15:00",
+      "date": "2026-10-01",
+      "time": "18:30",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -4352,9 +3627,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-02",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4366,6 +3642,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4377,6 +3654,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4388,18 +3666,8 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-10-02",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
     {
@@ -4410,18 +3678,8 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-10-02",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4432,6 +3690,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4443,6 +3702,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4454,29 +3714,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-02",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-10-03",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4484,9 +3735,10 @@
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-03",
-      "time": "15:00",
+      "time": "13:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4498,6 +3750,7 @@
       "time": "15:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4509,6 +3762,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4520,6 +3774,7 @@
       "time": "15:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4537,34 +3792,13 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-10-03",
-      "time": "15:45",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
       "date": "2026-10-03",
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-10-03",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4575,6 +3809,7 @@
       "time": "17:00",
       "duration": "1.5 h",
       "price": "€50",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4586,6 +3821,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
+      "spots": 10,
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4597,18 +3833,20 @@
       "time": "17:00",
       "duration": "0.5 h",
       "price": "€30",
+      "spots": 10,
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-03",
-      "time": "17:45",
+      "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "spots": 10,
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
     {
@@ -4617,6 +3855,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-10-04",
       "time": "14:00",
+      "spots": 16,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -4725,6 +3964,7 @@
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-10-18",
       "time": "14:00",
+      "spots": 14,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
