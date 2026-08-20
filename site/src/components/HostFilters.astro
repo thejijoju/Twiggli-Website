@@ -22,7 +22,7 @@ const t = filterCopy[lang];
 
 const groupIds = ['small', 'medium', 'large'] as const;
 const durationIds = ['short', 'medium', 'long'] as const;
-const activityIds = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing'] as const;
+const activityIds = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'] as const;
 
 const rows = [
   { name: 'activity', label: t.activityLabel, options: activityIds.map((id) => ({ id, label: t.activities[id] })) },

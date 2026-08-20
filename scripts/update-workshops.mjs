@@ -82,6 +82,16 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
+  // WordPress page listing the whole schedule as pipe-separated German
+  // lines under "Kommende Workshops für <X>:" headers; each entry links its
+  // own Eversports booking page.
+  { slug: 'beat-etage', name: 'Beat-Etage — kommende Workshops', mode: 'pipe-list-de',
+    url: 'https://beat-etage.de/workshops/', district: 'Treptow',
+    sections: {
+      'Djembes & Dunduns': { title: 'Djembe & Dundun Workshop' },
+      'Cajons': { title: 'Cajon Workshop' },
+      'Handpan': { title: 'Handpan Workshop' },
+    } },
   // Acuity Scheduling ("involves clicking") — but the scheduler embeds its
   // appointment catalog in the page HTML and serves availability as public
   // JSON, so the classes, prices and dates read with plain fetches.
@@ -199,6 +209,73 @@ function fromJsonLd(html, sourceUrl) {
 }
 
 const UA = 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)';
+
+/** Parser for pages listing workshops as German pipe-separated lines —
+ *  "29.08.2026 | Samstag, 13-15 Uhr | ANFÄNGER:INNEN | … | 49 € | Buchung
+ *  über Eversports" — grouped under "Kommende Workshops für <X>:" headers
+ *  (Beat-Etage's format). Works on the raw markup so each entry keeps its
+ *  own booking link; multi-day camps and past dates fall away. Times come
+ *  from the "13-15 Uhr" range (start = session time, span = duration). */
+function fromGermanPipeList(html, source) {
+  const out = [];
+  const marks = [...html.matchAll(/Kommende\s+Workshops\s+für\s+([^:<]+):/gi)].map((m) => ({
+    name: stripTags(m[1]).replace(/\s+/g, ' ').trim(),
+    headerStart: m.index,
+    start: m.index + m[0].length,
+  }));
+  if (!marks.length) {
+    console.log(`[${source.slug}] pipe-list: no "Kommende Workshops für …" sections found`);
+    return [];
+  }
+  // Camps and the closing boilerplate end the schedule.
+  let tailEnd = html.length;
+  for (const re of [/SAFE\s+THE\s+DATE/i, /Anmeldungen\s+per\s+E?-?Mail/i]) {
+    const m = re.exec(html);
+    if (m && m.index > marks[0].start && m.index < tailEnd) tailEnd = m.index;
+  }
+
+  for (let i = 0; i < marks.length; i++) {
+    const end = Math.min(i + 1 < marks.length ? marks[i + 1].headerStart : Infinity, tailEnd);
+    const seg = html.slice(marks[i].start, end);
+    const cfg = source.sections?.[marks[i].name] ?? {};
+    const dates = [...seg.matchAll(/(\d{2})\.(\d{2})\.(\d{2,4})\b/g)];
+    dates.forEach((m, idx) => {
+      const entry = seg.slice(m.index, idx + 1 < dates.length ? dates[idx + 1].index : seg.length);
+      const text = stripTags(entry);
+      if (/\bCamp\b/i.test(text)) return;
+      const year = m[3].length === 2 ? `20${m[3]}` : m[3];
+      const month = Number(m[2]);
+      if (month < 1 || month > 12 || Number(m[1]) > 31) return;
+      const date = `${year}-${m[2]}-${m[1]}`;
+
+      const range = text.match(/(\d{1,2})(?::(\d{2}))?\s*[-–]\s*(\d{1,2})(?::(\d{2}))?\s*Uhr/);
+      let time;
+      let duration;
+      if (range) {
+        time = `${String(range[1]).padStart(2, '0')}:${range[2] ?? '00'}`;
+        const span =
+          Number(range[3]) + Number(range[4] ?? 0) / 60 - (Number(range[1]) + Number(range[2] ?? 0) / 60);
+        if (span > 0 && span <= 12) duration = `${Math.round(span * 2) / 2} h`;
+      }
+      const price = text.match(/(\d+(?:,\d+)?)\s*€/);
+      const book = entry.match(/https:\/\/www\.eversports\.[a-z]+\/[^\s"'<>]+/);
+
+      console.log(
+        `[${source.slug}] pipe-list: "${marks[i].name}" ${date} ${time ?? '?'} ${price ? `€${price[1]}` : ''} ${book ? 'eversports' : 'page'}`,
+      );
+      out.push({
+        title: cfg.title ?? `${marks[i].name} Workshop`,
+        ...(cfg.titleEn ? { titleEn: cfg.titleEn } : {}),
+        date,
+        ...(time ? { time } : {}),
+        ...(duration ? { duration } : {}),
+        ...(price ? { price: `€${Math.round(Number(price[1].replace(',', '.')))}` } : {}),
+        url: book ? decodeEntities(book[0]) : source.url,
+      });
+    });
+  }
+  return out;
+}
 
 /** Find `"key":` in a blob of HTML/JS and bracket-match the JSON value
  *  that follows. Returns the parsed value or null. */
@@ -765,6 +842,20 @@ async function scrape(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'pipe-list-de') {
+    const found = fromGermanPipeList(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] pipe-list sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
   if (source.mode === 'acuity') {
     const found = await fromAcuity(source);
     const inRange = found
@@ -1011,6 +1102,8 @@ if (process.env.PARSE_TEST) {
   const fn =
     process.env.PARSE_TEST_MODE === 'dates-de'
       ? fromGermanDates
+      : process.env.PARSE_TEST_MODE === 'pipe-list-de'
+        ? fromGermanPipeList
       : process.env.PARSE_TEST_MODE === 'json-ld'
         ? (h) => fromJsonLd(h, 'test')
         : process.env.PARSE_TEST_MODE === 'ics'

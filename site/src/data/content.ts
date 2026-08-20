@@ -80,7 +80,7 @@ export type Host = {
 };
 
 export type ActivityKey =
-  | 'ceramics' | 'art' | 'craft' | 'food' | 'photography' | 'wellbeing';
+  | 'ceramics' | 'art' | 'craft' | 'food' | 'photography' | 'wellbeing' | 'music';
 
 /** The filterable facts about each host, keyed by slug.
  *
@@ -120,6 +120,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
   // PLACEHOLDER group range — an intimate studio; no published cap.
   senle:        { activity: 'craft',       groupRange: [1, 10],   hourRange: [2, 3] },
+  'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -201,6 +202,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'senle', name: 'Senlë Studio', specialty: 'Natural incense making', studio: 'Senlë Studio',
       blurb: 'A slow, mindful incense atelier in Friedrichshain. Explore raw botanicals — real woods and herbs — taste layered natural aromas, and blend, shape and wrap your own incense sticks to take home. From foundations to advanced scent design with over 30 natural ingredients.',
       group: 'Small groups', duration: '2–3 h', place: 'Gärtnerstraße, Berlin', languages: 'EN · DE' },
+    // Copy from beat-etage.de; photos and reel to follow.
+    { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
+      blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
+      group: 'Small groups', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -269,6 +274,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'senle', name: 'Senlë Studio', specialty: 'Natürliches Räucherwerk', studio: 'Senlë Studio',
       blurb: 'Ein achtsames Räucherwerk-Atelier in Friedrichshain. Rohe Pflanzenmaterialien entdecken — echte Hölzer und Kräuter —, vielschichtige natürliche Aromen verkosten und eigene Räucherstäbchen mischen, formen und mitnehmen. Von den Grundlagen bis zum Duftdesign mit über 30 natürlichen Zutaten.',
       group: 'Kleine Gruppen', duration: '2–3 Std.', place: 'Gärtnerstraße, Berlin', languages: 'EN · DE' },
+    { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & Trommeln', studio: 'Percussionstudio Beat-Etage',
+      blurb: 'Ein Percussionstudio in einer alten Treptower Fabrikhalle. Bei den monatlichen Wochenend-Workshops in westafrikanische Rhythmen auf Djembes und Dunduns eintauchen — oder Cajon und Handpan ausprobieren. Zwei Stunden Trommeln zum Anfassen, Instrumente inklusive, ganz ohne Vorkenntnisse.',
+      group: 'Kleine Gruppen', duration: '2 Std.', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
   ],
 };
 
@@ -314,6 +322,7 @@ export const filterCopy = {
     activities: {
       ceramics: 'Ceramics', art: 'Art & print', craft: 'Craft & making',
       food: 'Food & drink', photography: 'Photography', wellbeing: 'Wellbeing',
+      music: 'Music & rhythm',
     },
     groups: { small: 'Up to 10', medium: '10–30', large: '30+' },
     durations: { short: 'Up to 2 h', medium: '2–4 h', long: 'Half day or more' },
@@ -329,6 +338,7 @@ export const filterCopy = {
     activities: {
       ceramics: 'Keramik', art: 'Kunst & Druck', craft: 'Handwerk',
       food: 'Essen & Trinken', photography: 'Fotografie', wellbeing: 'Wohlbefinden',
+      music: 'Musik & Rhythmus',
     },
     groups: { small: 'Bis 10', medium: '10–30', large: '30+' },
     durations: { short: 'Bis 2 Std.', medium: '2–4 Std.', long: 'Ab einem halben Tag' },
