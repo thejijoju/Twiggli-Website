@@ -105,6 +105,12 @@ const SOURCES = [
     title: 'DIY Kaffeerösten', titleEn: 'DIY Coffee Roasting', price: '€59',
     district: 'Prenzlauer Berg',
     bookUrl: 'https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/' },
+  // One Shopify product per workshop date; the date lives in the product
+  // description ("Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr"), which the
+  // shopify mode's body-date fallback reads.
+  { slug: 'bumerang', name: 'Berliner Bumerang — Workshops', mode: 'shopify',
+    url: 'https://berliner-bumerang.de/products.json?limit=250',
+    district: 'Lichtenberg' },
   // Sarah's workshop pages list dates as table rows ("23.08.2026 …
   // 11 - 13 Uhr … Hier buchen"), each row linking its own PayPal checkout.
   { slug: 'sarah', name: 'Sarah Niklowitz — Sunday Morning Pages & Brunch', mode: 'dated-time-list',
@@ -994,6 +1000,38 @@ function fromShopify(jsonText, source) {
         url: productUrl,
       });
       kept++;
+    }
+    // Shops that create one product per workshop date (Berliner Bumerang)
+    // carry the date in the description instead of the variants:
+    // "Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr".
+    if (!kept) {
+      const MONTHS_DE = {
+        januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
+        juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
+      };
+      const wm = body.match(
+        /(\d{1,2})\.\s*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*(20\d{2})(?:\s*von\s*(\d{1,2})(?:[:.](\d{2}))?\s*bis\s*(\d{1,2})(?:[:.](\d{2}))?\s*Uhr)?/i,
+      );
+      const variant = (product.variants ?? []).find((v) => v.available !== false);
+      if (wm && variant) {
+        const date = `${wm[3]}-${MONTHS_DE[wm[2].toLowerCase()]}-${wm[1].padStart(2, '0')}`;
+        const time = wm[4] ? `${wm[4].padStart(2, '0')}:${wm[5] ?? '00'}` : undefined;
+        const span = wm[4] && wm[6]
+          ? Number(wm[6]) + Number(wm[7] ?? 0) / 60 - (Number(wm[4]) + Number(wm[5] ?? 0) / 60)
+          : 0;
+        out.push({
+          // A "OKTOBER - " style month prefix repeats what the date says.
+          title: stripTags(String(product.title)).replace(/^\s*(?:Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*[-–]\s*/i, ''),
+          date,
+          ...(time ? { time } : {}),
+          ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+          ...(variant.price != null ? { price: `€${Math.round(Number(variant.price))}` } : {}),
+          ...(source.district ? { district: source.district } : {}),
+          url: productUrl,
+        });
+        kept++;
+        console.log(`[${source.slug}] shopify body-date: "${product.title}" ${date} ${time ?? ''}`);
+      }
     }
     console.log(`[${source.slug}] shopify product "${product.title}": ${(product.variants ?? []).length} variants, ${kept} available dated sessions`);
   }

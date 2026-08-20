@@ -123,6 +123,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   munio:        { activity: 'craft',       groupRange: [1, 10],   hourRange: [1, 2] },
   // Walks run from 10 people; no published cap ("kleine Gruppen").
   'monk-garden': { activity: 'food',       groupRange: [10, 20],  hourRange: [2.5, 3] },
+  // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
+  bumerang:      { activity: 'craft',      groupRange: [1, 10],   hourRange: [7, 7] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -216,6 +218,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'monk-garden', name: 'The Monk Garden', specialty: 'Foraging walks & wild herbs', studio: 'The Monk Garden',
       blurb: 'Martin Rötzel’s modern monastery garden on the old Mariendorf gasworks. Join a guided wild-herb walk across Tempelhofer Feld — yarrow, ribwort, sorrel and what to do with them in the kitchen — or head into the forest hunting porcini and medicinal mushrooms, basket in hand.',
       group: 'Small groups (from 10)', duration: '2.5–3 h', place: 'Tempelhofer Feld & Berlin’s forests', languages: 'DE' },
+    // Copy from berliner-bumerang.de; photos and reel to follow.
+    { slug: 'bumerang', name: 'Berliner Bumerang', specialty: 'Boomerang building', studio: 'Berliner Bumerang Werkstatt',
+      blurb: 'Christian Kliem’s boomerang workshop in the Kaskelkiez. Build two boomerangs of your own — one indoor, one outdoor — with rasps, files and sandpaper only, no power tools, then learn the throwing theory so it actually comes back. A full day of handcraft for ages 8 to 99.',
+      group: 'Small groups', duration: '7 h', place: 'Kaskelstr. 46, Berlin', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -293,6 +299,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'monk-garden', name: 'The Monk Garden', specialty: 'Wildkräuter- & Pilzwanderungen', studio: 'The Monk Garden',
       blurb: 'Martin Rötzels moderner Klostergarten auf dem alten Gaswerk Mariendorf. Bei der geführten Wildkräuter-Wanderung über das Tempelhofer Feld Schafgarbe, Spitzwegerich und Sauerampfer entdecken — samt Küchen-Inspiration — oder im Wald mit Korb in der Hand Steinpilze und Vitalpilze suchen.',
       group: 'Kleine Gruppen (ab 10)', duration: '2,5–3 Std.', place: 'Tempelhofer Feld & Berliner Wälder', languages: 'DE' },
+    { slug: 'bumerang', name: 'Berliner Bumerang', specialty: 'Bumerangbau', studio: 'Berliner Bumerang Werkstatt',
+      blurb: 'Christian Kliems Bumerang-Werkstatt im Kaskelkiez. Zwei eigene Bumerangs bauen — einen für drinnen, einen für draußen — nur mit Raspeln, Feilen und Schleifpapier, ganz ohne Strom, dazu die Wurftheorie, damit er auch wirklich zurückkommt. Ein ganzer Tag Handwerk für Menschen von 8 bis 99.',
+      group: 'Kleine Gruppen', duration: '7 Std.', place: 'Kaskelstr. 46, Berlin', languages: 'DE' },
   ],
 };
 
