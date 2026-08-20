@@ -52,6 +52,12 @@ const SOURCES = [
   { slug: 'karen-rose', name: 'Karen-Rose — Keramikgießen | Terrazzo', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product',
     title: 'Keramikgießen | Terrazzo Workshop', price: '€59', duration: '3 h' },
+  // TEMP url: the general events page until this workshop's own
+  // re-product-id link is known — it is both the seed's protection (a
+  // failing source keeps its previous entries) and the Book target.
+  { slug: 'karen-rose', name: 'Karen-Rose — Seife Sieden', mode: 'dates-de',
+    url: 'https://karen-rose.com/events-2/',
+    title: 'Seife Sieden Workshop', price: '€99', duration: '3 h' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider

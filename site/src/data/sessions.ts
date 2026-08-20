@@ -67,7 +67,7 @@ const hash = (s: string): number => {
 
 /** Widened from 21 so real scraped workshops a few months out (Clay
  *  Garden's and Karen-Rose's run 5–12 weeks ahead) still land on the strip. */
-export const DAYS_AHEAD = 90;
+export const DAYS_AHEAD = 100;
 
 /** Today in Berlin, as a UTC-midnight timestamp — the base the scraped
  *  absolute dates are converted to day offsets against. Build-time, so the
