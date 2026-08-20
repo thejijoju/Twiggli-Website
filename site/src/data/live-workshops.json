@@ -4209,6 +4209,38 @@
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei",
+      "title": "Theoriekurs: Einführung in die Imkerei",
+      "titleEn": "Beekeeping Theory Course: Introduction",
+      "date": "2027-02-20",
+      "time": "10:00",
+      "district": "Dahlem",
+      "url": "https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse",
+      "title": "Klassischer Einsteigerkurs (5 Termine, Apr–Jun)",
+      "titleEn": "Classic Beekeeping Beginners' Course (5 dates, Apr–Jun)",
+      "date": "2027-04-18",
+      "time": "10:30",
+      "price": "€200",
+      "district": "Kaulsdorf",
+      "url": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse",
+      "title": "Einsteigerkurs + wesensgemäße Imkerei (5 Termine, Apr–Jun)",
+      "titleEn": "Beginners' Course + Holistic Beekeeping (5 dates, Apr–Jun)",
+      "date": "2027-04-19",
+      "time": "18:00",
+      "price": "€200",
+      "district": "Kaulsdorf",
+      "url": "https://imkerei-kohfink.de/IMKERKURSE/"
     }
   ]
 }
