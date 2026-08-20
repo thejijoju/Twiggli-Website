@@ -112,11 +112,12 @@ const SOURCES = [
     url: 'https://www.ceramickingdomberlin.com/sitemap.xml',
     pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)|/try-',
     district: 'Neukölln' },
-  // Their regular courses book through Acuity (the class pages embed
-  // schedule.php?owner=13975065) — same public catalog + availability API
-  // as Senlë's, covering every category in one pass.
-  { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom — course catalog (Acuity)', mode: 'acuity',
-    owner: '13975065', url: 'https://app.acuityscheduling.com/schedule.php?owner=13975065',
+  // Their regular courses book through per-category Acuity embeds on the
+  // class pages (the account's plain scheduler holds only 1-on-1 slots),
+  // so this source follows the embed links the site itself publishes.
+  { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom — course catalog (Acuity)', mode: 'acuity-embeds',
+    url: 'https://www.ceramickingdomberlin.com/sitemap.xml#acuity',
+    pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)|/try-',
     district: 'Neukölln' },
   // One Shopify product per workshop date; the date lives in the product
   // description ("Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr"), which the
@@ -731,7 +732,9 @@ async function fromKonfetti(source) {
     }
     const title =
       stripTags(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '').trim() ||
-      decodeEntities(html.match(/<title>([^<]*)/i)?.[1] ?? '').split('—')[0].trim();
+      decodeEntities((html.match(/<title>([^<]*)/i)?.[1] ?? '').replace(/&mdash;|&#8212;/gi, '—'))
+        .split('—')[0]
+        .trim();
     for (const id of ids) {
       if (seenEvents.has(id)) continue;
       seenEvents.add(id);
@@ -852,6 +855,14 @@ async function fromAcuity(source) {
     `[${source.slug}] acuity appointment types: ${types.map((t) => `${t?.name} [${t?.id}] €${t?.price} ${t?.duration}min`).join('; ')}`,
   );
 
+  return acuityTimesForTypes(source, hash, types);
+}
+
+/** Query Acuity's public availability endpoint for each appointment type
+ *  and map bookable slots to feed entries. Shared by the whole-account
+ *  and per-embed modes. */
+async function acuityTimesForTypes(source, hash, types) {
+  const base = 'https://app.acuityscheduling.com';
   const out = [];
   for (const t of types) {
     if (!t?.id || !t?.name) continue;
@@ -890,6 +901,83 @@ async function fromAcuity(source) {
       console.log(`[${source.slug}] acuity times for "${t.name}": ${err.message.split('\n')[0]}`);
     }
     await new Promise((r2) => setTimeout(r2, 250));
+  }
+  return out;
+}
+
+/** Some sites (Ceramic Kingdom) put each class category behind its own
+ *  Acuity embed (schedule.php?appointmentType=category:…&template=class)
+ *  while the account's plain scheduler lists only 1-on-1 appointments and
+ *  free pick-up time slots. This mode walks the site's own pages for those
+ *  embed links, reads each scoped catalog, and keeps the real classes —
+ *  new categories the site links later join automatically. */
+async function fromAcuityEmbeds(source) {
+  const res = await fetch(source.url, {
+    headers: { 'user-agent': UA, accept: 'application/xml,text/xml,*/*' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] acuity-embeds: sitemap HTTP ${res.status}`);
+    return [];
+  }
+  const xml = await res.text();
+  const pat = source.pagePattern ? new RegExp(source.pagePattern) : /./;
+  const pages = [...new Set([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => decodeEntities(m[1])))].filter(
+    (u) => pat.test(u),
+  );
+
+  const embeds = new Set();
+  for (const page of pages) {
+    try {
+      const r = await fetch(page, { headers: { 'user-agent': UA, accept: 'text/html,*/*;q=0.8' } });
+      if (!r.ok) continue;
+      const html = decodeEntities((await r.text()).replace(/\\/g, ''));
+      for (const m of html.matchAll(/https:\/\/app\.acuityscheduling\.com\/schedule\.php\?[^"'\s<>]+/g)) {
+        embeds.add(m[0]);
+      }
+    } catch {
+      /* page unreachable — the embed may still appear on another page */
+    }
+  }
+  console.log(`[${source.slug}] acuity-embeds: ${embeds.size} embed links on ${pages.length} pages`);
+
+  const out = [];
+  const seenTypes = new Set();
+  const junk = /\b[123]-on-1\b|one on one|two on one|follow-?up|trimming|time ?slot|pick-?up/i;
+  for (const embed of embeds) {
+    let hash;
+    let types;
+    try {
+      const r = await fetch(embed, { redirect: 'follow', headers: { 'user-agent': UA } });
+      if (!r.ok) {
+        console.log(`[${source.slug}] acuity-embeds: HTTP ${r.status} for ${embed}`);
+        continue;
+      }
+      hash = r.url.match(/\/schedule\/([a-z0-9]+)/i)?.[1];
+      const rawTypes = extractJsonAfterKey(await r.text(), 'appointmentTypes');
+      types = Array.isArray(rawTypes)
+        ? rawTypes
+        : rawTypes && typeof rawTypes === 'object'
+          ? Object.values(rawTypes).flat()
+          : [];
+    } catch (err) {
+      console.log(`[${source.slug}] acuity-embeds: ${embed}: ${err.message.split('\n')[0]}`);
+      continue;
+    }
+    if (!hash) continue;
+    // Keep only the embed's own category when the catalog states one, and
+    // never the 1-on-1/pick-up appointment types the plain scheduler shows.
+    const cat = decodeURIComponent(embed.match(/category(?:%3A|:)([^&]+)/i)?.[1] ?? '')
+      .replace(/\+/g, ' ')
+      .trim();
+    let fresh = types.filter((t) => t?.id && t?.name && !seenTypes.has(t.id) && Number(t.price) > 0);
+    const inCat = cat ? fresh.filter((t) => String(t.category ?? '').trim() === cat) : [];
+    fresh = (inCat.length ? inCat : fresh).filter((t) => !junk.test(String(t.name)));
+    fresh.forEach((t) => seenTypes.add(t.id));
+    if (!fresh.length) continue;
+    console.log(
+      `[${source.slug}] acuity-embeds "${cat || 'uncategorized'}": ${fresh.map((t) => `${t.name} [${t.id}] €${t.price} ${t.duration}min`).join('; ')}`,
+    );
+    out.push(...(await acuityTimesForTypes(source, hash, fresh)));
   }
   return out;
 }
@@ -1356,8 +1444,8 @@ async function renderAllFrames(url, slug) {
 async function scrape(source) {
   // Konfetti fetches its sitemap itself (with an XML accept — Squarespace
   // 406s the HTML-only one used for regular pages below).
-  if (source.mode === 'konfetti') {
-    const found = await fromKonfetti(source);
+  if (source.mode === 'konfetti' || source.mode === 'acuity-embeds') {
+    const found = source.mode === 'konfetti' ? await fromKonfetti(source) : await fromAcuityEmbeds(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
       .map((w) => ({
@@ -1366,7 +1454,7 @@ async function scrape(source) {
         ...w,
         ...(source.district ? { district: source.district } : {}),
       }));
-    console.log(`[${source.slug}] konfetti sessions kept: ${inRange.length}`);
+    console.log(`[${source.slug}] ${source.mode} sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 
