@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T19:51:27.661Z",
+  "updated": "2026-08-20T20:04:04.492Z",
   "sources": [
     {
       "slug": "qian",
@@ -66,6 +66,12 @@
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
       "status": "ok",
       "count": 3
+    },
+    {
+      "slug": "pastamadre",
+      "url": "https://www.pastamadre.de/calendar-kurstermine",
+      "status": "ok",
+      "count": 24
     },
     {
       "slug": "angelo",
@@ -281,6 +287,17 @@
       "price": "€59",
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=320775"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "gemüse fermentieren",
+      "date": "2026-08-22",
+      "time": "15:00",
+      "duration": "3 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
     },
     {
       "slug": "jem",
@@ -534,6 +551,17 @@
       "district": "Treptow"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"ravioli\" gefüllte pasta workshop",
+      "date": "2026-08-29",
+      "time": "15:00",
+      "duration": "4.5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/",
       "title": "Seife Sieden Workshop",
@@ -586,6 +614,17 @@
       "price": "€66",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"maccheroni\" pasta workshop",
+      "date": "2026-08-30",
+      "time": "15:00",
+      "duration": "4 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
     },
     {
       "slug": "galleria-lucia",
@@ -783,6 +822,17 @@
       "time": "15:00"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sauerteig brot workshop",
+      "date": "2026-09-05",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -847,6 +897,17 @@
       "district": "Friedrichshain"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"cappelletti\" gefüllte pasta workshop",
+      "date": "2026-09-06",
+      "time": "15:00",
+      "duration": "4.5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -888,6 +949,17 @@
       "price": "€75",
       "url": "https://beat-etage.de/workshops/",
       "district": "Treptow"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sourdough pizza workshop",
+      "date": "2026-09-12",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://en.pastamadre.de/contact",
+      "district": "Wedding"
     },
     {
       "slug": "beat-etage",
@@ -936,6 +1008,17 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=320775"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "fermenting vegetables",
+      "date": "2026-09-13",
+      "time": "15:00",
+      "duration": "3 h",
+      "price": "€76–100",
+      "url": "https://en.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Let's make Kimchi!",
@@ -970,6 +1053,17 @@
       "time": "15:00"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"capunti\" pasta workshop",
+      "date": "2026-09-19",
+      "time": "15:00",
+      "duration": "4 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
@@ -987,6 +1081,17 @@
       "date": "2026-09-20",
       "time": "13:00",
       "url": "https://www.claygarden.studio/special-workshops"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"pasta machen\"",
+      "date": "2026-09-20",
+      "time": "15:00",
+      "duration": "4.5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/calendar-kurstermine",
+      "district": "Wedding"
     },
     {
       "slug": "jem",
@@ -1056,6 +1161,17 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sourdough bread workshop",
+      "date": "2026-10-03",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://en.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Foundations of Scent",
@@ -1067,6 +1183,17 @@
       "district": "Friedrichshain"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"fusilli\" pasta workshop",
+      "date": "2026-10-04",
+      "time": "15:00",
+      "duration": "4 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "beat-etage",
       "sourceUrl": "https://beat-etage.de/workshops/",
       "title": "Djembe & Dundun Workshop",
@@ -1076,6 +1203,17 @@
       "price": "€49",
       "url": "https://www.eversports.de/org/activity/e4c213e6-303a-4a2d-8d34-d3a9babbfc3c",
       "district": "Treptow"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sauerteig pizza workshop",
+      "date": "2026-10-10",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
     },
     {
       "slug": "jem",
@@ -1100,6 +1238,39 @@
       "time": "11:00"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"ravioli\" gefüllte pasta workshop",
+      "date": "2026-10-11",
+      "time": "15:00",
+      "duration": "4.5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "gemüse fermentieren",
+      "date": "2026-10-16",
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"orecchiette\" pasta workshop",
+      "date": "2026-10-17",
+      "time": "15:00",
+      "duration": "4 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "qian",
       "sourceUrl": "https://www.claygarden.studio/special-workshops",
       "title": "Tea & Pottery Workshop",
@@ -1117,6 +1288,17 @@
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
       "district": "Friedrichshain"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"brot herstellen\"",
+      "date": "2026-10-18",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/calendar-kurstermine",
+      "district": "Wedding"
     },
     {
       "slug": "qian",
@@ -1146,6 +1328,17 @@
       "time": "11:00"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sauerteig brot workshop",
+      "date": "2026-10-31",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "beat-etage",
       "sourceUrl": "https://beat-etage.de/workshops/",
       "title": "Djembe & Dundun Workshop",
@@ -1167,6 +1360,39 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "time": "15:00",
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sauerteig pizza workshop",
+      "date": "2026-11-07",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "gemüse fermentieren",
+      "date": "2026-11-08",
+      "time": "15:00",
+      "duration": "3 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"maccheroni\" pasta workshop",
+      "date": "2026-11-14",
+      "time": "15:00",
+      "duration": "4 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
     },
     {
       "slug": "kohfink",
@@ -1214,6 +1440,17 @@
       "titleEn": "Soap Making Workshop"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"tortelli\" gefüllte pasta workshop",
+      "date": "2026-11-21",
+      "time": "15:00",
+      "duration": "4.5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
@@ -1236,6 +1473,17 @@
       "district": "Treptow"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sauerteig brot workshop",
+      "date": "2026-11-28",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
@@ -1247,6 +1495,17 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"gemüse fermentieren\"",
+      "date": "2026-11-29",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/calendar-kurstermine",
+      "district": "Wedding"
+    },
+    {
       "slug": "kohfink",
       "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
       "title": "Honiglebkuchen backen",
@@ -1256,6 +1515,17 @@
       "price": "€55",
       "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490385660357956000.html",
       "district": "Kaulsdorf"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "sauerteig pizza workshop",
+      "date": "2026-12-05",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding"
     }
   ]
 }
