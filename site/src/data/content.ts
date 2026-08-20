@@ -114,6 +114,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   ana:          { activity: 'wellbeing',   groupRange: [8, 20],   hourRange: [1.5, 6] },
   // PLACEHOLDER ranges — Karen-Rose's group sizes and formats are unconfirmed.
   'karen-rose': { activity: 'craft',       groupRange: [4, 12],   hourRange: [2, 3] },
+  'galleria-lucia': { activity: 'craft',   groupRange: [1, 10],   hourRange: [1.5, 2] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -183,6 +184,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Natural cosmetics, soap & terrazzo',
       blurb: 'Make-it-yourself workshops in Berlin: organic natural cosmetics, vegan soap and shampoo, scented candles, and terrazzo ceramics and jewellery. Few but good ingredients — and everything you make goes home with you.',
       group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },
+    // Copy from her own shop (gallerialucia.com); photos and reel to follow.
+    { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Scented candle workshops', studio: 'Galleria Lucia Atelier',
+      blurb: 'Design your own scented candle in a real working candle atelier inside a historic Berlin artist building — pick your jar colour, premium fragrance oils, wax colours and crystals, and finish with your own label. 100% soy wax, vegan and sustainable, drinks included.',
+      group: 'Up to 10', duration: '1.5–2 h', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -242,6 +247,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Naturkosmetik, Seife & Terrazzo',
       blurb: 'Selbermach-Workshops in Berlin: Bio-Naturkosmetik, vegane Seife und Shampoo, Duftkerzen sowie Terrazzo-Keramik und -Schmuck. Wenige, aber gute Zutaten — und alles, was du machst, nimmst du mit nach Hause.',
       group: '4–12', duration: '2–3 Std.', place: 'Berlin', languages: 'DE' },
+    { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Duftkerzen-Workshops', studio: 'Galleria Lucia Atelier',
+      blurb: 'Gestalte deine eigene Duftkerze in einem echten Kerzen-Atelier in einem historischen Berliner Künstlerhaus — Glasfarbe, Premium-Duftöle, Wachsfarben und Kristalle, dazu dein eigenes Etikett. 100 % Sojawachs, vegan und nachhaltig, Getränke inklusive. Workshops auf Englisch.',
+      group: 'Bis 10', duration: '1,5–2 Std.', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
   ],
 };
 

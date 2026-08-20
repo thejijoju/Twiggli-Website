@@ -68,6 +68,13 @@ const SOURCES = [
     url: 'https://karen-rose.com/events-2/?re-product-id=229220',
     title: 'Shampoo Naturkosmetik Workshop', titleEn: 'Shampoo Natural Cosmetics Workshop',
     price: '€55', duration: '3 h' },
+  // Shopify shop: the collection's products.json carries every workshop,
+  // its dated sessions (variants titled "DD.MM.YYYY - HH:MM"), per-date
+  // price and availability — fully automatic, nothing configured per
+  // workshop. New products in the collection appear on their own.
+  { slug: 'galleria-lucia', name: 'Galleria Lucia — workshops', mode: 'shopify',
+    url: 'https://www.gallerialucia.com/collections/workshops/products.json?limit=250',
+    district: 'Lichtenberg' },
   // TEMP url: the general events page until this workshop's own
   // re-product-id link is known — it is both the seed's protection (a
   // failing source keeps its previous entries) and the Book target.
@@ -301,6 +308,48 @@ function fromGermanRecurring(html, source) {
   });
 }
 
+/** Parser for Shopify workshop shops: the collection's products.json lists
+ *  every workshop as a product whose variants are the dated sessions
+ *  ("DD.MM.YYYY - HH:MM"), each with its own price and availability flag.
+ *  Sold-out variants are skipped. Duration comes from the description
+ *  ("Duration: 1.5 - 2 hours"). */
+function fromShopify(jsonText, source) {
+  let data;
+  try {
+    data = JSON.parse(jsonText);
+  } catch {
+    console.log(`[${source.slug}] shopify: response is not JSON`);
+    return [];
+  }
+  const out = [];
+  for (const product of data.products ?? []) {
+    const body = stripTags(String(product.body_html ?? ''));
+    const dur = body.match(/Duration:\s*([\d.,]+)(?:\s*(?:-|\u2013|to)\s*([\d.,]+))?\s*hours?/i);
+    const duration = dur
+      ? `${dur[1].replace(',', '.')}${dur[2] ? `\u2013${dur[2].replace(',', '.')}` : ''} h`
+      : undefined;
+    const productUrl = new URL(`/products/${product.handle}`, source.url).href;
+    let kept = 0;
+    for (const variant of product.variants ?? []) {
+      if (variant.available === false) continue;
+      const m = String(variant.title).match(/(\d{2})\.(\d{2})\.(\d{4})\s*[-\u2013]\s*(\d{1,2}):(\d{2})/);
+      if (!m) continue;
+      out.push({
+        title: stripTags(String(product.title)),
+        date: `${m[3]}-${m[2]}-${m[1]}`,
+        time: `${m[4].padStart(2, '0')}:${m[5]}`,
+        ...(duration ? { duration } : {}),
+        ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
+        ...(source.district ? { district: source.district } : {}),
+        url: productUrl,
+      });
+      kept++;
+    }
+    console.log(`[${source.slug}] shopify product "${product.title}": ${(product.variants ?? []).length} variants, ${kept} available dated sessions`);
+  }
+  return out;
+}
+
 /** Parser for dated-list pages: "Samstag, 29. August 2026" (German) or
  *  "Friday, September 25, 2026" (English), with the start time ("18 Uhr" /
  *  "18:00" / "6:00 PM") looked for around each date. A date with no time
@@ -491,6 +540,15 @@ async function scrape(source) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
   console.log(`[${source.slug}] fetched ${html.length} bytes`);
+
+  if (source.mode === 'shopify') {
+    const found = fromShopify(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
+    console.log(`[${source.slug}] shopify sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
 
   if (source.mode === 'recurring-de') {
     const recurring = fromGermanRecurring(html, source);
