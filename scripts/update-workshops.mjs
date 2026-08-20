@@ -75,6 +75,13 @@ const SOURCES = [
   { slug: 'galleria-lucia', name: 'Galleria Lucia — workshops', mode: 'shopify',
     url: 'https://www.gallerialucia.com/collections/workshops/products.json?limit=250',
     district: 'Lichtenberg' },
+  // Each baking date on the page carries its own eventfrog.de ticket link,
+  // and Eventfrog serves a .ics per event with the exact start/end — fully
+  // automatic, new dates appear on their own. €55 is the organizer-set
+  // ticket price shown on Eventfrog.
+  { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
+    url: 'https://imkerei-kohfink.de/BACK-KURSE/',
+    price: '€55', district: 'Kaulsdorf' },
   // Wix Events: the events sitemap lists every event-detail page, and each
   // page carries a schema.org Event JSON-LD block (exact start/end, price,
   // status). Fully automatic — events Jem adds appear on their own;
@@ -177,6 +184,54 @@ function fromJsonLd(html, sourceUrl) {
 }
 
 const UA = 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)';
+
+/** Parse an iCalendar feed's VEVENTs into feed entries. Local (TZID)
+ *  timestamps are taken as Berlin wall-clock; UTC ones are converted. */
+function fromIcs(icsText, pageUrl, source) {
+  // Unfold RFC 5545 continuation lines before matching.
+  const text = icsText.replace(/\r?\n[ \t]/g, '');
+  const out = [];
+  for (const block of text.split('BEGIN:VEVENT').slice(1)) {
+    const get = (k) => block.match(new RegExp(`^${k}(?:;[^:\\r\\n]*)?:(.*)$`, 'mi'))?.[1]?.trim();
+    const stamp = (raw) => raw?.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)/);
+    const s = stamp(get('DTSTART'));
+    if (!s) continue;
+    const e = stamp(get('DTEND'));
+    let date, time;
+    if (s[7] === 'Z') {
+      const ms = Date.parse(`${s[1]}-${s[2]}-${s[3]}T${s[4]}:${s[5]}:${s[6]}Z`);
+      date = berlinDate(ms);
+      time = berlinTime(ms);
+    } else {
+      date = `${s[1]}-${s[2]}-${s[3]}`;
+      time = `${s[4]}:${s[5]}`;
+    }
+    let duration;
+    if (e) {
+      // Same-offset difference, so parsing both as UTC is safe.
+      const hours =
+        (Date.parse(`${e[1]}-${e[2]}-${e[3]}T${e[4]}:${e[5]}:${e[6]}Z`) -
+          Date.parse(`${s[1]}-${s[2]}-${s[3]}T${s[4]}:${s[5]}:${s[6]}Z`)) /
+        3600000;
+      if (hours > 0 && hours <= 12) duration = `${Math.round(hours * 2) / 2} h`;
+    }
+    // "Workshop \"Honiglebkuchen backen\"" → "Honiglebkuchen backen".
+    const summary = get('SUMMARY')
+      ?.replace(/\\([,;])/g, '$1')
+      .replace(/["„“]/g, '')
+      .replace(/^\s*Workshop:?\s*/i, '')
+      .trim();
+    out.push({
+      title: summary || source.title || 'Workshop',
+      date,
+      time,
+      ...(duration ? { duration } : {}),
+      ...(source.price ? { price: source.price } : {}),
+      url: pageUrl,
+    });
+  }
+  return out;
+}
 
 /** Wix Bookings app id — constant across all Wix sites. */
 const WIX_BOOKINGS_APP = '13d21c63-b5ec-5912-8397-c3a5ddb27a97';
@@ -578,6 +633,50 @@ async function scrape(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'eventfrog') {
+    // The page links each date's tickets to eventfrog.de; every Eventfrog
+    // event also serves a machine-readable .ics feed with the exact
+    // start/end, so no HTML parsing is needed per event.
+    const links = [
+      ...new Set(
+        [...html.matchAll(/https?:\/\/eventfrog\.[a-z]+\/[^\s"'<>]*?-(\d{10,25})\.html/gi)].map(
+          (m) => `${m[0]} ${m[1]}`,
+        ),
+      ),
+    ];
+    console.log(`[${source.slug}] eventfrog ticket links: ${links.length}`);
+    const workshops = [];
+    for (const pair of links) {
+      const [pageUrl, id] = pair.split(' ');
+      try {
+        const ics = await fetch(`https://eventfrog.de/stream/de/event/${id}.ics`, {
+          headers: { 'user-agent': UA },
+        });
+        if (!ics.ok) {
+          console.log(`[${source.slug}] ics ${id}: HTTP ${ics.status}`);
+          continue;
+        }
+        for (const ev of fromIcs(await ics.text(), pageUrl, source)) {
+          if (ev.date < todayISO || ev.date > maxISO) continue;
+          console.log(
+            `[${source.slug}] eventfrog event: "${ev.title}" ${ev.date} ${ev.time} ${ev.duration ?? ''} ${ev.price ?? 'no price'}`,
+          );
+          workshops.push({
+            slug: source.slug,
+            sourceUrl: source.url,
+            ...ev,
+            ...(source.district ? { district: source.district } : {}),
+          });
+        }
+      } catch (err) {
+        console.log(`[${source.slug}] ics ${id}: ${err.message.split('\n')[0]}`);
+      }
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    console.log(`[${source.slug}] eventfrog events kept: ${workshops.length}`);
+    return { workshops, recurring: [] };
+  }
+
   if (source.mode === 'wix-events-sitemap') {
     // `html` is the site's Wix Events sitemap: every event-detail page ever
     // published, past ones included. Each live page carries a schema.org
@@ -768,7 +867,9 @@ if (process.env.PARSE_TEST) {
       ? fromGermanDates
       : process.env.PARSE_TEST_MODE === 'json-ld'
         ? (h) => fromJsonLd(h, 'test')
-        : fromGermanRecurring;
+        : process.env.PARSE_TEST_MODE === 'ics'
+          ? (h, src) => fromIcs(h, 'test-page', src)
+          : fromGermanRecurring;
   console.log(JSON.stringify(fn(html, testSource), null, 2));
   process.exit(0);
 }

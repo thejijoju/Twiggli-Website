@@ -115,6 +115,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER ranges — Karen-Rose's group sizes and formats are unconfirmed.
   'karen-rose': { activity: 'craft',       groupRange: [4, 12],   hourRange: [2, 3] },
   'galleria-lucia': { activity: 'craft',   groupRange: [1, 10],   hourRange: [1.5, 2] },
+  // PLACEHOLDER group range — the courses book per person or pair; no
+  // published cap. Baking runs 4 h, the beekeeping course days shorter.
+  kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -188,6 +191,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Scented candle workshops', studio: 'Galleria Lucia Atelier',
       blurb: 'Design your own scented candle in a real working candle atelier inside a historic Berlin artist building — pick your jar colour, premium fragrance oils, wax colours and crystals, and finish with your own label. 100% soy wax, vegan and sustainable, drinks included.',
       group: 'Up to 10', duration: '1.5–2 h', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+    // Copy from imkerei-kohfink.de; photos and reel to follow.
+    { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Beekeeping & honey baking', studio: 'Imkerei am Pflanzgarten',
+      blurb: 'Learn beekeeping from a professional Bioland apiary in Berlin-Kaulsdorf: hands-on beginners’ courses with up to 20 real bee colonies, a theory lecture, and honey gingerbread baking workshops — bake traditional Lebkuchen with honey and take your creations home.',
+      group: 'Solo or pair', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -250,6 +257,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Duftkerzen-Workshops', studio: 'Galleria Lucia Atelier',
       blurb: 'Gestalte deine eigene Duftkerze in einem echten Kerzen-Atelier in einem historischen Berliner Künstlerhaus — Glasfarbe, Premium-Duftöle, Wachsfarben und Kristalle, dazu dein eigenes Etikett. 100 % Sojawachs, vegan und nachhaltig, Getränke inklusive. Workshops auf Englisch.',
       group: 'Bis 10', duration: '1,5–2 Std.', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+    { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
+      blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
+      group: 'Einzeln oder zu zweit', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
   ],
 };
 
