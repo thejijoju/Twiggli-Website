@@ -27,7 +27,9 @@ jobs:
           console.log(`HTTP ${res.status}, ${html.length} bytes\n`);
           const decode = (s) => s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#0?39;/g,"'").replace(/&nbsp;/g,' ');
           const strip = (s) => decode(s.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ')).replace(/\s+/g,' ').trim();
-          console.log('--- headings ---');
+          console.log('--- json-ld ---');
+          for (const m of html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) console.log(m[1].slice(0, 4000));
+          console.log('\n--- headings ---');
           for (const m of html.matchAll(/<h([1-4])[^>]*>([\s\S]*?)<\/h\1>/gi)) {
             const t = strip(m[2]);
             if (t) console.log(`h${m[1]}: ${t}`);
