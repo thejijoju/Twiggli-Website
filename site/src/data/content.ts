@@ -179,10 +179,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ana', name: 'Ana', specialty: 'Breathwork, movement & voice', studio: 'Resonant Body',
       blurb: 'An embodied wellbeing practice combining breathwork, movement, voice, somatic awareness and creative exploration. Playful, accessible exercises help teams reconnect and reduce stress.',
       group: '8–20', duration: '1.5–6 h', place: 'Your office / a Berlin studio', languages: 'EN · DE · ES · FR · PT' },
-    // PLACEHOLDER copy pending her materials — the workshop itself is real
-    // (karen-rose.com), photos and reel to follow.
-    { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Organic natural cosmetics',
-      blurb: 'Hands-on organic natural cosmetics workshops in Berlin — blend and pour your own creams, balms and skincare from natural ingredients, and take everything you make home with you.',
+    // Copy from her own catalog (karen-rose.com); photos and reel to follow.
+    { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Natural cosmetics, soap & terrazzo',
+      blurb: 'Make-it-yourself workshops in Berlin: organic natural cosmetics, vegan soap and shampoo, scented candles, and terrazzo ceramics and jewellery. Few but good ingredients — and everything you make goes home with you.',
       group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },
   ],
   de: [
@@ -240,8 +239,8 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ana', name: 'Ana', specialty: 'Atemarbeit, Bewegung & Stimme', studio: 'Resonant Body',
       blurb: 'Eine verkörperte Wellbeing-Praxis aus Atemarbeit, Bewegung, Stimme und somatischer Wahrnehmung. Zugängliche Übungen bauen Stress ab und stärken den Zusammenhalt.',
       group: '8–20', duration: '1,5–6 Std.', place: 'Euer Büro / ein Berliner Studio', languages: 'EN · DE · ES · FR · PT' },
-    { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Bio-Naturkosmetik',
-      blurb: 'Bio-Naturkosmetik-Workshops zum Selbermachen in Berlin — rühre und gieße deine eigenen Cremes, Balsame und Pflegeprodukte aus natürlichen Zutaten und nimm alles mit nach Hause.',
+    { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Naturkosmetik, Seife & Terrazzo',
+      blurb: 'Selbermach-Workshops in Berlin: Bio-Naturkosmetik, vegane Seife und Shampoo, Duftkerzen sowie Terrazzo-Keramik und -Schmuck. Wenige, aber gute Zutaten — und alles, was du machst, nimmst du mit nach Hause.',
       group: '4–12', duration: '2–3 Std.', place: 'Berlin', languages: 'DE' },
   ],
 };

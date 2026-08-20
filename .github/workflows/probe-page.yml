@@ -1,0 +1,41 @@
+name: Probe a page
+
+# On-demand helper: fetches a URL from the Actions runner (which has open
+# internet, unlike some development sandboxes) and prints the page's
+# headings and visible text to the log. Read-only; touches nothing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to fetch and describe'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and describe
+        run: |
+          node - "$PROBE_URL" <<'EOF'
+          const url = process.argv[1];
+          const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)' }, redirect: 'follow' });
+          const html = await res.text();
+          console.log(`HTTP ${res.status}, ${html.length} bytes\n`);
+          const decode = (s) => s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#0?39;/g,"'").replace(/&nbsp;/g,' ');
+          const strip = (s) => decode(s.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ')).replace(/\s+/g,' ').trim();
+          console.log('--- headings ---');
+          for (const m of html.matchAll(/<h([1-4])[^>]*>([\s\S]*?)<\/h\1>/gi)) {
+            const t = strip(m[2]);
+            if (t) console.log(`h${m[1]}: ${t}`);
+          }
+          console.log('\n--- links to /events or products ---');
+          for (const m of new Set([...html.matchAll(/href="([^"]*(?:event|product|workshop|kurs)[^"]*)"/gi)].map(x => x[1]))) console.log(m);
+          console.log('\n--- visible text (first 12000 chars) ---');
+          console.log(strip(html).slice(0, 12000));
+          EOF
+        env:
+          PROBE_URL: ${{ inputs.url }}

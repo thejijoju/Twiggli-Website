@@ -48,10 +48,10 @@ const SOURCES = [
   // so title and price come from this config when the page yields none.
   { slug: 'karen-rose', name: 'Karen-Rose — Bio Naturkosmetik', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=227019',
-    title: 'Bio Naturkosmetik Workshop', price: '€65' },
+    title: 'Bio Naturkosmetik Workshop', price: '€65', duration: '3 h' },
   { slug: 'karen-rose', name: 'Karen-Rose — Keramikgießen | Terrazzo', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product',
-    title: 'Keramikgießen | Terrazzo Workshop', price: '€59' },
+    title: 'Keramikgießen | Terrazzo Workshop', price: '€59', duration: '3 h' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
@@ -340,6 +340,7 @@ function fromGermanDates(html, source) {
       title: source.title ?? 'Workshop',
       date,
       time,
+      ...(source.duration ? { duration: source.duration } : {}),
       ...(priceMatch ? { price: `€${priceMatch[1]}` } : source.price ? { price: source.price } : {}),
       url: source.url,
     });
@@ -365,6 +366,7 @@ function fromGermanDates(html, source) {
         title: source.title ?? 'Workshop',
         date,
         time,
+        ...(source.duration ? { duration: source.duration } : {}),
         ...(source.price ? { price: source.price } : {}),
         url: source.url,
       });
