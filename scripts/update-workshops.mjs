@@ -82,6 +82,12 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
+  // Acuity Scheduling ("involves clicking") — but the scheduler embeds its
+  // appointment catalog in the page HTML and serves availability as public
+  // JSON, so the classes, prices and dates read with plain fetches.
+  { slug: 'senle', name: 'Senlë Studio — Incense Labs', mode: 'acuity',
+    owner: '37478855', url: 'https://www.senle.studio/scheduling',
+    district: 'Friedrichshain' },
   // Regiondo-hosted shop pages (unlike Karen-Rose's embedded widget) are
   // server-rendered with an Event JSON-LD block carrying the course's next
   // start date and price — the default strategy reads them. The 2027
@@ -193,6 +199,117 @@ function fromJsonLd(html, sourceUrl) {
 }
 
 const UA = 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)';
+
+/** Find `"key":` in a blob of HTML/JS and bracket-match the JSON value
+ *  that follows. Returns the parsed value or null. */
+function extractJsonAfterKey(text, key) {
+  const m = new RegExp(`"${key}"\\s*:\\s*`).exec(text);
+  if (!m) return null;
+  const start = m.index + m[0].length;
+  const open = text[start];
+  if (open !== '[' && open !== '{') return null;
+  const close = open === '[' ? ']' : '}';
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < text.length; i++) {
+    const c = text[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === open) depth++;
+    else if (c === close) {
+      depth--;
+      if (!depth) {
+        try {
+          return JSON.parse(text.slice(start, i + 1));
+        } catch {
+          return null;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/** Strategy: Acuity Scheduling's own client API. The booking widget looks
+ *  click-only, but /schedule.php?owner=<id> redirects to the account's
+ *  /schedule/<hash>/ page whose HTML embeds the appointment catalog (ids,
+ *  names, prices, durations, calendars), and the widget reads dates from a
+ *  public JSON endpoint — verified live against Senlë Studio's scheduler:
+ *  GET /api/scheduling/v1/availability/times?owner=<hash>&appointmentTypeId=…
+ *  answers plain unauthenticated fetches. */
+async function fromAcuity(source) {
+  const base = 'https://app.acuityscheduling.com';
+  const res = await fetch(`${base}/schedule.php?owner=${source.owner}`, {
+    redirect: 'follow',
+    headers: { 'user-agent': UA },
+  });
+  console.log(`[${source.slug}] acuity scheduler: HTTP ${res.status} at ${res.url}`);
+  if (!res.ok) return [];
+  const hash = res.url.match(/\/schedule\/([a-z0-9]+)/i)?.[1];
+  if (!hash) {
+    console.log(`[${source.slug}] acuity: no schedule hash in final url`);
+    return [];
+  }
+  const html = await res.text();
+
+  const types = extractJsonAfterKey(html, 'appointmentTypes');
+  if (!Array.isArray(types) || !types.length) {
+    const i = html.search(/appointmentTypes/i);
+    console.log(
+      `[${source.slug}] acuity: appointmentTypes not parseable; context: ${i >= 0 ? `…${html.slice(Math.max(0, i - 100), i + 400).replace(/\s+/g, ' ')}…` : 'key absent'}`,
+    );
+    return [];
+  }
+  console.log(
+    `[${source.slug}] acuity appointment types: ${types.map((t) => `${t?.name} [${t?.id}] €${t?.price} ${t?.duration}min`).join('; ')}`,
+  );
+
+  const out = [];
+  for (const t of types) {
+    if (!t?.id || !t?.name) continue;
+    const cal = [].concat(t.calendarIDs ?? t.calendarIds ?? t.calendars ?? [])[0];
+    const priceNum = Number(t.price);
+    const minutes = Number(t.duration);
+    try {
+      const r = await fetch(
+        `${base}/api/scheduling/v1/availability/times?owner=${hash}&appointmentTypeId=${t.id}${cal ? `&calendarId=${cal}` : ''}&startDate=${todayISO}&maxDays=${KEEP_DAYS}&timezone=Europe%2FBerlin`,
+        { headers: { 'user-agent': UA, accept: 'application/json' } },
+      );
+      if (!r.ok) {
+        console.log(`[${source.slug}] acuity times for "${t.name}": HTTP ${r.status}`);
+        continue;
+      }
+      const days = await r.json();
+      for (const slot of Object.values(days ?? {}).flat()) {
+        const ms = Date.parse(slot?.time ?? '');
+        if (Number.isNaN(ms)) continue;
+        if (slot.slotsAvailable === 0) continue; // fully booked
+        console.log(
+          `[${source.slug}] acuity: "${t.name}" ${berlinDate(ms)} ${berlinTime(ms)} (${slot.slotsAvailable ?? '?'} spots)`,
+        );
+        out.push({
+          title: stripTags(String(t.name)),
+          date: berlinDate(ms),
+          time: berlinTime(ms),
+          ...(minutes > 0 && minutes <= 720 ? { duration: `${Math.round((minutes / 60) * 2) / 2} h` } : {}),
+          ...(Number.isFinite(priceNum) && priceNum > 0 ? { price: `€${Math.round(priceNum)}` } : {}),
+          // Deep link straight into this class's date picker.
+          url: `${base}/schedule/${hash}/appointment/${t.id}/calendar/${cal ?? 'any'}`,
+        });
+      }
+    } catch (err) {
+      console.log(`[${source.slug}] acuity times for "${t.name}": ${err.message.split('\n')[0]}`);
+    }
+    await new Promise((r2) => setTimeout(r2, 250));
+  }
+  return out;
+}
 
 /** Parse an iCalendar feed's VEVENTs into feed entries. Local (TZID)
  *  timestamps are taken as Berlin wall-clock; UTC ones are converted. */
@@ -639,6 +756,20 @@ async function scrape(source) {
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
       .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
     console.log(`[${source.slug}] shopify sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'acuity') {
+    const found = await fromAcuity(source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] acuity sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 
