@@ -118,8 +118,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — the courses book per person or pair; no
   // published cap. Baking runs 4 h, the beekeeping course days shorter.
   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
-  // PLACEHOLDER group range — an intimate studio; no published cap.
-  senle:        { activity: 'craft',       groupRange: [1, 10],   hourRange: [2, 3] },
   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
 };
 
@@ -198,10 +196,6 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Beekeeping & honey baking', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Learn beekeeping from a professional Bioland apiary in Berlin-Kaulsdorf: hands-on beginners’ courses with up to 20 real bee colonies, a theory lecture, and honey gingerbread baking workshops — bake traditional Lebkuchen with honey and take your creations home.',
       group: 'Solo or pair', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
-    // Copy from senle.studio; photos and reel to follow.
-    { slug: 'senle', name: 'Senlë Studio', specialty: 'Natural incense making', studio: 'Senlë Studio',
-      blurb: 'A slow, mindful incense atelier in Friedrichshain. Explore raw botanicals — real woods and herbs — taste layered natural aromas, and blend, shape and wrap your own incense sticks to take home. From foundations to advanced scent design with over 30 natural ingredients.',
-      group: 'Small groups', duration: '2–3 h', place: 'Gärtnerstraße, Berlin', languages: 'EN · DE' },
     // Copy from beat-etage.de; photos and reel to follow.
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
@@ -271,9 +265,6 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
       group: 'Einzeln oder zu zweit', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
-    { slug: 'senle', name: 'Senlë Studio', specialty: 'Natürliches Räucherwerk', studio: 'Senlë Studio',
-      blurb: 'Ein achtsames Räucherwerk-Atelier in Friedrichshain. Rohe Pflanzenmaterialien entdecken — echte Hölzer und Kräuter —, vielschichtige natürliche Aromen verkosten und eigene Räucherstäbchen mischen, formen und mitnehmen. Von den Grundlagen bis zum Duftdesign mit über 30 natürlichen Zutaten.',
-      group: 'Kleine Gruppen', duration: '2–3 Std.', place: 'Gärtnerstraße, Berlin', languages: 'EN · DE' },
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & Trommeln', studio: 'Percussionstudio Beat-Etage',
       blurb: 'Ein Percussionstudio in einer alten Treptower Fabrikhalle. Bei den monatlichen Wochenend-Workshops in westafrikanische Rhythmen auf Djembes und Dunduns eintauchen — oder Cajon und Handpan ausprobieren. Zwei Stunden Trommeln zum Anfassen, Instrumente inklusive, ganz ohne Vorkenntnisse.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },

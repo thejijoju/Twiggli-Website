@@ -82,6 +82,15 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
+  // Coffee and Bananas (Angelo & Linda's café) lists the roasting
+  // workshop's upcoming dates as bare text on the homepage; booking and
+  // price live on their tenfarmersandbananas.com shop.
+  { slug: 'angelo', name: 'Coffee and Bananas — roasting workshops', mode: 'dated-time-list',
+    url: 'https://www.coffeeandbananas.com/',
+    startMarker: 'UPCOMING WORKSHOPS', endMarker: 'JETZT TEILNEHMEN',
+    title: 'DIY Kaffeerösten', titleEn: 'DIY Coffee Roasting', price: '€59',
+    district: 'Prenzlauer Berg',
+    bookUrl: 'https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/' },
   // WordPress page listing the whole schedule as pipe-separated German
   // lines under "Kommende Workshops für <X>:" headers; each entry links its
   // own Eversports booking page.
@@ -95,7 +104,9 @@ const SOURCES = [
   // Acuity Scheduling ("involves clicking") — but the scheduler embeds its
   // appointment catalog in the page HTML and serves availability as public
   // JSON, so the classes, prices and dates read with plain fetches.
-  { slug: 'senle', name: 'Senlë Studio — Incense Labs', mode: 'acuity',
+  // The Acuity account behind senle.studio is Faye's — the schedule feeds
+  // her existing host card.
+  { slug: 'faye', name: 'Senlë Studio (Faye) — Incense Labs', mode: 'acuity',
     owner: '37478855', url: 'https://www.senle.studio/scheduling',
     district: 'Friedrichshain' },
   // Regiondo-hosted shop pages (unlike Karen-Rose's embedded widget) are
@@ -272,6 +283,49 @@ function fromGermanPipeList(html, source) {
         ...(price ? { price: `€${Math.round(Number(price[1].replace(',', '.')))}` } : {}),
         url: book ? decodeEntities(book[0]) : source.url,
       });
+    });
+  }
+  return out;
+}
+
+/** Parser for pages that announce one workshop's upcoming dates as a bare
+ *  text list — "Thu 20.08.2026 17.30-19.30 / Sat 22.08.2026 10.30-12.30…"
+ *  (Coffee and Bananas' format). Title, price and booking link come from
+ *  the source config; date, start time and duration from each line. The
+ *  optional start/end markers fence the schedule off from other dates on
+ *  the page, and duplicate date+time pairs collapse. */
+function fromDatedTimeList(html, source) {
+  let text = stripTags(html);
+  if (source.startMarker) {
+    const i = text.indexOf(source.startMarker);
+    if (i >= 0) text = text.slice(i + source.startMarker.length);
+  }
+  if (source.endMarker) {
+    const j = text.indexOf(source.endMarker);
+    if (j > 0) text = text.slice(0, j);
+  }
+  const seen = new Set();
+  const out = [];
+  for (const m of text.matchAll(
+    /(\d{2})\.(\d{2})\.(\d{2,4})\s+(\d{1,2})[.:](\d{2})\s*[-–]\s*(\d{1,2})[.:](\d{2})/g,
+  )) {
+    const year = m[3].length === 2 ? `20${m[3]}` : m[3];
+    const month = Number(m[2]);
+    if (month < 1 || month > 12 || Number(m[1]) > 31) continue;
+    const date = `${year}-${m[2]}-${m[1]}`;
+    const time = `${String(m[4]).padStart(2, '0')}:${m[5]}`;
+    if (seen.has(`${date} ${time}`)) continue;
+    seen.add(`${date} ${time}`);
+    const span = Number(m[6]) + Number(m[7]) / 60 - (Number(m[4]) + Number(m[5]) / 60);
+    console.log(`[${source.slug}] dated-time-list: ${date} ${time} (${span} h)`);
+    out.push({
+      title: source.title,
+      ...(source.titleEn ? { titleEn: source.titleEn } : {}),
+      date,
+      time,
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      ...(source.price ? { price: source.price } : {}),
+      url: source.bookUrl ?? source.url,
     });
   }
   return out;
@@ -842,6 +896,20 @@ async function scrape(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'dated-time-list') {
+    const found = fromDatedTimeList(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] dated-time-list sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
   if (source.mode === 'pipe-list-de') {
     const found = fromGermanPipeList(html, source);
     const inRange = found
@@ -1098,12 +1166,17 @@ async function scrape(source) {
 // parser against that file and prints the result, touching nothing.
 if (process.env.PARSE_TEST) {
   const html = readFileSync(process.env.PARSE_TEST, 'utf8');
-  const testSource = { slug: 'test', url: 'test', title: 'Test Workshop', price: '€65' };
+  const testSource = {
+    slug: 'test', url: 'test', title: 'Test Workshop', price: '€65',
+    startMarker: 'UPCOMING WORKSHOPS', endMarker: 'JETZT TEILNEHMEN',
+  };
   const fn =
     process.env.PARSE_TEST_MODE === 'dates-de'
       ? fromGermanDates
       : process.env.PARSE_TEST_MODE === 'pipe-list-de'
         ? fromGermanPipeList
+      : process.env.PARSE_TEST_MODE === 'dated-time-list'
+        ? fromDatedTimeList
       : process.env.PARSE_TEST_MODE === 'json-ld'
         ? (h) => fromJsonLd(h, 'test')
         : process.env.PARSE_TEST_MODE === 'ics'
