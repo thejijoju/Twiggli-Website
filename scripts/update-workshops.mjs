@@ -656,7 +656,9 @@ async function fromCheckoutLinks(html, source) {
  *  tickets left, price in cents). The site's sitemap finds the course
  *  pages; pages without a widget just contribute nothing. */
 async function fromKonfetti(source) {
-  const res = await fetch(source.url, { headers: { 'user-agent': UA } });
+  const res = await fetch(source.url, {
+    headers: { 'user-agent': UA, accept: 'application/xml,text/xml,*/*' },
+  });
   if (!res.ok) {
     console.log(`[${source.slug}] konfetti: sitemap HTTP ${res.status}`);
     return [];
@@ -1317,6 +1319,22 @@ async function renderAllFrames(url, slug) {
 }
 
 async function scrape(source) {
+  // Konfetti fetches its sitemap itself (with an XML accept — Squarespace
+  // 406s the HTML-only one used for regular pages below).
+  if (source.mode === 'konfetti') {
+    const found = await fromKonfetti(source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] konfetti sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
   const res = await fetch(source.url, {
     redirect: 'follow',
     headers: {
@@ -1376,20 +1394,6 @@ async function scrape(source) {
         ...(source.district ? { district: source.district } : {}),
       }));
     console.log(`[${source.slug}] dated-time-list sessions kept: ${inRange.length}`);
-    return { workshops: inRange, recurring: [] };
-  }
-
-  if (source.mode === 'konfetti') {
-    const found = await fromKonfetti(source);
-    const inRange = found
-      .filter((w) => w.date >= todayISO && w.date <= maxISO)
-      .map((w) => ({
-        slug: source.slug,
-        sourceUrl: source.url,
-        ...w,
-        ...(source.district ? { district: source.district } : {}),
-      }));
-    console.log(`[${source.slug}] konfetti sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 
