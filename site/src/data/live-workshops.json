@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T16:37:42.770Z",
+  "updated": "2026-08-20T16:47:36.151Z",
   "sources": [
     {
       "slug": "qian",
@@ -70,8 +70,8 @@
     {
       "slug": "senle",
       "url": "https://www.senle.studio/scheduling",
-      "status": "failed: no upcoming events parsed",
-      "count": 0
+      "status": "ok",
+      "count": 8
     },
     {
       "slug": "kohfink",
@@ -89,7 +89,7 @@
       "slug": "jem",
       "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "status": "ok",
-      "count": 10
+      "count": 8
     },
     {
       "slug": "karen-rose",
@@ -277,6 +277,17 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Foundations of Scent",
+      "date": "2026-08-23",
+      "time": "16:00",
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
+      "district": "Friedrichshain"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -339,6 +350,17 @@
       "price": "€71",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Sip Into Scent - Scent x Drink Pairing",
+      "date": "2026-08-27",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€45",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97092490/calendar/13025469",
+      "district": "Friedrichshain"
     },
     {
       "slug": "galleria-lucia",
@@ -467,6 +489,17 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Grundlagen des Dufts",
+      "date": "2026-08-30",
+      "time": "16:00",
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
+      "district": "Friedrichshain"
     },
     {
       "slug": "galleria-lucia",
@@ -684,6 +717,17 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Foundations of Scent",
+      "date": "2026-09-06",
+      "time": "14:00",
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
+      "district": "Friedrichshain"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -726,6 +770,17 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "time": "11:00",
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
+    },
+    {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab II: Blending & Expression",
+      "date": "2026-09-13",
+      "time": "14:00",
+      "duration": "3 h",
+      "price": "€106",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541614/calendar/13025469",
+      "district": "Friedrichshain"
     },
     {
       "slug": "karen-rose",
@@ -772,6 +827,17 @@
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=227019",
       "time": "15:00"
+    },
+    {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Grundlagen des Dufts",
+      "date": "2026-09-19",
+      "time": "16:00",
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
+      "district": "Friedrichshain"
     },
     {
       "slug": "qian",
@@ -838,6 +904,17 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Foundations of Scent",
+      "date": "2026-10-04",
+      "time": "14:00",
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
+      "district": "Friedrichshain"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
@@ -866,6 +943,17 @@
       "date": "2026-10-18",
       "time": "13:00",
       "url": "https://www.claygarden.studio/special-workshops"
+    },
+    {
+      "slug": "senle",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Grundlagen des Dufts",
+      "date": "2026-10-18",
+      "time": "14:00",
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
+      "district": "Friedrichshain"
     },
     {
       "slug": "qian",
@@ -950,28 +1038,6 @@
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/",
       "titleEn": "Soap Making Workshop"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
-      "date": "2026-11-22",
-      "time": "14:30",
-      "duration": "3 h",
-      "price": "€65",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-8",
-      "district": "Zehlendorf"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
-      "date": "2026-11-28",
-      "time": "15:00",
-      "duration": "3.5 h",
-      "price": "€65",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
-      "district": "Zehlendorf"
     },
     {
       "slug": "kohfink",
