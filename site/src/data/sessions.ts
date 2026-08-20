@@ -1,17 +1,14 @@
 /** Upcoming workshop sessions for the "Happening today" page.
  *
- *  PLACEHOLDER — these are generated from the real host list so the page has
- *  plausible content to lay out, not a real booking feed. Replace `getSessions`
- *  with a fetch from the booking backend when one exists; the page only needs
- *  the shape below.
+ *  Every session is real: dated entries from hosts' own schedules
+ *  (scraped weekly or entered by hand into live-workshops.json) plus
+ *  weekly-recurring classes expanded across the visible window. Nothing
+ *  is invented — a day with no real session shows the page's empty note.
  *
- *  Dates are expressed as `dayOffset` (0 = today) rather than absolute dates.
- *  The site is statically built, so any date baked in at build time would be
- *  wrong by the next morning — the browser resolves offsets against its own
- *  clock instead.
+ *  Dates are converted to `dayOffset` (0 = today, Europe/Berlin) at build
+ *  time; the deploy workflow rebuilds daily so they stay true.
  */
 import { getHosts, type Host } from './content.ts';
-import { appUrl } from './site.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
 
@@ -22,11 +19,11 @@ export type Session = {
   host: Host;
   title: string;
   place: string;
-  /** Berlin district, shown on the feed card. PLACEHOLDER — picked
-   *  deterministically until sessions carry a real venue. */
+  /** Berlin district (or the studio name when no district is known),
+   *  shown on the feed card. */
   district: string;
-  /** Where the row's Book button leads: the host's own booking page for
-   *  scraped real sessions, the app for placeholder ones. */
+  /** Where the row's Book button, title and thumbnail lead: the host's
+   *  own booking page. */
   bookUrl: string;
   /** Session-specific length; the card falls back to the host's. */
   duration?: string;
@@ -59,19 +56,12 @@ const WEEKDAY_INDEX: Record<string, number> = {
   sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6,
 };
 
-const DISTRICTS = [
-  'Mitte', 'Prenzlauer Berg', 'Kreuzberg', 'Neukölln', 'Friedrichshain',
-  'Charlottenburg', 'Schöneberg', 'Wedding', 'Moabit', 'Lichtenberg',
-];
-
-/** Deterministic, so a rebuild does not reshuffle the schedule. */
+/** Deterministic, used for stable recurring-session ids. */
 const hash = (s: string): number => {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return h;
 };
-
-const START_TIMES = ['10:00', '11:30', '14:00', '16:00', '18:30', '19:00'];
 
 /** Widened from 21 so real scraped workshops a few months out (Clay
  *  Garden's and Karen-Rose's run 5–12 weeks ahead) still land on the strip. */
@@ -140,44 +130,13 @@ function liveSessions(hosts: Host[]): Session[] {
   return sessions;
 }
 
-/** Hosts with any real scraped schedule at all — even entries beyond the
- *  strip — never show invented placeholder sessions. */
-const liveHostSlugs = new Set([
-  ...((liveData.workshops ?? []) as LiveWorkshop[]).map((w) => w.slug),
-  ...(((liveData as { recurring?: LiveRecurring[] }).recurring ?? []).map((r) => r.slug)),
-]);
-
+/** The feed carries only real sessions — dated ones scraped or entered
+ *  from hosts' own schedules, and weekly-recurring classes expanded across
+ *  the strip. Days with nothing real show the page's empty note; no
+ *  invented filler. */
 export function getSessions(lang: Lang): Session[] {
   const hosts = getHosts(lang);
-  const free = { en: 'Free', de: 'Kostenlos' }[lang];
-  const live = liveSessions(hosts);
-  const sessions: Session[] = [...live];
-
-  for (let day = 0; day < DAYS_AHEAD; day++) {
-    // two to four sessions a day, rotating through the makers
-    const count = 2 + (hash(`d${day}`) % 3);
-    for (let n = 0; n < count; n++) {
-      const host = hosts[(day * 3 + n * 5) % hosts.length];
-      // A host with a real scraped schedule never shows invented sessions.
-      if (liveHostSlugs.has(host.slug)) continue;
-      const seed = hash(`${day}-${n}-${host.slug}`);
-      const priced = seed % 5 !== 0;
-      sessions.push({
-        id: `${day}-${n}-${host.slug}`,
-        dayOffset: day,
-        time: START_TIMES[seed % START_TIMES.length],
-        host,
-        title: host.specialty,
-        place: host.place,
-        district: DISTRICTS[seed % DISTRICTS.length],
-        bookUrl: appUrl,
-        spots: 2 + (seed % 9),
-        price: priced ? `€${25 + (seed % 6) * 10}` : free,
-      });
-    }
-  }
-
-  return sessions.sort((a, b) =>
-    a.dayOffset - b.dayOffset || a.time.localeCompare(b.time),
+  return liveSessions(hosts).sort(
+    (a, b) => a.dayOffset - b.dayOffset || a.time.localeCompare(b.time),
   );
 }
