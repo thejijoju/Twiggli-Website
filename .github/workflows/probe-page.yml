@@ -20,8 +20,8 @@ jobs:
     steps:
       - name: Fetch and describe
         run: |
-          node - "$PROBE_URL" <<'EOF'
-          const url = process.argv[1];
+          node - <<'EOF'
+          const url = process.env.PROBE_URL;
           const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)' }, redirect: 'follow' });
           const html = await res.text();
           console.log(`HTTP ${res.status}, ${html.length} bytes\n`);
