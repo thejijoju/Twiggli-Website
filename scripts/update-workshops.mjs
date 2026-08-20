@@ -51,7 +51,8 @@ const SOURCES = [
     title: 'Bio Naturkosmetik Workshop', price: '€65', duration: '3 h' },
   { slug: 'karen-rose', name: 'Karen-Rose — Keramikgießen | Terrazzo', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product',
-    title: 'Keramikgießen | Terrazzo Workshop', price: '€59', duration: '3 h' },
+    title: 'Keramikgießen | Terrazzo Workshop', titleEn: 'Ceramic Casting | Terrazzo Workshop',
+    price: '€59', duration: '3 h' },
   // TEMP url: the general events page until this workshop's own
   // re-product-id link is known — it is both the seed's protection (a
   // failing source keeps its previous entries) and the Book target.
