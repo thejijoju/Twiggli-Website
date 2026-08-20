@@ -705,6 +705,9 @@ async function fromKonfetti(source) {
         [
           ...unescaped.matchAll(/eventDescriptionId=([a-z0-9]{4,})/gi),
           ...unescaped.matchAll(/event-description-id["'\s:=]+([a-z0-9]{4,})/gi),
+          // The Squarespace snippet names the event on the wrapper div:
+          // <div id='konfetti_iframe_wrapper' data-event-id='w2dr9z' …>
+          ...unescaped.matchAll(/konfetti[\s\S]{0,300}?data-event-id=["']([a-z0-9]{4,})["']/gi),
         ].map((m) => m[1]),
       ),
     ];
