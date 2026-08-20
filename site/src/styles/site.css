@@ -1557,14 +1557,15 @@ a:hover { color: var(--color-accent); }
 }
 /* The day strip: no boxes around dates, like the app — days before the
    selected one grey out, the selected one carries the accent. */
+/* The month, spelled out once above the strip — centered, black and bold,
+   so the day chips below carry only their numbers. */
 .daystrip-month {
   display: block;
-  margin: 0;
-  font-size: 13px;
+  margin: 0 0 4px;
+  font-size: 19px;
   font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-accent-700);
+  text-align: center;
+  color: var(--color-text);
 }
 .daystrip {
   display: flex;

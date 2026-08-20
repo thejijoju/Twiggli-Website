@@ -161,7 +161,7 @@ const dayLabel = (offset: number) =>
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const monthOf = (date: Date) => date.toLocaleDateString(locale, { month: 'short' });
+    const monthOf = (date: Date) => date.toLocaleDateString(locale, { month: 'long' });
     if (monthEl) monthEl.textContent = monthOf(today);
 
     chips.forEach((chip) => {
@@ -177,7 +177,8 @@ const dayLabel = (offset: number) =>
           : offset === 1 ? root.dataset.tomorrow || 'Tomorrow'
           : date.toLocaleDateString(locale, { weekday: 'short' });
       }
-      if (num) num.textContent = date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+      // Just the day number — the month is spelled out once above the strip.
+      if (num) num.textContent = date.toLocaleDateString(locale, { day: 'numeric' });
 
       chip.setAttribute(
         'aria-label',
