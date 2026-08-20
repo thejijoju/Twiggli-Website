@@ -1684,17 +1684,19 @@ a:hover { color: var(--color-accent); }
   text-overflow: ellipsis;
   color: color-mix(in srgb, var(--color-text) 48%, transparent);
 }
+/* Price and Book on one shared line, whatever else a card carries — the
+   spots note sits on its own line below, so the action row never shifts. */
 .session-side {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   align-items: center;
-  gap: 20px;
+  column-gap: 20px;
+  row-gap: 4px;
+  justify-items: end;
 }
-.session-fare {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
+.session-price { grid-column: 1; grid-row: 1; }
+.session-book { grid-column: 2; grid-row: 1; }
+.session-spots { grid-column: 1 / -1; grid-row: 2; text-align: right; }
 /* Booking happens in the app — the row's action leads there. Solid black
    pill, same family as the directory's request button. */
 .session-book {
@@ -1728,7 +1730,7 @@ a:hover { color: var(--color-accent); }
 
 @media (max-width: 720px) {
   .session { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 14px; }
-  .session-side { flex-direction: column; align-items: flex-end; gap: 8px; }
+  .session-side { column-gap: 10px; }
   .session-thumb { width: 64px; height: 64px; border-radius: 12px; }
   .session-title { font-size: 17px; }
   .timegroup-head { font-size: 22px; }

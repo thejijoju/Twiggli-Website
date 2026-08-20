@@ -132,16 +132,13 @@ const dayLabel = (offset: number) =>
                           <a class="session-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
                           <span class="session-host">{s.host.name} · {s.district}</span>
                         </span>
+                        {/* Price and Book share one row so every card's
+                            action line sits at the same height; the spots
+                            note drops underneath. */}
                         <span class="session-side">
-                          {(s.price || typeof s.spots === 'number') && (
-                            <span class="session-fare">
-                              {s.price && <span class="session-price">{s.price}</span>}
-                              {typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>}
-                            </span>
-                          )}
-                          {/* Placeholder sessions book in the app; real
-                              scraped ones book on the host's own page. */}
+                          {s.price && <span class="session-price">{s.price}</span>}
                           <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
+                          {typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>}
                         </span>
                       </li>
                     ))}
