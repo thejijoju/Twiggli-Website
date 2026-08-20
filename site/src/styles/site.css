@@ -1555,16 +1555,7 @@ a:hover { color: var(--color-accent); }
   border-color: var(--color-accent);
   color: #fff;
 }
-.district-pills { margin-top: 10px; align-items: center; }
-.district-pin {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: var(--color-accent-700);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+.district-pills { margin-top: 10px; }
 /* The day strip: no boxes around dates, like the app — days before the
    selected one grey out, the selected one carries the accent. */
 /* The month, spelled out once above the strip — centered, black and bold,
