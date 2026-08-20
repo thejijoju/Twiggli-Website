@@ -105,6 +105,14 @@ const SOURCES = [
     title: 'DIY Kaffeerösten', titleEn: 'DIY Coffee Roasting', price: '€59',
     district: 'Prenzlauer Berg',
     bookUrl: 'https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/' },
+  // Each listing page links every date to its own checkout.<domain> ticket
+  // page, which carries the authoritative date, time, title and price.
+  { slug: 'monk-garden', name: 'The Monk Garden — Pilzwanderungen', mode: 'checkout-links-de',
+    url: 'https://the-monk-garden.de/pilzwanderung-durch-den-wald/',
+    titleEn: 'Mushroom Foraging Walk', duration: '3 h', district: 'Berliner Wald' },
+  { slug: 'monk-garden', name: 'The Monk Garden — Wildkräuter-Wanderungen', mode: 'checkout-links-de',
+    url: 'https://the-monk-garden.de/wildkrauter-wanderungen/',
+    titleEn: 'Wild Herb Walk — Tempelhofer Feld', duration: '2.5–3 h', district: 'Tempelhof' },
   // WordPress page listing the whole schedule as pipe-separated German
   // lines under "Kommende Workshops für <X>:" headers; each entry links its
   // own Eversports booking page.
@@ -513,6 +521,54 @@ async function fromShopifyCowlendar(source) {
     } else {
       console.log(`[${source.slug}] cowlendar: "${p.title}": no working calendar id among ${candidates.length} candidates`);
     }
+  }
+  return out;
+}
+
+/** Strategy for The Monk Garden's pattern: a listing page whose dated
+ *  entries each link to their own checkout.<domain> ticket page, which
+ *  states the full date and start time ("26.09.2026 um 10:00 Uhr"), the
+ *  title and the per-person price. The checkout pages are the source of
+ *  truth — no year-guessing from the listing's bare "26.09." tokens. */
+async function fromCheckoutLinks(html, source) {
+  const links = [
+    ...new Set([...html.matchAll(/https?:\/\/checkout\.[a-z0-9.-]+\/[a-z0-9-]+/gi)].map((m) => m[0])),
+  ];
+  console.log(`[${source.slug}] checkout links found: ${links.length}`);
+  const out = [];
+  for (const link of links) {
+    try {
+      const r = await fetch(link, { headers: { 'user-agent': UA } });
+      if (!r.ok) {
+        console.log(`[${source.slug}] ${link}: HTTP ${r.status}`);
+        continue;
+      }
+      const page = await r.text();
+      const text = stripTags(page);
+      const dm = text.match(/(\d{2})\.(\d{2})\.(\d{4})(?:\s*um\s*(\d{1,2}):(\d{2})\s*Uhr)?/);
+      if (!dm) {
+        console.log(`[${source.slug}] ${link}: no dated line found`);
+        continue;
+      }
+      const title = stripTags(page.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '').trim() || source.title || 'Workshop';
+      const price = text.match(/(\d+)[.,](\d{2})\s*EUR/);
+      const date = `${dm[3]}-${dm[2]}-${dm[1]}`;
+      console.log(
+        `[${source.slug}] checkout: "${title}" ${date} ${dm[4] ? `${dm[4]}:${dm[5]}` : 'no time'} ${price ? `€${price[1]}` : 'no price'}`,
+      );
+      out.push({
+        title,
+        ...(source.titleEn ? { titleEn: source.titleEn } : {}),
+        date,
+        ...(dm[4] ? { time: `${String(dm[4]).padStart(2, '0')}:${dm[5]}` } : {}),
+        ...(source.duration ? { duration: source.duration } : {}),
+        ...(price ? { price: `€${Math.round(Number(`${price[1]}.${price[2]}`))}` } : {}),
+        url: link,
+      });
+    } catch (err) {
+      console.log(`[${source.slug}] ${link}: ${err.message.split('\n')[0]}`);
+    }
+    await new Promise((r2) => setTimeout(r2, 300));
   }
   return out;
 }
@@ -1122,6 +1178,20 @@ async function scrape(source) {
         ...(source.district ? { district: source.district } : {}),
       }));
     console.log(`[${source.slug}] dated-time-list sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'checkout-links-de') {
+    const found = await fromCheckoutLinks(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] checkout sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 

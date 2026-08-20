@@ -121,6 +121,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
   pastamadre:   { activity: 'food',        groupRange: [1, 12],   hourRange: [3, 5] },
   munio:        { activity: 'craft',       groupRange: [1, 10],   hourRange: [1, 2] },
+  // Walks run from 10 people; no published cap ("kleine Gruppen").
+  'monk-garden': { activity: 'food',       groupRange: [10, 20],  hourRange: [2.5, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -210,6 +212,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
       group: 'Small groups', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
+    // Copy from the-monk-garden.de; photos and reel to follow.
+    { slug: 'monk-garden', name: 'The Monk Garden', specialty: 'Foraging walks & wild herbs', studio: 'The Monk Garden',
+      blurb: 'Martin Rötzel’s modern monastery garden on the old Mariendorf gasworks. Join a guided wild-herb walk across Tempelhofer Feld — yarrow, ribwort, sorrel and what to do with them in the kitchen — or head into the forest hunting porcini and medicinal mushrooms, basket in hand.',
+      group: 'Small groups (from 10)', duration: '2.5–3 h', place: 'Tempelhofer Feld & Berlin’s forests', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -284,6 +290,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & Trommeln', studio: 'Percussionstudio Beat-Etage',
       blurb: 'Ein Percussionstudio in einer alten Treptower Fabrikhalle. Bei den monatlichen Wochenend-Workshops in westafrikanische Rhythmen auf Djembes und Dunduns eintauchen — oder Cajon und Handpan ausprobieren. Zwei Stunden Trommeln zum Anfassen, Instrumente inklusive, ganz ohne Vorkenntnisse.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
+    { slug: 'monk-garden', name: 'The Monk Garden', specialty: 'Wildkräuter- & Pilzwanderungen', studio: 'The Monk Garden',
+      blurb: 'Martin Rötzels moderner Klostergarten auf dem alten Gaswerk Mariendorf. Bei der geführten Wildkräuter-Wanderung über das Tempelhofer Feld Schafgarbe, Spitzwegerich und Sauerampfer entdecken — samt Küchen-Inspiration — oder im Wald mit Korb in der Hand Steinpilze und Vitalpilze suchen.',
+      group: 'Kleine Gruppen (ab 10)', duration: '2,5–3 Std.', place: 'Tempelhofer Feld & Berliner Wälder', languages: 'DE' },
   ],
 };
 
