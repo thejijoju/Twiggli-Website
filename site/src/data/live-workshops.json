@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-19T13:56:29.710Z",
+  "updated": "2026-08-20T14:44:05.886Z",
   "sources": [
     {
       "slug": "qian",
@@ -23,13 +23,49 @@
       "slug": "karen-rose",
       "url": "https://karen-rose.com/events-2/?re-product-id=227019",
       "status": "failed: no upcoming events parsed",
-      "count": 0
+      "count": 5
     },
     {
       "slug": "karen-rose",
       "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "status": "failed: no upcoming events parsed",
-      "count": 0
+      "count": 3
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/?re-product-id=229230",
+      "status": "failed: no upcoming events parsed",
+      "count": 1
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/?re-product-id=264518",
+      "status": "failed: no upcoming events parsed",
+      "count": 2
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/?re-product-id=320775",
+      "status": "failed: no upcoming events parsed",
+      "count": 2
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/?re-product-id=229220",
+      "status": "failed: no upcoming events parsed",
+      "count": 1
+    },
+    {
+      "slug": "galleria-lucia",
+      "url": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "status": "ok",
+      "count": 45
+    },
+    {
+      "slug": "karen-rose",
+      "url": "https://karen-rose.com/events-2/",
+      "status": "failed: no upcoming events parsed",
+      "count": 3
     }
   ],
   "recurring": [
@@ -113,6 +149,59 @@
   ],
   "workshops": [
     {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-20",
+      "time": "18:00",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-21",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-21",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-21",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-22",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "title": "Keramikgießen | Terrazzo Workshop",
@@ -123,6 +212,17 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "time": "11:00",
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-22",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
       "slug": "karen-rose",
@@ -137,6 +237,164 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=320775"
     },
     {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-22",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-22",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-23",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-23",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-23",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-23",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-24",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-24",
+      "time": "18:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-26",
+      "time": "15:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-26",
+      "time": "18:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-27",
+      "time": "18:00",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-28",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-28",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-28",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-29",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -146,6 +404,17 @@
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=227019",
       "time": "11:00"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-29",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
       "slug": "karen-rose",
@@ -160,6 +429,153 @@
       "titleEn": "Soap Making Workshop"
     },
     {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-29",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-29",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-30",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-30",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-30",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-08-30",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-31",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-08-31",
+      "time": "18:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-01",
+      "time": "18:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-02",
+      "time": "15:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-02",
+      "time": "18:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-09-03",
+      "time": "18:00",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-09-04",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-04",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=264518",
       "title": "Bio Naturkosmetik Workshop - Essentials",
@@ -170,6 +586,27 @@
       "price": "€49",
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=264518"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-09-04",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-05",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
       "slug": "karen-rose",
@@ -184,6 +621,17 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=229230"
     },
     {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-09-05",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -193,6 +641,69 @@
       "district": "Berlin",
       "url": "https://karen-rose.com/events-2/?re-product-id=227019",
       "time": "15:00"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-05",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-09-05",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-06",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+      "date": "2026-09-06",
+      "time": "13:00",
+      "duration": "1.5–2 h",
+      "price": "€66",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-09-06",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-09-06",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
       "slug": "karen-rose",
