@@ -82,6 +82,11 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
+  // Pasta Madre's Wix calendar renders every course server-side as
+  // h2-titled blocks; the three solidarity prices (Tulpe/Lilie/Rose)
+  // surface as a €76–100 range.
+  { slug: 'pastamadre', name: 'Pasta Madre — Kurstermine', mode: 'titled-date-blocks',
+    url: 'https://www.pastamadre.de/calendar-kurstermine', district: 'Wedding' },
   // Coffee and Bananas (Angelo & Linda's café) lists the roasting
   // workshop's upcoming dates as bare text on the homepage; booking and
   // price live on their tenfarmersandbananas.com shop.
@@ -326,6 +331,73 @@ function fromDatedTimeList(html, source) {
       ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
       ...(source.price ? { price: source.price } : {}),
       url: source.bookUrl ?? source.url,
+    });
+  }
+  return out;
+}
+
+/** Parser for calendar pages built as h2-titled blocks — each workshop an
+ *  <h2> heading followed by a written date (German "Samstag 22. August
+ *  2026" or English "Sunday 30 August 2026"), a "15:00-19:30 Uhr" range,
+ *  prices and a booking link (Pasta Madre's format). A block listing
+ *  several prices (their solidarity model) becomes a €min–max range;
+ *  sold-out blocks ("ausgebucht") are skipped. */
+function fromTitledDateBlocks(html, source) {
+  const MONTHS = {
+    januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
+    juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
+    january: '01', february: '02', march: '03', may: '05', june: '06',
+    july: '07', october: '10', december: '12',
+  };
+  const MONTH_NAMES = Object.keys(MONTHS).join('|');
+  const heads = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)];
+  const out = [];
+  for (let i = 0; i < heads.length; i++) {
+    const title = stripTags(heads[i][1]).trim();
+    if (!title) continue;
+    const start = heads[i].index + heads[i][0].length;
+    const block = html.slice(start, i + 1 < heads.length ? heads[i + 1].index : html.length);
+    const text = stripTags(block);
+    if (/ausgebucht|sold\s*out/i.test(text)) {
+      console.log(`[${source.slug}] blocks: "${title}" sold out — skipped`);
+      continue;
+    }
+    const dm = text.match(new RegExp(`(\\d{1,2})\\.?\\s+(${MONTH_NAMES})\\s+(20\\d{2})`, 'i'));
+    if (!dm) continue;
+    const date = `${dm[3]}-${MONTHS[dm[2].toLowerCase()]}-${dm[1].padStart(2, '0')}`;
+
+    const range = text.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/);
+    const time = range ? `${range[1].padStart(2, '0')}:${range[2]}` : undefined;
+    const span = range
+      ? Number(range[3]) + Number(range[4]) / 60 - (Number(range[1]) + Number(range[2]) / 60)
+      : 0;
+
+    const prices = [...text.matchAll(/(\d{2,3})[,.]\d{2}\s*€/g)].map((p) => Number(p[1]));
+    const price = prices.length
+      ? Math.min(...prices) === Math.max(...prices)
+        ? `€${prices[0]}`
+        : `€${Math.min(...prices)}–${Math.max(...prices)}`
+      : undefined;
+
+    // The block's own booking button, when it links anywhere.
+    let book;
+    for (const a of block.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)) {
+      if (/reservieren|book\s*now|jetzt\s*buchen/i.test(stripTags(a[2]))) {
+        book = decodeEntities(a[1]);
+        break;
+      }
+    }
+
+    console.log(
+      `[${source.slug}] blocks: "${title}" ${date} ${time ?? '?'} ${price ?? ''} ${book ? 'link' : 'page'}`,
+    );
+    out.push({
+      title,
+      date,
+      ...(time ? { time } : {}),
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      ...(price ? { price } : {}),
+      url: book && /^https?:/i.test(book) ? book : source.url,
     });
   }
   return out;
@@ -896,6 +968,20 @@ async function scrape(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'titled-date-blocks') {
+    const found = fromTitledDateBlocks(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] titled-date-blocks sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
   if (source.mode === 'dated-time-list') {
     const found = fromDatedTimeList(html, source);
     const inRange = found
@@ -1177,6 +1263,8 @@ if (process.env.PARSE_TEST) {
         ? fromGermanPipeList
       : process.env.PARSE_TEST_MODE === 'dated-time-list'
         ? fromDatedTimeList
+      : process.env.PARSE_TEST_MODE === 'titled-date-blocks'
+        ? fromTitledDateBlocks
       : process.env.PARSE_TEST_MODE === 'json-ld'
         ? (h) => fromJsonLd(h, 'test')
         : process.env.PARSE_TEST_MODE === 'ics'
