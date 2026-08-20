@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T15:52:32.044Z",
+  "updated": "2026-08-20T16:37:42.770Z",
   "sources": [
     {
       "slug": "qian",
@@ -66,6 +66,12 @@
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
       "status": "ok",
       "count": 3
+    },
+    {
+      "slug": "senle",
+      "url": "https://www.senle.studio/scheduling",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "kohfink",
