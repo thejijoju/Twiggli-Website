@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T15:20:59.328Z",
+  "updated": "2026-08-20T15:52:32.044Z",
   "sources": [
     {
       "slug": "qian",
@@ -60,6 +60,24 @@
       "url": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "status": "ok",
       "count": 40
+    },
+    {
+      "slug": "kohfink",
+      "url": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "status": "ok",
+      "count": 3
+    },
+    {
+      "slug": "kohfink",
+      "url": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "kohfink",
+      "url": "https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "jem",
@@ -883,6 +901,28 @@
       "titleEn": "Ceramic Casting | Terrazzo Workshop"
     },
     {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-11-14",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490382446002747367.html",
+      "district": "Kaulsdorf"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-11-20",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490384268180370385.html",
+      "district": "Kaulsdorf"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Let's make Kimchi!",
@@ -926,6 +966,17 @@
       "price": "€65",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-12-03",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490385660357956000.html",
+      "district": "Kaulsdorf"
     }
   ]
 }
