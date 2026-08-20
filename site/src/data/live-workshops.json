@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20T20:04:04.492Z",
+  "updated": "2026-08-20T20:39:22.372Z",
   "sources": [
     {
       "slug": "qian",
@@ -66,6 +66,12 @@
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
       "status": "ok",
       "count": 3
+    },
+    {
+      "slug": "munio",
+      "url": "https://themunio.de/collections/workshops",
+      "status": "ok",
+      "count": 52
     },
     {
       "slug": "pastamadre",
@@ -220,6 +226,17 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-21",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -228,6 +245,17 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-21",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "angelo",
@@ -289,6 +317,17 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=320775"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-22",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Gemüse Fermentieren",
@@ -309,6 +348,17 @@
       "price": "€75",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-22",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -396,6 +446,28 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-26",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-26",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "angelo",
       "sourceUrl": "https://www.coffeeandbananas.com/",
       "title": "DIY Kaffeerösten",
@@ -416,6 +488,28 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-27",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-27",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "angelo",
@@ -463,6 +557,17 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-28",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -471,6 +576,17 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-28",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "angelo",
@@ -551,6 +667,17 @@
       "district": "Treptow"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-29",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Ravioli\" Gefüllte Pasta Workshop",
@@ -582,6 +709,17 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-08-29",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -701,6 +839,28 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-02",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-02",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "angelo",
       "sourceUrl": "https://www.coffeeandbananas.com/",
       "title": "DIY Kaffeerösten",
@@ -721,6 +881,28 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-03",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-03",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -745,6 +927,17 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-04",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -753,6 +946,17 @@
       "price": "€59",
       "district": "Lichtenberg",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-04",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "karen-rose",
@@ -822,6 +1026,17 @@
       "time": "15:00"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-05",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sauerteig Brot Workshop",
@@ -852,6 +1067,17 @@
       "price": "€60",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fizzy-ferments-kombucha-kefir-and-wild-sodas",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-05",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -929,6 +1155,72 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-09",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-09",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-10",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-10",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-11",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-11",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Kimchi selber machen!",
@@ -951,6 +1243,17 @@
       "district": "Treptow"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-12",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sourdough Pizza Workshop",
@@ -960,6 +1263,17 @@
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
       "district": "Wedding"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-12",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "beat-etage",
@@ -1030,6 +1344,72 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-16",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-16",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-17",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-17",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-18",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-18",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=229220",
       "title": "Shampoo Naturkosmetik Workshop",
@@ -1051,6 +1431,17 @@
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/?re-product-id=227019",
       "time": "15:00"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-19",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "pastamadre",
@@ -1075,6 +1466,17 @@
       "district": "Friedrichshain"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-19",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "qian",
       "sourceUrl": "https://www.claygarden.studio/special-workshops",
       "title": "Tea & Pottery Workshop",
@@ -1095,6 +1497,50 @@
       "district": "Wedding"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-23",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-23",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-24",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-24",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Sushi workshop: roll your own sushi in Berlin",
@@ -1104,6 +1550,28 @@
       "price": "€75",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin-2",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-25",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-25",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "qian",
@@ -1140,6 +1608,17 @@
       "district": "Treptow"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-26",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=264518",
       "title": "Bio Naturkosmetik Workshop - Essentials",
@@ -1150,6 +1629,17 @@
       "price": "€49",
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/?re-product-id=264518"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-26",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "jem",
@@ -1163,6 +1653,83 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-30",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-09-30",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-01",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-01",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-02",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-02",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-03",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sourdough Bread Workshop",
@@ -1172,6 +1739,17 @@
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
       "district": "Wedding"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-03",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "faye",
