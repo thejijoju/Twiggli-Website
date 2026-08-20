@@ -83,6 +83,14 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
+  // Shopify catalog + Cowlendar booking modal ("you only see the dates
+  // after clicking Book") — but Cowlendar's availability API answers plain
+  // GETs, so every slot reads without a browser. Sessions run near-daily;
+  // maxDays keeps the volume sane.
+  { slug: 'munio', name: 'The Munio — workshops', mode: 'shopify-cowlendar',
+    base: 'https://themunio.de', collection: 'workshops',
+    url: 'https://themunio.de/collections/workshops',
+    district: 'Schöneberg', maxDays: 45 },
   // Pasta Madre's Wix calendar renders every course server-side as
   // h2-titled blocks; the three solidarity prices (Tulpe/Lilie/Rose)
   // surface as a €76–100 range.
@@ -353,8 +361,11 @@ function fromTitledDateBlocks(html, source) {
   const MONTH_NAMES = Object.keys(MONTHS).join('|');
   const heads = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)];
   const out = [];
+  // Their headings are styled lowercase; the card title-cases every word
+  // ("Gemüse Fermentieren") so titles read as titles.
+  const capitalize = (s) => s.replace(/\p{L}+/gu, (w) => w[0].toUpperCase() + w.slice(1));
   for (let i = 0; i < heads.length; i++) {
-    const title = stripTags(heads[i][1]).trim();
+    const title = capitalize(stripTags(heads[i][1]).trim());
     if (!title) continue;
     const start = heads[i].index + heads[i][0].length;
     const block = html.slice(start, i + 1 < heads.length ? heads[i + 1].index : html.length);
@@ -400,6 +411,95 @@ function fromTitledDateBlocks(html, source) {
       ...(price ? { price } : {}),
       url: book && /^https?:/i.test(book) ? book : source.url,
     });
+  }
+  return out;
+}
+
+/** Strategy: Shopify catalog + Cowlendar booking app. The collection's
+ *  products.json lists the workshops (title, price, variant); each product
+ *  page embeds its Cowlendar calendar id, and Cowlendar's availability
+ *  endpoint answers plain unauthenticated GETs with every bookable slot
+ *  (start, duration, spots left) — verified live against The Munio's
+ *  booking modal. Sessions run near-daily, so source.maxDays keeps the
+ *  horizon short enough not to drown the rest of the calendar. */
+async function fromShopifyCowlendar(source) {
+  const res = await fetch(`${source.base}/collections/${source.collection}/products.json?limit=250`, {
+    headers: { 'user-agent': UA, accept: 'application/json' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] cowlendar: products.json HTTP ${res.status}`);
+    return [];
+  }
+  const products = (await res.json()).products ?? [];
+  console.log(`[${source.slug}] cowlendar: ${products.length} products`);
+
+  const horizon = source.maxDays ?? 45;
+  const lastISO = berlinDate(Date.parse(todayISO) + horizon * 86400000);
+  const months = [];
+  for (let d = new Date(`${todayISO.slice(0, 7)}-01T00:00:00Z`); d.toISOString().slice(0, 7) <= lastISO.slice(0, 7); d.setUTCMonth(d.getUTCMonth() + 1)) {
+    months.push(d.toISOString().slice(0, 7));
+  }
+  const out = [];
+
+  for (const p of products) {
+    const variant = p.variants?.[0];
+    if (!variant) continue;
+    const productUrl = `${source.base}/products/${p.handle}`;
+    const minutes = Number(/(\d{2,3})\s*min/i.exec(p.title)?.[1] ?? (/1[.,]5\s*h/i.test(p.title) ? 90 : 60));
+    const price = Number(variant.price) > 0 ? `€${Math.round(Number(variant.price))}` : undefined;
+
+    let html = '';
+    try {
+      html = await (await fetch(productUrl, { headers: { 'user-agent': UA } })).text();
+    } catch (err) {
+      console.log(`[${source.slug}] cowlendar: ${p.handle} page: ${err.message.split('\n')[0]}`);
+      continue;
+    }
+    // The calendar id is a 24-hex token in the embed; try each candidate
+    // against the availability endpoint until one answers with slots.
+    const candidates = [...new Set([...html.matchAll(/\b[0-9a-f]{24}\b/g)].map((m) => m[0]))].slice(0, 8);
+    const seen = new Set();
+    let matched = false;
+    for (const id of candidates) {
+      let slots = [];
+      let ok = true;
+      for (const ym of months) {
+        const [y, mo] = ym.split('-');
+        try {
+          const av = await fetch(
+            `https://app.cowlendar.com/extapi/calendar/${id}/availability?year=${y}&month=${Number(mo)}&timezone=Europe%2FBerlin&quantity_details%5B0%5D%5Btype%5D=default&quantity_details%5B0%5D%5Bquantity%5D=1&quantity_details%5B0%5D%5Bname%5D=Default&teammate_id=all&duration=${minutes}&is_manual=false&is_pos=false&adjacent_days=true&variant_id=${variant.id}`,
+            { headers: { 'user-agent': UA, accept: 'application/json' } },
+          );
+          if (!av.ok) { ok = false; break; }
+          const data = await av.json();
+          if (!Array.isArray(data?.long)) { ok = false; break; }
+          slots.push(...data.long);
+        } catch { ok = false; break; }
+        await new Promise((r2) => setTimeout(r2, 200));
+      }
+      if (!ok) continue;
+      matched = true;
+      for (const s of slots) {
+        const m = /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})$/.exec(s?.slot_start ?? '');
+        if (!m || s.is_bookable === false || s.qty_left === 0) continue;
+        if (m[1] > lastISO || seen.has(s.slot_start)) continue;
+        seen.add(s.slot_start);
+        const hours = Number(s.slot_duration ?? minutes) / 60;
+        out.push({
+          title: p.title.replace(/\s*\d+\s*min\b/i, '').replace(/\s*1[.,]5h\b/i, '').trim(),
+          date: m[1],
+          time: m[2],
+          duration: `${Math.round(hours * 2) / 2} h`,
+          ...(price ? { price } : {}),
+          url: productUrl,
+        });
+      }
+      console.log(`[${source.slug}] cowlendar: "${p.title}" calendar ${id}: ${seen.size} bookable slots ≤ ${lastISO}`);
+      break;
+    }
+    if (!matched) {
+      console.log(`[${source.slug}] cowlendar: "${p.title}": no working calendar id among ${candidates.length} candidates`);
+    }
   }
   return out;
 }
@@ -966,6 +1066,20 @@ async function scrape(source) {
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
       .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
     console.log(`[${source.slug}] shopify sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'shopify-cowlendar') {
+    const found = await fromShopifyCowlendar(source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] cowlendar sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 

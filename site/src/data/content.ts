@@ -120,6 +120,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
   pastamadre:   { activity: 'food',        groupRange: [1, 12],   hourRange: [3, 5] },
+  munio:        { activity: 'craft',       groupRange: [1, 10],   hourRange: [1, 2] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -201,6 +202,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, sourdough & fermentation', studio: 'Pastamadre',
       blurb: 'Homemade Italian pasta, sourdough bread and pizza, and vegetable fermentation with Maria-Lucrezia and Frank in their Wedding kitchen — most workshops end around the dinner table. Solidarity pricing: pay the full Rose price, or the reduced Tulpe price when money is tight. Ingredients are organic, regional and largely from the SUPERCOOP co-op.',
       group: 'Small groups', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+    // Copy from themunio.de; photos and reel to follow.
+    { slug: 'munio', name: 'The Munio', specialty: 'Candle & fragrance making', studio: 'The Munio Studio',
+      blurb: 'A Latvian candle-maker’s Berlin studio on Akazienstraße. Pour your own natural soy-wax candle with dried flowers, blend fragrance-oil roll-ons from their scent library, or make scented wax melts — short, relaxed sessions in the store, most days of the week.',
+      group: 'Up to 10', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
     // Copy from beat-etage.de; photos and reel to follow.
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
@@ -270,6 +275,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
       group: 'Einzeln oder zu zweit', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
+    { slug: 'munio', name: 'The Munio', specialty: 'Kerzen & Duft-Workshops', studio: 'The Munio Studio',
+      blurb: 'Das Berliner Studio einer lettischen Kerzenmanufaktur in der Akazienstraße. Gieße deine eigene Sojawachskerze mit Trockenblumen, mische Duftöl-Roll-ons aus ihrer Duftbibliothek oder stelle Duftwachs her — kurze, entspannte Sessions im Store, fast jeden Tag.',
+      group: 'Bis 10', duration: '1–2 Std.', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, Sauerteig & Fermentation', studio: 'Pastamadre',
       blurb: 'Hausgemachte italienische Pasta, Sauerteigbrot und -pizza und Gemüsefermentation mit Maria-Lucrezia und Frank in ihrer Küche im Wedding — die meisten Workshops enden am Esstisch. Solidarisches Preismodell: voller Rose-Preis oder reduzierter Tulpe-Preis, wenn das Budget knapp ist. Zutaten bio, regional und größtenteils von der SUPERCOOP-Genossenschaft.',
       group: 'Kleine Gruppen', duration: '3–5 Std.', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
