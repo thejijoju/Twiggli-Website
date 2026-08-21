@@ -583,6 +583,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Silber Anhänger Guß Workshop",
+      "titleEn": "Silver Pendant Casting Workshop",
+      "date": "2026-08-22",
+      "time": "14:00",
+      "duration": "4 h",
+      "price": "€160",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=320775",
       "title": "Terrazzo Schmuck",
@@ -785,17 +798,6 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-08-23",
-      "time": "16:00",
-      "price": "€59",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Foundations of Scent",
@@ -807,6 +809,17 @@
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-23",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
       "slug": "galleria-lucia",
@@ -1125,6 +1138,19 @@
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Sip Into Scent - Scent x Drink Pairing",
+      "date": "2026-08-27",
+      "time": "18:00",
+      "spots": 12,
+      "duration": "2 h",
+      "price": "€45",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-97092490.jpg?1786720397",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97092490/calendar/13025469",
+      "district": "Friedrichshain"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -1148,19 +1174,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "faye",
-      "sourceUrl": "https://www.senle.studio/scheduling",
-      "title": "Sip Into Scent - Scent x Drink Pairing",
-      "date": "2026-08-27",
-      "time": "18:00",
-      "spots": 12,
-      "duration": "2 h",
-      "price": "€45",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-97092490.jpg?1786720397",
-      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97092490/calendar/13025469",
-      "district": "Friedrichshain"
     },
     {
       "slug": "munio",
@@ -1341,17 +1354,6 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-08-29",
-      "time": "10:30",
-      "price": "€59",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
       "slug": "angelo",
       "sourceUrl": "https://www.coffeeandbananas.com/",
       "title": "DIY Kaffeerösten",
@@ -1363,6 +1365,17 @@
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
       "district": "Prenzlauer Berg",
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-29",
+      "time": "10:30",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
       "slug": "karen-rose",
@@ -1390,6 +1403,18 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-08-29",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/d0d53672-e1c2-4064-aa51-fc3ab20430b2",
+      "district": "Treptow",
+      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -1415,16 +1440,17 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "beat-etage",
-      "sourceUrl": "https://beat-etage.de/workshops/",
-      "title": "Djembe & Dundun Workshop",
+      "slug": "karen-rose",
+      "sourceUrl": "https://karen-rose.com/events-2/",
+      "title": "Seife Sieden Workshop",
       "date": "2026-08-29",
-      "time": "13:00",
-      "duration": "2 h",
-      "price": "€49",
-      "url": "https://www.eversports.de/org/activity/d0d53672-e1c2-4064-aa51-fc3ab20430b2",
+      "time": "15:00",
+      "duration": "3 h",
+      "price": "€99",
       "district": "Treptow",
-      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+      "url": "https://karen-rose.com/events-2/",
+      "titleEn": "Soap Making Workshop",
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
     },
     {
       "slug": "munio",
@@ -1476,19 +1502,6 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
-      "slug": "karen-rose",
-      "sourceUrl": "https://karen-rose.com/events-2/",
-      "title": "Seife Sieden Workshop",
-      "date": "2026-08-29",
-      "time": "15:00",
-      "duration": "3 h",
-      "price": "€99",
-      "district": "Treptow",
-      "url": "https://karen-rose.com/events-2/",
-      "titleEn": "Soap Making Workshop",
-      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -1666,17 +1679,6 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-08-30",
-      "time": "16:00",
-      "price": "€59",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
@@ -1688,6 +1690,17 @@
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
+      "date": "2026-08-30",
+      "time": "16:00",
+      "price": "€59",
+      "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
       "slug": "galleria-lucia",
@@ -2210,6 +2223,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "galleria-lucia",
+      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
+      "date": "2026-09-04",
+      "time": "18:30",
+      "duration": "1.5–2 h",
+      "price": "€71",
+      "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
+      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=264518",
       "title": "Bio Naturkosmetik Workshop - Essentials",
@@ -2221,18 +2246,6 @@
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/?re-product-id=264518",
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-09-04",
-      "time": "18:30",
-      "duration": "1.5–2 h",
-      "price": "€71",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
       "slug": "ceramic-kingdom",
@@ -2272,6 +2285,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruck-Kurs -Fotografie-",
+      "date": "2026-09-05",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "price": "€87",
+      "url": "https://www.druckrausch.com/booking-calendar/05-09-basis-siebdruck-kurs-fotografie",
+      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
+      "district": "Friedenau"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=229230",
       "title": "Duftkerzen Workshop (vegan + nachhaltig)",
@@ -2283,18 +2308,6 @@
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/?re-product-id=229230",
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
-    },
-    {
-      "slug": "druckrausch",
-      "sourceUrl": "https://www.druckrausch.com/termine",
-      "title": "Basis-Siebdruck-Kurs -Fotografie-",
-      "date": "2026-09-05",
-      "time": "11:00",
-      "duration": "2.5 h",
-      "price": "€87",
-      "url": "https://www.druckrausch.com/booking-calendar/05-09-basis-siebdruck-kurs-fotografie",
-      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
-      "district": "Friedenau"
     },
     {
       "slug": "whittle",
@@ -2485,19 +2498,6 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-05",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "celina",
       "sourceUrl": "https://www.gestaltwandel.com/booking",
       "title": "Strawstar Binding",
@@ -2509,6 +2509,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-05",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -2609,6 +2622,19 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Silber Anhänger Guß Workshop",
+      "titleEn": "Silver Pendant Casting Workshop",
+      "date": "2026-09-06",
+      "time": "11:00",
+      "duration": "4 h",
+      "price": "€160",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
       "slug": "daisuki",
@@ -3085,6 +3111,18 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Kimchi selber machen!",
+      "date": "2026-09-11",
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/kimchi-selber-machen-3",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -3096,18 +3134,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Kimchi selber machen!",
-      "date": "2026-09-11",
-      "time": "18:00",
-      "duration": "3 h",
-      "price": "€65",
-      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/kimchi-selber-machen-3",
-      "district": "Zehlendorf"
     },
     {
       "slug": "ceramic-kingdom",
@@ -3276,6 +3302,18 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Cajon Workshop",
+      "date": "2026-09-12",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€50",
+      "url": "https://beat-etage.de/workshops/",
+      "district": "Treptow",
+      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -3326,18 +3364,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "beat-etage",
-      "sourceUrl": "https://beat-etage.de/workshops/",
-      "title": "Cajon Workshop",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "2 h",
-      "price": "€50",
-      "url": "https://beat-etage.de/workshops/",
-      "district": "Treptow",
-      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
       "slug": "munio",
@@ -3445,6 +3471,18 @@
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Let's make Kimchi!",
+      "date": "2026-09-13",
+      "time": "15:00",
+      "duration": "3 h",
+      "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-7",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=320775",
       "title": "Terrazzo Schmuck",
@@ -3468,18 +3506,6 @@
       "url": "https://en.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Let's make Kimchi!",
-      "date": "2026-09-13",
-      "time": "15:00",
-      "duration": "3 h",
-      "price": "€65",
-      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-7",
-      "district": "Zehlendorf"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4091,19 +4117,6 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-19",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "celina",
       "sourceUrl": "https://www.gestaltwandel.com/booking",
       "title": "Strawstar Binding",
@@ -4115,6 +4128,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-09-19",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4450,6 +4476,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sushi workshop: roll your own sushi in Berlin",
+      "date": "2026-09-24",
+      "time": "18:00",
+      "duration": "3.5 h",
+      "price": "€75",
+      "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin-2",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -4461,18 +4499,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Sushi workshop: roll your own sushi in Berlin",
-      "date": "2026-09-24",
-      "time": "18:00",
-      "duration": "3.5 h",
-      "price": "€75",
-      "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin-2",
-      "district": "Zehlendorf"
     },
     {
       "slug": "munio",
@@ -4605,17 +4631,6 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "qian",
-      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
-      "title": "Handbuilding Class with Clay Garden Studio",
-      "date": "2026-09-25",
-      "time": "18:00",
-      "duration": "2 h",
-      "price": "€65",
-      "url": "https://www.claygarden.studio/pottery-classes",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -4627,6 +4642,30 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Handbuilding Class with Clay Garden Studio",
+      "date": "2026-09-25",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://www.claygarden.studio/pottery-classes",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "monk-garden",
+      "sourceUrl": "https://the-monk-garden.de/pilzwanderung-durch-den-wald/",
+      "title": "Pilzwanderung durch den Wald",
+      "titleEn": "Mushroom Foraging Walk",
+      "date": "2026-09-26",
+      "time": "10:00",
+      "duration": "3 h",
+      "price": "€79",
+      "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-26-september",
+      "district": "Berliner Wald",
+      "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
     },
     {
       "slug": "schmiede",
@@ -4641,19 +4680,6 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
-    },
-    {
-      "slug": "monk-garden",
-      "sourceUrl": "https://the-monk-garden.de/pilzwanderung-durch-den-wald/",
-      "title": "Pilzwanderung durch den Wald",
-      "titleEn": "Mushroom Foraging Walk",
-      "date": "2026-09-26",
-      "time": "10:00",
-      "duration": "3 h",
-      "price": "€79",
-      "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-26-september",
-      "district": "Berliner Wald",
-      "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
     },
     {
       "slug": "druckrausch",
@@ -4694,6 +4720,18 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "beat-etage",
+      "sourceUrl": "https://beat-etage.de/workshops/",
+      "title": "Djembe & Dundun Workshop",
+      "date": "2026-09-26",
+      "time": "13:00",
+      "duration": "2 h",
+      "price": "€49",
+      "url": "https://www.eversports.de/org/activity/2c373cd4-eaac-411f-852e-f37030dcbc0a",
+      "district": "Treptow",
+      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -4705,18 +4743,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "beat-etage",
-      "sourceUrl": "https://beat-etage.de/workshops/",
-      "title": "Djembe & Dundun Workshop",
-      "date": "2026-09-26",
-      "time": "13:00",
-      "duration": "2 h",
-      "price": "€49",
-      "url": "https://www.eversports.de/org/activity/2c373cd4-eaac-411f-852e-f37030dcbc0a",
-      "district": "Treptow",
-      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
       "slug": "munio",
@@ -5250,6 +5276,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-10-02",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/02-10-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -5261,18 +5299,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "druckrausch",
-      "sourceUrl": "https://www.druckrausch.com/termine",
-      "title": "Basis-Siebdruckworkshop",
-      "date": "2026-10-02",
-      "time": "18:00",
-      "duration": "2 h",
-      "price": "€63",
-      "url": "https://www.druckrausch.com/booking-calendar/02-10-basis-siebdruckworkshop",
-      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
-      "district": "Friedenau"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5443,19 +5469,6 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-10-03",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "celina",
       "sourceUrl": "https://www.gestaltwandel.com/booking",
       "title": "Strawstar Binding",
@@ -5467,6 +5480,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-10-03",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5531,6 +5557,19 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95683042/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Silber Anhänger Guß Workshop",
+      "titleEn": "Silver Pendant Casting Workshop",
+      "date": "2026-10-04",
+      "time": "11:00",
+      "duration": "4 h",
+      "price": "€160",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
       "slug": "sarah",
@@ -5709,18 +5748,6 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
-      "slug": "pastamadre",
-      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
-      "title": "Sauerteig Pizza Workshop",
-      "date": "2026-10-10",
-      "time": "15:00",
-      "duration": "5 h",
-      "price": "€76–100",
-      "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
@@ -5731,6 +5758,18 @@
       "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "Sauerteig Pizza Workshop",
+      "date": "2026-10-10",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5757,6 +5796,18 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "bumerang",
+      "sourceUrl": "https://berliner-bumerang.de/products.json?limit=250",
+      "title": "Bumerang-Workshop",
+      "date": "2026-10-11",
+      "time": "10:00",
+      "duration": "7 h",
+      "price": "€129",
+      "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0560/1329/1681/files/BK_10.png?v=1712674710",
+      "url": "https://berliner-bumerang.de/products/kopie-von-september-bumerang-workshop"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5786,16 +5837,16 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
     },
     {
-      "slug": "bumerang",
-      "sourceUrl": "https://berliner-bumerang.de/products.json?limit=250",
-      "title": "Bumerang-Workshop",
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Mini: Wheel Throwing",
       "date": "2026-10-11",
-      "time": "10:00",
-      "duration": "7 h",
-      "price": "€129",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0560/1329/1681/files/BK_10.png?v=1712674710",
-      "url": "https://berliner-bumerang.de/products/kopie-von-september-bumerang-workshop"
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€80",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
+      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
       "slug": "karen-rose",
@@ -5808,18 +5859,6 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=227019",
       "time": "11:00",
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
-    },
-    {
-      "slug": "dirt",
-      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
-      "title": "Mini: Wheel Throwing",
-      "date": "2026-10-11",
-      "time": "11:00",
-      "duration": "3 h",
-      "price": "€80",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
-      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
       "slug": "daisuki",
@@ -6249,6 +6288,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "monk-garden",
+      "sourceUrl": "https://the-monk-garden.de/pilzwanderung-durch-den-wald/",
+      "title": "Pilzwanderung durch den Wald",
+      "titleEn": "Mushroom Foraging Walk",
+      "date": "2026-10-31",
+      "time": "10:00",
+      "duration": "3 h",
+      "price": "€79",
+      "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-31-oktober",
+      "district": "Berliner Wald",
+      "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
+    },
+    {
       "slug": "schmiede",
       "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
@@ -6261,19 +6313,6 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
-    },
-    {
-      "slug": "monk-garden",
-      "sourceUrl": "https://the-monk-garden.de/pilzwanderung-durch-den-wald/",
-      "title": "Pilzwanderung durch den Wald",
-      "titleEn": "Mushroom Foraging Walk",
-      "date": "2026-10-31",
-      "time": "10:00",
-      "duration": "3 h",
-      "price": "€79",
-      "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-31-oktober",
-      "district": "Berliner Wald",
-      "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
     },
     {
       "slug": "druckrausch",
@@ -6349,6 +6388,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Silber Anhänger Guß Workshop",
+      "titleEn": "Silver Pendant Casting Workshop",
+      "date": "2026-11-01",
+      "time": "11:00",
+      "duration": "4 h",
+      "price": "€160",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
       "slug": "whittle",
@@ -6731,18 +6783,6 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
-      "slug": "kohfink",
-      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "title": "Honiglebkuchen backen",
-      "date": "2026-11-20",
-      "time": "18:00",
-      "duration": "4 h",
-      "price": "€55",
-      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490384268180370385.html",
-      "district": "Kaulsdorf",
-      "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
-    },
-    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Let's make Kimchi!",
@@ -6753,6 +6793,18 @@
       "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-8",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-11-20",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490384268180370385.html",
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6984,18 +7036,6 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
-      "slug": "pastamadre",
-      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
-      "title": "Sauerteig Brot Workshop",
-      "date": "2026-11-28",
-      "time": "15:00",
-      "duration": "5 h",
-      "price": "€76–100",
-      "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
@@ -7006,6 +7046,18 @@
       "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "Sauerteig Brot Workshop",
+      "date": "2026-11-28",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "url": "https://www.pastamadre.de/contact",
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7145,6 +7197,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Silber Anhänger Guß Workshop",
+      "titleEn": "Silver Pendant Casting Workshop",
+      "date": "2026-12-06",
+      "time": "11:00",
+      "duration": "4 h",
+      "price": "€160",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
       "slug": "daisuki",

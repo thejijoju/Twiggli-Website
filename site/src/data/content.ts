@@ -136,6 +136,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   whittle:          { activity: 'craft',     groupRange: [1, 12], hourRange: [2.5, 5] },
   // PLACEHOLDER group range — the shop publishes no cap per class.
   dirt:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [1.25, 4] },
+  rose:             { activity: 'craft',     groupRange: [3, 4],  hourRange: [4, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -262,6 +263,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'dirt', name: 'Empire of Dirt', specialty: 'Wheel throwing & ceramics classes', studio: 'Empire of Dirt',
       blurb: 'Kerstin El-Khawad and Julia Koxholt’s ceramics studio in Kreuzberg. Wheel-throwing classes from express weekends to multi-week intensives, masterclasses with guest artists (Nerikomi and more), Wednesday drop-in pottery for kids (“Matsch Love”), and an open-studio membership for independent work. Courses meeting on two or three dates are marked right on the calendar.',
       group: 'Small groups', duration: '1.25–4 h', place: 'Großbeerenstraße 28C, Berlin', languages: 'EN · DE' },
+    // Copy from rose-williams.com; photos and reel to follow.
+    { slug: 'rose', name: 'Rose Williams', specialty: 'Silversmithing & jewelry workshops', studio: 'Rose Williams Jewelry',
+      blurb: 'Rosemary Nan Williams’s jewelry studio in Wedding. Four-hour short courses for complete beginners, taught in German or English in groups of 3–4: texture a silver ring at the rolling mill, cast a pendant by pouring molten silver over organic matter, or try cuttlefish casting. Tools, materials and silver are included — and you wear your piece home the same day.',
+      group: '3–4', duration: '4 h', place: 'Tegeler Straße 35, Berlin', languages: 'DE · EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -363,6 +368,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'dirt', name: 'Empire of Dirt', specialty: 'Drehscheibe & Keramikkurse', studio: 'Empire of Dirt',
       blurb: 'Das Keramikstudio von Kerstin El-Khawad und Julia Koxholt in Kreuzberg. Drehscheibenkurse vom Express-Wochenende bis zum mehrwöchigen Intensiv, Masterclasses mit Gastkünstlerinnen (Nerikomi u. a.), mittwochs Kinder-Töpfern zum Reinschnuppern („Matsch Love“) und eine Open-Studio-Mitgliedschaft fürs freie Arbeiten. Kurse mit zwei oder drei Terminen sind direkt im Kalender markiert.',
       group: 'Kleine Gruppen', duration: '1,25–4 Std.', place: 'Großbeerenstraße 28C, Berlin', languages: 'EN · DE' },
+    { slug: 'rose', name: 'Rose Williams', specialty: 'Silberschmieden & Schmuckworkshops', studio: 'Rose Williams Jewelry',
+      blurb: 'Das Schmuckstudio von Rosemary Nan Williams im Wedding. Vierstündige Schnupperkurse für absolute Anfänger, auf Deutsch oder Englisch in Gruppen von 3–4: an der Walze einen strukturierten Silberring prägen, geschmolzenes Silber über organische Materialien zu einem Anhänger gießen oder den Sepiaguß ausprobieren. Werkzeuge, Material und Silber inklusive — das fertige Stück trägst du noch am selben Tag.',
+      group: '3–4', duration: '4 Std.', place: 'Tegeler Straße 35, Berlin', languages: 'DE · EN' },
   ],
 };
 

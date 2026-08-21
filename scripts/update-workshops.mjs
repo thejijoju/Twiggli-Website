@@ -278,6 +278,16 @@ const SOURCES = [
   { slug: 'loom-lab', name: 'The Loom Lab — shop catalog (watched)', mode: 'shopify',
     url: 'https://theloomlab.de/products.json?limit=250', district: 'Berlin' },
 
+  // Rose Williams's Jimdo site sits behind the same Cloudflare wall as
+  // Anybody Can Whittle — GitHub runners get 403 — and her ticket sales
+  // run on Konfetti, which the site never links. The watcher fails every
+  // scrape by design so fail-keep preserves the hand-seeded dates from
+  // her own course calendar (request-to-book by mail); if the block ever
+  // loosens, the default parsers report what the page exposes.
+  { slug: 'rose', name: 'Rose Williams — jewelry courses (watched)',
+    url: 'https://www.rose-williams.com/jewelry-courses/',
+    district: 'Wedding' },
+
   // Empire of Dirt (Großbeerenstraße 28C, Kreuzberg) sells ceramics
   // classes as Shopify products whose variants carry English prose dates
   // ("October 24 & 25 (Saturday 11-15 / Sunday 11-14)"); courses meeting
