@@ -1685,12 +1685,18 @@ a:hover { color: var(--color-accent); }
   font-weight: 600;
   color: color-mix(in srgb, var(--color-text) 52%, transparent);
 }
-/* "Anytime, on request" — undated inquiry-only workshops under the feed. */
-.onrequest { margin-top: 40px; padding-top: 8px; border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); }
+/* "On request" — undated inquiry-only workshops under the feed, on a
+   whisper of the accent so the section reads as its own place. */
+.onrequest {
+  margin-top: 80px; /* ~2 cm of air above the panel */
+  padding: 28px 28px 36px;
+  background: var(--color-accent-100);
+  border-radius: 16px;
+}
 .onrequest-note {
-  margin: -6px 0 4px;
+  margin: -4px 0 24px;
   font-size: 14px;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: #6e6a75;
 }
 
 /* Taught-in language(s), sitting quietly beside the duration. */
