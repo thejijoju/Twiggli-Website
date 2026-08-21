@@ -2536,7 +2536,8 @@ const unique = workshops.filter((w) => {
   seen.add(key);
   return true;
 });
-unique.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+// Timeless sessions (all-day calendar entries) sort after timed ones.
+unique.sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '~').localeCompare(b.time ?? '~'));
 
 const seenRec = new Set();
 const uniqueRecurring = recurringOut.filter((r) => {
