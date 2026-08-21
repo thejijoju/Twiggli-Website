@@ -1440,15 +1440,23 @@ async function fromWixBookings(source, html) {
     const slot = entry.slot ?? entry;
     const start = Date.parse(slot.startDate ?? '');
     if (Number.isNaN(start)) continue;
-    if (entry.bookable === false) continue;
+    const end = Date.parse(slot.endDate ?? '');
+    const span = Number.isNaN(end) ? 0 : (end - start) / 3600000;
+    // Full sessions stay in the feed as Sold out + Notify me.
+    const soldOut = entry.bookable === false || entry.openSpots === 0;
+    const spots = Number(entry.openSpots ?? slot.openSpots);
     const service = byId.get(slot.serviceId);
     const priceValue = service?.payment?.fixed?.price?.value;
     const servicePage = service?.urls?.servicePage?.url;
+    const media = service?.media?.mainMedia?.image?.url ?? service?.media?.items?.[0]?.image?.url;
     events.push({
       title: service?.name ?? 'Workshop',
       date: berlinDate(start),
       time: berlinTime(start),
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
       ...(priceValue != null ? { price: `€${Math.round(Number(priceValue))}` } : {}),
+      ...(soldOut ? { soldOut: true } : Number.isFinite(spots) && spots >= 0 ? { spots } : {}),
+      ...(typeof media === 'string' && media.startsWith('http') ? { image: media } : {}),
       url: typeof servicePage === 'string' && servicePage.startsWith('http') ? servicePage : source.url,
     });
   }
