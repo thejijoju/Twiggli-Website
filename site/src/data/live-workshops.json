@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T08:02:26.985Z",
+  "updated": "2026-08-21T08:19:38.029Z",
   "sources": [
     {
       "slug": "qian",
@@ -108,6 +108,18 @@
       "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
       "status": "failed: no upcoming events parsed",
       "count": 0
+    },
+    {
+      "slug": "schmiede",
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "status": "ok",
+      "count": 10
+    },
+    {
+      "slug": "schmiede",
+      "url": "https://www.schmiedekurse-berlin.de/kinderschmiedekurse/",
+      "status": "ok",
+      "count": 2
     },
     {
       "slug": "druckrausch",
@@ -451,6 +463,19 @@
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
+      "date": "2026-08-22",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€450",
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "angelo",
@@ -1855,6 +1880,20 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-09-04",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -3580,6 +3619,20 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
+      "date": "2026-09-19",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€450",
+      "spots": 1,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=229220",
       "title": "Shampoo Naturkosmetik Workshop",
@@ -4075,6 +4128,19 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Kompaktkurs Messerschmieden – 1 Tag",
+      "date": "2026-09-25",
+      "time": "10:00",
+      "price": "€225",
+      "spots": 5,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "munio",
@@ -5343,6 +5409,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Grundtechniken des Schmiedens/ Kunstschmiedetechniken",
+      "date": "2026-10-17",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€280",
+      "spots": 4,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Orecchiette\" Pasta Workshop",
@@ -5475,6 +5555,21 @@
       "district": "Prenzlauer Berg"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/kinderschmiedekurse/",
+      "title": "Schmiedekurs für Kinder 10-14 Jahre – Vormittagskurs",
+      "date": "2026-10-20",
+      "time": "10:00",
+      "duration": "3 Tage",
+      "price": "€150",
+      "spots": 4,
+      "url": "https://www.schmiedekurse-berlin.de/kinderschmiedekurse/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg",
+      "kids": true
+    },
+    {
       "slug": "qian",
       "sourceUrl": "https://www.claygarden.studio/special-workshops",
       "title": "Tea & Pottery Workshop",
@@ -5482,6 +5577,34 @@
       "time": "13:00",
       "url": "https://www.claygarden.studio/special-workshops",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/kinderschmiedekurse/",
+      "title": "Schmiedekurs für Kinder 10-14 Jahre – Nachmittagskurs",
+      "date": "2026-10-20",
+      "time": "14:00",
+      "duration": "3 Tage",
+      "price": "€150",
+      "spots": 4,
+      "url": "https://www.schmiedekurse-berlin.de/kinderschmiedekurse/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg",
+      "kids": true
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Kompaktkurs Messerschmieden – 1 Tag",
+      "date": "2026-10-23",
+      "time": "10:00",
+      "price": "€225",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5495,6 +5618,20 @@
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-10-24",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5825,6 +5962,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
+      "date": "2026-11-14",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€450",
+      "spots": 2,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruck-Kurs -Fotografie-",
@@ -5887,6 +6038,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Kompaktkurs Messerschmieden – 1 Tag",
+      "date": "2026-11-20",
+      "time": "10:00",
+      "price": "€225",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "kohfink",
       "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
       "title": "Honiglebkuchen backen",
@@ -5922,6 +6086,20 @@
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-11-21",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "karen-rose",
