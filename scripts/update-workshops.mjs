@@ -119,6 +119,10 @@ const SOURCES = [
     url: 'https://www.ceramickingdomberlin.com/sitemap.xml#acuity',
     pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)|/try-',
     district: 'Neukölln' },
+  // Wix Bookings service list: /termine renders every dated workshop
+  // server-side with its own booking-calendar link, time range and price.
+  { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
+    url: 'https://www.druckrausch.com/termine', district: 'Friedenau' },
   // Readymag site whose PROG_CAL page embeds a Luma calendar — empty today
   // ("No Upcoming Events"), so this watches the calendar's public API and
   // events flow in the week the gallery publishes them.
@@ -226,6 +230,21 @@ const stripTags = (s) =>
     .replace(/\s+/g, ' ')
     .trim();
 
+/** The page's own share image (og:image / twitter:image) as an absolute
+ *  URL — the picture the host chose to represent this page. */
+function pageImage(html, pageUrl) {
+  const m =
+    html.match(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i) ??
+    html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ??
+    html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i);
+  if (!m) return undefined;
+  try {
+    return new URL(decodeEntities(m[1]), pageUrl).toString();
+  } catch {
+    return undefined;
+  }
+}
+
 /** Strategy 1: walk every JSON-LD block for schema.org Event-ish objects. */
 function fromJsonLd(html, sourceUrl) {
   const events = [];
@@ -276,12 +295,16 @@ function fromJsonLd(html, sourceUrl) {
             ? 'Free'
             : `€${Math.round(Number(rawPrice))}`
           : undefined;
+      // Event.image comes as a bare URL, an array, or an ImageObject.
+      const imgNode = [].concat(e.image ?? [])[0];
+      const image = typeof imgNode === 'string' ? imgNode : imgNode?.url;
       return {
         title: stripTags(String(e.name ?? 'Workshop')),
         date: berlinDate(start),
         time: berlinTime(start),
         ...(duration ? { duration } : {}),
         ...(price ? { price } : {}),
+        ...(typeof image === 'string' && image.startsWith('http') ? { image } : {}),
         url: typeof e.url === 'string' && e.url.startsWith('http') ? e.url : sourceUrl,
       };
     })
@@ -603,6 +626,7 @@ async function fromShopifyCowlendar(source) {
           duration: `${Math.round(hours * 2) / 2} h`,
           ...(price ? { price } : {}),
           ...(Number.isFinite(s.qty_left) ? { spots: s.qty_left } : {}),
+          ...(p.images?.[0]?.src ? { image: p.images[0].src } : {}),
           url: productUrl,
         });
       }
@@ -657,6 +681,7 @@ async function fromCheckoutLinks(html, source) {
         ...(dm[4] ? { time: `${String(dm[4]).padStart(2, '0')}:${dm[5]}` } : {}),
         ...(source.duration ? { duration: source.duration } : {}),
         ...(price ? { price: `€${Math.round(Number(`${price[1]}.${price[2]}`))}` } : {}),
+        ...(pageImage(page, link) ? { image: pageImage(page, link) } : {}),
         url: link,
       });
     } catch (err) {
@@ -748,6 +773,7 @@ async function fromKonfetti(source) {
       decodeEntities((html.match(/<title>([^<]*)/i)?.[1] ?? '').replace(/&mdash;|&#8212;/gi, '—'))
         .split('—')[0]
         .trim();
+    const image = pageImage(html, page);
     for (const id of ids) {
       if (seenEvents.has(id)) continue;
       seenEvents.add(id);
@@ -779,6 +805,7 @@ async function fromKonfetti(source) {
               ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
               ...(Number.isFinite(cents) && cents > 0 ? { price: `€${Math.round(cents / 100)}` } : {}),
               ...(Number.isFinite(s.available_tickets_quantity) ? { spots: s.available_tickets_quantity } : {}),
+              ...(image ? { image } : {}),
               url: page,
             });
             kept++;
@@ -830,6 +857,7 @@ async function fromLuma(source) {
       ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
       ...(Number.isFinite(cents) && cents > 0 && eur ? { price: `€${Math.round(cents / 100)}` } : {}),
       ...(Number.isFinite(spots) && spots >= 0 ? { spots } : {}),
+      ...(typeof ev?.cover_url === 'string' && ev.cover_url.startsWith('http') ? { image: ev.cover_url } : {}),
       url: ev?.url ? `https://lu.ma/${String(ev.url).replace(/^\/+/, '')}` : source.url,
     };
     if (!w.title) continue;
@@ -955,6 +983,7 @@ async function acuityTimesForTypes(source, hash, types) {
           ...(Number.isFinite(slot.slotsAvailable) ? { spots: slot.slotsAvailable } : {}),
           ...(minutes > 0 && minutes <= 720 ? { duration: `${Math.round((minutes / 60) * 2) / 2} h` } : {}),
           ...(Number.isFinite(priceNum) && priceNum > 0 ? { price: `€${Math.round(priceNum)}` } : {}),
+          ...(typeof t.image === 'string' && t.image.startsWith('http') ? { image: t.image } : {}),
           // Deep link straight into this class's date picker.
           url: `${base}/schedule/${hash}/appointment/${t.id}/calendar/${cal ?? 'any'}`,
         });
@@ -1040,6 +1069,56 @@ async function fromAcuityEmbeds(source) {
       `[${source.slug}] acuity-embeds "${cat || 'uncategorized'}": ${fresh.map((t) => `${t.name} [${t.id}] €${t.price} ${t.duration}min`).join('; ')}`,
     );
     out.push(...(await acuityTimesForTypes(source, hash, fresh)));
+  }
+  return out;
+}
+
+/** A Wix Bookings service list (Druckrausch's /termine): the page renders
+ *  every dated workshop server-side as an <h2> "26.08. - Basis-Siebdruck-
+ *  workshop" followed by its time range, price and a /booking-calendar/
+ *  <dd-mm-slug> link. Dates carry no year — one already behind today
+ *  belongs to next year. Each session's picture comes from its own
+ *  /service-page/'s share image. */
+async function fromWixServiceList(html, source) {
+  const base = new URL(source.url).origin;
+  const year = Number(todayISO.slice(0, 4));
+  const out = [];
+  for (const part of html.split(/<h2[^>]*>/i).slice(1)) {
+    const headEnd = part.indexOf('</h2>');
+    if (headEnd < 0) continue;
+    const heading = stripTags(part.slice(0, headEnd));
+    const hm = heading.match(/^(\d{2})\.(\d{2})\.?\s*(?:[-–]\s*)?(.+)$/);
+    if (!hm) continue;
+    const [, dd, mm, rawTitle] = hm;
+    // The split already ends each part right before the next heading.
+    const seg = part;
+    const text = stripTags(seg);
+    const link = seg.match(/(?:https?:\/\/[^"'\s<>]+)?\/booking-calendar\/[a-z0-9-]+/i)?.[0];
+    const range = text.match(/(\d{1,2})(?::(\d{2}))?\s*[-–]\s*(\d{1,2})(?::(\d{2}))?(?:\s*Uhr)?/);
+    const price = text.match(/€\s?(\d+)/);
+    let date = `${year}-${mm}-${dd}`;
+    if (date < todayISO) date = `${year + 1}-${mm}-${dd}`;
+    const span = range
+      ? Number(range[3]) + Number(range[4] ?? 0) / 60 - (Number(range[1]) + Number(range[2] ?? 0) / 60)
+      : 0;
+    const url = link ? new URL(link, base).toString() : source.url;
+    const w = {
+      title: rawTitle.trim(),
+      date,
+      ...(range ? { time: `${String(range[1]).padStart(2, '0')}:${range[2] ?? '00'}` } : {}),
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      ...(price ? { price: `€${price[1]}` } : {}),
+      url,
+    };
+    // The service detail page holds the workshop's own picture.
+    if (link) {
+      const img = await shareImageFor(new URL(link.replace('/booking-calendar/', '/service-page/'), base).toString());
+      if (img) w.image = img;
+    }
+    console.log(
+      `[${source.slug}] service: "${w.title}" ${w.date} ${w.time ?? 'no time'} ${w.price ?? 'no price'} ${w.image ? 'img' : 'no img'}`,
+    );
+    out.push(w);
   }
   return out;
 }
@@ -1283,6 +1362,7 @@ function fromShopify(jsonText, source) {
         ...(duration ? { duration } : {}),
         ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
         ...(source.district ? { district: source.district } : {}),
+        ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
         url: productUrl,
       });
       kept++;
@@ -1313,6 +1393,7 @@ function fromShopify(jsonText, source) {
           ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
           ...(variant.price != null ? { price: `€${Math.round(Number(variant.price))}` } : {}),
           ...(source.district ? { district: source.district } : {}),
+          ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
           url: productUrl,
         });
         kept++;
@@ -1503,7 +1584,57 @@ async function renderAllFrames(url, slug) {
   }
 }
 
+/** Cross-source cache: page URL → its share image (null when the page has
+ *  none), so booking pages shared by many sessions are fetched once. */
+const shareImageCache = new Map();
+
+/** Booking-platform pages whose share image would show the platform's own
+ *  branding rather than the workshop — for those the host's page decides. */
+const PLATFORM_IMAGE_HOSTS = /acuityscheduling\.com|paypal\.com/i;
+
+async function shareImageFor(url) {
+  if (shareImageCache.has(url)) return shareImageCache.get(url);
+  let img = null;
+  try {
+    const r = await fetch(url, {
+      redirect: 'follow',
+      headers: { 'user-agent': UA, accept: 'text/html,*/*;q=0.8' },
+    });
+    if (r.ok) img = pageImage(await r.text(), r.url) ?? null;
+  } catch {
+    /* unreachable — the card falls back to the host photo */
+  }
+  shareImageCache.set(url, img);
+  return img;
+}
+
 async function scrape(source) {
+  const result = await scrapeSource(source);
+  // A card showing the actual workshop reads far better than a host
+  // placeholder tile — where a mode found no image of its own, borrow the
+  // booking page's share image (og:image), one fetch per distinct page.
+  const missing = (result.workshops ?? []).filter((w) => !w.image);
+  if (missing.length) {
+    const byPage = new Map();
+    for (const w of missing) {
+      const page = PLATFORM_IMAGE_HOSTS.test(w.url) ? source.url.split('#')[0] : w.url;
+      if (/\.(json|xml)(\?|#|$)/i.test(page)) continue;
+      if (!byPage.has(page)) byPage.set(page, []);
+      byPage.get(page).push(w);
+    }
+    for (const [page, list] of [...byPage].slice(0, 40)) {
+      const img = await shareImageFor(page);
+      if (img) for (const w of list) w.image = img;
+    }
+  }
+  const all = result.workshops ?? [];
+  if (all.length) {
+    console.log(`[${source.slug}] images: ${all.filter((w) => w.image).length}/${all.length} sessions have one`);
+  }
+  return result;
+}
+
+async function scrapeSource(source) {
   // Konfetti fetches its sitemap itself (with an XML accept — Squarespace
   // 406s the HTML-only one used for regular pages below).
   if (source.mode === 'konfetti' || source.mode === 'acuity-embeds' || source.mode === 'luma') {
@@ -1596,6 +1727,20 @@ async function scrape(source) {
         ...(source.district ? { district: source.district } : {}),
       }));
     console.log(`[${source.slug}] checkout sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'wix-service-list') {
+    const found = await fromWixServiceList(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] wix-service-list sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 

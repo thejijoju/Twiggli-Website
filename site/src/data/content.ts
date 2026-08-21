@@ -129,6 +129,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER ranges — the gallery's program calendar is empty today;
   // events define their own size and length once published.
   sov:              { activity: 'art',       groupRange: [1, 50], hourRange: [1, 4] },
+  // PLACEHOLDER group range — no published cap on the course pages.
+  druckrausch:      { activity: 'art',       groupRange: [1, 10], hourRange: [1.5, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -235,6 +237,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'sov', name: 'SOV Gallery', specialty: 'Art events & gatherings', studio: 'SEE OUR VISION',
       blurb: 'A gallery and community space in Prenzlauer Berg — "for us, art is a dialogue, a space of interaction." Exhibitions, a media lab and a collective, with a program calendar of events and gatherings around the shows. Open Tuesday to Saturday, 2–7 pm.',
       group: 'Open to all', duration: 'Varies', place: 'Erich-Weinert-Str. 135, Berlin', languages: 'EN · DE' },
+    // Copy from druckrausch.com; photos and reel to follow.
+    { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Screen printing', studio: 'Druckrausch — mobile Druckwerkstatt',
+      blurb: 'A screen-printing workshop in Friedenau — and a mobile print studio for events. Learn the basics on shirts, totes and paper, squeeze in an after-work express session, print from your own photo stencil, or go big with "Print like Warhol". Also runs live printing at parties, team events and kids’ birthdays.',
+      group: 'Small groups', duration: '1.5–4 h', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -321,6 +327,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'sov', name: 'SOV Gallery', specialty: 'Kunst-Events & Begegnungen', studio: 'SEE OUR VISION',
       blurb: 'Galerie und Community-Raum in Prenzlauer Berg — "Kunst ist für uns ein Dialog, ein Raum der Begegnung." Ausstellungen, ein Media Lab und ein Kollektiv, dazu ein Programmkalender mit Events und Treffen rund um die Shows. Geöffnet Dienstag bis Samstag, 14–19 Uhr.',
       group: 'Offen für alle', duration: 'Variiert', place: 'Erich-Weinert-Str. 135, Berlin', languages: 'EN · DE' },
+    { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Siebdruck', studio: 'Druckrausch — mobile Druckwerkstatt',
+      blurb: 'Siebdruck-Werkstatt in Friedenau — und mobiles Druckstudio für Events. Grundlagen auf Shirts, Beuteln und Papier lernen, ein Express-Kurs nach Feierabend, Drucken von der eigenen Fotoschablone oder groß rauskommen mit "Drucken wie Warhol". Dazu Live-Siebdruck auf Partys, Team-Events und Kindergeburtstagen.',
+      group: 'Kleine Gruppen', duration: '1,5–4 Std.', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
   ],
 };
 

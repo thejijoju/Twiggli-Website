@@ -32,6 +32,9 @@ export type Session = {
   /** Unknown for scraped sessions — the card then omits the line. */
   spots?: number;
   price?: string;
+  /** The workshop's own picture, scraped from the host's booking page —
+   *  the card thumbnail prefers it over the host's stock tile. */
+  image?: string;
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -48,6 +51,9 @@ type LiveWorkshop = {
   district?: string;
   /** Live spots left, where the host's booking API reports it. */
   spots?: number;
+  /** The workshop's own picture from the host's site, where the scrape
+   *  found one. */
+  image?: string;
   url: string;
 };
 
@@ -107,6 +113,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.duration ? { duration: w.duration } : {}),
       ...(w.price ? { price: w.price } : {}),
       ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),
+      ...(w.image ? { image: w.image } : {}),
     });
   }
 
