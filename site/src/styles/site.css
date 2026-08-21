@@ -1747,7 +1747,9 @@ a:hover { color: var(--color-accent); }
 .session-share.is-copied .check-icon { display: block; }
 /* Sold-out cards: the badge replaces the spots note, and the action flips
    to a Notify-me button — outlined, so Book stays the solid one. */
-.session-soldout {
+/* Compound selector: the badge also carries .session-spots, whose grey is
+   defined later in this file and would win at equal specificity. */
+.session-spots.session-soldout {
   color: #b45309; /* dark orange-yellow — stands out without reading as an error */
   font-weight: 700;
 }
