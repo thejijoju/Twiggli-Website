@@ -128,6 +128,9 @@ const SOURCES = [
     pagePattern: '/de-de/e/', idFromUrl: true,
     excludeTitle: 'Profi-Dunkelkammer|Gutschein|Vermietung|Geschenk',
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
+    // The Termine page publishes no share image — her workshops overview
+    // does, and it serves every card that would otherwise go without.
+    imagePage: 'https://www.mobile-dunkelkammer.com/workshops/',
     district: 'Lichtenberg' },
   // Her Termine page's Google Calendar additionally lists the open
   // darkroom evenings (Offener Werkstattabend) that the Konfetti store
@@ -139,6 +142,7 @@ const SOURCES = [
     // entries are her announcements of off-site fairs, not sessions here.
     excludeTitle: 'Farbfilm|Film[- ]und[- ]Foto|Mach mal blau|Schwarz|Cyanotypie|^\\*',
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
+    imagePage: 'https://www.mobile-dunkelkammer.com/workshops/',
     district: 'Lichtenberg' },
   // Schmiede im Hof (Schmiedekurse Berlin): the Jimdo site prints the
   // whole schedule as German prose blocks with live seat counts; booking
@@ -2019,6 +2023,13 @@ async function scrape(source) {
       if (img && !/gokonfetti\.com/i.test(img)) for (const w of list) w.image = img;
     }
   }
+  // Last resort: a picture-bearing page of the host's own site named by
+  // the source (for hosts whose booking page publishes no share image).
+  const still = (result.workshops ?? []).filter((w) => !w.image);
+  if (still.length && source.imagePage) {
+    const img = await shareImageFor(source.imagePage);
+    if (img && !/gokonfetti\.com/i.test(img)) for (const w of still) w.image = img;
+  }
   const all = result.workshops ?? [];
   // Sessions designed for children get flagged for the feed's kids
   // filter — by their own title, a source-specific pattern, or a source
@@ -2494,7 +2505,9 @@ for (const source of SOURCES) {
     // (Karen-Rose's seeds sat imageless for exactly this reason).
     for (const w of keptDated) {
       if (w.image || !w.url || PLATFORM_IMAGE_HOSTS.test(w.url) || /\.(json|xml)(\?|#|$)/i.test(w.url)) continue;
-      const img = await shareImageFor(w.url);
+      const img =
+        (await shareImageFor(w.url)) ??
+        (source.imagePage ? await shareImageFor(source.imagePage) : null);
       if (img && !/gokonfetti\.com/i.test(img)) w.image = img;
     }
     console.log(
