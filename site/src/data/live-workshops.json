@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T08:36:34.634Z",
+  "updated": "2026-08-21T08:42:33.058Z",
   "sources": [
     {
       "slug": "qian",
@@ -120,6 +120,18 @@
       "url": "https://www.schmiedekurse-berlin.de/kinderschmiedekurse/",
       "status": "ok",
       "count": 2
+    },
+    {
+      "slug": "schmiede",
+      "url": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
+      "status": "ok",
+      "count": 1
+    },
+    {
+      "slug": "schmiede",
+      "url": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "druckrausch",
@@ -293,7 +305,7 @@
       "date": "2026-08-21",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -356,7 +368,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-21",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -446,7 +458,7 @@
       "date": "2026-08-21",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -687,7 +699,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-23",
       "time": "10:30",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -710,7 +722,7 @@
       "date": "2026-08-23",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -734,7 +746,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-23",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -759,7 +771,7 @@
       "date": "2026-08-23",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -771,7 +783,7 @@
       "date": "2026-08-24",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -783,7 +795,7 @@
       "date": "2026-08-24",
       "time": "18:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -794,7 +806,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-26",
       "time": "15:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -837,6 +849,20 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
+      "title": "Schweißkurs WIG",
+      "date": "2026-08-26",
+      "time": "16:00",
+      "duration": "3 h",
+      "price": "€130",
+      "soldOut": true,
+      "url": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=1820x1280:format=jpg/path/s670a799786839477/image/i0efa98ebb5097ebc/version/1670396528/image.jpg"
     },
     {
       "slug": "munio",
@@ -896,7 +922,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-26",
       "time": "18:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1037,7 +1063,7 @@
       "date": "2026-08-27",
       "time": "18:00",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -1088,7 +1114,7 @@
       "date": "2026-08-28",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -1151,7 +1177,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-28",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1241,7 +1267,7 @@
       "date": "2026-08-28",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -1252,7 +1278,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-29",
       "time": "10:30",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1288,7 +1314,7 @@
       "date": "2026-08-29",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -1387,7 +1413,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-29",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1464,7 +1490,7 @@
       "date": "2026-08-29",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -1514,7 +1540,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-30",
       "time": "10:30",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1526,7 +1552,7 @@
       "date": "2026-08-30",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -1562,7 +1588,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-08-30",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1587,7 +1613,7 @@
       "date": "2026-08-30",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -1599,7 +1625,7 @@
       "date": "2026-08-31",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -1611,7 +1637,7 @@
       "date": "2026-08-31",
       "time": "18:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -1622,7 +1648,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-01",
       "time": "18:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1633,7 +1659,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-02",
       "time": "15:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1735,7 +1761,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-02",
       "time": "18:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -1876,7 +1902,7 @@
       "date": "2026-09-03",
       "time": "18:00",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -1928,7 +1954,7 @@
       "date": "2026-09-04",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -1991,7 +2017,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-04",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -2080,7 +2106,7 @@
       "date": "2026-09-04",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -2117,7 +2143,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-05",
       "time": "10:30",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -2153,7 +2179,7 @@
       "date": "2026-09-05",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -2239,7 +2265,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-05",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -2341,7 +2367,7 @@
       "date": "2026-09-05",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -2417,7 +2443,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-06",
       "time": "10:30",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -2429,7 +2455,7 @@
       "date": "2026-09-06",
       "time": "13:00",
       "duration": "1.5–2 h",
-      "price": "€66",
+      "price": "€55",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
@@ -2465,7 +2491,7 @@
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
       "date": "2026-09-06",
       "time": "16:00",
-      "price": "€59",
+      "price": "€49",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -2477,7 +2503,7 @@
       "date": "2026-09-06",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€71",
+      "price": "€59",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -6519,7 +6545,8 @@
       "date": "2027-02-20",
       "time": "10:00",
       "district": "Dahlem",
-      "url": "https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei"
+      "url": "https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei",
+      "image": "https://cdn.regiondo.net/media/catalog/product/cache/5/image/265x/5e06319eda06f020e43594a9c230972d/b/i/big-ticket-image-693961bc41272286478122-cropped600-400/theoriekurs-einfuehrung-in-die-imkerei-323ce.jpg"
     },
     {
       "slug": "kohfink",
@@ -6530,7 +6557,8 @@
       "time": "10:30",
       "price": "€200",
       "district": "Kaulsdorf",
-      "url": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse"
+      "url": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse",
+      "image": "https://cdn.regiondo.net/media/catalog/product/cache/5/image/265x/5e06319eda06f020e43594a9c230972d/b/i/big-ticket-image-5fbf76c933c6b983211814-cropped600-400/klassischer-einsteigerkurs-38139.jpg"
     },
     {
       "slug": "kohfink",
@@ -6541,7 +6569,8 @@
       "time": "18:00",
       "price": "€200",
       "district": "Kaulsdorf",
-      "url": "https://imkerei-kohfink.de/IMKERKURSE/"
+      "url": "https://imkerei-kohfink.de/IMKERKURSE/",
+      "image": "https://imkerei-kohfink.de/.cm4all/uproc.php/0/Hotelhonig%201.jpg"
     }
   ]
 }
