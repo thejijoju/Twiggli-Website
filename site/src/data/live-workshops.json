@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T10:43:08.838Z",
+  "updated": "2026-08-21T10:54:10.009Z",
   "sources": [
     {
       "slug": "qian",
@@ -1702,16 +1702,6 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "dirt",
-      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
-      "title": "Intensive: Wheel Throwing for Beginners",
-      "date": "2026-08-31",
-      "price": "€330",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
-      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -1734,6 +1724,19 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Intensive: Wheel Throwing for Beginners – 5 Termine",
+      "titleEn": "Intensive: Wheel Throwing for Beginners – 5 dates",
+      "date": "2026-08-31",
+      "time": "19:00",
+      "duration": "5 × 2.5 h",
+      "price": "€330",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
+      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
     },
     {
       "slug": "galleria-lucia",
@@ -4884,16 +4887,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "dirt",
-      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
-      "title": "Intensive: Wheel Throwing for Beginners",
-      "date": "2026-09-29",
-      "price": "€330",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
-      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 40)",
@@ -4905,6 +4898,19 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337181/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Intensive: Wheel Throwing for Beginners – 5 Termine",
+      "titleEn": "Intensive: Wheel Throwing for Beginners – 5 dates",
+      "date": "2026-09-29",
+      "time": "19:30",
+      "duration": "5 × 2 h",
+      "price": "€330",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
+      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
     },
     {
       "slug": "munio",
@@ -6550,8 +6556,11 @@
     {
       "slug": "dirt",
       "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
-      "title": "Intensive: Wheel Throwing for Beginners",
+      "title": "Intensive: Wheel Throwing for Beginners – 5 Termine",
+      "titleEn": "Intensive: Wheel Throwing for Beginners – 5 dates",
       "date": "2026-11-09",
+      "time": "19:00",
+      "duration": "5 × 2.5 h",
       "price": "€330",
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
