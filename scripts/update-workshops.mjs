@@ -135,7 +135,9 @@ const SOURCES = [
   // delivers, so the two sabine sources never double-list a session.
   { slug: 'sabine', name: 'Mobile Dunkelkammer — Termine-Kalender', mode: 'gcal-embed',
     url: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
-    excludeTitle: 'Farbfilm|Film[- ]und[- ]Foto|Mach mal blau|Schwarz',
+    // The Konfetti store source already sells the courses; '*'-prefixed
+    // entries are her announcements of off-site fairs, not sessions here.
+    excludeTitle: 'Farbfilm|Film[- ]und[- ]Foto|Mach mal blau|Schwarz|Cyanotypie|^\\*',
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
     district: 'Lichtenberg' },
   // Schmiede im Hof (Schmiedekurse Berlin): the Jimdo site prints the
@@ -1284,38 +1286,56 @@ function fromIcs(icsText, pageUrl, source) {
   const out = [];
   for (const block of text.split('BEGIN:VEVENT').slice(1)) {
     const get = (k) => block.match(new RegExp(`^${k}(?:;[^:\\r\\n]*)?:(.*)$`, 'mi'))?.[1]?.trim();
+    if (/^STATUS:CANCELLED/im.test(block)) continue;
     const stamp = (raw) => raw?.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)/);
     const s = stamp(get('DTSTART'));
-    if (!s) continue;
-    const e = stamp(get('DTEND'));
-    let date, time;
-    if (s[7] === 'Z') {
-      const ms = Date.parse(`${s[1]}-${s[2]}-${s[3]}T${s[4]}:${s[5]}:${s[6]}Z`);
-      date = berlinDate(ms);
-      time = berlinTime(ms);
+    let date, time, duration;
+    if (s) {
+      if (s[7] === 'Z') {
+        const ms = Date.parse(`${s[1]}-${s[2]}-${s[3]}T${s[4]}:${s[5]}:${s[6]}Z`);
+        date = berlinDate(ms);
+        time = berlinTime(ms);
+      } else {
+        date = `${s[1]}-${s[2]}-${s[3]}`;
+        time = `${s[4]}:${s[5]}`;
+      }
+      const e = stamp(get('DTEND'));
+      if (e) {
+        // Same-offset difference, so parsing both as UTC is safe.
+        const hours =
+          (Date.parse(`${e[1]}-${e[2]}-${e[3]}T${e[4]}:${e[5]}:${e[6]}Z`) -
+            Date.parse(`${s[1]}-${s[2]}-${s[3]}T${s[4]}:${s[5]}:${s[6]}Z`)) /
+          3600000;
+        if (hours > 0 && hours <= 12) duration = `${Math.round(hours * 2) / 2} h`;
+      }
     } else {
-      date = `${s[1]}-${s[2]}-${s[3]}`;
-      time = `${s[4]}:${s[5]}`;
-    }
-    let duration;
-    if (e) {
-      // Same-offset difference, so parsing both as UTC is safe.
-      const hours =
-        (Date.parse(`${e[1]}-${e[2]}-${e[3]}T${e[4]}:${e[5]}:${e[6]}Z`) -
-          Date.parse(`${s[1]}-${s[2]}-${s[3]}T${s[4]}:${s[5]}:${s[6]}Z`)) /
-        3600000;
-      if (hours > 0 && hours <= 12) duration = `${Math.round(hours * 2) / 2} h`;
+      // All-day events (DTSTART;VALUE=DATE) — Google publishes Sabine's
+      // whole calendar this way, with the hours in the summary instead.
+      const d = get('DTSTART')?.match(/^(\d{4})(\d{2})(\d{2})$/);
+      if (!d) continue;
+      date = `${d[1]}-${d[2]}-${d[3]}`;
     }
     // "Workshop \"Honiglebkuchen backen\"" → "Honiglebkuchen backen".
-    const summary = get('SUMMARY')
+    let summary = get('SUMMARY')
       ?.replace(/\\([,;])/g, '$1')
       .replace(/["„“]/g, '')
       .replace(/^\s*Workshop:?\s*/i, '')
       .trim();
+    // A trailing "18-22 Uhr" in the summary is the event's real time —
+    // lift it off the title and into the card's own fields.
+    const range = summary?.match(/\s*(\d{1,2})\s*[-–]\s*(\d{1,2})\s*Uhr\s*$/i);
+    if (range) {
+      time ??= `${range[1].padStart(2, '0')}:00`;
+      if (!duration) {
+        const hours = Number(range[2]) - Number(range[1]);
+        if (hours > 0 && hours <= 12) duration = `${hours} h`;
+      }
+      summary = summary.slice(0, range.index).trim();
+    }
     out.push({
       title: summary || source.title || 'Workshop',
       date,
-      time,
+      ...(time ? { time } : {}),
       ...(duration ? { duration } : {}),
       ...(source.price ? { price: source.price } : {}),
       url: pageUrl,
