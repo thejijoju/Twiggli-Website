@@ -119,6 +119,16 @@ const SOURCES = [
     url: 'https://www.ceramickingdomberlin.com/sitemap.xml#acuity',
     pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)|/try-',
     district: 'Neukölln' },
+  // Sabine's dates live only in her Konfetti storefront — her own Termine
+  // page draws its calendar client-side. The store is read for data only:
+  // no Konfetti links on the site — cards point at her Termine page and
+  // take booking requests by mail (requestBooking).
+  { slug: 'sabine', name: 'Mobile Dunkelkammer — Kurse', mode: 'konfetti',
+    url: 'https://mobile-dunkelkammer.gokonfetti.com/de-de/',
+    pagePattern: '/de-de/e/', idFromUrl: true,
+    excludeTitle: 'Profi-Dunkelkammer|Gutschein|Vermietung|Geschenk',
+    requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
+    district: 'Lichtenberg' },
   // Wix Bookings service list: /termine renders every dated workshop
   // server-side with its own booking-calendar link, time range and price.
   { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
@@ -710,10 +720,36 @@ async function fromKonfetti(source) {
   }
   const xml = await res.text();
   const pat = source.pagePattern ? new RegExp(source.pagePattern) : /./;
-  const pages = [...new Set([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => decodeEntities(m[1])))].filter(
+  let pages = [...new Set([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => decodeEntities(m[1])))].filter(
     (u) => pat.test(u),
   );
-  console.log(`[${source.slug}] konfetti: ${pages.length} candidate pages from sitemap`);
+  if (pages.length) {
+    console.log(`[${source.slug}] konfetti: ${pages.length} candidate pages from sitemap`);
+  } else {
+    // Not a sitemap — a store/listing page (Konfetti's hosted storefronts
+    // are server-rendered): pull matching same-host links instead.
+    const origin = new URL(res.url).origin;
+    pages = [
+      ...new Set(
+        [...xml.matchAll(/href="([^"]+)"/g)]
+          .map((m) => {
+            try {
+              return new URL(decodeEntities(m[1]), res.url).toString();
+            } catch {
+              return null;
+            }
+          })
+          .filter((u) => u && u.startsWith(origin) && pat.test(u)),
+      ),
+    ];
+    console.log(`[${source.slug}] konfetti: ${pages.length} candidate pages from listing`);
+    if (!pages.length) {
+      const internal = [...new Set([...xml.matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]))].filter(
+        (u) => !u.startsWith('/_'),
+      );
+      console.log(`[${source.slug}] konfetti: internal links seen: ${internal.slice(0, 30).join(' ')}`);
+    }
+  }
 
   const horizon = source.maxDays ?? KEEP_DAYS;
   const lastISO = berlinDate(Date.parse(todayISO) + horizon * 86400000);
@@ -749,13 +785,19 @@ async function fromKonfetti(source) {
       ...new Set(
         [
           ...unescaped.matchAll(/eventDescriptionId=([a-z0-9]{4,})/gi),
-          ...unescaped.matchAll(/event-description-id["'\s:=]+([a-z0-9]{4,})/gi),
+          ...unescaped.matchAll(/event[-_]description[-_]id["'\s:=]+([a-z0-9]{4,})/gi),
           // The Squarespace snippet names the event on the wrapper div:
           // <div id='konfetti_iframe_wrapper' data-event-id='w2dr9z' …>
           ...unescaped.matchAll(/konfetti[\s\S]{0,300}?data-event-id=["']([a-z0-9]{4,})["']/gi),
         ].map((m) => m[1]),
       ),
     ];
+    // Konfetti's own storefront pages carry the event id as the URL's tail
+    // ("…-workshop-w2dr9z/") — used only where the source opts in.
+    if (!ids.length && source.idFromUrl) {
+      const tail = page.match(/-([a-z0-9]{5,8})\/?$/);
+      if (tail) ids.push(tail[1]);
+    }
     if (!ids.length) {
       const hits = [...unescaped.matchAll(/konfetti/gi)].slice(0, 3);
       for (const h of hits) {
@@ -771,7 +813,7 @@ async function fromKonfetti(source) {
     const title =
       stripTags(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '').trim() ||
       decodeEntities((html.match(/<title>([^<]*)/i)?.[1] ?? '').replace(/&mdash;|&#8212;/gi, '—'))
-        .split('—')[0]
+        .split(/[—|]/)[0]
         .trim();
     // Rentals, vouchers and other non-workshop pages fall away by title.
     if (source.excludeTitle && new RegExp(source.excludeTitle, 'i').test(title)) {
