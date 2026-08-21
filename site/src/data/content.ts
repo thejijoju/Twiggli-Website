@@ -133,6 +133,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   druckrausch:      { activity: 'art',       groupRange: [1, 10], hourRange: [1.5, 4] },
   schmiede:         { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 7] },
   daisuki:          { activity: 'food',      groupRange: [5, 20], hourRange: [3, 5] },
+  whittle:          { activity: 'craft',     groupRange: [1, 12], hourRange: [2.5, 5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -251,6 +252,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'daisuki', name: 'Berlin Daisuki', specialty: 'Japanese cooking classes', studio: 'BERLINDAISUKI Kochstudio',
       blurb: 'Naoko Yasuda’s Japanese cooking school in Charlottenburg — sushi, vegan sushi, and ramen & gyoza in the Kochstudio on Otto-Suhr-Allee, plus live online courses in sushi, ramen, bento box and homemade miso. Also runs team events, Agile Cooking, five-hour offline “digital detox” dinners and Japanese language courses. 5/5 on Google.',
       group: '5–20', duration: '~3 h', place: 'Otto-Suhr-Allee 94, Berlin', languages: 'DE' },
+    // Copy from anybodycanwhittle.com; photos and reel to follow.
+    { slug: 'whittle', name: 'Anybody Can Whittle', specialty: 'Whittling & spoon carving', studio: 'Anybody Can Whittle',
+      blurb: 'Nicole’s whittling school in Charlottenburg. Step-by-step courses from the first knife strokes to your own carved spoon — safety, wood, sharpening and finishing included, with a tea break to rest your hands. Material for one piece is in the course price, and wood- and soap-carving team events run for companies of 6–12.',
+      group: 'Up to 12', duration: '2.5–5 h', place: 'Spielhagenstraße 13, Berlin', languages: 'DE · EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -346,6 +351,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'daisuki', name: 'Berlin Daisuki', specialty: 'Japanische Kochkurse', studio: 'BERLINDAISUKI Kochstudio',
       blurb: 'Naoko Yasudas japanische Kochschule in Charlottenburg — Sushi, veganes Sushi und Ramen & Gyoza im Kochstudio in der Otto-Suhr-Allee, dazu Live-Online-Kurse für Sushi, Ramen, Bento-Box und selbstgemachtes Miso. Außerdem Team-Events, Agile Cooking, fünfstündige Offline-„Digital-Detox“-Dinner und Japanisch-Sprachkurse. 5/5 bei Google.',
       group: '5–20', duration: 'ca. 3 Std.', place: 'Otto-Suhr-Allee 94, Berlin', languages: 'DE' },
+    { slug: 'whittle', name: 'Anybody Can Whittle', specialty: 'Schnitzen & Löffelschnitzen', studio: 'Anybody Can Whittle',
+      blurb: 'Nicoles Schnitzschule in Charlottenburg. Kurse, die Schritt für Schritt vom ersten Messerschnitt zum eigenen Löffel führen — Sicherheit, Holz, Schärfen und Finish inklusive, mit Teepause für die Hände. Das Material für ein Werkstück steckt im Kurspreis, und Holz- und Seifenschnitz-Teamevents laufen für Firmen mit 6–12 Personen.',
+      group: 'Bis 12', duration: '2,5–5 Std.', place: 'Spielhagenstraße 13, Berlin', languages: 'DE · EN' },
   ],
 };
 
