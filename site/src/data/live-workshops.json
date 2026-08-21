@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T12:26:56.475Z",
+  "updated": "2026-08-21T13:35:53.950Z",
   "sources": [
     {
       "slug": "qian",
@@ -232,14 +232,14 @@
     {
       "slug": "loom-lab",
       "url": "https://theloomlab.de/products.json?limit=250",
-      "status": "failed: no upcoming events parsed",
-      "count": 0
+      "status": "ok",
+      "count": 1
     },
     {
       "slug": "rose",
       "url": "https://www.rose-williams.com/jewelry-courses/",
       "status": "failed: HTTP 403",
-      "count": 5
+      "count": 6
     },
     {
       "slug": "dirt",
@@ -355,6 +355,30 @@
       "district": "Kreuzberg",
       "kids": true,
       "url": "https://empireofdirt.studio/products/pottery-for-kids-love-matsch"
+    }
+  ],
+  "onRequest": [
+    {
+      "slug": "loom-lab",
+      "sourceUrl": "https://theloomlab.de/products.json?limit=250",
+      "title": "3D-Clay-Printing Experience",
+      "titleEn": "3D Clay Printing Experience",
+      "duration": "4 h",
+      "price": "€139",
+      "district": "Berlin",
+      "request": true,
+      "url": "https://theloomlab.de/products/3d-clay-printing-experience"
+    },
+    {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Sepiaguß Workshop",
+      "titleEn": "Cuttlefish Casting Workshop",
+      "duration": "4 h",
+      "price": "€150",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
     }
   ],
   "workshops": [
@@ -781,7 +805,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-08-23",
       "time": "16:00",
-      "spots": 9,
+      "spots": 8,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -7237,30 +7261,6 @@
       "district": "Kaulsdorf",
       "url": "https://imkerei-kohfink.de/IMKERKURSE/",
       "image": "https://imkerei-kohfink.de/.cm4all/uproc.php/0/Hotelhonig%201.jpg"
-    }
-  ],
-  "onRequest": [
-    {
-      "slug": "rose",
-      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
-      "title": "Sepiaguß Workshop",
-      "titleEn": "Cuttlefish Casting Workshop",
-      "duration": "4 h",
-      "price": "€150",
-      "district": "Wedding",
-      "request": true,
-      "url": "https://www.rose-williams.com/jewelry-courses/"
-    },
-    {
-      "slug": "loom-lab",
-      "sourceUrl": "https://theloomlab.de/products.json?limit=250",
-      "title": "3D-Clay-Printing Experience",
-      "titleEn": "3D Clay Printing Experience",
-      "duration": "4 h",
-      "price": "€139",
-      "district": "Berlin",
-      "request": true,
-      "url": "https://theloomlab.de/products/3d-clay-printing-experience"
     }
   ]
 }
