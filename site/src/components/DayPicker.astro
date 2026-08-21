@@ -275,6 +275,21 @@ const dayLabel = (offset: number) =>
     const monthOf = (date: Date) => date.toLocaleDateString(locale, { month: 'long' });
     if (monthEl) monthEl.textContent = monthOf(today);
 
+    // The page heading follows the selected day: "Happening today" →
+    // "Happening tomorrow" → "Happening this Sunday" → "Happening next
+    // Sunday" → "Happening on 12 October" (and the German equivalents).
+    const happeningTitle = document.querySelector<HTMLElement>('[data-happening-title]');
+    const headingFor = (offset: number, date: Date): string => {
+      const de = locale.startsWith('de');
+      if (offset === 0) return de ? 'Heute los' : 'Happening today';
+      if (offset === 1) return de ? 'Morgen los' : 'Happening tomorrow';
+      const weekday = date.toLocaleDateString(locale, { weekday: 'long' });
+      if (offset <= 6) return de ? `Diesen ${weekday} los` : `Happening this ${weekday}`;
+      if (offset <= 13) return de ? `Nächsten ${weekday} los` : `Happening next ${weekday}`;
+      const when = date.toLocaleDateString(locale, { day: 'numeric', month: 'long' });
+      return de ? `Am ${when} los` : `Happening on ${when}`;
+    };
+
     chips.forEach((chip) => {
       const offset = Number(chip.dataset.offset || 0);
       const date = new Date(today);
@@ -306,6 +321,7 @@ const dayLabel = (offset: number) =>
         });
         groups.forEach((g) => { g.hidden = g.dataset.day !== String(offset); });
         if (monthEl) monthEl.textContent = monthOf(date);
+        if (happeningTitle) happeningTitle.textContent = headingFor(offset, date);
         chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       });
     });
