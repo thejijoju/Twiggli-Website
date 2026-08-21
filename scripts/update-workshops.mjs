@@ -1626,38 +1626,54 @@ function fromShopify(jsonText, source) {
       }
       // English course variants (Empire of Dirt): "October 24 & 25
       // (Saturday 11-15 / Sunday 11-14)", "November 14&15&22 @ 11:30 -
-      // 14:00". A class meeting more than once sits on its FIRST date and
-      // the card marks the other meetings \u2014 in the title and as
-      // "N \u00d7 2.5 h" \u2014 so nobody mistakes a course for a single evening.
-      const em = vt.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s*(\d{1,2}(?:\s*[&,+]\s*\d{1,2})*)/i);
-      if (!em) continue;
-      const month = EN_MONTHS[em[1].toLowerCase()];
-      const days = em[2].split(/[&,+]/).map((d) => parseInt(d, 10)).filter((n) => n >= 1 && n <= 31);
-      if (!month || !days.length) continue;
-      const mmdd = `${String(month).padStart(2, '0')}-${String(days[0]).padStart(2, '0')}`;
+      // 14:00", "Mondays @ 19-21:30 on August 31 & September 7/14/21/28".
+      // A class meeting more than once sits on its FIRST date and the card
+      // marks the other meetings \u2014 in the title and as "N \u00d7 2.5 h" \u2014 so
+      // nobody mistakes a course for a single evening.
+      const groups = [...vt.matchAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s*((?:\d{1,2})(?:\s*[&,+/]\s*\d{1,2})*)/gi)]
+        .map((g) => ({
+          name: g[1].slice(0, 3),
+          month: EN_MONTHS[g[1].toLowerCase()],
+          days: g[2].split(/[&,+/]/).map((d) => parseInt(d, 10)).filter((n) => n >= 1 && n <= 31),
+          index: g.index,
+          end: g.index + g[0].length,
+        }))
+        .filter((g) => g.month && g.days.length);
+      if (!groups.length) continue;
+      const first = groups[0];
+      const mmdd = `${String(first.month).padStart(2, '0')}-${String(first.days[0]).padStart(2, '0')}`;
       let date = `${todayISO.slice(0, 4)}-${mmdd}`;
       if (date < todayISO) date = `${Number(todayISO.slice(0, 4)) + 1}-${mmdd}`;
-      // The first time range AFTER the dates is the (first) session's.
-      const rest = vt.slice(em.index + em[0].length);
-      const tm = rest.match(/(\d{1,2})(?::(\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?::(\d{2}))?/);
-      const startOk = tm && Number(tm[1]) <= 23 && Number(tm[3]) <= 24;
-      const hours = startOk
+      // The class time can sit before the dates ("Mondays @ 19-21:30
+      // on \u2026") or after them; take the first plausible range that isn't
+      // part of a date list.
+      let tm = null;
+      for (const c of vt.matchAll(/(\d{1,2})(?::(\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?::(\d{2}))?/g)) {
+        const insideDates = groups.some((g) => c.index >= g.index && c.index < g.end);
+        if (!insideDates && Number(c[1]) <= 23 && Number(c[3]) <= 24) { tm = c; break; }
+      }
+      const hours = tm
         ? Number(tm[3]) + Number(tm[4] ?? 0) / 60 - (Number(tm[1]) + Number(tm[2] ?? 0) / 60)
         : 0;
+      const total = groups.reduce((n, g) => n + g.days.length, 0);
       const baseTitle = stripTags(String(product.title));
-      const markDe = days.length > 1
-        ? ` \u2013 ${days.length} Termine: ${days.map((d) => `${d}.`).join(' & ')}${String(month).padStart(2, '0')}.`
+      // Two or three meetings list their dates; longer courses just count
+      // them (the booking page has the full schedule).
+      const listDe = groups.map((g) => `${g.days.join('. & ')}.${String(g.month).padStart(2, '0')}.`).join(' & ');
+      const listEn = groups.map((g) => `${g.name} ${g.days.join(' & ')}`).join(' & ');
+      const markDe = total > 1
+        ? (total <= 3 ? ` \u2013 ${total} Termine: ${listDe}` : ` \u2013 ${total} Termine`)
         : '';
-      const markEn = days.length > 1
-        ? ` \u2013 ${days.length} dates: ${em[1].slice(0, 3)} ${days.join(' & ')}`
+      const markEn = total > 1
+        ? (total <= 3 ? ` \u2013 ${total} dates: ${listEn}` : ` \u2013 ${total} dates`)
         : '';
       out.push({
         title: baseTitle + markDe,
         ...(markEn ? { titleEn: baseTitle + markEn } : {}),
         date,
-        ...(startOk ? { time: `${tm[1].padStart(2, '0')}:${tm[2] ?? '00'}` } : {}),
+        ...(tm ? { time: `${tm[1].padStart(2, '0')}:${tm[2] ?? '00'}` } : {}),
         ...(hours > 0 && hours <= 12
-          ? { duration: days.length > 1 ? `${days.length} \u00d7 ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
+          ? { duration: total > 1 ? `${total} \u00d7 ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
           : {}),
         ...(variant.available === false ? { soldOut: true } : {}),
         ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
