@@ -19,10 +19,21 @@ const present = new Set(sessions.map((s) => s.host.activity));
 const activities = ACTIVITY_ORDER.filter((a) => present.has(a));
 const activityLabels = filterCopy[lang].activities;
 
+/** A small emoji inside each activity pill — recognisable at a glance
+ *  without reading, kept discreet by size and opacity in the CSS. */
+const activityIcons: Record<ActivityKey, string> = {
+  ceramics: '🏺', art: '🎨', craft: '🛠️', food: '🍳',
+  photography: '📷', wellbeing: '🌿', music: '🥁',
+};
+
 /** A venue qualifier after the district ("Spandau St. Wilhelm") folds into
  *  its district so the filter stays a clean list of places. */
 const districtOf = (s: Session): string => s.district.replace(/\s+St\.\s.*$/, '');
 const districts = [...new Set(sessions.map(districtOf))].sort((a, b) => a.localeCompare(b));
+
+// The kids pill follows the no-dead-filters rule: it only renders once the
+// feed actually carries sessions designed for children.
+const hasKids = sessions.some((s) => s.kids);
 
 /** Sessions arrive sorted by time, so grouping keeps that order. */
 const byTime = (list: Session[]): [string, Session[]][] => {
@@ -39,11 +50,13 @@ const t = {
   en: { spots: 'spots left', book: 'Book', request: 'Request to book', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
         noMatch: 'Nothing in this activity on this day — try another.',
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
-        filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All' },
+        filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
+        kids: '🧸 For kids', share: 'Share', copied: 'Link copied' },
   de: { spots: 'Plätze frei', book: 'Buchen', request: 'Buchung anfragen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
-        filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle' },
+        filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
+        kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert' },
 }[lang];
 
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
@@ -97,8 +110,15 @@ const dayLabel = (offset: number) =>
   <div class="activity-pills" role="group" aria-label={t.filter}>
     <button class="activity-pill is-active" type="button" data-activity-filter="all">{t.all}</button>
     {activities.map((a) => (
-      <button class="activity-pill" type="button" data-activity-filter={a}>{activityLabels[a]}</button>
+      <button class="activity-pill" type="button" data-activity-filter={a}>
+        <span class="pill-icon" aria-hidden="true">{activityIcons[a]}</span>{activityLabels[a]}
+      </button>
     ))}
+    {/* An on/off toggle rather than one of the either-or activity pills —
+        "kids + ceramics" is a sensible combination. */}
+    {hasKids && (
+      <button class="activity-pill kids-pill" type="button" data-kids-filter aria-pressed="false">{t.kids}</button>
+    )}
   </div>
   <div class="activity-pills district-pills" role="group" aria-label={t.filterDistrict}>
     <button class="activity-pill is-active" type="button" data-district-filter="all">{t.all}</button>
@@ -123,7 +143,7 @@ const dayLabel = (offset: number) =>
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (
-                      <li class="session" data-activity={s.host.activity} data-district={districtOf(s)}>
+                      <li class="session" data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
                             the app — then prefers the workshop's own scraped
@@ -160,6 +180,24 @@ const dayLabel = (offset: number) =>
                           ) : (
                             <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
                           )}
+                          {/* People send workshops to friends — the native
+                              share sheet where the browser has one, copied
+                              link elsewhere. */}
+                          <button
+                            class="session-share"
+                            type="button"
+                            aria-label={t.share}
+                            title={t.share}
+                            data-share-title={s.title}
+                            data-share-host={s.host.name}
+                            data-share-date={isoDate(s.dayOffset)}
+                            data-share-time={s.time}
+                            data-share-url={s.bookUrl}
+                            data-copied-label={t.copied}
+                          >
+                            <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                          </button>
                           {typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>}
                         </span>
                       </li>
@@ -234,14 +272,17 @@ const dayLabel = (offset: number) =>
     // shows the no-match line.
     const activityPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-activity-filter]'));
     const districtPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-district-filter]'));
+    const kidsPill = root.querySelector<HTMLButtonElement>('[data-kids-filter]');
     let activityFilter = 'all';
     let districtFilter = 'all';
+    let kidsOnly = false;
 
     const applyFilters = () => {
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
         const matchesActivity = activityFilter === 'all' || li.dataset.activity === activityFilter;
         const matchesDistrict = districtFilter === 'all' || li.dataset.district === districtFilter;
-        li.hidden = !(matchesActivity && matchesDistrict);
+        const matchesKids = !kidsOnly || li.dataset.kids === 'true';
+        li.hidden = !(matchesActivity && matchesDistrict && matchesKids);
       });
       root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
         group.hidden = !group.querySelector('.session:not([hidden])');
@@ -264,6 +305,44 @@ const dayLabel = (offset: number) =>
         districtFilter = pill.dataset.districtFilter || 'all';
         districtPills.forEach((p) => p.classList.toggle('is-active', p === pill));
         applyFilters();
+      });
+    });
+    kidsPill?.addEventListener('click', () => {
+      kidsOnly = !kidsOnly;
+      kidsPill.classList.toggle('is-active', kidsOnly);
+      kidsPill.setAttribute('aria-pressed', String(kidsOnly));
+      applyFilters();
+    });
+
+    // Share: the native sheet where the browser offers one (phones), a
+    // copied link elsewhere — the text carries workshop, host and date.
+    root.querySelectorAll<HTMLButtonElement>('.session-share').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const d = btn.dataset;
+        const when = d.shareDate
+          ? new Date(`${d.shareDate}T00:00:00`).toLocaleDateString(locale, {
+              weekday: 'long', day: 'numeric', month: 'long',
+            })
+          : '';
+        const text = locale.startsWith('de')
+          ? `${d.shareTitle} bei ${d.shareHost} am ${when}${d.shareTime ? ` um ${d.shareTime} Uhr` : ''} — gefunden auf twiggli.com`
+          : `${d.shareTitle} with ${d.shareHost} on ${when}${d.shareTime ? ` at ${d.shareTime}` : ''} — found on twiggli.com`;
+        const url = d.shareUrl || location.href;
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: d.shareTitle, text, url });
+            return;
+          }
+          await navigator.clipboard.writeText(`${text}\n${url}`);
+          btn.classList.add('is-copied');
+          btn.setAttribute('aria-label', d.copiedLabel || 'Link copied');
+          setTimeout(() => {
+            btn.classList.remove('is-copied');
+            btn.setAttribute('aria-label', btn.title);
+          }, 1600);
+        } catch {
+          /* share sheet dismissed */
+        }
       });
     });
 

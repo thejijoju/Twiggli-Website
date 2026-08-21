@@ -38,6 +38,8 @@ export type Session = {
   /** Hosts whose booking platform must not be linked take requests by
    *  mail instead — the card's button becomes "Request booking". */
   request?: boolean;
+  /** Designed for children — picked out by the feed's kids filter. */
+  kids?: boolean;
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -60,6 +62,9 @@ type LiveWorkshop = {
   /** True when this host's card takes booking requests by mail instead of
    *  linking a booking page. */
   request?: boolean;
+  /** True for workshops designed for children (flagged by the scrape from
+   *  the title, or per-source). */
+  kids?: boolean;
   url: string;
 };
 
@@ -121,6 +126,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),
       ...(w.image ? { image: w.image } : {}),
       ...(w.request ? { request: true } : {}),
+      ...(w.kids ? { kids: true } : {}),
     });
   }
 
@@ -145,6 +151,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         bookUrl: r.url,
         ...(r.duration ? { duration: r.duration } : {}),
         ...(r.price ? { price: r.price } : {}),
+        ...(r.kids ? { kids: true } : {}),
       });
     }
   }

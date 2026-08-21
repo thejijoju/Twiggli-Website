@@ -1556,6 +1556,14 @@ a:hover { color: var(--color-accent); }
   color: #fff;
 }
 .district-pills { margin-top: 10px; }
+/* The kids toggle sits with the activity pills but combines with them
+   (kids + ceramics works), so a dashed border marks it as an on/off
+   switch rather than one of the either-or categories. */
+.kids-pill { border-style: dashed; }
+.kids-pill.is-active { border-style: solid; }
+/* The emoji inside each activity pill: recognisable at a glance, kept
+   discreet — a step smaller than the label and slightly faded. */
+.pill-icon { font-size: 11px; margin-right: 5px; opacity: 0.85; }
 /* The day strip: no boxes around dates, like the app — days before the
    selected one grey out, the selected one carries the accent. */
 /* The month, spelled out once above the strip — centered, black and bold,
@@ -1691,15 +1699,37 @@ a:hover { color: var(--color-accent); }
    spots note sits on its own line below, so the action row never shifts. */
 .session-side {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto auto auto;
   align-items: center;
-  column-gap: 20px;
+  column-gap: 12px;
   row-gap: 4px;
   justify-items: end;
 }
-.session-price { grid-column: 1; grid-row: 1; }
+.session-price { grid-column: 1; grid-row: 1; margin-right: 8px; }
 .session-book { grid-column: 2; grid-row: 1; }
 .session-spots { grid-column: 1 / -1; grid-row: 2; text-align: right; }
+/* Share sits beside the Book pill — a quiet round outline button, so the
+   black pill stays the row's one strong action. */
+.session-share {
+  grid-column: 3;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid var(--color-accent-300);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-accent-700);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.session-share:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.session-share svg { width: 16px; height: 16px; }
+.session-share .check-icon { display: none; }
+.session-share.is-copied .share-icon { display: none; }
+.session-share.is-copied .check-icon { display: block; }
 /* Booking happens in the app — the row's action leads there. Solid black
    pill, same family as the directory's request button. */
 .session-book {

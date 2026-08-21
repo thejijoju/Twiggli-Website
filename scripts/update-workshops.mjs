@@ -138,6 +138,20 @@ const SOURCES = [
     excludeTitle: 'Farbfilm|Film[- ]und[- ]Foto|Mach mal blau|Schwarz',
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
     district: 'Lichtenberg' },
+  // Schmiede im Hof (Schmiedekurse Berlin): the Jimdo site prints the
+  // whole schedule as German prose blocks with live seat counts; booking
+  // runs by mail, so cards take requests and link the Kurstermine page.
+  // The Mecklenburg summer workshop isn't a Berlin session.
+  { slug: 'schmiede', name: 'Schmiedekurse Berlin — Kurstermine', mode: 'kurs-blocks-de',
+    url: 'https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/',
+    excludeTitle: 'Mecklenburg|Sehlsdorf',
+    defaultTime: '10:00', requestBooking: true, district: 'Blankenburg' },
+  // Their children's forging introductions (ages 10-14, school-holiday
+  // mornings and afternoons) live on their own page in the same format —
+  // the titles name Kinder, so the feed's kids filter picks them up.
+  { slug: 'schmiede', name: 'Schmiedekurse Berlin — Kinderschmiedekurse', mode: 'kurs-blocks-de',
+    url: 'https://www.schmiedekurse-berlin.de/kinderschmiedekurse/',
+    requestBooking: true, district: 'Blankenburg' },
   // Wix Bookings service list: /termine renders every dated workshop
   // server-side with its own booking-calendar link, time range and price.
   { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
@@ -1202,7 +1216,15 @@ async function fromGcalEmbed(source) {
     return [];
   }
   const html = await res.text();
-  const embed = html.match(/https:\/\/calendar\.google\.com\/calendar\/embed\?[^"'\s<>]+/i)?.[0];
+  // The embed URL may sit in escaped JSON rather than a plain iframe tag —
+  // and Jimdo's consent manager builds the iframe client-side, in which
+  // case only a headless render's DOM shows it at all.
+  const embedIn = (s) =>
+    s?.replace(/\\\//g, '/').match(/https:\/\/calendar\.google\.com\/calendar\/embed\?[^"'\s<>\\]+/i)?.[0];
+  let embed = embedIn(html);
+  if (!embed) {
+    embed = embedIn(await renderAllFrames(source.url, source.slug));
+  }
   if (!embed) {
     console.log(`[${source.slug}] gcal: no Google Calendar embed on the page`);
     return [];
@@ -1651,6 +1673,111 @@ function fromTimeTags(html, sourceUrl) {
   return out;
 }
 
+/** Schmiedekurse Berlin's Jimdo pages: the whole schedule is server-
+ *  rendered German prose — a date ("22./23. August", "12. September", or
+ *  the kids pages' numeric ranges "20.-22.10"), the course title, then
+ *  Kursleiter, price and "N Plätze frei" / "ausgebucht". Kids dates split
+ *  into Vormittags- and Nachmittagskurs with their own times and seats.
+ *  Booking is by mail only, so sources pair this mode with requestBooking. */
+function fromKursBlocks(html, source) {
+  const MONTHS = { januar: 1, februar: 2, märz: 3, april: 4, mai: 5, juni: 6,
+    juli: 7, august: 8, september: 9, oktober: 10, november: 11, dezember: 12 };
+  let text = stripTags(html);
+  // The course list ends where the footer prose (booking terms, vouchers,
+  // the undated evening course) begins — dates there aren't sessions.
+  const cut = text.search(/Weitere Termine folgen|Info und Anmeldung|Buchung und Bezahlung/i);
+  if (cut > 0) text = text.slice(0, cut);
+
+  const dateRe = new RegExp(
+    // "22./23 . August", "12. September", "8.-11. September", "28 . /29. November"
+    String.raw`(\d{1,2})\s*\.\s*(?:[/–-]\s*(\d{1,2})\s*\.?\s*)?(${Object.keys(MONTHS).join('|')})` +
+    // "20.-22.10" and "14.7-16.7" on the kids pages
+    String.raw`|(\d{1,2})\.(\d{1,2})?\s*[-–]\s*(\d{1,2})\.(\d{1,2})\b`,
+    'gi',
+  );
+  // "31.Oktober/1. November" yields a second match for its end date — a
+  // match separated from the previous one by only range punctuation is the
+  // same course, not a new block.
+  const found = [];
+  for (const m of text.matchAll(dateRe)) {
+    const prev = found[found.length - 1];
+    if (prev && /^\s*[/–-]\s*$/.test(text.slice(prev.index + prev[0].length, m.index))) continue;
+    found.push(m);
+  }
+
+  const out = [];
+  for (let i = 0; i < found.length; i++) {
+    const m = found[i];
+    const day = Number(m[1] ?? m[4]);
+    const month = m[3] ? MONTHS[m[3].toLowerCase()] : Number(m[5] ?? m[7]);
+    const lastDay = m[2] ?? m[6];
+    const block = text.slice(m.index + m[0].length, found[i + 1]?.index ?? text.length);
+    if (!month || month > 12 || day > 31 || /Kurs wird verschoben/i.test(block)) continue;
+    // A past date is next year's run — the page's own "2027" section rolls
+    // forward exactly this way.
+    const mmdd = `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    let date = `${todayISO.slice(0, 4)}-${mmdd}`;
+    if (date < todayISO) date = `${Number(todayISO.slice(0, 4)) + 1}-${mmdd}`;
+
+    const price = block.match(/(\d{2,4})(?:,\d\d)?\s*€/);
+    const explicitDays = block.match(/(\d)\s*Tage/i);
+    const spanDays = lastDay ? Math.max(0, Number(lastDay) - day) + 1 : 1;
+    const days = explicitDays ? Number(explicitDays[1]) : spanDays;
+
+    const titleOf = (seg) =>
+      seg.split(/Kurszeiten|Kursleiter|Kursgebühr|Kosten|Max\.|\d+\s*Pl(?:ätze|atz)\s*frei|ausgebucht|Anmeldung|Vormittagskurs|Nachmittagskurs|Küchenmesser oder|Messer bis|\d\s*Tage a|Im Kurs|weitere Infos/i)[0]
+        .replace(/\s*-\s*(\d) Tag/g, ' – $1 Tag')
+        .replace(/[\s|•·–—-]+$/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    // A word-fragment "title" is the tail of a sentence that merely
+    // mentions dates ("Ersatztermine 19./20. September und …"), not a
+    // course block of its own.
+    const title = titleOf(block);
+    if (title.length < 6) continue;
+
+    const entryFor = (seg, entryTitle, fallbackTime) => {
+      if (/ausgebucht/i.test(seg) && !/Pl(?:ätze|atz)\s*frei/i.test(seg)) return null;
+      const spots = seg.match(/(\d+)\s*Pl(?:ätze|atz)\s*frei/i);
+      const range = seg.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})\s*Uhr/);
+      const start = range ? `${range[1].padStart(2, '0')}:00` : fallbackTime;
+      const hours = range ? Number(range[2]) - Number(range[1]) : null;
+      return {
+        title: entryTitle,
+        date,
+        ...(start ? { time: start } : {}),
+        ...(days > 1 ? { duration: `${days} Tage` } : hours ? { duration: `${hours} h` } : {}),
+        ...(price ? { price: `€${price[1]}` } : {}),
+        ...(spots ? { spots: Number(spots[1]) } : {}),
+        url: source.infoUrl ?? source.url,
+        ...(source.requestBooking ? { request: true } : {}),
+      };
+    };
+
+    const subs = [...block.matchAll(/Vormittagskurs|Nachmittagskurs/gi)];
+    if (subs.length) {
+      for (let s = 0; s < subs.length; s++) {
+        const seg = block.slice(subs[s].index, subs[s + 1]?.index ?? block.length);
+        const w = entryFor(seg, `${title} – ${subs[s][0]}`, null);
+        if (w) out.push(w);
+      }
+    } else {
+      const w = entryFor(block, title, source.defaultTime ?? null);
+      if (w) out.push(w);
+    }
+  }
+
+  let entries = out;
+  if (source.excludeTitle) {
+    const ex = new RegExp(source.excludeTitle, 'i');
+    entries = entries.filter((w) => !ex.test(w.title));
+  }
+  for (const w of entries) {
+    console.log(`[${source.slug}] kurs-block: "${w.title}" ${w.date} ${w.time ?? ''} ${w.spots != null ? `${w.spots} frei` : ''}`);
+  }
+  return entries;
+}
+
 /** Render a page in headless Chromium and return the HTML of the page and
  *  every iframe — the only way to see schedules that booking widgets
  *  (Acuity, Regiondo, …) draw client-side. Playwright is installed by the
@@ -1715,6 +1842,11 @@ const shareImageCache = new Map();
  *  host's own page decides. */
 const PLATFORM_IMAGE_HOSTS = /acuityscheduling\.com|paypal\.com|eversports\.|\/\/checkout\./i;
 
+/** Titles that name children mark the session for the feed's kids filter,
+ *  German and English spellings alike. A source can widen this with its
+ *  own `kidsTitle` pattern, or mark every session with `kids: true`. */
+const KIDS_TITLE_RE = /\bkinder|\bkids?\b|famili|child|jugend/i;
+
 async function shareImageFor(url) {
   if (shareImageCache.has(url)) return shareImageCache.get(url);
   let img = null;
@@ -1760,6 +1892,15 @@ async function scrape(source) {
       w.url = source.infoUrl ?? source.url;
       console.log(`[${source.slug}] konfetti link replaced with request-to-book: "${w.title}" ${w.date}`);
     }
+  }
+  // Sessions designed for children get flagged for the feed's kids
+  // filter — by their own title, a source-specific pattern, or a source
+  // that is kids through and through.
+  const kidsRe = source.kidsTitle
+    ? new RegExp(`${KIDS_TITLE_RE.source}|${source.kidsTitle}`, 'i')
+    : KIDS_TITLE_RE;
+  for (const w of [...all, ...(result.recurring ?? [])]) {
+    if (source.kids || kidsRe.test(`${w.title} ${w.titleEn ?? ''}`)) w.kids = true;
   }
   if (all.length) {
     console.log(`[${source.slug}] images: ${all.filter((w) => w.image).length}/${all.length} sessions have one`);
@@ -1864,6 +2005,20 @@ async function scrapeSource(source) {
         ...(source.district ? { district: source.district } : {}),
       }));
     console.log(`[${source.slug}] checkout sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'kurs-blocks-de') {
+    const found = fromKursBlocks(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      }));
+    console.log(`[${source.slug}] kurs-blocks sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 
