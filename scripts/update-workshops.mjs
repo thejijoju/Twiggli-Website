@@ -1901,6 +1901,21 @@ async function shareImageFor(url) {
 
 async function scrape(source) {
   const result = await scrapeSource(source);
+  // Hard rule (Jirel): nothing on the site references Konfetti — no card
+  // link AND no image loaded from their CDN. This runs before the image
+  // backfill below, so a stripped image is refetched from the host's own
+  // page instead.
+  for (const w of result.workshops ?? []) {
+    if (/gokonfetti\.com/i.test(w.url ?? '')) {
+      w.request = true;
+      w.url = source.infoUrl ?? source.url;
+      console.log(`[${source.slug}] konfetti link replaced with request-to-book: "${w.title}" ${w.date}`);
+    }
+    if (/gokonfetti\.com/i.test(w.image ?? '')) {
+      delete w.image;
+      console.log(`[${source.slug}] konfetti-hosted image dropped: "${w.title}" ${w.date}`);
+    }
+  }
   // A card showing the actual workshop reads far better than a host
   // placeholder tile — where a mode found no image of its own, borrow the
   // booking page's share image (og:image), one fetch per distinct page.
@@ -1915,20 +1930,10 @@ async function scrape(source) {
     }
     for (const [page, list] of [...byPage].slice(0, 40)) {
       const img = await shareImageFor(page);
-      if (img) for (const w of list) w.image = img;
+      if (img && !/gokonfetti\.com/i.test(img)) for (const w of list) w.image = img;
     }
   }
   const all = result.workshops ?? [];
-  // Hard rule (Jirel): no card ever links to Konfetti. Any session whose
-  // link would land on gokonfetti.com becomes a request-to-book card
-  // pointing at the host's own page instead.
-  for (const w of all) {
-    if (/gokonfetti\.com/i.test(w.url ?? '')) {
-      w.request = true;
-      w.url = source.infoUrl ?? source.url;
-      console.log(`[${source.slug}] konfetti link replaced with request-to-book: "${w.title}" ${w.date}`);
-    }
-  }
   // Sessions designed for children get flagged for the feed's kids
   // filter — by their own title, a source-specific pattern, or a source
   // that is kids through and through.
