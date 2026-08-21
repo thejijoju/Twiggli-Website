@@ -1748,7 +1748,7 @@ a:hover { color: var(--color-accent); }
 /* Sold-out cards: the badge replaces the spots note, and the action flips
    to a Notify-me button — outlined, so Book stays the solid one. */
 .session-soldout {
-  color: #a8453a;
+  color: #b45309; /* dark orange-yellow — stands out without reading as an error */
   font-weight: 700;
 }
 .session-notify {
