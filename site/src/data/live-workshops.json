@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T09:00:29.704Z",
+  "updated": "2026-08-21T09:11:22.163Z",
   "sources": [
     {
       "slug": "qian",
@@ -2131,16 +2131,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Online",
-      "title": "Online Sushi Kochkurs",
-      "date": "2026-09-05",
-      "price": "€69",
-      "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Intermediate Wheel | Plates & Bottles (WEEK 36)",
@@ -2187,6 +2177,18 @@
       "url": "https://www.druckrausch.com/booking-calendar/05-09-basis-siebdruck-kurs-fotografie",
       "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Online",
+      "title": "Online Sushi Kochkurs",
+      "date": "2026-09-05",
+      "time": "12:30",
+      "duration": "3 h",
+      "price": "€69",
+      "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
     },
     {
       "slug": "galleria-lucia",
@@ -2431,18 +2433,10 @@
       "slug": "daisuki",
       "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
       "district": "Online",
-      "title": "Online Ramen Kochkurs",
-      "date": "2026-09-06",
-      "price": "€69",
-      "url": "https://berlindaisuki.de/produkt/online-kochkurs-ramen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkt.png"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Online",
       "title": "Online Bento Kochkurs",
       "date": "2026-09-06",
+      "time": "09:00",
+      "duration": "3 h",
       "price": "€69",
       "url": "https://berlindaisuki.de/produkt/online-kochkurs-bento-box/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Bento_Produkt.png"
@@ -2483,6 +2477,18 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Online",
+      "title": "Online Ramen Kochkurs",
+      "date": "2026-09-06",
+      "time": "12:30",
+      "duration": "3 h",
+      "price": "€69",
+      "url": "https://berlindaisuki.de/produkt/online-kochkurs-ramen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkt.png"
     },
     {
       "slug": "galleria-lucia",
@@ -3962,39 +3968,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Sushi",
-      "date": "2026-09-20",
-      "price": "€129",
-      "soldOut": true,
-      "url": "https://berlindaisuki.de/produkt/kochkurs-sushi/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/IMG_9550-e1707379637477.jpg"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Vegan Sushi",
-      "date": "2026-09-20",
-      "price": "€129",
-      "soldOut": true,
-      "url": "https://berlindaisuki.de/produkt/sushi-vegetarisch/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Soja_Produkt.png"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Japanischer Ramen & Gyoza",
-      "date": "2026-09-20",
-      "price": "€129",
-      "soldOut": true,
-      "url": "https://berlindaisuki.de/produkt/kochkurs-ramen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Refresh",
@@ -4022,6 +3995,32 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
     },
     {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Sushi",
+      "date": "2026-09-20",
+      "time": "12:00",
+      "duration": "3 h",
+      "price": "€129",
+      "soldOut": true,
+      "url": "https://berlindaisuki.de/produkt/kochkurs-sushi/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/IMG_9550-e1707379637477.jpg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Vegan Sushi",
+      "date": "2026-09-20",
+      "time": "12:00",
+      "duration": "3 h",
+      "price": "€129",
+      "soldOut": true,
+      "url": "https://berlindaisuki.de/produkt/sushi-vegetarisch/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Soja_Produkt.png"
+    },
+    {
       "slug": "qian",
       "sourceUrl": "https://www.claygarden.studio/special-workshops",
       "title": "Tea & Pottery Workshop",
@@ -4041,6 +4040,19 @@
       "url": "https://www.pastamadre.de/calendar-kurstermine",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Japanischer Ramen & Gyoza",
+      "date": "2026-09-20",
+      "time": "16:00",
+      "duration": "3 h",
+      "price": "€129",
+      "soldOut": true,
+      "url": "https://berlindaisuki.de/produkt/kochkurs-ramen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5283,18 +5295,10 @@
       "slug": "daisuki",
       "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
       "district": "Online",
-      "title": "Online Ramen Kochkurs",
-      "date": "2026-10-04",
-      "price": "€69",
-      "url": "https://berlindaisuki.de/produkt/online-kochkurs-ramen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkt.png"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Online",
       "title": "Online Miso Kochkurs",
       "date": "2026-10-04",
+      "time": "09:00",
+      "duration": "3 h",
       "price": "€69",
       "url": "https://berlindaisuki.de/produkt/online-kochkurs-miso/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Miso_Produkt.png"
@@ -5322,6 +5326,18 @@
       "price": "€39",
       "url": "https://www.paypal.com/ncp/payment/4JXJEWHN48CUE",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Online",
+      "title": "Online Ramen Kochkurs",
+      "date": "2026-10-04",
+      "time": "12:30",
+      "duration": "3 h",
+      "price": "€69",
+      "url": "https://berlindaisuki.de/produkt/online-kochkurs-ramen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkt.png"
     },
     {
       "slug": "faye",
@@ -5513,36 +5529,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Sushi",
-      "date": "2026-10-11",
-      "price": "€129",
-      "url": "https://berlindaisuki.de/produkt/kochkurs-sushi/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/IMG_9550-e1707379637477.jpg"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Vegan Sushi",
-      "date": "2026-10-11",
-      "price": "€129",
-      "url": "https://berlindaisuki.de/produkt/sushi-vegetarisch/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Soja_Produkt.png"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Japanischer Ramen & Gyoza",
-      "date": "2026-10-11",
-      "price": "€129",
-      "url": "https://berlindaisuki.de/produkt/kochkurs-ramen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Teapots, Lids, Handles, & Spouts (Week 41)",
@@ -5593,6 +5579,30 @@
       "time": "11:00"
     },
     {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Sushi",
+      "date": "2026-10-11",
+      "time": "12:00",
+      "duration": "3 h",
+      "price": "€129",
+      "url": "https://berlindaisuki.de/produkt/kochkurs-sushi/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/IMG_9550-e1707379637477.jpg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Vegan Sushi",
+      "date": "2026-10-11",
+      "time": "12:00",
+      "duration": "3 h",
+      "price": "€129",
+      "url": "https://berlindaisuki.de/produkt/sushi-vegetarisch/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Soja_Produkt.png"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Ravioli\" Gefüllte Pasta Workshop",
@@ -5603,6 +5613,18 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Japanischer Ramen & Gyoza",
+      "date": "2026-10-11",
+      "time": "16:00",
+      "duration": "3 h",
+      "price": "€129",
+      "url": "https://berlindaisuki.de/produkt/kochkurs-ramen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
     },
     {
       "slug": "druckrausch",
@@ -5733,16 +5755,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Online",
-      "title": "Online Sushi Kochkurs",
-      "date": "2026-10-18",
-      "price": "€69",
-      "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Teapots, Lids, Handles, & Spouts (Week 41)",
@@ -5779,6 +5791,18 @@
       "price": "€39",
       "url": "https://www.paypal.com/ncp/payment/XNUDNT79FE6GL",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Online",
+      "title": "Online Sushi Kochkurs",
+      "date": "2026-10-18",
+      "time": "12:30",
+      "duration": "3 h",
+      "price": "€69",
+      "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
     },
     {
       "slug": "qian",
@@ -6195,16 +6219,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Online",
-      "title": "Online Sushi Kochkurs",
-      "date": "2026-11-08",
-      "price": "€69",
-      "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
-    },
-    {
       "slug": "sabine",
       "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
@@ -6228,6 +6242,18 @@
       "price": "€39",
       "url": "https://www.paypal.com/ncp/payment/C3FRWWECFL4FQ",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Online",
+      "title": "Online Sushi Kochkurs",
+      "date": "2026-11-08",
+      "time": "12:30",
+      "duration": "3 h",
+      "price": "€69",
+      "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
     },
     {
       "slug": "pastamadre",
@@ -6348,6 +6374,8 @@
       "district": "Online",
       "title": "Online Ramen Kochkurs",
       "date": "2026-11-15",
+      "time": "12:30",
+      "duration": "3 h",
       "price": "€69",
       "url": "https://berlindaisuki.de/produkt/online-kochkurs-ramen/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkt.png"
@@ -6472,6 +6500,8 @@
       "district": "Charlottenburg",
       "title": "Kochkurs in Küchenstudio: Sushi",
       "date": "2026-11-22",
+      "time": "12:00",
+      "duration": "3 h",
       "price": "€129",
       "url": "https://berlindaisuki.de/produkt/kochkurs-sushi/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/IMG_9550-e1707379637477.jpg"
@@ -6482,19 +6512,11 @@
       "district": "Charlottenburg",
       "title": "Kochkurs in Küchenstudio: Vegan Sushi",
       "date": "2026-11-22",
+      "time": "12:00",
+      "duration": "3 h",
       "price": "€129",
       "url": "https://berlindaisuki.de/produkt/sushi-vegetarisch/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Soja_Produkt.png"
-    },
-    {
-      "slug": "daisuki",
-      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
-      "district": "Charlottenburg",
-      "title": "Kochkurs in Küchenstudio: Japanischer Ramen & Gyoza",
-      "date": "2026-11-22",
-      "price": "€129",
-      "url": "https://berlindaisuki.de/produkt/kochkurs-ramen/",
-      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
     },
     {
       "slug": "jem",
@@ -6507,6 +6529,18 @@
       "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-8",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Charlottenburg",
+      "title": "Kochkurs in Küchenstudio: Japanischer Ramen & Gyoza",
+      "date": "2026-11-22",
+      "time": "16:00",
+      "duration": "3 h",
+      "price": "€129",
+      "url": "https://berlindaisuki.de/produkt/kochkurs-ramen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
     },
     {
       "slug": "sabine",
@@ -6741,6 +6775,8 @@
       "district": "Online",
       "title": "Online Sushi Kochkurs",
       "date": "2026-12-06",
+      "time": "12:30",
+      "duration": "3 h",
       "price": "€69",
       "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
