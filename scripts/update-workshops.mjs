@@ -269,6 +269,14 @@ const SOURCES = [
     url: 'https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES',
     infoUrl: 'https://www.anybodycanwhittle.com/workshops/',
     district: 'Charlottenburg' },
+
+  // The Loom Lab sells its 3D-clay-printing experience as an undated
+  // Shopify product today (€139, groups of 4-6, dates arranged around
+  // bookings). This watches the shop's catalog: the moment they sell
+  // dated variants — 'DD.MM.YYYY - HH:MM' like Galleria Lucia — the
+  // sessions flow into the feed with no further change.
+  { slug: 'loom-lab', name: 'The Loom Lab — shop catalog (watched)', mode: 'shopify',
+    url: 'https://theloomlab.de/products.json?limit=250', district: 'Berlin' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
