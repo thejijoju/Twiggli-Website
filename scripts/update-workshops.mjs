@@ -129,6 +129,15 @@ const SOURCES = [
     excludeTitle: 'Profi-Dunkelkammer|Gutschein|Vermietung|Geschenk',
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
     district: 'Lichtenberg' },
+  // Her Termine page's Google Calendar additionally lists the open
+  // darkroom evenings (Offener Werkstattabend) that the Konfetti store
+  // doesn't sell. excludeTitle drops the course dates the store already
+  // delivers, so the two sabine sources never double-list a session.
+  { slug: 'sabine', name: 'Mobile Dunkelkammer — Termine-Kalender', mode: 'gcal-embed',
+    url: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
+    excludeTitle: 'Farbfilm|Film[- ]und[- ]Foto|Mach mal blau|Schwarz',
+    requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
+    district: 'Lichtenberg' },
   // Wix Bookings service list: /termine renders every dated workshop
   // server-side with its own booking-calendar link, time range and price.
   { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
@@ -1178,6 +1187,64 @@ async function fromWixServiceList(html, source) {
   return out;
 }
 
+/** A Google Calendar embedded on the host's page (Sabine's Termine page):
+ *  the iframe's src names the calendar, and every public Google Calendar
+ *  serves an ICS feed at /calendar/ical/<id>/public/basic.ics — so the
+ *  dates the visitor sees in the widget arrive as plain data. Newer
+ *  embeds base64-encode the id; both spellings are handled. */
+async function fromGcalEmbed(source) {
+  const res = await fetch(source.url, {
+    redirect: 'follow',
+    headers: { 'user-agent': UA, accept: 'text/html,*/*;q=0.8' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] gcal: page HTTP ${res.status}`);
+    return [];
+  }
+  const html = await res.text();
+  const embed = html.match(/https:\/\/calendar\.google\.com\/calendar\/embed\?[^"'\s<>]+/i)?.[0];
+  if (!embed) {
+    console.log(`[${source.slug}] gcal: no Google Calendar embed on the page`);
+    return [];
+  }
+  const ids = [...decodeEntities(embed).matchAll(/[?&](?:src|cid)=([^&]+)/g)].map((m) =>
+    decodeURIComponent(m[1]),
+  );
+  console.log(`[${source.slug}] gcal: embed found with ${ids.length} calendar id(s)`);
+  const out = [];
+  for (let id of ids) {
+    if (!id.includes('@')) {
+      // cid-style embeds carry the id base64-encoded.
+      try {
+        const decoded = Buffer.from(id, 'base64').toString('utf8').replace(/[^\x20-\x7e]+.*$/s, '');
+        if (decoded.includes('@')) id = decoded;
+      } catch {
+        /* not base64 — try the raw value */
+      }
+    }
+    try {
+      const r = await fetch(`https://calendar.google.com/calendar/ical/${encodeURIComponent(id)}/public/basic.ics`, {
+        headers: { 'user-agent': UA },
+      });
+      console.log(`[${source.slug}] gcal: ics feed for ${id}: HTTP ${r.status}`);
+      if (!r.ok) continue;
+      out.push(...fromIcs(await r.text(), source.infoUrl ?? source.url, source));
+    } catch (err) {
+      console.log(`[${source.slug}] gcal: ics fetch failed: ${err.message.split('\n')[0]}`);
+    }
+  }
+  let entries = out;
+  if (source.excludeTitle) {
+    const ex = new RegExp(source.excludeTitle, 'i');
+    entries = entries.filter((w) => !ex.test(w.title));
+  }
+  for (const w of entries) {
+    if (source.requestBooking) w.request = true;
+    console.log(`[${source.slug}] gcal: "${w.title}" ${w.date} ${w.time ?? ''}`);
+  }
+  return entries;
+}
+
 /** Parse an iCalendar feed's VEVENTs into feed entries. Local (TZID)
  *  timestamps are taken as Berlin wall-clock; UTC ones are converted. */
 function fromIcs(icsText, pageUrl, source) {
@@ -1703,10 +1770,14 @@ async function scrape(source) {
 async function scrapeSource(source) {
   // Konfetti fetches its sitemap itself (with an XML accept — Squarespace
   // 406s the HTML-only one used for regular pages below).
-  if (source.mode === 'konfetti' || source.mode === 'acuity-embeds' || source.mode === 'luma') {
+  if (
+    source.mode === 'konfetti' || source.mode === 'acuity-embeds' ||
+    source.mode === 'luma' || source.mode === 'gcal-embed'
+  ) {
     const found =
       source.mode === 'konfetti' ? await fromKonfetti(source)
       : source.mode === 'acuity-embeds' ? await fromAcuityEmbeds(source)
+      : source.mode === 'gcal-embed' ? await fromGcalEmbed(source)
       : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
