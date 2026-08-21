@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T13:35:53.950Z",
+  "updated": "2026-08-21T15:14:20.793Z",
   "sources": [
     {
       "slug": "qian",
@@ -71,7 +71,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 218
+      "count": 213
     },
     {
       "slug": "pastamadre",
@@ -191,7 +191,7 @@
       "slug": "faye",
       "url": "https://www.senle.studio/scheduling",
       "status": "ok",
-      "count": 8
+      "count": 15
     },
     {
       "slug": "celina",
@@ -240,6 +240,12 @@
       "url": "https://www.rose-williams.com/jewelry-courses/",
       "status": "failed: HTTP 403",
       "count": 6
+    },
+    {
+      "slug": "techno",
+      "url": "https://technopainting.com/airbnb-experience/",
+      "status": "ok",
+      "count": 4
     },
     {
       "slug": "dirt",
@@ -327,6 +333,65 @@
       "url": "https://www.ninakranzart.com/privat-freizeit"
     },
     {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "weekdays": [
+        "mon",
+        "thu"
+      ],
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "weekdays": [
+        "tue",
+        "wed"
+      ],
+      "time": "19:00",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "weekdays": [
+        "fri"
+      ],
+      "time": "18:30",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "weekdays": [
+        "sat",
+        "sun"
+      ],
+      "time": "14:00",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/"
+    },
+    {
       "slug": "dirt",
       "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
       "title": "Töpfern für Kinder „Matsch Love“ (Drop-in)",
@@ -355,65 +420,6 @@
       "district": "Kreuzberg",
       "kids": true,
       "url": "https://empireofdirt.studio/products/pottery-for-kids-love-matsch"
-    },
-    {
-      "slug": "techno",
-      "sourceUrl": "https://technopainting.com/airbnb-experience/",
-      "title": "Techno Painting Workshop",
-      "duration": "3 h",
-      "price": "€75",
-      "district": "Mitte",
-      "request": true,
-      "url": "https://technopainting.com/airbnb-experience/",
-      "weekdays": [
-        "mon",
-        "thu"
-      ],
-      "time": "18:00"
-    },
-    {
-      "slug": "techno",
-      "sourceUrl": "https://technopainting.com/airbnb-experience/",
-      "title": "Techno Painting Workshop",
-      "duration": "3 h",
-      "price": "€75",
-      "district": "Mitte",
-      "request": true,
-      "url": "https://technopainting.com/airbnb-experience/",
-      "weekdays": [
-        "tue",
-        "wed"
-      ],
-      "time": "19:00"
-    },
-    {
-      "slug": "techno",
-      "sourceUrl": "https://technopainting.com/airbnb-experience/",
-      "title": "Techno Painting Workshop",
-      "duration": "3 h",
-      "price": "€75",
-      "district": "Mitte",
-      "request": true,
-      "url": "https://technopainting.com/airbnb-experience/",
-      "weekdays": [
-        "fri"
-      ],
-      "time": "18:30"
-    },
-    {
-      "slug": "techno",
-      "sourceUrl": "https://technopainting.com/airbnb-experience/",
-      "title": "Techno Painting Workshop",
-      "duration": "3 h",
-      "price": "€75",
-      "district": "Mitte",
-      "request": true,
-      "url": "https://technopainting.com/airbnb-experience/",
-      "weekdays": [
-        "sat",
-        "sun"
-      ],
-      "time": "14:00"
     }
   ],
   "onRequest": [
@@ -465,58 +471,6 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-21",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-08-21",
-      "time": "17:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-21",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-08-21",
-      "time": "17:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "angelo",
       "sourceUrl": "https://www.coffeeandbananas.com/",
       "title": "DIY Kaffeerösten",
@@ -528,19 +482,6 @@
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
       "district": "Prenzlauer Berg",
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-21",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 8,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -3510,13 +3451,13 @@
     {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
-      "title": "Incense Lab II: Blending & Expression",
+      "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-09-13",
       "time": "14:00",
-      "spots": 8,
-      "duration": "3 h",
-      "price": "€106",
-      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541614/calendar/13025469",
+      "spots": 16,
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
@@ -4268,6 +4209,19 @@
       "district": "Prenzlauer Berg"
     },
     {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Foundations of Scent",
+      "date": "2026-09-20",
+      "time": "14:00",
+      "spots": 16,
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Pasta Machen\"",
@@ -4948,6 +4902,19 @@
       "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-4",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Ritual Series: Journaling Workshop",
+      "date": "2026-09-27",
+      "time": "18:00",
+      "spots": 12,
+      "duration": "1 h",
+      "price": "€15",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97364659/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5659,6 +5626,19 @@
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Bracelet Workshop",
+      "date": "2026-10-04",
+      "time": "14:00",
+      "spots": 16,
+      "duration": "2.5 h",
+      "price": "€74",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97365416/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Fusilli\" Pasta Workshop",
@@ -5822,6 +5802,19 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Incense Lab I: Foundations of Scent",
+      "date": "2026-10-10",
+      "time": "16:00",
+      "spots": 16,
+      "duration": "2.5 h",
+      "price": "€64",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try Handbuilding",
@@ -5959,6 +5952,19 @@
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
     },
     {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Ritual Series: Journaling Workshop",
+      "date": "2026-10-11",
+      "time": "18:00",
+      "spots": 12,
+      "duration": "1 h",
+      "price": "€15",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97364659/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruckworkshop",
@@ -6046,6 +6052,19 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Bracelet Workshop",
+      "date": "2026-10-17",
+      "time": "17:00",
+      "spots": 16,
+      "duration": "2.5 h",
+      "price": "€74",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97365416/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "celina",
@@ -6297,6 +6316,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "faye",
+      "sourceUrl": "https://www.senle.studio/scheduling",
+      "title": "Ritual Series: Journaling Workshop",
+      "date": "2026-10-25",
+      "time": "18:00",
+      "spots": 12,
+      "duration": "1 h",
+      "price": "€15",
+      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97364659/calendar/13025469",
+      "district": "Friedrichshain",
+      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "ceramic-kingdom",
