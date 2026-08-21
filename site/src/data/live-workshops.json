@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T08:19:38.029Z",
+  "updated": "2026-08-21T08:30:34.830Z",
   "sources": [
     {
       "slug": "qian",
@@ -77,7 +77,7 @@
       "slug": "pastamadre",
       "url": "https://www.pastamadre.de/calendar-kurstermine",
       "status": "ok",
-      "count": 24
+      "count": 25
     },
     {
       "slug": "angelo",
@@ -101,19 +101,19 @@
       "slug": "sabine",
       "url": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "status": "ok",
-      "count": 13
+      "count": 14
     },
     {
       "slug": "sabine",
       "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
-      "status": "failed: no upcoming events parsed",
-      "count": 0
+      "status": "ok",
+      "count": 6
     },
     {
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "status": "ok",
-      "count": 10
+      "count": 15
     },
     {
       "slug": "schmiede",
@@ -197,7 +197,7 @@
       "slug": "jem",
       "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "status": "ok",
-      "count": 10
+      "count": 11
     },
     {
       "slug": "karen-rose",
@@ -714,6 +714,19 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "Sauerteig Pizza Workshop",
+      "date": "2026-08-23",
+      "time": "15:00",
+      "duration": "5 h",
+      "price": "€76–100",
+      "soldOut": true,
+      "url": "https://www.pastamadre.de/calendar-kurstermine",
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -1517,6 +1530,19 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
+      "date": "2026-08-30",
+      "time": "14:30",
+      "duration": "3 h",
+      "price": "€65",
+      "soldOut": true,
+      "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-7",
+      "district": "Zehlendorf"
     },
     {
       "slug": "pastamadre",
@@ -2703,6 +2729,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "title": "Offener Werkstattabend S/W",
+      "date": "2026-09-10",
+      "time": "18:00",
+      "duration": "4 h",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "request": true,
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -2924,6 +2961,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Kompaktkurs Messerschmieden – 1 Tag",
+      "date": "2026-09-12",
+      "time": "10:00",
+      "price": "€225",
+      "soldOut": true,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Siebdruck + Papercutting",
@@ -3140,6 +3190,19 @@
       "request": true,
       "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
       "district": "Lichtenberg"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Kompaktkurs Messerschmieden – 1 Tag",
+      "date": "2026-09-13",
+      "time": "10:00",
+      "price": "€225",
+      "soldOut": true,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "karen-rose",
@@ -3446,6 +3509,17 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "title": "Offener Werkstattabend S/W",
+      "date": "2026-09-17",
+      "time": "18:00",
+      "duration": "4 h",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "request": true,
+      "district": "Lichtenberg"
     },
     {
       "slug": "munio",
@@ -4269,6 +4343,20 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-09-26",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "soldOut": true,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "monk-garden",
@@ -5156,6 +5244,17 @@
       "district": "Friedenau"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "title": "Offener Werkstattabend S/W",
+      "date": "2026-10-08",
+      "time": "18:00",
+      "duration": "4 h",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "request": true,
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 40)",
@@ -5368,6 +5467,17 @@
       "url": "https://www.druckrausch.com/booking-calendar/14-10-basis-siebdruckworkshop",
       "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "title": "Offener Werkstattabend S/W",
+      "date": "2026-10-15",
+      "time": "18:00",
+      "duration": "4 h",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "request": true,
+      "district": "Lichtenberg"
     },
     {
       "slug": "sabine",
@@ -5699,6 +5809,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
+      "date": "2026-10-31",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€450",
+      "soldOut": true,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "monk-garden",
       "sourceUrl": "https://the-monk-garden.de/pilzwanderung-durch-den-wald/",
       "title": "Pilzwanderung durch den Wald",
@@ -5796,6 +5920,17 @@
       "url": "https://www.druckrausch.com/booking-calendar/04-11-basis-siebdruckworkshop",
       "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "title": "Offener Werkstattabend S/W",
+      "date": "2026-11-05",
+      "time": "18:00",
+      "duration": "4 h",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "request": true,
+      "district": "Lichtenberg"
     },
     {
       "slug": "sabine",
@@ -6165,6 +6300,17 @@
     },
     {
       "slug": "sabine",
+      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "title": "Offener Werkstattabend S/W",
+      "date": "2026-11-26",
+      "time": "18:00",
+      "duration": "4 h",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "request": true,
+      "district": "Lichtenberg"
+    },
+    {
+      "slug": "sabine",
       "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
       "date": "2026-11-27",
@@ -6189,6 +6335,20 @@
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
+      "date": "2026-11-28",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€450",
+      "soldOut": true,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "druckrausch",
