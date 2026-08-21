@@ -1016,14 +1016,17 @@ async function fromAcuityEmbeds(source) {
     (u) => pat.test(u),
   );
 
-  const embeds = new Set();
+  // Remember which site page carried each embed — its share image becomes
+  // the class's picture (the Acuity deep link itself has none).
+  const embeds = new Map();
   for (const page of pages) {
     try {
       const r = await fetch(page, { headers: { 'user-agent': UA, accept: 'text/html,*/*;q=0.8' } });
       if (!r.ok) continue;
       const html = decodeEntities((await r.text()).replace(/\\/g, ''));
+      const originImage = pageImage(html, page);
       for (const m of html.matchAll(/https:\/\/app\.acuityscheduling\.com\/schedule\.php\?[^"'\s<>]+/g)) {
-        embeds.add(m[0]);
+        if (!embeds.has(m[0])) embeds.set(m[0], originImage);
       }
     } catch {
       /* page unreachable — the embed may still appear on another page */
@@ -1034,7 +1037,7 @@ async function fromAcuityEmbeds(source) {
   const out = [];
   const seenTypes = new Set();
   const junk = /\b[123]-on-1\b|one on one|two on one|follow-?up|trimming|time ?slot|pick-?up/i;
-  for (const embed of embeds) {
+  for (const [embed, originImage] of embeds) {
     let hash;
     let types;
     try {
@@ -1068,7 +1071,9 @@ async function fromAcuityEmbeds(source) {
     console.log(
       `[${source.slug}] acuity-embeds "${cat || 'uncategorized'}": ${fresh.map((t) => `${t.name} [${t.id}] €${t.price} ${t.duration}min`).join('; ')}`,
     );
-    out.push(...(await acuityTimesForTypes(source, hash, fresh)));
+    const sessions = await acuityTimesForTypes(source, hash, fresh);
+    if (originImage) for (const s of sessions) s.image ??= originImage;
+    out.push(...sessions);
   }
   return out;
 }
@@ -1589,8 +1594,9 @@ async function renderAllFrames(url, slug) {
 const shareImageCache = new Map();
 
 /** Booking-platform pages whose share image would show the platform's own
- *  branding rather than the workshop — for those the host's page decides. */
-const PLATFORM_IMAGE_HOSTS = /acuityscheduling\.com|paypal\.com/i;
+ *  branding (or none at all) rather than the workshop — for those the
+ *  host's own page decides. */
+const PLATFORM_IMAGE_HOSTS = /acuityscheduling\.com|paypal\.com|eversports\.|\/\/checkout\./i;
 
 async function shareImageFor(url) {
   if (shareImageCache.has(url)) return shareImageCache.get(url);
