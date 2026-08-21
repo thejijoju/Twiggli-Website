@@ -52,19 +52,19 @@ const t = {
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
         filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
         kids: '🧸 For kids', share: 'Share', copied: 'Link copied',
-        soldOut: 'Sold out', notify: '🔔 Notify me',
+        soldOut: 'Sold out', notify: 'Notify me',
         notifyTitle: 'Get notified when a spot opens',
         notifyHint: 'We check this host’s calendar automatically. Leave your email and we’ll let you know the moment this workshop takes bookings again — the message opens in your mail app, just hit send.',
-        notifyEmail: 'Your email', notifySend: '🔔 Set notification', cancel: 'Cancel' },
+        notifyEmail: 'Your email', notifySend: 'Set notification', cancel: 'Cancel' },
   de: { spots: 'Plätze frei', book: 'Buchen', request: 'Buchung anfragen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
         filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
         kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert',
-        soldOut: 'Ausgebucht', notify: '🔔 Benachrichtige mich',
+        soldOut: 'Ausgebucht', notify: 'Benachrichtige mich',
         notifyTitle: 'Bescheid bekommen, wenn ein Platz frei wird',
         notifyHint: 'Wir prüfen den Kalender dieses Hosts automatisch. Trag deine E-Mail ein und wir melden uns, sobald dieser Workshop wieder buchbar ist — die Nachricht öffnet sich in deinem Mailprogramm, einfach absenden.',
-        notifyEmail: 'Deine E-Mail', notifySend: '🔔 Benachrichtigung einrichten', cancel: 'Abbrechen' },
+        notifyEmail: 'Deine E-Mail', notifySend: 'Benachrichtigung einrichten', cancel: 'Abbrechen' },
 }[lang];
 
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
@@ -193,7 +193,7 @@ const dayLabel = (offset: number) =>
                               data-notify-host={s.host.name}
                               data-notify-date={isoDate(s.dayOffset)}
                               data-notify-time={s.time}
-                            >{t.notify}</button>
+                            ><svg class="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>{t.notify}</button>
                           ) : s.request ? (
                             <a class="session-book" href={requestHref(s)}>{t.request}</a>
                           ) : (
@@ -253,7 +253,7 @@ const dayLabel = (offset: number) =>
       </label>
       <div class="notify-actions">
         <button class="notify-cancel" type="button" data-notify-cancel>{t.cancel}</button>
-        <button class="notify-send" type="submit">{t.notifySend}</button>
+        <button class="notify-send" type="submit"><svg class="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>{t.notifySend}</button>
       </div>
     </form>
   </dialog>
