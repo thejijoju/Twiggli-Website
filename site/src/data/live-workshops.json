@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T09:29:26.962Z",
+  "updated": "2026-08-21T09:55:04.018Z",
   "sources": [
     {
       "slug": "qian",
@@ -222,6 +222,12 @@
       "url": "https://karen-rose.com/events-2/",
       "status": "failed: no upcoming events parsed",
       "count": 3
+    },
+    {
+      "slug": "whittle",
+      "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
+      "status": "failed: HTTP 403",
+      "count": 6
     }
   ],
   "recurring": [
