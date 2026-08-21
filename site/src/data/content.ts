@@ -132,6 +132,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — no published cap on the course pages.
   druckrausch:      { activity: 'art',       groupRange: [1, 10], hourRange: [1.5, 4] },
   schmiede:         { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 7] },
+  daisuki:          { activity: 'food',      groupRange: [5, 20], hourRange: [3, 5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -246,6 +247,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'schmiede', name: 'Schmiedekurse Berlin', specialty: 'Blacksmithing & knife forging', studio: 'Schmiede im Hof',
       blurb: 'A working forge in an old leather-factory yard in Blankenburg. Learn the classic techniques over a weekend, forge your own kitchen or outdoor knife — up to Japanese Damascus steel with a hand-fitted wooden handle — and take everything you make home. Small groups of five or six around the fire, plus three-day forging introductions for kids aged 10–14 in the school holidays.',
       group: 'Up to 6', duration: '1–2 days', place: 'Pankstraße 13, Berlin', languages: 'DE' },
+    // Copy from berlindaisuki.de; photos and reel to follow.
+    { slug: 'daisuki', name: 'Berlin Daisuki', specialty: 'Japanese cooking classes', studio: 'BERLINDAISUKI Kochstudio',
+      blurb: 'Naoko Yasuda’s Japanese cooking school in Charlottenburg — sushi, vegan sushi, and ramen & gyoza in the Kochstudio on Otto-Suhr-Allee, plus live online courses in sushi, ramen, bento box and homemade miso. Also runs team events, Agile Cooking, five-hour offline “digital detox” dinners and Japanese language courses. 5/5 on Google.',
+      group: '5–20', duration: '~3 h', place: 'Otto-Suhr-Allee 94, Berlin', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -338,6 +343,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'schmiede', name: 'Schmiedekurse Berlin', specialty: 'Schmieden & Messerschmieden', studio: 'Schmiede im Hof',
       blurb: 'Eine Schmiede im Hof einer alten Lederfabrik in Blankenburg. Am Wochenende die Grundtechniken lernen, das eigene Küchen- oder Outdoormesser schmieden — bis hin zum japanischen Damaszenerstahl mit selbst angepasstem Holzgriff — und alles Geschmiedete mit nach Hause nehmen. Kleine Gruppen mit fünf bis sechs Plätzen am Feuer, dazu dreitägige Schmiede-Einführungen für Kinder von 10–14 in den Ferien.',
       group: 'Bis 6', duration: '1–2 Tage', place: 'Pankstraße 13, Berlin', languages: 'DE' },
+    { slug: 'daisuki', name: 'Berlin Daisuki', specialty: 'Japanische Kochkurse', studio: 'BERLINDAISUKI Kochstudio',
+      blurb: 'Naoko Yasudas japanische Kochschule in Charlottenburg — Sushi, veganes Sushi und Ramen & Gyoza im Kochstudio in der Otto-Suhr-Allee, dazu Live-Online-Kurse für Sushi, Ramen, Bento-Box und selbstgemachtes Miso. Außerdem Team-Events, Agile Cooking, fünfstündige Offline-„Digital-Detox“-Dinner und Japanisch-Sprachkurse. 5/5 bei Google.',
+      group: '5–20', duration: 'ca. 3 Std.', place: 'Otto-Suhr-Allee 94, Berlin', languages: 'DE' },
   ],
 };
 

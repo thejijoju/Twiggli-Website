@@ -164,6 +164,11 @@ const SOURCES = [
   { slug: 'schmiede', name: 'Schmiedekurse Berlin — Messerschärfkurse', mode: 'kurs-blocks-de',
     url: 'https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/',
     courseTitle: 'Messerschärfkurs – Abendkurs', requestBooking: true, district: 'Blankenburg' },
+  // Berlin Daisuki's Japanese cooking school: the Kochkurs page renders
+  // every course with dated headings and WooCommerce product links —
+  // in-studio courses in Charlottenburg plus the live online courses.
+  { slug: 'daisuki', name: 'Berlin Daisuki — Japanisch-Kochkurse', mode: 'wp-course-dates',
+    url: 'https://berlindaisuki.de/japanischkochkurs/', district: 'Charlottenburg' },
   // Wix Bookings service list: /termine renders every dated workshop
   // server-side with its own booking-calendar link, time range and price.
   { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
@@ -1712,6 +1717,72 @@ function fromTimeTags(html, sourceUrl) {
   return out;
 }
 
+/** Berlin Daisuki's WordPress Kochkurs page: each course is a heading
+ *  ("Kochkurs in Küchenstudio : Sushi", "Online Sushi Kochkurs") followed
+ *  by one dated heading per session ("11.10.2026 So. 129 €"), a Jetzt-
+ *  buchen link to the course's WooCommerce product page, and a descriptor
+ *  with the hours ("12 Uhr – 15 Uhr" / "12.30h bis 15.30h"). A leading
+ *  "– sorry, ausgebucht." in a date heading closes the PREVIOUS date. */
+function fromWpCourseDates(html, source) {
+  const heads = [...html.matchAll(/<h([2-4])[^>]*>([\s\S]*?)<\/h\1>/gi)].map((m) => ({
+    index: m.index,
+    text: stripTags(m[2]),
+  }));
+  const courseRe = new RegExp(source.coursePattern ?? 'Kochkurs', 'i');
+  const dateRe = /(\d{1,2})\.(\d{1,2})\.(\d{4})/;
+  const out = [];
+  for (let i = 0; i < heads.length; i++) {
+    const h = heads[i];
+    if (dateRe.test(h.text) || !courseRe.test(h.text)) continue;
+    const sessions = [];
+    let j = i + 1;
+    while (j < heads.length && dateRe.test(heads[j].text)) {
+      const t = heads[j].text;
+      const d = t.match(dateRe);
+      const closesPrevious = /^\s*(?:[–—-]\s*)?sorry,?\s*ausgebucht/i.test(t);
+      if (closesPrevious && sessions.length) sessions[sessions.length - 1].soldOut = true;
+      sessions.push({
+        date: `${d[3]}-${d[2].padStart(2, '0')}-${d[1].padStart(2, '0')}`,
+        soldOut: !closesPrevious && /ausgebucht|ausverkauft/i.test(t),
+        price: t.match(/(\d{2,3})(?:,\d\d)?\s*€/)?.[1],
+      });
+      j++;
+    }
+    if (!sessions.length) continue;
+    const block = html.slice(h.index, heads[j]?.index ?? html.length);
+    const blockText = stripTags(block);
+    const range = blockText.match(
+      /(\d{1,2})(?:[.:](\d{2}))?\s*(?:Uhr|h)\s*(?:–|—|-|bis)\s*(\d{1,2})(?:[.:]\d{2})?\s*(?:Uhr|h)/i,
+    );
+    const hoursTxt = blockText.match(/ca\.?\s*(\d+)\s*Stunden/i);
+    const link = block.match(/href="([^"]*\/produkt\/[^"]+)"/i)?.[1];
+    const title = h.text.replace(/\s*:\s*/g, ': ').replace(/\s+/g, ' ').trim();
+    for (const s of sessions) {
+      const w = {
+        title,
+        date: s.date,
+        ...(range ? { time: `${range[1].padStart(2, '0')}:${range[2] ?? '00'}` } : {}),
+        ...(hoursTxt
+          ? { duration: `${hoursTxt[1]} h` }
+          : range
+            ? { duration: `${Number(range[3]) - Number(range[1])} h` }
+            : {}),
+        ...(s.price ? { price: `€${s.price}` } : {}),
+        ...(s.soldOut ? { soldOut: true } : {}),
+        // Online courses aren't tied to a Bezirk — the card says so.
+        ...(/\bonline\b/i.test(h.text) ? { district: 'Online' } : {}),
+        url: link ? new URL(decodeEntities(link), source.url).href : source.url,
+      };
+      console.log(
+        `[${source.slug}] course: "${w.title}" ${w.date} ${w.time ?? ''} ${w.soldOut ? 'SOLD OUT' : ''}`,
+      );
+      out.push(w);
+    }
+    i = j - 1;
+  }
+  return out;
+}
+
 /** Schmiedekurse Berlin's Jimdo pages: the whole schedule is server-
  *  rendered German prose — a date ("22./23. August", "12. September", or
  *  the kids pages' numeric ranges "20.-22.10"), the course title, then
@@ -2061,6 +2132,21 @@ async function scrapeSource(source) {
         ...(source.district ? { district: source.district } : {}),
       }));
     console.log(`[${source.slug}] checkout sessions kept: ${inRange.length}`);
+    return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'wp-course-dates') {
+    const found = fromWpCourseDates(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        // The parser's own district (Online courses) wins over the host's.
+        ...(source.district ? { district: source.district } : {}),
+        ...w,
+      }));
+    console.log(`[${source.slug}] wp-course-dates sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
   }
 
