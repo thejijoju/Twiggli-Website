@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T07:22:00.196Z",
+  "updated": "2026-08-21T07:42:29.693Z",
   "sources": [
     {
       "slug": "qian",
@@ -96,6 +96,12 @@
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "status": "ok",
       "count": 30
+    },
+    {
+      "slug": "sabine",
+      "url": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "status": "ok",
+      "count": 13
     },
     {
       "slug": "druckrausch",
@@ -2782,6 +2788,20 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
+      "date": "2026-09-11",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€119",
+      "spots": 4,
+      "image": "https://media.gokonfetti.com/67617/910x0/entwicklung-von-darkroom-fotos-ylmjgv62.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -2943,8 +2963,7 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+      "district": "Wedding"
     },
     {
       "slug": "munio",
@@ -3063,6 +3082,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
+      "date": "2026-09-13",
+      "time": "10:00",
+      "duration": "9 h",
+      "price": "€189",
+      "spots": 3,
+      "image": "https://media.gokonfetti.com/67613/910x0/darkroom-fotoentwicklung-r0q4jpm1.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "title": "Keramikgießen | Terrazzo Workshop",
@@ -3108,8 +3141,7 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+      "district": "Wedding"
     },
     {
       "slug": "jem",
@@ -3408,6 +3440,20 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Cyanotypie-Workshop – Mach mal blau! in Berlin",
+      "date": "2026-09-18",
+      "time": "13:30",
+      "duration": "1 h",
+      "price": "€20",
+      "spots": 4,
+      "image": "https://media.gokonfetti.com/82142/910x0/vier-frauen-roter-lkw-ly06232v.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -3445,6 +3491,20 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Cyanotypie-Workshop – Mach mal blau! in Berlin",
+      "date": "2026-09-18",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€20",
+      "spots": 1,
+      "image": "https://media.gokonfetti.com/82142/910x0/vier-frauen-roter-lkw-ly06232v.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
     },
     {
       "slug": "munio",
@@ -3714,6 +3774,20 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/65358826/calendar/10335256",
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
+      "date": "2026-09-20",
+      "time": "10:00",
+      "duration": "9 h",
+      "price": "€189",
+      "spots": 3,
+      "image": "https://media.gokonfetti.com/67613/910x0/darkroom-fotoentwicklung-r0q4jpm1.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
     },
     {
       "slug": "qian",
@@ -4826,8 +4900,7 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+      "district": "Wedding"
     },
     {
       "slug": "munio",
@@ -5021,6 +5094,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
+      "date": "2026-10-09",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€119",
+      "spots": 4,
+      "image": "https://media.gokonfetti.com/67617/910x0/entwicklung-von-darkroom-fotos-ylmjgv62.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -5147,6 +5234,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
+      "date": "2026-10-11",
+      "time": "10:00",
+      "duration": "9 h",
+      "price": "€189",
+      "spots": 3,
+      "image": "https://media.gokonfetti.com/67613/910x0/darkroom-fotoentwicklung-r0q4jpm1.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "bumerang",
       "sourceUrl": "https://berliner-bumerang.de/products.json?limit=250",
       "title": "Bumerang-Workshop",
@@ -5192,6 +5293,20 @@
       "url": "https://www.druckrausch.com/booking-calendar/14-10-basis-siebdruckworkshop",
       "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
+      "date": "2026-10-16",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€119",
+      "spots": 4,
+      "image": "https://media.gokonfetti.com/67617/910x0/entwicklung-von-darkroom-fotos-ylmjgv62.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
     },
     {
       "slug": "pastamadre",
@@ -5281,6 +5396,20 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/94359481/calendar/10335256",
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
+      "date": "2026-10-18",
+      "time": "10:00",
+      "duration": "9 h",
+      "price": "€189",
+      "spots": 3,
+      "image": "https://media.gokonfetti.com/67613/910x0/darkroom-fotoentwicklung-r0q4jpm1.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
     },
     {
       "slug": "sarah",
@@ -5523,6 +5652,20 @@
       "district": "Friedenau"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
+      "date": "2026-11-06",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€119",
+      "spots": 4,
+      "image": "https://media.gokonfetti.com/67617/910x0/entwicklung-von-darkroom-fotos-ylmjgv62.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -5609,6 +5752,20 @@
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
+      "date": "2026-11-08",
+      "time": "10:00",
+      "duration": "9 h",
+      "price": "€189",
+      "spots": 3,
+      "image": "https://media.gokonfetti.com/67613/910x0/darkroom-fotoentwicklung-r0q4jpm1.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
     },
     {
       "slug": "sarah",
@@ -5820,6 +5977,20 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
+      "date": "2026-11-27",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€119",
+      "spots": 4,
+      "image": "https://media.gokonfetti.com/67617/910x0/entwicklung-von-darkroom-fotos-ylmjgv62.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -5905,6 +6076,20 @@
       "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "sabine",
+      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
+      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
+      "date": "2026-11-29",
+      "time": "10:00",
+      "duration": "9 h",
+      "price": "€189",
+      "spots": 3,
+      "image": "https://media.gokonfetti.com/67613/910x0/darkroom-fotoentwicklung-r0q4jpm1.jpg",
+      "request": true,
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "district": "Lichtenberg"
     },
     {
       "slug": "sarah",
