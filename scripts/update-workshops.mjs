@@ -319,7 +319,7 @@ function fromJsonLd(html, sourceUrl) {
       const availabilities = [offer?.availability, ...[].concat(offer?.offers ?? []).map((o) => o?.availability)]
         .filter(Boolean)
         .map(String);
-      if (availabilities.length && availabilities.every((a) => /soldout/i.test(a))) return null;
+      const soldOut = availabilities.length > 0 && availabilities.every((a) => /soldout/i.test(a));
       const rawPrice = [offer?.price, offer?.lowPrice, [].concat(offer?.offers ?? [])[0]?.price]
         .find((p) => p != null && p !== '');
       const price =
@@ -337,6 +337,7 @@ function fromJsonLd(html, sourceUrl) {
         time: berlinTime(start),
         ...(duration ? { duration } : {}),
         ...(price ? { price } : {}),
+        ...(soldOut ? { soldOut: true } : {}),
         ...(typeof image === 'string' && image.startsWith('http') ? { image } : {}),
         url: typeof e.url === 'string' && e.url.startsWith('http') ? e.url : sourceUrl,
       };
@@ -528,10 +529,10 @@ function fromTitledDateBlocks(html, source) {
     const start = heads[i].index + heads[i][0].length;
     const block = html.slice(start, i + 1 < heads.length ? heads[i + 1].index : html.length);
     const text = stripTags(block);
-    if (/ausgebucht|sold\s*out/i.test(text)) {
-      console.log(`[${source.slug}] blocks: "${title}" sold out — skipped`);
-      continue;
-    }
+    // Sold-out blocks stay in the feed — the card shows "Sold out" and a
+    // Notify-me button instead of Book.
+    const soldOut = /ausgebucht|sold\s*out/i.test(text);
+    if (soldOut) console.log(`[${source.slug}] blocks: "${title}" sold out — kept as notify-me`);
     const dm = text.match(new RegExp(`(\\d{1,2})\\.?\\s+(${MONTH_NAMES})\\s+(20\\d{2})`, 'i'));
     if (!dm) continue;
     const date = `${dm[3]}-${MONTHS[dm[2].toLowerCase()]}-${dm[1].padStart(2, '0')}`;
@@ -567,6 +568,7 @@ function fromTitledDateBlocks(html, source) {
       ...(time ? { time } : {}),
       ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
       ...(price ? { price } : {}),
+      ...(soldOut ? { soldOut: true } : {}),
       url: book && /^https?:/i.test(book) ? book : source.url,
     });
   }
@@ -648,7 +650,10 @@ async function fromShopifyCowlendar(source) {
       const entries = [];
       for (const s of slots) {
         const m = /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})$/.exec(s?.slot_start ?? '');
-        if (!m || s.is_bookable === false || s.qty_left === 0) continue;
+        if (!m) continue;
+        // Fully-booked slots stay: the card shows Sold out + Notify me.
+        const soldOut = s.qty_left === 0;
+        if (s.is_bookable === false && !soldOut) continue;
         if (m[1] > lastISO || seen.has(s.slot_start)) continue;
         seen.add(s.slot_start);
         const hours = Number(s.slot_duration ?? minutes) / 60;
@@ -658,7 +663,7 @@ async function fromShopifyCowlendar(source) {
           time: m[2],
           duration: `${Math.round(hours * 2) / 2} h`,
           ...(price ? { price } : {}),
-          ...(Number.isFinite(s.qty_left) ? { spots: s.qty_left } : {}),
+          ...(soldOut ? { soldOut: true } : Number.isFinite(s.qty_left) ? { spots: s.qty_left } : {}),
           ...(p.images?.[0]?.src ? { image: p.images[0].src } : {}),
           url: productUrl,
         });
@@ -861,8 +866,8 @@ async function fromKonfetti(source) {
         }
         for (const day of Object.values(days ?? {})) {
           for (const s of day?.dates ?? []) {
-            if (s?.status !== 'OPEN') continue;
-            if (s.available_tickets_quantity === 0) continue;
+            if (s?.status !== 'OPEN' && s?.status !== 'SOLD_OUT') continue;
+            const soldOut = s.status === 'SOLD_OUT' || s.available_tickets_quantity === 0;
             const startMs = Date.parse(s.start ?? '');
             if (Number.isNaN(startMs)) continue;
             const endMs = Date.parse(s.end ?? '');
@@ -874,7 +879,11 @@ async function fromKonfetti(source) {
               time: berlinTime(startMs),
               ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
               ...(Number.isFinite(cents) && cents > 0 ? { price: `€${Math.round(cents / 100)}` } : {}),
-              ...(Number.isFinite(s.available_tickets_quantity) ? { spots: s.available_tickets_quantity } : {}),
+              ...(soldOut
+                ? { soldOut: true }
+                : Number.isFinite(s.available_tickets_quantity)
+                  ? { spots: s.available_tickets_quantity }
+                  : {}),
               ...(image ? { image } : {}),
               // Some hosts must not link out to the booking platform — their
               // cards point at the host's own site and take requests by mail.
@@ -919,7 +928,7 @@ async function fromLuma(source) {
     const endMs = Date.parse(ev?.end_at ?? '');
     const span = Number.isNaN(endMs) ? 0 : (endMs - startMs) / 3600000;
     const ticket = entry?.ticket_info ?? ev?.ticket_info ?? {};
-    if (ticket.is_sold_out) continue;
+    const soldOut = !!ticket.is_sold_out;
     const cents = Number(ticket?.price?.cents);
     const eur = String(ticket?.price?.currency ?? 'eur').toLowerCase() === 'eur';
     const spots = Number(ticket?.spots_remaining);
@@ -929,7 +938,7 @@ async function fromLuma(source) {
       time: berlinTime(startMs),
       ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
       ...(Number.isFinite(cents) && cents > 0 && eur ? { price: `€${Math.round(cents / 100)}` } : {}),
-      ...(Number.isFinite(spots) && spots >= 0 ? { spots } : {}),
+      ...(soldOut ? { soldOut: true } : Number.isFinite(spots) && spots >= 0 ? { spots } : {}),
       ...(typeof ev?.cover_url === 'string' && ev.cover_url.startsWith('http') ? { image: ev.cover_url } : {}),
       url: ev?.url ? `https://lu.ma/${String(ev.url).replace(/^\/+/, '')}` : source.url,
     };
@@ -1045,7 +1054,7 @@ async function acuityTimesForTypes(source, hash, types) {
       for (const slot of Object.values(days ?? {}).flat()) {
         const ms = Date.parse(slot?.time ?? '');
         if (Number.isNaN(ms)) continue;
-        if (slot.slotsAvailable === 0) continue; // fully booked
+        const soldOut = slot.slotsAvailable === 0; // fully booked → Notify me
         console.log(
           `[${source.slug}] acuity: "${t.name}" ${berlinDate(ms)} ${berlinTime(ms)} (${slot.slotsAvailable ?? '?'} spots)`,
         );
@@ -1053,7 +1062,7 @@ async function acuityTimesForTypes(source, hash, types) {
           title: stripTags(String(t.name)),
           date: berlinDate(ms),
           time: berlinTime(ms),
-          ...(Number.isFinite(slot.slotsAvailable) ? { spots: slot.slotsAvailable } : {}),
+          ...(soldOut ? { soldOut: true } : Number.isFinite(slot.slotsAvailable) ? { spots: slot.slotsAvailable } : {}),
           ...(minutes > 0 && minutes <= 720 ? { duration: `${Math.round((minutes / 60) * 2) / 2} h` } : {}),
           ...(Number.isFinite(priceNum) && priceNum > 0 ? { price: `€${Math.round(priceNum)}` } : {}),
           ...(typeof t.image === 'string' && t.image.startsWith('http') ? { image: t.image } : {}),
@@ -1496,13 +1505,13 @@ function fromShopify(jsonText, source) {
     const productUrl = new URL(`/products/${product.handle}`, source.url).href;
     let kept = 0;
     for (const variant of product.variants ?? []) {
-      if (variant.available === false) continue;
       const m = String(variant.title).match(/(\d{2})\.(\d{2})\.(\d{4})\s*[-\u2013]\s*(\d{1,2}):(\d{2})/);
       if (!m) continue;
       out.push({
         title: stripTags(String(product.title)),
         date: `${m[3]}-${m[2]}-${m[1]}`,
         time: `${m[4].padStart(2, '0')}:${m[5]}`,
+        ...(variant.available === false ? { soldOut: true } : {}),
         ...(duration ? { duration } : {}),
         ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
         ...(source.district ? { district: source.district } : {}),
@@ -1701,7 +1710,14 @@ function fromKursBlocks(html, source) {
   const found = [];
   for (const m of text.matchAll(dateRe)) {
     const prev = found[found.length - 1];
-    if (prev && /^\s*[/–-]\s*$/.test(text.slice(prev.index + prev[0].length, m.index))) continue;
+    if (prev && /^\s*[/–-]\s*$/.test(text.slice(prev.endsAt, m.index))) {
+      // The course spans into the next day/month — its block starts after
+      // the whole range, and the extra day makes it a two-day course.
+      prev.endsAt = m.index + m[0].length;
+      prev.spansDays = true;
+      continue;
+    }
+    m.endsAt = m.index + m[0].length;
     found.push(m);
   }
 
@@ -1711,7 +1727,7 @@ function fromKursBlocks(html, source) {
     const day = Number(m[1] ?? m[4]);
     const month = m[3] ? MONTHS[m[3].toLowerCase()] : Number(m[5] ?? m[7]);
     const lastDay = m[2] ?? m[6];
-    const block = text.slice(m.index + m[0].length, found[i + 1]?.index ?? text.length);
+    const block = text.slice(m.endsAt, found[i + 1]?.index ?? text.length);
     if (!month || month > 12 || day > 31 || /Kurs wird verschoben/i.test(block)) continue;
     // A past date is next year's run — the page's own "2027" section rolls
     // forward exactly this way.
@@ -1721,7 +1737,7 @@ function fromKursBlocks(html, source) {
 
     const price = block.match(/(\d{2,4})(?:,\d\d)?\s*€/);
     const explicitDays = block.match(/(\d)\s*Tage/i);
-    const spanDays = lastDay ? Math.max(0, Number(lastDay) - day) + 1 : 1;
+    const spanDays = lastDay ? Math.max(0, Number(lastDay) - day) + 1 : m.spansDays ? 2 : 1;
     const days = explicitDays ? Number(explicitDays[1]) : spanDays;
 
     const titleOf = (seg) =>
@@ -1737,7 +1753,7 @@ function fromKursBlocks(html, source) {
     if (title.length < 6) continue;
 
     const entryFor = (seg, entryTitle, fallbackTime) => {
-      if (/ausgebucht/i.test(seg) && !/Pl(?:ätze|atz)\s*frei/i.test(seg)) return null;
+      const soldOut = /ausgebucht/i.test(seg) && !/Pl(?:ätze|atz)\s*frei/i.test(seg);
       const spots = seg.match(/(\d+)\s*Pl(?:ätze|atz)\s*frei/i);
       const range = seg.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})\s*Uhr/);
       const start = range ? `${range[1].padStart(2, '0')}:00` : fallbackTime;
@@ -1748,7 +1764,7 @@ function fromKursBlocks(html, source) {
         ...(start ? { time: start } : {}),
         ...(days > 1 ? { duration: `${days} Tage` } : hours ? { duration: `${hours} h` } : {}),
         ...(price ? { price: `€${price[1]}` } : {}),
-        ...(spots ? { spots: Number(spots[1]) } : {}),
+        ...(soldOut ? { soldOut: true } : spots ? { spots: Number(spots[1]) } : {}),
         url: source.infoUrl ?? source.url,
         ...(source.requestBooking ? { request: true } : {}),
       };
@@ -2379,6 +2395,23 @@ const uniqueRecurring = recurringOut.filter((r) => {
   seenRec.add(key);
   return true;
 });
+
+// Sessions that were sold out on the last scrape and are bookable again —
+// the workflow turns this file into a notification issue so everyone who
+// asked to be notified ("🔔 Notify me: …" mails) can be told the event is
+// open for bookings again.
+const wasSoldOut = new Map(
+  (previous.workshops ?? [])
+    .filter((w) => w.soldOut)
+    .map((w) => [`${w.slug}|${w.date}|${w.time}|${w.title}`, w]),
+);
+const reopened = unique.filter(
+  (w) => !w.soldOut && wasSoldOut.has(`${w.slug}|${w.date}|${w.time}|${w.title}`),
+);
+for (const w of reopened) {
+  console.log(`REOPENED: "${w.title}" ${w.date} ${w.time ?? ''} (${w.slug})`);
+}
+writeFileSync('reopened-events.json', JSON.stringify(reopened, null, 2) + '\n');
 
 writeFileSync(
   OUT,

@@ -40,6 +40,9 @@ export type Session = {
   request?: boolean;
   /** Designed for children — picked out by the feed's kids filter. */
   kids?: boolean;
+  /** Fully booked right now — the card says so and offers "Notify me"
+   *  instead of Book; the daily scrape flips it back when spots return. */
+  soldOut?: boolean;
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -65,6 +68,8 @@ type LiveWorkshop = {
   /** True for workshops designed for children (flagged by the scrape from
    *  the title, or per-source). */
   kids?: boolean;
+  /** True while the host's booking platform reports the session full. */
+  soldOut?: boolean;
   url: string;
 };
 
@@ -127,6 +132,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.image ? { image: w.image } : {}),
       ...(w.request ? { request: true } : {}),
       ...(w.kids ? { kids: true } : {}),
+      ...(w.soldOut ? { soldOut: true } : {}),
     });
   }
 

@@ -1708,28 +1708,117 @@ a:hover { color: var(--color-accent); }
 .session-price { grid-column: 1; grid-row: 1; margin-right: 8px; }
 .session-book { grid-column: 2; grid-row: 1; }
 .session-spots { grid-column: 1 / -1; grid-row: 2; text-align: right; }
-/* Share sits beside the Book pill — a quiet round outline button, so the
-   black pill stays the row's one strong action. */
+/* Share sits beside the Book pill — the classic curved forward arrow in
+   the price pill's exact colours, so the row reads as one family and the
+   black pill stays its one strong action. */
 .session-share {
   grid-column: 3;
   grid-row: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border: 1.5px solid var(--color-accent-300);
+  width: 30px;
+  height: 30px;
+  border: 0;
   border-radius: 999px;
-  background: transparent;
-  color: var(--color-accent-700);
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease;
 }
-.session-share:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.session-share:hover { background: color-mix(in srgb, var(--color-accent-100) 55%, var(--color-accent-300)); }
 .session-share svg { width: 16px; height: 16px; }
 .session-share .check-icon { display: none; }
 .session-share.is-copied .share-icon { display: none; }
 .session-share.is-copied .check-icon { display: block; }
+/* Sold-out cards: the badge replaces the spots note, and the action flips
+   to a Notify-me button — outlined, so Book stays the solid one. */
+.session-soldout {
+  color: #a8453a;
+  font-weight: 700;
+}
+.session-notify {
+  background: transparent;
+  border: 1.5px solid var(--color-text);
+  color: var(--color-text);
+  padding: 8.5px 18px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.session-notify:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+/* The notify dialog: email in, bell out. */
+.notify-dialog {
+  border: 0;
+  border-radius: 20px;
+  padding: 26px;
+  max-width: 380px;
+  width: calc(100% - 40px);
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.25);
+}
+.notify-dialog::backdrop { background: rgb(0 0 0 / 0.4); }
+.notify-title { margin: 0 0 10px; font-size: 20px; }
+.notify-event {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
+  font-weight: 700;
+  font-size: 14px;
+}
+.notify-hint {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+}
+.notify-label { display: block; margin-bottom: 16px; font-size: 13px; font-weight: 700; }
+.notify-input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-accent-300);
+  border-radius: 12px;
+  font: inherit;
+  background: transparent;
+  color: inherit;
+}
+.notify-input:focus { outline: none; border-color: var(--color-accent); }
+.notify-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.notify-cancel {
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.notify-send {
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* A card reached from a notification email's link. */
+.session.is-highlighted {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
 /* Booking happens in the app — the row's action leads there. Solid black
    pill, same family as the directory's request button. */
 .session-book {

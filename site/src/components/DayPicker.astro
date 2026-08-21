@@ -51,12 +51,20 @@ const t = {
         noMatch: 'Nothing in this activity on this day — try another.',
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
         filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
-        kids: '🧸 For kids', share: 'Share', copied: 'Link copied' },
+        kids: '🧸 For kids', share: 'Share', copied: 'Link copied',
+        soldOut: 'Sold out', notify: '🔔 Notify me',
+        notifyTitle: 'Get notified when a spot opens',
+        notifyHint: 'We check this host’s calendar automatically. Leave your email and we’ll let you know the moment this workshop takes bookings again — the message opens in your mail app, just hit send.',
+        notifyEmail: 'Your email', notifySend: '🔔 Set notification', cancel: 'Cancel' },
   de: { spots: 'Plätze frei', book: 'Buchen', request: 'Buchung anfragen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
         filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
-        kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert' },
+        kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert',
+        soldOut: 'Ausgebucht', notify: '🔔 Benachrichtige mich',
+        notifyTitle: 'Bescheid bekommen, wenn ein Platz frei wird',
+        notifyHint: 'Wir prüfen den Kalender dieses Hosts automatisch. Trag deine E-Mail ein und wir melden uns, sobald dieser Workshop wieder buchbar ist — die Nachricht öffnet sich in deinem Mailprogramm, einfach absenden.',
+        notifyEmail: 'Deine E-Mail', notifySend: '🔔 Benachrichtigung einrichten', cancel: 'Abbrechen' },
 }[lang];
 
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
@@ -86,6 +94,7 @@ const dayLabel = (offset: number) =>
   data-locale={lang === 'de' ? 'de-DE' : 'en-GB'}
   data-today={t.today}
   data-tomorrow={t.tomorrow}
+  data-request-email={REQUEST_EMAIL}
 >
   <span class="daystrip-month" data-month aria-hidden="true"></span>
   <div class="daystrip" role="tablist" aria-label={t.pick}>
@@ -143,7 +152,7 @@ const dayLabel = (offset: number) =>
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (
-                      <li class="session" data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}>
+                      <li class="session" id={s.id} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
                             the app — then prefers the workshop's own scraped
@@ -175,7 +184,17 @@ const dayLabel = (offset: number) =>
                             note drops underneath. */}
                         <span class="session-side">
                           {s.price && <span class="session-price">{s.price}</span>}
-                          {s.request ? (
+                          {s.soldOut ? (
+                            <button
+                              class="session-book session-notify"
+                              type="button"
+                              data-notify
+                              data-notify-title={s.title}
+                              data-notify-host={s.host.name}
+                              data-notify-date={isoDate(s.dayOffset)}
+                              data-notify-time={s.time}
+                            >{t.notify}</button>
+                          ) : s.request ? (
                             <a class="session-book" href={requestHref(s)}>{t.request}</a>
                           ) : (
                             <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
@@ -195,10 +214,14 @@ const dayLabel = (offset: number) =>
                             data-share-url={s.bookUrl}
                             data-copied-label={t.copied}
                           >
-                            <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
                             <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                           </button>
-                          {typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>}
+                          {s.soldOut ? (
+                            <span class="session-spots session-soldout">{t.soldOut}</span>
+                          ) : (
+                            typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>
+                          )}
                         </span>
                       </li>
                     ))}
@@ -214,6 +237,26 @@ const dayLabel = (offset: number) =>
       );
     })}
   </div>
+
+  {/* One dialog serves every sold-out card: the visitor leaves the address
+      to notify, hits the bell, and the request opens in their mail app —
+      subject line stable per event so the weekly reopen report can point
+      straight at the matching inbox thread. */}
+  <dialog class="notify-dialog" data-notify-dialog>
+    <form method="dialog" class="notify-form" data-notify-form>
+      <h3 class="notify-title">{t.notifyTitle}</h3>
+      <p class="notify-event" data-notify-event></p>
+      <p class="notify-hint">{t.notifyHint}</p>
+      <label class="notify-label">
+        {t.notifyEmail}
+        <input class="notify-input" type="email" required placeholder="anna@mail.com" data-notify-input />
+      </label>
+      <div class="notify-actions">
+        <button class="notify-cancel" type="button" data-notify-cancel>{t.cancel}</button>
+        <button class="notify-send" type="submit">{t.notifySend}</button>
+      </div>
+    </form>
+  </dialog>
 </div>
 
 <script>
@@ -345,6 +388,53 @@ const dayLabel = (offset: number) =>
         }
       });
     });
+
+    // Notify-me on sold-out cards: the dialog collects the address to
+    // notify, then opens the visitor's mail app with the request. The
+    // subject is stable per event ("Notify me: <title> on <date>") so the
+    // weekly reopen report can quote the exact inbox search.
+    const notifyDialog = root.querySelector<HTMLDialogElement>('[data-notify-dialog]');
+    const notifyForm = root.querySelector<HTMLFormElement>('[data-notify-form]');
+    const notifyEvent = root.querySelector<HTMLElement>('[data-notify-event]');
+    const notifyInput = root.querySelector<HTMLInputElement>('[data-notify-input]');
+    let notifyContext: DOMStringMap | null = null;
+    root.querySelectorAll<HTMLButtonElement>('[data-notify]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        notifyContext = btn.dataset;
+        if (notifyEvent) {
+          notifyEvent.textContent = `${notifyContext.notifyTitle} · ${notifyContext.notifyHost} · ${notifyContext.notifyDate}${notifyContext.notifyTime ? ` ${notifyContext.notifyTime}` : ''}`;
+        }
+        notifyDialog?.showModal();
+        notifyInput?.focus();
+      });
+    });
+    root.querySelector('[data-notify-cancel]')?.addEventListener('click', () => notifyDialog?.close());
+    notifyForm?.addEventListener('submit', () => {
+      const d = notifyContext;
+      const address = notifyInput?.value.trim();
+      if (!d || !address) return;
+      const when = `${d.notifyDate}${d.notifyTime ? ` ${d.notifyTime}` : ''}`;
+      const subject = `Notify me: ${d.notifyTitle} on ${d.notifyDate}`;
+      const body = locale.startsWith('de')
+        ? `Hallo Twiggli,\n\nbitte benachrichtigt mich, sobald dieser ausgebuchte Workshop wieder buchbar ist:\n\nWorkshop: ${d.notifyTitle}\nGastgeber: ${d.notifyHost}\nTermin: ${when}\nBenachrichtigung an: ${address}\n\nDanke!`
+        : `Hi Twiggli,\n\nplease notify me when this sold-out workshop is bookable again:\n\nWorkshop: ${d.notifyTitle}\nHost: ${d.notifyHost}\nDate: ${when}\nNotify this address: ${address}\n\nThanks!`;
+      location.href = `mailto:${root.dataset.requestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+
+    // A notification email links straight to its card (#live-…): select
+    // that card's day, scroll to it and highlight it, so the reader lands
+    // on the Book button.
+    if (location.hash) {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target && root.contains(target)) {
+        const day = target.closest<HTMLElement>('.daygroup')?.dataset.day;
+        chips.find((c) => c.dataset.offset === day)?.click();
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.classList.add('is-highlighted');
+        }, 150);
+      }
+    }
 
     // Reel thumbnails play only while on screen — a hidden day group has no
     // box, so its clips never load or run; switching day or scrolling away

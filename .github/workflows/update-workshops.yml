@@ -13,6 +13,7 @@ on:
 permissions:
   contents: write
   actions: write
+  issues: write
 
 concurrency:
   group: update-workshops
@@ -36,6 +37,38 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Scrape host schedules
         run: node scripts/update-workshops.mjs
+      # Sessions that were sold out last time and are bookable again: open
+      # an issue so the site owner (who holds the "🔔 Notify me" mails) can
+      # tell subscribers the event is open — with the inbox search line and
+      # a ready-to-send reply per event.
+      - name: Open a notify-subscribers issue for reopened events
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count=$(node -e "console.log(JSON.parse(require('fs').readFileSync('reopened-events.json','utf8')).length)" 2>/dev/null || echo 0)
+          echo "Reopened events: $count"
+          if [ "$count" = "0" ]; then exit 0; fi
+          node - > issue-body.md <<'EOF'
+          const events = JSON.parse(require('fs').readFileSync('reopened-events.json', 'utf8'));
+          const lines = [
+            'These sessions were sold out on the previous scrape and are **open for bookings again**.',
+            '',
+            'For each one: search your inbox for the subject line below (every "Notify me" request carries it) and reply to those people with the ready-made text.',
+            '',
+          ];
+          for (const w of events) {
+            const when = `${w.date}${w.time ? ` ${w.time}` : ''}`;
+            const anchor = `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`;
+            const link = `https://www.twiggli.com/happening-today/#${anchor}`;
+            lines.push(`### ${w.title} — ${when}`);
+            lines.push(`- Inbox search: \`Notify me: ${w.title} on ${w.date}\``);
+            lines.push(`- Ready to send:`);
+            lines.push(`  > Good news — "${w.title}" on ${when} just opened up for bookings again. Book it here before it fills up: ${link}`);
+            lines.push('');
+          }
+          console.log(lines.join('\n'));
+          EOF
+          gh issue create --title "🔔 ${count} reopened event(s) — notify subscribers" --body-file issue-body.md
       - name: Commit and deploy if the feed changed
         env:
           GH_TOKEN: ${{ github.token }}
