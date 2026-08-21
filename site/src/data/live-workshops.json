@@ -823,6 +823,19 @@
       "url": "https://www.anybodycanwhittle.com/workshops/"
     },
     {
+      "slug": "whittle",
+      "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
+      "title": "Seifenschnitzen",
+      "titleEn": "Soap Carving",
+      "date": "2026-08-26",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€75",
+      "district": "Charlottenburg",
+      "request": true,
+      "url": "https://www.anybodycanwhittle.com/workshops/"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -1690,6 +1703,20 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "whittle",
+      "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
+      "title": "Seifenschnitzen",
+      "titleEn": "Soap Carving",
+      "date": "2026-09-02",
+      "time": "11:00",
+      "duration": "2 h",
+      "price": "€75",
+      "district": "Charlottenburg",
+      "request": true,
+      "url": "https://www.anybodycanwhittle.com/workshops/",
+      "spots": 6
     },
     {
       "slug": "galleria-lucia",
