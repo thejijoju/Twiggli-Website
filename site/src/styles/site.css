@@ -1559,6 +1559,17 @@ a:hover { color: var(--color-accent); }
   color: #fff;
 }
 .district-pills { margin-top: 10px; }
+/* The district row runs in the brighter accent purple, the activity row
+   in the heading's dark one — two filters, two recognisable colours. */
+.district-pills .activity-pill {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.district-pills .activity-pill.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
 /* The kids toggle sits with the activity pills but combines with them
    (kids + ceramics works), so a dashed border marks it as an on/off
    switch rather than one of the either-or categories. */
