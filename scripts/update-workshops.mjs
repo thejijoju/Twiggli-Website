@@ -154,6 +154,16 @@ const SOURCES = [
   { slug: 'schmiede', name: 'Schmiedekurse Berlin — Kinderschmiedekurse', mode: 'kurs-blocks-de',
     url: 'https://www.schmiedekurse-berlin.de/kinderschmiedekurse/',
     requestBooking: true, district: 'Blankenburg' },
+  // Their welding page mixes prose and voucher products around the dated
+  // courses ("WIG Schweißen: Mittwoch 26. August 16 - 19.00 Uhr").
+  { slug: 'schmiede', name: 'Schmiedekurse Berlin — Schweißkurse', mode: 'kurs-blocks-de',
+    url: 'https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/',
+    courseTitle: 'Schweißkurs', requestBooking: true, district: 'Blankenburg' },
+  // The sharpening evening course names itself before its date, so the
+  // source supplies the title; watched for the next published date.
+  { slug: 'schmiede', name: 'Schmiedekurse Berlin — Messerschärfkurse', mode: 'kurs-blocks-de',
+    url: 'https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/',
+    courseTitle: 'Messerschärfkurs – Abendkurs', requestBooking: true, district: 'Blankenburg' },
   // Wix Bookings service list: /termine renders every dated workshop
   // server-side with its own booking-calendar link, time range and price.
   { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
@@ -1761,23 +1771,28 @@ function fromKursBlocks(html, source) {
     const days = explicitDays ? Number(explicitDays[1]) : spanDays;
 
     const titleOf = (seg) =>
-      seg.split(/Kurszeiten|Kursleiter|Kursgebühr|Kosten|Max\.|\d+\s*Pl(?:ätze|atz)\s*frei|ausgebucht|Anmeldung|Vormittagskurs|Nachmittagskurs|Küchenmesser oder|Messer bis|\d\s*Tage a|Im Kurs|weitere Infos/i)[0]
+      seg
+        // A time range straight after the date belongs to the session, not
+        // the title ("26. August 16 - 19.00 Uhr Schweißkurs WIG …").
+        .replace(/^\s*\d{1,2}(?:[.:]\d{2})?\s*[-–]\s*\d{1,2}(?:[.:]\d{2})?\s*Uhr/, '')
+        .split(/Kurszeiten|Kursleiter|Kursgebühr|Kosten|Max\.|\d+\s*Pl(?:ätze|atz)\s*frei|ausgebucht|ausverkauft|Anmeldung|Vormittagskurs|Nachmittagskurs|Küchenmesser oder|Messer bis|\d\s*Tage a|\d\s*Stunden|Im Kurs|weitere Infos/i)[0]
         .replace(/\s*-\s*(\d) Tag/g, ' – $1 Tag')
         .replace(/[\s|•·–—-]+$/g, '')
         .replace(/\s+/g, ' ')
         .trim();
     // A word-fragment "title" is the tail of a sentence that merely
     // mentions dates ("Ersatztermine 19./20. September und …"), not a
-    // course block of its own.
-    const title = titleOf(block);
+    // course block of its own. Pages that name the course before its date
+    // ("Kurstermine: 4. Juni 17-19 Uhr") supply the title per source.
+    const title = titleOf(block) || source.courseTitle || '';
     if (title.length < 6) continue;
 
     const entryFor = (seg, entryTitle, fallbackTime) => {
-      const soldOut = /ausgebucht/i.test(seg) && !/Pl(?:ätze|atz)\s*frei/i.test(seg);
+      const soldOut = /ausgebucht|ausverkauft/i.test(seg) && !/Pl(?:ätze|atz)\s*frei/i.test(seg);
       const spots = seg.match(/(\d+)\s*Pl(?:ätze|atz)\s*frei/i);
-      const range = seg.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})\s*Uhr/);
-      const start = range ? `${range[1].padStart(2, '0')}:00` : fallbackTime;
-      const hours = range ? Number(range[2]) - Number(range[1]) : null;
+      const range = seg.match(/(\d{1,2})(?:[.:](\d{2}))?\s*[-–]\s*(\d{1,2})(?:[.:]\d{2})?\s*Uhr/);
+      const start = range ? `${range[1].padStart(2, '0')}:${range[2] ?? '00'}` : fallbackTime;
+      const hours = range ? Number(range[3]) - Number(range[1]) : null;
       return {
         title: entryTitle,
         date,
