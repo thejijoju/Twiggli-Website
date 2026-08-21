@@ -301,7 +301,8 @@ function pageImage(html, pageUrl) {
       .find((u) => !/logo|icon|favicon|cropped-|placeholder/i.test(u));
   if (!fallback) return undefined;
   try {
-    return new URL(decodeEntities(fallback), pageUrl).toString();
+    // Cards live on an https page — an http image would be mixed content.
+    return new URL(decodeEntities(fallback), pageUrl).toString().replace(/^http:\/\//, 'https://');
   } catch {
     return undefined;
   }
