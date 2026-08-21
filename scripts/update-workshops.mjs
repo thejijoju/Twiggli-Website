@@ -303,6 +303,29 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Techno Painting (Dina Shneider, Berlin-Mitte) publishes a fixed
+  // weekly schedule as prose on her WordPress page; tickets sell through
+  // Konfetti/Airbnb/Viator/Eventbrite, none of which the site links —
+  // cards take booking requests by mail (Jirel's rule). The recurring-de
+  // mode parses nothing from the English page by design; the schedule
+  // rides in as seeds and fail-keep covers outages.
+  { slug: 'techno', name: 'Techno Painting — weekly schedule', mode: 'recurring-de',
+    url: 'https://technopainting.com/airbnb-experience/', district: 'Mitte',
+    seedRecurring: [
+      { title: 'Techno Painting Workshop', weekdays: ['mon', 'thu'], time: '18:00',
+        duration: '3 h', price: '€75', district: 'Mitte', request: true,
+        url: 'https://technopainting.com/airbnb-experience/' },
+      { title: 'Techno Painting Workshop', weekdays: ['tue', 'wed'], time: '19:00',
+        duration: '3 h', price: '€75', district: 'Mitte', request: true,
+        url: 'https://technopainting.com/airbnb-experience/' },
+      { title: 'Techno Painting Workshop', weekdays: ['fri'], time: '18:30',
+        duration: '3 h', price: '€75', district: 'Mitte', request: true,
+        url: 'https://technopainting.com/airbnb-experience/' },
+      { title: 'Techno Painting Workshop', weekdays: ['sat', 'sun'], time: '14:00',
+        duration: '3 h', price: '€75', district: 'Mitte', request: true,
+        url: 'https://technopainting.com/airbnb-experience/' },
+    ] },
+
   // Empire of Dirt (Großbeerenstraße 28C, Kreuzberg) sells ceramics
   // classes as Shopify products whose variants carry English prose dates
   // ("October 24 & 25 (Saturday 11-15 / Sunday 11-14)"); courses meeting

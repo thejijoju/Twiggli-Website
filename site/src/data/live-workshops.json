@@ -355,6 +355,65 @@
       "district": "Kreuzberg",
       "kids": true,
       "url": "https://empireofdirt.studio/products/pottery-for-kids-love-matsch"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/",
+      "weekdays": [
+        "mon",
+        "thu"
+      ],
+      "time": "18:00"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/",
+      "weekdays": [
+        "tue",
+        "wed"
+      ],
+      "time": "19:00"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/",
+      "weekdays": [
+        "fri"
+      ],
+      "time": "18:30"
+    },
+    {
+      "slug": "techno",
+      "sourceUrl": "https://technopainting.com/airbnb-experience/",
+      "title": "Techno Painting Workshop",
+      "duration": "3 h",
+      "price": "€75",
+      "district": "Mitte",
+      "request": true,
+      "url": "https://technopainting.com/airbnb-experience/",
+      "weekdays": [
+        "sat",
+        "sun"
+      ],
+      "time": "14:00"
     }
   ],
   "onRequest": [

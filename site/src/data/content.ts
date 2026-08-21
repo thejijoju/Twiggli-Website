@@ -137,6 +137,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — the shop publishes no cap per class.
   dirt:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [1.25, 4] },
   rose:             { activity: 'craft',     groupRange: [3, 4],  hourRange: [4, 4] },
+  techno:           { activity: 'art',       groupRange: [1, 6],  hourRange: [3, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -267,6 +268,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'rose', name: 'Rose Williams', specialty: 'Silversmithing & jewelry workshops', studio: 'Rose Williams Jewelry',
       blurb: 'Rosemary Nan Williams’s jewelry studio in Wedding. Four-hour short courses for complete beginners, taught in German or English in groups of 3–4: texture a silver ring at the rolling mill, cast a pendant by pouring molten silver over organic matter, or try cuttlefish casting. Tools, materials and silver are included — and you wear your piece home the same day.',
       group: '3–4', duration: '4 h', place: 'Tegeler Straße 35, Berlin', languages: 'DE · EN' },
+    // Copy from technopainting.com and her Makery listing; photos to follow.
+    { slug: 'techno', name: 'Techno Painting', specialty: 'Techno painting sessions', studio: 'Techno Painting Studio',
+      blurb: 'Berlin artist Dina Shneider’s original Techno Painting workshop, running since 2018 and rated one of the top five Airbnb experiences in Berlin. Techno music meets intuitive, therapeutic acrylic painting in her Mitte studio: you pick a palette, work in layers, slip into flow state — one break with drinks — and leave with your own 70 × 50 cm canvas. All materials provided, no experience needed, sessions every day of the week.',
+      group: 'Up to 6', duration: '3 h', place: 'Studio in Berlin-Mitte', languages: 'EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -371,6 +376,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'rose', name: 'Rose Williams', specialty: 'Silberschmieden & Schmuckworkshops', studio: 'Rose Williams Jewelry',
       blurb: 'Das Schmuckstudio von Rosemary Nan Williams im Wedding. Vierstündige Schnupperkurse für absolute Anfänger, auf Deutsch oder Englisch in Gruppen von 3–4: an der Walze einen strukturierten Silberring prägen, geschmolzenes Silber über organische Materialien zu einem Anhänger gießen oder den Sepiaguß ausprobieren. Werkzeuge, Material und Silber inklusive — das fertige Stück trägst du noch am selben Tag.',
       group: '3–4', duration: '4 Std.', place: 'Tegeler Straße 35, Berlin', languages: 'DE · EN' },
+    { slug: 'techno', name: 'Techno Painting', specialty: 'Techno-Painting-Sessions', studio: 'Techno Painting Studio',
+      blurb: 'Der originale Techno-Painting-Workshop der Berliner Künstlerin Dina Shneider — seit 2018 eine der fünf bestbewerteten Airbnb-Experiences Berlins. Technomusik trifft intuitives, therapeutisches Acrylmalen in ihrem Studio in Mitte: Palette wählen, in Schichten arbeiten, in den Flow kommen — eine Pause mit Getränken — und am Ende nimmst du deine eigene 70 × 50 cm Leinwand mit. Material inklusive, keine Vorkenntnisse nötig, Sessions an jedem Tag der Woche.',
+      group: 'Bis 6', duration: '3 Std.', place: 'Studio in Berlin-Mitte', languages: 'EN' },
   ],
 };
 

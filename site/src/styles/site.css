@@ -1728,7 +1728,7 @@ a:hover { color: var(--color-accent); }
   display: block;
   margin-top: 3px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;

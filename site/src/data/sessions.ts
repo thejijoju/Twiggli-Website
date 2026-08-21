@@ -194,6 +194,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         ...(r.duration ? { duration: r.duration } : {}),
         ...(r.price ? { price: r.price } : {}),
         ...(r.kids ? { kids: true } : {}),
+        ...(r.request ? { request: true } : {}),
       });
     }
   }
