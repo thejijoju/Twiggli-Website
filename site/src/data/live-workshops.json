@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T07:42:29.693Z",
+  "updated": "2026-08-21T08:02:26.985Z",
   "sources": [
     {
       "slug": "qian",
@@ -102,6 +102,12 @@
       "url": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "status": "ok",
       "count": 13
+    },
+    {
+      "slug": "sabine",
+      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "druckrausch",
@@ -2963,7 +2969,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "munio",
@@ -3141,7 +3148,8 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "jem",
@@ -4900,7 +4908,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "munio",
