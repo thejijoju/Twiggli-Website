@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T09:55:04.018Z",
+  "updated": "2026-08-21T10:43:08.838Z",
   "sources": [
     {
       "slug": "qian",
@@ -71,7 +71,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 222
+      "count": 221
     },
     {
       "slug": "pastamadre",
@@ -227,7 +227,19 @@
       "slug": "whittle",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "status": "failed: HTTP 403",
-      "count": 6
+      "count": 18
+    },
+    {
+      "slug": "loom-lab",
+      "url": "https://theloomlab.de/products.json?limit=250",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "dirt",
+      "url": "https://empireofdirt.studio/products.json?limit=250",
+      "status": "ok",
+      "count": 10
     }
   ],
   "recurring": [
@@ -307,6 +319,36 @@
       "duration": "1 h",
       "district": "Spandau St. Wilhelm",
       "url": "https://www.ninakranzart.com/privat-freizeit"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Töpfern für Kinder „Matsch Love“ (Drop-in)",
+      "titleEn": "Pottery for Kids “Matsch Love” (drop-in)",
+      "weekdays": [
+        "wed"
+      ],
+      "time": "15:00",
+      "duration": "1.25 h",
+      "price": "€20",
+      "district": "Kreuzberg",
+      "kids": true,
+      "url": "https://empireofdirt.studio/products/pottery-for-kids-love-matsch"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Töpfern für Kinder „Matsch Love“ (Drop-in)",
+      "titleEn": "Pottery for Kids “Matsch Love” (drop-in)",
+      "weekdays": [
+        "wed"
+      ],
+      "time": "16:30",
+      "duration": "1.25 h",
+      "price": "€20",
+      "district": "Kreuzberg",
+      "kids": true,
+      "url": "https://empireofdirt.studio/products/pottery-for-kids-love-matsch"
     }
   ],
   "workshops": [
@@ -321,19 +363,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-21",
-      "time": "13:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 6,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
     },
     {
       "slug": "munio",
@@ -1671,6 +1700,16 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Intensive: Wheel Throwing for Beginners",
+      "date": "2026-08-31",
+      "price": "€330",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
+      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
     },
     {
       "slug": "galleria-lucia",
@@ -4845,6 +4884,16 @@
       "district": "Neukölln"
     },
     {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Intensive: Wheel Throwing for Beginners",
+      "date": "2026-09-29",
+      "price": "€330",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
+      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 40)",
@@ -5755,6 +5804,18 @@
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
     },
     {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Mini: Wheel Throwing",
+      "date": "2026-10-11",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€80",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
+      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
+    },
+    {
       "slug": "daisuki",
       "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
       "district": "Charlottenburg",
@@ -6102,6 +6163,19 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Masterclass: Nerikomi with Angela – 2 Termine: 24. & 25.10.",
+      "titleEn": "Masterclass: Nerikomi with Angela – 2 dates: Oct 24 & 25",
+      "date": "2026-10-24",
+      "time": "11:00",
+      "duration": "2 × 4 h",
+      "price": "€130",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/image3_3.jpg?v=1782675056",
+      "url": "https://empireofdirt.studio/products/masterclass-nerikomi-with-angela"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6474,6 +6548,16 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Intensive: Wheel Throwing for Beginners",
+      "date": "2026-11-09",
+      "price": "€330",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
+      "url": "https://empireofdirt.studio/products/five-week-pottery-class"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Basis",
@@ -6497,6 +6581,18 @@
       "url": "https://www.druckrausch.com/booking-calendar/11-11-express-siebdruck-kurs",
       "image": "https://static.wixstatic.com/media/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg/v1/fit/w_1299,h_866,al_c,q_85/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Mini: Wheel Throwing",
+      "date": "2026-11-12",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€80",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
+      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6536,6 +6632,19 @@
       "url": "https://www.druckrausch.com/booking-calendar/14-11-basis-siebdruck-kurs-fotografie",
       "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Express: Wheel Throwing – 3 Termine: 14. & 15. & 22.11.",
+      "titleEn": "Express: Wheel Throwing – 3 dates: Nov 14 & 15 & 22",
+      "date": "2026-11-14",
+      "time": "11:30",
+      "duration": "3 × 2.5 h",
+      "price": "€210",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6963.jpg?v=1745264480",
+      "url": "https://empireofdirt.studio/products/express-wheel-throwing"
     },
     {
       "slug": "pastamadre",
@@ -6952,6 +7061,18 @@
       "url": "https://www.pastamadre.de/calendar-kurstermine",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Mini: Wheel Throwing",
+      "date": "2026-11-29",
+      "time": "18:30",
+      "duration": "3 h",
+      "price": "€80",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
+      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
       "slug": "kohfink",
