@@ -1684,6 +1684,16 @@ async function scrape(source) {
     }
   }
   const all = result.workshops ?? [];
+  // Hard rule (Jirel): no card ever links to Konfetti. Any session whose
+  // link would land on gokonfetti.com becomes a request-to-book card
+  // pointing at the host's own page instead.
+  for (const w of all) {
+    if (/gokonfetti\.com/i.test(w.url ?? '')) {
+      w.request = true;
+      w.url = source.infoUrl ?? source.url;
+      console.log(`[${source.slug}] konfetti link replaced with request-to-book: "${w.title}" ${w.date}`);
+    }
+  }
   if (all.length) {
     console.log(`[${source.slug}] images: ${all.filter((w) => w.image).length}/${all.length} sessions have one`);
   }
