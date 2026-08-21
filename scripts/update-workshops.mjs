@@ -292,9 +292,16 @@ function pageImage(html, pageUrl) {
     html.match(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i) ??
     html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ??
     html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i);
-  if (!m) return undefined;
+  // WordPress sites without an SEO plugin publish no share image at all
+  // (Karen-Rose's, Sarah's) — the first real content image stands in.
+  const fallback =
+    m?.[1] ??
+    [...html.matchAll(/<img[^>]+src=["']([^"']+\/wp-content\/uploads\/[^"']+\.(?:jpe?g|png|webp)[^"']*)["']/gi)]
+      .map((x) => x[1])
+      .find((u) => !/logo|icon|favicon|cropped-|placeholder/i.test(u));
+  if (!fallback) return undefined;
   try {
-    return new URL(decodeEntities(m[1]), pageUrl).toString();
+    return new URL(decodeEntities(fallback), pageUrl).toString();
   } catch {
     return undefined;
   }
