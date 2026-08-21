@@ -258,6 +258,16 @@ const SOURCES = [
   { slug: 'karen-rose', name: 'Karen-Rose — Seife Sieden', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/',
     title: 'Seife Sieden Workshop', titleEn: 'Soap Making Workshop', price: '€99', duration: '3 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
+
+  // Anybody Can Whittle's Jimdo site sits behind Cloudflare rules that
+  // block GitHub's runners, so this source always fails — by design: the
+  // failure keeps the hand-seeded sessions (from Nicole's own booking
+  // calendar) alive via fail-keep, and if the block ever loosens the
+  // default parsers take over. Cards take requests by mail.
+  { slug: 'whittle', name: 'Anybody Can Whittle — booking calendar (watched)',
+    url: 'https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES',
+    requestBooking: true, infoUrl: 'https://www.anybodycanwhittle.com/workshops/',
+    district: 'Charlottenburg' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
