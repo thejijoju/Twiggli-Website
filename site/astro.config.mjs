@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // Served from https://www.twiggli.com — the domain is live, pointed at GitHub
 // Pages by public/CNAME plus the registrar's DNS. No `base`: the site sits at
@@ -8,6 +9,15 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://www.twiggli.com',
   build: { format: 'directory' },
+
+  // Google finds the happening-today calendar (and its daily-refreshed
+  // Event markup) through this sitemap; payment/redirect stubs stay out.
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !/paymentcanceled|stripe-connect|corporate\/$|hosts\/$/.test(page),
+    }),
+  ],
 
   // The corporate pitch lived at /corporate/, then /hosts/, and now
   // /corporatebookings/. Both old URLs are live and may be linked or

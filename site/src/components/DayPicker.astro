@@ -175,7 +175,14 @@ const dayLabel = (offset: number) =>
                           )}
                         </a>
                         <span class="session-main">
-                          <span class="session-duration">{s.duration ?? s.host.duration}</span>
+                          <span class="session-duration">
+                            {s.duration ?? s.host.duration}
+                            {/* Taught-in languages, one quiet pill each, so
+                                nobody books a class they can't follow. */}
+                            {(s.host.languages ?? '').split('·').map((l) => l.trim()).filter(Boolean).map((l) => (
+                              <span class="lang-pill">{l}</span>
+                            ))}
+                          </span>
                           <a class="session-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
                           <span class="session-host">{s.host.name} · {s.district}</span>
                         </span>

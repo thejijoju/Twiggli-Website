@@ -1685,6 +1685,20 @@ a:hover { color: var(--color-accent); }
   font-weight: 600;
   color: color-mix(in srgb, var(--color-text) 52%, transparent);
 }
+/* Taught-in language(s), sitting quietly beside the duration. */
+.lang-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 22%, transparent);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  vertical-align: 1px;
+}
 .session-title {
   display: block;
   margin-top: 2px;

@@ -277,6 +277,28 @@ const SOURCES = [
   // sessions flow into the feed with no further change.
   { slug: 'loom-lab', name: 'The Loom Lab — shop catalog (watched)', mode: 'shopify',
     url: 'https://theloomlab.de/products.json?limit=250', district: 'Berlin' },
+
+  // Empire of Dirt (Großbeerenstraße 28C, Kreuzberg) sells ceramics
+  // classes as Shopify products whose variants carry English prose dates
+  // ("October 24 & 25 (Saturday 11-15 / Sunday 11-14)"); courses meeting
+  // on several dates land on their first date, marked "N Termine"/"N
+  // dates" in the title. Memberships, open studio and gift cards carry no
+  // date and drop out on their own. The kids Wednesday drop-ins are sold
+  // undated, so they ride along as seeded recurring classes.
+  { slug: 'dirt', name: 'Empire of Dirt — Shopify classes', mode: 'shopify',
+    url: 'https://empireofdirt.studio/products.json?limit=250', district: 'Kreuzberg',
+    seedRecurring: [
+      { title: 'Töpfern für Kinder „Matsch Love“ (Drop-in)',
+        titleEn: 'Pottery for Kids “Matsch Love” (drop-in)',
+        weekdays: ['wed'], time: '15:00', duration: '1.25 h', price: '€20',
+        district: 'Kreuzberg', kids: true,
+        url: 'https://empireofdirt.studio/products/pottery-for-kids-love-matsch' },
+      { title: 'Töpfern für Kinder „Matsch Love“ (Drop-in)',
+        titleEn: 'Pottery for Kids “Matsch Love” (drop-in)',
+        weekdays: ['wed'], time: '16:30', duration: '1.25 h', price: '€20',
+        district: 'Kreuzberg', kids: true,
+        url: 'https://empireofdirt.studio/products/pottery-for-kids-love-matsch' },
+    ] },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
@@ -1562,6 +1584,11 @@ function fromGermanRecurring(html, source) {
  *  ("DD.MM.YYYY - HH:MM"), each with its own price and availability flag.
  *  Sold-out variants are skipped. Duration comes from the description
  *  ("Duration: 1.5 - 2 hours"). */
+const EN_MONTHS = {
+  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
+};
+
 function fromShopify(jsonText, source) {
   let data;
   try {
@@ -1580,14 +1607,59 @@ function fromShopify(jsonText, source) {
     const productUrl = new URL(`/products/${product.handle}`, source.url).href;
     let kept = 0;
     for (const variant of product.variants ?? []) {
-      const m = String(variant.title).match(/(\d{2})\.(\d{2})\.(\d{4})\s*[-\u2013]\s*(\d{1,2}):(\d{2})/);
-      if (!m) continue;
+      const vt = String(variant.title);
+      const m = vt.match(/(\d{2})\.(\d{2})\.(\d{4})\s*[-\u2013]\s*(\d{1,2}):(\d{2})/);
+      if (m) {
+        out.push({
+          title: stripTags(String(product.title)),
+          date: `${m[3]}-${m[2]}-${m[1]}`,
+          time: `${m[4].padStart(2, '0')}:${m[5]}`,
+          ...(variant.available === false ? { soldOut: true } : {}),
+          ...(duration ? { duration } : {}),
+          ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
+          ...(source.district ? { district: source.district } : {}),
+          ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
+          url: productUrl,
+        });
+        kept++;
+        continue;
+      }
+      // English course variants (Empire of Dirt): "October 24 & 25
+      // (Saturday 11-15 / Sunday 11-14)", "November 14&15&22 @ 11:30 -
+      // 14:00". A class meeting more than once sits on its FIRST date and
+      // the card marks the other meetings \u2014 in the title and as
+      // "N \u00d7 2.5 h" \u2014 so nobody mistakes a course for a single evening.
+      const em = vt.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s*(\d{1,2}(?:\s*[&,+]\s*\d{1,2})*)/i);
+      if (!em) continue;
+      const month = EN_MONTHS[em[1].toLowerCase()];
+      const days = em[2].split(/[&,+]/).map((d) => parseInt(d, 10)).filter((n) => n >= 1 && n <= 31);
+      if (!month || !days.length) continue;
+      const mmdd = `${String(month).padStart(2, '0')}-${String(days[0]).padStart(2, '0')}`;
+      let date = `${todayISO.slice(0, 4)}-${mmdd}`;
+      if (date < todayISO) date = `${Number(todayISO.slice(0, 4)) + 1}-${mmdd}`;
+      // The first time range AFTER the dates is the (first) session's.
+      const rest = vt.slice(em.index + em[0].length);
+      const tm = rest.match(/(\d{1,2})(?::(\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?::(\d{2}))?/);
+      const startOk = tm && Number(tm[1]) <= 23 && Number(tm[3]) <= 24;
+      const hours = startOk
+        ? Number(tm[3]) + Number(tm[4] ?? 0) / 60 - (Number(tm[1]) + Number(tm[2] ?? 0) / 60)
+        : 0;
+      const baseTitle = stripTags(String(product.title));
+      const markDe = days.length > 1
+        ? ` \u2013 ${days.length} Termine: ${days.map((d) => `${d}.`).join(' & ')}${String(month).padStart(2, '0')}.`
+        : '';
+      const markEn = days.length > 1
+        ? ` \u2013 ${days.length} dates: ${em[1].slice(0, 3)} ${days.join(' & ')}`
+        : '';
       out.push({
-        title: stripTags(String(product.title)),
-        date: `${m[3]}-${m[2]}-${m[1]}`,
-        time: `${m[4].padStart(2, '0')}:${m[5]}`,
+        title: baseTitle + markDe,
+        ...(markEn ? { titleEn: baseTitle + markEn } : {}),
+        date,
+        ...(startOk ? { time: `${tm[1].padStart(2, '0')}:${tm[2] ?? '00'}` } : {}),
+        ...(hours > 0 && hours <= 12
+          ? { duration: days.length > 1 ? `${days.length} \u00d7 ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
+          : {}),
         ...(variant.available === false ? { soldOut: true } : {}),
-        ...(duration ? { duration } : {}),
         ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
         ...(source.district ? { district: source.district } : {}),
         ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
@@ -2033,6 +2105,13 @@ async function shareImageFor(url) {
 
 async function scrape(source) {
   const result = await scrapeSource(source);
+  // Standing weekly classes a host runs as drop-ins without dated variants
+  // (Empire of Dirt's kids Wednesdays) ride along as hand-curated recurring
+  // entries — emitted every run while the source answers, and kept by the
+  // fail-keep path (they carry the source's url) when it doesn't.
+  for (const seed of source.seedRecurring ?? []) {
+    (result.recurring ??= []).push({ slug: source.slug, sourceUrl: source.url, ...seed });
+  }
   // Hard rule (Jirel): nothing on the site references Konfetti — no card
   // link AND no image loaded from their CDN. This runs before the image
   // backfill below, so a stripped image is refetched from the host's own
@@ -2505,6 +2584,8 @@ if (process.env.PARSE_TEST) {
         ? fromDatedTimeList
       : process.env.PARSE_TEST_MODE === 'titled-date-blocks'
         ? fromTitledDateBlocks
+      : process.env.PARSE_TEST_MODE === 'shopify'
+        ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json' })
       : process.env.PARSE_TEST_MODE === 'json-ld'
         ? (h) => fromJsonLd(h, 'test')
         : process.env.PARSE_TEST_MODE === 'ics'

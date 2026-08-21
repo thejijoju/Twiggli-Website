@@ -134,6 +134,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   schmiede:         { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 7] },
   daisuki:          { activity: 'food',      groupRange: [5, 20], hourRange: [3, 5] },
   whittle:          { activity: 'craft',     groupRange: [1, 12], hourRange: [2.5, 5] },
+  // PLACEHOLDER group range — the shop publishes no cap per class.
+  dirt:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [1.25, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -256,6 +258,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'whittle', name: 'Anybody Can Whittle', specialty: 'Whittling & spoon carving', studio: 'Anybody Can Whittle',
       blurb: 'Nicole’s whittling school in Charlottenburg. Step-by-step courses from the first knife strokes to your own carved spoon — safety, wood, sharpening and finishing included, with a tea break to rest your hands. Material for one piece is in the course price, and wood- and soap-carving team events run for companies of 6–12.',
       group: 'Up to 12', duration: '2.5–5 h', place: 'Spielhagenstraße 13, Berlin', languages: 'DE · EN' },
+    // Copy from empireofdirt.studio; photos and reel to follow.
+    { slug: 'dirt', name: 'Empire of Dirt', specialty: 'Wheel throwing & ceramics classes', studio: 'Empire of Dirt',
+      blurb: 'Kerstin El-Khawad and Julia Koxholt’s ceramics studio in Kreuzberg. Wheel-throwing classes from express weekends to multi-week intensives, masterclasses with guest artists (Nerikomi and more), Wednesday drop-in pottery for kids (“Matsch Love”), and an open-studio membership for independent work. Courses meeting on two or three dates are marked right on the calendar.',
+      group: 'Small groups', duration: '1.25–4 h', place: 'Großbeerenstraße 28C, Berlin', languages: 'EN · DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -354,6 +360,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'whittle', name: 'Anybody Can Whittle', specialty: 'Schnitzen & Löffelschnitzen', studio: 'Anybody Can Whittle',
       blurb: 'Nicoles Schnitzschule in Charlottenburg. Kurse, die Schritt für Schritt vom ersten Messerschnitt zum eigenen Löffel führen — Sicherheit, Holz, Schärfen und Finish inklusive, mit Teepause für die Hände. Das Material für ein Werkstück steckt im Kurspreis, und Holz- und Seifenschnitz-Teamevents laufen für Firmen mit 6–12 Personen.',
       group: 'Bis 12', duration: '2,5–5 Std.', place: 'Spielhagenstraße 13, Berlin', languages: 'DE · EN' },
+    { slug: 'dirt', name: 'Empire of Dirt', specialty: 'Drehscheibe & Keramikkurse', studio: 'Empire of Dirt',
+      blurb: 'Das Keramikstudio von Kerstin El-Khawad und Julia Koxholt in Kreuzberg. Drehscheibenkurse vom Express-Wochenende bis zum mehrwöchigen Intensiv, Masterclasses mit Gastkünstlerinnen (Nerikomi u. a.), mittwochs Kinder-Töpfern zum Reinschnuppern („Matsch Love“) und eine Open-Studio-Mitgliedschaft fürs freie Arbeiten. Kurse mit zwei oder drei Terminen sind direkt im Kalender markiert.',
+      group: 'Kleine Gruppen', duration: '1,25–4 Std.', place: 'Großbeerenstraße 28C, Berlin', languages: 'EN · DE' },
   ],
 };
 

@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import DayPicker from '../../../components/DayPicker.astro';
+import EventSchema from '../../../components/EventSchema.astro';
 
 const lang = 'de';
 ---
@@ -21,4 +22,5 @@ const lang = 'de';
     </section>
 
   </div>
+  <EventSchema lang={lang} pageUrl="https://www.twiggli.com/de/happening-today/" />
 </Base>

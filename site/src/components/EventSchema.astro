@@ -1,0 +1,76 @@
+---
+/** Schema.org Event markup for the happening-today feed.
+ *
+ *  Google's event search experience ("workshops berlin" style queries)
+ *  only lists events it can read as structured data — this emits every
+ *  real upcoming session as a schema.org Event inside one JSON-LD
+ *  ItemList, built from the same feed the visible cards use, so the
+ *  markup can never drift from the page. Sessions deep-link back to
+ *  their card via the feed's #live-… anchors.
+ */
+import { getSessions, berlinTodayMs } from '../data/sessions.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  /** Absolute URL of the page carrying the markup. */
+  pageUrl: string;
+}
+
+const { lang, pageUrl } = Astro.props;
+const today = berlinTodayMs();
+
+const isoDate = (dayOffset: number): string =>
+  new Date(today + dayOffset * 86400000).toISOString().slice(0, 10);
+
+// Google caps how much markup it reads per page; the nearest sessions are
+// the ones a searcher can still act on anyway.
+const sessions = getSessions(lang).slice(0, 80);
+
+const events = sessions.map((s) => ({
+  '@type': 'Event',
+  name: s.title,
+  startDate: `${isoDate(s.dayOffset)}${s.time ? `T${s.time}:00` : ''}`,
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventStatus: 'https://schema.org/EventScheduled',
+  location: {
+    '@type': 'Place',
+    name: s.host.studio ?? s.host.name,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: s.place,
+      addressLocality: 'Berlin',
+      addressCountry: 'DE',
+    },
+  },
+  ...(s.image || s.host.photo ? { image: [s.image ?? s.host.photo] } : {}),
+  description: `${s.host.specialty} — ${s.host.name}`,
+  organizer: { '@type': 'Organization', name: s.host.name },
+  ...(s.price
+    ? {
+        offers: {
+          '@type': 'Offer',
+          price: s.price.replace(/[^\d.]/g, ''),
+          priceCurrency: 'EUR',
+          url: s.bookUrl,
+          availability: s.soldOut
+            ? 'https://schema.org/SoldOut'
+            : 'https://schema.org/InStock',
+        },
+      }
+    : {}),
+  url: `${pageUrl}#${s.id}`,
+}));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: events.map((e, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: e,
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
