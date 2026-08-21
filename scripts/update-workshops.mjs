@@ -263,10 +263,11 @@ const SOURCES = [
   // block GitHub's runners, so this source always fails — by design: the
   // failure keeps the hand-seeded sessions (from Nicole's own booking
   // calendar) alive via fail-keep, and if the block ever loosens the
-  // default parsers take over. Cards take requests by mail.
+  // default parsers take over. Cards Book straight into her per-course
+  // booking-checkout calendars — only robots are blocked, not visitors.
   { slug: 'whittle', name: 'Anybody Can Whittle — booking calendar (watched)',
     url: 'https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES',
-    requestBooking: true, infoUrl: 'https://www.anybodycanwhittle.com/workshops/',
+    infoUrl: 'https://www.anybodycanwhittle.com/workshops/',
     district: 'Charlottenburg' },
 ];
 
