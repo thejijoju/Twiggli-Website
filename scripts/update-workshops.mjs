@@ -49,26 +49,26 @@ const SOURCES = [
   // so title and price come from this config when the page yields none.
   { slug: 'karen-rose', name: 'Karen-Rose — Bio Naturkosmetik', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=227019',
-    title: 'Bio Naturkosmetik Workshop', price: '€65', duration: '3 h', district: 'Treptow' },
+    title: 'Bio Naturkosmetik Workshop', price: '€65', duration: '3 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
   { slug: 'karen-rose', name: 'Karen-Rose — Keramikgießen | Terrazzo', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product',
     title: 'Keramikgießen | Terrazzo Workshop', titleEn: 'Ceramic Casting | Terrazzo Workshop',
-    price: '€59', duration: '3 h', district: 'Treptow' },
+    price: '€59', duration: '3 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
   { slug: 'karen-rose', name: 'Karen-Rose — Duftkerzen', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=229230',
     title: 'Duftkerzen Workshop (vegan + nachhaltig)',
-    titleEn: 'Scented Candle Workshop (vegan + sustainable)', price: '€55', duration: '2 h', district: 'Treptow' },
+    titleEn: 'Scented Candle Workshop (vegan + sustainable)', price: '€55', duration: '2 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
   { slug: 'karen-rose', name: 'Karen-Rose — Naturkosmetik Essentials', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=264518',
     title: 'Bio Naturkosmetik Workshop - Essentials',
-    titleEn: 'Organic Natural Cosmetics Workshop - Essentials', price: '€49', duration: '2 h', district: 'Treptow' },
+    titleEn: 'Organic Natural Cosmetics Workshop - Essentials', price: '€49', duration: '2 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
   { slug: 'karen-rose', name: 'Karen-Rose — Terrazzo Schmuck', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=320775',
-    title: 'Terrazzo Schmuck', titleEn: 'Terrazzo Jewelry', price: '€59', duration: '3 h', district: 'Treptow' },
+    title: 'Terrazzo Schmuck', titleEn: 'Terrazzo Jewelry', price: '€59', duration: '3 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
   { slug: 'karen-rose', name: 'Karen-Rose — Shampoo Naturkosmetik', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/?re-product-id=229220',
     title: 'Shampoo Naturkosmetik Workshop', titleEn: 'Shampoo Natural Cosmetics Workshop',
-    price: '€55', duration: '3 h', district: 'Treptow' },
+    price: '€55', duration: '3 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
   // Shopify shop: the collection's products.json carries every workshop,
   // its dated sessions (variants titled "DD.MM.YYYY - HH:MM"), per-date
   // price and availability — fully automatic, nothing configured per
@@ -257,7 +257,7 @@ const SOURCES = [
   // failing source keeps its previous entries) and the Book target.
   { slug: 'karen-rose', name: 'Karen-Rose — Seife Sieden', mode: 'dates-de',
     url: 'https://karen-rose.com/events-2/',
-    title: 'Seife Sieden Workshop', titleEn: 'Soap Making Workshop', price: '€99', duration: '3 h', district: 'Treptow' },
+    title: 'Seife Sieden Workshop', titleEn: 'Soap Making Workshop', price: '€99', duration: '3 h', district: 'Treptow', imagePage: 'https://karen-rose.com/' },
 ];
 
 /** How far ahead a scraped session may be and still be kept. Slightly wider
@@ -275,7 +275,8 @@ const maxISO = berlinDate(Date.now() + KEEP_DAYS * 86400000);
 const decodeEntities = (s) =>
   s
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ');
+    .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ')
+    .replace(/&#8211;|&ndash;/gi, '–').replace(/&#8212;|&mdash;/gi, '—');
 
 const stripTags = (s) =>
   decodeEntities(
@@ -1743,17 +1744,23 @@ function fromWpCourseDates(html, source) {
     while (j < heads.length && dateRe.test(heads[j].text)) {
       const t = heads[j].text;
       const d = t.match(dateRe);
-      const closesPrevious = /^\s*(?:[–—-]\s*)?sorry,?\s*ausgebucht/i.test(t);
-      if (closesPrevious && sessions.length) sessions[sessions.length - 1].soldOut = true;
+      // "– sorry, ausgebucht. 20.09.2026" marks ITS date as full —
+      // verified against the product page, whose date picker no longer
+      // offers that day.
       sessions.push({
         date: `${d[3]}-${d[2].padStart(2, '0')}-${d[1].padStart(2, '0')}`,
-        soldOut: !closesPrevious && /ausgebucht|ausverkauft/i.test(t),
+        soldOut: /ausgebucht|ausverkauft/i.test(t),
         price: t.match(/(\d{2,3})(?:,\d\d)?\s*€/)?.[1],
       });
       j++;
     }
     if (!sessions.length) continue;
-    const block = html.slice(h.index, heads[j]?.index ?? html.length);
+    // The course's descriptor ("Wie lange? 12 Uhr – 15 Uhr", the booking
+    // link) often sits under its own sub-heading after the dates — the
+    // block runs to the NEXT course heading, not just the next heading.
+    let k = j;
+    while (k < heads.length && !courseRe.test(heads[k].text)) k++;
+    const block = html.slice(h.index, heads[k]?.index ?? html.length);
     const blockText = stripTags(block);
     const range = blockText.match(
       /(\d{1,2})(?:[.:](\d{2}))?\s*(?:Uhr|h)\s*(?:–|—|-|bis)\s*(\d{1,2})(?:[.:]\d{2})?\s*(?:Uhr|h)/i,
