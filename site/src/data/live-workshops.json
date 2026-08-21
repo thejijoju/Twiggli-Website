@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T04:40:02.631Z",
+  "updated": "2026-08-21T06:58:09.900Z",
   "sources": [
     {
       "slug": "qian",
@@ -98,6 +98,12 @@
       "count": 30
     },
     {
+      "slug": "sov",
+      "url": "https://www.sov.gallery/prog_calendar/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
       "slug": "bumerang",
       "url": "https://berliner-bumerang.de/products.json?limit=250",
       "status": "ok",
@@ -138,6 +144,12 @@
       "url": "https://www.senle.studio/scheduling",
       "status": "ok",
       "count": 8
+    },
+    {
+      "slug": "celina",
+      "url": "https://www.gestaltwandel.com/booking",
+      "status": "ok",
+      "count": 5
     },
     {
       "slug": "kohfink",
@@ -1900,7 +1912,7 @@
       "time": "13:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 7,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2042,6 +2054,18 @@
       "spots": 10,
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "celina",
+      "sourceUrl": "https://www.gestaltwandel.com/booking",
+      "title": "Strawstar Binding",
+      "date": "2026-09-05",
+      "time": "18:00",
+      "spots": 20,
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
+      "district": "Gesundbrunnen"
     },
     {
       "slug": "galleria-lucia",
@@ -3312,6 +3336,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "celina",
+      "sourceUrl": "https://www.gestaltwandel.com/booking",
+      "title": "Strawstar Binding",
+      "date": "2026-09-19",
+      "time": "18:00",
+      "spots": 20,
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
+      "district": "Gesundbrunnen"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try Handbuilding",
@@ -4383,6 +4419,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "celina",
+      "sourceUrl": "https://www.gestaltwandel.com/booking",
+      "title": "Strawstar Binding",
+      "date": "2026-10-03",
+      "time": "18:00",
+      "spots": 20,
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
+      "district": "Gesundbrunnen"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try Handbuilding",
@@ -4649,6 +4697,18 @@
       "district": "Wedding"
     },
     {
+      "slug": "celina",
+      "sourceUrl": "https://www.gestaltwandel.com/booking",
+      "title": "Strawstar Binding",
+      "date": "2026-10-17",
+      "time": "18:00",
+      "spots": 20,
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
+      "district": "Gesundbrunnen"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try Handbuilding",
@@ -4850,6 +4910,18 @@
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding"
+    },
+    {
+      "slug": "celina",
+      "sourceUrl": "https://www.gestaltwandel.com/booking",
+      "title": "Strawstar Binding",
+      "date": "2026-10-31",
+      "time": "18:00",
+      "spots": 20,
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
+      "district": "Gesundbrunnen"
     },
     {
       "slug": "ceramic-kingdom",
