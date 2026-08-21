@@ -80,6 +80,42 @@ type LiveRecurring = Omit<LiveWorkshop, 'date'> & {
   weekdays: string[]; // 'mon'…'sun'
 };
 
+/** A workshop a host runs only on inquiry — no published dates. Shown in
+ *  the calendar's own "on request" section under the day feed. */
+type LiveOnRequest = Omit<LiveWorkshop, 'date' | 'time'>;
+
+export type OnRequestWorkshop = {
+  id: string;
+  host: Host;
+  title: string;
+  district: string;
+  bookUrl: string;
+  duration?: string;
+  price?: string;
+  request?: boolean;
+};
+
+/** Undated inquiry-only workshops for the feed's "on request" section. */
+export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
+  const bySlug = new Map(getHosts(lang).map((h) => [h.slug, h]));
+  const out: OnRequestWorkshop[] = [];
+  for (const o of ((liveData as { onRequest?: LiveOnRequest[] }).onRequest ?? [])) {
+    const host = bySlug.get(o.slug);
+    if (!host) continue;
+    out.push({
+      id: `req-${o.slug}-${hash(o.title)}`,
+      host,
+      title: lang === 'en' && o.titleEn ? o.titleEn : o.title,
+      district: o.district ?? host.studio ?? host.place,
+      bookUrl: o.url,
+      ...(o.duration ? { duration: o.duration } : {}),
+      ...(o.price ? { price: o.price } : {}),
+      ...(o.request ? { request: true } : {}),
+    });
+  }
+  return out;
+}
+
 const WEEKDAY_INDEX: Record<string, number> = {
   sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6,
 };

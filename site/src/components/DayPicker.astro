@@ -1,5 +1,5 @@
 ---
-import { getSessions, berlinTodayMs, DAYS_AHEAD, type Session } from '../data/sessions.ts';
+import { getSessions, getOnRequest, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
@@ -11,6 +11,7 @@ interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 
 const sessions = getSessions(lang);
+const onRequest = getOnRequest(lang);
 const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 
 // Only activities that actually have sessions get a pill — no dead filters.
@@ -55,7 +56,9 @@ const t = {
         soldOut: 'Sold out', notify: 'Notify me',
         notifyTitle: 'Get notified when a spot opens',
         notifyHint: 'We check this host’s calendar automatically. Leave your email and we’ll let you know the moment this workshop takes bookings again — the message opens in your mail app, just hit send.',
-        notifyEmail: 'Your email', notifySend: 'Set notification', cancel: 'Cancel' },
+        notifyEmail: 'Your email', notifySend: 'Set notification', cancel: 'Cancel',
+        onRequestHead: 'Anytime, on request', inquire: 'Inquire',
+        onRequestNote: 'These workshops run whenever you ask — the host schedules a date around you.' },
   de: { spots: 'Plätze frei', book: 'Buchen', request: 'Buchung anfragen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
@@ -64,7 +67,9 @@ const t = {
         soldOut: 'Ausgebucht', notify: 'Benachrichtige mich',
         notifyTitle: 'Bescheid bekommen, wenn ein Platz frei wird',
         notifyHint: 'Wir prüfen den Kalender dieses Hosts automatisch. Trag deine E-Mail ein und wir melden uns, sobald dieser Workshop wieder buchbar ist — die Nachricht öffnet sich in deinem Mailprogramm, einfach absenden.',
-        notifyEmail: 'Deine E-Mail', notifySend: 'Benachrichtigung einrichten', cancel: 'Abbrechen' },
+        notifyEmail: 'Deine E-Mail', notifySend: 'Benachrichtigung einrichten', cancel: 'Abbrechen',
+        onRequestHead: 'Jederzeit, auf Anfrage', inquire: 'Termin anfragen',
+        onRequestNote: 'Diese Workshops laufen, wann du willst — der Host legt den Termin mit dir fest.' },
 }[lang];
 
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
@@ -81,6 +86,18 @@ const requestHref = (s: Session): string => {
   const body = lang === 'de'
     ? `Hallo Twiggli,\n\nich möchte diesen Workshop buchen:\n\nWorkshop: ${s.title}\nGastgeber: ${s.host.name}\nTermin: ${when}\n${s.price ? `Preis: ${s.price}\n` : ''}\nMein Name:\nAnzahl Personen:\n\nDanke!`
     : `Hi Twiggli,\n\nI'd like to book this workshop:\n\nWorkshop: ${s.title}\nHost: ${s.host.name}\nDate: ${when}\n${s.price ? `Price: ${s.price}\n` : ''}\nMy name:\nNumber of people:\n\nThanks!`;
+  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
+
+/** Inquiry mail for undated on-request workshops — no date in the
+ *  subject, the visitor proposes one in the body. */
+const inquireHref = (o: OnRequestWorkshop): string => {
+  const subject = lang === 'de'
+    ? `Terminanfrage: ${o.title} (${o.host.name})`
+    : `Workshop inquiry: ${o.title} (${o.host.name})`;
+  const body = lang === 'de'
+    ? `Hallo Twiggli,\n\nich möchte diesen Workshop anfragen:\n\nWorkshop: ${o.title}\nGastgeber: ${o.host.name}\n${o.price ? `Preis: ${o.price}\n` : ''}\nMein Wunschtermin:\nMein Name:\nAnzahl Personen:\n\nDanke!`
+    : `Hi Twiggli,\n\nI'd like to inquire about this workshop:\n\nWorkshop: ${o.title}\nHost: ${o.host.name}\n${o.price ? `Price: ${o.price}\n` : ''}\nMy preferred date:\nMy name:\nNumber of people:\n\nThanks!`;
   return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };
 
@@ -244,6 +261,38 @@ const dayLabel = (offset: number) =>
       );
     })}
   </div>
+
+  {/* Workshops without published dates sit under the day feed, whatever
+      day is selected — the host schedules them around the inquiry. */}
+  {onRequest.length > 0 && (
+    <section class="timegroup onrequest">
+      <h3 class="timegroup-head">{t.onRequestHead}</h3>
+      <p class="onrequest-note">{t.onRequestNote}</p>
+      <ul class="session-list">
+        {onRequest.map((o) => (
+          <li class="session" id={o.id} data-activity={o.host.activity}>
+            <a class="session-thumb" href={o.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+              <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
+            </a>
+            <span class="session-main">
+              <span class="session-duration">
+                {o.duration ?? o.host.duration}
+                {(o.host.languages ?? '').split('·').map((l) => l.trim()).filter(Boolean).map((l) => (
+                  <span class="lang-pill">{l}</span>
+                ))}
+              </span>
+              <a class="session-title" href={o.bookUrl} target="_blank" rel="noopener">{o.title}</a>
+              <span class="session-host">{o.host.name} · {o.district}</span>
+            </span>
+            <span class="session-side">
+              {o.price && <span class="session-price">{o.price}</span>}
+              <a class="session-book" href={o.request ? inquireHref(o) : o.bookUrl} target={o.request ? undefined : '_blank'} rel={o.request ? undefined : 'noopener'}>{t.inquire}</a>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 
   {/* One dialog serves every sold-out card: the visitor leaves the address
       to notify, hits the bell, and the request opens in their mail app —

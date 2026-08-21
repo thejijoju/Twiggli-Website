@@ -2593,8 +2593,8 @@
     {
       "slug": "rose",
       "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
-      "title": "Silber Anhänger Guß Workshop",
-      "titleEn": "Silver Pendant Casting Workshop",
+      "title": "Strukturierte Silber Ring Workshop",
+      "titleEn": "Textured Silver Ring Workshop",
       "date": "2026-09-06",
       "time": "11:00",
       "duration": "4 h",
@@ -5540,8 +5540,8 @@
     {
       "slug": "rose",
       "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
-      "title": "Silber Anhänger Guß Workshop",
-      "titleEn": "Silver Pendant Casting Workshop",
+      "title": "Strukturierte Silber Ring Workshop",
+      "titleEn": "Textured Silver Ring Workshop",
       "date": "2026-10-04",
       "time": "11:00",
       "duration": "4 h",
@@ -6359,8 +6359,8 @@
     {
       "slug": "rose",
       "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
-      "title": "Silber Anhänger Guß Workshop",
-      "titleEn": "Silver Pendant Casting Workshop",
+      "title": "Strukturierte Silber Ring Workshop",
+      "titleEn": "Textured Silver Ring Workshop",
       "date": "2026-11-01",
       "time": "11:00",
       "duration": "4 h",
@@ -7168,8 +7168,8 @@
     {
       "slug": "rose",
       "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
-      "title": "Silber Anhänger Guß Workshop",
-      "titleEn": "Silver Pendant Casting Workshop",
+      "title": "Strukturierte Silber Ring Workshop",
+      "titleEn": "Textured Silver Ring Workshop",
       "date": "2026-12-06",
       "time": "11:00",
       "duration": "4 h",
@@ -7237,6 +7237,30 @@
       "district": "Kaulsdorf",
       "url": "https://imkerei-kohfink.de/IMKERKURSE/",
       "image": "https://imkerei-kohfink.de/.cm4all/uproc.php/0/Hotelhonig%201.jpg"
+    }
+  ],
+  "onRequest": [
+    {
+      "slug": "rose",
+      "sourceUrl": "https://www.rose-williams.com/jewelry-courses/",
+      "title": "Sepiaguß Workshop",
+      "titleEn": "Cuttlefish Casting Workshop",
+      "duration": "4 h",
+      "price": "€150",
+      "district": "Wedding",
+      "request": true,
+      "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
+      "slug": "loom-lab",
+      "sourceUrl": "https://theloomlab.de/products.json?limit=250",
+      "title": "3D-Clay-Printing Experience",
+      "titleEn": "3D Clay Printing Experience",
+      "duration": "4 h",
+      "price": "€139",
+      "district": "Berlin",
+      "request": true,
+      "url": "https://theloomlab.de/products/3d-clay-printing-experience"
     }
   ]
 }

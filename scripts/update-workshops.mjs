@@ -276,7 +276,13 @@ const SOURCES = [
   // dated variants — 'DD.MM.YYYY - HH:MM' like Galleria Lucia — the
   // sessions flow into the feed with no further change.
   { slug: 'loom-lab', name: 'The Loom Lab — shop catalog (watched)', mode: 'shopify',
-    url: 'https://theloomlab.de/products.json?limit=250', district: 'Berlin' },
+    url: 'https://theloomlab.de/products.json?limit=250', district: 'Berlin',
+    seedOnRequest: [
+      { title: '3D-Clay-Printing Experience',
+        titleEn: '3D Clay Printing Experience',
+        duration: '4 h', price: '€139', district: 'Berlin', request: true,
+        url: 'https://theloomlab.de/products/3d-clay-printing-experience' },
+    ] },
 
   // Rose Williams's Jimdo site sits behind the same Cloudflare wall as
   // Anybody Can Whittle — GitHub runners get 403 — and her ticket sales
@@ -286,7 +292,16 @@ const SOURCES = [
   // loosens, the default parsers report what the page exposes.
   { slug: 'rose', name: 'Rose Williams — jewelry courses (watched)',
     url: 'https://www.rose-williams.com/jewelry-courses/',
-    district: 'Wedding' },
+    district: 'Wedding',
+    // Cuttlefish casting publishes no dates — Rose schedules it on
+    // inquiry. (The watcher fails against Cloudflare, so this seed also
+    // lives in live-workshops.json and survives via fail-keep.)
+    seedOnRequest: [
+      { title: 'Sepiaguß Workshop',
+        titleEn: 'Cuttlefish Casting Workshop',
+        duration: '4 h', price: '€150', district: 'Wedding', request: true,
+        url: 'https://www.rose-williams.com/jewelry-courses/' },
+    ] },
 
   // Empire of Dirt (Großbeerenstraße 28C, Kreuzberg) sells ceramics
   // classes as Shopify products whose variants carry English prose dates
@@ -2138,6 +2153,13 @@ async function scrape(source) {
   for (const seed of source.seedRecurring ?? []) {
     (result.recurring ??= []).push({ slug: source.slug, sourceUrl: source.url, ...seed });
   }
+  // Workshops a host runs only on inquiry — no published dates at all —
+  // sit in the calendar's "on request" section. Same lifecycle as the
+  // recurring seeds: emitted while the source answers, fail-kept when
+  // it doesn't.
+  for (const seed of source.seedOnRequest ?? []) {
+    (result.onRequest ??= []).push({ slug: source.slug, sourceUrl: source.url, ...seed });
+  }
   // Hard rule (Jirel): nothing on the site references Konfetti — no card
   // link AND no image loaded from their CDN. This runs before the image
   // backfill below, so a stripped image is refetched from the host's own
@@ -2631,14 +2653,16 @@ const previous = (() => {
 
 const workshops = [];
 const recurringOut = [];
+const onRequestOut = [];
 const statuses = [];
 for (const source of SOURCES) {
   try {
     const found = await scrape(source);
-    const total = found.workshops.length + found.recurring.length;
+    const total = found.workshops.length + found.recurring.length + (found.onRequest?.length ?? 0);
     if (total) {
       workshops.push(...found.workshops);
       recurringOut.push(...found.recurring);
+      onRequestOut.push(...(found.onRequest ?? []));
       statuses.push({ slug: source.slug, url: source.url, status: 'ok', count: total });
     } else {
       throw new Error('no upcoming events parsed');
@@ -2649,6 +2673,7 @@ for (const source of SOURCES) {
     // duplicates a sibling page's fresh results for the same host.
     const keptDated = (previous.workshops ?? []).filter((w) => w.sourceUrl === source.url && w.date >= todayISO);
     const keptRecurring = (previous.recurring ?? []).filter((r) => r.sourceUrl === source.url);
+    const keptOnRequest = (previous.onRequest ?? []).filter((o) => o.sourceUrl === source.url);
     // Kept entries deserve the workshop's own picture too — their booking
     // pages are usually reachable even when the schedule parse fails
     // (Karen-Rose's seeds sat imageless for exactly this reason).
@@ -2664,14 +2689,15 @@ for (const source of SOURCES) {
     );
     workshops.push(...keptDated);
     recurringOut.push(...keptRecurring);
+    onRequestOut.push(...keptOnRequest);
     statuses.push({
       slug: source.slug,
       url: source.url,
       status: `failed: ${err.message}`,
-      count: keptDated.length + keptRecurring.length,
+      count: keptDated.length + keptRecurring.length + keptOnRequest.length,
     });
     console.error(
-      `[${source.slug}] FAILED (${err.message}) — kept ${keptDated.length + keptRecurring.length} previous entries`,
+      `[${source.slug}] FAILED (${err.message}) — kept ${keptDated.length + keptRecurring.length + keptOnRequest.length} previous entries`,
     );
   }
 }
@@ -2696,6 +2722,14 @@ const uniqueRecurring = recurringOut.filter((r) => {
   return true;
 });
 
+const seenReq = new Set();
+const uniqueOnRequest = onRequestOut.filter((o) => {
+  const key = `${o.slug}|${o.title}`;
+  if (seenReq.has(key)) return false;
+  seenReq.add(key);
+  return true;
+});
+
 // Sessions that were sold out on the last scrape and are bookable again —
 // the workflow turns this file into a notification issue so everyone who
 // asked to be notified ("🔔 Notify me: …" mails) can be told the event is
@@ -2716,9 +2750,9 @@ writeFileSync('reopened-events.json', JSON.stringify(reopened, null, 2) + '\n');
 writeFileSync(
   OUT,
   JSON.stringify(
-    { updated: new Date().toISOString(), sources: statuses, recurring: uniqueRecurring, workshops: unique },
+    { updated: new Date().toISOString(), sources: statuses, recurring: uniqueRecurring, onRequest: uniqueOnRequest, workshops: unique },
     null,
     2,
   ) + '\n',
 );
-console.log(`wrote ${unique.length} workshops + ${uniqueRecurring.length} recurring classes to ${OUT}`);
+console.log(`wrote ${unique.length} workshops + ${uniqueRecurring.length} recurring + ${uniqueOnRequest.length} on-request to ${OUT}`);
