@@ -773,6 +773,11 @@ async function fromKonfetti(source) {
       decodeEntities((html.match(/<title>([^<]*)/i)?.[1] ?? '').replace(/&mdash;|&#8212;/gi, '—'))
         .split('—')[0]
         .trim();
+    // Rentals, vouchers and other non-workshop pages fall away by title.
+    if (source.excludeTitle && new RegExp(source.excludeTitle, 'i').test(title)) {
+      console.log(`[${source.slug}] konfetti: excluded "${title}"`);
+      continue;
+    }
     const image = pageImage(html, page);
     for (const id of ids) {
       if (seenEvents.has(id)) continue;
@@ -806,7 +811,10 @@ async function fromKonfetti(source) {
               ...(Number.isFinite(cents) && cents > 0 ? { price: `€${Math.round(cents / 100)}` } : {}),
               ...(Number.isFinite(s.available_tickets_quantity) ? { spots: s.available_tickets_quantity } : {}),
               ...(image ? { image } : {}),
-              url: page,
+              // Some hosts must not link out to the booking platform — their
+              // cards point at the host's own site and take requests by mail.
+              ...(source.requestBooking ? { request: true } : {}),
+              url: source.infoUrl ?? page,
             });
             kept++;
           }

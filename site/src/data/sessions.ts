@@ -35,6 +35,9 @@ export type Session = {
   /** The workshop's own picture, scraped from the host's booking page —
    *  the card thumbnail prefers it over the host's stock tile. */
   image?: string;
+  /** Hosts whose booking platform must not be linked take requests by
+   *  mail instead — the card's button becomes "Request booking". */
+  request?: boolean;
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -54,6 +57,9 @@ type LiveWorkshop = {
   /** The workshop's own picture from the host's site, where the scrape
    *  found one. */
   image?: string;
+  /** True when this host's card takes booking requests by mail instead of
+   *  linking a booking page. */
+  request?: boolean;
   url: string;
 };
 
@@ -114,6 +120,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.price ? { price: w.price } : {}),
       ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),
       ...(w.image ? { image: w.image } : {}),
+      ...(w.request ? { request: true } : {}),
     });
   }
 

@@ -1,5 +1,5 @@
 ---
-import { getSessions, DAYS_AHEAD, type Session } from '../data/sessions.ts';
+import { getSessions, berlinTodayMs, DAYS_AHEAD, type Session } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
@@ -36,15 +36,32 @@ const byTime = (list: Session[]): [string, Session[]][] => {
 };
 
 const t = {
-  en: { spots: 'spots left', book: 'Book', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
+  en: { spots: 'spots left', book: 'Book', request: 'Request booking', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
         noMatch: 'Nothing in this activity on this day — try another.',
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
         filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All' },
-  de: { spots: 'Plätze frei', book: 'Buchen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
+  de: { spots: 'Plätze frei', book: 'Buchen', request: 'Buchung anfragen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
         noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
         filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle' },
 }[lang];
+
+/** Request-by-mail hosts: the button opens a prefilled email to Twiggli
+ *  instead of a booking page. Built at render time — the daily rebuild
+ *  keeps the session's real date in the subject. */
+const REQUEST_EMAIL = 'jirel.kuenen@gmail.com';
+const isoDate = (offset: number) =>
+  new Date(berlinTodayMs() + offset * 86400000).toISOString().slice(0, 10);
+const requestHref = (s: Session): string => {
+  const when = `${isoDate(s.dayOffset)}${s.time ? ` ${s.time}` : ''}`;
+  const subject = lang === 'de'
+    ? `Buchungsanfrage: ${s.title} am ${when}`
+    : `Booking request: ${s.title} on ${when}`;
+  const body = lang === 'de'
+    ? `Hallo Twiggli,\n\nich möchte diesen Workshop buchen:\n\nWorkshop: ${s.title}\nGastgeber: ${s.host.name}\nTermin: ${when}\n${s.price ? `Preis: ${s.price}\n` : ''}\nMein Name:\nAnzahl Personen:\n\nDanke!`
+    : `Hi Twiggli,\n\nI'd like to book this workshop:\n\nWorkshop: ${s.title}\nHost: ${s.host.name}\nDate: ${when}\n${s.price ? `Price: ${s.price}\n` : ''}\nMy name:\nNumber of people:\n\nThanks!`;
+  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
 
 const dayLabel = (offset: number) =>
   offset === 0 ? t.today : offset === 1 ? t.tomorrow : null;
@@ -138,7 +155,11 @@ const dayLabel = (offset: number) =>
                             note drops underneath. */}
                         <span class="session-side">
                           {s.price && <span class="session-price">{s.price}</span>}
-                          <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
+                          {s.request ? (
+                            <a class="session-book" href={requestHref(s)}>{t.request}</a>
+                          ) : (
+                            <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
+                          )}
                           {typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>}
                         </span>
                       </li>
