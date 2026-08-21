@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T06:58:09.900Z",
+  "updated": "2026-08-21T07:13:04.451Z",
   "sources": [
     {
       "slug": "qian",
@@ -96,6 +96,12 @@
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "status": "ok",
       "count": 30
+    },
+    {
+      "slug": "druckrausch",
+      "url": "https://www.druckrausch.com/termine",
+      "status": "ok",
+      "count": 19
     },
     {
       "slug": "sov",
@@ -265,6 +271,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -276,6 +283,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 6,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -288,6 +296,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -300,6 +309,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -312,6 +322,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -323,6 +334,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -334,6 +346,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -346,6 +359,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -358,6 +372,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -370,6 +385,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -383,7 +399,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "munio",
@@ -394,6 +411,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 8,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -406,6 +424,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -417,6 +436,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 4,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -430,7 +450,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "karen-rose",
@@ -465,6 +486,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -489,6 +511,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -501,6 +524,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -513,6 +537,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -525,7 +550,8 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "jem",
@@ -535,6 +561,7 @@
       "time": "16:00",
       "duration": "3.5 h",
       "price": "€75",
+      "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin",
       "district": "Zehlendorf"
     },
@@ -547,6 +574,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -559,6 +587,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -571,6 +600,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -583,6 +613,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -595,6 +626,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 8,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -618,6 +650,7 @@
       "time": "10:30",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -640,6 +673,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -650,6 +684,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -662,7 +697,8 @@
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "galleria-lucia",
@@ -673,6 +709,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -684,6 +721,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -695,6 +733,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -705,6 +744,7 @@
       "time": "15:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -716,6 +756,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -728,6 +769,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -740,6 +782,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -752,6 +795,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -764,6 +808,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -776,6 +821,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -789,7 +835,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -799,7 +846,20 @@
       "time": "18:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-08-26",
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/26-08-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "munio",
@@ -810,6 +870,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 8,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -822,6 +883,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -834,6 +896,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -846,6 +909,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -858,6 +922,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -870,6 +935,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -882,6 +948,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -894,6 +961,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -907,7 +975,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -918,6 +987,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -929,6 +999,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -941,6 +1012,7 @@
       "spots": 12,
       "duration": "2 h",
       "price": "€45",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-97092490.jpg?1786720397",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97092490/calendar/13025469",
       "district": "Friedrichshain"
     },
@@ -953,6 +1025,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -965,6 +1038,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -976,6 +1050,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -988,6 +1063,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1000,6 +1076,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1012,6 +1089,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1023,6 +1101,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1034,6 +1113,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -1046,6 +1126,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1058,6 +1139,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1070,6 +1152,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1083,7 +1166,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "munio",
@@ -1094,6 +1178,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1106,6 +1191,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -1116,6 +1202,7 @@
       "time": "10:30",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1128,7 +1215,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "karen-rose",
@@ -1150,6 +1238,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1161,6 +1250,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 8,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1184,6 +1274,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1196,6 +1287,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1208,6 +1300,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1220,7 +1313,8 @@
       "duration": "4.5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "karen-rose",
@@ -1242,6 +1336,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1253,6 +1348,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 8,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -1265,6 +1361,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1277,6 +1374,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1289,6 +1387,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1301,6 +1400,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1313,6 +1413,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -1324,6 +1425,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -1336,6 +1438,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -1359,6 +1462,7 @@
       "time": "10:30",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1370,6 +1474,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1381,7 +1486,8 @@
       "duration": "4 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -1391,6 +1497,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1403,7 +1510,8 @@
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "galleria-lucia",
@@ -1414,6 +1522,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -1425,6 +1534,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1436,6 +1546,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1446,6 +1557,7 @@
       "time": "18:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1456,6 +1568,7 @@
       "time": "15:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1467,6 +1580,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1479,6 +1593,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1491,6 +1606,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1503,6 +1619,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1515,6 +1632,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1527,6 +1645,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1540,7 +1659,8 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -1550,6 +1670,7 @@
       "time": "18:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1561,6 +1682,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1573,6 +1695,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1585,6 +1708,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1597,6 +1721,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1609,6 +1734,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -1621,6 +1747,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1633,6 +1760,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1645,6 +1773,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1658,7 +1787,20 @@
       "duration": "2 h",
       "price": "€59",
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Express-Siebdruck-Kurs",
+      "date": "2026-09-03",
+      "time": "17:30",
+      "duration": "1.5 h",
+      "price": "€45",
+      "url": "https://www.druckrausch.com/booking-calendar/03-09-express-siebdruck-kurs",
+      "image": "https://static.wixstatic.com/media/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg/v1/fit/w_1299,h_866,al_c,q_85/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "galleria-lucia",
@@ -1669,6 +1811,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -1680,6 +1823,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1692,6 +1836,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -1704,6 +1849,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1715,6 +1861,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1727,6 +1874,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1739,6 +1887,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1751,6 +1900,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1762,6 +1912,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1773,6 +1924,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -1785,6 +1937,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1797,6 +1950,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1809,6 +1963,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1821,6 +1976,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 5,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1845,6 +2001,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -1856,6 +2013,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -1879,6 +2037,7 @@
       "time": "10:30",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1894,6 +2053,18 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=229230"
     },
     {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruck-Kurs -Fotografie-",
+      "date": "2026-09-05",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "price": "€87",
+      "url": "https://www.druckrausch.com/booking-calendar/05-09-basis-siebdruck-kurs-fotografie",
+      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
+      "district": "Friedenau"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -1902,6 +2073,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1913,6 +2085,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 7,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -1936,6 +2109,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -1948,6 +2122,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1960,6 +2135,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -1972,7 +2148,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -1982,6 +2159,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -1992,6 +2170,7 @@
       "time": "16:00",
       "duration": "3 h",
       "price": "€60",
+      "image": "https://static.wixstatic.com/media/d918f6_2f78747316cd476b9c6f42d0c3c5648f~mv2.jpg/v1/fill/w_1686,h_1170,al_c,q_90/d918f6_2f78747316cd476b9c6f42d0c3c5648f~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fizzy-ferments-kombucha-kefir-and-wild-sodas",
       "district": "Zehlendorf"
     },
@@ -2004,6 +2183,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -2016,6 +2196,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2028,6 +2209,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2040,6 +2222,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2052,6 +2235,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2064,6 +2248,7 @@
       "spots": 20,
       "duration": "2 h",
       "price": "€59",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
     },
@@ -2076,6 +2261,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -2087,6 +2273,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -2111,6 +2298,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -2146,6 +2334,7 @@
       "time": "10:30",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -2157,6 +2346,7 @@
       "duration": "1.5–2 h",
       "price": "€66",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -2169,7 +2359,8 @@
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "pastamadre",
@@ -2180,7 +2371,8 @@
       "duration": "4.5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -2190,6 +2382,7 @@
       "time": "16:00",
       "price": "€59",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
@@ -2201,6 +2394,7 @@
       "duration": "1.5–2 h",
       "price": "€71",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
@@ -2248,6 +2442,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2260,6 +2455,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2272,6 +2468,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2284,6 +2481,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2296,6 +2494,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2308,8 +2507,21 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-09-09",
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/09-09-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "munio",
@@ -2320,6 +2532,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2332,6 +2545,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2344,6 +2558,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2356,6 +2571,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2368,6 +2584,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -2380,6 +2597,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2392,6 +2610,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2404,6 +2623,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2416,6 +2636,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2428,6 +2649,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -2452,6 +2674,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2464,6 +2687,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2476,6 +2700,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2488,6 +2713,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2500,6 +2726,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -2512,6 +2739,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2524,6 +2752,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2536,6 +2765,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2548,6 +2778,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2559,6 +2790,7 @@
       "time": "18:00",
       "duration": "3 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/kimchi-selber-machen-3",
       "district": "Zehlendorf"
     },
@@ -2571,6 +2803,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 2,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -2611,6 +2844,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Siebdruck + Papercutting",
+      "date": "2026-09-12",
+      "time": "10:30",
+      "duration": "3.5 h",
+      "price": "€77",
+      "url": "https://www.druckrausch.com/booking-calendar/12-09-siebdruck-papercutting",
+      "image": "https://static.wixstatic.com/media/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg/v1/fit/w_1134,h_756,al_c,q_85/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg",
+      "district": "Friedenau"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -2619,6 +2864,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2631,7 +2877,8 @@
       "duration": "2 h",
       "price": "€75",
       "url": "https://beat-etage.de/workshops/",
-      "district": "Treptow"
+      "district": "Treptow",
+      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
       "slug": "munio",
@@ -2642,6 +2889,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2654,6 +2902,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2666,6 +2915,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2678,7 +2928,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "munio",
@@ -2689,6 +2940,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -2701,6 +2953,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2713,6 +2966,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2725,6 +2979,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2737,7 +2992,8 @@
       "duration": "2 h",
       "price": "€50",
       "url": "https://beat-etage.de/workshops/",
-      "district": "Treptow"
+      "district": "Treptow",
+      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
       "slug": "munio",
@@ -2748,6 +3004,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2760,6 +3017,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -2772,6 +3030,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -2809,7 +3068,8 @@
       "duration": "3 h",
       "price": "€106",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541614/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "karen-rose",
@@ -2832,7 +3092,8 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "jem",
@@ -2842,6 +3103,7 @@
       "time": "15:00",
       "duration": "3 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-7",
       "district": "Zehlendorf"
     },
@@ -2866,6 +3128,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2878,6 +3141,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2890,6 +3154,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2902,6 +3167,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2914,6 +3180,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2926,6 +3193,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2942,6 +3210,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Collagegrafik",
+      "date": "2026-09-16",
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€60",
+      "url": "https://www.druckrausch.com/booking-calendar/16-09-collagegrafik",
+      "image": "https://static.wixstatic.com/media/daf795_941c7f9e5027450d9eacdaee8f458afa~mv2_d_5184_3456_s_4_2.jpg/v1/fit/w_5184,h_3456,al_c,q_90/daf795_941c7f9e5027450d9eacdaee8f458afa~mv2_d_5184_3456_s_4_2.jpg",
+      "district": "Friedenau"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -2950,6 +3230,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -2962,6 +3243,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -2974,6 +3256,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2986,6 +3269,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -2998,6 +3282,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3010,6 +3295,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3022,6 +3308,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3034,8 +3321,21 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Express-Siebdruck-Kurs",
+      "date": "2026-09-17",
+      "time": "17:30",
+      "duration": "1.5 h",
+      "price": "€45",
+      "url": "https://www.druckrausch.com/booking-calendar/17-09-express-siebdruck-kurs",
+      "image": "https://static.wixstatic.com/media/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg/v1/fit/w_1299,h_866,al_c,q_85/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "munio",
@@ -3046,6 +3346,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3058,6 +3359,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3082,6 +3384,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3094,6 +3397,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3106,6 +3410,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3118,6 +3423,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3130,6 +3436,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3142,6 +3449,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3154,6 +3462,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3166,6 +3475,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3178,6 +3488,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3202,6 +3513,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3225,6 +3537,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3237,6 +3550,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3249,6 +3563,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3261,7 +3576,8 @@
       "duration": "4 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "faye",
@@ -3273,7 +3589,8 @@
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "munio",
@@ -3284,6 +3601,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3296,6 +3614,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3308,6 +3627,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3320,6 +3640,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3332,6 +3653,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3344,6 +3666,7 @@
       "spots": 20,
       "duration": "2 h",
       "price": "€59",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
     },
@@ -3356,6 +3679,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -3389,7 +3713,8 @@
       "duration": "4.5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/calendar-kurstermine",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -3424,6 +3749,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3436,6 +3762,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3448,6 +3775,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3460,6 +3788,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3472,6 +3801,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3484,8 +3814,21 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-09-23",
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/23-09-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "munio",
@@ -3496,6 +3839,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3508,6 +3852,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3520,6 +3865,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3532,6 +3878,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3544,6 +3891,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3556,6 +3904,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3568,6 +3917,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3580,6 +3930,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3592,6 +3943,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3603,6 +3955,7 @@
       "time": "18:00",
       "duration": "3.5 h",
       "price": "€75",
+      "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin-2",
       "district": "Zehlendorf"
     },
@@ -3615,6 +3968,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3627,6 +3981,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3639,6 +3994,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3651,6 +4007,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3663,6 +4020,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3675,6 +4033,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3687,6 +4046,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3699,6 +4059,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3711,6 +4072,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3734,6 +4096,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3748,6 +4111,18 @@
       "price": "€79",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-26-september",
       "district": "Berliner Wald"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Drucken wie Warhol",
+      "date": "2026-09-26",
+      "time": "10:30",
+      "duration": "4 h",
+      "price": "€90",
+      "url": "https://www.druckrausch.com/booking-calendar/26-09-drucken-wie-warhol",
+      "image": "https://static.wixstatic.com/media/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg/v1/fit/w_10667,h_6000,al_c,q_90/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "karen-rose",
@@ -3770,6 +4145,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3793,6 +4169,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3805,6 +4182,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3817,6 +4195,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3841,6 +4220,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -3853,6 +4233,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3865,6 +4246,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3877,6 +4259,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3889,6 +4272,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -3901,6 +4285,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 3,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -3913,6 +4298,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -3924,6 +4310,7 @@
       "time": "14:30",
       "duration": "3 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-4",
       "district": "Zehlendorf"
     },
@@ -3960,6 +4347,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -3972,6 +4360,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3984,6 +4373,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -3996,6 +4386,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4008,6 +4399,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4020,8 +4412,21 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruck-Kurs -Fotografie-",
+      "date": "2026-09-30",
+      "time": "18:00",
+      "duration": "2.5 h",
+      "price": "€87",
+      "url": "https://www.druckrausch.com/booking-calendar/30-09-basis-siebdruck-kurs-fotografie",
+      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "munio",
@@ -4032,6 +4437,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4044,6 +4450,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4056,6 +4463,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4068,6 +4476,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4080,6 +4489,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -4092,6 +4502,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4104,6 +4515,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4116,6 +4528,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4128,6 +4541,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4140,6 +4554,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -4164,6 +4579,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4176,6 +4592,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4188,6 +4605,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4200,6 +4618,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4212,6 +4631,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -4224,6 +4644,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4236,6 +4657,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4248,6 +4670,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4260,8 +4683,21 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-10-02",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/02-10-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4272,6 +4708,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4308,6 +4745,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4320,6 +4758,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4332,6 +4771,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4344,6 +4784,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4356,7 +4797,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "munio",
@@ -4367,6 +4809,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
     },
@@ -4379,6 +4822,7 @@
       "duration": "1.5 h",
       "price": "€50",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
       "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
       "district": "Schöneberg"
     },
@@ -4391,6 +4835,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4403,6 +4848,7 @@
       "duration": "0.5 h",
       "price": "€30",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
     },
@@ -4415,6 +4861,7 @@
       "duration": "1 h",
       "price": "€45",
       "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
     },
@@ -4427,6 +4874,7 @@
       "spots": 20,
       "duration": "2 h",
       "price": "€59",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
     },
@@ -4439,6 +4887,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -4463,6 +4912,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4499,7 +4949,8 @@
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "pastamadre",
@@ -4510,7 +4961,20 @@
       "duration": "4 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Express-Siebdruck-Kurs",
+      "date": "2026-10-08",
+      "time": "17:30",
+      "duration": "1.5 h",
+      "price": "€45",
+      "url": "https://www.druckrausch.com/booking-calendar/08-10-express-siebdruck-kurs",
+      "image": "https://static.wixstatic.com/media/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg/v1/fit/w_1299,h_866,al_c,q_85/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4533,6 +4997,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4561,6 +5026,18 @@
       "district": "Berliner Wald"
     },
     {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Siebdruck + Papercutting",
+      "date": "2026-10-10",
+      "time": "10:30",
+      "duration": "3.5 h",
+      "price": "€77",
+      "url": "https://www.druckrausch.com/booking-calendar/10-10-siebdruck-papercutting",
+      "image": "https://static.wixstatic.com/media/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg/v1/fit/w_1134,h_756,al_c,q_85/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg",
+      "district": "Friedenau"
+    },
+    {
       "slug": "beat-etage",
       "sourceUrl": "https://beat-etage.de/workshops/",
       "title": "Djembe & Dundun Workshop",
@@ -4580,7 +5057,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "jem",
@@ -4590,6 +5068,7 @@
       "time": "15:00",
       "duration": "3.5 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin",
       "district": "Zehlendorf"
     },
@@ -4602,6 +5081,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -4614,6 +5094,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4638,6 +5119,7 @@
       "duration": "7 h",
       "price": "€129",
       "district": "Lichtenberg",
+      "image": "https://cdn.shopify.com/s/files/1/0560/1329/1681/files/BK_10.png?v=1712674710",
       "url": "https://berliner-bumerang.de/products/kopie-von-september-bumerang-workshop"
     },
     {
@@ -4660,7 +5142,20 @@
       "duration": "4.5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-10-14",
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/14-10-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "pastamadre",
@@ -4671,7 +5166,8 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4682,6 +5178,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4694,7 +5191,8 @@
       "duration": "4 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "celina",
@@ -4705,6 +5203,7 @@
       "spots": 20,
       "duration": "2 h",
       "price": "€59",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
     },
@@ -4717,6 +5216,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -4729,6 +5229,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4774,7 +5275,8 @@
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
-      "district": "Friedrichshain"
+      "district": "Friedrichshain",
+      "image": "http://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "pastamadre",
@@ -4785,7 +5287,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/calendar-kurstermine",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "qian",
@@ -4814,6 +5317,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4826,6 +5330,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -4838,6 +5343,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4850,6 +5356,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4862,6 +5369,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4874,6 +5382,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -4888,6 +5397,17 @@
       "price": "€79",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-31-oktober",
       "district": "Berliner Wald"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Drucken wie Warhol",
+      "date": "2026-10-31",
+      "time": "10:30",
+      "duration": "4 h",
+      "price": "€90",
+      "url": "https://www.druckrausch.com/booking-calendar/31-10-drucken-wie-warhol",
+      "district": "Friedenau"
     },
     {
       "slug": "karen-rose",
@@ -4909,7 +5429,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "celina",
@@ -4920,6 +5441,7 @@
       "spots": 20,
       "duration": "2 h",
       "price": "€59",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
     },
@@ -4932,6 +5454,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -4944,8 +5467,21 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruckworkshop",
+      "date": "2026-11-04",
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€63",
+      "url": "https://www.druckrausch.com/booking-calendar/04-11-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4956,6 +5492,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5003,7 +5540,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5014,6 +5552,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -5026,6 +5565,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5049,7 +5589,20 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Express-Siebdruck-Kurs",
+      "date": "2026-11-11",
+      "time": "18:30",
+      "duration": "1.5 h",
+      "price": "€45",
+      "url": "https://www.druckrausch.com/booking-calendar/11-11-express-siebdruck-kurs",
+      "image": "https://static.wixstatic.com/media/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg/v1/fit/w_1299,h_866,al_c,q_85/daf795_7f125c2be98046efae9ee5809603177a~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5060,8 +5613,21 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Basis-Siebdruck-Kurs -Fotografie-",
+      "date": "2026-11-14",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "price": "€87",
+      "url": "https://www.druckrausch.com/booking-calendar/14-11-basis-siebdruck-kurs-fotografie",
+      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "pastamadre",
@@ -5072,7 +5638,8 @@
       "duration": "4 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "kohfink",
@@ -5083,7 +5650,8 @@
       "duration": "4 h",
       "price": "€55",
       "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490382446002747367.html",
-      "district": "Kaulsdorf"
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp?_=1785846344000"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5094,6 +5662,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -5106,6 +5675,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5118,7 +5688,8 @@
       "duration": "4 h",
       "price": "€55",
       "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490384268180370385.html",
-      "district": "Kaulsdorf"
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
       "slug": "jem",
@@ -5128,6 +5699,7 @@
       "time": "18:00",
       "duration": "3 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-8",
       "district": "Zehlendorf"
     },
@@ -5140,6 +5712,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5164,7 +5737,8 @@
       "duration": "4.5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5175,6 +5749,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -5187,6 +5762,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5198,6 +5774,7 @@
       "time": "14:30",
       "duration": "3 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-8",
       "district": "Zehlendorf"
     },
@@ -5210,8 +5787,21 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 6,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "druckrausch",
+      "sourceUrl": "https://www.druckrausch.com/termine",
+      "title": "Drucken wie Warhol",
+      "date": "2026-11-28",
+      "time": "10:30",
+      "duration": "4 h",
+      "price": "€90",
+      "url": "https://www.druckrausch.com/booking-calendar/28-11-drucken-wie-warhol",
+      "image": "https://static.wixstatic.com/media/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg/v1/fit/w_10667,h_6000,al_c,q_90/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg",
+      "district": "Friedenau"
     },
     {
       "slug": "beat-etage",
@@ -5233,7 +5823,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "jem",
@@ -5243,6 +5834,7 @@
       "time": "15:00",
       "duration": "3.5 h",
       "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
       "district": "Zehlendorf"
     },
@@ -5255,6 +5847,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -5267,6 +5860,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5290,7 +5884,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/calendar-kurstermine",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "kohfink",
@@ -5301,7 +5896,8 @@
       "duration": "4 h",
       "price": "€55",
       "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7490385660357956000.html",
-      "district": "Kaulsdorf"
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5312,6 +5908,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
@@ -5324,7 +5921,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://www.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5335,6 +5933,7 @@
       "duration": "2 h",
       "price": "€59",
       "spots": 7,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
     },
@@ -5347,6 +5946,7 @@
       "duration": "2 h",
       "price": "€65",
       "spots": 8,
+      "image": "http://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
     },
