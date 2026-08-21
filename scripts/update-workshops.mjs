@@ -2403,6 +2403,17 @@ for (const source of SOURCES) {
     // duplicates a sibling page's fresh results for the same host.
     const keptDated = (previous.workshops ?? []).filter((w) => w.sourceUrl === source.url && w.date >= todayISO);
     const keptRecurring = (previous.recurring ?? []).filter((r) => r.sourceUrl === source.url);
+    // Kept entries deserve the workshop's own picture too — their booking
+    // pages are usually reachable even when the schedule parse fails
+    // (Karen-Rose's seeds sat imageless for exactly this reason).
+    for (const w of keptDated) {
+      if (w.image || !w.url || PLATFORM_IMAGE_HOSTS.test(w.url) || /\.(json|xml)(\?|#|$)/i.test(w.url)) continue;
+      const img = await shareImageFor(w.url);
+      if (img && !/gokonfetti\.com/i.test(img)) w.image = img;
+    }
+    console.log(
+      `[${source.slug}] kept images: ${keptDated.filter((w) => w.image).length}/${keptDated.length}`,
+    );
     workshops.push(...keptDated);
     recurringOut.push(...keptRecurring);
     statuses.push({
