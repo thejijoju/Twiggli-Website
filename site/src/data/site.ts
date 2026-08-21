@@ -22,11 +22,11 @@ const brandCopy = {
 const navLabels = {
   en: {
     home: 'Home', getStarted: 'Get Started', happening: 'Happening today',
-    corporate: 'Bookings for Corporate', blog: 'Blog', contact: 'Contact',
+    corporate: 'Corporate & Group Bookings', blog: 'Blog', contact: 'Contact',
   },
   de: {
     home: 'Startseite', getStarted: 'Jetzt starten', happening: 'Heute los',
-    corporate: 'Für Unternehmen', blog: 'Blog', contact: 'Kontakt',
+    corporate: 'Firmen- & Gruppenbuchungen', blog: 'Blog', contact: 'Kontakt',
   },
 };
 

@@ -126,6 +126,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
   bumerang:      { activity: 'craft',      groupRange: [1, 10],   hourRange: [7, 7] },
   'ceramic-kingdom': { activity: 'ceramics', groupRange: [1, 7],  hourRange: [2, 4] },
+  // PLACEHOLDER ranges — the gallery's program calendar is empty today;
+  // events define their own size and length once published.
+  sov:              { activity: 'art',       groupRange: [1, 50], hourRange: [1, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -147,7 +150,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
       blurb: 'Mindful carving workshops that pull teams out of screen-time and into a calm, hands-on craft. Learn freehand technique with simple hand tools and turn wood or soap into your own handmade object.',
       group: '2–4 studio · 5–12 on-site', duration: '2.5–5 h', place: 'Charlottenburg / on-site', languages: 'DE · EN' },
     { slug: 'celina', name: 'Celina', specialty: 'Bookbinding, mosaic & stamps', studio: 'Gestaltwandel',
-      blurb: 'Switch off and get making — expert-guided craft in a calm, light-filled studio: bookbinding, mosaic tiles, straw stars or carved stamps. No experience needed, and formats adapt to your team.',
+      blurb: 'Switch off and get making — expert-guided craft in a calm studio, with nine formats to pick from: bookbinding, silk painting, envelope folding, stained glass soldering (Tiffany technique), mosaic making, tin ornaments, concrete tile making, straw stars and stamp carving. No experience needed; every format also runs as a private group session on a date of your choice.',
       group: 'Up to 20 studio · 50–100 mobile', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
@@ -227,6 +230,11 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Pottery school & open studio', studio: 'Ceramic Kingdom',
       blurb: 'Madeline Stillwell’s ceramics school in the Reuterkiez. Wheel-throwing from taster to intermediate, handbuilding, mold making and slip casting, glaze chemistry, sgraffito — even 3D printing in clay. Small classes of about seven, taught in English and German, with open studio time and kiln firing for those who keep going.',
       group: 'Up to 7', duration: '2–4 h', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
+    // Copy from sov.gallery (manifesto + footer); program calendar watched —
+    // events appear as the gallery publishes them. Photos and reel to follow.
+    { slug: 'sov', name: 'SOV Gallery', specialty: 'Art events & gatherings', studio: 'SEE OUR VISION',
+      blurb: 'A gallery and community space in Prenzlauer Berg — "for us, art is a dialogue, a space of interaction." Exhibitions, a media lab and a collective, with a program calendar of events and gatherings around the shows. Open Tuesday to Saturday, 2–7 pm.',
+      group: 'Open to all', duration: 'Varies', place: 'Erich-Weinert-Str. 135, Berlin', languages: 'EN · DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -239,7 +247,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
       blurb: 'Achtsames Schnitzen, das Teams aus der Bildschirmzeit holt. Freihandtechnik mit einfachem Handwerkzeug — aus Holz oder Seife entsteht ein eigenes Objekt.',
       group: '2–4 Studio · 5–12 vor Ort', duration: '2,5–5 Std.', place: 'Charlottenburg / vor Ort', languages: 'DE · EN' },
     { slug: 'celina', name: 'Celina', specialty: 'Buchbinden, Mosaik & Stempel', studio: 'Gestaltwandel',
-      blurb: 'Abschalten und gestalten — angeleitetes Handwerk im hellen Studio: Buchbinden, Mosaikfliesen, Strohsterne oder geschnitzte Stempel. Ohne Vorkenntnisse.',
+      blurb: 'Abschalten und gestalten — angeleitetes Handwerk im ruhigen Studio, mit neun Formaten zur Wahl: Buchbinden, Seidenmalerei, Briefumschläge falten, Tiffany-Glaslöten, Mosaik, Blechornamente, Betonfliesen, Strohsterne und Stempelschnitzen. Ohne Vorkenntnisse; jedes Format auch als private Gruppensession an einem Wunschtermin.',
       group: 'Bis 20 Studio · 50–100 mobil', duration: '2–4 Std.', place: 'Koloniestraße 111, Berlin', languages: 'DE · EN' },
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
@@ -310,6 +318,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Töpferschule & offene Werkstatt', studio: 'Ceramic Kingdom',
       blurb: 'Madeline Stillwells Keramikschule im Reuterkiez. Drehscheibe vom Schnupperkurs bis zur Mittelstufe, Aufbautechnik, Formenbau und Schlickerguss, Glasurchemie, Sgraffito — sogar 3D-Druck mit Ton. Kleine Kurse mit etwa sieben Plätzen auf Englisch und Deutsch, dazu offene Werkstatt und Brennservice für alle, die dranbleiben.',
       group: 'Bis 7', duration: '2–4 Std.', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
+    { slug: 'sov', name: 'SOV Gallery', specialty: 'Kunst-Events & Begegnungen', studio: 'SEE OUR VISION',
+      blurb: 'Galerie und Community-Raum in Prenzlauer Berg — "Kunst ist für uns ein Dialog, ein Raum der Begegnung." Ausstellungen, ein Media Lab und ein Kollektiv, dazu ein Programmkalender mit Events und Treffen rund um die Shows. Geöffnet Dienstag bis Samstag, 14–19 Uhr.',
+      group: 'Offen für alle', duration: 'Variiert', place: 'Erich-Weinert-Str. 135, Berlin', languages: 'EN · DE' },
   ],
 };
 

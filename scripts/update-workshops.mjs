@@ -119,6 +119,12 @@ const SOURCES = [
     url: 'https://www.ceramickingdomberlin.com/sitemap.xml#acuity',
     pagePattern: '/en/(class|wheelthrowing|handbuilding|moldmaking|glazing|sgraffito|mini)|/try-',
     district: 'Neukölln' },
+  // Readymag site whose PROG_CAL page embeds a Luma calendar — empty today
+  // ("No Upcoming Events"), so this watches the calendar's public API and
+  // events flow in the week the gallery publishes them.
+  { slug: 'sov', name: 'SOV Gallery — program calendar (Luma)', mode: 'luma',
+    calendarId: 'cal-qJfZ6kCnFfwad4g', url: 'https://www.sov.gallery/prog_calendar/',
+    district: 'Prenzlauer Berg' },
   // One Shopify product per workshop date; the date lives in the product
   // description ("Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr"), which the
   // shopify mode's body-date fallback reads.
@@ -165,6 +171,13 @@ const SOURCES = [
   { slug: 'faye', name: 'Senlë Studio (Faye) — Incense Labs', mode: 'acuity',
     owner: '37478855', url: 'https://www.senle.studio/scheduling',
     district: 'Friedrichshain' },
+  // Gestaltwandel's Squarespace site books dated classes through Acuity
+  // (the embed only exposes the schedule hash). Most of her nine formats
+  // run on request — those live on the corporate & group bookings page —
+  // so whatever classes she dates appear here automatically.
+  { slug: 'celina', name: 'Gestaltwandel — dated workshops (Acuity)', mode: 'acuity',
+    scheduleHash: 'eadb79a4', url: 'https://www.gestaltwandel.com/booking',
+    district: 'Gesundbrunnen' },
   // Regiondo-hosted shop pages (unlike Karen-Rose's embedded widget) are
   // server-rendered with an Event JSON-LD block carrying the course's next
   // start date and price — the default strategy reads them. The 2027
@@ -779,6 +792,53 @@ async function fromKonfetti(source) {
   return out;
 }
 
+/** A Luma calendar embed (lu.ma / luma.com — SOV Gallery's PROG_CAL page).
+ *  The embed's public API serves every upcoming event as JSON with UTC
+ *  start/end, ticket price and spots — nothing to render or click. An empty
+ *  calendar simply parses to zero events until the host publishes dates. */
+async function fromLuma(source) {
+  const res = await fetch(
+    `https://api.lu.ma/calendar/get-items?calendar_api_id=${source.calendarId}&period=future&pagination_limit=100`,
+    { headers: { 'user-agent': UA, accept: 'application/json' } },
+  );
+  if (!res.ok) {
+    console.log(`[${source.slug}] luma: calendar API HTTP ${res.status}`);
+    return [];
+  }
+  const data = await res.json();
+  const entries = data?.entries ?? [];
+  if (!entries.length) {
+    console.log(`[${source.slug}] luma: calendar has no upcoming events`);
+    return [];
+  }
+  const out = [];
+  for (const entry of entries) {
+    const ev = entry?.event ?? entry;
+    const startMs = Date.parse(ev?.start_at ?? '');
+    if (Number.isNaN(startMs)) continue;
+    const endMs = Date.parse(ev?.end_at ?? '');
+    const span = Number.isNaN(endMs) ? 0 : (endMs - startMs) / 3600000;
+    const ticket = entry?.ticket_info ?? ev?.ticket_info ?? {};
+    if (ticket.is_sold_out) continue;
+    const cents = Number(ticket?.price?.cents);
+    const eur = String(ticket?.price?.currency ?? 'eur').toLowerCase() === 'eur';
+    const spots = Number(ticket?.spots_remaining);
+    const w = {
+      title: String(ev?.name ?? '').trim(),
+      date: berlinDate(startMs),
+      time: berlinTime(startMs),
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      ...(Number.isFinite(cents) && cents > 0 && eur ? { price: `€${Math.round(cents / 100)}` } : {}),
+      ...(Number.isFinite(spots) && spots >= 0 ? { spots } : {}),
+      url: ev?.url ? `https://lu.ma/${String(ev.url).replace(/^\/+/, '')}` : source.url,
+    };
+    if (!w.title) continue;
+    console.log(`[${source.slug}] luma: "${w.title}" ${w.date} ${w.time} ${w.price ?? 'no price'}`);
+    out.push(w);
+  }
+  return out;
+}
+
 /** Find `"key":` in a blob of HTML/JS and bracket-match the JSON value
  *  that follows. Returns the parsed value or null. */
 function extractJsonAfterKey(text, key) {
@@ -824,13 +884,15 @@ function extractJsonAfterKey(text, key) {
  *  answers plain unauthenticated fetches. */
 async function fromAcuity(source) {
   const base = 'https://app.acuityscheduling.com';
-  const res = await fetch(`${base}/schedule.php?owner=${source.owner}`, {
-    redirect: 'follow',
-    headers: { 'user-agent': UA },
-  });
+  // Either a numeric owner (schedule.php redirects to the hashed page) or
+  // the schedule hash itself, when the embed only ever showed the hash.
+  const res = await fetch(
+    source.scheduleHash ? `${base}/schedule/${source.scheduleHash}/` : `${base}/schedule.php?owner=${source.owner}`,
+    { redirect: 'follow', headers: { 'user-agent': UA } },
+  );
   console.log(`[${source.slug}] acuity scheduler: HTTP ${res.status} at ${res.url}`);
   if (!res.ok) return [];
-  const hash = res.url.match(/\/schedule\/([a-z0-9]+)/i)?.[1];
+  const hash = source.scheduleHash ?? res.url.match(/\/schedule\/([a-z0-9]+)/i)?.[1];
   if (!hash) {
     console.log(`[${source.slug}] acuity: no schedule hash in final url`);
     return [];
@@ -1444,8 +1506,11 @@ async function renderAllFrames(url, slug) {
 async function scrape(source) {
   // Konfetti fetches its sitemap itself (with an XML accept — Squarespace
   // 406s the HTML-only one used for regular pages below).
-  if (source.mode === 'konfetti' || source.mode === 'acuity-embeds') {
-    const found = source.mode === 'konfetti' ? await fromKonfetti(source) : await fromAcuityEmbeds(source);
+  if (source.mode === 'konfetti' || source.mode === 'acuity-embeds' || source.mode === 'luma') {
+    const found =
+      source.mode === 'konfetti' ? await fromKonfetti(source)
+      : source.mode === 'acuity-embeds' ? await fromAcuityEmbeds(source)
+      : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
       .map((w) => ({
