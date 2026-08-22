@@ -303,6 +303,15 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Rebeca Ventura (Arte Gorda) sells her linocut sessions through her own
+  // Ticket Tailor box office, "learnlino" — one row per upcoming event,
+  // each with date, time, venue and its own picture. She teaches at
+  // Kunstraum Heartspace in Prenzlauer Berg; the venue's own Google
+  // Calendar covers every artist showing there, so her box office is the
+  // source that can only ever be hers.
+  { slug: 'rebeca', name: 'Arte Gorda — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/learnlino', district: 'Prenzlauer Berg' },
+
   // Techno Painting (Dina Shneider, Berlin-Mitte) publishes a fixed
   // weekly schedule as prose on her WordPress page; tickets sell through
   // Konfetti/Airbnb/Viator/Eventbrite, none of which the site links —
@@ -1329,6 +1338,82 @@ async function fromWixServiceList(html, source) {
   return out;
 }
 
+const EN_MONTH_ABBR = {
+  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+  jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
+};
+
+/** A Ticket Tailor box office (Rebeca's "learnlino"): the public events
+ *  list carries every upcoming event with its date, time and venue, and
+ *  each row links the event's own page. Ticket Tailor sits behind a
+ *  Cloudflare JS challenge that blocks CI runners outright, so the page
+ *  is read through the r.jina.ai text relay — the same route that reaches
+ *  the other Cloudflare-walled hosts — which renders it as markdown:
+ *
+ *    ![Image 2: Linocut & Spritz](https://uploads.tickettailorassets.com/…jpg)
+ *    ### [Linocut & Spritz](https://www.tickettailor.com/events/learnlino/2289577)
+ *    Tue 25 Aug 2026 18:00 - 20:30 Kunstraum Heartspace, 10407
+ *
+ *  New events appear in the feed the day she publishes them; prices live
+ *  inside the checkout widget only, so the card omits the price line and
+ *  Book leads to her event page. */
+async function fromTicketTailor(source) {
+  const relay = `https://r.jina.ai/${source.url}`;
+  const res = await fetch(relay, {
+    redirect: 'follow',
+    headers: { 'user-agent': UA, accept: 'text/plain,*/*;q=0.8' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] tickettailor: relay HTTP ${res.status}`);
+    return [];
+  }
+  const md = await res.text();
+  const out = [];
+  // Each event is a "### [title](url)" heading; its details run up to the
+  // next heading. The thumbnail sits in the image line just before it.
+  const headings = [...md.matchAll(/###\s*\[([^\]]+)\]\((https:\/\/www\.tickettailor\.com\/events\/[^)\s]+)\)/g)];
+  for (let i = 0; i < headings.length; i++) {
+    const h = headings[i];
+    const block = md.slice(h.index + h[0].length, headings[i + 1]?.index ?? md.length);
+    const when = block.match(
+      /(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(20\d{2})\s+(\d{1,2}):(\d{2})(?:\s*[-–]\s*(\d{1,2}):(\d{2}))?/i,
+    );
+    if (!when) {
+      console.log(`[${source.slug}] tickettailor: no date on "${h[1]}"`);
+      continue;
+    }
+    const month = EN_MONTH_ABBR[when[2].toLowerCase()];
+    const date = `${when[3]}-${String(month).padStart(2, '0')}-${when[1].padStart(2, '0')}`;
+    const time = `${when[4].padStart(2, '0')}:${when[5]}`;
+    const span = when[6]
+      ? Number(when[6]) + Number(when[7]) / 60 - (Number(when[4]) + Number(when[5]) / 60)
+      : 0;
+    // The venue follows the time range, up to the "[Event details]" link.
+    const venue = block
+      .slice(when.index + when[0].length)
+      .split(/\[Event details\]|\[Book now\]|\n#/)[0]
+      .replace(/[\s,]*\b\d{5}\b\s*/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // The event's own thumbnail sits in the markdown image just above.
+    const before = md.slice(headings[i - 1]?.index ?? 0, h.index);
+    const img = [...before.matchAll(/!\[[^\]]*\]\((https:\/\/uploads\.tickettailorassets\.com\/[^)\s]+)\)/g)].pop();
+    const title = decodeEntities(h[1]).trim();
+    out.push({
+      title,
+      date,
+      time,
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      ...(venue && venue.length < 60 ? { district: venue } : {}),
+      ...(img ? { image: img[1] } : {}),
+      url: h[2],
+    });
+    console.log(`[${source.slug}] tickettailor: "${title}" ${date} ${time}${venue ? ` @ ${venue}` : ''}`);
+  }
+  console.log(`[${source.slug}] tickettailor: ${out.length} events on the box office`);
+  return out;
+}
+
 /** A Google Calendar embedded on the host's page (Sabine's Termine page):
  *  the iframe's src names the calendar, and every public Google Calendar
  *  serves an ICS feed at /calendar/ical/<id>/public/basic.ics — so the
@@ -2243,12 +2328,14 @@ async function scrapeSource(source) {
   // 406s the HTML-only one used for regular pages below).
   if (
     source.mode === 'konfetti' || source.mode === 'acuity-embeds' ||
-    source.mode === 'luma' || source.mode === 'gcal-embed'
+    source.mode === 'luma' || source.mode === 'gcal-embed' ||
+    source.mode === 'tickettailor'
   ) {
     const found =
       source.mode === 'konfetti' ? await fromKonfetti(source)
       : source.mode === 'acuity-embeds' ? await fromAcuityEmbeds(source)
       : source.mode === 'gcal-embed' ? await fromGcalEmbed(source)
+      : source.mode === 'tickettailor' ? await fromTicketTailor(source)
       : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)

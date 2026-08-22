@@ -335,15 +335,20 @@ const dayLabel = (offset: number) =>
     // "Happening tomorrow" → "Happening this Sunday" → "Happening next
     // Sunday" → "Happening on 12 October" (and the German equivalents).
     const happeningTitle = document.querySelector<HTMLElement>('[data-happening-title]');
+    // One title carries both the place and the chosen day, so the page has
+    // a single heading rather than a kicker repeating it.
     const headingFor = (offset: number, date: Date): string => {
       const de = locale.startsWith('de');
-      if (offset === 0) return de ? 'Heute los' : 'Happening today';
-      if (offset === 1) return de ? 'Morgen los' : 'Happening tomorrow';
       const weekday = date.toLocaleDateString(locale, { weekday: 'long' });
-      if (offset <= 6) return de ? `Diesen ${weekday} los` : `Happening this ${weekday}`;
-      if (offset <= 13) return de ? `Nächsten ${weekday} los` : `Happening next ${weekday}`;
-      const when = date.toLocaleDateString(locale, { day: 'numeric', month: 'long' });
-      return de ? `Am ${when} los` : `Happening on ${when}`;
+      const when =
+        offset === 0 ? (de ? 'heute' : 'today')
+        : offset === 1 ? (de ? 'morgen' : 'tomorrow')
+        : offset <= 6 ? (de ? `diesen ${weekday}` : `this ${weekday}`)
+        : offset <= 13 ? (de ? `nächsten ${weekday}` : `next ${weekday}`)
+        : de
+          ? `am ${date.toLocaleDateString(locale, { day: 'numeric', month: 'long' })}`
+          : `on ${date.toLocaleDateString(locale, { day: 'numeric', month: 'long' })}`;
+      return de ? `Was ${when} in Berlin läuft` : `What is on in Berlin ${when}`;
     };
 
     chips.forEach((chip) => {
