@@ -11,6 +11,10 @@ on:
         description: 'URL to fetch and describe'
         required: true
         type: string
+      marker:
+        description: 'Optional text to find — prints raw HTML around each match, for reading structure a parser needs'
+        required: false
+        type: string
 
 permissions: {}
 
@@ -46,6 +50,20 @@ jobs:
           [...new Set([...html.matchAll(/href="([^"]+)"/gi)].map(x => x[1]))].slice(0, 100).forEach(u => console.log(u));
           console.log('\n--- visible text (first 12000 chars) ---');
           console.log(strip(html).slice(0, 12000));
+          const marker = process.env.PROBE_MARKER;
+          if (marker) {
+            console.log(`\n--- raw HTML around "${marker}" ---`);
+            let i = 0, n = 0;
+            while (n < 8) {
+              const idx = html.indexOf(marker, i);
+              if (idx < 0) break;
+              console.log(`@${idx}:\n${html.slice(Math.max(0, idx - 400), idx + 1200)}\n---`);
+              i = idx + marker.length;
+              n++;
+            }
+            if (!n) console.log('(no match)');
+          }
           EOF
         env:
           PROBE_URL: ${{ inputs.url }}
+          PROBE_MARKER: ${{ inputs.marker }}
