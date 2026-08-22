@@ -1536,12 +1536,12 @@ a:hover { color: var(--color-accent); }
    whitespace and type weight do the separating. */
 /* The one filter: activity pills after themakery.de's category row —
    thin-outlined, rounded, in the accent purple; the active one fills. */
-.activity-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.activity-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
 /* Two filter rows, two purples: the activity row runs in the brighter
    accent, the district row in the heading's dark accent-800 — the
    filters read clearly and are told apart at a glance. */
 .activity-pill {
-  padding: 6px 14px;
+  padding: 4px 10px;
   border: 1.5px solid var(--color-accent);
   border-radius: 999px;
   background: transparent;
@@ -1633,13 +1633,22 @@ a:hover { color: var(--color-accent); }
 .daychip[aria-selected='true'] .daychip-dow,
 .daychip[aria-selected='true'] .daychip-num { color: var(--color-accent); }
 
-.daysessions { margin-top: 16px; }
+/* The day feed reads as one block, like the "On request" panel below it —
+   a light baby blue instead of that panel's lavender, so the two areas
+   are told apart while still feeling like one system. */
+.daysessions {
+  margin-top: 16px;
+  padding: 28px 28px 36px;
+  background: #eff6fb;
+  border-radius: 16px;
+}
 .daypicker-empty {
   margin: 40px 0 0;
   font-size: 17px;
   color: color-mix(in srgb, var(--color-text) 62%, transparent);
 }
 .timegroup { margin-top: 40px; }
+.daygroup > .timegroup:first-of-type { margin-top: 0; }
 .timegroup-head {
   font-family: var(--font-heading);
   font-weight: 900;
