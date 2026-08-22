@@ -303,12 +303,12 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
-  // Ana (Resonant Body®) sells her multi-day labs through Eversports.
-  // Each lab meets on two dates at its own venue — the page's Schedule
-  // table gives the dates/times/addresses, the Ticket options table the
-  // price per lab. No blanket district here: fromEversports resolves it
-  // per session from the venue address below.
-  { slug: 'ana', name: 'Ana — Fluxus Maximus (Eversports)', mode: 'eversports',
+  // Ana (Resonant Body®) sells her multi-day labs through her booking
+  // page. Each lab meets on two dates at its own venue — the page's
+  // Schedule table gives the dates/times/addresses, the Ticket options
+  // table the price per lab. No blanket district here: fromEversports
+  // resolves it per session from the venue address below.
+  { slug: 'ana', name: 'Ana — Fluxus Maximus booking page', mode: 'eversports',
     url: 'https://www.eversports.de/e/workshop/GZDF_GR',
     knownDistricts: { 'Mariannenplatz': 'Kreuzberg', 'Breite Straße 43': 'Pankow' } },
 

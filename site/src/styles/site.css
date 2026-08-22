@@ -1537,38 +1537,27 @@ a:hover { color: var(--color-accent); }
 /* The one filter: activity pills after themakery.de's category row —
    thin-outlined, rounded, in the accent purple; the active one fills. */
 .activity-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
-/* Two filter rows, two purples: the activity row runs in the brighter
-   accent, the district row in the heading's dark accent-800 — the
-   filters read clearly and are told apart at a glance. */
+/* One purple for every filter pill — the heading's dark accent-800 — so
+   the whole filter row reads as one consistent system. */
 .activity-pill {
   padding: 4px 10px;
-  border: 1.5px solid var(--color-accent);
+  border: 1.5px solid var(--color-accent-800);
   border-radius: 999px;
   background: transparent;
   font: inherit;
   font-weight: 600;
   font-size: 13px;
-  color: var(--color-accent);
+  color: var(--color-accent-800);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 .activity-pill:hover { background: var(--color-accent-100); }
 .activity-pill.is-active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: #fff;
-}
-.district-pills { margin-top: 10px; }
-/* The district row takes the heading's darker purple. */
-.district-pills .activity-pill {
-  border-color: var(--color-accent-800);
-  color: var(--color-accent-800);
-}
-.district-pills .activity-pill.is-active {
   background: var(--color-accent-800);
   border-color: var(--color-accent-800);
   color: #fff;
 }
+.district-pills { margin-top: 10px; }
 /* The kids toggle sits with the activity pills but combines with them
    (kids + ceramics works), so a dashed border marks it as an on/off
    switch rather than one of the either-or categories. */
