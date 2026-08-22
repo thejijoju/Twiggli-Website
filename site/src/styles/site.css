@@ -1637,7 +1637,7 @@ a:hover { color: var(--color-accent); }
    a light baby blue instead of that panel's lavender, so the two areas
    are told apart while still feeling like one system. */
 .daysessions {
-  margin-top: 94px; /* ~2.5 cm of air below the filter pills */
+  margin-top: 57px; /* ~1.5 cm of air below the filter pills */
   padding: 28px 28px 36px;
   background: #eff6fb;
   border-radius: 16px;

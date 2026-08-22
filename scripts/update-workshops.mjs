@@ -310,7 +310,9 @@ const SOURCES = [
   // Calendar covers every artist showing there, so her box office is the
   // source that can only ever be hers.
   { slug: 'rebeca', name: 'Arte Gorda — Ticket Tailor box office', mode: 'tickettailor',
-    url: 'https://www.tickettailor.com/events/learnlino', district: 'Prenzlauer Berg' },
+    url: 'https://www.tickettailor.com/events/learnlino', district: 'Prenzlauer Berg',
+    // Confirmed by Jirel in the live checkout widget (Regular Entry €60).
+    knownPrices: { 'Linocut & Spritz': '€60' } },
 
   // Techno Painting (Dina Shneider, Berlin-Mitte) publishes a fixed
   // weekly schedule as prose on her WordPress page; tickets sell through
@@ -1399,11 +1401,16 @@ async function fromTicketTailor(source) {
     const before = md.slice(headings[i - 1]?.index ?? 0, h.index);
     const img = [...before.matchAll(/!\[[^\]]*\]\((https:\/\/uploads\.tickettailorassets\.com\/[^)\s]+)\)/g)].pop();
     const title = decodeEntities(h[1]).trim();
+    // Ticket Tailor reveals its price only inside the live checkout
+    // widget (JS-rendered), invisible to a scrape — a source may supply
+    // known prices by title, checked by the host, to fill that gap.
+    const price = source.knownPrices?.[title];
     out.push({
       title,
       date,
       time,
       ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      ...(price ? { price } : {}),
       ...(venue && venue.length < 60 ? { district: venue } : {}),
       ...(img ? { image: img[1] } : {}),
       url: h[2],
