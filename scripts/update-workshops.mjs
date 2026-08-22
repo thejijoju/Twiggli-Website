@@ -303,6 +303,15 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Ana (Resonant Body®) sells her multi-day labs through Eversports.
+  // Each lab meets on two dates at its own venue — the page's Schedule
+  // table gives the dates/times/addresses, the Ticket options table the
+  // price per lab. No blanket district here: fromEversports resolves it
+  // per session from the venue address below.
+  { slug: 'ana', name: 'Ana — Fluxus Maximus (Eversports)', mode: 'eversports',
+    url: 'https://www.eversports.de/e/workshop/GZDF_GR',
+    knownDistricts: { 'Mariannenplatz': 'Kreuzberg', 'Breite Straße 43': 'Pankow' } },
+
   // Rebeca Ventura (Arte Gorda) sells her linocut sessions through her own
   // Ticket Tailor box office, "learnlino" — one row per upcoming event,
   // each with date, time, venue and its own picture. She teaches at
@@ -1421,6 +1430,102 @@ async function fromTicketTailor(source) {
   return out;
 }
 
+/** 12-hour clock hour → 24-hour numeric hour. */
+const h24 = (h, ap) => {
+  let hour = Number(h) % 12;
+  if (/pm/i.test(ap)) hour += 12;
+  return hour;
+};
+
+/** A single Eversports event page (Ana's "Fluxus Maximus" workshop): the
+ *  page's own Schedule table lists every date with its time and address,
+ *  and the Ticket options table lists what each session costs — read
+ *  through the r.jina.ai text relay since Eversports sits behind a
+ *  Cloudflare JS challenge that blocks CI runners outright. Rendered as
+ *  markdown tables:
+ *
+ *    | Date | Time | Location | Teacher |
+ *    | 01/16/2027 | 09:00 AM - 03:00 PM | Mariannenplatz 2, 10997 Berlin | Ana |
+ *
+ *  The relay renders the table with no browser timezone context, so its
+ *  times come out in UTC — one (winter) or two (summer) hours behind
+ *  what a Berlin visitor actually sees on the live page (confirmed
+ *  against Jirel's own browser: the relay's 09:00 was the page's 10:00).
+ *  Every row is parsed as UTC and converted through the same
+ *  Europe/Berlin helpers the rest of the scraper uses, so the card
+ *  always matches the page regardless of season.
+ *
+ *  Consecutive schedule rows sharing one address are one multi-day
+ *  session (a two-day lab) — matched in order to the ticket rows, both
+ *  listed top to bottom in the same sequence on the page. */
+async function fromEversports(source) {
+  const relay = `https://r.jina.ai/${source.url}`;
+  const res = await fetch(relay, {
+    redirect: 'follow',
+    headers: { 'user-agent': UA, accept: 'text/plain,*/*;q=0.8' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] eversports: relay HTTP ${res.status}`);
+    return [];
+  }
+  const md = await res.text();
+  const pageTitle = md.match(/\n#\s+([^\n]+)/)?.[1]?.trim();
+
+  const tickets = [...md.matchAll(/\|\s*€\s*([\d.,]+)(?:\s*€\s*[\d.,]+)?\s*\|\s*([^|]+?)\s*\|/g)]
+    .map((m) => ({ price: `€${Math.round(Number(m[1].replace(',', '.')))}`, name: decodeEntities(m[2]).trim() }))
+    .filter((t) => t.name && !/^Price$/i.test(t.name));
+
+  const rows = [...md.matchAll(
+    /\|\s*(\d{2})\/(\d{2})\/(\d{4})\s*\|\s*(\d{1,2}):(\d{2})\s*(AM|PM)\s*[-–]\s*(\d{1,2}):(\d{2})\s*(AM|PM)\s*\|\s*([^|]+?)\s*\|/gi,
+  )].map((m) => {
+    const [, mm, dd, yyyy, h1, min1, ap1, h2, min2, ap2, loc] = m;
+    const startUtc = Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd), h24(h1, ap1), Number(min1));
+    const endUtc = Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd), h24(h2, ap2), Number(min2));
+    return {
+      date: berlinDate(startUtc),
+      time: berlinTime(startUtc),
+      hours: (endUtc - startUtc) / 3600000,
+      location: loc.trim(),
+    };
+  });
+  if (!rows.length) {
+    console.log(`[${source.slug}] eversports: no schedule rows found`);
+    return [];
+  }
+
+  const groups = [];
+  for (const r of rows) {
+    const last = groups[groups.length - 1];
+    if (last && last.location === r.location) last.rows.push(r);
+    else groups.push({ location: r.location, rows: [r] });
+  }
+
+  const out = [];
+  groups.forEach((g, i) => {
+    const first = g.rows[0];
+    const ticket = tickets[i];
+    const days = g.rows.length;
+    const district =
+      Object.entries(source.knownDistricts ?? {}).find(([k]) => first.location.includes(k))?.[1] ??
+      source.district;
+    const title = ticket?.name || pageTitle || 'Workshop';
+    out.push({
+      title,
+      date: first.date,
+      time: first.time,
+      ...(days > 1
+        ? { duration: `${days} Tage` }
+        : first.hours > 0 && first.hours <= 12 ? { duration: `${Math.round(first.hours * 2) / 2} h` } : {}),
+      ...(ticket?.price ? { price: ticket.price } : {}),
+      ...(district ? { district } : {}),
+      url: source.infoUrl ?? source.url,
+    });
+    console.log(`[${source.slug}] eversports: "${title}" ${first.date} ${first.time} (${days}d) ${ticket?.price ?? 'no price'}`);
+  });
+  console.log(`[${source.slug}] eversports: ${out.length} sessions on the page`);
+  return out;
+}
+
 /** A Google Calendar embedded on the host's page (Sabine's Termine page):
  *  the iframe's src names the calendar, and every public Google Calendar
  *  serves an ICS feed at /calendar/ical/<id>/public/basic.ics — so the
@@ -2336,13 +2441,14 @@ async function scrapeSource(source) {
   if (
     source.mode === 'konfetti' || source.mode === 'acuity-embeds' ||
     source.mode === 'luma' || source.mode === 'gcal-embed' ||
-    source.mode === 'tickettailor'
+    source.mode === 'tickettailor' || source.mode === 'eversports'
   ) {
     const found =
       source.mode === 'konfetti' ? await fromKonfetti(source)
       : source.mode === 'acuity-embeds' ? await fromAcuityEmbeds(source)
       : source.mode === 'gcal-embed' ? await fromGcalEmbed(source)
       : source.mode === 'tickettailor' ? await fromTicketTailor(source)
+      : source.mode === 'eversports' ? await fromEversports(source)
       : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
