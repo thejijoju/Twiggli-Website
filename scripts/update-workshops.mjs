@@ -303,6 +303,15 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Barbara Amaral (ArcoIris Embroidery) lists her embroidery sessions
+  // on a public event page that carries every upcoming date of the same
+  // workshop in its "Weitere Termine" list — dates, times, prices and
+  // per-date links, all server-rendered. All sessions run at That Pink
+  // Café in Neukölln.
+  { slug: 'arcoiris', name: 'ArcoIris Embroidery — event page', mode: 'rausgegangen',
+    url: 'https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/',
+    district: 'Neukölln' },
+
   // Ana (Resonant Body®) sells her multi-day labs through her booking
   // page. Each lab meets on two dates at its own venue — the page's
   // Schedule table gives the dates/times/addresses, the Ticket options
@@ -1430,6 +1439,84 @@ async function fromTicketTailor(source) {
   return out;
 }
 
+const MONTHS_DE_ANY = {
+  jan: 1, feb: 2, mär: 3, mar: 3, apr: 4, mai: 5, jun: 6,
+  jul: 7, aug: 8, sep: 9, okt: 10, nov: 11, dez: 12,
+};
+const deMonth = (name) => MONTHS_DE_ANY[name.toLowerCase().slice(0, 3)];
+
+/** A Rausgegangen event page (Barbara's embroidery workshop): the page
+ *  carries its own date line ("So, 30. Aug 2026 11:00 - 13:30") and a
+ *  "Weitere Termine" list of every future run of the same workshop, one
+ *  card per date with day / month / time / venue / price and a link to
+ *  that date's own event page. Plain server-rendered HTML, no wall. */
+async function fromRausgegangen(source) {
+  const res = await fetch(source.url, {
+    redirect: 'follow',
+    headers: { 'user-agent': UA, accept: 'text/html,*/*;q=0.8' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] rausgegangen: HTTP ${res.status}`);
+    return [];
+  }
+  const html = await res.text();
+  const text = stripTags(html);
+  const title =
+    html.match(/<title>([^<]+?)\s+on\s+\d{2}\.\d{2}\.\d{4}/i)?.[1]?.trim() ??
+    html.match(/<title>([^<|-]+)/i)?.[1]?.trim() ?? 'Workshop';
+  const out = [];
+
+  // The page's own date: "So, 30. Aug 2026 11:00 - 13:30".
+  const main = text.match(
+    /(?:Mo|Di|Mi|Do|Fr|Sa|So),?\s*(\d{1,2})\.\s*([A-Za-zäÄ]+)\.?\s*(\d{4})\s+(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/,
+  );
+  let duration;
+  if (main && deMonth(main[2])) {
+    const hours =
+      Number(main[6]) + Number(main[7]) / 60 - (Number(main[4]) + Number(main[5]) / 60);
+    if (hours > 0 && hours <= 12) duration = `${Math.round(hours * 2) / 2} h`;
+    const price = text.slice(main.index).match(/(\d+(?:,\d{2})?)\s*€/);
+    out.push({
+      title,
+      date: `${main[3]}-${String(deMonth(main[2])).padStart(2, '0')}-${main[1].padStart(2, '0')}`,
+      time: `${main[4].padStart(2, '0')}:${main[5]}`,
+      ...(duration ? { duration } : {}),
+      ...(price ? { price: `€${Math.round(Number(price[1].replace(',', '.')))}` } : {}),
+      url: source.url.split('#')[0],
+    });
+  }
+
+  // "Weitere Termine": one linked card per future date. Sessions of the
+  // same workshop share the main date's length.
+  const listStart = html.indexOf('other-subevents-list');
+  if (listStart > 0) {
+    const section = html.slice(listStart, html.indexOf('</section>', listStart) + 1 || undefined).slice(0, 30000);
+    for (const card of section.matchAll(/<a\s+[^>]*href="(\/[^"]*\/events\/[^"]+)"[\s\S]*?<\/a>/g)) {
+      const ps = [...card[0].matchAll(/<p[^>]*>([^<]+)<\/p>/g)].map((p) => stripTags(p[1]));
+      const day = ps.find((p) => /^\d{1,2}\.$/.test(p));
+      const month = ps.find((p) => deMonth(p) !== undefined && /^[A-Za-zäÄ]+$/.test(p));
+      const time = ps.find((p) => /^\d{1,2}:\d{2}$/.test(p));
+      const price = ps.find((p) => /^\d+(?:,\d{2})?\s*€$/.test(p));
+      if (!day || !month || !time) continue;
+      const mm = String(deMonth(month)).padStart(2, '0');
+      const dd = day.replace('.', '').padStart(2, '0');
+      let date = `${todayISO.slice(0, 4)}-${mm}-${dd}`;
+      if (date < todayISO) date = `${Number(todayISO.slice(0, 4)) + 1}-${mm}-${dd}`;
+      out.push({
+        title,
+        date,
+        time: time.length === 4 ? `0${time}` : time,
+        ...(duration ? { duration } : {}),
+        ...(price ? { price: `€${Math.round(Number(price.replace('€', '').trim().replace(',', '.')))}` } : {}),
+        url: new URL(card[1], source.url).href,
+      });
+    }
+  }
+  for (const w of out) console.log(`[${source.slug}] rausgegangen: "${w.title}" ${w.date} ${w.time} ${w.price ?? ''}`);
+  console.log(`[${source.slug}] rausgegangen: ${out.length} dates on the page`);
+  return out;
+}
+
 /** 12-hour clock hour → 24-hour numeric hour. */
 const h24 = (h, ap) => {
   let hour = Number(h) % 12;
@@ -2441,7 +2528,8 @@ async function scrapeSource(source) {
   if (
     source.mode === 'konfetti' || source.mode === 'acuity-embeds' ||
     source.mode === 'luma' || source.mode === 'gcal-embed' ||
-    source.mode === 'tickettailor' || source.mode === 'eversports'
+    source.mode === 'tickettailor' || source.mode === 'eversports' ||
+    source.mode === 'rausgegangen'
   ) {
     const found =
       source.mode === 'konfetti' ? await fromKonfetti(source)
@@ -2449,6 +2537,7 @@ async function scrapeSource(source) {
       : source.mode === 'gcal-embed' ? await fromGcalEmbed(source)
       : source.mode === 'tickettailor' ? await fromTicketTailor(source)
       : source.mode === 'eversports' ? await fromEversports(source)
+      : source.mode === 'rausgegangen' ? await fromRausgegangen(source)
       : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)

@@ -138,6 +138,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   dirt:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [1.25, 4] },
   rose:             { activity: 'craft',     groupRange: [3, 4],  hourRange: [4, 4] },
   techno:           { activity: 'art',       groupRange: [1, 6],  hourRange: [3, 3] },
+  // PLACEHOLDER group range — the event page publishes no cap.
+  arcoiris:         { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 2.5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -272,6 +274,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'techno', name: 'Techno Painting', specialty: 'Techno painting sessions', studio: 'Techno Painting Studio',
       blurb: 'Berlin artist Dina Shneider’s original Techno Painting workshop, running since 2018 and rated one of the top five Airbnb experiences in Berlin. Techno music meets intuitive, therapeutic acrylic painting in her Mitte studio: you pick a palette, work in layers, slip into flow state — one break with drinks — and leave with your own 70 × 50 cm canvas. All materials provided, no experience needed, sessions every day of the week.',
       group: 'Up to 6', duration: '3 h', place: 'Studio in Berlin-Mitte', languages: 'EN' },
+    // Copy from her event page; photos and reel to follow.
+    { slug: 'arcoiris', name: 'Barbara', specialty: 'Upcycled embroidery workshops', studio: 'ArcoIris Embroidery',
+      blurb: 'Barbara Amaral’s embroidery sessions at That Pink Café in Neukölln. Stitch a bold vulva flower while learning versatile stitches, clean thread work and secure knots — on fabrics that are entirely upcycled: scraps, secondhand finds and rescued textiles from Berlin’s Zu-Verschenken boxes. Beginner-friendly and open to everyone; you head home with a finished hoop and a stitch guide to keep going.',
+      group: 'Small groups', duration: '2.5 h', place: 'That Pink Café, Schwarzastraße 9, Berlin', languages: 'EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -379,6 +385,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'techno', name: 'Techno Painting', specialty: 'Techno-Painting-Sessions', studio: 'Techno Painting Studio',
       blurb: 'Der originale Techno-Painting-Workshop der Berliner Künstlerin Dina Shneider — seit 2018 eine der fünf bestbewerteten Airbnb-Experiences Berlins. Technomusik trifft intuitives, therapeutisches Acrylmalen in ihrem Studio in Mitte: Palette wählen, in Schichten arbeiten, in den Flow kommen — eine Pause mit Getränken — und am Ende nimmst du deine eigene 70 × 50 cm Leinwand mit. Material inklusive, keine Vorkenntnisse nötig, Sessions an jedem Tag der Woche.',
       group: 'Bis 6', duration: '3 Std.', place: 'Studio in Berlin-Mitte', languages: 'EN' },
+    { slug: 'arcoiris', name: 'Barbara', specialty: 'Upcycling-Stickworkshops', studio: 'ArcoIris Embroidery',
+      blurb: 'Barbara Amarals Stick-Sessions im That Pink Café in Neukölln. Stick eine kraftvolle Vulva-Blume und lerne dabei vielseitige Stiche, sauberes Fädentrennen und sichere Knoten — auf Stoffen, die komplett upgecycelt sind: Reste, Secondhand-Funde und gerettete Textilien aus Berliner Zu-Verschenken-Kisten. Anfängerfreundlich und offen für alle; am Ende nimmst du deinen fertigen Stickrahmen und eine Stichanleitung mit nach Hause.',
+      group: 'Kleine Gruppen', duration: '2,5 Std.', place: 'That Pink Café, Schwarzastraße 9, Berlin', languages: 'EN' },
   ],
 };
 
