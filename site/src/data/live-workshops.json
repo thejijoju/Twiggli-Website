@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T13:18:44.155Z",
+  "updated": "2026-08-22T14:15:35.924Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,14 +64,14 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 3
     },
     {
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 209
+      "count": 205
     },
     {
       "slug": "pastamadre",
@@ -240,6 +240,12 @@
       "url": "https://www.rose-williams.com/jewelry-courses/",
       "status": "failed: HTTP 403",
       "count": 6
+    },
+    {
+      "slug": "ana",
+      "url": "https://www.eversports.de/e/workshop/GZDF_GR",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "rebeca",
@@ -557,58 +563,6 @@
     {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-08-22",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-08-22",
-      "time": "17:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-08-22",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-08-22",
-      "time": "17:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
       "date": "2026-08-22",
       "time": "18:00",
@@ -747,6 +701,7 @@
       "date": "2026-08-25",
       "time": "18:00",
       "duration": "2.5 h",
+      "price": "€60",
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/eyd9jyy4nrrfedpiuty0.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/learnlino/2289577"
