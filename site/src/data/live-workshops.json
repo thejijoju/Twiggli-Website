@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T15:14:20.793Z",
+  "updated": "2026-08-22T04:36:28.666Z",
   "sources": [
     {
       "slug": "qian",
@@ -59,7 +59,7 @@
       "slug": "galleria-lucia",
       "url": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "status": "ok",
-      "count": 40
+      "count": 37
     },
     {
       "slug": "kohfink",
@@ -89,7 +89,7 @@
       "slug": "ceramic-kingdom",
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "status": "ok",
-      "count": 44
+      "count": 43
     },
     {
       "slug": "ceramic-kingdom",
@@ -215,7 +215,7 @@
       "slug": "jem",
       "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "status": "ok",
-      "count": 11
+      "count": 10
     },
     {
       "slug": "karen-rose",
@@ -448,67 +448,6 @@
   ],
   "workshops": [
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Design your own scented candle with crystals, Workshop in Berlin",
-      "date": "2026-08-21",
-      "time": "13:00",
-      "duration": "1.5–2 h",
-      "price": "€66",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-08-21",
-      "time": "16:00",
-      "price": "€59",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-08-21",
-      "time": "17:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg",
-      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-08-21",
-      "time": "18:30",
-      "duration": "1.5–2 h",
-      "price": "€71",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
-      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
-      "date": "2026-08-21",
-      "time": "19:15",
-      "duration": "2 h",
-      "price": "€65",
-      "spots": 4,
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
-      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
-      "district": "Neukölln"
-    },
-    {
       "slug": "schmiede",
       "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
@@ -657,7 +596,6 @@
       "date": "2026-08-22",
       "time": "16:00",
       "duration": "3.5 h",
-      "price": "€75",
       "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin",
       "district": "Zehlendorf"
@@ -2199,6 +2137,19 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-04",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "munio",
@@ -4680,7 +4631,7 @@
       "date": "2026-09-26",
       "time": "10:00",
       "duration": "3 h",
-      "price": "€79",
+      "price": "€59",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-26-september",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
@@ -5351,7 +5302,7 @@
       "date": "2026-10-03",
       "time": "10:00",
       "duration": "3 h",
-      "price": "€79",
+      "price": "€59",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-03-oktober",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
@@ -5735,7 +5686,7 @@
       "date": "2026-10-10",
       "time": "10:00",
       "duration": "3 h",
-      "price": "€79",
+      "price": "€59",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-10-oktober",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
@@ -6391,7 +6342,7 @@
       "date": "2026-10-31",
       "time": "10:00",
       "duration": "3 h",
-      "price": "€79",
+      "price": "€59",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-31-oktober",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
@@ -6556,7 +6507,7 @@
       "date": "2026-11-07",
       "time": "10:00",
       "duration": "3 h",
-      "price": "€79",
+      "price": "€59",
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-07-november",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
@@ -7128,18 +7079,6 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Fermenting Vegetables: A Hands-On Workshop in Berlin",
-      "date": "2026-11-28",
-      "time": "15:00",
-      "duration": "3.5 h",
-      "price": "€65",
-      "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
-      "district": "Zehlendorf"
     },
     {
       "slug": "ceramic-kingdom",
