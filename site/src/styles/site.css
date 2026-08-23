@@ -1812,15 +1812,18 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   color: var(--color-accent-800);
 }
+.daypicker[data-view='grid'] .daysessions .session-side {
+  position: relative;
+}
 .daypicker[data-view='grid'] .daysessions .session-spots {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  padding: 4px 10px;
+  bottom: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  font-size: 11px;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 10px;
   font-weight: 700;
   text-align: center;
   white-space: nowrap;
@@ -1834,7 +1837,6 @@ a:hover { color: var(--color-accent); }
   flex-direction: column;
   align-items: stretch;
   gap: 0;
-  position: relative;
 }
 .daypicker[data-view='grid'] .daysessions .session-thumb {
   width: 100%;
