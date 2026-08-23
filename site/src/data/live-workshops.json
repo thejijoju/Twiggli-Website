@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T14:15:35.924Z",
+  "updated": "2026-08-22T15:05:11.311Z",
   "sources": [
     {
       "slug": "qian",
@@ -71,7 +71,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 205
+      "count": 204
     },
     {
       "slug": "pastamadre",
@@ -240,6 +240,12 @@
       "url": "https://www.rose-williams.com/jewelry-courses/",
       "status": "failed: HTTP 403",
       "count": 6
+    },
+    {
+      "slug": "arcoiris",
+      "url": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
+      "status": "ok",
+      "count": 4
     },
     {
       "slug": "ana",
@@ -559,19 +565,6 @@
       "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin",
       "district": "Zehlendorf"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-08-22",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 8,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -1489,6 +1482,18 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "arcoiris",
+      "sourceUrl": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
+      "title": "Vulva Flower Embroidery Workshop",
+      "date": "2026-08-30",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "price": "€59",
+      "url": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
+      "district": "Neukölln",
+      "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
     },
     {
       "slug": "galleria-lucia",
@@ -5241,6 +5246,18 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "arcoiris",
+      "sourceUrl": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
+      "title": "Vulva Flower Embroidery Workshop",
+      "date": "2026-10-03",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "price": "€59",
+      "url": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-10/",
+      "district": "Neukölln",
+      "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -6356,6 +6373,18 @@
       "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
+      "slug": "arcoiris",
+      "sourceUrl": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
+      "title": "Vulva Flower Embroidery Workshop",
+      "date": "2026-11-01",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "price": "€59",
+      "url": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-11/",
+      "district": "Neukölln",
+      "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Basis",
@@ -7112,6 +7141,18 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "arcoiris",
+      "sourceUrl": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
+      "title": "Vulva Flower Embroidery Workshop",
+      "date": "2026-12-05",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "price": "€59",
+      "url": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-12/",
+      "district": "Neukölln",
+      "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
     },
     {
       "slug": "pastamadre",
