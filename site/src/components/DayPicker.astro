@@ -194,6 +194,11 @@ const dayLabel = (offset: number) =>
                               grid, so each card wears its start time as a
                               chip on the picture. */}
                           {s.time && <span class="session-timechip">{s.time}</span>}
+                          {s.soldOut ? (
+                            <span class="session-availbadge session-soldout">{t.soldOut}</span>
+                          ) : (
+                            typeof s.spots === 'number' && <span class="session-availbadge">{s.spots} {t.spots}</span>
+                          )}
                           {s.host.video ? (
                             <video
                               class="session-video"

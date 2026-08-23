@@ -1812,24 +1812,27 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   color: var(--color-accent-800);
 }
-.daypicker[data-view='grid'] .daysessions .session-side {
-  position: relative;
-}
-.daypicker[data-view='grid'] .daysessions .session-spots {
+/* The spots/sold-out note moves onto the picture as a corner badge in
+   grid view (mirrors the time chip, opposite corner) — it never sits in
+   the action row, so it can never push the Book button out of line with
+   its neighbours. The original note stays in the DOM for list view, just
+   hidden here. */
+.daypicker[data-view='grid'] .daysessions .session-spots { display: none; }
+.session-availbadge { display: none; }
+.daypicker[data-view='grid'] .daysessions .session-availbadge {
+  display: inline-block;
   position: absolute;
-  bottom: calc(100% + 4px);
-  right: 0;
-  z-index: 10;
-  padding: 3px 8px;
+  bottom: 8px;
+  right: 8px;
+  z-index: 2;
+  padding: 3px 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
-  font-size: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
   font-weight: 700;
-  text-align: center;
-  white-space: nowrap;
-  color: inherit;
+  color: var(--color-accent-800);
 }
-.daypicker[data-view='grid'] .daysessions .session-spots.session-soldout {
+.daypicker[data-view='grid'] .daysessions .session-availbadge.session-soldout {
   color: #b45309;
 }
 .daypicker[data-view='grid'] .daysessions .session {
