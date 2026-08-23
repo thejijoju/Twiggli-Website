@@ -1812,11 +1812,29 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   color: var(--color-accent-800);
 }
+.daypicker[data-view='grid'] .daysessions .session-spots {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  color: inherit;
+}
+.daypicker[data-view='grid'] .daysessions .session-spots.session-soldout {
+  color: #b45309;
+}
 .daypicker[data-view='grid'] .daysessions .session {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
+  position: relative;
 }
 .daypicker[data-view='grid'] .daysessions .session-thumb {
   width: 100%;
@@ -1858,11 +1876,6 @@ a:hover { color: var(--color-accent); }
   width: 100%;
   justify-content: center;
   text-align: center;
-}
-.daypicker[data-view='grid'] .daysessions .session-spots {
-  grid-column: 1 / -1;
-  grid-row: 3;
-  justify-self: center;
 }
 /* Phones: two tidy columns instead of one huge card per row. */
 @media (max-width: 640px) {
