@@ -1775,10 +1775,40 @@ a:hover { color: var(--color-accent); }
 .view-btn:hover { background: var(--color-accent-100); }
 .view-btn.is-active { background: var(--color-accent-800); color: #fff; }
 
-.daypicker[data-view='grid'] .session-list {
+/* The hidden attribute must always win — filtering and the day switch
+   set it on elements whose classes carry their own display values. */
+.daypicker [hidden] { display: none !important; }
+
+/* In grid view the whole day flows as ONE grid across the full panel
+   width — no per-time sub-grids leaving rows half empty. The time
+   headers give way to a time chip on each card; the cards arrive
+   already sorted by hour, so the order still tells the day's story. */
+.daypicker[data-view='grid'] .daygroup {
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
-  gap: 24px 16px;
+  gap: 28px 16px;
   align-items: start;
+}
+.daypicker[data-view='grid'] .daysessions .timegroup,
+.daypicker[data-view='grid'] .daysessions .session-list {
+  display: contents;
+}
+.daypicker[data-view='grid'] .daysessions .timegroup-head { display: none; }
+.daypicker[data-view='grid'] .daypicker-empty { grid-column: 1 / -1; }
+.session-timechip { display: none; }
+.daypicker[data-view='grid'] .session-thumb { position: relative; }
+.daypicker[data-view='grid'] .session-timechip {
+  display: inline-block;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent-800);
 }
 .daypicker[data-view='grid'] .session {
   display: flex;

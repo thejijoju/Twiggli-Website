@@ -190,6 +190,10 @@ const dayLabel = (offset: number) =>
                             and title both lead where the Book button does:
                             the host's own site for real sessions. */}
                         <a class="session-thumb" href={s.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+                          {/* In grid view the day flows as one full-width
+                              grid, so each card wears its start time as a
+                              chip on the picture. */}
+                          {s.time && <span class="session-timechip">{s.time}</span>}
                           {s.host.video ? (
                             <video
                               class="session-video"
