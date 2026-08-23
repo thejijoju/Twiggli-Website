@@ -1782,22 +1782,24 @@ a:hover { color: var(--color-accent); }
 /* In grid view the whole day flows as ONE grid across the full panel
    width — no per-time sub-grids leaving rows half empty. The time
    headers give way to a time chip on each card; the cards arrive
-   already sorted by hour, so the order still tells the day's story. */
-.daypicker[data-view='grid'] .daygroup {
+   already sorted by hour, so the order still tells the day's story.
+   Everything is scoped to .daysessions: the "On request" panel below
+   keeps its list rows in both views. */
+.daypicker[data-view='grid'] .daysessions .daygroup {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
   gap: 28px 16px;
-  align-items: start;
+  align-items: stretch; /* cards in a row share a height… */
 }
 .daypicker[data-view='grid'] .daysessions .timegroup,
 .daypicker[data-view='grid'] .daysessions .session-list {
   display: contents;
 }
 .daypicker[data-view='grid'] .daysessions .timegroup-head { display: none; }
-.daypicker[data-view='grid'] .daypicker-empty { grid-column: 1 / -1; }
+.daypicker[data-view='grid'] .daysessions .daypicker-empty { grid-column: 1 / -1; }
 .session-timechip { display: none; }
-.daypicker[data-view='grid'] .session-thumb { position: relative; }
-.daypicker[data-view='grid'] .session-timechip {
+.daypicker[data-view='grid'] .daysessions .session-thumb { position: relative; }
+.daypicker[data-view='grid'] .daysessions .session-timechip {
   display: inline-block;
   position: absolute;
   top: 8px;
@@ -1810,28 +1812,67 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   color: var(--color-accent-800);
 }
-.daypicker[data-view='grid'] .session {
+.daypicker[data-view='grid'] .daysessions .session {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
 }
-.daypicker[data-view='grid'] .session-thumb {
+.daypicker[data-view='grid'] .daysessions .session-thumb {
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
 }
-.daypicker[data-view='grid'] .session-main { margin-top: 10px; }
-.daypicker[data-view='grid'] .session-title { font-size: 16px; margin-top: 2px; }
-.daypicker[data-view='grid'] .session-host { white-space: normal; font-size: 12px; }
-.daypicker[data-view='grid'] .session-side {
-  margin-top: 10px;
-  grid-template-columns: 1fr auto auto;
-  justify-items: start;
-  width: 100%;
+.daypicker[data-view='grid'] .daysessions .session-main { margin-top: 10px; }
+/* Long titles clamp to two lines and long host lines to one, so every
+   card's action row lands at a predictable height. */
+.daypicker[data-view='grid'] .daysessions .session-title {
+  font-size: 16px;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
-.daypicker[data-view='grid'] .session-book { justify-self: end; }
-.daypicker[data-view='grid'] .session-spots { justify-self: end; }
+.daypicker[data-view='grid'] .daysessions .session-host {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* …and the action area pins to the card's bottom edge: price and share
+   on one line, the Book/Request/Notify pill full-width beneath (so long
+   labels never overflow a narrow card), spots centred under it. */
+.daypicker[data-view='grid'] .daysessions .session-side {
+  margin-top: auto;
+  padding-top: 12px;
+  width: 100%;
+  grid-template-columns: 1fr auto;
+  justify-items: start;
+}
+.daypicker[data-view='grid'] .daysessions .session-price { grid-column: 1; grid-row: 1; margin-right: 0; }
+.daypicker[data-view='grid'] .daysessions .session-share { grid-column: 2; grid-row: 1; justify-self: end; }
+.daypicker[data-view='grid'] .daysessions .session-book {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: stretch;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+.daypicker[data-view='grid'] .daysessions .session-spots {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  justify-self: center;
+}
+/* Phones: two tidy columns instead of one huge card per row. */
+@media (max-width: 640px) {
+  .daysessions { padding: 18px 14px 26px; }
+  .daypicker[data-view='grid'] .daysessions .daygroup {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 10px;
+  }
+  .daypicker[data-view='grid'] .daysessions .session-title { font-size: 15px; }
+}
 /* Share sits beside the Book pill — the classic curved forward arrow in
    the price pill's exact colours, so the row reads as one family and the
    black pill stays its one strong action. */
