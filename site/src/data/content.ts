@@ -590,6 +590,19 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
       video: '/video/nina-klang-farbe.mp4',
       poster: '/video/nina-klang-farbe-poster.jpg',
     },
+    // Her two sound-relaxation classes are not painting, so her general
+    // reel — a painting table — was the wrong thing to show on them. This
+    // is the sound-bath stretch of the same footage, cut on its own: the
+    // bowls, and the room lying on mats. Nothing in the clip is specific to
+    // the pregnancy class, but the practice on screen is the one taught.
+    'Klangentspannung': {
+      video: '/video/nina-klangentspannung.mp4',
+      poster: '/video/nina-klangentspannung-poster.jpg',
+    },
+    'Klangentspannung für Schwangere': {
+      video: '/video/nina-klangentspannung.mp4',
+      poster: '/video/nina-klangentspannung-poster.jpg',
+    },
   },
 };
 
