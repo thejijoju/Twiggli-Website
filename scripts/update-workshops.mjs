@@ -321,6 +321,8 @@ const SOURCES = [
   // source; it gets its own host card rather than being folded into hers.
   { slug: 'learnanatomy', name: 'Learn Anatomy — Ticket Tailor box office', mode: 'tickettailor',
     url: 'https://www.tickettailor.com/events/turnedartist', district: 'Prenzlauer Berg' },
+  { slug: 'elinorsahm', name: 'Elinor Sahm — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/elinorsahm', district: 'Prenzlauer Berg' },
 
   // Mampe is Berlin's oldest liquor manufacturer (recipes back to 1831) and
   // runs guided manufactory tours with a tasting at the end, in German and

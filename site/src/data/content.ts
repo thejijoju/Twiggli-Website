@@ -148,6 +148,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   ronnadel:         { activity: 'art',       groupRange: [1, 10], hourRange: [2.5, 2.5] },
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   learnanatomy:     { activity: 'art',       groupRange: [1, 12], hourRange: [1, 2.5] },
+  elinorsahm:       { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -305,6 +306,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'learnanatomy', name: 'Learn Anatomy', specialty: 'Anatomy for artists', studio: 'Rebeca Ventura & Alice Bischof',
       blurb: 'Artists Rebeca Ventura and Alice Bischof teach anatomy the way people actually need to draw it. The twelve-part course works head to toe — proportions, torso, limbs, hands and feet, then the face in detail — one hour a week, joined in the room or over Zoom, dropping into single sessions or taking the whole run. Alongside it sit the specials on bodies that standard anatomy classes leave out: where fat gathers and folds, and how skin sags, wrinkles and marks with age.',
       group: 'Small groups', duration: '1–2.5 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin · or online', languages: 'EN' },
+    { slug: 'elinorsahm', name: 'Elinor Sahm', specialty: 'Alcohol ink painting', studio: 'Kunstraum Heartspace',
+      blurb: 'Alcohol ink is fluid, vivid and startlingly fast — it gives striking results almost immediately, even if you have never painted. Elinor Sahm has spent years exploring, exhibiting and teaching with it, and brings that to Berlin: the techniques she developed for steering and controlling the ink on Yupo paper, while leaving room for flow, chance and surprise. Complete beginners and working artists both welcome; everyone leaves with original pieces.',
+      group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -430,6 +434,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'learnanatomy', name: 'Learn Anatomy', specialty: 'Anatomie für Zeichnende', studio: 'Rebeca Ventura & Alice Bischof',
       blurb: 'Die Künstlerinnen Rebeca Ventura und Alice Bischof unterrichten Anatomie so, wie man sie zum Zeichnen wirklich braucht. Der zwölfteilige Kurs geht von Kopf bis Fuß — Proportionen, Oberkörper, Gliedmaßen, Hände und Füße, dann das Gesicht im Detail — eine Stunde pro Woche, vor Ort oder über Zoom, als Einzeltermin oder ganze Reihe. Dazu die Specials über Körper, die in üblichen Anatomiekursen fehlen: wo sich Fett sammelt und faltet, und wie Haut mit den Jahren erschlafft, Falten und Spuren bekommt.',
       group: 'Kleine Gruppen', duration: '1–2,5 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin · oder online', languages: 'EN' },
+    { slug: 'elinorsahm', name: 'Elinor Sahm', specialty: 'Malen mit Alkoholtinte', studio: 'Kunstraum Heartspace',
+      blurb: 'Alkoholtinte ist flüssig, leuchtend und verblüffend schnell — sie liefert fast sofort eindrucksvolle Ergebnisse, auch wenn du noch nie gemalt hast. Elinor Sahm hat jahrelang mit ihr gearbeitet, ausgestellt und unterrichtet und bringt das nun nach Berlin: die Techniken, die sie entwickelt hat, um die Tinte auf Yupo-Papier zu lenken und zu kontrollieren — und ihr trotzdem Raum für Fluss, Zufall und Überraschung zu lassen. Für komplette Anfänger wie für arbeitende Künstlerinnen; alle nehmen eigene Arbeiten mit.',
+      group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
   ],
 };
 
