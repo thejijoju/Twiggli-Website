@@ -364,28 +364,27 @@ const SOURCES = [
 
   // Violaine Toth Ceramic is a Neukölln studio running wheel, handbuilding
   // and glazing classes in English, three to six per class. The shop is
-  // Shopify, so products.json is the right door, and the shopify mode reads
-  // a date out of a variant title where a shop names its variants by date.
+  // Shopify, so products.json is the right door — but her variants are not
+  // dates ("Default Title", "September"), so the plain shopify mode reads
+  // nothing. Her dated classes write the date in the product body under a
+  // "When?" label, which shopify-when reads.
   //
-  // Hers do not. The drop-in classes carry a single "Default Title" variant
-  // and take their dates from a Shopify appointment app, which fetches the
-  // calendar client-side after the page loads — nothing dated reaches the
-  // server response, so a fetch-and-parse scraper has nothing to read. The
-  // one course that does publish dates writes them as prose in the product
-  // body ("Tuesday 1st, Tuesday 8th, Wednesday 9th September 18:00-20:30"),
-  // which no mode here reads yet.
+  // Pointed at /collections/all rather than her classes collection: the
+  // limited-edition dates she adds through the year are not filed there,
+  // and product_type does the filtering more reliably than the collection
+  // does. Everything she teaches is typed "classe"; her pots are not.
   //
-  // So this reads zero today and is here to catch the case where she starts
-  // naming variants by date, which Shopify shops commonly do. Getting the
-  // rest needs either a body-prose parser or a headless browser — see the
-  // note in her host card.
+  // What this cannot reach: the standing drop-in classes — wheel,
+  // handbuilding, glazing — carry no "When?" because their dates live in a
+  // Shopify appointment app that fetches the calendar client-side. Nothing
+  // dated reaches the server response, so they read as nothing here rather
+  // than as something wrong.
   //
-  // The prices in products.json are net of VAT (79.83 where her own page
-  // says 95 EUR), so nothing here should quote a price from a variant
-  // without grossing it up first.
-  { slug: 'violaine', name: 'Violaine Toth Ceramic — classes (Shopify)', mode: 'shopify',
-    url: 'https://tothviolaine.com/collections/ceramic-workshops-berlin/products.json?limit=250',
-    district: 'Neukölln' },
+  // Prices come off her copy ("180€/person"), never off the variant: the
+  // variant price is net of VAT, 151.26 against the 180 she charges.
+  { slug: 'violaine', name: 'Violaine Toth Ceramic — dated classes (Shopify)', mode: 'shopify-when',
+    url: 'https://tothviolaine.com/collections/all/products.json?limit=250',
+    productType: 'classe', district: 'Neukölln' },
 
   // Tania Varela teaches handbuilding ceramics at WOMADE inside Bikini
   // Berlin, four formats of three hours each, eight seats, in German with
@@ -2335,6 +2334,116 @@ function englishCourseDates(text) {
   };
 }
 
+/** A Shopify shop that keeps a class's date in prose in the product body
+ *  rather than in a variant title — "When? Saturday 12th September, 10-17h",
+ *  or a course's meetings as "Tuesday 1st, Tuesday 8th, Wednesday 9th
+ *  September 18:00-20:30 & Saturday 26th September 11:00-13:00".
+ *
+ *  Only a "When?" label counts. Every product body on a shop like this is
+ *  full of prose that reads like a date to a loose parser — pickup times,
+ *  cancellation windows — and that one label is what separates a product
+ *  that has a date from one that is booked through a calendar widget.
+ *
+ *  Each "&"-separated stretch is rewritten into the month-first shape
+ *  englishCourseDates already reads ("September 1, 8, 9 18:00-20:30"), so
+ *  the year inference, the meeting count and the course marker all come
+ *  from the same code the other English listings use.
+ */
+function fromShopifyWhen(jsonText, source) {
+  let data;
+  try {
+    data = JSON.parse(jsonText);
+  } catch {
+    console.log(`[${source.slug}] shopify-when: response is not JSON`);
+    return [];
+  }
+  const out = [];
+  for (const product of data.products ?? []) {
+    if (source.productType && product.product_type !== source.productType) continue;
+    const body = stripTags(String(product.body_html ?? ''));
+    // The label runs until the next one in her "Details to remember" list.
+    const when = body.match(/\bWhen\s*[?:]\s*([\s\S]{0,300}?)(?=\bWhere\s*[?:]|\bWith who\b|\bWhat to bring\b|\bPlease note\b|\bImportant notes\b|$)/i);
+    if (!when) continue;
+    const productUrl = new URL(`/products/${product.handle}`, source.url).href;
+    // Her spec line states the taught hours and the gross fee per head:
+    // "4-6 participants • 1 day • 6 hours • Beginner level • 180€/person".
+    // The variant price is net of VAT (151.26 against her own 180), so a
+    // price is taken from the copy or not at all.
+    const perHead = body.match(/(\d{2,4})\s*€\s*\/\s*(?:person|participant)/i);
+    // "• 6 hours •" or "• 2h30 •" in the spec line above the copy.
+    const statedSplit = body.match(/•\s*(\d{1,2})h(\d{2})\s*(?:•|$)/i);
+    const statedWhole = body.match(/•\s*(\d{1,2}(?:[.,]\d)?)\s*hours?\b/i);
+    const statedHours = statedSplit
+      ? Number(statedSplit[1]) + Number(statedSplit[2]) / 60
+      : statedWhole
+        ? Number(statedWhole[1].replace(',', '.'))
+        : 0;
+    const soldOut = (product.variants ?? []).every((v) => v.available === false);
+    const MONTH_RE = new RegExp(`\\b(${Object.keys(EN_MONTHS).join('|')})\\b`, 'gi');
+
+    const dated = [];
+    for (const chunk of when[1].split(/\s*&\s*/)) {
+      // Days are written before the month with an ordinal suffix, which is
+      // the one thing englishCourseDates cannot read, so the chunk is handed
+      // over in its own month-first order with the suffixes dropped.
+      //
+      // The month to key on is the one the days lead up to, not the first in
+      // the chunk: "September evening sessions: Tuesday 1st … September
+      // 18:00-20:30" opens with the month as a label, and reading that one
+      // leaves the days behind and takes the clock as a date.
+      const ordinals = [...chunk.matchAll(/\b(\d{1,2})(?:st|nd|rd|th)\b/gi)];
+      const lastOrdinal = ordinals.length ? ordinals[ordinals.length - 1].index : -1;
+      MONTH_RE.lastIndex = 0;
+      let month = null;
+      for (const m of chunk.matchAll(MONTH_RE)) {
+        month = month ?? m;
+        if (m.index > lastOrdinal) { month = m; break; }
+      }
+      if (!month) continue;
+      const days = ordinals.filter((o) => o.index < month.index).map((o) => o[1]);
+      const after = chunk.slice(month.index + month[0].length).replace(/(\d{1,2})(?:st|nd|rd|th)\b/gi, '$1');
+      const course = englishCourseDates(days.length ? `${month[1]} ${days.join(', ')} ${after}` : `${month[1]} ${after}`);
+      if (course) dated.push(course);
+    }
+
+    if (!dated.length) continue;
+    // A course whose meetings are written in stretches with a clock each —
+    // three evenings and then a Saturday morning — is still one thing to
+    // book at one price. It gets one card, opening on its first meeting and
+    // counting the rest, rather than a card per stretch that would read as
+    // separate classes each costing the whole course.
+    dated.sort((a, b) => (a.date < b.date ? -1 : 1));
+    const opening = dated[0];
+    const total = dated.reduce((n, c) => n + c.total, 0);
+    const countDe = total > 1 ? ` – ${total} Termine` : '';
+    const countEn = total > 1 ? ` – ${total} dates` : '';
+    const markDe = dated.length === 1 ? opening.markDe : countDe;
+    const markEn = dated.length === 1 ? opening.markEn : countEn;
+    // Her stated hours exclude the lunch break the clock range includes, so
+    // they win — but only where they can mean one meeting. On a course they
+    // are the total across all of them, and the first meeting's own clock
+    // range is the honest per-meeting length.
+    const hours = total === 1 && statedHours ? statedHours : opening.hours;
+    const title = stripTags(String(product.title));
+    out.push({
+      title: title + markDe,
+      ...(markEn ? { titleEn: title + markEn } : {}),
+      date: opening.date,
+      ...(opening.time ? { time: opening.time } : {}),
+      ...(hours > 0 && hours <= 12
+        ? { duration: total > 1
+            ? `${total} × ${Math.round(hours * 2) / 2} h`
+            : `${Math.round(hours * 2) / 2} h` }
+        : {}),
+      ...(perHead ? { price: `€${perHead[1]}` } : {}),
+      ...(soldOut ? { soldOut: true } : {}),
+      ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
+      url: productUrl,
+    });
+  }
+  return out;
+}
+
 function fromShopify(jsonText, source) {
   let data;
   try {
@@ -3399,6 +3508,16 @@ async function scrapeSource(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'shopify-when') {
+    const found = fromShopifyWhen(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w,
+        ...(source.district ? { district: source.district } : {}) }));
+    console.log(`[${source.slug}] shopify-when sessions kept: ${inRange.length} of ${found.length} dated`);
+    return { workshops: inRange, recurring: [] };
+  }
+
   if (source.mode === 'shopify-cowlendar') {
     const found = await fromShopifyCowlendar(source);
     const inRange = found
@@ -3774,6 +3893,8 @@ if (process.env.PARSE_TEST) {
         ? fromTitledDateBlocks
       : process.env.PARSE_TEST_MODE === 'shopify'
         ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json' })
+      : process.env.PARSE_TEST_MODE === 'shopify-when'
+        ? (h, src) => fromShopifyWhen(h, { ...src, url: 'https://shop.example/products.json', productType: 'classe' })
       : process.env.PARSE_TEST_MODE === 'json-ld'
         ? (h) => fromJsonLd(h, 'test')
         : process.env.PARSE_TEST_MODE === 'ics'
