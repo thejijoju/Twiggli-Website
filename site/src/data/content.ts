@@ -110,7 +110,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   jem:          { activity: 'food',        groupRange: [1, 40],   hourRange: [3, 4] },
   'loom-lab':   { activity: 'ceramics',    groupRange: [4, 6],    hourRange: [4, 4] },
   maximiliana:  { activity: 'art',         groupRange: [3, 12],   hourRange: [3, 3] },
-  pia:          { activity: 'art',         groupRange: [4, 20],   hourRange: [2, 2] },
+  // Her public Vulvas.berlin sessions take solo visitors and run 2.5 h,
+  // so the range starts at one and reaches past the corporate two hours.
+  pia:          { activity: 'art',         groupRange: [1, 20],   hourRange: [2, 2.5] },
   sarah:        { activity: 'wellbeing',   groupRange: [3, 12],   hourRange: [1, 7] },
   anne:         { activity: 'photography', groupRange: [5, 20],   hourRange: [1.5, 2] },
   sabine:       { activity: 'photography', groupRange: [1, 12],   hourRange: [4, 5] },

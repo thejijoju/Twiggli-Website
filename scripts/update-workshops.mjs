@@ -339,6 +339,33 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Pia Simonsen has been on the corporate list from the start (as Rethink)
+  // but had no feed: her public brand, Vulvas.berlin, sells nothing online
+  // — you mail her or message her on Instagram — so there is nothing dated
+  // to scrape. What she does publish is a standing weekly slot and a
+  // private-group format, both at a fixed length and price, so those ride
+  // in as seeds and the page is watched in case she ever posts real dates.
+  //
+  // Guided acrylic painting built around vulva anatomy and the conversation
+  // about it: her own FAQ is explicit that the session is educational
+  // rather than sexual, that there is no nudity or live model, and that
+  // men and solo visitors are welcome — which is why the group range now
+  // starts at one.
+  { slug: 'pia', name: 'Vulvas.berlin (Pia Simonsen) — workshops (watched)',
+    url: 'https://www.vulvas.berlin/',
+    district: 'Friedrichshain',
+    seedRecurring: [
+      { title: 'Vulva Painting Workshop', weekdays: ['thu'], time: '18:30',
+        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true,
+        url: 'https://www.vulvas.berlin/' },
+    ],
+    seedOnRequest: [
+      { title: 'Vulva Painting Workshop \u2014 private Gruppe',
+        titleEn: 'Vulva Painting Workshop \u2014 private group',
+        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true,
+        url: 'https://www.vulvas.berlin/' },
+    ] },
+
   // Ohma Studio (Boxhagener Str. 110, Friedrichshain) is a venue, not a
   // host: Olivia rents out a cosy co-working room and four makers teach
   // there, each selling their own tickets. Evelyn Cseh is already a host
