@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T13:25:19.821Z",
+  "updated": "2026-08-24T17:47:27.637Z",
   "sources": [
     {
       "slug": "qian",
@@ -160,13 +160,13 @@
     {
       "slug": "sarah",
       "url": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
-      "status": "ok",
+      "status": "failed: fetch failed",
       "count": 4
     },
     {
       "slug": "sarah",
       "url": "https://sarahniklowitz.de/journaling-fuer-beginner/",
-      "status": "failed: no upcoming events parsed",
+      "status": "failed: fetch failed",
       "count": 0
     },
     {
@@ -276,6 +276,12 @@
       "url": "https://www.drawingwalks.art/join-a-walk",
       "status": "ok",
       "count": 10
+    },
+    {
+      "slug": "violaine",
+      "url": "https://tothviolaine.com/collections/all/products.json?limit=250",
+      "status": "ok",
+      "count": 2
     },
     {
       "slug": "tania",
@@ -1920,6 +1926,19 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "violaine",
+      "sourceUrl": "https://tothviolaine.com/collections/all/products.json?limit=250",
+      "title": "4-sessions pottery class: Throwing, Trimming & Glazing – 4 Termine",
+      "titleEn": "4-sessions pottery class: Throwing, Trimming & Glazing – 4 dates",
+      "date": "2026-09-01",
+      "time": "18:00",
+      "duration": "4 × 2.5 h",
+      "price": "€295",
+      "image": "https://cdn.shopify.com/s/files/1/0972/8036/0832/files/ceramic-classes-sessions.jpg?v=1769246214",
+      "url": "https://tothviolaine.com/products/classes-throwing-trimming-glazing-class-berlin",
+      "district": "Neukölln"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Seifenschnitzen",
@@ -2273,20 +2292,6 @@
       "duration": "2.25 h"
     },
     {
-      "slug": "schmiede",
-      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
-      "title": "Messerschmieden 2 Tage",
-      "date": "2026-09-04",
-      "time": "10:00",
-      "duration": "2 Tage",
-      "price": "€350",
-      "spots": 6,
-      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
-      "request": true,
-      "district": "Blankenburg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -2488,6 +2493,20 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-09-05",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -2958,7 +2977,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-09-06",
       "time": "14:00",
-      "spots": 13,
+      "spots": 10,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -3578,6 +3597,18 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
+      "slug": "violaine",
+      "sourceUrl": "https://tothviolaine.com/collections/all/products.json?limit=250",
+      "title": "Limited edition : Black cups workshop (September)",
+      "date": "2026-09-12",
+      "time": "10:00",
+      "duration": "6 h",
+      "price": "€180",
+      "image": "https://cdn.shopify.com/s/files/1/0972/8036/0832/files/B3E155E9-5824-4764-9D9A-F6769B654EBB.jpg?v=1785853953",
+      "url": "https://tothviolaine.com/products/limited-edition-black-cups-workshop-september",
+      "district": "Neukölln"
     },
     {
       "slug": "druckrausch",
