@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T09:31:37.200Z",
+  "updated": "2026-08-24T09:43:28.709Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,7 +64,7 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 3
     },
     {
@@ -240,6 +240,30 @@
       "url": "https://www.rose-williams.com/jewelry-courses/",
       "status": "failed: HTTP 403",
       "count": 5
+    },
+    {
+      "slug": "ronnadel",
+      "url": "https://www.tickettailor.com/events/ronnadel",
+      "status": "ok",
+      "count": 1
+    },
+    {
+      "slug": "cateduckwall",
+      "url": "https://www.tickettailor.com/events/cateduckwall",
+      "status": "ok",
+      "count": 1
+    },
+    {
+      "slug": "learnanatomy",
+      "url": "https://www.tickettailor.com/events/turnedartist",
+      "status": "ok",
+      "count": 14
+    },
+    {
+      "slug": "elinorsahm",
+      "url": "https://www.tickettailor.com/events/elinorsahm",
+      "status": "ok",
+      "count": 1
     },
     {
       "slug": "mampe",
@@ -1120,6 +1144,17 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "cateduckwall",
+      "sourceUrl": "https://www.tickettailor.com/events/cateduckwall",
+      "title": "Saturday Cyanotypes: Print Your Own Cyanotype Tote Bag",
+      "date": "2026-08-29",
+      "time": "11:00",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_734,q_100,w_734,x_0,y_133/c_scale,h_250,q_85,w_250/v1/production/userfiles/dzowyw0pwqzzsvdklpuy.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/cateduckwall/2338906"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -1155,6 +1190,17 @@
       "url": "https://www.eversports.de/org/activity/d0d53672-e1c2-4064-aa51-fc3ab20430b2",
       "district": "Treptow",
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+    },
+    {
+      "slug": "elinorsahm",
+      "sourceUrl": "https://www.tickettailor.com/events/elinorsahm",
+      "title": "Flow & Form - Introduction to Alcohol Ink",
+      "date": "2026-08-29",
+      "time": "13:00",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_816,q_100,w_816,x_555,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/agadl4ejo3p5yhe105xr.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/elinorsahm/2365001"
     },
     {
       "slug": "mampe",
@@ -1242,6 +1288,17 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "SPECIAL: Fat Bodies - Anatomy Workshop",
+      "date": "2026-08-29",
+      "time": "16:00",
+      "duration": "2.5 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/wzqiumnczvy80xdicask.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348264"
     },
     {
       "slug": "mampe",
@@ -1369,6 +1426,17 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337237/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "SPECIAL: Older Bodies - Anatomy Workshop",
+      "date": "2026-08-30",
+      "time": "10:00",
+      "duration": "2.5 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/vd2dvtibmpi8ayqcf2ro.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348316"
     },
     {
       "slug": "galleria-lucia",
@@ -1639,6 +1707,17 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Full Body Proportions",
+      "date": "2026-09-02",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/nxmsfpye243zphgsksij.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348203"
     },
     {
       "slug": "angelo",
@@ -2674,6 +2753,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Torso (Front)",
+      "date": "2026-09-09",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/a0ojgpzoudbwkezb53ep.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348232"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruckworkshop",
@@ -3518,6 +3608,17 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Torso (Back)",
+      "date": "2026-09-16",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ctibozlnftydpxvymlxs.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348235"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4365,6 +4466,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Legs",
+      "date": "2026-09-23",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/osobpuwvwymgncpurqqx.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348236"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruckworkshop",
@@ -5119,6 +5231,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Arms",
+      "date": "2026-09-30",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/wuxibdr05ujjofxot29r.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348237"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruck-Kurs -Fotografie-",
@@ -5413,6 +5536,17 @@
       "url": "https://www.druckrausch.com/booking-calendar/02-10-basis-siebdruckworkshop",
       "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "ronnadel",
+      "sourceUrl": "https://www.tickettailor.com/events/ronnadel",
+      "title": "Printmaking with Cyanotype",
+      "date": "2026-10-02",
+      "time": "18:00",
+      "duration": "2.5 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1029,q_100,w_1029,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/w9amncvfnvdixlukwccc.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/ronnadel/2303158"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5885,6 +6019,17 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Feet",
+      "date": "2026-10-07",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/gcw9cnm94ttnruxepg99.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348238"
     },
     {
       "slug": "munio",
@@ -6443,6 +6588,17 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Hands",
+      "date": "2026-10-14",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/wx3p9f6st1zuitfhjqha.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348239"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruckworkshop",
@@ -6801,6 +6957,17 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Neck & Shoulders",
+      "date": "2026-10-21",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/d4vcohnv1kd6chut2mcq.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348240"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 42)",
@@ -7057,6 +7224,17 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Full Head Proportions",
+      "date": "2026-10-28",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/t21pozdmmye93bslnli3.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348241"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -7308,6 +7486,17 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Eyes & Nose",
+      "date": "2026-11-04",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/nvnznshot0441qjogufy.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348242"
     },
     {
       "slug": "druckrausch",
@@ -7623,6 +7812,17 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Ears",
+      "date": "2026-11-11",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/a9i37rd86mgjapmfvmye.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348243"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Express-Siebdruck-Kurs",
@@ -7857,6 +8057,17 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "learnanatomy",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Chin & Mouth",
+      "date": "2026-11-18",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/fm1ltoardj0o8k7tubhp.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348244"
     },
     {
       "slug": "ceramic-kingdom",
