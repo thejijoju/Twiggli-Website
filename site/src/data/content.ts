@@ -522,6 +522,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // own, audio stripped; the top band is cropped off to lose the CapCut
   // watermark her export carried.
   anne: { video: '/video/anne.mp4', poster: '/video/anne-poster.jpg' },
+  // Dina's studio, canvases going up on easels. Audio stripped, and trimmed
+  // to the session footage — the back half of her clip was a slideshow of
+  // Airbnb review screenshots, which is another platform's furniture.
+  techno: { video: '/video/techno.mp4', poster: '/video/techno-poster.jpg' },
   // reel-3 is an unattributed painting-session clip sitting with a painting
   // host. UNCONFIRMED — if it was shot with a specific maker, move the slug
   // here and the carousel and directory both follow.
