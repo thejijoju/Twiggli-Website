@@ -303,6 +303,25 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Kunstraum Heartspace (Danziger Str. 172, Prenzlauer Berg) is a venue, not
+  // a host: Alice Bischof runs the room and independent artists teach in it,
+  // each selling through their own Ticket Tailor box office. Scraping the
+  // venue's own course pages would double-list Rebeca's linocut classes
+  // (already here via 'learnlino') and Sarah's Sunday Morning Pages, so each
+  // artist is onboarded on their own box office instead. All of them sit at
+  // the same address, hence the shared district.
+  { slug: 'ronnadel', name: 'Ron Nadel — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/ronnadel', district: 'Prenzlauer Berg' },
+  { slug: 'cateduckwall', name: 'Cate Duckwall — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/cateduckwall', district: 'Prenzlauer Berg' },
+  // 'turnedartist' is the Learn Anatomy programme — a twelve-part anatomy
+  // course plus one-off body-drawing specials, taught jointly by Rebeca
+  // Ventura and Alice Bischof. It is its own box office and carries none of
+  // Rebeca's linocut sessions, so there is no overlap with her 'learnlino'
+  // source; it gets its own host card rather than being folded into hers.
+  { slug: 'learnanatomy', name: 'Learn Anatomy — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/turnedartist', district: 'Prenzlauer Berg' },
+
   // Mampe is Berlin's oldest liquor manufacturer (recipes back to 1831) and
   // runs guided manufactory tours with a tasting at the end, in German and
   // English, plus a gin seminar where you distil and bottle your own. Their
