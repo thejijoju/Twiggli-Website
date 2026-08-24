@@ -41,13 +41,17 @@ jobs:
           // platforms like Squarespace keep a class's dates.
           let asJson = null;
           try { asJson = JSON.parse(html); } catch {}
-          const outline = asJson && (Array.isArray(asJson) ? asJson : asJson.items);
+          const outline = asJson && (Array.isArray(asJson) ? asJson
+            : ['items', 'data', 'events', 'results', 'entries'].map((k) => asJson[k]).find(Array.isArray));
           if (outline) {
             console.log('--- json items ---');
             for (const it of outline) {
               const sc = it.structuredContent ?? it;
               const price = sc.priceMoney?.value;
-              console.log(`\n\u2022 ${it.title ?? it.name ?? '(untitled)'}${it.fullUrl ? ` \u2014 ${it.fullUrl}` : ''}${price ? ` \u2014 ${price}` : ''}`);
+              const link = it.fullUrl ?? it.url;
+              console.log(`\n\u2022 ${it.title ?? it.name?.text ?? it.name ?? '(untitled)'}${link ? ` \u2014 ${link}` : ''}${price ? ` \u2014 ${price}` : ''}`);
+              for (const k of ['start', 'start_date', 'startDate', 'end_date', 'timezone', 'is_sold_out', 'tickets_url'])
+                if (it[k] != null) console.log(`  ${k}: ${JSON.stringify(it[k]).slice(0, 200)}`);
               if (it.excerpt) console.log(`  excerpt: ${strip(it.excerpt).slice(0, 400)}`);
               if (it.body) console.log(`  body: ${strip(it.body).slice(0, 900)}`);
               for (const v of sc.variants ?? []) {
