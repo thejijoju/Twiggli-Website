@@ -316,7 +316,7 @@ const SOURCES = [
   { slug: 'mampe', name: 'Mampe — manufactory tours & tastings', mode: 'shopify',
     url: 'https://mampe.berlin/de-engl/collections/events/products.json?limit=250',
     productBase: 'https://mampe.berlin/de-engl/products/',
-    district: 'Berlin' },
+    district: 'Kreuzberg' },
 
   // Maximiliána Martišková — already a host here (bird sketching and
   // watercolour at Kunstraum Heartspace) — sells her public sessions

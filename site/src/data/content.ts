@@ -288,7 +288,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     // Copy from their events collection; photos to follow.
     { slug: 'mampe', name: 'Mampe', specialty: 'Manufactory tours & spirit tastings', studio: 'MAMPE Manufaktur',
       blurb: 'Berlin’s oldest liquor manufacturer, pouring since 1831. A guided tour walks you through 195 years of the city’s drinking history and the workings of the manufactory, then sits you down to taste the schnapps — several still made to the original recipes. Short tours run 45–60 minutes in German or English, the long one 90; the gin seminar goes further, and you distil and bottle your own to take home.',
-      group: 'Groups welcome', duration: '45 min – 2.5 h', place: 'MAMPE Manufaktur, Berlin', languages: 'DE · EN' },
+      group: 'Groups welcome', duration: '45 min – 2.5 h', place: 'Am Tempelhofer Berg 6, Berlin', languages: 'DE · EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -404,7 +404,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
       group: '2–8', duration: '2 Std.', place: 'Grimmstr. 24, Berlin', languages: 'EN · DE' },
     { slug: 'mampe', name: 'Mampe', specialty: 'Manufaktur-Führungen & Spirituosen-Verkostung', studio: 'MAMPE Manufaktur',
       blurb: 'Berlins älteste Spirituosenmanufaktur, seit 1831 im Ausschank. Die Führung nimmt euch mit durch 195 Jahre Berliner Trinkgeschichte und durch die Manufaktur — und danach wird verkostet, einiges davon noch nach den Originalrezepturen gebrannt. Die kurzen Führungen dauern 45–60 Minuten auf Deutsch oder Englisch, die große 90; im Gin-Seminar geht ihr weiter und brennt und abfüllt euren eigenen Gin zum Mitnehmen.',
-      group: 'Gruppen willkommen', duration: '45 Min. – 2,5 Std.', place: 'MAMPE Manufaktur, Berlin', languages: 'DE · EN' },
+      group: 'Gruppen willkommen', duration: '45 Min. – 2,5 Std.', place: 'Am Tempelhofer Berg 6, Berlin', languages: 'DE · EN' },
   ],
 };
 
