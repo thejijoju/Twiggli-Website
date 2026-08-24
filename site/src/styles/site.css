@@ -1719,6 +1719,67 @@ a:hover { color: var(--color-accent); }
   font-size: 14px;
   color: #6e6a75;
 }
+/* One line of five cards, laid out like the feed's grid view rather than
+   as list rows — the five rotate daily (see getOnRequest), so the strip
+   stays short and still turns over. Below 900px the line scrolls sideways
+   instead of squeezing five cards into a phone. */
+.onrequest .session-list {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px 16px;
+  align-items: stretch;
+}
+.onrequest .session {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+.onrequest .session-thumb {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+.onrequest .session-main { margin-top: 10px; }
+.onrequest .session-title {
+  font-size: 16px;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.onrequest .session-host {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Price and the Inquire pill pin to the card's bottom edge, so five cards
+   of unequal title length still line their buttons up. */
+.onrequest .session-side {
+  margin-top: auto;
+  padding-top: 12px;
+  width: 100%;
+  grid-template-columns: 1fr;
+  justify-items: start;
+}
+.onrequest .session-price { grid-column: 1; grid-row: 1; margin-right: 0; }
+.onrequest .session-book {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: stretch;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .onrequest .session-list {
+    grid-template-columns: repeat(5, minmax(190px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x proximity;
+  }
+  .onrequest .session { scroll-snap-align: start; }
+}
 
 /* Taught-in language(s), sitting quietly beside the duration. */
 .lang-pill {

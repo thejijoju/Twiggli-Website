@@ -95,14 +95,26 @@ export type OnRequestWorkshop = {
   request?: boolean;
 };
 
-/** Undated inquiry-only workshops for the feed's "on request" section. */
+/** How many on-request workshops the section shows at once — one line of
+ *  cards under the day feed. */
+export const ON_REQUEST_SHOWN = 5;
+
+/** Undated inquiry-only workshops for the feed's "on request" section.
+ *
+ *  There are more of these than fit on one line, so the section shows a
+ *  window of ON_REQUEST_SHOWN that walks one place along per day — the
+ *  deploy workflow rebuilds every morning, so a visitor coming back finds
+ *  different makers rather than the same five forever. Never two from one
+ *  host: hosts are the unit the window steps over, and a host offering
+ *  several workshops cycles through them on the same clock.
+ */
 export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
   const bySlug = new Map(getHosts(lang).map((h) => [h.slug, h]));
-  const out: OnRequestWorkshop[] = [];
+  const byHost = new Map<string, OnRequestWorkshop[]>();
   for (const o of ((liveData as { onRequest?: LiveOnRequest[] }).onRequest ?? [])) {
     const host = bySlug.get(o.slug);
     if (!host) continue;
-    out.push({
+    const entry: OnRequestWorkshop = {
       id: `req-${o.slug}-${hash(o.title)}`,
       host,
       title: lang === 'en' && o.titleEn ? o.titleEn : o.title,
@@ -111,7 +123,19 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
       ...(o.duration ? { duration: o.duration } : {}),
       ...(o.price ? { price: o.price } : {}),
       ...(o.request ? { request: true } : {}),
-    });
+    };
+    const forHost = byHost.get(o.slug);
+    if (forHost) forHost.push(entry);
+    else byHost.set(o.slug, [entry]);
+  }
+
+  const slugs = [...byHost.keys()];
+  if (!slugs.length) return [];
+  const day = Math.floor(berlinTodayMs() / 86400000);
+  const out: OnRequestWorkshop[] = [];
+  for (let i = 0; i < Math.min(ON_REQUEST_SHOWN, slugs.length); i++) {
+    const forHost = byHost.get(slugs[(((day + i) % slugs.length) + slugs.length) % slugs.length])!;
+    out.push(forHost[day % forHost.length]);
   }
   return out;
 }
