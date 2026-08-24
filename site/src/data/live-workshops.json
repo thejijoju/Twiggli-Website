@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T04:52:28.909Z",
+  "updated": "2026-08-24T09:31:37.200Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,7 +64,7 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 3
     },
     {
@@ -89,7 +89,7 @@
       "slug": "ceramic-kingdom",
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "status": "ok",
-      "count": 44
+      "count": 43
     },
     {
       "slug": "ceramic-kingdom",
@@ -242,6 +242,24 @@
       "count": 5
     },
     {
+      "slug": "mampe",
+      "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "status": "ok",
+      "count": 90
+    },
+    {
+      "slug": "maximiliana",
+      "url": "https://www.tickettailor.com/events/maxmartiskova",
+      "status": "ok",
+      "count": 1
+    },
+    {
+      "slug": "redrum",
+      "url": "https://www.redrumberlin.de/tasting-experience/",
+      "status": "ok",
+      "count": 2
+    },
+    {
       "slug": "arcoiris",
       "url": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
       "status": "ok",
@@ -270,18 +288,6 @@
       "url": "https://empireofdirt.studio/products.json?limit=250",
       "status": "ok",
       "count": 10
-    },
-    {
-      "slug": "redrum",
-      "url": "https://www.redrumberlin.de/tasting-experience/",
-      "status": "seeded",
-      "count": 0
-    },
-    {
-      "slug": "maximiliana",
-      "url": "https://www.tickettailor.com/events/maxmartiskova",
-      "status": "seeded",
-      "count": 0
     }
   ],
   "recurring": [
@@ -476,6 +482,15 @@
       "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
+      "slug": "maximiliana",
+      "sourceUrl": "https://www.tickettailor.com/events/maxmartiskova",
+      "title": "Workshop auf Anfrage: Naturtagebuch",
+      "titleEn": "Personal Nature Journaling Workshop",
+      "district": "Berlin",
+      "request": true,
+      "url": "https://maxmartiskova.com/start-a-project"
+    },
+    {
       "slug": "redrum",
       "sourceUrl": "https://www.redrumberlin.de/tasting-experience/",
       "title": "Spirituosen-Tasting",
@@ -496,15 +511,6 @@
       "district": "Kreuzberg",
       "request": true,
       "url": "https://www.redrumberlin.de/tasting-experience/"
-    },
-    {
-      "slug": "maximiliana",
-      "sourceUrl": "https://www.tickettailor.com/events/maxmartiskova",
-      "title": "Workshop auf Anfrage: Naturtagebuch",
-      "titleEn": "Personal Nature Journaling Workshop",
-      "district": "Berlin",
-      "request": true,
-      "url": "https://maxmartiskova.com/start-a-project"
     }
   ],
   "workshops": [
@@ -569,6 +575,18 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=45e12f27-7f10-467f-937f-fab7cc95dcce&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-08-26",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -631,6 +649,18 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=1820x1280:format=jpg/path/s670a799786839477/image/i0efa98ebb5097ebc/version/1670396528/image.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-08-26",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -1127,6 +1157,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-08-29",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -1202,6 +1244,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-08-29",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -1267,6 +1321,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-08-29",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -1277,19 +1343,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
-      "title": "Try Handbuilding",
-      "date": "2026-08-29",
-      "time": "19:00",
-      "duration": "2 h",
-      "price": "€59",
-      "spots": 7,
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
-      "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
-      "district": "Neukölln"
     },
     {
       "slug": "ceramic-kingdom",
@@ -1475,6 +1528,18 @@
       "spots": 6
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-02",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -1523,6 +1588,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-02",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -1807,6 +1884,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-04",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -2072,6 +2161,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-05",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -2156,6 +2257,18 @@
       "image": "https://static.wixstatic.com/media/d918f6_2f78747316cd476b9c6f42d0c3c5648f~mv2.jpg/v1/fill/w_1686,h_1170,al_c,q_90/d918f6_2f78747316cd476b9c6f42d0c3c5648f~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fizzy-ferments-kombucha-kefir-and-wild-sodas",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-05",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -2447,6 +2560,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-09",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -2484,6 +2609,30 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-09",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-09",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -2939,6 +3088,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-12",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "beat-etage",
       "sourceUrl": "https://beat-etage.de/workshops/",
       "title": "Handpan Workshop",
@@ -3000,6 +3161,18 @@
       "url": "https://en.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-12",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -3077,6 +3250,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-09-12",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
     {
       "slug": "ceramic-kingdom",
@@ -3221,6 +3406,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-16",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -3258,6 +3455,30 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-16",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-16",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -3518,6 +3739,18 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-18",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -3689,6 +3922,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-19",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -3763,6 +4008,18 @@
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-19",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -3918,6 +4175,18 @@
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-20",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Pasta Machen\"",
@@ -3982,6 +4251,18 @@
       "spots": 3
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-23",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -4019,6 +4300,30 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-23",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-23",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -4240,6 +4545,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-25",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -4445,6 +4762,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-26",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -4495,6 +4824,18 @@
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/?re-product-id=264518",
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-26",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -4560,6 +4901,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-09-26",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4652,6 +5005,18 @@
       "url": "https://empireofdirt.studio/products/five-week-pottery-class"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-30",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -4689,6 +5054,30 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-09-30",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-09-30",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -4896,6 +5285,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-02",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
       "slug": "munio",
@@ -5372,6 +5773,18 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-07",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Kerzen und Wachspättchen Workshop",
@@ -5409,6 +5822,30 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-07",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-07",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -5617,6 +6054,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-09",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
       "slug": "sabine",
       "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
@@ -5707,6 +6156,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-10",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sauerteig Pizza Workshop",
@@ -5742,6 +6203,30 @@
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-10",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-10-10",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5933,6 +6418,31 @@
       "district": "Neukölln"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-14",
+      "time": "14:00",
+      "soldOut": true,
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-14",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruckworkshop",
@@ -5968,6 +6478,18 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97447227/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-16",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
       "slug": "pastamadre",
@@ -6009,6 +6531,18 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-17",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Orecchiette\" Pasta Workshop",
@@ -6019,6 +6553,18 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-17",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "faye",
@@ -6219,6 +6765,42 @@
       "kids": true
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-21",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-21",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-21",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 42)",
@@ -6243,6 +6825,18 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-23",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6296,6 +6890,31 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/image3_3.jpg?v=1782675056",
       "url": "https://empireofdirt.studio/products/masterclass-nerikomi-with-angela"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-24",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-24",
+      "time": "16:00",
+      "soldOut": true,
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6402,6 +7021,42 @@
       "district": "Neukölln"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-28",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-28",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-10-28",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -6426,6 +7081,18 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97447362/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-10-30",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6607,6 +7274,42 @@
       "spots": 3
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-04",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-11-04",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-04",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruckworkshop",
@@ -6642,6 +7345,18 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97447362/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-11-06",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
       "slug": "sabine",
@@ -6709,6 +7424,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-07",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "title": "Keramikgießen | Terrazzo Workshop",
@@ -6732,6 +7459,30 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-07",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-11-07",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6836,6 +7587,42 @@
       "spots": 3
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-11",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-11-11",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-11",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Express-Siebdruck-Kurs",
@@ -6858,6 +7645,18 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
       "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-11-13",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6912,6 +7711,18 @@
       "url": "https://empireofdirt.studio/products/express-wheel-throwing"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-14",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Maccheroni\" Pasta Workshop",
@@ -6922,6 +7733,18 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-14",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "kohfink",
@@ -6998,6 +7821,42 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97447466/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-18",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-11-18",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-18",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7090,6 +7949,18 @@
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-21",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Tortelli\" Gefüllte Pasta Workshop",
@@ -7100,6 +7971,30 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-21",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-11-21",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7187,6 +8082,42 @@
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "spots": 3
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-25",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-11-25",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-25",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "sabine",
@@ -7292,6 +8223,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-28",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sauerteig Brot Workshop",
@@ -7314,6 +8257,18 @@
       "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
       "district": "Zehlendorf"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-11-28",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7392,6 +8347,42 @@
       "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-02",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "SMALL SCHNAPPS STORIES in English",
+      "date": "2026-12-02",
+      "time": "15:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
+      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-02",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "kohfink",
       "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
       "title": "Honiglebkuchen backen",
@@ -7429,6 +8420,18 @@
       "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-05",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sauerteig Pizza Workshop",
@@ -7439,6 +8442,30 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-05",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
+      "date": "2026-12-05",
+      "time": "18:00",
+      "duration": "2–2.5 h",
+      "price": "€77",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
+      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7492,6 +8519,30 @@
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-09",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-09",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -7519,6 +8570,18 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-12",
+      "time": "14:00",
+      "duration": "0.75–1 h",
+      "price": "€12",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "Sauerteig Brot Workshop",
@@ -7529,6 +8592,18 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "mampe",
+      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+      "title": "GROßE SCHNAPSGESCHICHTEN",
+      "date": "2026-12-12",
+      "time": "16:00",
+      "duration": "1.5 h",
+      "price": "€24",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
       "slug": "ceramic-kingdom",
