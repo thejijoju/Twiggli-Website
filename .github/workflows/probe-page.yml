@@ -30,8 +30,17 @@ jobs:
           const urls = process.env.PROBE_URL.split(/[\s,]+/).map((u) => u.trim()).filter(Boolean);
           for (const url of urls) {
           console.log(`\n${'='.repeat(70)}\n=== ${url}\n${'='.repeat(70)}`);
-          const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)' }, redirect: 'follow' });
-          const html = await res.text();
+          // A dead host used to throw and abort the whole run, losing the
+          // pages that did answer — a guessed url now costs its own block
+          // and nothing else.
+          let res, html;
+          try {
+            res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)' }, redirect: 'follow' });
+            html = await res.text();
+          } catch (err) {
+            console.log(`FETCH FAILED: ${err.message}${err.cause ? ` (${err.cause.code ?? err.cause.message})` : ''}`);
+            continue;
+          }
           console.log(`HTTP ${res.status}, ${html.length} bytes\n`);
           const decode = (s) => s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#0?39;/g,"'").replace(/&nbsp;/g,' ');
           const strip = (s) => decode(s.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ')).replace(/\s+/g,' ').trim();
