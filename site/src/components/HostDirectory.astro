@@ -78,9 +78,13 @@ const labels = {
 </div>
 
 <script>
-  // Reels on the directory play on click and stop when another starts, so two
-  // never run at once. Everything else here is a still.
+  // Reels on the directory start when the pointer is over them and stop when
+  // it leaves; a click stops one under the cursor, and it stays stopped until
+  // the pointer leaves and comes back. Only ever one at a time. Touch has no
+  // hover, so there a tap toggles the tile instead. Everything else here is
+  // a still.
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
+  const hoverable = window.matchMedia('(hover: hover)').matches;
   const stopAll = (except?: HTMLElement) =>
     cards.forEach((c) => {
       if (c === except) return;
@@ -91,17 +95,31 @@ const labels = {
   cards.forEach((card) => {
     const video = card.querySelector<HTMLVideoElement>('.maker-video');
     if (!video) return;
-    const toggle = () => {
-      if (!video.paused) {
-        video.pause();
-        card.classList.remove('is-playing');
-        return;
-      }
+    const media = card.querySelector('.maker-media');
+    const start = () => {
       stopAll(card);
       card.classList.add('is-playing');
       video.play().catch(() => card.classList.remove('is-playing'));
     };
-    card.querySelector('.maker-media')?.addEventListener('click', toggle);
+    const halt = () => {
+      video.pause();
+      card.classList.remove('is-playing');
+    };
+    if (hoverable) {
+      let stopped = false;
+      media?.addEventListener('mouseenter', () => { if (!stopped) start(); });
+      media?.addEventListener('mouseleave', () => { stopped = false; halt(); });
+      media?.addEventListener('click', () => { stopped = true; halt(); });
+    } else {
+      media?.addEventListener('click', () => (video.paused ? start() : halt()));
+    }
+    // The play button is the tile's keyboard route in, so it toggles rather
+    // than following the click-to-stop rule the media itself uses.
+    card.querySelector('.maker-play')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (video.paused) start();
+      else halt();
+    });
     video.addEventListener('pause', () => card.classList.remove('is-playing'));
   });
 </script>
