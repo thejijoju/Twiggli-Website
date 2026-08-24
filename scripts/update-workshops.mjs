@@ -2785,6 +2785,20 @@ function fromGermanDates(html, source) {
           meetings = 2;
         }
       }
+      // A date introduced as the start of something ("Beginn Freitag
+      // 22.05.") is a course rather than a single session, and the page says
+      // how long it runs somewhere in its own prose ("über einen Zeitraum
+      // von 7 Wochen"). Seven weekly evenings shown as one three-hour
+      // evening understates what somebody is signing up for. Only a date
+      // that announces itself as a beginning takes this, so a list of
+      // one-off dates on the same page is unaffected.
+      // "Beginn" must introduce this very date — German pages also write
+      // "Beginn: 18 Uhr" for a start time, which says nothing about a run.
+      if (/\bBeginn\b\s*(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)?\s*(?:,\s*)?$/i.test(beforeCtx)) {
+        const runs = text.match(/(?:Zeitraum von\s*)?(\d{1,2})\s*(?:Wochen|Termine[n]?|Abende[n]?)\b/i);
+        const n = Number(runs?.[1]);
+        if (n >= 2 && n <= 20) meetings = n;
+      }
       const TIME_RE = /(\d{1,2}):(\d{2})(?!\s*€)\s*(am|pm)?|(\d{1,2})\s*(?:Uhr|(am|pm))/i;
       const tm = afterCtx.match(TIME_RE) ?? beforeCtx.match(TIME_RE);
       const time = tm
@@ -2808,12 +2822,12 @@ function fromGermanDates(html, source) {
       const priceMatch = afterCtx.match(/(\d{1,4})(?:[.,]\d{2}|,-)?\s*€/);
       const baseTitle = source.title ?? 'Workshop';
       out.push({
-        title: baseTitle + (meetings > 1 ? ' – 2 Termine' : ''),
-        ...(source.titleEn ? { titleEn: source.titleEn + (meetings > 1 ? ' – 2 dates' : '') } : {}),
+        title: baseTitle + (meetings > 1 ? ` – ${meetings} Termine` : ''),
+        ...(source.titleEn ? { titleEn: source.titleEn + (meetings > 1 ? ` – ${meetings} dates` : '') } : {}),
         date,
         time,
         ...(hours > 0 && hours <= 12
-          ? { duration: meetings > 1 ? `2 × ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
+          ? { duration: meetings > 1 ? `${meetings} × ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
           : source.duration ? { duration: source.duration } : {}),
         // Courses that sell through a partner say so on the page rather than
         // hiding it behind a booking click.
