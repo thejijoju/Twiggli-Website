@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T11:47:40.697Z",
+  "updated": "2026-08-24T11:58:27.134Z",
   "sources": [
     {
       "slug": "qian",
@@ -270,6 +270,12 @@
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
       "count": 90
+    },
+    {
+      "slug": "tufttuft",
+      "url": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "status": "ok",
+      "count": 14
     },
     {
       "slug": "alessia",
@@ -1270,6 +1276,32 @@
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_734,q_100,w_734,x_0,y_133/c_scale,h_250,q_85,w_250/v1/production/userfiles/dzowyw0pwqzzsvdklpuy.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/cateduckwall/2338906"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-08-29",
+      "time": "11:00",
+      "spots": 5,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-08-29",
+      "time": "11:00",
+      "spots": 4,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",
@@ -2359,6 +2391,32 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-09-05",
+      "time": "11:00",
+      "spots": 6,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-09-05",
+      "time": "11:00",
+      "spots": 3,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "daisuki",
       "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
       "district": "Online",
@@ -2682,6 +2740,32 @@
       "district": "Wedding",
       "request": true,
       "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-09-06",
+      "time": "11:00",
+      "spots": 3,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-09-06",
+      "time": "11:00",
+      "spots": 3,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "daisuki",
@@ -3628,6 +3712,32 @@
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-09-13",
+      "time": "11:00",
+      "spots": 5,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-09-13",
+      "time": "11:00",
+      "spots": 4,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Incense Lab I: Grundlagen des Dufts",
@@ -4193,6 +4303,32 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-09-19",
+      "time": "10:00",
+      "spots": 6,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-09-19",
+      "time": "10:00",
+      "spots": 3,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "sina",
       "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
       "title": "Intro to Quilting",
@@ -4708,6 +4844,19 @@
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/osobpuwvwymgncpurqqx.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/turnedartist/2348236"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Weekday Mini 25 x 25 cm",
+      "date": "2026-09-23",
+      "time": "18:00",
+      "spots": 8,
+      "duration": "3 h",
+      "price": "€99",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-90325063.png?1779291791",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/90325063/calendar/13737604",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "druckrausch",
@@ -6317,6 +6466,19 @@
       "url": "https://www.tickettailor.com/events/turnedartist/2348238"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Weekday Mini 25 x 25 cm",
+      "date": "2026-10-07",
+      "time": "18:00",
+      "spots": 10,
+      "duration": "3 h",
+      "price": "€99",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-90325063.png?1779291791",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/90325063/calendar/13737604",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -7573,6 +7735,19 @@
       "url": "https://www.tickettailor.com/events/turnedartist/2348241"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Weekday Mini 25 x 25 cm",
+      "date": "2026-10-28",
+      "time": "18:00",
+      "spots": 10,
+      "duration": "3 h",
+      "price": "€99",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-90325063.png?1779291791",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/90325063/calendar/13737604",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -8185,6 +8360,19 @@
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/a9i37rd86mgjapmfvmye.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/turnedartist/2348243"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Weekday Mini 25 x 25 cm",
+      "date": "2026-11-11",
+      "time": "18:00",
+      "spots": 10,
+      "duration": "3 h",
+      "price": "€99",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-90325063.png?1779291791",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/90325063/calendar/13737604",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "druckrausch",
