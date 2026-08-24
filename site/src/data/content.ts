@@ -567,6 +567,29 @@ const reels: Record<string, { video: string; poster: string }> = {
   pia: { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
 };
 
+/** Reels for a single workshop rather than a whole host. A host running
+ *  several formats can have footage of each, and the feed prefers the
+ *  workshop's own over the host's general one on that workshop's cards.
+ *  Keyed by host slug, then by the title exactly as the feed carries it —
+ *  the German original, which is what both languages are built from. */
+const workshopReels: Record<string, Record<string, { video: string; poster: string }>> = {
+  nina: {
+    'Klang & Farbe': {
+      video: '/video/nina-klang-farbe.mp4',
+      poster: '/video/nina-klang-farbe-poster.jpg',
+    },
+  },
+};
+
+/** The reel for one workshop, if it has its own. */
+export const getWorkshopReel = (
+  slug: string,
+  title: string,
+): { video: string; poster: string } | undefined => {
+  const reel = workshopReels[slug]?.[title];
+  return reel ? { video: withBase(reel.video), poster: withBase(reel.poster) } : undefined;
+};
+
 export const getHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
     const reel = reels[h.slug];

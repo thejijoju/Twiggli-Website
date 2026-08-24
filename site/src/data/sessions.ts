@@ -8,7 +8,7 @@
  *  Dates are converted to `dayOffset` (0 = today, Europe/Berlin) at build
  *  time; the deploy workflow rebuilds daily so they stay true.
  */
-import { getHosts, type Host } from './content.ts';
+import { getHosts, getWorkshopReel, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
 
@@ -116,7 +116,7 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
     if (!host) continue;
     const entry: OnRequestWorkshop = {
       id: `req-${o.slug}-${hash(o.title)}`,
-      host,
+      host: withWorkshopReel(host, o.slug, o.title),
       title: lang === 'en' && o.titleEn ? o.titleEn : o.title,
       district: o.district ?? host.studio ?? host.place,
       bookUrl: o.url,
@@ -161,6 +161,15 @@ export const DAYS_AHEAD = 100;
 export const berlinTodayMs = (): number =>
   Date.parse(new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' }));
 
+/** A workshop with its own footage shows that instead of the host's general
+ *  reel, on its cards only — everywhere a host is drawn as a host, their own
+ *  reel still stands. Swapping it on the session's copy of the host is all
+ *  that takes: every surface already reads the reel off there. */
+const withWorkshopReel = (host: Host, slug: string, title: string): Host => {
+  const reel = getWorkshopReel(slug, title);
+  return reel ? { ...host, video: reel.video, poster: reel.poster } : host;
+};
+
 /** Real sessions scraped weekly from hosts' public schedules — see
  *  scripts/update-workshops.mjs. A host with real sessions in the window
  *  drops out of the placeholder rotation entirely, and their Book button
@@ -179,7 +188,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       id: `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`,
       dayOffset,
       time: w.time,
-      host,
+      host: withWorkshopReel(host, w.slug, w.title),
       title: lang === 'en' && w.titleEn ? w.titleEn : w.title,
       place: host.place,
       // Real listings never get an invented district — the studio name is
@@ -210,7 +219,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         id: `rec-${r.slug}-${hash(r.title)}-${dayOffset}`,
         dayOffset,
         time: r.time,
-        host,
+        host: withWorkshopReel(host, r.slug, r.title),
         title: lang === 'en' && r.titleEn ? r.titleEn : r.title,
         place: host.place,
         district: r.district ?? host.studio ?? host.place,
