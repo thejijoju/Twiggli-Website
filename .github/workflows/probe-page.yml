@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: 'URL to fetch and describe'
+        description: 'URL to fetch and describe — several, comma- or newline-separated, are fetched in turn'
         required: true
         type: string
       marker:
@@ -25,7 +25,11 @@ jobs:
       - name: Fetch and describe
         run: |
           node - <<'EOF'
-          const url = process.env.PROBE_URL;
+          // One run can describe several pages — reading a host who splits
+          // their schedule across a page per discipline took a run each.
+          const urls = process.env.PROBE_URL.split(/[\s,]+/).map((u) => u.trim()).filter(Boolean);
+          for (const url of urls) {
+          console.log(`\n${'='.repeat(70)}\n=== ${url}\n${'='.repeat(70)}`);
           const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)' }, redirect: 'follow' });
           const html = await res.text();
           console.log(`HTTP ${res.status}, ${html.length} bytes\n`);
@@ -62,6 +66,7 @@ jobs:
               n++;
             }
             if (!n) console.log('(no match)');
+          }
           }
           EOF
         env:
