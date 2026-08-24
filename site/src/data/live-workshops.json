@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T13:11:19.537Z",
+  "updated": "2026-08-24T13:25:19.821Z",
   "sources": [
     {
       "slug": "qian",
@@ -270,6 +270,12 @@
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
       "count": 90
+    },
+    {
+      "slug": "drawingwalks",
+      "url": "https://www.drawingwalks.art/join-a-walk",
+      "status": "ok",
+      "count": 10
     },
     {
       "slug": "tania",
@@ -625,6 +631,14 @@
       "url": "https://www.rose-williams.com/jewelry-courses/"
     },
     {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Drawing Walk für Gruppen",
+      "titleEn": "Drawing Walk for groups",
+      "request": true,
+      "url": "https://www.drawingwalks.art/group-events-1"
+    },
+    {
       "slug": "tania",
       "sourceUrl": "https://taniavarelastudio.com/keramikhandbuilding/",
       "title": "Private Keramik-Session",
@@ -713,6 +727,30 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-25",
+      "time": "10:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-25",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
+    },
+    {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/learnlino",
       "title": "Linocut & Spritz",
@@ -737,6 +775,18 @@
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES"
     },
     {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-26",
+      "time": "10:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Seifenschnitzen",
@@ -747,6 +797,18 @@
       "price": "€75",
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=45e12f27-7f10-467f-937f-fab7cc95dcce&c_type=OCCURRING_SERVICES"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-26",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "mampe",
@@ -912,6 +974,18 @@
       "district": "Friedenau"
     },
     {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-27",
+      "time": "10:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -923,6 +997,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-27",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "munio",
@@ -1080,6 +1166,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-28",
+      "time": "10:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -1103,6 +1201,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-28",
+      "time": "13:00",
+      "spots": 11,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "munio",
@@ -1389,6 +1499,18 @@
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_816,q_100,w_816,x_555,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/agadl4ejo3p5yhe105xr.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/elinorsahm/2365001"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-08-29",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "mampe",
