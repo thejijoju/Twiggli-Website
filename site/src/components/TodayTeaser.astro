@@ -90,11 +90,14 @@ const calendarHref = href(lang, '/happening-today/');
 </section>
 
 <script>
-  // The teaser's reels play while on screen, pause off screen — same
-  // bandwidth manners as the schedule feed.
+  // The teaser's reels wait for the pointer: hovering a card plays its clip
+  // straight away, leaving stops it — same manners as the schedule feed, so
+  // only the card being looked at ever loads. Touch has no hover, so there
+  // they play while on screen and pause off it.
   const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.today-video'));
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (videos.length && !still) {
+  const hoverable = window.matchMedia('(hover: hover)').matches;
+  if (videos.length && !hoverable && !still) {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -106,5 +109,23 @@ const calendarHref = href(lang, '/happening-today/');
       { threshold: 0.3 },
     );
     videos.forEach((video) => observer.observe(video));
+  } else if (videos.length) {
+    // Nothing would stop a clip the pointer never left — scrolling past
+    // with the cursor parked on a card, say.
+    const offscreen = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) (entry.target as HTMLVideoElement).pause();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    for (const video of videos) {
+      offscreen.observe(video);
+      const card = video.closest('.today-card');
+      if (!card) continue;
+      card.addEventListener('mouseenter', () => video.play().catch(() => {}));
+      card.addEventListener('mouseleave', () => video.pause());
+    }
   }
 </script>

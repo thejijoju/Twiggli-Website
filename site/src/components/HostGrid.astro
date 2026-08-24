@@ -129,6 +129,19 @@ const videoPlaceholder = {
     window.addEventListener('resize', onScroll);
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hoverable = window.matchMedia('(hover: hover)').matches;
+
+    const play = (card: HTMLElement) => {
+      const v = videoOf(card);
+      if (!v || card.classList.contains('is-playing')) return;
+      cards.forEach((other) => { if (other !== card) stop(other); });
+      card.classList.add('is-playing');
+      // Muted + playsinline, so autoplay policies allow this; the promise
+      // still rejects on some browsers, and an un-played card should not
+      // sit there claiming to be playing.
+      v.play().catch(() => card.classList.remove('is-playing'));
+    };
+
     cards.forEach((card) => {
       const activate = () => {
         if (!card.classList.contains('is-active')) {
@@ -139,15 +152,16 @@ const videoPlaceholder = {
           stop(card);
           return;
         }
-        cards.forEach((other) => { if (other !== card) stop(other); });
-        card.classList.add('is-playing');
-        const v = videoOf(card);
-        // Muted + playsinline, so autoplay policies allow this; the promise
-        // still rejects on some browsers, and an un-played card should not
-        // sit there claiming to be playing.
-        if (v) v.play().catch(() => card.classList.remove('is-playing'));
+        play(card);
       };
       card.addEventListener('click', activate);
+      // With a mouse, the reel starts the moment the pointer is over the
+      // card — no need to centre it first — and stops when the pointer
+      // leaves, the same way scrolling the card off centre stops it.
+      if (hoverable) {
+        card.addEventListener('mouseenter', () => play(card));
+        card.addEventListener('mouseleave', () => stop(card));
+      }
       card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
