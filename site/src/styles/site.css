@@ -1813,6 +1813,16 @@ a:hover { color: var(--color-accent); }
 .daypicker[data-view='grid'] .daysessions .daypicker-empty { grid-column: 1 / -1; }
 .session-timechip { display: none; }
 .daypicker[data-view='grid'] .daysessions .session-thumb { position: relative; }
+/* Both corner chips ride on a frosted pane rather than near-solid white:
+   the picture stays visible through them, and the blur keeps the label
+   legible over a busy photo. Browsers without backdrop-filter just get
+   the flat translucent white, which still reads. */
+.daypicker[data-view='grid'] .daysessions .session-timechip,
+.daypicker[data-view='grid'] .daysessions .session-availbadge {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
 .daypicker[data-view='grid'] .daysessions .session-timechip {
   display: inline-block;
   position: absolute;
@@ -1821,7 +1831,6 @@ a:hover { color: var(--color-accent); }
   z-index: 2;
   padding: 3px 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
   font-size: 12px;
   font-weight: 700;
   color: var(--color-accent-800);
@@ -1841,7 +1850,6 @@ a:hover { color: var(--color-accent); }
   z-index: 2;
   padding: 3px 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
   font-size: 11px;
   font-weight: 700;
   color: var(--color-accent-800);
