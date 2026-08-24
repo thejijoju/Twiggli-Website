@@ -303,6 +303,21 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Mampe is Berlin's oldest liquor manufacturer (recipes back to 1831) and
+  // runs guided manufactory tours with a tasting at the end, in German and
+  // English, plus a gin seminar where you distil and bottle your own. Their
+  // Shopify events collection sells one dated variant per run, in German
+  // long form ("Mittwoch, 20. Mai 2026, 16:00 Uhr"), with the length in the
+  // product title rather than the description — both now handled by the
+  // shopify parser. The same collection also carries at-home tasting boxes,
+  // whose variants are group sizes rather than dates, so they never reach
+  // the feed. The shop is served under a /de-engl/ market path, hence
+  // productBase.
+  { slug: 'mampe', name: 'Mampe — manufactory tours & tastings', mode: 'shopify',
+    url: 'https://mampe.berlin/de-engl/collections/events/products.json?limit=250',
+    productBase: 'https://mampe.berlin/de-engl/products/',
+    district: 'Berlin' },
+
   // Maximiliána Martišková — already a host here (bird sketching and
   // watercolour at Kunstraum Heartspace) — sells her public sessions
   // through her own Ticket Tailor box office, so the same relay route as
@@ -1965,6 +1980,19 @@ const EN_MONTHS = {
   july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
 };
 
+const MONTHS_DE = {
+  januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
+  juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
+};
+const MONTHS_DE_RE = 'Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember';
+
+/** "45-60min" / "90min" / "120-150min" as a duration string. Mampe carries
+ *  the length in the product title rather than the description. */
+const hoursFromMinutes = (a, b) => {
+  const h = (m) => String(Math.round((Number(m) / 60) * 100) / 100);
+  return `${h(a)}${b ? `–${h(b)}` : ''} h`;
+};
+
 function fromShopify(jsonText, source) {
   let data;
   try {
@@ -1977,22 +2005,59 @@ function fromShopify(jsonText, source) {
   for (const product of data.products ?? []) {
     const body = stripTags(String(product.body_html ?? ''));
     const dur = body.match(/Duration:\s*([\d.,]+)(?:\s*(?:-|\u2013|to)\s*([\d.,]+))?\s*hours?/i);
+    // Some shops (Mampe) put the length in the product title instead:
+    // "GROSSE SCHNAPSGESCHICHTEN: 90min", "SMALL SCHNAPPS STORIES: 45-60min".
+    const durMin = String(product.title ?? '').match(/(\d{2,3})\s*(?:[-\u2013]\s*(\d{2,3})\s*)?min/i);
     const duration = dur
       ? `${dur[1].replace(',', '.')}${dur[2] ? `\u2013${dur[2].replace(',', '.')}` : ''} h`
-      : undefined;
-    const productUrl = new URL(`/products/${product.handle}`, source.url).href;
+      : durMin
+        ? hoursFromMinutes(durMin[1], durMin[2])
+        : undefined;
+    // A title that named its own length has said it twice once the duration
+    // pill carries it; drop the token and tidy what it leaves behind.
+    const productTitle = stripTags(String(product.title))
+      .replace(/:?\s*\d{2,3}\s*(?:[-\u2013]\s*\d{2,3}\s*)?min\b/i, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/[\s:,-]+$/, '')
+      .trim();
+    // Shops served under a market/locale path (mampe.berlin/de-engl/\u2026) need
+    // their product links built on that path, not the bare root.
+    const productUrl = source.productBase
+      ? new URL(product.handle, source.productBase).href
+      : new URL(`/products/${product.handle}`, source.url).href;
     let kept = 0;
     for (const variant of product.variants ?? []) {
       const vt = String(variant.title);
       const m = vt.match(/(\d{2})\.(\d{2})\.(\d{4})\s*[-\u2013]\s*(\d{1,2}):(\d{2})/);
       if (m) {
         out.push({
-          title: stripTags(String(product.title)),
+          title: productTitle,
           date: `${m[3]}-${m[2]}-${m[1]}`,
           time: `${m[4].padStart(2, '0')}:${m[5]}`,
           ...(variant.available === false ? { soldOut: true } : {}),
           ...(duration ? { duration } : {}),
           ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
+          ...(source.district ? { district: source.district } : {}),
+          ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
+          url: productUrl,
+        });
+        kept++;
+        continue;
+      }
+      // German long-form variants, one per date (Mampe): "Mittwoch, 20. Mai
+      // 2026, 16:00 Uhr / TICKET GROSSE SCHNAPSGESCHICHTEN". The weekday
+      // and the ticket name after the slash carry nothing the card needs.
+      const dm = vt.match(
+        new RegExp(`(\\d{1,2})\\.\\s*(${MONTHS_DE_RE})\\s+(20\\d{2})\\s*,?\\s*(?:um\\s*)?(\\d{1,2})(?:[:.](\\d{2}))?\\s*Uhr`, 'i'),
+      );
+      if (dm) {
+        out.push({
+          title: productTitle,
+          date: `${dm[3]}-${MONTHS_DE[dm[2].toLowerCase()]}-${dm[1].padStart(2, '0')}`,
+          time: `${dm[4].padStart(2, '0')}:${dm[5] ?? '00'}`,
+          ...(variant.available === false ? { soldOut: true } : {}),
+          ...(duration ? { duration } : {}),
+          ...(variant.price != null ? { price: `€${Math.round(Number(variant.price))}` } : {}),
           ...(source.district ? { district: source.district } : {}),
           ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
           url: productUrl,
@@ -2063,12 +2128,8 @@ function fromShopify(jsonText, source) {
     // carry the date in the description instead of the variants:
     // "Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr".
     if (!kept) {
-      const MONTHS_DE = {
-        januar: '01', februar: '02', märz: '03', april: '04', mai: '05', juni: '06',
-        juli: '07', august: '08', september: '09', oktober: '10', november: '11', dezember: '12',
-      };
       const wm = body.match(
-        /(\d{1,2})\.\s*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*(20\d{2})(?:\s*von\s*(\d{1,2})(?:[:.](\d{2}))?\s*bis\s*(\d{1,2})(?:[:.](\d{2}))?\s*Uhr)?/i,
+        new RegExp(`(\\d{1,2})\\.\\s*(${MONTHS_DE_RE})\\s*(20\\d{2})(?:\\s*von\\s*(\\d{1,2})(?:[:.](\\d{2}))?\\s*bis\\s*(\\d{1,2})(?:[:.](\\d{2}))?\\s*Uhr)?`, 'i'),
       );
       const variant = (product.variants ?? []).find((v) => v.available !== false);
       if (wm && variant) {
@@ -2079,7 +2140,7 @@ function fromShopify(jsonText, source) {
           : 0;
         out.push({
           // A "OKTOBER - " style month prefix repeats what the date says.
-          title: stripTags(String(product.title)).replace(/^\s*(?:Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s*[-–]\s*/i, ''),
+          title: productTitle.replace(new RegExp(`^\\s*(?:${MONTHS_DE_RE})\\s*[-–]\\s*`, 'i'), ''),
           date,
           ...(time ? { time } : {}),
           ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),

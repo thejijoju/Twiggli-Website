@@ -141,6 +141,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — the event page publishes no cap.
   arcoiris:         { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 2.5] },
   redrum:           { activity: 'food',      groupRange: [2, 8],  hourRange: [2, 2] },
+  // PLACEHOLDER group range — the shop publishes no cap per tour.
+  mampe:            { activity: 'food',      groupRange: [1, 20], hourRange: [0.75, 2.5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -283,6 +285,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'redrum', name: 'Michael', specialty: 'Guided drink tastings', studio: 'Redrum Art Bar',
       blurb: 'Guided tastings at Redrum Art Bar in Kreuzberg, hosted by Michael for groups of two to eight. The bar closes to outside guests for the two hours, so the session is yours: a flight through one spirit or cocktail family — rum, mezcal, whisky, absinthe, negronis and a dozen more — with sparkling water to clean the palate and snacks matched to what is in the glass. Dates are arranged around you rather than published.',
       group: '2–8', duration: '2 h', place: 'Grimmstr. 24, Berlin', languages: 'EN · DE' },
+    // Copy from their events collection; photos to follow.
+    { slug: 'mampe', name: 'Mampe', specialty: 'Manufactory tours & spirit tastings', studio: 'MAMPE Manufaktur',
+      blurb: 'Berlin’s oldest liquor manufacturer, pouring since 1831. A guided tour walks you through 195 years of the city’s drinking history and the workings of the manufactory, then sits you down to taste the schnapps — several still made to the original recipes. Short tours run 45–60 minutes in German or English, the long one 90; the gin seminar goes further, and you distil and bottle your own to take home.',
+      group: 'Groups welcome', duration: '45 min – 2.5 h', place: 'MAMPE Manufaktur, Berlin', languages: 'DE · EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -396,6 +402,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'redrum', name: 'Michael', specialty: 'Geführte Drink-Tastings', studio: 'Redrum Art Bar',
       blurb: 'Geführte Tastings in der Redrum Art Bar in Kreuzberg — Michael führt Gruppen von zwei bis acht Personen durch den Abend. Die Bar bleibt für die zwei Stunden für andere Gäste geschlossen, die Session gehört also euch: eine Reise durch eine Spirituosen- oder Cocktail-Familie — Rum, Mezcal, Whisky, Absinth, Negronis und ein Dutzend mehr — mit Sprudelwasser zum Neutralisieren und Snacks, die zum Glas passen. Termine werden mit euch abgestimmt statt veröffentlicht.',
       group: '2–8', duration: '2 Std.', place: 'Grimmstr. 24, Berlin', languages: 'EN · DE' },
+    { slug: 'mampe', name: 'Mampe', specialty: 'Manufaktur-Führungen & Spirituosen-Verkostung', studio: 'MAMPE Manufaktur',
+      blurb: 'Berlins älteste Spirituosenmanufaktur, seit 1831 im Ausschank. Die Führung nimmt euch mit durch 195 Jahre Berliner Trinkgeschichte und durch die Manufaktur — und danach wird verkostet, einiges davon noch nach den Originalrezepturen gebrannt. Die kurzen Führungen dauern 45–60 Minuten auf Deutsch oder Englisch, die große 90; im Gin-Seminar geht ihr weiter und brennt und abfüllt euren eigenen Gin zum Mitnehmen.',
+      group: 'Gruppen willkommen', duration: '45 Min. – 2,5 Std.', place: 'MAMPE Manufaktur, Berlin', languages: 'DE · EN' },
   ],
 };
 
