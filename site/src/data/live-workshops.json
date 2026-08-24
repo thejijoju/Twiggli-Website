@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T11:58:27.134Z",
+  "updated": "2026-08-24T12:24:34.426Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,7 +64,7 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 3
     },
     {
@@ -272,6 +272,12 @@
       "count": 90
     },
     {
+      "slug": "simone",
+      "url": "https://www.wild-site.com/klag_simone/workshops/",
+      "status": "failed: fetch failed",
+      "count": 0
+    },
+    {
       "slug": "tufttuft",
       "url": "https://tufttuftberlin.as.me/schedule/85685f54",
       "status": "ok",
@@ -310,7 +316,7 @@
     {
       "slug": "olivia",
       "url": "https://www.oliviabarney.com/workshops",
-      "status": "failed: no upcoming events parsed",
+      "status": "failed: Unexpected token 'D', \"DEzZDNhNDY\"... is not valid JSON",
       "count": 0
     },
     {
@@ -4296,7 +4302,7 @@
       "time": "10:00",
       "duration": "2 Tage",
       "price": "€450",
-      "spots": 1,
+      "soldOut": true,
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "request": true,
       "district": "Blankenburg",
