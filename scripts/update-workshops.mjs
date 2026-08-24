@@ -339,6 +339,16 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Helka Ceramics has taught at Twiggli from the start but had no feed of
+  // her own: her classes sell from her Squarespace shop, which the scraper
+  // could not read. Her studio is Böckhstr. 12 in Kreuzberg; the four-week
+  // and six-week wheel-throwing courses run 19:00-22:00, the evening
+  // workshop is a 2.5 hour taster, and the shop's gift card carries amounts
+  // rather than dates so it stays out of the day feed on its own.
+  { slug: 'helka', name: 'Helka Ceramics — pottery classes & workshops', mode: 'squarespace',
+    url: 'https://www.helkaceramics.com/pottery-classes-workshops',
+    district: 'Kreuzberg' },
+
   // Maximiliána Martišková — already a host here (bird sketching and
   // watercolour at Kunstraum Heartspace) — sells her public sessions
   // through her own Ticket Tailor box office, so the same relay route as
@@ -2014,6 +2024,63 @@ const hoursFromMinutes = (a, b) => {
   return `${h(a)}${b ? `–${h(b)}` : ''} h`;
 };
 
+/** Reads an English list of course dates — "October 24 & 25", "August 31 +
+ *  September 07, 14, 21", "September 15, 22, 29 + October 6, 13, 20,
+ *  19-22.00" — into the first meeting's date, the start time, the length of
+ *  one meeting and how many there are. A class meeting more than once sits
+ *  on its FIRST date, and the caller marks the other meetings on the card so
+ *  nobody mistakes a course for a single evening. Returns null when the text
+ *  names no dates at all. */
+function englishCourseDates(text) {
+  // A day only continues the list if it is not the start of a clock time:
+  // in "October 6, 13, 20, 19-22.00" the 19 opens the hours, not a fourth
+  // meeting.
+  const groups = [...text.matchAll(
+    /(January|February|March|April|May|June|July|August|September|October|November|December)\s*((?:\d{1,2}(?!\d))(?:\s*[&,+/]\s*\d{1,2}(?!\d)(?![:.]\d)(?!\s*[-\u2013]\s*\d))*)/gi,
+  )]
+    .map((g) => ({
+      name: g[1].slice(0, 3),
+      month: EN_MONTHS[g[1].toLowerCase()],
+      days: g[2].split(/[&,+/]/).map((d) => parseInt(d, 10)).filter((n) => n >= 1 && n <= 31),
+      index: g.index,
+      end: g.index + g[0].length,
+    }))
+    .filter((g) => g.month && g.days.length);
+  if (!groups.length) return null;
+  const first = groups[0];
+  const mmdd = `${String(first.month).padStart(2, '0')}-${String(first.days[0]).padStart(2, '0')}`;
+  let date = `${todayISO.slice(0, 4)}-${mmdd}`;
+  // These listings carry no year. A date a few weeks behind is a stale
+  // listing and drops out on the feed's date filter; only one most of a
+  // year behind is really next year's (a January course listed in December).
+  if (date < todayISO && Date.parse(todayISO) - Date.parse(date) > 120 * 86400000) {
+    date = `${Number(todayISO.slice(0, 4)) + 1}-${mmdd}`;
+  }
+  // The class time can sit before the dates ("Mondays @ 19-21:30 on …") or
+  // after them; take the first plausible range that isn't part of a date list.
+  let tm = null;
+  for (const c of text.matchAll(/(\d{1,2})(?::(\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?::(\d{2}))?/g)) {
+    const insideDates = groups.some((g) => c.index >= g.index && c.index < g.end);
+    if (!insideDates && Number(c[1]) <= 23 && Number(c[3]) <= 24) { tm = c; break; }
+  }
+  const hours = tm
+    ? Number(tm[3]) + Number(tm[4] ?? 0) / 60 - (Number(tm[1]) + Number(tm[2] ?? 0) / 60)
+    : 0;
+  const total = groups.reduce((n, g) => n + g.days.length, 0);
+  // Two or three meetings list their dates; longer courses just count them
+  // (the booking page has the full schedule).
+  const listDe = groups.map((g) => `${g.days.join('. & ')}.${String(g.month).padStart(2, '0')}.`).join(' & ');
+  const listEn = groups.map((g) => `${g.name} ${g.days.join(' & ')}`).join(' & ');
+  return {
+    date,
+    time: tm ? `${tm[1].padStart(2, '0')}:${tm[2] ?? '00'}` : undefined,
+    hours,
+    total,
+    markDe: total > 1 ? (total <= 3 ? ` \u2013 ${total} Termine: ${listDe}` : ` \u2013 ${total} Termine`) : '',
+    markEn: total > 1 ? (total <= 3 ? ` \u2013 ${total} dates: ${listEn}` : ` \u2013 ${total} dates`) : '',
+  };
+}
+
 function fromShopify(jsonText, source) {
   let data;
   try {
@@ -2089,53 +2156,20 @@ function fromShopify(jsonText, source) {
       // English course variants (Empire of Dirt): "October 24 & 25
       // (Saturday 11-15 / Sunday 11-14)", "November 14&15&22 @ 11:30 -
       // 14:00", "Mondays @ 19-21:30 on August 31 & September 7/14/21/28".
-      // A class meeting more than once sits on its FIRST date and the card
-      // marks the other meetings \u2014 in the title and as "N \u00d7 2.5 h" \u2014 so
-      // nobody mistakes a course for a single evening.
-      const groups = [...vt.matchAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s*((?:\d{1,2})(?:\s*[&,+/]\s*\d{1,2})*)/gi)]
-        .map((g) => ({
-          name: g[1].slice(0, 3),
-          month: EN_MONTHS[g[1].toLowerCase()],
-          days: g[2].split(/[&,+/]/).map((d) => parseInt(d, 10)).filter((n) => n >= 1 && n <= 31),
-          index: g.index,
-          end: g.index + g[0].length,
-        }))
-        .filter((g) => g.month && g.days.length);
-      if (!groups.length) continue;
-      const first = groups[0];
-      const mmdd = `${String(first.month).padStart(2, '0')}-${String(first.days[0]).padStart(2, '0')}`;
-      let date = `${todayISO.slice(0, 4)}-${mmdd}`;
-      if (date < todayISO) date = `${Number(todayISO.slice(0, 4)) + 1}-${mmdd}`;
-      // The class time can sit before the dates ("Mondays @ 19-21:30
-      // on \u2026") or after them; take the first plausible range that isn't
-      // part of a date list.
-      let tm = null;
-      for (const c of vt.matchAll(/(\d{1,2})(?::(\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?::(\d{2}))?/g)) {
-        const insideDates = groups.some((g) => c.index >= g.index && c.index < g.end);
-        if (!insideDates && Number(c[1]) <= 23 && Number(c[3]) <= 24) { tm = c; break; }
-      }
-      const hours = tm
-        ? Number(tm[3]) + Number(tm[4] ?? 0) / 60 - (Number(tm[1]) + Number(tm[2] ?? 0) / 60)
-        : 0;
-      const total = groups.reduce((n, g) => n + g.days.length, 0);
+      const course = englishCourseDates(vt);
+      if (!course) continue;
       const baseTitle = stripTags(String(product.title));
-      // Two or three meetings list their dates; longer courses just count
-      // them (the booking page has the full schedule).
-      const listDe = groups.map((g) => `${g.days.join('. & ')}.${String(g.month).padStart(2, '0')}.`).join(' & ');
-      const listEn = groups.map((g) => `${g.name} ${g.days.join(' & ')}`).join(' & ');
-      const markDe = total > 1
-        ? (total <= 3 ? ` \u2013 ${total} Termine: ${listDe}` : ` \u2013 ${total} Termine`)
-        : '';
-      const markEn = total > 1
-        ? (total <= 3 ? ` \u2013 ${total} dates: ${listEn}` : ` \u2013 ${total} dates`)
-        : '';
       out.push({
-        title: baseTitle + markDe,
-        ...(markEn ? { titleEn: baseTitle + markEn } : {}),
-        date,
-        ...(tm ? { time: `${tm[1].padStart(2, '0')}:${tm[2] ?? '00'}` } : {}),
-        ...(hours > 0 && hours <= 12
-          ? { duration: total > 1 ? `${total} \u00d7 ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
+        title: baseTitle + course.markDe,
+        ...(course.markEn ? { titleEn: baseTitle + course.markEn } : {}),
+        date: course.date,
+        ...(course.time ? { time: course.time } : {}),
+        ...(course.hours > 0 && course.hours <= 12
+          ? {
+              duration: course.total > 1
+                ? `${course.total} \u00d7 ${Math.round(course.hours * 2) / 2} h`
+                : `${Math.round(course.hours * 2) / 2} h`,
+            }
           : {}),
         ...(variant.available === false ? { soldOut: true } : {}),
         ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
@@ -2175,6 +2209,128 @@ function fromShopify(jsonText, source) {
       }
     }
     console.log(`[${source.slug}] shopify product "${product.title}": ${(product.variants ?? []).length} variants, ${kept} available dated sessions`);
+  }
+  return out;
+}
+
+/** Squarespace commerce pages answer ?format=json with the whole product
+ *  collection \u2014 every class, its excerpt, its photo and its variants. A class
+ *  that runs on fixed dates keeps them in a variant option named "Date":
+ *  either one evening ("Wed. 12/08/26 19-21h30") or a course's whole series
+ *  in a single option ("August 31 + September 07, 14, 21"). A class that
+ *  sells one seat rather than a date (Helka's six-week courses) has no such
+ *  option and names its dates in the excerpt instead, so that is read as a
+ *  fallback. Anything with neither \u2014 a gift card, whose variants are amounts
+ *  \u2014 names no date at all and so never reaches the feed. */
+async function fromSquarespace(source) {
+  const url = new URL(source.url);
+  url.searchParams.set('format', 'json');
+  const res = await fetch(url.href, {
+    redirect: 'follow',
+    headers: {
+      'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)',
+      accept: 'application/json',
+    },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  const items = data.items ?? [];
+  console.log(`[${source.slug}] squarespace: ${items.length} products`);
+  const out = [];
+  for (const item of items) {
+    const sc = item.structuredContent ?? {};
+    const title = stripTags(String(item.title ?? '')).trim();
+    const common = {
+      ...(source.district ? { district: source.district } : {}),
+      ...(item.assetUrl ? { image: item.assetUrl } : {}),
+      url: item.fullUrl ? new URL(item.fullUrl, source.url).href : source.url,
+    };
+    const text = stripTags(`${item.excerpt ?? ''} ${item.body ?? ''}`).replace(/\s+/g, ' ').trim();
+    // The clock a course keeps when its date option names only days
+    // ("\u2026 21 September - 19:00 - 22:00"). Colon-bearing, so a range of dates
+    // can never be mistaken for a range of hours.
+    const clock = text.match(/(\d{1,2}):(\d{2})\s*[-\u2013]\s*(\d{1,2})(?::(\d{2}))?/);
+    const clockHours = clock
+      ? Number(clock[3]) + Number(clock[4] ?? 0) / 60 - (Number(clock[1]) + Number(clock[2] ?? 0) / 60)
+      : 0;
+    // A course sits on its first meeting; the card marks the rest so nobody
+    // books a six-week course thinking it is one evening.
+    const courseEntry = (course) => {
+      const hours = course.hours > 0 ? course.hours : clockHours;
+      const time = course.time ?? (clock ? `${clock[1].padStart(2, '0')}:${clock[2]}` : undefined);
+      return {
+        title: title + course.markDe,
+        ...(course.markEn ? { titleEn: title + course.markEn } : {}),
+        date: course.date,
+        ...(time ? { time } : {}),
+        ...(hours > 0 && hours <= 12
+          ? {
+              duration: course.total > 1
+                ? `${course.total} \u00d7 ${Math.round(hours * 2) / 2} h`
+                : `${Math.round(hours * 2) / 2} h`,
+            }
+          : {}),
+      };
+    };
+    let kept = 0;
+    for (const variant of sc.variants ?? []) {
+      const dateText = (variant.optionValues ?? [])
+        .find((o) => /date|termin/i.test(String(o.optionName)))?.value;
+      if (!dateText) continue;
+      const price = variant.priceMoney?.value != null
+        ? { price: `\u20ac${Math.round(Number(variant.priceMoney.value))}` }
+        : {};
+      // Squarespace tracks seats as stock, so "3 left" and "sold out" are
+      // both real rather than guessed.
+      const seats = variant.unlimited ? null : Number(variant.qtyInStock);
+      const avail = seats == null || !Number.isFinite(seats)
+        ? {}
+        : seats <= 0 ? { soldOut: true } : { spots: seats };
+      // One evening, day first: "Wed. 12/08/26 19-21h30".
+      const one = String(dateText).match(
+        /(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\D{0,4}(\d{1,2})(?:[:.h](\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?:[:.h](\d{2}))?)?/,
+      );
+      if (one) {
+        const span = one[4]
+          ? Number(one[6]) + Number(one[7] ?? 0) / 60 - (Number(one[4]) + Number(one[5] ?? 0) / 60)
+          : 0;
+        out.push({
+          title,
+          date: `${one[3].length === 2 ? `20${one[3]}` : one[3]}-${one[2].padStart(2, '0')}-${one[1].padStart(2, '0')}`,
+          ...(one[4] ? { time: `${one[4].padStart(2, '0')}:${one[5] ?? '00'}` } : {}),
+          ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+          ...avail,
+          ...price,
+          ...common,
+        });
+        kept++;
+        continue;
+      }
+      const course = englishCourseDates(String(dateText));
+      if (!course) continue;
+      out.push({ ...courseEntry(course), ...avail, ...price, ...common });
+      kept++;
+    }
+    // No dated option anywhere: a course sold as a single seat, whose dates
+    // live in the title or the excerpt.
+    if (!kept) {
+      const course = englishCourseDates(`${title} ${text}`);
+      const variant = (sc.variants ?? []).find((v) => v.unlimited || Number(v.qtyInStock) > 0);
+      if (course && variant) {
+        const seats = variant.unlimited ? null : Number(variant.qtyInStock);
+        out.push({
+          ...courseEntry(course),
+          ...(seats == null || !Number.isFinite(seats) ? {} : { spots: seats }),
+          ...(variant.priceMoney?.value != null
+            ? { price: `\u20ac${Math.round(Number(variant.priceMoney.value))}` }
+            : {}),
+          ...common,
+        });
+        kept++;
+        console.log(`[${source.slug}] squarespace prose dates: "${title}" ${course.date} \u00d7${course.total}`);
+      }
+    }
+    console.log(`[${source.slug}] squarespace product "${title}": ${(sc.variants ?? []).length} variants, ${kept} dated sessions`);
   }
   return out;
 }
@@ -2655,7 +2811,7 @@ async function scrapeSource(source) {
     source.mode === 'konfetti' || source.mode === 'acuity-embeds' ||
     source.mode === 'luma' || source.mode === 'gcal-embed' ||
     source.mode === 'tickettailor' || source.mode === 'eversports' ||
-    source.mode === 'rausgegangen'
+    source.mode === 'rausgegangen' || source.mode === 'squarespace'
   ) {
     const found =
       source.mode === 'konfetti' ? await fromKonfetti(source)
@@ -2664,6 +2820,7 @@ async function scrapeSource(source) {
       : source.mode === 'tickettailor' ? await fromTicketTailor(source)
       : source.mode === 'eversports' ? await fromEversports(source)
       : source.mode === 'rausgegangen' ? await fromRausgegangen(source)
+      : source.mode === 'squarespace' ? await fromSquarespace(source)
       : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
