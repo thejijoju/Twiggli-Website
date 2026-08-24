@@ -339,6 +339,29 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Drawing Walks is Ditte Østergaard's city tour crossed with a drawing
+  // workshop: she walks a neighbourhood, tells its stories and sets quick
+  // sketching exercises along the way, sketchbook and materials included.
+  // Booking runs through the Acuity block embedded on her page, so the mode
+  // already here reads it — the walk's real seats, its own price and length,
+  // and a deep link into its date picker.
+  //
+  // No district is set on the source deliberately. A walk has no address,
+  // and hers names its own neighbourhood ("Draw Berlin: Prenzlauer Berg"),
+  // which the acuity mode now reads off the title. Fixing one district here
+  // would be right only until she walks somewhere else.
+  //
+  // Bigger groups — a team, a birthday — are arranged rather than booked, so
+  // that rides in on request pointing at her group-events page.
+  { slug: 'drawingwalks', name: 'Drawing Walks — scheduled walks (Acuity)', mode: 'acuity',
+    owner: '32077039', url: 'https://www.drawingwalks.art/join-a-walk',
+    seedOnRequest: [
+      { title: 'Drawing Walk für Gruppen',
+        titleEn: 'Drawing Walk for groups',
+        request: true,
+        url: 'https://www.drawingwalks.art/group-events-1' },
+    ] },
+
   // Tania Varela teaches handbuilding ceramics at WOMADE inside Bikini
   // Berlin, four formats of three hours each, eight seats, in German with
   // support in English, Spanish and French. Each format keeps its own page
@@ -1446,6 +1469,21 @@ async function fromAcuity(source) {
 /** Query Acuity's public availability endpoint for each appointment type
  *  and map bookable slots to feed entries. Shared by the whole-account
  *  and per-embed modes. */
+/** Berlin neighbourhoods a class may name in its own title ("Draw Berlin:
+ *  Prenzlauer Berg"). A walking tour has no fixed address, so the walk says
+ *  where it is and the source cannot: pinning one district on the source
+ *  would be right until the day a second neighbourhood is added. Longest
+ *  first, so "Prenzlauer Berg" is not shadowed by a shorter name inside it. */
+const BERLIN_DISTRICTS = [
+  'Prenzlauer Berg', 'Friedrichshain', 'Charlottenburg', 'Gesundbrunnen', 'Reinickendorf',
+  'Wilmersdorf', 'Lichtenberg', 'Neuk\u00f6lln', 'Sch\u00f6neberg', 'Tempelhof', 'Friedenau',
+  'Zehlendorf', 'Kreuzberg', 'Steglitz', 'Tiergarten', 'K\u00f6penick', 'Wei\u00dfensee',
+  'Treptow', 'Spandau', 'Wedding', 'Marzahn', 'Moabit', 'Pankow', 'Dahlem', 'Mitte',
+].sort((a, b) => b.length - a.length);
+
+const districtInTitle = (text) =>
+  BERLIN_DISTRICTS.find((d) => new RegExp(`\\b${d}\\b`, 'i').test(String(text)));
+
 async function acuityTimesForTypes(source, hash, types) {
   const base = 'https://app.acuityscheduling.com';
   const out = [];
@@ -1476,9 +1514,15 @@ async function acuityTimesForTypes(source, hash, types) {
           date: berlinDate(ms),
           time: berlinTime(ms),
           ...(soldOut ? { soldOut: true } : Number.isFinite(slot.slotsAvailable) ? { spots: slot.slotsAvailable } : {}),
-          ...(minutes > 0 && minutes <= 720 ? { duration: `${Math.round((minutes / 60) * 2) / 2} h` } : {}),
+          // Quarter-hour rather than half: a 165-minute walk is 2.75 h, and
+          // rounding it up to 3 h claims a quarter of an hour that is not
+          // there. Lengths that were already exact are unchanged.
+          ...(minutes > 0 && minutes <= 720 ? { duration: hoursFromMinutes(minutes) } : {}),
           ...(Number.isFinite(priceNum) && priceNum > 0 ? { price: `€${Math.round(priceNum)}` } : {}),
           ...(typeof t.image === 'string' && t.image.startsWith('http') ? { image: t.image } : {}),
+          // A walk that names its neighbourhood places itself; anything else
+          // falls back to the source's district in scrapeSource.
+          ...(districtInTitle(t.name) ? { district: districtInTitle(t.name) } : {}),
           // Deep link straight into this class's date picker.
           url: `${base}/schedule/${hash}/appointment/${t.id}/calendar/${cal ?? 'any'}`,
         });

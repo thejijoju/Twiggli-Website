@@ -107,6 +107,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   tufttuft:     { activity: 'craft',       groupRange: [1, 10],   hourRange: [3, 5] },
   simone:       { activity: 'craft',       groupRange: [3, 6],    hourRange: [4, 6] },
   tania:        { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [3, 3] },
+  drawingwalks: { activity: 'art',         groupRange: [1, 15],   hourRange: [2.75, 2.75] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -188,6 +189,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
       group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+    { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Urban sketching walks', studio: 'Drawing Walks',
+      blurb: 'A city tour and a drawing workshop at once. Ditte walks a neighbourhood with you, tells its stories, and sets quick, playful sketching exercises along the way — drawing as a way of seeing, which makes you look closer and catch the details you would otherwise pass without noticing. A sketchbook and a handful of materials come with you; you dress for the weather and turn up at the meeting point. Whether you have not drawn since childhood or your sketchbook never leaves your bag, you are welcome.',
+      group: 'Up to 15', duration: '2.75 h', place: 'Meeting points across Berlin', languages: 'EN' },
     { slug: 'tania', name: 'Tania Varela', specialty: 'Handbuilding ceramics', studio: 'Tanita Tarara Ceramics',
       blurb: 'Handbuilding without a wheel, at WOMADE inside Bikini Berlin — pinching and slab work you can repeat at home afterwards. Four formats of three hours: a breakfast set of cup and plate, a session broken by a proper brunch, black-and-white decoration with sgraffito and carving, and an open format where you bring your own idea. She glazes and fires everything afterwards and lets you know when it is ready. Eight seats, materials and both firings included.',
       group: 'Up to 8', duration: '3 h', place: 'WOMADE, Bikini Berlin 1. OG, Charlottenburg', languages: 'DE · EN · ES · FR' },
@@ -360,6 +364,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
       group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+    { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Zeichenspaziergänge', studio: 'Drawing Walks',
+      blurb: 'Stadtspaziergang und Zeichenworkshop in einem. Ditte geht mit euch durch ein Viertel, erzählt seine Geschichten und gibt unterwegs kurze, verspielte Zeichenübungen — Zeichnen als Art des Sehens, die dich genauer hinschauen lässt und Details entdecken, an denen du sonst vorbeigehst. Skizzenbuch und Material sind dabei; du ziehst dich wettergerecht an und kommst zum Treffpunkt. Ob du seit der Kindheit nicht gezeichnet hast oder dein Skizzenbuch immer dabei ist — du bist willkommen.',
+      group: 'Bis 15', duration: '2,75 Std.', place: 'Treffpunkte in ganz Berlin', languages: 'EN' },
     { slug: 'tania', name: 'Tania Varela', specialty: 'Keramik-Handaufbau', studio: 'Tanita Tarara Ceramics',
       blurb: 'Handaufbau ohne Drehscheibe, bei WOMADE im Bikini Berlin — Pinch- und Plattentechnik, die du zu Hause wiederholen kannst. Vier Formate à drei Stunden: ein Frühstücksset aus Tasse und Teller, eine Session mit gemütlicher Brunchpause, Schwarz-Weiß-Dekor mit Sgraffito und Carving, und ein offenes Format für deine eigene Idee. Glasieren und beide Brände übernimmt sie danach und meldet sich, wenn alles fertig ist. Acht Plätze, Material und Brände inklusive.',
       group: 'Bis 8', duration: '3 Std.', place: 'WOMADE, Bikini Berlin 1. OG, Charlottenburg', languages: 'DE · EN · ES · FR' },
