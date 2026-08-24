@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T12:46:45.554Z",
+  "updated": "2026-08-24T13:11:19.537Z",
   "sources": [
     {
       "slug": "qian",
@@ -250,7 +250,7 @@
     {
       "slug": "cateduckwall",
       "url": "https://www.tickettailor.com/events/cateduckwall",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 1
     },
     {
@@ -270,6 +270,30 @@
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
       "count": 90
+    },
+    {
+      "slug": "tania",
+      "url": "https://taniavarelastudio.com/keramikhandbuilding/",
+      "status": "ok",
+      "count": 1
+    },
+    {
+      "slug": "tania",
+      "url": "https://taniavarelastudio.com/keramikundbrunch/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "tania",
+      "url": "https://taniavarelastudio.com/black-white-keramik-workshop/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "tania",
+      "url": "https://taniavarelastudio.com/mach-dein-lieblingsstueck-handbuilding-workshop/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "simone",
@@ -599,6 +623,15 @@
       "district": "Wedding",
       "request": true,
       "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
+      "slug": "tania",
+      "sourceUrl": "https://taniavarelastudio.com/keramikhandbuilding/",
+      "title": "Private Keramik-Session",
+      "titleEn": "Private Ceramics Session",
+      "district": "Charlottenburg",
+      "request": true,
+      "url": "https://taniavarelastudio.com/"
     },
     {
       "slug": "haki",
