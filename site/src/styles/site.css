@@ -140,7 +140,6 @@ a:hover { color: var(--color-accent); }
    header grew to five links. */
 .nav-end a { letter-spacing: normal; }
 .nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
-.footer-logo { display: block; }
 
 /* The current page reads as a solid rule under the label rather than the
    system's hairline text-decoration underline. */
@@ -904,98 +903,117 @@ a:hover { color: var(--color-accent); }
 .btn-on-accent:hover { background: color-mix(in srgb, var(--color-bg) 15%, transparent); }
 .btn-on-accent:active { background: color-mix(in srgb, var(--color-bg) 25%, transparent); }
 
-/* — footer — a dark band, deliberately breaking from the page's light
-   theme to read as a distinct close to the page. Nav columns sit beside an
-   app-download photo card; a copyright/legal bar and a darker social-icon
-   bar stack underneath it. */
-.footer { background: #121116; color: #cfced6; }
+/* — footer — black, and given room. The page's light theme stops here and
+   the band closes it on type and space alone: no photograph, no logo mark,
+   the wordmark set large enough to carry the brand by itself. White on
+   black throughout, with the quieter text stepped down in opacity rather
+   than tinted grey, so every value on the band is the same white. */
+.footer {
+  background: #000;
+  color: #fff;
+}
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 56px var(--gutter) 40px;
+  padding: 112px var(--gutter) 64px;
+}
+.footer-top {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
+  align-items: flex-end;
   justify-content: space-between;
+  gap: 48px;
+  padding-bottom: 72px;
 }
-.footer-main { display: flex; flex-wrap: wrap; gap: 56px; flex: 1 1 260px; }
-.footer-brand { display: flex; align-items: center; gap: 10px; flex: none; }
-/* Same wordmark treatment as the nav, so the lockup reads identically at
-   both ends of the page. */
-.footer-brand-name {
+.footer-identity { flex: 1 1 420px; }
+/* The wordmark carries the page's close, so it is set at display size and
+   tracked in tight — the one piece of type on the site allowed to be big. */
+.footer-wordmark {
+  display: block;
   font-family: var(--font-heading);
   font-weight: 900;
-  font-size: 18px;
+  font-size: clamp(56px, 9vw, 132px);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
-  letter-spacing: 0;
   color: #fff;
+  text-decoration: none;
 }
-.footer-logo { width: 28px; height: 28px; flex: none; }
-.footer-cols { display: flex; gap: 56px; flex-wrap: wrap; }
+.footer-tagline {
+  margin: 24px 0 0;
+  max-width: 34ch;
+  font-size: 17px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+.footer-app {
+  flex: 0 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+.footer-app-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+.footer-app-stores { gap: 10px; }
+.footer-app-stores .store-badge img { height: 44px; }
+
+/* Hairline rules rather than boxes: the only structure the band needs. */
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+  padding: 56px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
 .footer-col-title {
-  font-size: 13px;
+  margin: 0 0 20px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: color-mix(in srgb, #fff 50%, transparent);
-  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.4);
 }
 .footer-links {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-size: 16px;
+  gap: 14px;
+  font-size: 17px;
 }
-.footer-links a { color: #cfced6; }
-.footer-links a:hover { color: #fff; }
-
-/* — footer CTA card — the "Ready to dive in?" app-download prompt as a
-   photo card, echoing the Roblox-style footer's "Join Now" graphic. */
-.footer-cta-card {
-  position: relative;
-  flex: 1 1 320px;
-  max-width: 420px;
-  min-height: 220px;
-  border-radius: 20px;
-  overflow: hidden;
+/* Undecorated until pointed at — a column of underlines is what made the
+   old band read as a list of links rather than as a footer. */
+.footer-links a {
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  width: fit-content;
+  transition: color 0.15s ease;
 }
-.footer-cta-media { position: absolute; inset: 0; width: 100%; height: 100%; }
-.footer-cta-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 16px;
-  padding: 24px;
-  background: linear-gradient(180deg, rgba(10, 10, 14, 0.1) 0%, rgba(10, 10, 14, 0.88) 100%);
-}
-.footer-cta-title {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: 20px;
-  line-height: 1.3;
+.footer-links a:hover,
+.footer-links a:focus-visible {
   color: #fff;
-  margin: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
-.footer-cta-stores { gap: 8px; }
-.footer-cta-stores .store-badge img { height: 40px; }
+.footer-note {
+  margin: 40px 0 0;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.4);
+}
 
-.footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); }
-.footer-bottom-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px var(--gutter);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 32px;
-  align-items: center;
-  justify-content: space-between;
+@media (max-width: 900px) {
+  .footer-inner { padding: 72px var(--gutter) 48px; }
+  .footer-top { padding-bottom: 48px; gap: 36px; }
+  .footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; padding: 44px 0; }
 }
-.footer-note { font-size: 15px; color: color-mix(in srgb, #fff 55%, transparent); margin: 0; }
-.footer-legal-inline { display: flex; gap: 24px; flex-wrap: wrap; font-size: 15px; }
-.footer-legal-inline a { color: color-mix(in srgb, #fff 65%, transparent); }
-.footer-legal-inline a:hover { color: #fff; }
+@media (max-width: 560px) {
+  .footer-nav { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+}
 
 /* Dark social strip, pinned above the nav at the top of the page. */
 .social-bar { background: #0b0a0d; }
@@ -1188,7 +1206,6 @@ a:hover { color: var(--color-accent); }
     padding: 24px 0;
   }
   .split-title { font-size: 30px; }
-  .footer-cols { gap: 40px; }
 }
 
 /* Five inline links plus the language switch and the CTA pill is a wide
@@ -1222,9 +1239,6 @@ a:hover { color: var(--color-accent); }
     transform: translateX(-50%);
   }
   .hosts-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
-  .footer-inner { gap: 32px; }
-  .footer-cta-card { max-width: none; min-height: 260px; }
-  .footer-bottom-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 
 /* — maker directory — one card per host on /hosts/. The brochure photo
