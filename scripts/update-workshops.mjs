@@ -339,6 +339,35 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Ohma Studio (Boxhagener Str. 110, Friedrichshain) is a venue, not a
+  // host: Olivia rents out a cosy co-working room and four makers teach
+  // there, each selling their own tickets. Evelyn Cseh is already a host
+  // here and her card already names Ohma, so she is not read twice — the
+  // three sources below are the other three makers, on their own box
+  // offices. Sina's and Cèlia's Eventbrite pages render their lists in the
+  // browser and CloudFront 403s the JSON behind them, so both go through
+  // the relay. Each session's venue is checked before the district is
+  // applied, since none of them teaches only here.
+  { slug: 'sina', name: 'Sina Becker — Eventbrite box office', mode: 'eventbrite',
+    url: 'https://www.eventbrite.de/o/sinamaker-99895128061',
+    district: 'Friedrichshain', venue: 'Ohma Studio', detail: true },
+
+  // Cèlia teaches in bursts — 33 events run, none on the books today — so a
+  // clean zero is her resting state and dates flow in the day she posts
+  // them.
+  { slug: 'celia', name: 'Cèlia Hoste (La HoCo) — Eventbrite box office', mode: 'eventbrite',
+    url: 'https://www.eventbrite.de/o/la-hoco-115794852461',
+    district: 'Friedrichshain', venue: 'Ohma Studio' },
+
+  // Olivia sells her own workshops through the Wix Events widget on this
+  // page, which is empty today and has never published an event (the site
+  // has no events sitemap at all). Watched rather than seeded: she runs
+  // scheduled ticketed sessions, not sessions on enquiry, so inventing an
+  // on-request card would misdescribe how she sells.
+  { slug: 'olivia', name: 'Olivia Barney — Ohma Studio workshops (watched)',
+    url: 'https://www.oliviabarney.com/workshops',
+    district: 'Friedrichshain' },
+
   // Helka Ceramics has taught at Twiggli from the start but had no feed of
   // her own: her classes sell from her Squarespace shop, which the scraper
   // could not read. Her studio is Böckhstr. 12 in Kreuzberg; the four-week
@@ -2223,6 +2252,140 @@ function fromShopify(jsonText, source) {
   return out;
 }
 
+/** Eventbrite organiser pages render their event list in the browser, and
+ *  CloudFront answers the JSON behind it with a 403 to CI runners, so the
+ *  page is read through the r.jina.ai text relay \u2014 the same route that
+ *  reaches the other walled hosts. The relay prints the list twice: once
+ *  flat, then again grouped under a date heading, and only the grouped half
+ *  dates every event (the flat half says "Samstag um 09:45"), so that is the
+ *  half this reads:
+ *
+ *    29. August Samstag
+ *    [![Image 8: Hauptbild f\u00fcr Baby Patchwork Quilt](https://img.evbuc.com/\u2026)](\u2026)
+ *    ### [Baby Patchwork Quilt Workshop](https://www.eventbrite.de/e/\u2026-1993454336583)
+ *    Samstag um 09:45 Ohma Studio Ab 168,00\u20ac
+ *
+ *  Those headings carry no year, but they do carry the weekday, so the year
+ *  is the one whose calendar agrees rather than a guess \u2014 and a heading
+ *  that matches neither this year nor next is skipped and logged rather than
+ *  placed on a wrong day. An organiser with nothing scheduled reads as a
+ *  clean zero ("Gerade nichts geplant"), which is a resting state here, not
+ *  a parse failure. */
+const WEEKDAYS_DE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+
+async function fromEventbrite(source) {
+  const relay = `https://r.jina.ai/${source.url}`;
+  const res = await fetch(relay, {
+    redirect: 'follow',
+    headers: { 'user-agent': UA, accept: 'text/plain,*/*;q=0.8' },
+  });
+  if (!res.ok) {
+    console.log(`[${source.slug}] eventbrite: relay HTTP ${res.status}`);
+    return [];
+  }
+  const md = await res.text();
+  const heads = [...md.matchAll(
+    new RegExp(`(\\d{1,2})\\.\\s*(${MONTHS_DE_RE})\\s+(${WEEKDAYS_DE.join('|')})\\b`, 'gi'),
+  )];
+  if (!heads.length) {
+    console.log(`[${source.slug}] eventbrite: no dated headings (${/nichts geplant|Nothing scheduled/i.test(md) ? 'organiser has nothing scheduled' : 'unexpected page'})`);
+    return [];
+  }
+  const out = [];
+  const seen = new Set();
+  for (let i = 0; i < heads.length; i++) {
+    const h = heads[i];
+    const segment = md.slice(h.index + h[0].length, heads[i + 1]?.index ?? md.length);
+    const day = h[1].padStart(2, '0');
+    const month = String(MONTHS_DE[h[2].toLowerCase()]);
+    const weekday = h[3].toLowerCase();
+    // The heading names no year; take the one whose calendar puts this date
+    // on the weekday it claims.
+    const year = [todayISO.slice(0, 4), String(Number(todayISO.slice(0, 4)) + 1)].find((y) => {
+      const d = new Date(`${y}-${month}-${day}T12:00:00Z`);
+      return !Number.isNaN(d.getTime()) && WEEKDAYS_DE[d.getUTCDay()].toLowerCase() === weekday;
+    });
+    if (!year) {
+      console.log(`[${source.slug}] eventbrite: "${h[0]}" is no ${h[3]} this year or next \u2014 skipped`);
+      continue;
+    }
+    const date = `${year}-${month}-${day}`;
+    const headings = [...segment.matchAll(/###\s*\[([^\]]+)\]\((https:\/\/www\.eventbrite\.[a-z.]+\/e\/[^)\s]+)\)/g)];
+    for (let j = 0; j < headings.length; j++) {
+      const ev = headings[j];
+      const block = segment.slice(ev.index + ev[0].length, headings[j + 1]?.index ?? segment.length);
+      const before = segment.slice(headings[j - 1] ? headings[j - 1].index : 0, ev.index);
+      const url = ev[2].split('?')[0];
+      if (seen.has(`${date} ${url}`)) continue;
+      seen.add(`${date} ${url}`);
+      const tm = block.match(/(\d{1,2}):(\d{2})/);
+      // "Ab 168,00\u20ac" is the cheapest tier, so the card says 168+ rather
+      // than claiming that is what every ticket costs.
+      const pm = block.match(/(?:Ab|From)\s*([\d.]+),(\d{2})\s*\u20ac/i) ?? block.match(/(?:Ab|From)\s*\u20ac?\s*([\d.]+)\s*\u20ac?/i);
+      const img = [...before.matchAll(/\((https:\/\/img\.evbuc\.com\/[^)\s]+)\)/g)].pop();
+      // The venue sits between the time and the price. A session somewhere
+      // other than the host's usual room should not inherit its district.
+      const venue = block.match(/\d{1,2}:\d{2}\s+([^\n]*?)\s+(?:Ab|From)\s/)?.[1]?.trim();
+      const atHome = !source.venue || (venue && venue.toLowerCase().includes(source.venue.toLowerCase()));
+      if (!atHome) {
+        console.log(`[${source.slug}] eventbrite: "${ev[1]}" is at "${venue}", not ${source.venue} \u2014 no district`);
+      }
+      out.push({
+        title: stripTags(ev[1]).trim(),
+        date,
+        ...(tm ? { time: `${tm[1].padStart(2, '0')}:${tm[2]}` } : {}),
+        ...(/Ausverkauft|Sold\s*Out/i.test(block) ? { soldOut: true } : {}),
+        ...(pm ? { price: `\u20ac${Math.round(Number(pm[1].replace(/\./g, '')))}+` } : {}),
+        ...(atHome && source.district ? { district: source.district } : {}),
+        ...(img ? { image: img[1] } : {}),
+        url,
+      });
+      console.log(`[${source.slug}] eventbrite: "${ev[1]}" ${date} ${tm ? `${tm[1]}:${tm[2]}` : ''} ${venue ?? ''}`);
+    }
+  }
+  // The organiser list gives a start time but never a length, and these
+  // sessions run anywhere from a weeknight two hours to most of a Saturday
+  // \u2014 a difference worth showing. Each event page states it outright
+  // ("Highlights * 5 hours 45 minutes"), so sources that opt in read it,
+  // capped so a busy organiser cannot stretch the scrape indefinitely.
+  if (source.detail) {
+    for (const w of out.slice(0, 12)) {
+      const mins = await eventbriteMinutes(w.url, source.slug);
+      if (mins) w.duration = hoursFromMinutes(mins);
+    }
+  }
+  return out;
+}
+
+/** One Eventbrite event page, read for the length it states. Returns null
+ *  when the page does not load or does not say \u2014 the card then carries no
+ *  duration rather than a guessed one. */
+async function eventbriteMinutes(url, slug) {
+  try {
+    const res = await fetch(`https://r.jina.ai/${url}`, {
+      redirect: 'follow',
+      headers: { 'user-agent': UA, accept: 'text/plain,*/*;q=0.8' },
+    });
+    if (!res.ok) {
+      console.log(`[${slug}] eventbrite detail: relay HTTP ${res.status} for ${url}`);
+      return null;
+    }
+    const md = await res.text();
+    const at = md.search(/Highlights/i);
+    if (at < 0) return null;
+    const seg = md.slice(at, at + 120);
+    const hm = seg.match(/(\d+)\s*hours?(?:\s*(?:and\s*)?(\d+)\s*min)?/i);
+    const mins = hm
+      ? Number(hm[1]) * 60 + Number(hm[2] ?? 0)
+      : Number(seg.match(/(\d+)\s*minutes?/i)?.[1] ?? 0);
+    if (!mins || mins > 14 * 60) return null;
+    return mins;
+  } catch (err) {
+    console.log(`[${slug}] eventbrite detail: ${err.message}`);
+    return null;
+  }
+}
+
 /** Squarespace commerce pages answer ?format=json with the whole product
  *  collection \u2014 every class, its excerpt, its photo and its variants. A class
  *  that runs on fixed dates keeps them in a variant option named "Date":
@@ -2821,7 +2984,8 @@ async function scrapeSource(source) {
     source.mode === 'konfetti' || source.mode === 'acuity-embeds' ||
     source.mode === 'luma' || source.mode === 'gcal-embed' ||
     source.mode === 'tickettailor' || source.mode === 'eversports' ||
-    source.mode === 'rausgegangen' || source.mode === 'squarespace'
+    source.mode === 'rausgegangen' || source.mode === 'squarespace' ||
+    source.mode === 'eventbrite'
   ) {
     const found =
       source.mode === 'konfetti' ? await fromKonfetti(source)
@@ -2831,6 +2995,7 @@ async function scrapeSource(source) {
       : source.mode === 'eversports' ? await fromEversports(source)
       : source.mode === 'rausgegangen' ? await fromRausgegangen(source)
       : source.mode === 'squarespace' ? await fromSquarespace(source)
+      : source.mode === 'eventbrite' ? await fromEventbrite(source)
       : await fromLuma(source);
     const inRange = found
       .filter((w) => w.date >= todayISO && w.date <= maxISO)
