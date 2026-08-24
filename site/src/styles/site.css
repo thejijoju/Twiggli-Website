@@ -1249,7 +1249,14 @@ a:hover { color: var(--color-accent); }
   object-fit: cover;
   display: block;
 }
-.maker:has(.maker-video) .maker-media { cursor: pointer; }
+/* Reels are shot vertical, and the brochure-strip banner crops them to a
+   sliver, so a card with a reel goes square instead. 420px is the widest a
+   directory column gets, so the square never outgrows its card. */
+.maker:has(.maker-video) .maker-media {
+  aspect-ratio: 1 / 1;
+  max-width: 420px;
+  cursor: pointer;
+}
 .maker-play {
   position: absolute;
   right: 12px;
