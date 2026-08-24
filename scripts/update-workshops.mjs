@@ -2034,14 +2034,24 @@ const hoursFromMinutes = (a, b) => {
 function englishCourseDates(text) {
   // A day only continues the list if it is not the start of a clock time:
   // in "October 6, 13, 20, 19-22.00" the 19 opens the hours, not a fourth
-  // meeting.
+  // meeting. A dash is allowed only on the day right after the month name,
+  // where it means consecutive days ("September 11-12", a two-day
+  // intensive) and cannot be the hours \u2014 those never sit there.
   const groups = [...text.matchAll(
-    /(January|February|March|April|May|June|July|August|September|October|November|December)\s*((?:\d{1,2}(?!\d))(?:\s*[&,+/]\s*\d{1,2}(?!\d)(?![:.]\d)(?!\s*[-\u2013]\s*\d))*)/gi,
+    /(January|February|March|April|May|June|July|August|September|October|November|December)\s*((?:\d{1,2}(?!\d)(?:\s*[-\u2013]\s*\d{1,2}(?!\d)(?!\s*(?:[:.]\d|h\b|Uhr|[ap]m\b)))?)(?:\s*[&,+/]\s*\d{1,2}(?!\d)(?![:.]\d)(?!\s*[-\u2013]\s*\d))*)/gi,
   )]
     .map((g) => ({
       name: g[1].slice(0, 3),
       month: EN_MONTHS[g[1].toLowerCase()],
-      days: g[2].split(/[&,+/]/).map((d) => parseInt(d, 10)).filter((n) => n >= 1 && n <= 31),
+      days: g[2].split(/[&,+/]/).flatMap((part) => {
+        // "11-12" is two consecutive meetings, not one; a wider span is
+        // more likely a typo or a misread than a fortnight-long course.
+        const span = part.match(/^\s*(\d{1,2})\s*[-\u2013]\s*(\d{1,2})\s*$/);
+        if (span && Number(span[2]) > Number(span[1]) && Number(span[2]) - Number(span[1]) <= 6) {
+          return Array.from({ length: Number(span[2]) - Number(span[1]) + 1 }, (_, i) => Number(span[1]) + i);
+        }
+        return [parseInt(part, 10)];
+      }).filter((n) => n >= 1 && n <= 31),
       index: g.index,
       end: g.index + g[0].length,
     }))
