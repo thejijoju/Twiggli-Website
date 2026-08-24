@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T11:30:08.683Z",
+  "updated": "2026-08-24T11:37:43.005Z",
   "sources": [
     {
       "slug": "qian",
@@ -272,6 +272,12 @@
       "count": 90
     },
     {
+      "slug": "haki",
+      "url": "https://hakiceramics.onepage.me/",
+      "status": "ok",
+      "count": 3
+    },
+    {
       "slug": "pia",
       "url": "https://www.vulvas.berlin/",
       "status": "ok",
@@ -423,6 +429,33 @@
       "url": "https://www.ninakranzart.com/privat-freizeit"
     },
     {
+      "slug": "haki",
+      "sourceUrl": "https://hakiceramics.onepage.me/",
+      "title": "Handbuilding Workshop",
+      "weekdays": [
+        "tue"
+      ],
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€35",
+      "district": "Friedrichshain",
+      "url": "https://hakiceramics.onepage.me/"
+    },
+    {
+      "slug": "haki",
+      "sourceUrl": "https://hakiceramics.onepage.me/",
+      "title": "Offener Platz an der Drehscheibe (Fortgeschrittene)",
+      "titleEn": "Open Wheel Spot (experienced throwers)",
+      "weekdays": [
+        "tue"
+      ],
+      "time": "18:30",
+      "duration": "2 h",
+      "price": "€35",
+      "district": "Friedrichshain",
+      "url": "https://hakiceramics.onepage.me/"
+    },
+    {
       "slug": "pia",
       "sourceUrl": "https://www.vulvas.berlin/",
       "title": "Vulva Painting Workshop",
@@ -548,6 +581,17 @@
       "district": "Wedding",
       "request": true,
       "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
+      "slug": "haki",
+      "sourceUrl": "https://hakiceramics.onepage.me/",
+      "title": "Private Drehscheibenstunde",
+      "titleEn": "Private Wheel-Throwing Class",
+      "duration": "2 h",
+      "price": "€80",
+      "district": "Friedrichshain",
+      "request": true,
+      "url": "https://hakiceramics.onepage.me/"
     },
     {
       "slug": "pia",
@@ -6099,8 +6143,7 @@
       "price": "€35+",
       "district": "Friedrichshain",
       "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F948422053%2F2441551045951%2F1%2Foriginal.20250130-115320?w=640&auto=format%2Ccompress&q=75&sharp=10&s=5c3ead55f1655bb13dfd550961769fe3",
-      "url": "https://www.eventbrite.de/e/visible-mending-weave-darning-workshop-tickets-1996973667998",
-      "duration": "2.75 h"
+      "url": "https://www.eventbrite.de/e/visible-mending-weave-darning-workshop-tickets-1996973667998"
     },
     {
       "slug": "mampe",
