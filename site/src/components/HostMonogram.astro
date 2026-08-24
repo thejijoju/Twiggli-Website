@@ -1,0 +1,18 @@
+---
+/**
+ * Stand-in tile for a host whose photos have not arrived yet.
+ *
+ * getHosts leaves `photo` and `wide` off when no file ships for the slug, so
+ * every place that draws a host picture needs something to draw instead —
+ * their initial on a tinted ground, which fills the same box and reads as
+ * deliberate rather than as a picture that failed to load.
+ */
+interface Props {
+  name: string;
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+const initial = name.trim().charAt(0).toUpperCase();
+---
+
+<span class:list={['media-monogram', className]} aria-hidden="true">{initial}</span>

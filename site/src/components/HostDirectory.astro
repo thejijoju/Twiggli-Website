@@ -1,6 +1,7 @@
 ---
 import type { Host } from '../data/content.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
+import HostMonogram from './HostMonogram.astro';
 
 /**
  * The full maker directory: one card per host, with the brochure photo strip
@@ -45,8 +46,10 @@ const labels = {
             preload="none"
             aria-label={`${host.name} — ${labels.play}`}
           ></video>
-        ) : (
+        ) : host.wide ? (
           <img src={host.wide} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
+        ) : (
+          <HostMonogram name={host.name} />
         )}
         {host.video && (
           <button class="maker-play" type="button" aria-label={`${host.name} — ${labels.play}`}>

@@ -1,6 +1,7 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import type { Host } from '../data/content.ts';
+import HostMonogram from './HostMonogram.astro';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
 interface Props {
@@ -44,8 +45,10 @@ const videoPlaceholder = {
               playsinline
               preload="none"
             ></video>
+          ) : host.photo ? (
+            <img class="host-coverflow-still" src={host.photo} alt="" loading="lazy" decoding="async" />
           ) : (
-            <ImageSlot src={host.photo} shape="rect" placeholder="Host reel" alt="" />
+            <HostMonogram name={host.name} />
           )}
           <span class="host-coverflow-play" aria-hidden="true">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>

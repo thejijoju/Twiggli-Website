@@ -1,6 +1,7 @@
 ---
 import { getSessions, berlinTodayMs } from '../data/sessions.ts';
 import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import HostMonogram from './HostMonogram.astro';
 
 /** The homepage's taste of the live calendar: the next few real sessions —
  *  one card per host, reels playing — with the full calendar one tap away.
@@ -71,8 +72,10 @@ const calendarHref = href(lang, '/happening-today/');
                 preload="none"
                 aria-hidden="true"
               ></video>
-            ) : (
+            ) : s.host.photo ? (
               <img src={s.host.photo} alt="" loading="lazy" decoding="async" />
+            ) : (
+              <HostMonogram name={s.host.name} />
             )}
             <span class="today-when">{s.time ? `${dayLabel(s.dayOffset)} · ${s.time}` : dayLabel(s.dayOffset)}</span>
             {s.price && <span class="today-price">{s.price}</span>}

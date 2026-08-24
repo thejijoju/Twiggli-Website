@@ -1,7 +1,42 @@
 /** Page content. Copy here is verbatim from the Claude Design export;
  *  anything marked PLACEHOLDER is filler awaiting real content. */
 
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 import { withBase, type Lang } from '../lib/url.ts';
+
+/** The blank cream squares the design export dropped in for hosts whose
+ *  photography had not been shot yet — byte-identical fillers, two sizes and
+ *  two shades of them. They are pictures of nothing, so they are treated as
+ *  absent rather than drawn as an empty tile. */
+const BLANK_PLACEHOLDERS = new Set([
+  '67cf8462e6f4d452c9523fb218e70eb8',
+  '20a14a3096917f63a2963575ef794779',
+  '8600a57f8063293a85c564f3ba37cfe3',
+  '2db02a3a9a4fdd567e3fff8b368b5d7f',
+]);
+
+/** Host pictures live in public/ and are copied verbatim into the build, so
+ *  a host onboarded before their photos arrive has no file behind the path
+ *  the slug implies — and an <img> pointed at a missing file renders a
+ *  broken tile on a live page. Checked once at build time; where the file
+ *  is absent or blank the field is left off entirely and the components show
+ *  a monogram instead. */
+const publicDir = fileURLToPath(new URL('../../public', import.meta.url));
+const realPicture = new Map<string, boolean>();
+const shipped = (path: string): string | undefined => {
+  let real = realPicture.get(path);
+  if (real === undefined) {
+    const file = `${publicDir}${path}`;
+    real =
+      existsSync(file) &&
+      !BLANK_PLACEHOLDERS.has(createHash('md5').update(readFileSync(file)).digest('hex'));
+    realPicture.set(path, real);
+  }
+  return real ? withBase(path) : undefined;
+};
 
 export type Step = { num: string; title: string; copy: string };
 
@@ -535,12 +570,14 @@ const reels: Record<string, { video: string; poster: string }> = {
 export const getHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
     const reel = reels[h.slug];
+    const photo = shipped(`/img/hosts/${h.slug}.jpg`);
+    const wide = shipped(`/img/hosts/${h.slug}-wide.jpg`);
     return {
       ...h,
       ...facets[h.slug],
       id: i + 1,
-      photo: withBase(`/img/hosts/${h.slug}.jpg`),
-      wide: withBase(`/img/hosts/${h.slug}-wide.jpg`),
+      ...(photo ? { photo } : {}),
+      ...(wide ? { wide } : {}),
       ...(reel
         ? { video: withBase(reel.video), poster: withBase(reel.poster) }
         : {}),

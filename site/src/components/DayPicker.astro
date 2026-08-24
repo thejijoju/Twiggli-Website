@@ -1,6 +1,7 @@
 ---
 import { getSessions, getOnRequest, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
+import HostMonogram from './HostMonogram.astro';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
 /** The schedule feed, styled after the app's search screen: the borderless
@@ -218,8 +219,10 @@ const dayLabel = (offset: number) =>
                               playsinline
                               preload="none"
                             ></video>
-                          ) : (
+                          ) : (s.image ?? s.host.photo) ? (
                             <img src={s.image ?? s.host.photo} alt="" loading="lazy" decoding="async" />
+                          ) : (
+                            <HostMonogram name={s.host.name} />
                           )}
                         </a>
                         <span class="session-main">
@@ -320,8 +323,10 @@ const dayLabel = (offset: number) =>
                   playsinline
                   preload="none"
                 ></video>
-              ) : (
+              ) : o.host.photo ? (
                 <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <HostMonogram name={o.host.name} />
               )}
             </a>
             <span class="session-main">
