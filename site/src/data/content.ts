@@ -515,6 +515,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   redrum: { video: '/video/redrum.mp4', poster: '/video/redrum-poster.jpg' },
   // Sarah's writing table mid-session, supplied by her. Audio stripped.
   sarah: { video: '/video/sarah.mp4', poster: '/video/sarah-poster.jpg' },
+  // Gestaltwandel's bookbinding film — sewing a signature, then the finished
+  // books. Celina's own, audio stripped.
+  celina: { video: '/video/celina.mp4', poster: '/video/celina-poster.jpg' },
   // reel-3 is an unattributed painting-session clip sitting with a painting
   // host. UNCONFIRMED — if it was shot with a specific maker, move the slug
   // here and the carousel and directory both follow.
