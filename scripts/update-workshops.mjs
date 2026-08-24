@@ -303,6 +303,25 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Maximiliána Martišková is an illustrator and nature-journal artist who
+  // teaches nature journaling and bird illustration "a few times a year".
+  // Her public sessions sell through her own Ticket Tailor box office, so
+  // the same relay route as Rebeca's reads it — the box office is simply
+  // empty between rounds, which is a clean zero rather than a parse
+  // failure. Her bespoke sessions for schools, conservation groups,
+  // conferences and workplace teams carry no dates at all and are quoted
+  // per enquiry, so they ride in as an on-request card pointing at her
+  // own get-in-touch page. Ticket Tailor hides prices inside the checkout
+  // widget, so neither card invents one.
+  { slug: 'maxmartiskova', name: 'Maximiliána Martišková — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/maxmartiskova', district: 'Berlin',
+    seedOnRequest: [
+      { title: 'Workshop auf Anfrage: Naturtagebuch',
+        titleEn: 'Personal Nature Journaling Workshop',
+        district: 'Berlin', request: true,
+        url: 'https://maxmartiskova.com/start-a-project' },
+    ] },
+
   // Redrum Art Bar (Grimmstr. 24, Kreuzberg) runs guided drink tastings
   // for groups of 2-8, ~2 h, on the bar's own working days between
   // 17:00-19:00 in a private setting. No dates are ever published: you

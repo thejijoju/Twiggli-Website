@@ -141,6 +141,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — the event page publishes no cap.
   arcoiris:         { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 2.5] },
   redrum:           { activity: 'food',      groupRange: [2, 8],  hourRange: [2, 2] },
+  // PLACEHOLDER group range and hours — she publishes neither a cap nor a
+  // session length; her dated sessions carry their own from the box office.
+  maxmartiskova:    { activity: 'art',       groupRange: [1, 12], hourRange: [2, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -283,6 +286,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'redrum', name: 'Michael', specialty: 'Guided drink tastings', studio: 'Redrum Art Bar',
       blurb: 'Guided tastings at Redrum Art Bar in Kreuzberg, hosted by Michael for groups of two to eight. The bar closes to outside guests for the two hours, so the session is yours: a flight through one spirit or cocktail family — rum, mezcal, whisky, absinthe, negronis and a dozen more — with sparkling water to clean the palate and snacks matched to what is in the glass. Dates are arranged around you rather than published.',
       group: '2–8', duration: '2 h', place: 'Grimmstr. 24, Berlin', languages: 'EN · DE' },
+    // Copy from her portfolio and box office; photos to follow.
+    { slug: 'maxmartiskova', name: 'Maximiliána', specialty: 'Nature journaling & bird illustration', studio: 'Maximiliána Martišková',
+      blurb: 'Illustrator and nature-journal artist Maximiliána Martišková teaches drawing as a way of seeing. Her nature journaling sessions turn live observation into confident, accurate drawings — past the pre-printed checklist and into the practical mechanics of visual documentation, whether you want to catch a bird’s movement or log precise diagnostic field marks. Suitable for beginners as much as for artists, birdwatchers and field professionals. She also teaches a six-week bird illustration course at Berlin Drawing Room, and takes bespoke sessions for schools, conservation groups, conferences and workplace teams.',
+      group: 'Small groups', duration: 'By arrangement', place: 'Berlin', languages: 'EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -396,6 +403,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'redrum', name: 'Michael', specialty: 'Geführte Drink-Tastings', studio: 'Redrum Art Bar',
       blurb: 'Geführte Tastings in der Redrum Art Bar in Kreuzberg — Michael führt Gruppen von zwei bis acht Personen durch den Abend. Die Bar bleibt für die zwei Stunden für andere Gäste geschlossen, die Session gehört also euch: eine Reise durch eine Spirituosen- oder Cocktail-Familie — Rum, Mezcal, Whisky, Absinth, Negronis und ein Dutzend mehr — mit Sprudelwasser zum Neutralisieren und Snacks, die zum Glas passen. Termine werden mit euch abgestimmt statt veröffentlicht.',
       group: '2–8', duration: '2 Std.', place: 'Grimmstr. 24, Berlin', languages: 'EN · DE' },
+    { slug: 'maxmartiskova', name: 'Maximiliána', specialty: 'Naturtagebuch & Vogelillustration', studio: 'Maximiliána Martišková',
+      blurb: 'Die Illustratorin und Naturtagebuch-Künstlerin Maximiliána Martišková lehrt Zeichnen als eine Art des Sehens. In ihren Naturtagebuch-Sessions wird aus der lebendigen Beobachtung eine sichere, genaue Zeichnung — weg von der vorgedruckten Checkliste, hin zum Handwerk der visuellen Dokumentation: ob du die Bewegung eines Vogels einfangen oder präzise Bestimmungsmerkmale festhalten willst. Geeignet für Anfänger ebenso wie für Künstlerinnen, Vogelbeobachter und Fachleute aus der Feldarbeit. Außerdem unterrichtet sie einen sechswöchigen Vogelillustrations-Kurs im Berlin Drawing Room und übernimmt maßgeschneiderte Sessions für Schulen, Naturschutzgruppen, Konferenzen und Teams.',
+      group: 'Kleine Gruppen', duration: 'Nach Absprache', place: 'Berlin', languages: 'EN' },
   ],
 };
 

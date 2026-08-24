@@ -276,6 +276,12 @@
       "url": "https://www.redrumberlin.de/tasting-experience/",
       "status": "seeded",
       "count": 0
+    },
+    {
+      "slug": "maxmartiskova",
+      "url": "https://www.tickettailor.com/events/maxmartiskova",
+      "status": "seeded",
+      "count": 0
     }
   ],
   "recurring": [
@@ -490,6 +496,15 @@
       "district": "Kreuzberg",
       "request": true,
       "url": "https://www.redrumberlin.de/tasting-experience/"
+    },
+    {
+      "slug": "maxmartiskova",
+      "sourceUrl": "https://www.tickettailor.com/events/maxmartiskova",
+      "title": "Workshop auf Anfrage: Naturtagebuch",
+      "titleEn": "Personal Nature Journaling Workshop",
+      "district": "Berlin",
+      "request": true,
+      "url": "https://maxmartiskova.com/start-a-project"
     }
   ],
   "workshops": [
