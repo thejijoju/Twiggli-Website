@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T11:37:43.005Z",
+  "updated": "2026-08-24T11:47:40.697Z",
   "sources": [
     {
       "slug": "qian",
@@ -270,6 +270,12 @@
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
       "count": 90
+    },
+    {
+      "slug": "alessia",
+      "url": "https://alessiasinopoli.it/portrait-workshop/",
+      "status": "ok",
+      "count": 4
     },
     {
       "slug": "haki",
@@ -1583,6 +1589,19 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "alessia",
+      "sourceUrl": "https://alessiasinopoli.it/portrait-workshop/",
+      "title": "Realistic Portrait Drawing with Pencil",
+      "date": "2026-08-30",
+      "time": "14:00",
+      "duration": "4 h",
+      "district": "Prenzlauer Berg",
+      "request": true,
+      "url": "https://alessiasinopoli.it/portrait-workshop/",
+      "price": "€55",
+      "image": "https://alessiasinopoli.it/wp-content/uploads/2025/10/AlessiaSinopoli-PortraitDrawingWorkshop-3-scaled.jpg"
     },
     {
       "slug": "jem",
@@ -5267,6 +5286,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "alessia",
+      "sourceUrl": "https://alessiasinopoli.it/portrait-workshop/",
+      "title": "Realistic Portrait Drawing with Pencil",
+      "date": "2026-09-27",
+      "time": "14:00",
+      "duration": "4 h",
+      "district": "Prenzlauer Berg",
+      "request": true,
+      "url": "https://alessiasinopoli.it/portrait-workshop/",
+      "price": "€55",
+      "image": "https://alessiasinopoli.it/wp-content/uploads/2025/10/AlessiaSinopoli-PortraitDrawingWorkshop-3-scaled.jpg"
+    },
+    {
       "slug": "jem",
       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
@@ -6123,6 +6155,19 @@
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
+      "slug": "alessia",
+      "sourceUrl": "https://alessiasinopoli.it/portrait-workshop/",
+      "title": "Realistic Portrait Drawing with Pencil",
+      "date": "2026-10-04",
+      "time": "14:00",
+      "duration": "4 h",
+      "district": "Prenzlauer Berg",
+      "request": true,
+      "url": "https://alessiasinopoli.it/portrait-workshop/",
+      "price": "€55",
+      "image": "https://alessiasinopoli.it/wp-content/uploads/2025/10/AlessiaSinopoli-PortraitDrawingWorkshop-3-scaled.jpg"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Fusilli\" Pasta Workshop",
@@ -6143,7 +6188,8 @@
       "price": "€35+",
       "district": "Friedrichshain",
       "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F948422053%2F2441551045951%2F1%2Foriginal.20250130-115320?w=640&auto=format%2Ccompress&q=75&sharp=10&s=5c3ead55f1655bb13dfd550961769fe3",
-      "url": "https://www.eventbrite.de/e/visible-mending-weave-darning-workshop-tickets-1996973667998"
+      "url": "https://www.eventbrite.de/e/visible-mending-weave-darning-workshop-tickets-1996973667998",
+      "duration": "2.75 h"
     },
     {
       "slug": "mampe",
@@ -8041,6 +8087,19 @@
       "price": "€69",
       "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
+    },
+    {
+      "slug": "alessia",
+      "sourceUrl": "https://alessiasinopoli.it/portrait-workshop/",
+      "title": "Realistic Portrait Drawing with Pencil",
+      "date": "2026-11-08",
+      "time": "14:00",
+      "duration": "4 h",
+      "district": "Prenzlauer Berg",
+      "request": true,
+      "url": "https://alessiasinopoli.it/portrait-workshop/",
+      "price": "€55",
+      "image": "https://alessiasinopoli.it/wp-content/uploads/2025/10/AlessiaSinopoli-PortraitDrawingWorkshop-3-scaled.jpg"
     },
     {
       "slug": "pastamadre",
