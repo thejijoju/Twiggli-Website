@@ -518,6 +518,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Gestaltwandel's bookbinding film — sewing a signature, then the finished
   // books. Celina's own, audio stripped.
   celina: { video: '/video/celina.mp4', poster: '/video/celina-poster.jpg' },
+  // Anne's session reel — props, and everyone photographing each other. Her
+  // own, audio stripped; the top band is cropped off to lose the CapCut
+  // watermark her export carried.
+  anne: { video: '/video/anne.mp4', poster: '/video/anne-poster.jpg' },
   // reel-3 is an unattributed painting-session clip sitting with a painting
   // host. UNCONFIRMED — if it was shot with a specific maker, move the slug
   // here and the carousel and directory both follow.
