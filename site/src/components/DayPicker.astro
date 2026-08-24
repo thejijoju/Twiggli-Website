@@ -293,8 +293,22 @@ const dayLabel = (offset: number) =>
       <ul class="session-list">
         {onRequest.map((o) => (
           <li class="session" id={o.id} data-activity={o.host.activity}>
+            {/* Same tile as a dated card: the host's reel where footage
+                exists, otherwise the stock photo. */}
             <a class="session-thumb" href={o.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-              <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
+              {o.host.video ? (
+                <video
+                  class="session-video"
+                  src={o.host.video}
+                  poster={o.host.poster}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                ></video>
+              ) : (
+                <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
+              )}
             </a>
             <span class="session-main">
               <span class="session-duration">

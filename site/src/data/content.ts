@@ -510,6 +510,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   rebeca: { video: '/video/rebeca.mp4', poster: '/video/rebeca-poster.jpg' },
   // Nina Kranz's own reel, supplied by her.
   nina: { video: '/video/nina.mp4', poster: '/video/nina-poster.jpg' },
+  // Michael's own footage of the Redrum bar — the absinthe fountain and the
+  // bottles laid out for a tasting. Audio stripped, as above.
+  redrum: { video: '/video/redrum.mp4', poster: '/video/redrum-poster.jpg' },
   // reel-3 is an unattributed painting-session clip sitting with a painting
   // host. UNCONFIRMED — if it was shot with a specific maker, move the slug
   // here and the carousel and directory both follow.
