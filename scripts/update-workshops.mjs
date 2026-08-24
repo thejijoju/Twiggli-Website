@@ -339,6 +339,22 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Alessia Sinopoli is the fifth Kunstraum Heartspace artist here, after
+  // Ron Nadel, Cate Duckwall, Rebeca and Elinor Sahm — the venue itself is
+  // not a host, so each artist is read from wherever they sell.
+  //
+  // Hers is a WooCommerce site, but the workshop is not sold through the
+  // shop: you pick a date in a booking form and she mails back with payment
+  // details, which is why the card asks rather than checks out. The dates
+  // live in that form's option list and are rendered server-side, so the
+  // whole run reads without a browser and a date she adds appears in the
+  // feed on the next scrape. The options name a weekday but no year, which
+  // is what settles the January and February dates as next year's.
+  { slug: 'alessia', name: 'Alessia Sinopoli — portrait workshop dates', mode: 'option-dates',
+    url: 'https://alessiasinopoli.it/portrait-workshop/',
+    title: 'Realistic Portrait Drawing with Pencil',
+    district: 'Prenzlauer Berg', request: true },
+
   // Haki Ceramics works out of an artist studio building on the
   // RAW-Gelände (VWG-Haus, Revaler Str. 99, Friedrichshain). Her schedule
   // is a standing Tuesday evening rather than a list of dates — "no fixed
@@ -2316,6 +2332,93 @@ function fromShopify(jsonText, source) {
   return out;
 }
 
+const WEEKDAYS_DE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+/** A listing that names a weekday but no year pins its own year: take the
+ *  one whose calendar agrees. Hosts publish months ahead and roll into the
+ *  new year without saying so \u2014 "Sunday 10 January" is a Saturday in 2026
+ *  and a Sunday in 2027, which settles it. A date matching neither this
+ *  year nor next returns null, so the caller can skip it rather than place
+ *  it on a wrong day. */
+function yearForWeekday(month, day, weekday) {
+  const want = String(weekday).toLowerCase();
+  const hits = [];
+  for (const y of [Number(todayISO.slice(0, 4)), Number(todayISO.slice(0, 4)) + 1]) {
+    const d = new Date(`${y}-${month}-${day}T12:00:00Z`);
+    if (Number.isNaN(d.getTime())) continue;
+    if (WEEKDAYS_DE[d.getUTCDay()].toLowerCase() === want || WEEKDAYS_EN[d.getUTCDay()].toLowerCase() === want) {
+      hits.push(String(y));
+    }
+  }
+  // A weekday can only line up once in two consecutive years, but prefer a
+  // date still ahead of us if that ever changes.
+  return hits.find((y) => `${y}-${month}-${day}` >= todayISO) ?? hits[0] ?? null;
+}
+
+/** Some hosts publish their dates as the option list of a booking form
+ *  rather than as a schedule: Alessia Sinopoli\u2019s portrait workshop names
+ *  each Sunday in a picker \u2014 "Sunday 30 August, 2-6 p.m." \u2014 and the form
+ *  then mails you back with payment details. Those options are rendered
+ *  server-side, so the whole run of dates reads without a browser, and new
+ *  ones appear in the feed the day she adds them.
+ *
+ *  The options carry a weekday but no year, which is exactly enough:
+ *  yearForWeekday settles it, so the January and February dates land in the
+ *  following year without anyone hard-coding a rollover. */
+function fromOptionDates(html, source) {
+  const out = [];
+  const months = Object.keys(EN_MONTHS).map((m) => m[0].toUpperCase() + m.slice(1)).join('|');
+  const re = new RegExp(
+    `<option[^>]*>\\s*(${WEEKDAYS_EN.join('|')})\\s+(\\d{1,2})(?:st|nd|rd|th)?\\s+(${months})` +
+    `(?:\\s*,?\\s*(\\d{1,2})(?::(\\d{2}))?\\s*[-\\u2013]\\s*(\\d{1,2})(?::(\\d{2}))?\\s*([ap])\\.?\\s*m\\.?)?`,
+    'gi',
+  );
+  for (const m of html.matchAll(re)) {
+    const month = String(EN_MONTHS[m[3].toLowerCase()]).padStart(2, '0');
+    const day = m[2].padStart(2, '0');
+    const year = yearForWeekday(month, day, m[1]);
+    if (!year) {
+      console.log(`[${source.slug}] option-dates: "${m[0].replace(/<[^>]*>/g, '').trim()}" is no ${m[1]} this year or next \u2014 skipped`);
+      continue;
+    }
+    // "2-6 p.m." states the meridiem once, at the end. The start shares it
+    // unless its clock number is the larger one, which can only mean the
+    // session runs across midday ("10-2 p.m.").
+    let time;
+    let hours = 0;
+    if (m[4]) {
+      const pmEnd = m[8].toLowerCase() === 'p';
+      const rawStart = Number(m[4]);
+      const rawEnd = Number(m[6]);
+      const pmStart = rawStart <= rawEnd ? pmEnd : !pmEnd;
+      const to24 = (h, pm) => (pm ? (h % 12) + 12 : h % 12);
+      const sh = to24(rawStart, pmStart);
+      const eh = to24(rawEnd, pmEnd);
+      time = `${String(sh).padStart(2, '0')}:${m[5] ?? '00'}`;
+      hours = eh + Number(m[7] ?? 0) / 60 - (sh + Number(m[5] ?? 0) / 60);
+    }
+    out.push({
+      title: source.title ?? stripTags(html.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i)?.[1] ?? '').trim(),
+      date: `${year}-${month}-${day}`,
+      ...(time ? { time } : {}),
+      ...(hours > 0 && hours <= 12 ? { duration: `${Math.round(hours * 2) / 2} h` } : {}),
+      ...(source.price ? { price: source.price } : {}),
+      ...(source.district ? { district: source.district } : {}),
+      ...(source.request ? { request: true } : {}),
+      url: source.url,
+    });
+  }
+  // The fee is on the page as a labelled line, so a change to it reaches
+  // the cards rather than sitting stale in this file.
+  const fee = stripTags(html).match(/Price:\s*\u20ac?\s*(\d{1,4})\s*\u20ac?/i);
+  if (fee) for (const w of out) w.price = `\u20ac${fee[1]}`;
+  for (const w of out) {
+    console.log(`[${source.slug}] option-date: "${w.title}" ${w.date} ${w.time ?? ''} ${w.duration ?? ''} ${w.price ?? ''}`);
+  }
+  return out;
+}
+
 /** Eventbrite organiser pages render their event list in the browser, and
  *  CloudFront answers the JSON behind it with a 403 to CI runners, so the
  *  page is read through the r.jina.ai text relay \u2014 the same route that
@@ -2335,8 +2438,6 @@ function fromShopify(jsonText, source) {
  *  placed on a wrong day. An organiser with nothing scheduled reads as a
  *  clean zero ("Gerade nichts geplant"), which is a resting state here, not
  *  a parse failure. */
-const WEEKDAYS_DE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-
 async function fromEventbrite(source) {
   const relay = `https://r.jina.ai/${source.url}`;
   const res = await fetch(relay, {
@@ -2362,13 +2463,7 @@ async function fromEventbrite(source) {
     const segment = md.slice(h.index + h[0].length, heads[i + 1]?.index ?? md.length);
     const day = h[1].padStart(2, '0');
     const month = String(MONTHS_DE[h[2].toLowerCase()]);
-    const weekday = h[3].toLowerCase();
-    // The heading names no year; take the one whose calendar puts this date
-    // on the weekday it claims.
-    const year = [todayISO.slice(0, 4), String(Number(todayISO.slice(0, 4)) + 1)].find((y) => {
-      const d = new Date(`${y}-${month}-${day}T12:00:00Z`);
-      return !Number.isNaN(d.getTime()) && WEEKDAYS_DE[d.getUTCDay()].toLowerCase() === weekday;
-    });
+    const year = yearForWeekday(month, day, h[3]);
     if (!year) {
       console.log(`[${source.slug}] eventbrite: "${h[0]}" is no ${h[3]} this year or next \u2014 skipped`);
       continue;
@@ -3083,6 +3178,15 @@ async function scrapeSource(source) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
   console.log(`[${source.slug}] fetched ${html.length} bytes`);
+
+  if (source.mode === 'option-dates') {
+    const found = fromOptionDates(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
+    console.log(`[${source.slug}] option-dates sessions kept: ${inRange.length} of ${found.length} listed`);
+    return { workshops: inRange, recurring: [] };
+  }
 
   if (source.mode === 'shopify') {
     const found = fromShopify(html, source);

@@ -102,6 +102,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
   helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
   haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
+  alessia:      { activity: 'art',         groupRange: [1, 8],    hourRange: [4, 4] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -183,6 +184,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
       group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+    { slug: 'alessia', name: 'Alessia Sinopoli', specialty: 'Realistic pencil portraits',
+      blurb: 'An Italian artist based in Berlin teaching realistic portrait drawing from photographic references — a structured method rather than a knack. You work the grid for proportion, learn what pencils of different hardness actually do, and spend most of the afternoon on shading and hatching, which is where a portrait turns from flat to solid. Eight people at most, so the guidance follows your own way of drawing; beginners and improvers both. Professional materials, printed references, tea and a sweet treat at the break are all provided.',
+      group: 'Up to 8', duration: '4 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
     { slug: 'haki', name: 'Haki', specialty: 'Handbuilding & wheel throwing', studio: 'Haki Ceramics',
       blurb: 'Clay in an artist studio building on the RAW-Gelände. The Tuesday evening group has no fixed start or end — beginners and improvers work side by side, picking up techniques as their own pieces call for them, up to seven at a time. Clay, tools, glazes and both firings are included: once your work has dried you come back to glaze it, so you leave with finished stoneware you shaped yourself. Wheel throwing runs one-to-one by appointment, and confident throwers can take the studio\u2019s single wheel spot during the group session.',
       group: 'Up to 7 \u00b7 1-to-1 \u00b7 teams to 6', duration: '2 h', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
@@ -343,6 +347,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
       group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+    { slug: 'alessia', name: 'Alessia Sinopoli', specialty: 'Realistische Bleistiftporträts',
+      blurb: 'Italienische Künstlerin in Berlin, die realistisches Porträtzeichnen nach Fotovorlage unterrichtet — als klare Methode, nicht als Talentfrage. Ihr arbeitet mit dem Raster für die Proportionen, lernt, was Bleistifte unterschiedlicher Härte wirklich können, und verbringt den größten Teil des Nachmittags mit Schraffur und Schattierung, wo ein Porträt von flach zu plastisch wird. Höchstens acht Personen, die Anleitung folgt eurer eigenen Handschrift; Anfängerinnen wie Geübte. Profimaterial, gedruckte Vorlagen, Tee und etwas Süßes in der Pause sind inklusive.',
+      group: 'Bis 8', duration: '4 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
     { slug: 'haki', name: 'Haki', specialty: 'Aufbaukeramik & Drehscheibe', studio: 'Haki Ceramics',
       blurb: 'Ton im K\u00fcnstlerhaus auf dem RAW-Gel\u00e4nde. Die Dienstagabend-Gruppe hat keinen festen Anfang und kein Ende \u2014 Einsteigerinnen und Ge\u00fcbte arbeiten nebeneinander und lernen die Techniken, die ihr St\u00fcck gerade braucht, zu siebt h\u00f6chstens. Ton, Werkzeug, Glasuren und beide Brände sind dabei: Ist deine Arbeit getrocknet, kommst du zum Glasieren wieder und nimmst fertiges Steinzeug mit, das du selbst geformt hast. Die Drehscheibe l\u00e4uft einzeln nach Absprache, und wer sicher dreht, kann w\u00e4hrend der Gruppe den einen Scheibenplatz belegen.',
       group: 'Bis 7 \u00b7 Einzel \u00b7 Teams bis 6', duration: '2 Std.', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
