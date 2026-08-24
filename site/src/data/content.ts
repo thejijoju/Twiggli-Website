@@ -95,7 +95,7 @@ export type ActivityKey =
  *  is looking for something small or something company-wide. */
 const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>> = {
   qian:         { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [2, 2] },
-  rebeca:       { activity: 'art',         groupRange: [3, 24],   hourRange: [2, 3] },
+  rebeca:       { activity: 'art',         groupRange: [3, 24],   hourRange: [1, 3] },
   nicole:       { activity: 'craft',       groupRange: [2, 12],   hourRange: [2.5, 5] },
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
   evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [3, 3] },
@@ -147,7 +147,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // room is small, so these are deliberately modest.
   ronnadel:         { activity: 'art',       groupRange: [1, 10], hourRange: [2.5, 2.5] },
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
-  learnanatomy:     { activity: 'art',       groupRange: [1, 12], hourRange: [1, 2.5] },
   elinorsahm:       { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2] },
 };
 
@@ -164,7 +163,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
       blurb: 'Hands-on hand-building and pottery — calming, creative and beginner-friendly. Teams learn the basics while shaping their own ceramic pieces to take home.',
       group: 'Up to 8', duration: '2 h', place: 'Clay Garden Studio / your office', languages: 'EN' },
     { slug: 'rebeca', name: 'Rebeca', specialty: 'Linocut & portrait painting', studio: 'Arte Gorda',
-      blurb: 'Two hands-on formats: bold linocut printmaking, or a portrait-painting session where teammates paint each other and take the canvas home. Playful and made to bring the team closer.',
+      blurb: 'Two hands-on formats: bold linocut printmaking, or a portrait-painting session where teammates paint each other and take the canvas home. Playful and made to bring the team closer. She also teaches anatomy for artists at Kunstraum Heartspace — a twelve-part head-to-toe course co-taught with Alice Bischof, plus her own specials on the bodies standard anatomy classes leave out: where fat gathers and folds, and how skin ages.',
       group: '3–24', duration: '2–3 h', place: 'Prenzlauer Berg / mobile', languages: 'EN · DE · PT · ES' },
     { slug: 'nicole', name: 'Nicole', specialty: 'Wood & soap carving', studio: 'Anybody Can Whittle',
       blurb: 'Mindful carving workshops that pull teams out of screen-time and into a calm, hands-on craft. Learn freehand technique with simple hand tools and turn wood or soap into your own handmade object.',
@@ -303,9 +302,6 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotype on fabric', studio: 'Kunstraum Heartspace',
       blurb: 'A Berlin artist working across moving image, photography, writing and sound design, who teaches to help people reconnect with their curiosity. Her Saturday cyanotype session is a hands-on introduction to the process on fabric: botanicals, found objects and prepared imagery printed onto a cotton tote you take home, plus a care guide for it. No experience needed, all materials included — good for anyone drawn to analogue photography, printmaking or textiles, or just wanting to slow down and make something by hand.',
       group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
-    { slug: 'learnanatomy', name: 'Learn Anatomy', specialty: 'Anatomy for artists', studio: 'Rebeca Ventura & Alice Bischof',
-      blurb: 'Artists Rebeca Ventura and Alice Bischof teach anatomy the way people actually need to draw it. The twelve-part course works head to toe — proportions, torso, limbs, hands and feet, then the face in detail — one hour a week, joined in the room or over Zoom, dropping into single sessions or taking the whole run. Alongside it sit the specials on bodies that standard anatomy classes leave out: where fat gathers and folds, and how skin sags, wrinkles and marks with age.',
-      group: 'Small groups', duration: '1–2.5 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin · or online', languages: 'EN' },
     { slug: 'elinorsahm', name: 'Elinor Sahm', specialty: 'Alcohol ink painting', studio: 'Kunstraum Heartspace',
       blurb: 'Alcohol ink is fluid, vivid and startlingly fast — it gives striking results almost immediately, even if you have never painted. Elinor Sahm has spent years exploring, exhibiting and teaching with it, and brings that to Berlin: the techniques she developed for steering and controlling the ink on Yupo paper, while leaving room for flow, chance and surprise. Complete beginners and working artists both welcome; everyone leaves with original pieces.',
       group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
@@ -315,7 +311,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
       blurb: 'Töpfern zum Anfassen — ruhig, kreativ und ideal für Anfänger. Teams lernen die Grundlagen und formen ihre eigenen Keramikstücke zum Mitnehmen.',
       group: 'Bis 8', duration: '2 Std.', place: 'Clay Garden Studio / euer Büro', languages: 'EN' },
     { slug: 'rebeca', name: 'Rebeca', specialty: 'Linoldruck & Porträtmalerei', studio: 'Arte Gorda',
-      blurb: 'Zwei Formate zum Mitmachen: ausdrucksstarker Linoldruck oder eine Porträtmalerei-Session, in der sich das Team gegenseitig malt und die Leinwand mitnimmt.',
+      blurb: 'Zwei Formate zum Mitmachen: ausdrucksstarker Linoldruck oder eine Porträtmalerei-Session, in der sich das Team gegenseitig malt und die Leinwand mitnimmt. Außerdem unterrichtet sie Anatomie für Zeichnende im Kunstraum Heartspace — einen zwölfteiligen Kurs von Kopf bis Fuß zusammen mit Alice Bischof, dazu ihre eigenen Specials über die Körper, die in üblichen Anatomiekursen fehlen: wo sich Fett sammelt und faltet, und wie Haut altert.',
       group: '3–24', duration: '2–3 Std.', place: 'Prenzlauer Berg / mobil', languages: 'EN · DE · PT · ES' },
     { slug: 'nicole', name: 'Nicole', specialty: 'Holz- & Seifenschnitzen', studio: 'Anybody Can Whittle',
       blurb: 'Achtsames Schnitzen, das Teams aus der Bildschirmzeit holt. Freihandtechnik mit einfachem Handwerkzeug — aus Holz oder Seife entsteht ein eigenes Objekt.',
@@ -431,9 +427,6 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotypie auf Stoff', studio: 'Kunstraum Heartspace',
       blurb: 'Eine Berliner Künstlerin, die zwischen bewegtem Bild, Fotografie, Text und Sounddesign arbeitet — und unterrichtet, um Menschen wieder mit ihrer Neugier zu verbinden. Ihre Samstags-Session ist ein praktischer Einstieg in die Cyanotypie auf Stoff: Pflanzen, gefundene Objekte und vorbereitete Motive werden auf einen Baumwollbeutel gedruckt, den du mitnimmst, samt Pflegeanleitung. Keine Vorkenntnisse nötig, Material inklusive — für alle, die analoge Fotografie, Druck oder Textiles mögen oder einfach mal wieder etwas mit den Händen machen wollen.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
-    { slug: 'learnanatomy', name: 'Learn Anatomy', specialty: 'Anatomie für Zeichnende', studio: 'Rebeca Ventura & Alice Bischof',
-      blurb: 'Die Künstlerinnen Rebeca Ventura und Alice Bischof unterrichten Anatomie so, wie man sie zum Zeichnen wirklich braucht. Der zwölfteilige Kurs geht von Kopf bis Fuß — Proportionen, Oberkörper, Gliedmaßen, Hände und Füße, dann das Gesicht im Detail — eine Stunde pro Woche, vor Ort oder über Zoom, als Einzeltermin oder ganze Reihe. Dazu die Specials über Körper, die in üblichen Anatomiekursen fehlen: wo sich Fett sammelt und faltet, und wie Haut mit den Jahren erschlafft, Falten und Spuren bekommt.',
-      group: 'Kleine Gruppen', duration: '1–2,5 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin · oder online', languages: 'EN' },
     { slug: 'elinorsahm', name: 'Elinor Sahm', specialty: 'Malen mit Alkoholtinte', studio: 'Kunstraum Heartspace',
       blurb: 'Alkoholtinte ist flüssig, leuchtend und verblüffend schnell — sie liefert fast sofort eindrucksvolle Ergebnisse, auch wenn du noch nie gemalt hast. Elinor Sahm hat jahrelang mit ihr gearbeitet, ausgestellt und unterrichtet und bringt das nun nach Berlin: die Techniken, die sie entwickelt hat, um die Tinte auf Yupo-Papier zu lenken und zu kontrollieren — und ihr trotzdem Raum für Fluss, Zufall und Überraschung zu lassen. Für komplette Anfänger wie für arbeitende Künstlerinnen; alle nehmen eigene Arbeiten mit.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },

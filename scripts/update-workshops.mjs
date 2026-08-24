@@ -314,12 +314,12 @@ const SOURCES = [
     url: 'https://www.tickettailor.com/events/ronnadel', district: 'Prenzlauer Berg' },
   { slug: 'cateduckwall', name: 'Cate Duckwall — Ticket Tailor box office', mode: 'tickettailor',
     url: 'https://www.tickettailor.com/events/cateduckwall', district: 'Prenzlauer Berg' },
-  // 'turnedartist' is the Learn Anatomy programme — a twelve-part anatomy
-  // course plus one-off body-drawing specials, taught jointly by Rebeca
-  // Ventura and Alice Bischof. It is its own box office and carries none of
-  // Rebeca's linocut sessions, so there is no overlap with her 'learnlino'
-  // source; it gets its own host card rather than being folded into hers.
-  { slug: 'learnanatomy', name: 'Learn Anatomy — Ticket Tailor box office', mode: 'tickettailor',
+  // 'turnedartist' is Rebeca's second box office: the Fat Bodies and Older
+  // Bodies specials are hers alone, and the twelve-part anatomy course she
+  // co-teaches with Alice Bischof. It carries none of the linocut sessions
+  // her 'learnlino' box office sells, so the two sources complement rather
+  // than duplicate each other — both land on her one host card.
+  { slug: 'rebeca', name: 'Arte Gorda — anatomy box office', mode: 'tickettailor',
     url: 'https://www.tickettailor.com/events/turnedartist', district: 'Prenzlauer Berg' },
   { slug: 'elinorsahm', name: 'Elinor Sahm — Ticket Tailor box office', mode: 'tickettailor',
     url: 'https://www.tickettailor.com/events/elinorsahm', district: 'Prenzlauer Berg' },
