@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T09:23:27.593Z",
+  "updated": "2026-08-24T09:31:37.200Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,7 +64,7 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 3
     },
     {
@@ -582,7 +582,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -658,7 +658,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -1164,7 +1164,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -1251,7 +1251,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -1328,7 +1328,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -1535,7 +1535,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -1597,7 +1597,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -1891,7 +1891,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -2168,7 +2168,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -2266,7 +2266,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -2567,7 +2567,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -2618,7 +2618,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -2630,7 +2630,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -3095,7 +3095,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -3170,7 +3170,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -3259,7 +3259,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -3413,7 +3413,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -3464,7 +3464,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -3476,7 +3476,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -3746,7 +3746,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -3929,7 +3929,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -4017,7 +4017,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -4182,7 +4182,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -4258,7 +4258,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -4309,7 +4309,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -4321,7 +4321,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -4552,7 +4552,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -4769,7 +4769,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -4833,7 +4833,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -4910,7 +4910,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -5012,7 +5012,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -5063,7 +5063,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -5075,7 +5075,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -5294,7 +5294,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -5780,7 +5780,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -5831,7 +5831,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -5843,7 +5843,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -6061,7 +6061,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -6163,7 +6163,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -6212,7 +6212,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -6224,7 +6224,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -6426,7 +6426,7 @@
       "soldOut": true,
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -6438,7 +6438,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -6487,7 +6487,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -6538,7 +6538,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -6562,7 +6562,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -6772,7 +6772,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -6784,7 +6784,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -6796,7 +6796,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -6834,7 +6834,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -6899,7 +6899,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -6912,7 +6912,7 @@
       "soldOut": true,
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7028,7 +7028,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7040,7 +7040,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7052,7 +7052,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7090,7 +7090,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7169,6 +7169,7 @@
       "duration": "4 h",
       "price": "€90",
       "url": "https://www.druckrausch.com/booking-calendar/31-10-drucken-wie-warhol",
+      "image": "https://static.wixstatic.com/media/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg/v1/fit/w_10667,h_6000,al_c,q_90/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg",
       "district": "Friedenau"
     },
     {
@@ -7280,7 +7281,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7292,7 +7293,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7304,7 +7305,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7353,7 +7354,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7430,7 +7431,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7467,7 +7468,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7479,7 +7480,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -7593,7 +7594,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7605,7 +7606,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7617,7 +7618,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7653,7 +7654,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7717,7 +7718,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7741,7 +7742,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7829,7 +7830,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7841,7 +7842,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -7853,7 +7854,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7955,7 +7956,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -7979,7 +7980,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -7991,7 +7992,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -8090,7 +8091,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -8102,7 +8103,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -8114,7 +8115,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -8229,7 +8230,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -8265,7 +8266,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -8353,7 +8354,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -8365,7 +8366,7 @@
       "time": "15:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
@@ -8377,7 +8378,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -8426,7 +8427,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -8450,7 +8451,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -8462,7 +8463,7 @@
       "time": "18:00",
       "duration": "2–2.5 h",
       "price": "€77",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
       "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
     },
@@ -8525,7 +8526,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -8537,7 +8538,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
@@ -8576,7 +8577,7 @@
       "time": "14:00",
       "duration": "0.75–1 h",
       "price": "€12",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
@@ -8600,7 +8601,7 @@
       "time": "16:00",
       "duration": "1.5 h",
       "price": "€24",
-      "district": "Berlin",
+      "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
