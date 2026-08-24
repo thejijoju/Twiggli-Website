@@ -303,18 +303,19 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
-  // Maximiliána Martišková is an illustrator and nature-journal artist who
-  // teaches nature journaling and bird illustration "a few times a year".
-  // Her public sessions sell through her own Ticket Tailor box office, so
-  // the same relay route as Rebeca's reads it — the box office is simply
-  // empty between rounds, which is a clean zero rather than a parse
-  // failure. Her bespoke sessions for schools, conservation groups,
-  // conferences and workplace teams carry no dates at all and are quoted
-  // per enquiry, so they ride in as an on-request card pointing at her
-  // own get-in-touch page. Ticket Tailor hides prices inside the checkout
-  // widget, so neither card invents one.
-  { slug: 'maxmartiskova', name: 'Maximiliána Martišková — Ticket Tailor box office', mode: 'tickettailor',
-    url: 'https://www.tickettailor.com/events/maxmartiskova', district: 'Berlin',
+  // Maximiliána Martišková — already a host here (bird sketching and
+  // watercolour at Kunstraum Heartspace) — sells her public sessions
+  // through her own Ticket Tailor box office, so the same relay route as
+  // Rebeca's reads it: Ticket Tailor blocks CI runners outright. She
+  // teaches "a few times a year", so an empty box office is the normal
+  // resting state, a clean zero rather than a parse failure, and each
+  // event carries its own venue rather than a fixed district. Her bespoke
+  // sessions for schools, conservation groups, conferences and workplace
+  // teams carry no dates and are quoted per enquiry, so they ride in as an
+  // on-request card pointing at her get-in-touch page. Ticket Tailor hides
+  // prices inside the checkout widget, so neither card invents one.
+  { slug: 'maximiliana', name: 'Maximiliána Martišková — Ticket Tailor box office', mode: 'tickettailor',
+    url: 'https://www.tickettailor.com/events/maxmartiskova',
     seedOnRequest: [
       { title: 'Workshop auf Anfrage: Naturtagebuch',
         titleEn: 'Personal Nature Journaling Workshop',
