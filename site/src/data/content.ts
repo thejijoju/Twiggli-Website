@@ -105,6 +105,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   alessia:      { activity: 'art',         groupRange: [1, 8],    hourRange: [4, 4] },
   // PLACEHOLDER group range — Acuity carries no class size for these.
   tufttuft:     { activity: 'craft',       groupRange: [1, 10],   hourRange: [3, 5] },
+  simone:       { activity: 'craft',       groupRange: [3, 6],    hourRange: [4, 6] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -186,6 +187,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
       group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+    { slug: 'simone', name: 'Simone Klag', specialty: 'Stone sculpture in alabaster', studio: 'B.L.O.-Ateliers',
+      blurb: 'A stone sculptor working out of the B.L.O.-Ateliers on the old railway depot in Lichtenberg. Alabaster is soft enough to shape with rasps and files and turns translucent once it is polished — a trick she saves for the end. You can chase a specific idea, an animal or a heart or a figure, or simply start rasping and follow where the stone goes; she says both ways are right. Groups of three to six, no experience needed, and tool use is included in the fee.',
+      group: '3–6', duration: '6 h · 2 × 4 h', place: 'B.L.O.-Ateliers, Kaskelstr. 55, Lichtenberg', languages: 'DE' },
     { slug: 'tufttuft', name: 'Tuft Tuft', specialty: 'Rug tufting', studio: 'Tuft Tuft',
       blurb: 'Punch your own design into a handmade rug with a tufting gun \u2014 no experience needed. You send the idea ahead so they can make it tuft-ready, then pick from a wall of yarn colours and work the frame with hands-on guidance. They shear, finish and trim it for you afterwards; collect in about two weeks or have it shipped. Three sizes, from a three-hour mini that suits a midweek evening or an office offsite, through the 30 \u00d7 40 cm original, to a five-hour 50 \u00d7 50. Snacks included.',
       group: 'Small group', duration: '3\u20135 h', place: 'Marienburger Str. 21, Prenzlauer Berg', languages: 'EN' },
@@ -352,6 +356,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
       group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+    { slug: 'simone', name: 'Simone Klag', specialty: 'Steinbildhauerei in Alabaster', studio: 'B.L.O.-Ateliers',
+      blurb: 'Steinbildhauerin in den B.L.O.-Ateliers auf dem alten Bahndepot in Lichtenberg. Alabaster lässt sich mit Raspeln und Feilen gut bearbeiten und zeigt seine Transparenz erst, wenn er ganz glatt geschliffen ist — den Trick dafür hebt sie sich fürs Ende auf. Du kannst einer konkreten Idee folgen, einem Tier, einem Herz, einer Figur, oder einfach drauflosraspeln und schauen, wohin der Stein dich führt; beide Wege sind richtig. Kleine Gruppen von drei bis sechs, ohne Vorkenntnisse, Werkzeugnutzung inklusive.',
+      group: '3–6', duration: '6 Std. · 2 × 4 Std.', place: 'B.L.O.-Ateliers, Kaskelstr. 55, Lichtenberg', languages: 'DE' },
     { slug: 'tufttuft', name: 'Tuft Tuft', specialty: 'Teppiche tuften', studio: 'Tuft Tuft',
       blurb: 'Mit der Tufting-Pistole euer eigenes Motiv in einen handgemachten Teppich schie\u00dfen \u2014 ganz ohne Vorkenntnisse. Ihr schickt die Idee vorab, damit sie tuftfertig gemacht wird, w\u00e4hlt dann aus einer Wand voller Garnfarben und arbeitet am Rahmen mit Anleitung. Scheren, Finish und Zuschnitt \u00fcbernehmen sie; abholen in etwa zwei Wochen oder Versand gegen eine kleine Geb\u00fchr. Drei Gr\u00f6\u00dfen \u2014 vom dreist\u00fcndigen Mini f\u00fcr einen Abend unter der Woche oder ein Team-Offsite \u00fcber das 30 \u00d7 40 cm Original bis zum f\u00fcnfst\u00fcndigen 50 \u00d7 50. Snacks inklusive.',
       group: 'Kleine Gruppe', duration: '3\u20135 Std.', place: 'Marienburger Str. 21, Prenzlauer Berg', languages: 'EN' },

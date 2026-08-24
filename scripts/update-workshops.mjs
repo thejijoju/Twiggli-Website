@@ -339,6 +339,24 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Simone Klag carves stone at the B.L.O.-Ateliers on the old railway
+  // depot in Lichtenberg and teaches alabaster there in three shapes: a
+  // six-hour Saturday, a weekend of two four-hour days, and workshops run
+  // with VHS Lichtenberg that book through the VHS rather than through her.
+  //
+  // Her whole published programme runs January to June and had already
+  // elapsed when this was added, so the source reads a clean zero today and
+  // fills as she posts the next one. Her page dates each entry numerically
+  // with the fee beside it, which the dates-de numeric branch reads —
+  // including the weekend pairs, which name the year only on the second day
+  // and would otherwise land the course on its closing day, and the
+  // "ausgebucht" the VHS entries carry.
+  { slug: 'simone', name: 'Simone Klag — Steinbildhauer-Workshops', mode: 'dates-de',
+    url: 'https://www.wild-site.com/klag_simone/workshops/',
+    title: 'Experimentieren mit Alabaster',
+    titleEn: 'Experimenting with Alabaster',
+    district: 'Lichtenberg' },
+
   // Tuft Tuft (Marienburger Str. 21, Prenzlauer Berg) books its rug-tufting
   // workshops through Acuity, which the existing mode reads: it returns the
   // real slot list per class, so each date carries its own spot count and
@@ -2751,9 +2769,22 @@ function fromGermanDates(html, source) {
   // dates ("22.08.2026") — riskier, since any date on the page matches.
   if (!out.length) {
     for (const m of text.matchAll(/\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/g)) {
-      const date = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+      let date = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
       const afterCtx = text.slice(m.index + m[0].length, m.index + m[0].length + 160);
       const beforeCtx = text.slice(Math.max(0, m.index - 80), m.index);
+      // A weekend course writes both its days and puts the year only on the
+      // second ("14./15.02.2026", "28.02./01.03.2026"). Matching alone lands
+      // it on day two; the pair in front says it starts a day earlier.
+      const pair = beforeCtx.match(/(\d{1,2})\.(?:(\d{1,2})\.)?\/$/);
+      let meetings = 1;
+      if (pair) {
+        const firstMonth = (pair[2] ?? m[2]).padStart(2, '0');
+        const firstDate = `${m[3]}-${firstMonth}-${pair[1].padStart(2, '0')}`;
+        if (firstDate < date) {
+          date = firstDate;
+          meetings = 2;
+        }
+      }
       const TIME_RE = /(\d{1,2}):(\d{2})(?!\s*€)\s*(am|pm)?|(\d{1,2})\s*(?:Uhr|(am|pm))/i;
       const tm = afterCtx.match(TIME_RE) ?? beforeCtx.match(TIME_RE);
       const time = tm
@@ -2763,13 +2794,31 @@ function fromGermanDates(html, source) {
         console.log(`[${source.slug}] numeric date ${date} has no time nearby — skipped`);
         continue;
       }
+      // A closing time right after the start gives the length of one
+      // meeting, which is what a course of two four-hour days should show
+      // rather than one figure covering both.
+      const span = afterCtx.match(/(\d{1,2}):(\d{2})\s*[-–—]\s*(\d{1,2}):(\d{2})/);
+      const hours = span
+        ? Number(span[3]) + Number(span[4]) / 60 - (Number(span[1]) + Number(span[2]) / 60)
+        : 0;
+      // "169,-€" is the German shorthand the written-out branch above does
+      // not meet; a page that prices each date separately reaches the cards.
+      // Only what follows the date counts: looking behind it as well picks
+      // up the previous entry's fee on a list where one date has none.
+      const priceMatch = afterCtx.match(/(\d{1,4})(?:[.,]\d{2}|,-)?\s*€/);
+      const baseTitle = source.title ?? 'Workshop';
       out.push({
-        title: source.title ?? 'Workshop',
+        title: baseTitle + (meetings > 1 ? ' – 2 Termine' : ''),
+        ...(source.titleEn ? { titleEn: source.titleEn + (meetings > 1 ? ' – 2 dates' : '') } : {}),
         date,
         time,
-        ...(source.titleEn ? { titleEn: source.titleEn } : {}),
-        ...(source.duration ? { duration: source.duration } : {}),
-        ...(source.price ? { price: source.price } : {}),
+        ...(hours > 0 && hours <= 12
+          ? { duration: meetings > 1 ? `2 × ${Math.round(hours * 2) / 2} h` : `${Math.round(hours * 2) / 2} h` }
+          : source.duration ? { duration: source.duration } : {}),
+        // Courses that sell through a partner say so on the page rather than
+        // hiding it behind a booking click.
+        ...(/ausgebucht|ausverkauft/i.test(afterCtx) ? { soldOut: true } : {}),
+        ...(priceMatch ? { price: `€${priceMatch[1]}` } : source.price ? { price: source.price } : {}),
         url: source.url,
       });
     }
