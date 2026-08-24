@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T12:24:34.426Z",
+  "updated": "2026-08-24T12:32:28.151Z",
   "sources": [
     {
       "slug": "qian",
@@ -64,7 +64,7 @@
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 3
     },
     {
@@ -274,7 +274,7 @@
     {
       "slug": "simone",
       "url": "https://www.wild-site.com/klag_simone/workshops/",
-      "status": "failed: fetch failed",
+      "status": "failed: no upcoming events parsed",
       "count": 0
     },
     {
@@ -316,7 +316,7 @@
     {
       "slug": "olivia",
       "url": "https://www.oliviabarney.com/workshops",
-      "status": "failed: Unexpected token 'D', \"DEzZDNhNDY\"... is not valid JSON",
+      "status": "failed: no upcoming events parsed",
       "count": 0
     },
     {
