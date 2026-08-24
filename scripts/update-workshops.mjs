@@ -362,6 +362,31 @@ const SOURCES = [
         url: 'https://www.drawingwalks.art/group-events-1' },
     ] },
 
+  // Violaine Toth Ceramic is a Neukölln studio running wheel, handbuilding
+  // and glazing classes in English, three to six per class. The shop is
+  // Shopify, so products.json is the right door, and the shopify mode reads
+  // a date out of a variant title where a shop names its variants by date.
+  //
+  // Hers do not. The drop-in classes carry a single "Default Title" variant
+  // and take their dates from a Shopify appointment app, which fetches the
+  // calendar client-side after the page loads — nothing dated reaches the
+  // server response, so a fetch-and-parse scraper has nothing to read. The
+  // one course that does publish dates writes them as prose in the product
+  // body ("Tuesday 1st, Tuesday 8th, Wednesday 9th September 18:00-20:30"),
+  // which no mode here reads yet.
+  //
+  // So this reads zero today and is here to catch the case where she starts
+  // naming variants by date, which Shopify shops commonly do. Getting the
+  // rest needs either a body-prose parser or a headless browser — see the
+  // note in her host card.
+  //
+  // The prices in products.json are net of VAT (79.83 where her own page
+  // says 95 EUR), so nothing here should quote a price from a variant
+  // without grossing it up first.
+  { slug: 'violaine', name: 'Violaine Toth Ceramic — classes (Shopify)', mode: 'shopify',
+    url: 'https://tothviolaine.com/collections/ceramic-workshops-berlin/products.json?limit=250',
+    district: 'Neukölln' },
+
   // Tania Varela teaches handbuilding ceramics at WOMADE inside Bikini
   // Berlin, four formats of three hours each, eight seats, in German with
   // support in English, Spanish and French. Each format keeps its own page

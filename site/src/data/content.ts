@@ -143,6 +143,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   simone:       { activity: 'craft',       groupRange: [3, 6],    hourRange: [4, 6] },
   tania:        { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [3, 3] },
   drawingwalks: { activity: 'art',         groupRange: [1, 15],   hourRange: [2.75, 2.75] },
+  // One on a private wheel session up to six in a group class; the glazing
+  // class runs 2 h, the wheel and handbuilding ones 2.5.
+  violaine:     { activity: 'ceramics',    groupRange: [1, 6],    hourRange: [2, 2.5] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -227,6 +230,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Urban sketching walks', studio: 'Drawing Walks',
       blurb: 'A city tour and a drawing workshop at once. Ditte walks a neighbourhood with you, tells its stories, and sets quick, playful sketching exercises along the way — drawing as a way of seeing, which makes you look closer and catch the details you would otherwise pass without noticing. A sketchbook and a handful of materials come with you; you dress for the weather and turn up at the meeting point. Whether you have not drawn since childhood or your sketchbook never leaves your bag, you are welcome.',
       group: 'Up to 15', duration: '2.75 h', place: 'Meeting points across Berlin', languages: 'EN' },
+    { slug: 'violaine', name: 'Violaine Toth', specialty: 'Wheel throwing & handbuilding', studio: 'Violaine Toth Ceramic',
+      blurb: 'A ceramic studio in Neukölln teaching since 2018, where a class is three to six people around the wheels with Violaine or Brew. The 2.5-hour beginner session takes you from wedging the clay to throwing bowls and cylinders, and the studio glazes and fires two of your pieces afterwards — ready to collect about six weeks later. Handbuilding and glazing sessions run at the same size, a private wheel class takes one or two, and a four-session course spreads throwing, trimming and glazing across ten hours in a month. Clay, tools and firing are in the price; classes are held in English.',
+      group: '3–6', duration: '2–2.5 h', place: 'Treptower Str. 12, Neukölln', languages: 'EN' },
     { slug: 'tania', name: 'Tania Varela', specialty: 'Handbuilding ceramics', studio: 'Tanita Tarara Ceramics',
       blurb: 'Handbuilding without a wheel, at WOMADE inside Bikini Berlin — pinching and slab work you can repeat at home afterwards. Four formats of three hours: a breakfast set of cup and plate, a session broken by a proper brunch, black-and-white decoration with sgraffito and carving, and an open format where you bring your own idea. She glazes and fires everything afterwards and lets you know when it is ready. Eight seats, materials and both firings included.',
       group: 'Up to 8', duration: '3 h', place: 'WOMADE, Bikini Berlin 1. OG, Charlottenburg', languages: 'DE · EN · ES · FR' },
@@ -402,6 +408,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Zeichenspaziergänge', studio: 'Drawing Walks',
       blurb: 'Stadtspaziergang und Zeichenworkshop in einem. Ditte geht mit euch durch ein Viertel, erzählt seine Geschichten und gibt unterwegs kurze, verspielte Zeichenübungen — Zeichnen als Art des Sehens, die dich genauer hinschauen lässt und Details entdecken, an denen du sonst vorbeigehst. Skizzenbuch und Material sind dabei; du ziehst dich wettergerecht an und kommst zum Treffpunkt. Ob du seit der Kindheit nicht gezeichnet hast oder dein Skizzenbuch immer dabei ist — du bist willkommen.',
       group: 'Bis 15', duration: '2,75 Std.', place: 'Treffpunkte in ganz Berlin', languages: 'EN' },
+    { slug: 'violaine', name: 'Violaine Toth', specialty: 'Drehscheibe & Handaufbau', studio: 'Violaine Toth Ceramic',
+      blurb: 'Ein Keramikstudio in Neukölln, das seit 2018 unterrichtet — drei bis sechs Leute an den Scheiben, angeleitet von Violaine oder Brew. Die 2,5-stündige Einsteigersession führt vom Schlagen des Tons bis zum Drehen von Schalen und Zylindern; zwei deiner Stücke glasiert und brennt das Studio danach, abholbereit nach etwa sechs Wochen. Handaufbau und Glasieren laufen in gleicher Größe, eine private Drehstunde nimmt ein bis zwei Personen, und ein Vier-Termine-Kurs verteilt Drehen, Abdrehen und Glasieren über zehn Stunden in einem Monat. Ton, Werkzeug und Brand sind inklusive; unterrichtet wird auf Englisch.',
+      group: '3–6', duration: '2–2,5 Std.', place: 'Treptower Str. 12, Neukölln', languages: 'EN' },
     { slug: 'tania', name: 'Tania Varela', specialty: 'Keramik-Handaufbau', studio: 'Tanita Tarara Ceramics',
       blurb: 'Handaufbau ohne Drehscheibe, bei WOMADE im Bikini Berlin — Pinch- und Plattentechnik, die du zu Hause wiederholen kannst. Vier Formate à drei Stunden: ein Frühstücksset aus Tasse und Teller, eine Session mit gemütlicher Brunchpause, Schwarz-Weiß-Dekor mit Sgraffito und Carving, und ein offenes Format für deine eigene Idee. Glasieren und beide Brände übernimmt sie danach und meldet sich, wenn alles fertig ist. Acht Plätze, Material und Brände inklusive.',
       group: 'Bis 8', duration: '3 Std.', place: 'WOMADE, Bikini Berlin 1. OG, Charlottenburg', languages: 'DE · EN · ES · FR' },
@@ -557,6 +566,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   // own, audio stripped; the top band is cropped off to lose the CapCut
   // watermark her export carried.
   anne: { video: '/video/anne.mp4', poster: '/video/anne-poster.jpg' },
+  // Violaine's studio — a pot being shaped, then the class at work. Her own,
+  // audio stripped.
+  violaine: { video: '/video/violaine.mp4', poster: '/video/violaine-poster.jpg' },
   // Dina's studio, canvases going up on easels. Audio stripped, and trimmed
   // to the session footage — the back half of her clip was a slideshow of
   // Airbnb review screenshots, which is another platform's furniture.
