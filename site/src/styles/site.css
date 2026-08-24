@@ -926,21 +926,22 @@ a:hover { color: var(--color-accent); }
   padding-bottom: 72px;
 }
 .footer-identity { flex: 1 1 420px; }
-/* The wordmark carries the page's close, so it is set at display size and
-   tracked in tight — the one piece of type on the site allowed to be big. */
+/* A fifth of the display size it was first set at. The negative tracking
+   went with it — that was there to close up gaps only a 130px wordmark
+   opens, and at this size it would just crowd the letters. */
 .footer-wordmark {
   display: block;
   font-family: var(--font-heading);
   font-weight: 900;
-  font-size: clamp(56px, 9vw, 132px);
-  line-height: 0.86;
-  letter-spacing: -0.03em;
+  font-size: clamp(20px, 1.8vw, 26px);
+  line-height: 1.1;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fff;
   text-decoration: none;
 }
 .footer-tagline {
-  margin: 24px 0 0;
+  margin: 14px 0 0;
   max-width: 34ch;
   font-size: 17px;
   line-height: 1.5;
