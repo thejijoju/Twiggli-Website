@@ -3197,6 +3197,24 @@ async function scrape(source) {
   return result;
 }
 
+/** A page fetch that survives one bad moment. A thrown fetch is a network
+ *  fault — DNS, TLS, a connection dropped — not an answer, and one of those
+ *  used to cost a host its whole week, since a failing source keeps only
+ *  what it had before and a new one has nothing to keep. HTTP statuses are
+ *  answers and are handed back untouched for the caller to judge. */
+async function fetchPage(url, init, slug, tries = 3) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fetch(url, init);
+    } catch (err) {
+      if (attempt >= tries) throw err;
+      const wait = 400 * attempt;
+      console.log(`[${slug}] fetch attempt ${attempt} failed (${err.message.split('\n')[0]}) — retrying in ${wait}ms`);
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+}
+
 async function scrapeSource(source) {
   // Konfetti fetches its sitemap itself (with an XML accept — Squarespace
   // 406s the HTML-only one used for regular pages below).
@@ -3229,13 +3247,17 @@ async function scrapeSource(source) {
     return { workshops: inRange, recurring: [] };
   }
 
-  const res = await fetch(source.url, {
-    redirect: 'follow',
-    headers: {
-      'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)',
-      accept: 'text/html,application/xhtml+xml',
+  const res = await fetchPage(
+    source.url,
+    {
+      redirect: 'follow',
+      headers: {
+        'user-agent': 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)',
+        accept: 'text/html,application/xhtml+xml',
+      },
     },
-  });
+    source.slug,
+  );
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
   console.log(`[${source.slug}] fetched ${html.length} bytes`);
