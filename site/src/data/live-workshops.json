@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T10:31:51.304Z",
+  "updated": "2026-08-24T10:52:12.706Z",
   "sources": [
     {
       "slug": "qian",
@@ -270,6 +270,24 @@
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
       "count": 90
+    },
+    {
+      "slug": "sina",
+      "url": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "status": "ok",
+      "count": 7
+    },
+    {
+      "slug": "celia",
+      "url": "https://www.eventbrite.de/o/la-hoco-115794852461",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "olivia",
+      "url": "https://www.oliviabarney.com/workshops",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "helka",
@@ -1099,6 +1117,18 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Baby Patchwork Quilt Workshop",
+      "date": "2026-08-29",
+      "time": "09:45",
+      "price": "€168+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1183308652%2F2441551045951%2F1%2Foriginal.20260429-083226?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=7765fb0b0d2d7013e7a4b9297497097f",
+      "url": "https://www.eventbrite.de/e/baby-patchwork-quilt-workshop-tickets-1993454336583",
+      "duration": "5.75 h"
     },
     {
       "slug": "galleria-lucia",
@@ -1944,6 +1974,18 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Visible Mending- Weave Darning Workshop",
+      "date": "2026-09-03",
+      "time": "18:30",
+      "price": "€35+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F948422053%2F2441551045951%2F1%2Foriginal.20250130-115320?w=640&auto=format%2Ccompress&q=75&sharp=10&s=5c3ead55f1655bb13dfd550961769fe3",
+      "url": "https://www.eventbrite.de/e/visible-mending-weave-darning-workshop-tickets-1996199898633",
+      "duration": "2.25 h"
+    },
+    {
       "slug": "schmiede",
       "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "title": "Messerschmieden 2 Tage",
@@ -2646,6 +2688,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Improv Quilting Workshop – Play with Color, Fabric & Creativity",
+      "date": "2026-09-08",
+      "time": "18:00",
+      "price": "€55+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1171792271%2F2441551045951%2F1%2Foriginal.20251126-095602?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=8950d5c7ce429e939616aec56ca50902",
+      "url": "https://www.eventbrite.de/e/improv-quilting-workshop-play-with-color-fabric-creativity-tickets-1996200229623",
+      "duration": "2.75 h"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 37)",
@@ -2966,10 +3020,11 @@
     {
       "slug": "helka",
       "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
-      "title": "Throw big with Anas Rifi-Zinati — September 11-12",
+      "title": "Throw big with Anas Rifi-Zinati — September 11-12 – 2 Termine: 11. & 12.09.",
+      "titleEn": "Throw big with Anas Rifi-Zinati — September 11-12 – 2 dates: Sep 11 & 12",
       "date": "2026-09-11",
       "time": "11:00",
-      "duration": "7 h",
+      "duration": "2 × 7 h",
       "spots": 4,
       "price": "€420",
       "district": "Kreuzberg",
@@ -3295,7 +3350,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "mampe",
@@ -3512,7 +3568,8 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "jem",
@@ -4042,6 +4099,18 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Intro to Quilting",
+      "date": "2026-09-19",
+      "time": "10:00",
+      "price": "€65+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1010756053%2F2441551045951%2F1%2Foriginal.20250416-205651?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.622200367814&fp-y=0.45799209206&s=f3173b8651282ed90bbd737a793e89f5",
+      "url": "https://www.eventbrite.de/e/intro-to-quilting-tickets-1996638060186",
+      "duration": "3.5 h"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=229220",
       "title": "Shampoo Naturkosmetik Workshop",
@@ -4395,6 +4464,18 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337214/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Silly Hearts Embroidery Workshop",
+      "date": "2026-09-22",
+      "time": "18:00",
+      "price": "€30+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1174394487%2F2441551045951%2F1%2Foriginal.20260109-092931?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=65e86b8ae348423033c4c1a8a4eeebb4",
+      "url": "https://www.eventbrite.de/e/silly-hearts-embroidery-workshop-tickets-1997772476255",
+      "duration": "2.75 h"
     },
     {
       "slug": "whittle",
@@ -5745,7 +5826,8 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding"
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
       "slug": "munio",
@@ -5976,6 +6058,18 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Visible Mending- Weave Darning Workshop",
+      "date": "2026-10-06",
+      "time": "18:00",
+      "price": "€35+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F948422053%2F2441551045951%2F1%2Foriginal.20250130-115320?w=640&auto=format%2Ccompress&q=75&sharp=10&s=5c3ead55f1655bb13dfd550961769fe3",
+      "url": "https://www.eventbrite.de/e/visible-mending-weave-darning-workshop-tickets-1996973667998",
+      "duration": "2.75 h"
     },
     {
       "slug": "mampe",
@@ -6333,6 +6427,18 @@
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-10-oktober",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
+    },
+    {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Intro to Quilting",
+      "date": "2026-10-10",
+      "time": "10:00",
+      "price": "€65+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1010756053%2F2441551045951%2F1%2Foriginal.20250416-205651?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.622200367814&fp-y=0.45799209206&s=f3173b8651282ed90bbd737a793e89f5",
+      "url": "https://www.eventbrite.de/e/intro-to-quilting-tickets-1997593379572",
+      "duration": "3.5 h"
     },
     {
       "slug": "druckrausch",
@@ -7619,7 +7725,6 @@
       "duration": "2 h",
       "price": "€63",
       "url": "https://www.druckrausch.com/booking-calendar/04-11-basis-siebdruckworkshop",
-      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
     },
     {
