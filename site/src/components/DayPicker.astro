@@ -575,32 +575,65 @@ const dayLabel = (offset: number) =>
       }
     }
 
-    // Reel thumbnails play only while on screen — a hidden day group has no
-    // box, so its clips never load or run; switching day or scrolling away
-    // pauses them again.
+    // Reel thumbnails. With a mouse, a tile plays while the pointer is over
+    // it and stops when the pointer leaves; a click stops it where it is,
+    // and it stays stopped until the pointer leaves and comes back. Nothing
+    // else on the page runs, which is what keeps a feed of a hundred reels
+    // cheap — each one loads only when someone looks at it.
+    //
+    // Touch has no hover, so there a tile plays while it is on screen and a
+    // tap toggles it, as before.
     const reels = Array.from(root.querySelectorAll<HTMLVideoElement>('.session-video'));
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reels.length && !still) {
+    const hoverable = window.matchMedia('(hover: hover)').matches;
+    const start = (video: HTMLVideoElement) => video.play().catch(() => {});
+
+    if (reels.length && !hoverable && !still) {
+      // A hidden day group has no box, so its clips never load or run;
+      // switching day or scrolling away pauses them again.
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             const video = entry.target as HTMLVideoElement;
-            if (entry.isIntersecting) video.play().catch(() => {});
+            if (entry.isIntersecting) start(video);
             else video.pause();
           }
         },
         { threshold: 0.4 },
       );
       reels.forEach((video) => observer.observe(video));
+    } else if (reels.length) {
+      // Hover starts them, but nothing would stop one the pointer never
+      // left — scrolling past with the cursor parked on a card, or a day
+      // switch pulling the tile out from under it.
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) (entry.target as HTMLVideoElement).pause();
+          }
+        },
+        { threshold: 0.1 },
+      );
+      reels.forEach((video) => observer.observe(video));
     }
-    // Tapping a reel toggles it. Reduced motion refuses the autoplay above
-    // outright, and so do the low-power modes on phones, so without this the
-    // tile would just sit there — and it deliberately links nowhere now.
+
     for (const video of reels) {
-      video.closest('.session-thumb')?.addEventListener('click', () => {
-        if (video.paused) video.play().catch(() => {});
-        else video.pause();
-      });
+      const tile = video.closest('.session-thumb');
+      if (!tile) continue;
+      if (hoverable) {
+        let stopped = false;
+        tile.addEventListener('mouseenter', () => { if (!stopped) start(video); });
+        tile.addEventListener('mouseleave', () => { stopped = false; video.pause(); });
+        tile.addEventListener('click', () => { stopped = true; video.pause(); });
+      } else {
+        // The tile links nowhere, so a tap has nothing else to do — and on
+        // the phones whose low-power mode refuses the autoplay above, it is
+        // the only way to start a reel at all.
+        tile.addEventListener('click', () => {
+          if (video.paused) start(video);
+          else video.pause();
+        });
+      }
     }
   });
 </script>
