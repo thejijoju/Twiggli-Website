@@ -103,6 +103,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
   haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
   alessia:      { activity: 'art',         groupRange: [1, 8],    hourRange: [4, 4] },
+  // PLACEHOLDER group range — Acuity carries no class size for these.
+  tufttuft:     { activity: 'craft',       groupRange: [1, 10],   hourRange: [3, 5] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -184,6 +186,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
       group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+    { slug: 'tufttuft', name: 'Tuft Tuft', specialty: 'Rug tufting', studio: 'Tuft Tuft',
+      blurb: 'Punch your own design into a handmade rug with a tufting gun \u2014 no experience needed. You send the idea ahead so they can make it tuft-ready, then pick from a wall of yarn colours and work the frame with hands-on guidance. They shear, finish and trim it for you afterwards; collect in about two weeks or have it shipped. Three sizes, from a three-hour mini that suits a midweek evening or an office offsite, through the 30 \u00d7 40 cm original, to a five-hour 50 \u00d7 50. Snacks included.',
+      group: 'Small group', duration: '3\u20135 h', place: 'Marienburger Str. 21, Prenzlauer Berg', languages: 'EN' },
     { slug: 'alessia', name: 'Alessia Sinopoli', specialty: 'Realistic pencil portraits',
       blurb: 'An Italian artist based in Berlin teaching realistic portrait drawing from photographic references — a structured method rather than a knack. You work the grid for proportion, learn what pencils of different hardness actually do, and spend most of the afternoon on shading and hatching, which is where a portrait turns from flat to solid. Eight people at most, so the guidance follows your own way of drawing; beginners and improvers both. Professional materials, printed references, tea and a sweet treat at the break are all provided.',
       group: 'Up to 8', duration: '4 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
@@ -347,6 +352,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
       group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+    { slug: 'tufttuft', name: 'Tuft Tuft', specialty: 'Teppiche tuften', studio: 'Tuft Tuft',
+      blurb: 'Mit der Tufting-Pistole euer eigenes Motiv in einen handgemachten Teppich schie\u00dfen \u2014 ganz ohne Vorkenntnisse. Ihr schickt die Idee vorab, damit sie tuftfertig gemacht wird, w\u00e4hlt dann aus einer Wand voller Garnfarben und arbeitet am Rahmen mit Anleitung. Scheren, Finish und Zuschnitt \u00fcbernehmen sie; abholen in etwa zwei Wochen oder Versand gegen eine kleine Geb\u00fchr. Drei Gr\u00f6\u00dfen \u2014 vom dreist\u00fcndigen Mini f\u00fcr einen Abend unter der Woche oder ein Team-Offsite \u00fcber das 30 \u00d7 40 cm Original bis zum f\u00fcnfst\u00fcndigen 50 \u00d7 50. Snacks inklusive.',
+      group: 'Kleine Gruppe', duration: '3\u20135 Std.', place: 'Marienburger Str. 21, Prenzlauer Berg', languages: 'EN' },
     { slug: 'alessia', name: 'Alessia Sinopoli', specialty: 'Realistische Bleistiftporträts',
       blurb: 'Italienische Künstlerin in Berlin, die realistisches Porträtzeichnen nach Fotovorlage unterrichtet — als klare Methode, nicht als Talentfrage. Ihr arbeitet mit dem Raster für die Proportionen, lernt, was Bleistifte unterschiedlicher Härte wirklich können, und verbringt den größten Teil des Nachmittags mit Schraffur und Schattierung, wo ein Porträt von flach zu plastisch wird. Höchstens acht Personen, die Anleitung folgt eurer eigenen Handschrift; Anfängerinnen wie Geübte. Profimaterial, gedruckte Vorlagen, Tee und etwas Süßes in der Pause sind inklusive.',
       group: 'Bis 8', duration: '4 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
