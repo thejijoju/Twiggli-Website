@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T10:16:40.014Z",
+  "updated": "2026-08-24T10:31:51.304Z",
   "sources": [
     {
       "slug": "qian",
@@ -215,7 +215,7 @@
       "slug": "jem",
       "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "status": "ok",
-      "count": 9
+      "count": 10
     },
     {
       "slug": "karen-rose",
@@ -270,6 +270,12 @@
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
       "count": 90
+    },
+    {
+      "slug": "helka",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "status": "ok",
+      "count": 12
     },
     {
       "slug": "maximiliana",
@@ -1559,6 +1565,20 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "4-week tableware course – 4 Termine",
+      "titleEn": "4-week tableware course – 4 dates",
+      "date": "2026-08-31",
+      "time": "19:00",
+      "duration": "4 × 3 h",
+      "spots": 4,
+      "price": "€295",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
+    },
+    {
       "slug": "dirt",
       "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
       "title": "Intensive: Wheel Throwing for Beginners – 5 Termine",
@@ -2776,6 +2796,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "Evening pottery workshop",
+      "date": "2026-09-09",
+      "time": "19:00",
+      "duration": "2.5 h",
+      "soldOut": true,
+      "price": "€95",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -2929,6 +2962,19 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337161/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "Throw big with Anas Rifi-Zinati — September 11-12",
+      "date": "2026-09-11",
+      "time": "11:00",
+      "duration": "7 h",
+      "spots": 4,
+      "price": "€420",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/8eb05cc4-7d77-4150-a207-8e818a45e313/dc68c668-8b1b-4bee-a114-1b0a27a80a7e.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/throw-big-anas-rifi-zinati"
     },
     {
       "slug": "munio",
@@ -3249,8 +3295,7 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+      "district": "Wedding"
     },
     {
       "slug": "mampe",
@@ -3467,8 +3512,7 @@
       "duration": "3 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+      "district": "Wedding"
     },
     {
       "slug": "jem",
@@ -3494,6 +3538,20 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337214/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "6-week intermediate wheelthrowing course | September-October – 6 Termine",
+      "titleEn": "6-week intermediate wheelthrowing course | September-October – 6 dates",
+      "date": "2026-09-15",
+      "time": "19:00",
+      "duration": "6 × 3 h",
+      "spots": 6,
+      "price": "€420",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/bf6f1caf-a9f2-4681-9681-d2db02db6570/Daniel+Far%C3%B2_Helka+Ceramics_022_0Q1A2298.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/intermediate-pottery-course"
     },
     {
       "slug": "mampe",
@@ -5053,6 +5111,18 @@
       "district": "Neukölln"
     },
     {
+      "slug": "jem",
+      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+      "title": "Sauerteigbrot leicht gemacht: Backkurs in Berlin",
+      "date": "2026-09-27",
+      "time": "14:30",
+      "duration": "3 h",
+      "price": "€65",
+      "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
+      "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-4",
+      "district": "Zehlendorf"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Ritual Series: Journaling Workshop",
@@ -5064,6 +5134,20 @@
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97364659/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "4-week tableware course – 4 Termine",
+      "titleEn": "4-week tableware course – 4 dates",
+      "date": "2026-09-28",
+      "time": "19:00",
+      "duration": "4 × 3 h",
+      "spots": 5,
+      "price": "€295",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5661,8 +5745,7 @@
       "duration": "5 h",
       "price": "€76–100",
       "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+      "district": "Wedding"
     },
     {
       "slug": "munio",
@@ -6599,6 +6682,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "Evening pottery workshop",
+      "date": "2026-10-14",
+      "time": "19:00",
+      "duration": "2.5 h",
+      "spots": 3,
+      "price": "€95",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
+    },
+    {
       "slug": "sabine",
       "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
       "title": "Offener Werkstattabend S/W",
@@ -7150,6 +7246,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "4-week tableware course – 4 Termine",
+      "titleEn": "4-week tableware course – 4 dates",
+      "date": "2026-10-26",
+      "time": "19:00",
+      "duration": "4 × 3 h",
+      "spots": 8,
+      "price": "€295",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 44)",
@@ -7161,6 +7271,20 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97447362/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "4-week tableware course – 4 Termine",
+      "titleEn": "4-week tableware course – 4 dates",
+      "date": "2026-10-27",
+      "time": "19:00",
+      "duration": "4 × 3 h",
+      "spots": 7,
+      "price": "€295",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7497,6 +7621,19 @@
       "url": "https://www.druckrausch.com/booking-calendar/04-11-basis-siebdruckworkshop",
       "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "Evening pottery workshop",
+      "date": "2026-11-04",
+      "time": "19:00",
+      "duration": "2.5 h",
+      "spots": 7,
+      "price": "€95",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
     },
     {
       "slug": "sabine",
@@ -8270,6 +8407,20 @@
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkut_1.png"
     },
     {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "4-week tableware course – 4 Termine",
+      "titleEn": "4-week tableware course – 4 dates",
+      "date": "2026-11-23",
+      "time": "19:00",
+      "duration": "4 × 3 h",
+      "spots": 8,
+      "price": "€295",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Basis",
@@ -8281,6 +8432,20 @@
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "spots": 3
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "4-week tableware course – 4 Termine",
+      "titleEn": "4-week tableware course – 4 dates",
+      "date": "2026-11-24",
+      "time": "19:00",
+      "duration": "4 × 3 h",
+      "spots": 8,
+      "price": "€295",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
     },
     {
       "slug": "mampe",
@@ -8317,6 +8482,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "Evening pottery workshop",
+      "date": "2026-11-25",
+      "time": "19:00",
+      "duration": "2.5 h",
+      "spots": 5,
+      "price": "€95",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
     },
     {
       "slug": "sabine",
