@@ -106,6 +106,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — Acuity carries no class size for these.
   tufttuft:     { activity: 'craft',       groupRange: [1, 10],   hourRange: [3, 5] },
   simone:       { activity: 'craft',       groupRange: [3, 6],    hourRange: [4, 6] },
+  tania:        { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [3, 3] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -187,6 +188,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
       group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+    { slug: 'tania', name: 'Tania Varela', specialty: 'Handbuilding ceramics', studio: 'Tanita Tarara Ceramics',
+      blurb: 'Handbuilding without a wheel, at WOMADE inside Bikini Berlin — pinching and slab work you can repeat at home afterwards. Four formats of three hours: a breakfast set of cup and plate, a session broken by a proper brunch, black-and-white decoration with sgraffito and carving, and an open format where you bring your own idea. She glazes and fires everything afterwards and lets you know when it is ready. Eight seats, materials and both firings included.',
+      group: 'Up to 8', duration: '3 h', place: 'WOMADE, Bikini Berlin 1. OG, Charlottenburg', languages: 'DE · EN · ES · FR' },
     { slug: 'simone', name: 'Simone Klag', specialty: 'Stone sculpture in alabaster', studio: 'B.L.O.-Ateliers',
       blurb: 'A stone sculptor working out of the B.L.O.-Ateliers on the old railway depot in Lichtenberg. Alabaster is soft enough to shape with rasps and files and turns translucent once it is polished — a trick she saves for the end. You can chase a specific idea, an animal or a heart or a figure, or simply start rasping and follow where the stone goes; she says both ways are right. Groups of three to six, no experience needed, and tool use is included in the fee.',
       group: '3–6', duration: '6 h · 2 × 4 h', place: 'B.L.O.-Ateliers, Kaskelstr. 55, Lichtenberg', languages: 'DE' },
@@ -356,6 +360,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
       group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+    { slug: 'tania', name: 'Tania Varela', specialty: 'Keramik-Handaufbau', studio: 'Tanita Tarara Ceramics',
+      blurb: 'Handaufbau ohne Drehscheibe, bei WOMADE im Bikini Berlin — Pinch- und Plattentechnik, die du zu Hause wiederholen kannst. Vier Formate à drei Stunden: ein Frühstücksset aus Tasse und Teller, eine Session mit gemütlicher Brunchpause, Schwarz-Weiß-Dekor mit Sgraffito und Carving, und ein offenes Format für deine eigene Idee. Glasieren und beide Brände übernimmt sie danach und meldet sich, wenn alles fertig ist. Acht Plätze, Material und Brände inklusive.',
+      group: 'Bis 8', duration: '3 Std.', place: 'WOMADE, Bikini Berlin 1. OG, Charlottenburg', languages: 'DE · EN · ES · FR' },
     { slug: 'simone', name: 'Simone Klag', specialty: 'Steinbildhauerei in Alabaster', studio: 'B.L.O.-Ateliers',
       blurb: 'Steinbildhauerin in den B.L.O.-Ateliers auf dem alten Bahndepot in Lichtenberg. Alabaster lässt sich mit Raspeln und Feilen gut bearbeiten und zeigt seine Transparenz erst, wenn er ganz glatt geschliffen ist — den Trick dafür hebt sie sich fürs Ende auf. Du kannst einer konkreten Idee folgen, einem Tier, einem Herz, einer Figur, oder einfach drauflosraspeln und schauen, wohin der Stein dich führt; beide Wege sind richtig. Kleine Gruppen von drei bis sechs, ohne Vorkenntnisse, Werkzeugnutzung inklusive.',
       group: '3–6', duration: '6 Std. · 2 × 4 Std.', place: 'B.L.O.-Ateliers, Kaskelstr. 55, Lichtenberg', languages: 'DE' },

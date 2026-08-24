@@ -339,6 +339,42 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Tania Varela teaches handbuilding ceramics at WOMADE inside Bikini
+  // Berlin, four formats of three hours each, eight seats, in German with
+  // support in English, Spanish and French. Each format keeps its own page
+  // with a Termin block — "Datum: Samstag, 16.05.2026, 11:00-14:00 Uhr"
+  // then "Preis: 79 €" — which the dates-de numeric branch reads outright,
+  // so each source carries its own title and its fee comes off its own
+  // page rather than being copied here. Her overview page lists the same
+  // dates without a year, but a page each is what gives the four formats
+  // four names.
+  //
+  // Her programme ran May to July and had elapsed when this was added —
+  // her own page says she is planning the next one — so these read a clean
+  // zero today. Private sessions for a team, friends or family have no
+  // dates at all and are arranged by mail, so that rides in on request.
+  { slug: 'tania', name: 'Tania Varela — Dein Frühstücksset', mode: 'dates-de',
+    url: 'https://taniavarelastudio.com/keramikhandbuilding/',
+    title: 'Dein Frühstücksset', titleEn: 'Your Breakfast Set',
+    district: 'Charlottenburg',
+    seedOnRequest: [
+      { title: 'Private Keramik-Session',
+        titleEn: 'Private Ceramics Session',
+        district: 'Charlottenburg', request: true,
+        url: 'https://taniavarelastudio.com/' },
+    ] },
+  { slug: 'tania', name: 'Tania Varela — Keramik & Brunch', mode: 'dates-de',
+    url: 'https://taniavarelastudio.com/keramikundbrunch/',
+    title: 'Keramik & Brunch', titleEn: 'Ceramics & Brunch',
+    district: 'Charlottenburg' },
+  { slug: 'tania', name: 'Tania Varela — Black & White', mode: 'dates-de',
+    url: 'https://taniavarelastudio.com/black-white-keramik-workshop/',
+    title: 'Black & White', district: 'Charlottenburg' },
+  { slug: 'tania', name: 'Tania Varela — Mach dein Lieblingsstück', mode: 'dates-de',
+    url: 'https://taniavarelastudio.com/mach-dein-lieblingsstueck-handbuilding-workshop/',
+    title: 'Mach dein Lieblingsstück', titleEn: 'Make Your Favourite Piece',
+    district: 'Charlottenburg' },
+
   // Simone Klag carves stone at the B.L.O.-Ateliers on the old railway
   // depot in Lichtenberg and teaches alabaster there in three shapes: a
   // six-hour Saturday, a weekend of two four-hour days, and workshops run
