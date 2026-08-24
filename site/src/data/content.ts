@@ -101,6 +101,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [3, 3] },
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
   helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
+  haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
   // PLACEHOLDER group ranges — Ohma Studio's makers publish no cap; the
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
@@ -182,6 +183,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
       group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+    { slug: 'haki', name: 'Haki', specialty: 'Handbuilding & wheel throwing', studio: 'Haki Ceramics',
+      blurb: 'Clay in an artist studio building on the RAW-Gelände. The Tuesday evening group has no fixed start or end — beginners and improvers work side by side, picking up techniques as their own pieces call for them, up to seven at a time. Clay, tools, glazes and both firings are included: once your work has dried you come back to glaze it, so you leave with finished stoneware you shaped yourself. Wheel throwing runs one-to-one by appointment, and confident throwers can take the studio\u2019s single wheel spot during the group session.',
+      group: 'Up to 7 \u00b7 1-to-1 \u00b7 teams to 6', duration: '2 h', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
     { slug: 'sina', name: 'Sina Becker', specialty: 'Quilting, mending & embroidery', studio: 'Ohma Studio',
       blurb: 'A quilt maker and fibre artist working with recycled materials and reimagining what we already have. Beginner-friendly sessions in patchwork and improv quilting, visible mending by weave darning, and embroidery — all materials provided, tea and cookies included.',
       group: 'Small group', duration: '2–6 h', place: 'Ohma Studio, Friedrichshain', languages: 'EN · DE' },
@@ -339,6 +343,9 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
       group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+    { slug: 'haki', name: 'Haki', specialty: 'Aufbaukeramik & Drehscheibe', studio: 'Haki Ceramics',
+      blurb: 'Ton im K\u00fcnstlerhaus auf dem RAW-Gel\u00e4nde. Die Dienstagabend-Gruppe hat keinen festen Anfang und kein Ende \u2014 Einsteigerinnen und Ge\u00fcbte arbeiten nebeneinander und lernen die Techniken, die ihr St\u00fcck gerade braucht, zu siebt h\u00f6chstens. Ton, Werkzeug, Glasuren und beide Brände sind dabei: Ist deine Arbeit getrocknet, kommst du zum Glasieren wieder und nimmst fertiges Steinzeug mit, das du selbst geformt hast. Die Drehscheibe l\u00e4uft einzeln nach Absprache, und wer sicher dreht, kann w\u00e4hrend der Gruppe den einen Scheibenplatz belegen.',
+      group: 'Bis 7 \u00b7 Einzel \u00b7 Teams bis 6', duration: '2 Std.', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
     { slug: 'sina', name: 'Sina Becker', specialty: 'Quilten, Reparieren & Sticken', studio: 'Ohma Studio',
       blurb: 'Quiltmacherin und Textilkünstlerin, die mit recycelten Materialien arbeitet. Patchwork und Improv-Quilting für Einsteiger, sichtbares Reparieren per Webstopfen und Sticken — Material ist gestellt, Tee und Kekse inklusive.',
       group: 'Kleine Gruppe', duration: '2–6 Std.', place: 'Ohma Studio, Friedrichshain', languages: 'EN · DE' },

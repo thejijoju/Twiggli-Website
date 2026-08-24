@@ -339,6 +339,43 @@ const SOURCES = [
     productBase: 'https://mampe.berlin/de-engl/products/',
     district: 'Kreuzberg' },
 
+  // Haki Ceramics works out of an artist studio building on the
+  // RAW-Gelände (VWG-Haus, Revaler Str. 99, Friedrichshain). Her schedule
+  // is a standing Tuesday evening rather than a list of dates — "no fixed
+  // start or end dates", open-ended, join when a spot frees — so the group
+  // sessions ride in as recurring seeds. Additional Saturdays are
+  // "announced here" and she publishes the odd single date in prose, which
+  // is why the page is watched: her JSON-LD names only the website, so a
+  // watcher reads a clean zero rather than mistaking that prose for a
+  // session.
+  //
+  // The single wheel is bookable during the same Tuesday slot at the same
+  // fee, but only by people who can already work independently — a
+  // separate offering at the same hour rather than the same one, so it
+  // gets its own card. Gift vouchers are products rather than sessions and
+  // name no date, so they stay out. Note for later: she breaks for the
+  // month of July, which no seed can express — outside the feed's horizon
+  // today, worth remembering next spring.
+  { slug: 'haki', name: 'Haki Ceramics — workshops and classes (watched)',
+    url: 'https://hakiceramics.onepage.me/',
+    district: 'Friedrichshain',
+    seedRecurring: [
+      { title: 'Handbuilding Workshop', weekdays: ['tue'], time: '18:30',
+        duration: '2 h', price: '\u20ac35', district: 'Friedrichshain',
+        url: 'https://hakiceramics.onepage.me/' },
+      { title: 'Offener Platz an der Drehscheibe (Fortgeschrittene)',
+        titleEn: 'Open Wheel Spot (experienced throwers)',
+        weekdays: ['tue'], time: '18:30',
+        duration: '2 h', price: '\u20ac35', district: 'Friedrichshain',
+        url: 'https://hakiceramics.onepage.me/' },
+    ],
+    seedOnRequest: [
+      { title: 'Private Drehscheibenstunde',
+        titleEn: 'Private Wheel-Throwing Class',
+        duration: '2 h', price: '\u20ac80', district: 'Friedrichshain', request: true,
+        url: 'https://hakiceramics.onepage.me/' },
+    ] },
+
   // Pia Simonsen has been on the corporate list from the start (as Rethink)
   // but had no feed: her public brand, Vulvas.berlin, sells nothing online
   // — you mail her or message her on Instagram — so there is nothing dated
