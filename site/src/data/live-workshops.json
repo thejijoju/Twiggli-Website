@@ -270,6 +270,12 @@
       "url": "https://empireofdirt.studio/products.json?limit=250",
       "status": "ok",
       "count": 10
+    },
+    {
+      "slug": "redrum",
+      "url": "https://www.redrumberlin.de/tasting-experience/",
+      "status": "seeded",
+      "count": 0
     }
   ],
   "recurring": [
@@ -462,6 +468,28 @@
       "district": "Wedding",
       "request": true,
       "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
+      "slug": "redrum",
+      "sourceUrl": "https://www.redrumberlin.de/tasting-experience/",
+      "title": "Spirituosen-Tasting",
+      "titleEn": "Spirits Tasting Experience",
+      "duration": "2 h",
+      "price": "€40–100",
+      "district": "Kreuzberg",
+      "request": true,
+      "url": "https://www.redrumberlin.de/tasting-experience/"
+    },
+    {
+      "slug": "redrum",
+      "sourceUrl": "https://www.redrumberlin.de/tasting-experience/",
+      "title": "Cocktail-Tasting",
+      "titleEn": "Cocktail Tasting Experience",
+      "duration": "2 h",
+      "price": "€50–60",
+      "district": "Kreuzberg",
+      "request": true,
+      "url": "https://www.redrumberlin.de/tasting-experience/"
     }
   ],
   "workshops": [

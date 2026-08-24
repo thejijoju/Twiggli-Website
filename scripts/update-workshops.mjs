@@ -303,6 +303,30 @@ const SOURCES = [
         url: 'https://www.rose-williams.com/jewelry-courses/' },
     ] },
 
+  // Redrum Art Bar (Grimmstr. 24, Kreuzberg) runs guided drink tastings
+  // for groups of 2-8, ~2 h, on the bar's own working days between
+  // 17:00-19:00 in a private setting. No dates are ever published: you
+  // mail them a preferred date, they confirm it, then you pre-pay through
+  // their SumUp store — so the offering rides in as on-request cards
+  // rather than dated sessions. Their page splits the nineteen tastings
+  // into spirits (€40-100) and cocktails (€50-60), and applies a
+  // different per-group choice limit to each, so the split is kept.
+  // The watcher reads the tasting page every scrape; if they ever publish
+  // dates, the default parsers report them.
+  { slug: 'redrum', name: 'Redrum Art Bar — drink tastings (watched)',
+    url: 'https://www.redrumberlin.de/tasting-experience/',
+    district: 'Kreuzberg',
+    seedOnRequest: [
+      { title: 'Spirituosen-Tasting',
+        titleEn: 'Spirits Tasting Experience',
+        duration: '2 h', price: '€40–100', district: 'Kreuzberg', request: true,
+        url: 'https://www.redrumberlin.de/tasting-experience/' },
+      { title: 'Cocktail-Tasting',
+        titleEn: 'Cocktail Tasting Experience',
+        duration: '2 h', price: '€50–60', district: 'Kreuzberg', request: true,
+        url: 'https://www.redrumberlin.de/tasting-experience/' },
+    ] },
+
   // Barbara Amaral (ArcoIris Embroidery) lists her embroidery sessions
   // on a public event page that carries every upcoming date of the same
   // workshop in its "Weitere Termine" list — dates, times, prices and
