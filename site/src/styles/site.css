@@ -1697,6 +1697,8 @@ a:hover { color: var(--color-accent); }
   object-position: center;
   display: block;
 }
+/* A reel tile plays on tap instead of linking out — see DayPicker. */
+.session-thumb:has(.session-video) { cursor: pointer; }
 .session-main { display: block; min-width: 0; }
 .session-duration {
   display: block;

@@ -189,7 +189,16 @@ const dayLabel = (offset: number) =>
                             picture over the host's stock tile. Thumbnail
                             and title both lead where the Book button does:
                             the host's own site for real sessions. */}
-                        <a class="session-thumb" href={s.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+                        {/* A reel tile carries no link: tapping it plays the
+                            clip, and the title beside it already goes to the
+                            host. A still keeps the link, as there is nothing
+                            else for a tap to do. */}
+                        <a
+                          class="session-thumb"
+                          {...(s.host.video ? {} : { href: s.bookUrl, target: '_blank', rel: 'noopener' })}
+                          tabindex="-1"
+                          aria-hidden="true"
+                        >
                           {/* In grid view the day flows as one full-width
                               grid, so each card wears its start time as a
                               chip on the picture. */}
@@ -295,7 +304,12 @@ const dayLabel = (offset: number) =>
           <li class="session" id={o.id} data-activity={o.host.activity}>
             {/* Same tile as a dated card: the host's reel where footage
                 exists, otherwise the stock photo. */}
-            <a class="session-thumb" href={o.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <a
+              class="session-thumb"
+              {...(o.host.video ? {} : { href: o.bookUrl, target: '_blank', rel: 'noopener' })}
+              tabindex="-1"
+              aria-hidden="true"
+            >
               {o.host.video ? (
                 <video
                   class="session-video"
@@ -578,6 +592,15 @@ const dayLabel = (offset: number) =>
         { threshold: 0.4 },
       );
       reels.forEach((video) => observer.observe(video));
+    }
+    // Tapping a reel toggles it. Reduced motion refuses the autoplay above
+    // outright, and so do the low-power modes on phones, so without this the
+    // tile would just sit there — and it deliberately links nowhere now.
+    for (const video of reels) {
+      video.closest('.session-thumb')?.addEventListener('click', () => {
+        if (video.paused) video.play().catch(() => {});
+        else video.pause();
+      });
     }
   });
 </script>
