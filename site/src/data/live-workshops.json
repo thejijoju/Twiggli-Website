@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T10:52:12.706Z",
+  "updated": "2026-08-24T11:30:08.683Z",
   "sources": [
     {
       "slug": "qian",
@@ -272,6 +272,12 @@
       "count": 90
     },
     {
+      "slug": "pia",
+      "url": "https://www.vulvas.berlin/",
+      "status": "ok",
+      "count": 2
+    },
+    {
       "slug": "sina",
       "url": "https://www.eventbrite.de/o/sinamaker-99895128061",
       "status": "ok",
@@ -417,6 +423,20 @@
       "url": "https://www.ninakranzart.com/privat-freizeit"
     },
     {
+      "slug": "pia",
+      "sourceUrl": "https://www.vulvas.berlin/",
+      "title": "Vulva Painting Workshop",
+      "weekdays": [
+        "thu"
+      ],
+      "time": "18:30",
+      "duration": "2.5 h",
+      "price": "€40",
+      "district": "Friedrichshain",
+      "request": true,
+      "url": "https://www.vulvas.berlin/"
+    },
+    {
       "slug": "techno",
       "sourceUrl": "https://technopainting.com/airbnb-experience/",
       "title": "Techno Painting Workshop",
@@ -528,6 +548,17 @@
       "district": "Wedding",
       "request": true,
       "url": "https://www.rose-williams.com/jewelry-courses/"
+    },
+    {
+      "slug": "pia",
+      "sourceUrl": "https://www.vulvas.berlin/",
+      "title": "Vulva Painting Workshop — private Gruppe",
+      "titleEn": "Vulva Painting Workshop — private group",
+      "duration": "2.5 h",
+      "price": "€40",
+      "district": "Friedrichshain",
+      "request": true,
+      "url": "https://www.vulvas.berlin/"
     },
     {
       "slug": "maximiliana",
@@ -7725,6 +7756,7 @@
       "duration": "2 h",
       "price": "€63",
       "url": "https://www.druckrausch.com/booking-calendar/04-11-basis-siebdruckworkshop",
+      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
       "district": "Friedenau"
     },
     {
