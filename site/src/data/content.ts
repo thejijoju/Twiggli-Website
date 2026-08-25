@@ -714,22 +714,23 @@ export type PhoneCard = {
 };
 
 const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
-  // Card 1's copy names what its reel actually shows (a painting session) —
-  // pairing a "Bachata" title with painting footage would have the mockup
-  // showing a video of the wrong thing. Card 2 is info-only (its thumbnail
-  // sits scrolled off the top of the feed, as in the app), so its copy is
-  // free to stay the screenshot's.
+  // Card 1's copy names what its reel actually shows — Maximiliana's bird
+  // sketching, since hers is the clip on the feed's headline card. Pairing
+  // a "Bachata" title with that footage would have the mockup showing a
+  // video of the wrong thing. Card 2 is info-only (its thumbnail sits
+  // scrolled off the top of the feed, as in the app), so its copy is free
+  // to stay the screenshot's.
   en: [
-    { id: 'phone-front-1', title: 'Collective painting', date: 'Mon, Oct 16', time: '9AM–10.30AM',
-      distance: '5 km away', host: 'Rebeca', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-1', title: 'Bird sketching & watercolour', date: 'Mon, Oct 16', time: '9AM–10.30AM',
+      distance: '5 km away', host: 'Maximiliana', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Bouldering course', date: 'Mon, Oct 16', time: '4PM–6PM',
       distance: '2 km away', host: 'Pauline D.', rating: '4.8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Hiking meetup', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
-    { id: 'phone-front-1', title: 'Kollektive Malerei', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
-      distance: '5 km entfernt', host: 'Rebeca', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-1', title: 'Vogelskizzen & Aquarell', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
+      distance: '5 km entfernt', host: 'Maximiliana', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Boulderkurs', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
       distance: '2 km entfernt', host: 'Pauline D.', rating: '4,8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },
@@ -743,15 +744,18 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
  *  `public/video/`, point the card's entry at it, and the mockup plays it —
  *  nothing else needs changing.
  *
- *  All four feed cards show video, per request, but we only hold three
- *  reels — so reel-1 also fills card 4, placed diagonal to card 1 (and
- *  card 3 diagonal to the back phone's reel-2) to keep the repeats as far
- *  apart as the grid allows. All three clips are painting sessions, so
- *  until per-activity footage lands only card 1's title matches its clip;
- *  cards 3 and 4 show media alone (their info is cropped by the app's
- *  bottom nav), which keeps the mismatch invisible. */
+ *  Card 1 is the headline card — tall, titled, with a host line — so it
+ *  carries a real host's real footage: Maximiliana sketching a goose and
+ *  then painting it, and the card's title and host name say so.
+ *
+ *  The other three still draw on the unattributed reel-1/2/3 clips, which
+ *  are all painting sessions. Card 2's copy is the screenshot's and cards
+ *  3 and 4 show media alone — their info is cropped by the app's bottom
+ *  nav — so none of them claims to be something it is not. reel-1 fills
+ *  both card 4 and the mockup's other slots at a diagonal, keeping the
+ *  repeats as far apart as the grid allows. */
 const phoneReels: Record<string, { video: string; poster: string }> = {
-  'phone-front-1': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+  'phone-front-1': { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg' },
   'phone-front-2': { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
   'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
   'phone-front-4': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
