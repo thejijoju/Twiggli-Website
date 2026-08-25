@@ -582,6 +582,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // cards are merged into one host.
   nicole: { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg' },
   whittle: { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg' },
+  // Two clips from the same session five minutes apart, joined in the order
+  // they were shot: the goose drawn in pencil, then the same page painted.
+  // Hers, and silent to begin with.
+  maximiliana: { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg' },
   // Dina's studio, canvases going up on easels. Audio stripped, and trimmed
   // to the session footage — the back half of her clip was a slideshow of
   // Airbnb review screenshots, which is another platform's furniture.
