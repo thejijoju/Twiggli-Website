@@ -574,7 +574,14 @@ const reels: Record<string, { video: string; poster: string }> = {
   angelo: { video: '/video/angelo.mp4', poster: '/video/angelo-poster.jpg' },
   // Nicole's bench: whittling a spoon, the finished carvings, then the soap
   // side of the workshop. Hers, audio stripped.
+  //
+  // She is on the site twice — "Nicole" for the team events and "Anybody
+  // Can Whittle" for the school, whose blurb calls it Nicole's — and only
+  // the school carries a source, so the calendar files her eighteen
+  // sessions under that slug. Both point at the one reel until the two
+  // cards are merged into one host.
   nicole: { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg' },
+  whittle: { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg' },
   // Dina's studio, canvases going up on easels. Audio stripped, and trimmed
   // to the session footage — the back half of her clip was a slideshow of
   // Airbnb review screenshots, which is another platform's furniture.
