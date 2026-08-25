@@ -708,7 +708,27 @@ a:hover { color: var(--color-accent); }
    the page rather than more blocks on white. Each sits outside .container
    for this; their kickers keep their own container inside.
    The warm band runs at half opacity over the white page. */
-.hosts-band { background: rgba(253, 249, 231, 0.5); }
+/* The hosts band is the one section that runs dark-ward: a warm cream at
+   the top settling into a deeper sand at the bottom, so the reel of faces
+   sits on something with a floor rather than on flat tint. A shallow wave
+   in the page's own white breaks the top edge — a few pixels of movement,
+   not a decoration. */
+.hosts-band {
+  position: relative;
+  background: linear-gradient(180deg, #fdf8ea 0%, #f8efd6 52%, #eee0bc 100%);
+}
+.hosts-band::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 0h1440v22c-240 20-480 26-720 14S240 6 0 24Z' fill='%23ffffff'/%3E%3C/svg%3E");
+}
 .steps-band { background: rgba(248, 239, 253, 1); }
 
 /* — homepage "Happening today" teaser — a taste of the live calendar:
@@ -798,6 +818,12 @@ a:hover { color: var(--color-accent); }
 }
 
 .host-coverflow {
+  /* The reel is the section, so the cards are sized to be watched rather
+     than glanced at: 360px against the 199px that once fitted five across
+     the container. Three are visible now and the outer pair runs past the
+     edge into the mask. On a phone it steps back to a share of the
+     viewport, so the card keeps a margin either side. */
+  --coverflow-card: 360px;
   display: flex;
   gap: 12px;
   overflow-x: auto;
@@ -813,13 +839,12 @@ a:hover { color: var(--color-accent); }
   -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
 }
-/* Half a card, so the centred card sits dead centre of the track. */
-.host-coverflow-spacer { flex: none; width: calc(50% - 132.5px); }
+/* Half a card, so the centred card sits dead centre of the track — derived
+   from the card width rather than repeated, so the two cannot drift. */
+.host-coverflow-spacer { flex: none; width: calc(50% - var(--coverflow-card) / 2); }
 .host-coverflow-card {
   flex: none;
-  /* A third larger than the 199px that fitted five across the container, so
-     the outermost pair now runs past the edge and is faded by the mask. */
-  width: 265px;
+  width: var(--coverflow-card);
   scroll-snap-align: center;
   cursor: pointer;
   text-align: center;
@@ -890,7 +915,27 @@ a:hover { color: var(--color-accent); }
   pointer-events: auto;
 }
 .host-coverflow-card .host-name { margin-top: 12px; }
+/* Name and specialty are one link to the host's next session. Undecorated
+   until pointed at, so the card still reads as a caption rather than as a
+   pair of links. */
+.host-coverflow-link {
+  display: block;
+  margin-top: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+.host-coverflow-link .host-name,
+.host-coverflow-link .host-specialty { display: block; margin: 0; }
+.host-coverflow-link .host-specialty { margin-top: 2px; }
+.host-coverflow-link:hover .host-name,
+.host-coverflow-link:focus-visible .host-name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
+@media (max-width: 480px) {
+  .host-coverflow { --coverflow-card: 82vw; }
+}
 @media (prefers-reduced-motion: reduce) {
   .host-coverflow { scroll-behavior: auto; }
   .host-coverflow-card { transition: none; }

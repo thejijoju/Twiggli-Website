@@ -1,8 +1,9 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import type { Host } from '../data/content.ts';
+import { getSessions } from '../data/sessions.ts';
 import HostMonogram from './HostMonogram.astro';
-import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 
 interface Props {
   hosts: Host[];
@@ -16,6 +17,23 @@ interface Props {
   lang?: Lang;
 }
 const { hosts, layout = 'grid', lang = DEFAULT_LANG } = Astro.props;
+
+/* A card's name and specialty lead to that host's next session on the
+   calendar. getSessions comes back in calendar order, so the first one a
+   slug appears in is the next one they teach. A host with nothing on the
+   calendar — corporate-only, or between programmes — leads to their entry
+   in the directory instead, which is the page that can actually answer
+   "when?" for them. */
+const nextSession = new Map<string, { id: string; title: string }>();
+for (const s of getSessions(lang)) {
+  if (!nextSession.has(s.host.slug)) nextSession.set(s.host.slug, s);
+}
+const hostHref = (slug: string) => {
+  const next = nextSession.get(slug);
+  return next
+    ? `${href(lang, '/happening-today/')}#${next.id}`
+    : `${href(lang, '/corporatebookings/')}#${slug}`;
+};
 
 const videoPlaceholder = {
   en: 'Video preview coming soon',
@@ -55,8 +73,14 @@ const videoPlaceholder = {
           </span>
           {!host.video && <div class="host-coverflow-video-placeholder">{videoPlaceholder}</div>}
         </div>
-        <p class="host-name">{host.name}</p>
-        <p class="host-specialty">{host.specialty}</p>
+        <a
+          class="host-coverflow-link"
+          href={hostHref(host.slug)}
+          title={nextSession.get(host.slug)?.title}
+        >
+          <span class="host-name">{host.name}</span>
+          <span class="host-specialty">{host.specialty}</span>
+        </a>
       </div>
     ))}
     <div class="host-coverflow-spacer" aria-hidden="true"></div>
@@ -158,6 +182,9 @@ const videoPlaceholder = {
         play(card);
       };
       card.addEventListener('click', activate);
+      // The name below the reel is a link out to the calendar; without this
+      // the card's own click would swallow it and just recentre the card.
+      card.querySelector('.host-coverflow-link')?.addEventListener('click', (e) => e.stopPropagation());
       // With a mouse, the reel starts the moment the pointer is over the
       // card — no need to centre it first — and stops when the pointer
       // leaves, the same way scrolling the card off centre stops it.
