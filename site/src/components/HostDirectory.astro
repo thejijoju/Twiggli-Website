@@ -1,5 +1,7 @@
 ---
 import type { Host } from '../data/content.ts';
+import { getHostPriceRanges } from '../data/sessions.ts';
+import { filterCopy } from '../data/content.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import HostMonogram from './HostMonogram.astro';
 
@@ -17,9 +19,21 @@ interface Props {
 }
 const { hosts, lang = DEFAULT_LANG } = Astro.props;
 
+/* What a seat at this host's own public sessions costs, so the price filter
+   has something real to match on and the card can say so. A private group
+   is quoted separately — hence "per person" on the row rather than a figure
+   presented as the price of the booking. */
+const priceRanges = getHostPriceRanges();
+const priceCopy = filterCopy[lang];
+const money = (n: number) => `€${Math.round(n)}`;
+const priceText = (range: [number, number] | undefined) =>
+  !range ? priceCopy.priceUnknown
+    : range[0] === range[1] ? `${money(range[0])} · ${priceCopy.priceMeta}`
+    : `${money(range[0])}–${money(range[1])} · ${priceCopy.priceMeta}`;
+
 const labels = {
-  en: { studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', play: 'Play reel', request: 'Request event' },
-  de: { studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', play: 'Reel abspielen', request: 'Event anfragen' },
+  en: { studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', price: 'Price', play: 'Play reel', request: 'Request event' },
+  de: { studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', price: 'Preis', play: 'Reel abspielen', request: 'Event anfragen' },
 }[lang];
 ---
 
@@ -33,6 +47,8 @@ const labels = {
       data-group-max={host.groupRange[1]}
       data-hours-min={host.hourRange[0]}
       data-hours-max={host.hourRange[1]}
+      data-price-min={priceRanges.get(host.slug)?.[0]}
+      data-price-max={priceRanges.get(host.slug)?.[1]}
     >
       <div class="maker-media">
         {host.video ? (
@@ -68,6 +84,7 @@ const labels = {
         <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
         <div><dt>{labels.place}</dt><dd>{host.place}</dd></div>
         <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
+        <div><dt>{labels.price}</dt><dd>{priceText(priceRanges.get(host.slug))}</dd></div>
       </dl>
 
       {/* Lands on the contact form with this host in the query string, so

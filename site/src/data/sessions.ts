@@ -140,6 +140,38 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
   return out;
 }
 
+/** What a host's published sessions cost, as [cheapest, dearest] in euros.
+ *
+ *  There is no price on a host card — the directory describes what someone
+ *  hosts, not what they charge — so the only real figures are the ones on
+ *  their own listings, scraped with the sessions. A host with nothing
+ *  published is absent from the map rather than guessed at.
+ *
+ *  These are per-person prices for a seat at a public session. A private
+ *  group is quoted separately, which is why the directory labels them as
+ *  such rather than presenting them as the price of a booking.
+ */
+export function getHostPriceRanges(): Map<string, [number, number]> {
+  const out = new Map<string, [number, number]>();
+  const priced = [
+    ...((liveData as { workshops?: { slug: string; price?: string }[] }).workshops ?? []),
+    ...((liveData as { recurring?: { slug: string; price?: string }[] }).recurring ?? []),
+    ...((liveData as { onRequest?: { slug: string; price?: string }[] }).onRequest ?? []),
+  ];
+  for (const w of priced) {
+    if (!w.price) continue;
+    // "€66", "€40–100", "€168+" — every number in the string is a real
+    // price for this session, so the ends of the span are its ends.
+    const found = [...w.price.matchAll(/\d+(?:[.,]\d+)?/g)].map((m) => Number(m[0].replace(',', '.')));
+    if (!found.length) continue;
+    const range = out.get(w.slug);
+    const lo = Math.min(...found);
+    const hi = Math.max(...found);
+    out.set(w.slug, range ? [Math.min(range[0], lo), Math.max(range[1], hi)] : [lo, hi]);
+  }
+  return out;
+}
+
 const WEEKDAY_INDEX: Record<string, number> = {
   sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6,
 };

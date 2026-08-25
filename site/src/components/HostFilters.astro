@@ -23,11 +23,13 @@ const t = filterCopy[lang];
 const groupIds = ['small', 'medium', 'large'] as const;
 const durationIds = ['short', 'medium', 'long'] as const;
 const activityIds = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'] as const;
+const priceIds = ['budget', 'mid', 'high', 'premium'] as const;
 
 const rows = [
   { name: 'activity', label: t.activityLabel, options: activityIds.map((id) => ({ id, label: t.activities[id] })) },
   { name: 'group', label: t.groupLabel, options: groupIds.map((id) => ({ id, label: t.groups[id] })) },
   { name: 'hours', label: t.durationLabel, options: durationIds.map((id) => ({ id, label: t.durations[id] })) },
+  { name: 'price', label: t.priceLabel, options: priceIds.map((id) => ({ id, label: t.prices[id] })) },
 ];
 ---
 
@@ -74,6 +76,16 @@ const rows = [
     medium: [2, 4],
     long: [4, Infinity],
   };
+  /* Euros a seat, read off the host's own published sessions. A host who
+     publishes no price cannot be placed in a band, so picking one hides
+     them — which is the honest answer to "show me what costs under 50"
+     when nobody knows what they cost. They come back under "All". */
+  const PRICES: Record<string, [number, number]> = {
+    budget: [0, 50],
+    mid: [50, 100],
+    high: [100, 200],
+    premium: [200, Infinity],
+  };
 
   const form = document.querySelector<HTMLFormElement>('#host-filters');
   const empty = document.querySelector<HTMLElement>('.filter-empty');
@@ -90,13 +102,17 @@ const rows = [
       const activity = String(data.get('activity') ?? '');
       const group = String(data.get('group') ?? '');
       const hours = String(data.get('hours') ?? '');
+      const price = String(data.get('price') ?? '');
 
       let shown = 0;
       for (const card of cards) {
         const ok =
           (!activity || card.dataset.activity === activity) &&
           (!group || overlaps([num(card, 'groupMin'), num(card, 'groupMax')], GROUPS[group])) &&
-          (!hours || overlaps([num(card, 'hoursMin'), num(card, 'hoursMax')], HOURS[hours]));
+          (!hours || overlaps([num(card, 'hoursMin'), num(card, 'hoursMax')], HOURS[hours])) &&
+          (!price ||
+            (card.dataset.priceMin !== undefined &&
+              overlaps([num(card, 'priceMin'), num(card, 'priceMax')], PRICES[price])));
         card.hidden = !ok;
         if (ok) shown++;
       }
@@ -106,7 +122,7 @@ const rows = [
         const many = count.dataset.many ?? '';
         count.textContent = shown === 1 ? (count.dataset.one ?? '') : many.replace('0', String(shown));
       }
-      if (clear) clear.hidden = !activity && !group && !hours;
+      if (clear) clear.hidden = !activity && !group && !hours && !price;
     };
 
     form.addEventListener('change', apply);

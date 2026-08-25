@@ -656,7 +656,7 @@ export const filterCopy = {
     all: 'All',
     clear: 'Clear filters',
     count: (n: number) => (n === 1 ? '1 host' : `${n} hosts`),
-    empty: 'No host matches all three filters. Try widening one.',
+    empty: 'No host matches every filter. Try widening one.',
     activities: {
       ceramics: 'Ceramics', art: 'Art & print', craft: 'Craft & making',
       food: 'Food & drink', photography: 'Photography', wellbeing: 'Wellbeing',
@@ -664,6 +664,10 @@ export const filterCopy = {
     },
     groups: { small: 'Up to 10', medium: '10–30', large: '30+' },
     durations: { short: 'Up to 2 h', medium: '2–4 h', long: 'Half day or more' },
+    priceLabel: 'Price per person',
+    prices: { budget: 'Under €50', mid: '€50–100', high: '€100–200', premium: '€200+' },
+    priceMeta: 'Per person',
+    priceUnknown: 'On request',
   },
   de: {
     activityLabel: 'Aktivität',
@@ -672,7 +676,7 @@ export const filterCopy = {
     all: 'Alle',
     clear: 'Filter zurücksetzen',
     count: (n: number) => (n === 1 ? '1 Gastgeber' : `${n} Gastgeber`),
-    empty: 'Kein Gastgeber passt zu allen drei Filtern. Erweitere einen davon.',
+    empty: 'Kein Gastgeber passt zu allen Filtern. Erweitere einen davon.',
     activities: {
       ceramics: 'Keramik', art: 'Kunst & Druck', craft: 'Handwerk',
       food: 'Essen & Trinken', photography: 'Fotografie', wellbeing: 'Wohlbefinden',
@@ -680,6 +684,10 @@ export const filterCopy = {
     },
     groups: { small: 'Bis 10', medium: '10–30', large: '30+' },
     durations: { short: 'Bis 2 Std.', medium: '2–4 Std.', long: 'Ab einem halben Tag' },
+    priceLabel: 'Preis pro Person',
+    prices: { budget: 'Unter 50 €', mid: '50–100 €', high: '100–200 €', premium: 'Ab 200 €' },
+    priceMeta: 'Pro Person',
+    priceUnknown: 'Auf Anfrage',
   },
 } as const;
 
