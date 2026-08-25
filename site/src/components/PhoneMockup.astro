@@ -46,8 +46,12 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
     <div class="phone-back">
       <div class="phone-back-screen">
         <div class="phone-back-media">
+          {/* The app's video feed, full screen. It waits for the pointer:
+              a reel this size running behind the front phone pulls the eye
+              off the screen the page is actually showing. */}
           <video
             class="phone-card-video"
+            data-hover-only
             src={backVideo}
             poster={backPoster}
             muted
@@ -129,6 +133,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {feature.video ? (
                   <video
                     class="phone-card-video"
+                    data-hover-only={feature.hoverOnly ? '' : undefined}
                     src={feature.video}
                     poster={feature.poster}
                     muted
@@ -183,6 +188,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {infoCard.video ? (
                   <video
                     class="phone-card-video"
+                    data-hover-only={infoCard.hoverOnly ? '' : undefined}
                     src={infoCard.video}
                     poster={infoCard.poster}
                     muted
@@ -267,16 +273,23 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
   const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.phone-card-video'));
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const phone = document.querySelector('.hero-visual');
-  const playAll = () => { for (const v of videos) v.play().catch(() => {}); };
+
+  /* Two kinds of clip in here. Most run with the feed, so the phone shows
+     the app doing the thing the page describes rather than a frozen
+     screenshot. The ones marked hover-only wait for the pointer and stop
+     when it leaves — the back phone's full-screen reel, which would
+     otherwise pull the eye off the screen in front of it, and the second
+     titled card, which would otherwise compete with the first. */
+  const auto = videos.filter((v) => v.dataset.hoverOnly === undefined);
+  const onDemand = videos.filter((v) => v.dataset.hoverOnly !== undefined);
+  const playAuto = () => { for (const v of auto) v.play().catch(() => {}); };
 
   if (videos.length && phone) {
-    if (!still) {
-      // Observe the whole visual, not just the front phone — the back
-      // phone's full-screen reel needs to start and stop with the rest.
+    if (auto.length && !still) {
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) playAll();
-          else for (const v of videos) v.pause();
+          if (entry.isIntersecting) playAuto();
+          else for (const v of auto) v.pause();
         },
         { threshold: 0.25 },
       );
@@ -286,9 +299,17 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
     // Autoplay is refused outright by reduced motion, and quietly by a
     // phone in low-power mode or a browser with data saver on — and a
     // mockup of a video app frozen on its posters is the one thing this
-    // block must not be. Pointing at it or touching it starts it, whatever
-    // the browser decided.
-    phone.addEventListener('pointerenter', playAll);
-    phone.addEventListener('touchstart', playAll, { passive: true });
+    // block must not be. Pointing at the phone or touching it starts the
+    // feed's clips, whatever the browser decided. It deliberately does not
+    // start the hover-only ones: those answer to their own tile alone.
+    phone.addEventListener('pointerenter', playAuto);
+    phone.addEventListener('touchstart', playAuto, { passive: true });
+
+    for (const video of onDemand) {
+      const tile = video.parentElement;
+      if (!tile) continue;
+      tile.addEventListener('pointerenter', () => video.play().catch(() => {}));
+      tile.addEventListener('pointerleave', () => video.pause());
+    }
   }
 </script>

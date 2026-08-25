@@ -711,6 +711,8 @@ export type PhoneCard = {
   photo?: string;
   video?: string;
   poster?: string;
+  /** Waits for the pointer instead of playing with the rest of the feed. */
+  hoverOnly?: boolean;
 };
 
 const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
@@ -723,16 +725,16 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
   en: [
     { id: 'phone-front-1', title: 'Bird sketching & watercolour', date: 'Mon, Oct 16', time: '9AM–10.30AM',
       distance: '5 km away', host: 'Maximiliana', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
-    { id: 'phone-front-2', title: 'Bouldering course', date: 'Mon, Oct 16', time: '4PM–6PM',
-      distance: '2 km away', host: 'Pauline D.', rating: '4.8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-2', title: 'Wood & soap carving', date: 'Mon, Oct 16', time: '4PM–6PM',
+      distance: '2 km away', host: 'Nicole', rating: '4.8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Hiking meetup', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
     { id: 'phone-front-1', title: 'Vogelskizzen & Aquarell', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
       distance: '5 km entfernt', host: 'Maximiliana', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
-    { id: 'phone-front-2', title: 'Boulderkurs', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
-      distance: '2 km entfernt', host: 'Pauline D.', rating: '4,8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-2', title: 'Holz- & Seifenschnitzen', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
+      distance: '2 km entfernt', host: 'Nicole', rating: '4,8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Wander-Treffen', photo: '/img/hero/hiking.jpg' },
   ],
@@ -748,15 +750,19 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
  *  carries a real host's real footage: Maximiliana sketching a goose and
  *  then painting it, and the card's title and host name say so.
  *
- *  The other three still draw on the unattributed reel-1/2/3 clips, which
- *  are all painting sessions. Card 2's copy is the screenshot's and cards
- *  3 and 4 show media alone — their info is cropped by the app's bottom
- *  nav — so none of them claims to be something it is not. reel-1 fills
- *  both card 4 and the mockup's other slots at a diagonal, keeping the
- *  repeats as far apart as the grid allows. */
-const phoneReels: Record<string, { video: string; poster: string }> = {
+ *  Card 2, the titled card opposite it, carries Nicole's carving and names
+ *  her too. Both cards name a real host, so both must show that host's own
+ *  footage — and card 2 waits for the pointer rather than playing with the
+ *  rest, since two titled cards running at once fight for the eye.
+ *
+ *  Cards 3 and 4 still draw on the unattributed reel-1/2 clips and show
+ *  media alone, their info cropped by the app's bottom nav, so neither
+ *  claims to be something it is not. */
+const phoneReels: Record<string, { video: string; poster: string; hoverOnly?: boolean }> = {
   'phone-front-1': { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg' },
-  'phone-front-2': { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
+  // Nicole's carving, and it waits for the pointer — two titled cards
+  // running at once fight each other for the eye.
+  'phone-front-2': { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg', hoverOnly: true },
   'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
   'phone-front-4': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
 };
@@ -769,7 +775,11 @@ export const getPhoneCards = (lang: Lang): PhoneCard[] =>
       ...card,
       photo: card.photo ? withBase(card.photo) : undefined,
       ...(reel
-        ? { video: withBase(reel.video), poster: withBase(reel.poster) }
+        ? {
+            video: withBase(reel.video),
+            poster: withBase(reel.poster),
+            ...(reel.hoverOnly ? { hoverOnly: true } : {}),
+          }
         : {}),
     };
   });
