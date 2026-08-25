@@ -273,6 +273,14 @@ a:hover { color: var(--color-accent); }
 .hero-visual {
   position: relative;
   min-height: 760px;
+  /* Drawn at its design size and scaled down as one piece, so the frames,
+     the feed and its type all keep their proportions — shrinking the two
+     phone frames alone would leave the contents at full size inside them.
+     The negative margin takes back the space the transform does not: a
+     scaled box still occupies its original height in the layout. */
+  transform: scale(0.8);
+  transform-origin: top center;
+  margin-bottom: -152px; /* 760px × 0.2 */
 }
 .phone-back {
   position: absolute;

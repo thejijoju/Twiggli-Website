@@ -266,20 +266,29 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
      all that loads until then. */
   const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.phone-card-video'));
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const phone = document.querySelector('.hero-visual');
+  const playAll = () => { for (const v of videos) v.play().catch(() => {}); };
 
-  if (videos.length && !still) {
-    // Observe the whole visual, not just the front phone — the back
-    // phone's full-screen reel needs to start and stop with the rest.
-    const phone = document.querySelector('.hero-visual');
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        for (const video of videos) {
-          if (entry.isIntersecting) video.play().catch(() => {});
-          else video.pause();
-        }
-      },
-      { threshold: 0.25 },
-    );
-    if (phone) observer.observe(phone);
+  if (videos.length && phone) {
+    if (!still) {
+      // Observe the whole visual, not just the front phone — the back
+      // phone's full-screen reel needs to start and stop with the rest.
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) playAll();
+          else for (const v of videos) v.pause();
+        },
+        { threshold: 0.25 },
+      );
+      observer.observe(phone);
+    }
+
+    // Autoplay is refused outright by reduced motion, and quietly by a
+    // phone in low-power mode or a browser with data saver on — and a
+    // mockup of a video app frozen on its posters is the one thing this
+    // block must not be. Pointing at it or touching it starts it, whatever
+    // the browser decided.
+    phone.addEventListener('pointerenter', playAll);
+    phone.addEventListener('touchstart', playAll, { passive: true });
   }
 </script>
