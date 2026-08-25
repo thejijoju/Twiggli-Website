@@ -572,6 +572,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Angelo's roast start to finish — green beans in the pot, roasted,
   // ground, brewed, tasted. His own, audio stripped.
   angelo: { video: '/video/angelo.mp4', poster: '/video/angelo-poster.jpg' },
+  // Nicole's bench: whittling a spoon, the finished carvings, then the soap
+  // side of the workshop. Hers, audio stripped.
+  nicole: { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg' },
   // Dina's studio, canvases going up on easels. Audio stripped, and trimmed
   // to the session footage — the back half of her clip was a slideshow of
   // Airbnb review screenshots, which is another platform's furniture.
