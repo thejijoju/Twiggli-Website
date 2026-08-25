@@ -437,10 +437,15 @@ a:hover { color: var(--color-accent); }
   border-radius: 14px;
   background: var(--color-surface);
 }
-/* The feed's headline card. 25/32 is the 5/8 it was drawn at with a fifth
-   of the height taken off: the reel in it stood taller than the card needed
-   to be. */
-.phone-card-media-tall { aspect-ratio: 25 / 32; }
+/* The two titled cards, which carry the two named hosts' reels. Set to one
+   height rather than one ratio: the feed's columns are deliberately unequal
+   (155 and 131), so matching ratios would leave the pair 30px apart. 198px
+   is the 5/8 the headline card was drawn at with a fifth of its height
+   taken off — the reel in it stood taller than the card needed to be. */
+.phone-card-media-tall {
+  aspect-ratio: auto;
+  height: 198px;
+}
 /* The reels are 9:16; the thumbnails are squarer. object-fit crops rather
    than letterboxes, so a portrait clip fills the card the way the app's
    would. */
@@ -466,6 +471,12 @@ a:hover { color: var(--color-accent); }
   fill: none;
   stroke: #b9b9b9;
   stroke-width: 1.8;
+}
+/* A saved event, the way it reads in the app: the outline filled in rather
+   than a second icon. */
+.phone-card-heart.is-liked {
+  fill: #ff4d8d;
+  stroke: #ff4d8d;
 }
 .phone-card-when {
   display: flex;

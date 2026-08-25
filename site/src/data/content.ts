@@ -713,6 +713,8 @@ export type PhoneCard = {
   poster?: string;
   /** Waits for the pointer instead of playing with the rest of the feed. */
   hoverOnly?: boolean;
+  /** Drawn with its heart filled, the way a saved event looks in the app. */
+  liked?: boolean;
 };
 
 const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
@@ -724,7 +726,7 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
   // to stay the screenshot's.
   en: [
     { id: 'phone-front-1', title: 'Bird sketching & watercolour', date: 'Mon, Oct 16', time: '9AM–10.30AM',
-      distance: '5 km away', host: 'Maximiliana', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
+      distance: '5 km away', host: 'Maximiliana', rating: '5', ratingCount: '1', liked: true, photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Wood & soap carving', date: 'Mon, Oct 16', time: '4PM–6PM',
       distance: '2 km away', host: 'Nicole', rating: '4.8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
@@ -732,7 +734,7 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
   ],
   de: [
     { id: 'phone-front-1', title: 'Vogelskizzen & Aquarell', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
-      distance: '5 km entfernt', host: 'Maximiliana', rating: '5', ratingCount: '1', photo: '/img/hero/bachata.jpg' },
+      distance: '5 km entfernt', host: 'Maximiliana', rating: '5', ratingCount: '1', liked: true, photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Holz- & Seifenschnitzen', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
       distance: '2 km entfernt', host: 'Nicole', rating: '4,8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },

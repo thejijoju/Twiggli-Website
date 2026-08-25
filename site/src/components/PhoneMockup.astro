@@ -149,7 +149,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
               <div class="phone-card-info">
                 <div class="phone-card-head">
                   <p class="phone-card-title">{feature.title}</p>
-                  <svg class="phone-card-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
+                  <svg class:list={['phone-card-heart', feature.liked && 'is-liked']} viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
                 </div>
                 <div class="phone-card-when"><span>{feature.date}</span><span>{feature.time}</span></div>
                 <span class="phone-card-distance">{feature.distance}</span>
@@ -184,7 +184,10 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
 
           <div class="phone-feed-col">
             <div class="phone-card">
-              <div class="phone-card-media">
+              {/* Same tile as the headline card opposite: the two titled
+                  cards carry the two named hosts' reels, and a pair that
+                  sits side by side should be the same height. */}
+              <div class="phone-card-media phone-card-media-tall">
                 {infoCard.video ? (
                   <video
                     class="phone-card-video"
@@ -204,7 +207,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
               <div class="phone-card-info">
                 <div class="phone-card-head">
                   <p class="phone-card-title">{infoCard.title}</p>
-                  <svg class="phone-card-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
+                  <svg class:list={['phone-card-heart', infoCard.liked && 'is-liked']} viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
                 </div>
                 <div class="phone-card-when"><span>{infoCard.date}</span><span>{infoCard.time}</span></div>
                 <span class="phone-card-distance">{infoCard.distance}</span>
