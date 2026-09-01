@@ -8,11 +8,11 @@ import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 interface Props {
   hosts: Host[];
   /** 'grid' is the static wrapping layout (the /hosts/ directory).
-   *  'carousel' is a center-focused "coverflow" reel — the active card sits
-   *  large and sharp in the middle, neighbours shrink and fade toward the
-   *  edges. Click a side card to bring it to centre; click the centred card
-   *  to play its reel. Cards without a reel yet keep the placeholder slot
-   *  and a "coming soon" state. */
+   *  'carousel' is a row of reels running the full width of the band, each
+   *  in a phone frame. Cards near the middle sit a touch larger than the
+   *  ones at the edges. A reel plays while the pointer is over it — there
+   *  is no play button — and a tap stands in for that on a touch screen.
+   *  Cards without a reel yet keep the placeholder slot. */
   layout?: 'grid' | 'carousel';
   lang?: Lang;
 }
@@ -49,7 +49,6 @@ const videoPlaceholder = {
 
 {layout === 'carousel' ? (
   <div class="host-coverflow" data-host-coverflow>
-    <div class="host-coverflow-spacer" aria-hidden="true"></div>
     {carouselHosts.map((host) => (
       <div
         class="host-coverflow-card"
@@ -74,9 +73,6 @@ const videoPlaceholder = {
           ) : (
             <HostMonogram name={host.name} />
           )}
-          <span class="host-coverflow-play" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-          </span>
           {!host.video && <div class="host-coverflow-video-placeholder">{videoPlaceholder}</div>}
         </div>
         <a
@@ -89,7 +85,6 @@ const videoPlaceholder = {
         </a>
       </div>
     ))}
-    <div class="host-coverflow-spacer" aria-hidden="true"></div>
   </div>
 ) : (
   <div class="hosts-grid">
@@ -147,11 +142,20 @@ const videoPlaceholder = {
         const r = card.getBoundingClientRect();
         const dist = Math.abs(r.left + r.width / 2 - center);
         const norm = dist / s;
+        // A light centre bias — the middle of the row reads as the front of
+        // it without the edges shrinking into thumbnails. 0.03 a card out
+        // puts the neighbours at 97% and the pair beyond them at 94%.
+        // The frame is scaled, not the whole card, and from its bottom edge
+        // (see the transform-origin in site.css): every phone stands on the
+        // same floor and the names below them stay on one line, instead of
+        // each card drifting up and down by its own share of the scale.
+        const media = card.querySelector('.host-coverflow-media');
+        if (media) media.style.transform = `scale(${Math.max(1 - norm * 0.03, 0.9)})`;
         card.classList.toggle('is-active', norm < 0.5);
-        // Every card is the same size now, so being off-centre no longer
-        // means being too small to watch: a reel only stops once its card
-        // has scrolled out of the five on screen.
-        if (norm > 2.5 && card.classList.contains('is-playing')) stop(card);
+        // Every card is watchable, so being off-centre no longer means being
+        // too small to watch: a reel only stops once its card has scrolled
+        // out of the row.
+        if (norm > 3.5 && card.classList.contains('is-playing')) stop(card);
       });
     };
     const onScroll = () => {
@@ -161,7 +165,6 @@ const videoPlaceholder = {
     track.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const hoverable = window.matchMedia('(hover: hover)').matches;
 
     const play = (card: HTMLElement) => {
@@ -176,20 +179,15 @@ const videoPlaceholder = {
     };
 
     cards.forEach((card) => {
-      // All five on screen are full-size and watchable, so a click plays the
-      // card it landed on rather than first dragging it to the middle. Only
-      // a card sitting outside the row still centres itself first.
+      // There is no play button, so on a touch screen — where there is no
+      // pointer to hover with — a tap on the card is what starts and stops
+      // the reel. With a mouse the hover handlers below do it instead.
       const activate = () => {
         if (card.classList.contains('is-playing')) {
           stop(card);
           return;
         }
         play(card);
-        card.scrollIntoView({
-          behavior: reduceMotion ? 'auto' : 'smooth',
-          inline: 'nearest',
-          block: 'nearest',
-        });
       };
       card.addEventListener('click', activate);
       // The name below the reel is a link out to the calendar; without this
@@ -210,11 +208,10 @@ const videoPlaceholder = {
       });
     });
 
-    // Open on the third card, so the default view is the full row of five
-    // rather than the first card centred with nothing to the left of it.
-    const openOn = Math.min(2, cards.length - 1);
+    // Open at the left edge: the row starts with its first reel against the
+    // side of the band and runs off the other one.
     const settle = () => {
-      track.scrollLeft = openOn * (step() || 0);
+      track.scrollLeft = 0;
       update();
     };
     settle();

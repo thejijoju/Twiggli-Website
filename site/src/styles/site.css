@@ -97,8 +97,8 @@ a:hover { color: var(--color-accent); }
 
 /* Anchors have to clear the pinned header, or a jump-to-section lands with
    its heading hidden underneath the nav. --header-h is the nav's own height
-   (its 20px padding either side of the 71px mark). */
-:root { --header-h: 111px; }
+   (its 14px padding either side of the 55px mark). */
+:root { --header-h: 83px; }
 [id] { scroll-margin-top: calc(var(--header-h) + 24px); }
 
 /* — shell — */
@@ -163,7 +163,8 @@ a:hover { color: var(--color-accent); }
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
-  padding: 20px var(--gutter);
+  /* 14px either side of a 55px mark — a quarter off the header's height. */
+  padding: 14px var(--gutter);
   border-bottom: none;
   display: flex;
   align-items: center;
@@ -181,7 +182,7 @@ a:hover { color: var(--color-accent); }
   gap: 28px;
 }
 /* The mark stands alone in the nav — no wordmark beside it. */
-.nav-logo { display: block; width: 71px; height: 71px; flex: none; }
+.nav-logo { display: block; width: 55px; height: 55px; flex: none; }
 /* Nav links track normally — the widened 0.045em got too loose once the
    header grew to five links. */
 .nav-end a { letter-spacing: normal; }
@@ -916,72 +917,43 @@ a:hover { color: var(--color-accent); }
   display: flex;
   gap: var(--coverflow-gap);
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 40px 0;
 }
 .host-coverflow::-webkit-scrollbar { display: none; }
-/* Fades the outer cards into the band, so the reel looks like it continues
-   past the edge rather than being cut off. */
-.host-coverflow {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
-}
-/* Half a card, so the centred card sits dead centre of the track — derived
-   from the card width rather than repeated, so the two cannot drift. */
-.host-coverflow-spacer { flex: none; width: calc(50% - var(--coverflow-card) / 2); }
 .host-coverflow-card {
   flex: none;
   width: var(--coverflow-card);
-  scroll-snap-align: center;
+  /* Aligned to the start, not the centre: the row begins hard against the
+     left edge of the band and runs off the right one, rather than opening
+     with one card centred and empty space beside it. Centre-snapping would
+     also drag the track off zero on load, since position zero is not a
+     snap point when a card has to sit in the middle. */
+  scroll-snap-align: start;
   cursor: pointer;
   text-align: center;
-  transform-origin: center;
-  transition: transform 0.2s ease, opacity 0.2s ease;
 }
-/* The card is a phone: the hero mockups' bezel and colour around a 9:16
-   screen, with a dynamic-island pill at the top. Vertical video in a black
-   frame this shape reads as a reel on a phone before anyone reads a word
-   of the section. */
+/* The card is a phone: the hero mockups' bezel and colour on all four
+   sides of a 9:16 screen. Vertical video in a black frame this shape reads
+   as a reel on a phone before anyone reads a word of the section — no
+   island pill and no play button on top of it; the reel starts on hover. */
 .host-coverflow-media {
   position: relative;
   aspect-ratio: 9 / 16;
+  /* The centre bias is applied here rather than to the whole card, and it
+     grows upward from the bottom edge, so the row of phones shares a floor
+     and the names underneath stay on one line. */
+  transform-origin: bottom center;
+  transition: transform 0.2s ease;
   border-radius: calc(var(--coverflow-screen-radius) + var(--phone-bezel));
   overflow: hidden;
   background: var(--phone-frame);
   box-shadow: var(--shadow-lg);
 }
-.host-coverflow-media::after {
-  content: '';
-  position: absolute;
-  top: calc(var(--phone-bezel) + 7px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 58px;
-  height: 16px;
-  border-radius: 999px;
-  background: var(--phone-frame);
-  z-index: 2;
-  pointer-events: none;
-}
 .host-coverflow-card.is-active .host-coverflow-media {
   box-shadow: 0 24px 56px color-mix(in srgb, #2d2b2b 34%, transparent);
-}
-.host-coverflow-play {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  z-index: 3;
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: color-mix(in srgb, #000 45%, transparent);
-  color: #fff;
-  transition: opacity 0.2s ease;
 }
 .host-coverflow-video-placeholder {
   position: absolute;
@@ -1013,7 +985,6 @@ a:hover { color: var(--color-accent); }
 .host-coverflow-video-placeholder {
   border-radius: var(--coverflow-screen-radius);
 }
-.host-coverflow-card.is-playing .host-coverflow-play { opacity: 0; }
 .host-coverflow-card.is-playing .host-coverflow-video-placeholder {
   opacity: 1;
   pointer-events: auto;
