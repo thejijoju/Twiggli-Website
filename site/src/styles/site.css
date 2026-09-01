@@ -920,7 +920,13 @@ a:hover { color: var(--color-accent); }
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 40px 0;
+  /* The page gutter either side, so the first phone stands off the edge of
+     the window instead of against it, and the last one has somewhere to
+     end. Short of the section's kicker, which is inset by the 1200px
+     container as well — the row is deliberately wider than the measure.
+     scroll-padding keeps a snapped card clear of the same inset. */
+  padding: 40px var(--gutter);
+  scroll-padding-inline: var(--gutter);
 }
 .host-coverflow::-webkit-scrollbar { display: none; }
 .host-coverflow-card {
@@ -972,11 +978,19 @@ a:hover { color: var(--color-accent); }
 }
 /* The still a card falls back to when its host has no reel — same box as
    the video, so a card without footage still frames up identically.
-   Both sit inset by the bezel: they are the screen, not the phone. */
+   Both sit inset by the bezel: they are the screen, not the phone.
+
+   The size is spelled out rather than left to the insets. A <video> is a
+   replaced element, and an absolutely positioned one with width/height auto
+   takes its own intrinsic size instead of the box its insets describe — so
+   `right` and `bottom` were being dropped and the picture ran out over two
+   sides of the frame. */
 .host-coverflow-still,
 .host-coverflow-video {
   position: absolute;
   inset: var(--phone-bezel);
+  width: calc(100% - 2 * var(--phone-bezel));
+  height: calc(100% - 2 * var(--phone-bezel));
   object-fit: cover;
   border-radius: var(--coverflow-screen-radius);
   display: block;
@@ -1437,8 +1451,11 @@ a:hover { color: var(--color-accent); }
    not move it. Insetting it by the bezel is the same result. */
 .maker:has(.maker-video) .maker-video {
   inset: var(--phone-bezel);
-  width: auto;
-  height: auto;
+  /* Spelled out for the same reason as the carousel's reels above: auto on
+     a replaced element means its intrinsic size, which drops the right and
+     bottom insets and lets the picture cover two sides of the frame. */
+  width: calc(100% - 2 * var(--phone-bezel));
+  height: calc(100% - 2 * var(--phone-bezel));
   border-radius: calc(14px - var(--phone-bezel));
 }
 .maker-play {
