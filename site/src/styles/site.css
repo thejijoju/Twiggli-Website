@@ -1024,7 +1024,10 @@ a:hover { color: var(--color-accent); }
 .btn-on-accent:hover { background: color-mix(in srgb, var(--color-bg) 15%, transparent); }
 .btn-on-accent:active { background: color-mix(in srgb, var(--color-bg) 25%, transparent); }
 
-/* — footer — black, and given room. The page's light theme stops here and
+/* — footer — black, and closed up: a third off its height, taken out of the
+   whitespace and the leading rather than off the ends of the band, so it
+   still reads as a footer and not as a strip of links. The page's light
+   theme stops here and
    the band closes it on type and space alone: no photograph, no logo mark,
    the wordmark set large enough to carry the brand by itself. White on
    black throughout, with the quieter text stepped down in opacity rather
@@ -1036,15 +1039,15 @@ a:hover { color: var(--color-accent); }
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 112px var(--gutter) 64px;
+  padding: 48px var(--gutter) 32px;
 }
 .footer-top {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 48px;
-  padding-bottom: 72px;
+  gap: 32px;
+  padding-bottom: 32px;
 }
 .footer-identity { flex: 1 1 420px; }
 /* A fifth of the display size it was first set at. The negative tracking
@@ -1062,7 +1065,7 @@ a:hover { color: var(--color-accent); }
   text-decoration: none;
 }
 .footer-tagline {
-  margin: 14px 0 0;
+  margin: 10px 0 0;
   max-width: 34ch;
   font-size: 17px;
   line-height: 1.5;
@@ -1088,13 +1091,13 @@ a:hover { color: var(--color-accent); }
 .footer-nav {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 48px;
-  padding: 56px 0;
+  gap: 32px;
+  padding: 24px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 .footer-col-title {
-  margin: 0 0 20px;
+  margin: 0 0 12px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -1104,8 +1107,8 @@ a:hover { color: var(--color-accent); }
 .footer-links {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  font-size: 17px;
+  gap: 8px;
+  font-size: 16px;
 }
 /* Undecorated until pointed at — a column of underlines is what made the
    old band read as a list of links rather than as a footer. */
@@ -1122,19 +1125,19 @@ a:hover { color: var(--color-accent); }
   text-underline-offset: 4px;
 }
 .footer-note {
-  margin: 40px 0 0;
+  margin: 24px 0 0;
   font-size: 14px;
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.4);
 }
 
 @media (max-width: 900px) {
-  .footer-inner { padding: 72px var(--gutter) 48px; }
-  .footer-top { padding-bottom: 48px; gap: 36px; }
-  .footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; padding: 44px 0; }
+  .footer-inner { padding: 40px var(--gutter) 28px; }
+  .footer-top { padding-bottom: 28px; gap: 26px; }
+  .footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 32px; padding: 20px 0; }
 }
 @media (max-width: 560px) {
-  .footer-nav { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .footer-nav { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
 
 /* Dark social strip, pinned above the nav at the top of the page. */
