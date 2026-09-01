@@ -87,12 +87,35 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
   <body>
     <div class="page">
       <SocialBar lang={lang} />
-      <Nav lang={lang} />
+      {/* The nav is pinned; the dark social strip above it is not, so it
+          scrolls away and leaves the transparent nav at the top edge. */}
+      <header class="site-header" data-site-header>
+        <Nav lang={lang} />
+      </header>
       <main>
         <slot />
       </main>
       <Footer lang={lang} />
     </div>
     <CookieBanner lang={lang} />
+    <script>
+      // The header paints nothing at rest — the page shows through it. Once
+      // the page has scrolled at all, content starts passing underneath, so
+      // a frosted layer fades in behind the links to keep them readable.
+      // Class toggle only; the appearance itself lives in site.css.
+      const header = document.querySelector('[data-site-header]');
+      if (header) {
+        let raf = 0;
+        const sync = () => {
+          raf = 0;
+          header.classList.toggle('is-stuck', window.scrollY > 4);
+        };
+        const onScroll = () => {
+          if (!raf) raf = requestAnimationFrame(sync);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        sync();
+      }
+    </script>
   </body>
 </html>

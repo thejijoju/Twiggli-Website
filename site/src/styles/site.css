@@ -70,6 +70,17 @@
   --color-accent-2-900: #292352;
 }
 
+/* ── Phone frame ───────────────────────────────────────────────────────
+   The hero mockups' bezel, lifted off the phones and made a token so every
+   video on the site sits in the same frame. Only the *thickness* and the
+   *colour* are shared — each video keeps its own size, and each tile keeps
+   its own outer radius, with the screen's radius derived from it so the
+   two stay concentric. Stills are left alone: the frame marks a video. */
+:root {
+  --phone-frame: #131313;
+  --phone-bezel: 8px;
+}
+
 body { margin: 0; text-wrap: pretty; }
 a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent); }
@@ -84,7 +95,11 @@ a:hover { color: var(--color-accent); }
 }
 .page > main { flex: 1; }
 
-[id] { scroll-margin-top: 24px; }
+/* Anchors have to clear the pinned header, or a jump-to-section lands with
+   its heading hidden underneath the nav. --header-h is the nav's own height
+   (its 20px padding either side of the 71px mark). */
+:root { --header-h: 111px; }
+[id] { scroll-margin-top: calc(var(--header-h) + 24px); }
 
 /* — shell — */
 .container {
@@ -107,6 +122,37 @@ a:hover { color: var(--color-accent); }
 /* For pages whose head is just a title and the content should start right
    under it — the schedule's calendar strip sits high on the page. */
 .section-flush { padding-top: 0; }
+
+/* — header — the nav is pinned to the top of the viewport and paints
+   nothing at rest, so the page runs under it rather than starting below a
+   solid bar. The dark social strip sits above it in normal flow and is
+   deliberately *not* pinned: it scrolls away on the first flick and leaves
+   the nav alone at the top edge.
+
+   Sticky rather than fixed, so the nav still occupies its own row at the top
+   of the page and nothing has to be padded down to compensate. */
+.site-header {
+  position: sticky;
+  top: 0;
+  /* Above the hero's stacked phone frames (z-index 1–3) and the cookie bar
+     (20), which is the tallest thing the chrome has to clear. */
+  z-index: 60;
+  background: transparent;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+/* Once anything has scrolled underneath, a frosted pane fades in behind the
+   links — still see-through, just enough to keep them legible over whatever
+   is passing below. Base.astro toggles the class. */
+.site-header.is-stuck {
+  background: color-mix(in srgb, var(--color-bg) 62%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+/* Without a blur to lean on, the tint has to do the legibility work alone. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header.is-stuck { background: color-mix(in srgb, var(--color-bg) 92%, transparent); }
+}
 
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
@@ -713,11 +759,10 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
-/* — hosts coverflow — a centre-focused reel: the active card sits large
-   and sharp in the middle, neighbours shrink and fade toward the edges
-   (scale/opacity are set per-card by HostGrid's scroll-linked script).
-   Click a side card to snap it to centre; click the centred card to
-   reveal its (placeholder) video state. */
+/* — hosts coverflow — a row of five reels, all one size: nothing is
+   scaled up in the middle or shrunk at the edges, so every card on screen
+   is equally watchable. Click any of them to play it; the track scrolls
+   on through the rest of the reels. */
 /* Full-width tinted bands, so these sections read as their own moments on
    the page rather than more blocks on white. Each sits outside .container
    for this; their kickers keep their own container inside.
@@ -783,6 +828,25 @@ a:hover { color: var(--color-accent); }
   display: block;
   transition: transform 0.3s ease;
 }
+/* Framed — see the --phone-bezel note at the top of the file. The bezel is
+   padding, so the video shrinks inside the tile rather than the tile
+   growing, and the two corner chips step in by the same amount so they sit
+   on the screen instead of straddling the frame. */
+.today-card:has(.today-video) .today-media {
+  padding: var(--phone-bezel);
+  background: var(--phone-frame);
+}
+.today-card:has(.today-video) .today-video {
+  border-radius: calc(18px - var(--phone-bezel));
+}
+.today-card:has(.today-video) .today-when {
+  left: calc(12px + var(--phone-bezel));
+  top: calc(12px + var(--phone-bezel));
+}
+.today-card:has(.today-video) .today-price {
+  right: calc(12px + var(--phone-bezel));
+  bottom: calc(12px + var(--phone-bezel));
+}
 .today-card:hover .today-media img,
 .today-card:hover .today-video { transform: scale(1.03); }
 .today-when {
@@ -832,14 +896,25 @@ a:hover { color: var(--color-accent); }
 }
 
 .host-coverflow {
-  /* The reel is the section, so the cards are sized to be watched rather
-     than glanced at: 360px against the 199px that once fitted five across
-     the container. Three are visible now and the outer pair runs past the
-     edge into the mask. On a phone it steps back to a share of the
-     viewport, so the card keeps a margin either side. */
-  --coverflow-card: 360px;
+  /* Five cards across the full width of the band — the track sits outside
+     .container for exactly this, since five at a watchable size need more
+     than the 1200px measure. The width is whatever divides the row into
+     five with the gaps taken out, capped at 300px so it stops growing on
+     very wide screens, and floored at 200px so it degrades into a scroller
+     rather than a row of thumbnails. On a phone it steps up to a share of
+     the viewport (below), one card at a time. */
+  --coverflow-gap: 12px;
+  /* 225px wide against a 9:16 screen puts the card at the same 400px tall
+     it was at 300 × 3:4 — the row keeps its height, each card just narrows
+     into a phone. Five still fit with room to spare; the floor lets it
+     degrade into a scroller on a tablet rather than shrinking to
+     thumbnails. */
+  --coverflow-card: clamp(170px, calc((100% - 4 * var(--coverflow-gap)) / 5), 225px);
+  /* The screen's radius; the frame's is this plus the bezel, so the two are
+     concentric. Deep, because this one is meant to read as a phone. */
+  --coverflow-screen-radius: 26px;
   display: flex;
-  gap: 12px;
+  gap: var(--coverflow-gap);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -865,13 +940,30 @@ a:hover { color: var(--color-accent); }
   transform-origin: center;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
+/* The card is a phone: the hero mockups' bezel and colour around a 9:16
+   screen, with a dynamic-island pill at the top. Vertical video in a black
+   frame this shape reads as a reel on a phone before anyone reads a word
+   of the section. */
 .host-coverflow-media {
   position: relative;
-  aspect-ratio: 3 / 4;
-  border-radius: 20px;
+  aspect-ratio: 9 / 16;
+  border-radius: calc(var(--coverflow-screen-radius) + var(--phone-bezel));
   overflow: hidden;
-  background: #000;
+  background: var(--phone-frame);
   box-shadow: var(--shadow-lg);
+}
+.host-coverflow-media::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--phone-bezel) + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--phone-frame);
+  z-index: 2;
+  pointer-events: none;
 }
 .host-coverflow-card.is-active .host-coverflow-media {
   box-shadow: 0 24px 56px color-mix(in srgb, #2d2b2b 34%, transparent);
@@ -880,6 +972,7 @@ a:hover { color: var(--color-accent); }
   position: absolute;
   inset: 0;
   margin: auto;
+  z-index: 3;
   width: 52px;
   height: 52px;
   display: flex;
@@ -892,7 +985,7 @@ a:hover { color: var(--color-accent); }
 }
 .host-coverflow-video-placeholder {
   position: absolute;
-  inset: 0;
+  inset: var(--phone-bezel);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -906,22 +999,19 @@ a:hover { color: var(--color-accent); }
   transition: opacity 0.2s ease;
 }
 /* The still a card falls back to when its host has no reel — same box as
-   the video, so the coverflow scales it identically. */
-.host-coverflow-still {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+   the video, so a card without footage still frames up identically.
+   Both sit inset by the bezel: they are the screen, not the phone. */
+.host-coverflow-still,
 .host-coverflow-video {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: var(--phone-bezel);
   object-fit: cover;
+  border-radius: var(--coverflow-screen-radius);
   display: block;
+}
+/* The placeholder and the play button are screen furniture too. */
+.host-coverflow-video-placeholder {
+  border-radius: var(--coverflow-screen-radius);
 }
 .host-coverflow-card.is-playing .host-coverflow-play { opacity: 0; }
 .host-coverflow-card.is-playing .host-coverflow-video-placeholder {
@@ -948,7 +1038,8 @@ a:hover { color: var(--color-accent); }
 }
 
 @media (max-width: 480px) {
-  .host-coverflow { --coverflow-card: 82vw; }
+  /* One reel at a time, sized so the frame still fits on screen whole. */
+  .host-coverflow { --coverflow-card: min(62vw, 260px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .host-coverflow { scroll-behavior: auto; }
@@ -1275,6 +1366,9 @@ a:hover { color: var(--color-accent); }
 }
 
 @media (max-width: 720px) {
+  /* The compressed height, below — an anchor is only ever jumped to with
+     the page scrolled, which is exactly when the header is compressed. */
+  :root { --header-h: 62px; }
   .nav {
     padding: 16px 20px;
     flex-wrap: wrap;
@@ -1286,6 +1380,28 @@ a:hover { color: var(--color-accent); }
     flex-wrap: wrap;
   }
   .nav a.nav-cta { padding: 10px 18px; font-size: 14px; }
+
+  /* At rest the nav wraps over three rows on a phone, which is fine at the
+     top of the page and far too much to pin there. Once it is stuck it
+     collapses into a single compact bar: a smaller mark, and the links in
+     one row that swipes sideways rather than wrapping — so nothing is
+     dropped from the navigation to buy the height. */
+  .site-header.is-stuck .nav {
+    flex-wrap: nowrap;
+    padding: 8px 16px;
+    gap: 12px;
+  }
+  .site-header.is-stuck .nav-logo { width: 40px; height: 40px; }
+  .site-header.is-stuck .nav-end {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 14px;
+    font-size: 14px;
+  }
+  .site-header.is-stuck .nav-end::-webkit-scrollbar { display: none; }
+  .site-header.is-stuck .nav-end a { white-space: nowrap; }
+  .site-header.is-stuck .nav a.nav-cta { padding: 8px 14px; font-size: 13px; }
 }
 
 @media (max-width: 520px) {
@@ -1340,6 +1456,16 @@ a:hover { color: var(--color-accent); }
   aspect-ratio: 1 / 1;
   max-width: 420px;
   cursor: pointer;
+  background: var(--phone-frame);
+}
+/* The reel is positioned rather than in flow, and an absolutely positioned
+   child is laid out against the *padding* box — padding on the tile would
+   not move it. Insetting it by the bezel is the same result. */
+.maker:has(.maker-video) .maker-video {
+  inset: var(--phone-bezel);
+  width: auto;
+  height: auto;
+  border-radius: calc(14px - var(--phone-bezel));
 }
 .maker-play {
   position: absolute;
@@ -1785,7 +1911,22 @@ a:hover { color: var(--color-accent); }
   display: block;
 }
 /* A reel tile plays on tap instead of linking out — see DayPicker. */
-.session-thumb:has(.session-video) { cursor: pointer; }
+.session-thumb:has(.session-video) {
+  cursor: pointer;
+  padding: var(--phone-bezel);
+  background: var(--phone-frame);
+}
+.session-thumb .session-video { border-radius: calc(16px - var(--phone-bezel)); }
+/* The grid view's corner chips clear the bezel the same way the teaser's
+   do — 8px off the frame's edge would land them half on the frame. */
+.daypicker[data-view='grid'] .daysessions .session-thumb:has(.session-video) .session-timechip {
+  top: calc(8px + var(--phone-bezel));
+  left: calc(8px + var(--phone-bezel));
+}
+.daypicker[data-view='grid'] .daysessions .session-thumb:has(.session-video) .session-availbadge {
+  bottom: calc(8px + var(--phone-bezel));
+  right: calc(8px + var(--phone-bezel));
+}
 /* Stand-in for a host whose photos have not arrived — see HostMonogram.
    Fills whatever tile it sits in, square or banner. */
 .media-monogram {
@@ -2240,6 +2381,8 @@ a:hover { color: var(--color-accent); }
   .session { grid-template-columns: 96px minmax(0, 1fr) auto; gap: 4px 14px; }
   .session-side { column-gap: 10px; }
   .session-thumb { width: 96px; height: 96px; border-radius: 12px; }
+  /* Concentric with the smaller tile — the bezel itself keeps its width. */
+  .session-thumb .session-video { border-radius: calc(12px - var(--phone-bezel)); }
   .session-title { font-size: 17px; }
   .timegroup-head { font-size: 22px; }
 }

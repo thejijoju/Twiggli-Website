@@ -18,6 +18,12 @@ interface Props {
 }
 const { hosts, layout = 'grid', lang = DEFAULT_LANG } = Astro.props;
 
+/* The carousel is a reel of reels — five of them on screen at once — so it
+   only carries hosts whose footage has actually landed. A card with a still
+   (or worse, a monogram) in that row reads as a gap, and the directory grid
+   below is where every host belongs anyway. */
+const carouselHosts = hosts.filter((host) => host.video);
+
 /* A card's name and specialty lead to that host's next session on the
    calendar. getSessions comes back in calendar order, so the first one a
    slug appears in is the next one they teach. A host with nothing on the
@@ -44,7 +50,7 @@ const videoPlaceholder = {
 {layout === 'carousel' ? (
   <div class="host-coverflow" data-host-coverflow>
     <div class="host-coverflow-spacer" aria-hidden="true"></div>
-    {hosts.map((host) => (
+    {carouselHosts.map((host) => (
       <div
         class="host-coverflow-card"
         tabindex="0"
@@ -126,10 +132,9 @@ const videoPlaceholder = {
       if (v) { v.pause(); v.currentTime = 0; }
     };
 
-    // One card-plus-gap. Distance is measured in these rather than as a
-    // fraction of the track, so a card two places out looks the same however
-    // wide the viewport is — the falloff is what makes five cards read as
-    // 2 / 1 big / 2.
+    // One card-plus-gap. Distance from the centre is measured in these, so a
+    // card's place in the row (centre, neighbour, edge) is the same number
+    // however wide the viewport is.
     const step = () =>
       cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : 1;
 
@@ -142,10 +147,11 @@ const videoPlaceholder = {
         const r = card.getBoundingClientRect();
         const dist = Math.abs(r.left + r.width / 2 - center);
         const norm = dist / s;
-        card.style.transform = `scale(${Math.max(1 - norm * 0.16, 0.56)})`;
-        card.style.opacity = String(Math.max(1 - norm * 0.2, 0.4));
         card.classList.toggle('is-active', norm < 0.5);
-        if (norm >= 0.5 && card.classList.contains('is-playing')) stop(card);
+        // Every card is the same size now, so being off-centre no longer
+        // means being too small to watch: a reel only stops once its card
+        // has scrolled out of the five on screen.
+        if (norm > 2.5 && card.classList.contains('is-playing')) stop(card);
       });
     };
     const onScroll = () => {
@@ -170,16 +176,20 @@ const videoPlaceholder = {
     };
 
     cards.forEach((card) => {
+      // All five on screen are full-size and watchable, so a click plays the
+      // card it landed on rather than first dragging it to the middle. Only
+      // a card sitting outside the row still centres itself first.
       const activate = () => {
-        if (!card.classList.contains('is-active')) {
-          card.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
-          return;
-        }
         if (card.classList.contains('is-playing')) {
           stop(card);
           return;
         }
         play(card);
+        card.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          inline: 'nearest',
+          block: 'nearest',
+        });
       };
       card.addEventListener('click', activate);
       // The name below the reel is a link out to the calendar; without this
@@ -200,9 +210,8 @@ const videoPlaceholder = {
       });
     });
 
-    // Open on the third card, so the default view is two cards, the big one,
-    // then two more — rather than the first card centred with nothing left
-    // of it.
+    // Open on the third card, so the default view is the full row of five
+    // rather than the first card centred with nothing to the left of it.
     const openOn = Math.min(2, cards.length - 1);
     const settle = () => {
       track.scrollLeft = openOn * (step() || 0);

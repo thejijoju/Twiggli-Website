@@ -42,9 +42,9 @@ const hosts = getHosts(lang);
     <div class="container">
       <span class="kicker">Unsere Gastgeber</span>
     </div>
-    <div class="container">
-      <HostGrid hosts={hosts} layout="carousel" lang={lang} />
-    </div>
+    {/* Outside .container on purpose: five cards side by side need more
+        room than the 1200px measure, and the track fades at both edges. */}
+    <HostGrid hosts={hosts} layout="carousel" lang={lang} />
     <div class="container hosts-band-actions">
       <a href={withBase('/de/corporatebookings/')} class="btn btn-primary">Alle {hosts.length} Gastgeber ansehen</a>
     </div>
