@@ -139,7 +139,8 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                     muted
                     loop
                     playsinline
-                    preload="none"
+                    autoplay={feature.hoverOnly ? undefined : true}
+                    preload={feature.hoverOnly ? 'none' : 'auto'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -165,7 +166,8 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                     muted
                     loop
                     playsinline
-                    preload="none"
+                    autoplay={mediaA.hoverOnly ? undefined : true}
+                    preload={mediaA.hoverOnly ? 'none' : 'auto'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -190,7 +192,8 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                     muted
                     loop
                     playsinline
-                    preload="none"
+                    autoplay={infoCard.hoverOnly ? undefined : true}
+                    preload={infoCard.hoverOnly ? 'none' : 'auto'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -216,7 +219,8 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                     muted
                     loop
                     playsinline
-                    preload="none"
+                    autoplay={mediaB.hoverOnly ? undefined : true}
+                    preload={mediaB.hoverOnly ? 'none' : 'auto'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -260,8 +264,14 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
      a mockup playing three videos off-screen costs the visitor bandwidth for
      something nobody is looking at. `muted` + `playsinline` are what let a
      clip autoplay at all — iOS blocks anything with sound, and without
-     playsinline it takes over the screen. preload="none" means the poster is
-     all that loads until then. */
+     playsinline it takes over the screen.
+
+     The two that run carry the autoplay attribute as well as being started
+     from here: the browser's own handling of a muted autoplay is steadier
+     than one play() call from script, which is refused if it lands before
+     the clip has any data — and with preload="none" it always did. Those two
+     preload for real; the three that wait for a pointer keep preload="none",
+     so nothing but their posters loads until asked for. */
   const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.phone-card-video'));
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const phone = document.querySelector('.hero-visual');
@@ -274,7 +284,27 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
      cards that would otherwise make the whole screen move at once. */
   const auto = videos.filter((v) => v.dataset.hoverOnly === undefined);
   const onDemand = videos.filter((v) => v.dataset.hoverOnly !== undefined);
-  const playAuto = () => { for (const v of auto) v.play().catch(() => {}); };
+
+  /* Reduced motion has to win over the autoplay attribute the two running
+     clips carry in the markup — the browser acts on that before this script
+     is reached, so it is taken off them here rather than merely not called. */
+  if (still) {
+    for (const v of auto) {
+      v.autoplay = false;
+      v.removeAttribute('autoplay');
+      v.pause();
+    }
+  }
+
+  const start = (v: HTMLVideoElement) =>
+    v.play().catch(() => {
+      /* A play() on a clip with nothing buffered yet gets refused outright,
+         and that first attempt is often made before a byte has arrived. One
+         retry, the moment there is a frame to show. Without it the two cards
+         that are supposed to run sit on their posters for good. */
+      v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
+    });
+  const playAuto = () => { if (!still) for (const v of auto) start(v); };
 
   if (videos.length && phone) {
     if (auto.length && !still) {
@@ -300,7 +330,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
     for (const video of onDemand) {
       const tile = video.parentElement;
       if (!tile) continue;
-      tile.addEventListener('pointerenter', () => video.play().catch(() => {}));
+      tile.addEventListener('pointerenter', () => start(video));
       tile.addEventListener('pointerleave', () => video.pause());
     }
   }
