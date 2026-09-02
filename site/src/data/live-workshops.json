@@ -3525,7 +3525,8 @@
       "price": "€55",
       "district": "Treptow",
       "url": "https://karen-rose.com/events-2/?re-product-id=229220",
-      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
+      "spots": 8
     },
     {
       "slug": "whittle",
@@ -9666,6 +9667,19 @@
       "district": "Kaulsdorf",
       "url": "https://imkerei-kohfink.de/IMKERKURSE/",
       "image": "https://imkerei-kohfink.de/.cm4all/uproc.php/0/Hotelhonig%201.jpg"
+    },
+    {
+      "slug": "karen-rose",
+      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=229220",
+      "title": "Shampoo Naturkosmetik Workshop",
+      "titleEn": "Shampoo Natural Cosmetics Workshop",
+      "date": "2026-11-14",
+      "duration": "3 h",
+      "price": "€55",
+      "district": "Treptow",
+      "url": "https://karen-rose.com/events-2/?re-product-id=229220",
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
+      "spots": 8
     }
   ]
 }

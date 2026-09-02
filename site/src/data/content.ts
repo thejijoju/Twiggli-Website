@@ -634,10 +634,11 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
   },
   // Karen-Rose teaches half a dozen formats, so hers are keyed by topic
   // rather than by one dated title: every future Duftkerzen date plays the
-  // candle reel, every Terrazzo one the terrazzo reel, whatever wording her
-  // booking page carries that month. Anything of hers with neither word in
-  // it — soap, shampoo, the cosmetics classes — falls back to her general
-  // reel, the herb-salt table.
+  // candle reel, every Terrazzo one the terrazzo reel, every Naturkosmetik
+  // one the cosmetics reel, whatever wording her booking page carries that
+  // month. What none of those words match — her soap class — falls back to
+  // her general reel, the herb-salt table, which is also the one the hosts
+  // carousel draws her with.
   'karen-rose': {
     // Terrazzo chips being crushed and spread with tweezers. Hers, audio
     // stripped. One 46-second take with a single "Satisfying" sticker near
@@ -654,6 +655,16 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
     Duftkerzen: {
       video: '/video/karen-rose-duftkerzen.mp4',
       poster: '/video/karen-rose-duftkerzen-poster.jpg',
+    },
+    // The cosmetics bench itself: melting over the bain-marie, powder on the
+    // scale, essential oil from the dropper, kneading, the finished bar in
+    // her hands. Hers, audio stripped, and clean — no captions anywhere in
+    // it. Covers all three of her cosmetics formats (the 3h workshop, its
+    // Essentials cut, and the shampoo one), which had been falling back to
+    // the herb-salt table.
+    Naturkosmetik: {
+      video: '/video/karen-rose-naturkosmetik.mp4',
+      poster: '/video/karen-rose-naturkosmetik-poster.jpg',
     },
   },
 };
