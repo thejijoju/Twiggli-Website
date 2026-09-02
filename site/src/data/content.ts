@@ -296,7 +296,8 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'ana', name: 'Ana', specialty: 'Breathwork, movement & voice', studio: 'Resonant Body',
       blurb: 'An embodied wellbeing practice combining breathwork, movement, voice, somatic awareness and creative exploration. Playful, accessible exercises help teams reconnect and reduce stress.',
       group: '8–20', duration: '1.5–6 h', place: 'Your office / a Berlin studio', languages: 'EN · DE · ES · FR · PT' },
-    // Copy from her own catalog (karen-rose.com); photos and reel to follow.
+    // Copy from her own catalog (karen-rose.com); photos to follow. Her reel
+    // has landed — see `reels` below.
     { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Natural cosmetics, soap & terrazzo',
       blurb: 'Make-it-yourself workshops in Berlin: organic natural cosmetics, vegan soap and shampoo, scented candles, and terrazzo ceramics and jewellery. Few but good ingredients — and everything you make goes home with you.',
       group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },
@@ -594,6 +595,16 @@ const reels: Record<string, { video: string; poster: string }> = {
   // host. UNCONFIRMED — if it was shot with a specific maker, move the slug
   // here and the carousel and directory both follow.
   pia: { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
+  // Karen-Rose's herb- and flower-salt table: the salt going into the jar,
+  // the blossoms stirred through it, and the finished KRÄUTERSALZ. Hers,
+  // audio stripped like the rest.
+  //
+  // Her cut opened and closed on story captions burnt into the picture
+  // ("Kräuter- und Blütensalze herstellen als Team Event", and a mail-us
+  // card at the end), both of them set over the middle of the frame where
+  // no crop reaches. The clean stretch between them — 3.6s to 19.55s of the
+  // original — is what ships; nothing is painted over or blurred.
+  'karen-rose': { video: '/video/karen-rose.mp4', poster: '/video/karen-rose-poster.jpg' },
 };
 
 /** Reels for a single workshop rather than a whole host. A host running
