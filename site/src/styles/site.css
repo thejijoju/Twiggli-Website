@@ -768,14 +768,14 @@ a:hover { color: var(--color-accent); }
    the page rather than more blocks on white. Each sits outside .container
    for this; their kickers keep their own container inside.
    The warm band runs at half opacity over the white page. */
-/* The hosts band is the one section that runs dark-ward: a warm cream at
-   the top settling into a deeper sand at the bottom, so the reel of faces
-   sits on something with a floor rather than on flat tint. A shallow wave
-   in the page's own white breaks the top edge — a few pixels of movement,
-   not a decoration. */
+/* The hosts band is barely tinted: the palest cream at the top settling a
+   shade warmer at the bottom, so the reel of faces sits on something with a
+   floor without the band itself competing with the phones on it. A shallow
+   wave in the page's own white breaks the top edge — a few pixels of
+   movement, not a decoration. */
 .hosts-band {
   position: relative;
-  background: linear-gradient(180deg, #fdf8ea 0%, #f8efd6 52%, #eee0bc 100%);
+  background: linear-gradient(180deg, #fdfbf6 0%, #faf7ee 50%, #f5f0e3 100%);
 }
 .hosts-band::before {
   content: '';
@@ -905,12 +905,16 @@ a:hover { color: var(--color-accent); }
      rather than a row of thumbnails. On a phone it steps up to a share of
      the viewport (below), one card at a time. */
   --coverflow-gap: 12px;
-  /* 225px wide against a 9:16 screen puts the card at the same 400px tall
-     it was at 300 × 3:4 — the row keeps its height, each card just narrows
-     into a phone. Five still fit with room to spare; the floor lets it
-     degrade into a scroller on a tablet rather than shrinking to
+  /* Exactly five across, at any window width. The card is a fifth of the
+     track, capped at 280px so the phones stop growing on a wide screen —
+     and the track is capped to match (five of those plus their gaps plus
+     the gutters), so past that width the row centres itself in the band
+     rather than letting a sixth card creep in at the edge. The floor lets
+     it fall back to a scroller on a tablet instead of shrinking to
      thumbnails. */
-  --coverflow-card: clamp(170px, calc((100% - 4 * var(--coverflow-gap)) / 5), 225px);
+  --coverflow-card: clamp(190px, calc((100% - 4 * var(--coverflow-gap)) / 5), 280px);
+  max-width: calc(5 * 280px + 4 * var(--coverflow-gap) + 2 * var(--gutter));
+  margin-inline: auto;
   /* The screen's radius; the frame's is this plus the bezel, so the two are
      concentric. Deep, because this one is meant to read as a phone. */
   --coverflow-screen-radius: 26px;
@@ -940,6 +944,9 @@ a:hover { color: var(--color-accent); }
   scroll-snap-align: start;
   cursor: pointer;
   text-align: center;
+  /* The edge cards fade back; HostGrid's scroll-linked script sets the
+     value, this only makes the change ride along with the scale. */
+  transition: opacity 0.2s ease;
 }
 /* The card is a phone: the hero mockups' bezel and colour on all four
    sides of a 9:16 screen. Vertical video in a black frame this shape reads
