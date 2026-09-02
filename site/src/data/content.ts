@@ -632,6 +632,17 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
       poster: '/video/nina-klangentspannung-poster.jpg',
     },
   },
+  'karen-rose': {
+    // Terrazzo chips being crushed and spread with tweezers — the making of
+    // the jewellery, not the cosmetics bench her general reel shows. Hers,
+    // audio stripped. One 46-second take with a single "Satisfying" sticker
+    // near the top between roughly 12.8s and 15.5s; the 20s–36s window that
+    // ships is well clear of it on both sides.
+    'Terrazzo Schmuck': {
+      video: '/video/karen-rose-terrazzo.mp4',
+      poster: '/video/karen-rose-terrazzo-poster.jpg',
+    },
+  },
 };
 
 /** The reel for one workshop, if it has its own. */
