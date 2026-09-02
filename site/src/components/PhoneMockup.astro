@@ -152,14 +152,6 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                   <svg class:list={['phone-card-heart', feature.liked && 'is-liked']} viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
                 </div>
                 <div class="phone-card-when"><span>{feature.date}</span><span>{feature.time}</span></div>
-                <span class="phone-card-distance">{feature.distance}</span>
-                <hr class="phone-card-rule" />
-                <p class="phone-card-host">{feature.host}</p>
-                <div class="phone-card-rating">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4L12 17.4l-5.8 3 1.1-6.4-4.7-4.6 6.5-.9Z" /></svg>
-                  <strong>{feature.rating}</strong>
-                  <span>({feature.ratingCount})</span>
-                </div>
               </div>
             </div>
             <div class="phone-card">
@@ -167,6 +159,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {mediaA.video ? (
                   <video
                     class="phone-card-video"
+                    data-hover-only={mediaA.hoverOnly ? '' : undefined}
                     src={mediaA.video}
                     poster={mediaA.poster}
                     muted
@@ -210,14 +203,6 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                   <svg class:list={['phone-card-heart', infoCard.liked && 'is-liked']} viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.9 13a4.7 4.7 0 0 1 0-6.6 4.5 4.5 0 0 1 6.5 0l.6.7.6-.7a4.5 4.5 0 0 1 6.5 0 4.7 4.7 0 0 1 0 6.6Z" /></svg>
                 </div>
                 <div class="phone-card-when"><span>{infoCard.date}</span><span>{infoCard.time}</span></div>
-                <span class="phone-card-distance">{infoCard.distance}</span>
-                <hr class="phone-card-rule" />
-                <p class="phone-card-host">{infoCard.host}</p>
-                <div class="phone-card-rating">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4L12 17.4l-5.8 3 1.1-6.4-4.7-4.6 6.5-.9Z" /></svg>
-                  <strong>{infoCard.rating}</strong>
-                  <span>({infoCard.ratingCount})</span>
-                </div>
               </div>
             </div>
             <div class="phone-card">
@@ -225,6 +210,7 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {mediaB.video ? (
                   <video
                     class="phone-card-video"
+                    data-hover-only={mediaB.hoverOnly ? '' : undefined}
                     src={mediaB.video}
                     poster={mediaB.poster}
                     muted
@@ -267,7 +253,10 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
   /* The mockup's thumbnails are clips, so the phone shows the app doing the
      thing the page is describing rather than a frozen screenshot.
 
-     They start only when the phone scrolls into view and stop when it leaves:
+     Two of the four run on their own — the top-left card and the one
+     diagonally opposite at the bottom right, so the movement reads across
+     the screen rather than down one side. The other two wait for the
+     pointer. They start only when the phone scrolls into view and stop when it leaves:
      a mockup playing three videos off-screen costs the visitor bandwidth for
      something nobody is looking at. `muted` + `playsinline` are what let a
      clip autoplay at all — iOS blocks anything with sound, and without
@@ -277,12 +266,12 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const phone = document.querySelector('.hero-visual');
 
-  /* Two kinds of clip in here. Most run with the feed, so the phone shows
-     the app doing the thing the page describes rather than a frozen
+  /* Two kinds of clip in here. The ones that run with the feed show the app
+     doing the thing the page describes rather than sitting on a frozen
      screenshot. The ones marked hover-only wait for the pointer and stop
      when it leaves — the back phone's full-screen reel, which would
-     otherwise pull the eye off the screen in front of it, and the second
-     titled card, which would otherwise compete with the first. */
+     otherwise pull the eye off the screen in front of it, and the two feed
+     cards that would otherwise make the whole screen move at once. */
   const auto = videos.filter((v) => v.dataset.hoverOnly === undefined);
   const onDemand = videos.filter((v) => v.dataset.hoverOnly !== undefined);
   const playAuto = () => { for (const v of auto) v.play().catch(() => {}); };

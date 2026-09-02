@@ -753,10 +753,6 @@ export type PhoneCard = {
   title: string;
   date?: string;
   time?: string;
-  distance?: string;
-  host?: string;
-  rating?: string;
-  ratingCount?: string;
   photo?: string;
   video?: string;
   poster?: string;
@@ -775,17 +771,17 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
   // to stay the screenshot's.
   en: [
     { id: 'phone-front-1', title: 'Bird sketching & watercolour', date: 'Mon, Oct 16', time: '9AM–10.30AM',
-      distance: '5 km away', host: 'Maximiliana', rating: '5', ratingCount: '1', liked: true, photo: '/img/hero/bachata.jpg' },
+      liked: true, photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Wood & soap carving', date: 'Mon, Oct 16', time: '4PM–6PM',
-      distance: '2 km away', host: 'Nicole', rating: '4.8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
+      photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Hiking meetup', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
     { id: 'phone-front-1', title: 'Vogelskizzen & Aquarell', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
-      distance: '5 km entfernt', host: 'Maximiliana', rating: '5', ratingCount: '1', liked: true, photo: '/img/hero/bachata.jpg' },
+      liked: true, photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Holz- & Seifenschnitzen', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
-      distance: '2 km entfernt', host: 'Nicole', rating: '4,8', ratingCount: '4', photo: '/img/hero/bouldering.jpg' },
+      photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Wander-Treffen', photo: '/img/hero/hiking.jpg' },
   ],
@@ -814,7 +810,11 @@ const phoneReels: Record<string, { video: string; poster: string; hoverOnly?: bo
   // Nicole's carving, and it waits for the pointer — two titled cards
   // running at once fight each other for the eye.
   'phone-front-2': { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg', hoverOnly: true },
-  'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg' },
+  // Bottom left waits for the pointer as well: the two that run on their own
+  // are the top-left card and the one diagonally opposite it at the bottom
+  // right, so the movement crosses the screen instead of running down one
+  // side of it or setting the whole feed going at once.
+  'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg', hoverOnly: true },
   'phone-front-4': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
 };
 

@@ -475,9 +475,30 @@ a:hover { color: var(--color-accent); }
   gap: 10px;
   flex: 1;
   overflow: hidden;
-  align-items: start;
+  /* Stretch, not start: the columns take the whole height the feed has, so
+     the bottom card of each can claim whatever the titled card above it
+     leaves. */
+  align-items: stretch;
 }
-.phone-feed-col { display: flex; flex-direction: column; gap: 10px; }
+.phone-feed-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+/* The bottom card takes the rest of the column and runs a little past the
+   end of it, where the feed's overflow crops it: the app's feed carries on
+   under the nav, and a card stopping short of it with white underneath
+   would read as the end of the list. */
+.phone-feed-col > .phone-card:last-child {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: -18px;
+}
+.phone-feed-col > .phone-card:last-child .phone-card-media {
+  aspect-ratio: auto;
+  height: 100%;
+}
 .phone-card-media {
   aspect-ratio: 1 / 1.05;
   overflow: hidden;
@@ -534,25 +555,9 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 78%, transparent);
   margin-top: 3px;
 }
-.phone-card-distance {
-  display: inline-block;
-  font-size: 10.5px;
-  text-decoration: underline;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
-  margin-top: 5px;
-}
-.phone-card-rule { border: 0; height: 1px; background: #ececec; margin: 7px 0 5px; }
-.phone-card-host { font-size: 12px; font-weight: 600; margin: 0; }
-.phone-card-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10.5px;
-  margin-top: 3px;
-}
-.phone-card-rating svg { width: 12px; height: 12px; fill: #c4c4c4; }
-.phone-card-rating strong { font-weight: 600; }
-.phone-card-rating span { color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+/* The titled cards carry a title, a heart and the date line, and stop
+   there — the distance, the divider, the host name and the star rating are
+   gone, which is what lets the two bottom cards ride up the screen. */
 .phone-photo { flex: 1; overflow: hidden; border-radius: 0 0 30px 30px; }
 /* — the app's bottom nav — */
 .phone-nav {
