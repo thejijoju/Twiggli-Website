@@ -632,25 +632,52 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
       poster: '/video/nina-klangentspannung-poster.jpg',
     },
   },
+  // Karen-Rose teaches half a dozen formats, so hers are keyed by topic
+  // rather than by one dated title: every future Duftkerzen date plays the
+  // candle reel, every Terrazzo one the terrazzo reel, whatever wording her
+  // booking page carries that month. Anything of hers with neither word in
+  // it — soap, shampoo, the cosmetics classes — falls back to her general
+  // reel, the herb-salt table.
   'karen-rose': {
-    // Terrazzo chips being crushed and spread with tweezers — the making of
-    // the jewellery, not the cosmetics bench her general reel shows. Hers,
-    // audio stripped. One 46-second take with a single "Satisfying" sticker
-    // near the top between roughly 12.8s and 15.5s; the 20s–36s window that
-    // ships is well clear of it on both sides.
-    'Terrazzo Schmuck': {
+    // Terrazzo chips being crushed and spread with tweezers. Hers, audio
+    // stripped. One 46-second take with a single "Satisfying" sticker near
+    // the top between roughly 12.8s and 15.5s; the 20s–36s window that ships
+    // is well clear of it on both sides.
+    Terrazzo: {
       video: '/video/karen-rose-terrazzo.mp4',
       poster: '/video/karen-rose-terrazzo-poster.jpg',
+    },
+    // The candle bench: wax melting in the bain-marie, the studio wall, the
+    // pour, and the finished jars dressed with petals. Hers, audio stripped
+    // — kept whole at her request, so her own Instagram handle sticker and
+    // the "Schön war's!" end card are still in the picture.
+    Duftkerzen: {
+      video: '/video/karen-rose-duftkerzen.mp4',
+      poster: '/video/karen-rose-duftkerzen-poster.jpg',
     },
   },
 };
 
-/** The reel for one workshop, if it has its own. */
+/** The reel for one workshop, if it has its own.
+ *
+ *  An exact title wins; failing that the title is matched against the keys
+ *  as topics — the longest key it contains, case-insensitively. Footage of a
+ *  format is footage of that format whenever it next runs, and a host's own
+ *  wording drifts between dates ("Duftkerzen Workshop (vegan + nachhaltig)"
+ *  one month, "Duftkerzen Workshop Berlin" the next), which an exact key
+ *  would silently stop matching. Longest-first so a specific key still beats
+ *  a general one that happens to be a substring of the same title. */
 export const getWorkshopReel = (
   slug: string,
   title: string,
 ): { video: string; poster: string } | undefined => {
-  const reel = workshopReels[slug]?.[title];
+  const forHost = workshopReels[slug];
+  if (!forHost) return undefined;
+  const haystack = title.toLowerCase();
+  const topicKey = Object.keys(forHost)
+    .filter((key) => haystack.includes(key.toLowerCase()))
+    .sort((a, b) => b.length - a.length)[0];
+  const reel = forHost[title] ?? (topicKey ? forHost[topicKey] : undefined);
   return reel ? { video: withBase(reel.video), poster: withBase(reel.poster) } : undefined;
 };
 
