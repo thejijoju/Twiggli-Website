@@ -4454,16 +4454,17 @@
     },
     {
       "slug": "karen-rose",
-      "sourceUrl": "https://karen-rose.com/events-2/",
+      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=265107",
       "title": "Seife Sieden Workshop",
       "date": "2026-09-26",
       "time": "11:00",
       "duration": "3 h",
       "price": "€99",
       "district": "Treptow",
-      "url": "https://karen-rose.com/events-2/",
+      "url": "https://karen-rose.com/events-2/?re-product-id=265107",
       "titleEn": "Soap Making Workshop",
-      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
+      "spots": 2
     },
     {
       "slug": "whittle",
@@ -8628,16 +8629,17 @@
     },
     {
       "slug": "karen-rose",
-      "sourceUrl": "https://karen-rose.com/events-2/",
+      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=265107",
       "title": "Seife Sieden Workshop",
       "date": "2026-11-21",
       "time": "11:00",
       "duration": "3 h",
       "price": "€99",
       "district": "Treptow",
-      "url": "https://karen-rose.com/events-2/",
+      "url": "https://karen-rose.com/events-2/?re-product-id=265107",
       "titleEn": "Soap Making Workshop",
-      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
+      "soldOut": true
     },
     {
       "slug": "mampe",
@@ -9680,6 +9682,34 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=229220",
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
       "spots": 8
+    },
+    {
+      "slug": "karen-rose",
+      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=265107",
+      "title": "Seife Sieden Workshop",
+      "date": "2026-11-20",
+      "time": "18:00",
+      "duration": "3 h",
+      "price": "€99",
+      "district": "Treptow",
+      "url": "https://karen-rose.com/events-2/?re-product-id=265107",
+      "titleEn": "Soap Making Workshop",
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
+      "spots": 3
+    },
+    {
+      "slug": "karen-rose",
+      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=265107",
+      "title": "Seife Sieden Workshop",
+      "date": "2026-11-22",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€99",
+      "district": "Treptow",
+      "url": "https://karen-rose.com/events-2/?re-product-id=265107",
+      "titleEn": "Soap Making Workshop",
+      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
+      "spots": 2
     }
   ]
 }

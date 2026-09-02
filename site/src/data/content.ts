@@ -636,9 +636,9 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
   // rather than by one dated title: every future Duftkerzen date plays the
   // candle reel, every Terrazzo one the terrazzo reel, every Naturkosmetik
   // one the cosmetics reel, whatever wording her booking page carries that
-  // month. What none of those words match — her soap class — falls back to
-  // her general reel, the herb-salt table, which is also the one the hosts
-  // carousel draws her with.
+  // month. Every format she runs is covered now; her general reel, the
+  // herb-salt table, is what the hosts carousel still draws her with and
+  // what any format she adds falls back to until it has footage of its own.
   'karen-rose': {
     // Terrazzo chips being crushed and spread with tweezers. Hers, audio
     // stripped. One 46-second take with a single "Satisfying" sticker near
@@ -665,6 +665,20 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
     Naturkosmetik: {
       video: '/video/karen-rose-naturkosmetik.mp4',
       poster: '/video/karen-rose-naturkosmetik-poster.jpg',
+    },
+    // Soap: the cured loaves out of their wooden moulds and cut into bars,
+    // dried flowers through every one. Hers, audio stripped.
+    //
+    // Her cut is captioned start to finish — a typewriter track that runs
+    // the length of it — so this is the one reel where the text is cropped
+    // out rather than trimmed around. Everything after the opening "POV"
+    // block sits below y=880 of the 1280, and the work is in the top two
+    // thirds, so a 490×870 window off the top of the frame loses the
+    // captions and nothing else. The opening block reaches higher, to about
+    // y=754, so the cut starts past it at 14s.
+    Seife: {
+      video: '/video/karen-rose-seife.mp4',
+      poster: '/video/karen-rose-seife-poster.jpg',
     },
   },
 };
