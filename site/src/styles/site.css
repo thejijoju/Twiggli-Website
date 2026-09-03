@@ -1253,6 +1253,33 @@ a:hover { color: var(--color-accent); }
 .prose dl { margin: 0 0 16px; }
 .prose dt { font-weight: 600; color: var(--color-text); margin-top: 12px; }
 .prose dd { margin: 2px 0 0; }
+/* A reel inside an article — the same phone frame the rest of the site uses,
+   held to a width that leaves the column readable beside it. Vertical
+   footage at full measure would push everything else off the screen. */
+.post-video {
+  margin: 32px 0;
+  max-width: 320px;
+}
+.post-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  background: var(--phone-frame);
+  padding: var(--phone-bezel);
+  border-radius: calc(20px + var(--phone-bezel));
+  box-sizing: border-box;
+}
+.post-video figcaption {
+  margin-top: 10px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+@media (min-width: 900px) {
+  /* Beside the text rather than interrupting it, once there is room. */
+  .post-video { float: right; margin: 6px 0 24px 32px; max-width: 300px; }
+}
 
 /* Table of contents at the head of each legal document. */
 .legal-toc {
