@@ -864,16 +864,16 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
       liked: true, photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Wood & soap carving', date: 'Mon, Oct 16', time: '4PM–6PM',
       photo: '/img/hero/bouldering.jpg' },
-    { id: 'phone-front-3', title: 'Cooking workshop', photo: '/img/hero/cooking.jpg' },
-    { id: 'phone-front-4', title: 'Hiking meetup', photo: '/img/hero/hiking.jpg' },
+    { id: 'phone-front-3', title: 'DIY coffee roasting', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Plant-based incense making', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
     { id: 'phone-front-1', title: 'Vogelskizzen & Aquarell', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
       liked: true, photo: '/img/hero/bachata.jpg' },
     { id: 'phone-front-2', title: 'Holz- & Seifenschnitzen', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
       photo: '/img/hero/bouldering.jpg' },
-    { id: 'phone-front-3', title: 'Kochworkshop', photo: '/img/hero/cooking.jpg' },
-    { id: 'phone-front-4', title: 'Wander-Treffen', photo: '/img/hero/hiking.jpg' },
+    { id: 'phone-front-3', title: 'DIY-Kaffeerösten', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Pflanzliche Räucherwaren', photo: '/img/hero/hiking.jpg' },
   ],
 };
 
@@ -892,20 +892,25 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
  *  footage — and card 2 waits for the pointer rather than playing with the
  *  rest, since two titled cards running at once fight for the eye.
  *
- *  Cards 3 and 4 still draw on the unattributed reel-1/2 clips and show
- *  media alone, their info cropped by the app's bottom nav, so neither
- *  claims to be something it is not. */
+ *  Cards 3 and 4 show media alone, their info cropped by the app's bottom
+ *  nav, so neither puts a name to what it is playing. */
 const phoneReels: Record<string, { video: string; poster: string; hoverOnly?: boolean }> = {
   'phone-front-1': { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg' },
   // Nicole's carving, and it waits for the pointer — two titled cards
   // running at once fight each other for the eye.
   'phone-front-2': { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg', hoverOnly: true },
+  // The two bottom cards carry real hosts now, in place of the unattributed
+  // reel-1/reel-2 clips that were standing in: Angelo's coffee roast bottom
+  // left, Faye's incense bench bottom right.
+  //
   // Bottom left waits for the pointer as well: the two that run on their own
   // are the top-left card and the one diagonally opposite it at the bottom
   // right, so the movement crosses the screen instead of running down one
-  // side of it or setting the whole feed going at once.
-  'phone-front-3': { video: '/video/reel-2.mp4', poster: '/video/reel-2-poster.jpg', hoverOnly: true },
-  'phone-front-4': { video: '/video/reel-1.mp4', poster: '/video/reel-1-poster.jpg' },
+  // side of it or setting the whole feed going at once. Angelo's is the
+  // heavier file by some way, so it is the better one to leave on the
+  // pointer — preload="none" means it costs nothing until asked for.
+  'phone-front-3': { video: '/video/angelo.mp4', poster: '/video/angelo-poster.jpg', hoverOnly: true },
+  'phone-front-4': { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg' },
 };
 
 /** The sample cards inside the phone mockup. */
