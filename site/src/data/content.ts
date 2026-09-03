@@ -608,6 +608,23 @@ const reels: Record<string, { video: string; poster: string }> = {
   // "Nanmu powder") in small type over the picture, the last of them ending
   // about 40.5s in; the 45s–67s window that ships is past all of them.
   faye: { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg' },
+  // The school's benches, in the order their own montage runs them: a pot
+  // rising on the wheel, a slab cut to a paper pattern, handbuilding, the
+  // engobe-decorated pieces, glaze mixed, colour brushed on. Theirs, audio
+  // stripped. Their first reel — they had none, despite carrying ninety-two
+  // sessions across twenty-two formats, more than any other host.
+  //
+  // Their cut is a studio promo, branded on every single frame: the CK mark
+  // bottom left, "art school & shared workspace in berlin neukölln since
+  // 2016" bottom right, and the technique named top right. There is no clean
+  // second in it, so this is cropped rather than trimmed around — a 450×800
+  // window out of the middle of the frame clears all three — and the closing
+  // card of services is trimmed off, its text sitting too far in for any
+  // crop to reach.
+  'ceramic-kingdom': {
+    video: '/video/ceramic-kingdom.mp4',
+    poster: '/video/ceramic-kingdom-poster.jpg',
+  },
   // Karen-Rose's herb- and flower-salt table: the salt going into the jar,
   // the blossoms stirred through it, and the finished KRÄUTERSALZ. Hers,
   // audio stripped like the rest.
