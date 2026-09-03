@@ -77,6 +77,31 @@
    its own outer radius, with the screen's radius derived from it so the
    two stay concentric. Stills are left alone: the frame marks a video. */
 :root {
+  /* ── Pill ring ──────────────────────────────────────────────────────
+     The two colours of the ring around the profile avatar, carried onto the
+     filter pills on the calendar. Read off the screenshot by eye — the image
+     came in as a picture in the conversation, not a file, so these are not
+     sampled values. Correct them here and every pill follows; nothing else
+     names them.
+
+     Two thirds blue to one third purple: the blue holds flat to 66% and the
+     turn happens across the last third, so the surface splits the way the
+     ring does rather than blending the whole way round. */
+  --pill-ring-blue: #3b82f6;
+  --pill-ring-purple: #7c3aed;
+  /* A tenth thicker than the 1.5px the stroke asked for. It is drawn with a
+     mask rather than as a border because Chromium floors border-width to
+     whole pixels — 1.5px and 1.65px both came out as 1px, so nothing between
+     1 and 2 was ever on screen. Padding on the ring layer is laid out in
+     sub-pixel units, so this width is the width that gets painted. */
+  --pill-ring-width: 1.65px;
+  --pill-ring: linear-gradient(
+    135deg,
+    var(--pill-ring-blue) 0%,
+    var(--pill-ring-blue) 66%,
+    var(--pill-ring-purple) 100%
+  );
+
   --phone-frame: #131313;
   /* A fifth thinner than the 8px it started at. One token, so the carousel's
      phones, the teaser, the calendar tiles and the directory all move
@@ -1810,18 +1835,19 @@ a:hover { color: var(--color-accent); }
 /* The one filter: activity pills after themakery.de's category row —
    thin-outlined, rounded, in the accent purple; the active one fills. */
 .activity-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
-/* The unselected pill's stroke runs light blue into the heading's dark
-   purple (accent-800) — a two-layer background does the gradient border:
-   an opaque inner layer clipped to the padding box (the pill's own fill),
-   a gradient outer layer clipped to the border box (the stroke). Selecting
-   a pill still fills it solid, per the rest of the system. */
+/* The unselected pill's stroke carries the avatar ring's two colours — a
+   two-layer background does the gradient border: an opaque inner layer
+   clipped to the padding box (the pill's own fill), a gradient outer layer
+   clipped to the border box (the stroke). Selecting a pill still fills it
+   solid, per the rest of the system. */
 .activity-pill {
-  padding: 4px 10px;
-  border: 1.5px solid transparent;
+  position: relative;
+  /* The old 1.5px border is folded into the padding, so the pill keeps the
+     size it had while the stroke moves to ::before. */
+  padding: 5.5px 11.5px;
+  border: 0;
   border-radius: 999px;
-  background:
-    linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
-    linear-gradient(135deg, #7dd3fc, var(--color-accent-800)) border-box;
+  background: var(--color-bg);
   font: inherit;
   font-weight: 600;
   font-size: 13px;
@@ -1829,11 +1855,29 @@ a:hover { color: var(--color-accent); }
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.activity-pill:hover {
-  background:
-    linear-gradient(var(--color-accent-100), var(--color-accent-100)) padding-box,
-    linear-gradient(135deg, #7dd3fc, var(--color-accent-800)) border-box;
+/* The stroke. A gradient the size of the pill, with everything inside the
+   ring's width masked away — mask-composite subtracts the inner box from the
+   outer one, leaving the edge. */
+.activity-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--pill-ring-width);
+  background: var(--pill-ring);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
+.activity-pill:hover { background: var(--color-accent-100); }
+/* Selected pills fill solid and drop the stroke, as they did before. */
+.activity-pill.is-active::before { content: none; }
 .activity-pill.is-active {
   background: var(--color-accent-800);
   border-color: var(--color-accent-800);
@@ -1845,9 +1889,19 @@ a:hover { color: var(--color-accent); }
    switch rather than one of the either-or categories — the gradient
    stroke would just disappear into the dashes, so it keeps a plain one. */
 .kids-pill {
-  border: 1.5px dashed var(--color-accent-800);
+  /* Its own real border, so the padding goes back to what the others had
+     before theirs was folded in — otherwise this one sits larger than the
+     pills beside it. And no gradient ring on top of the dashes.
+
+     2px, not the 1.65px the others carry: a dashed border cannot be drawn
+     with the mask, and Chromium floors border-width to whole pixels, so 2 is
+     the nearest width it will actually paint. 1px would read as thinner than
+     everything around it. */
+  padding: 4px 10px;
+  border: 2px dashed var(--color-accent-800);
   background: var(--color-bg);
 }
+.kids-pill::before { content: none; }
 .kids-pill:hover { background: var(--color-accent-100); }
 .kids-pill.is-active { border-style: solid; }
 /* The emoji inside each activity pill: recognisable at a glance without
