@@ -780,6 +780,14 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
       en: 'Take home 4 products',
       de: '4 Produkte mitnehmen',
     },
+    // Of the two labels offered for this one — a small group, or one to give
+    // away — the gift reading is the one that does not turn into a claim we
+    // would have to stand behind: her listed group size is 4–12, which is
+    // not small enough to promise in print.
+    'Keramikgießen | Terrazzo Workshop': {
+      en: 'Great as a gift',
+      de: 'Gut zum Verschenken',
+    },
   },
 };
 
