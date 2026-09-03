@@ -82,6 +82,9 @@ const calendarHref = href(lang, '/happening-today/');
           </span>
           <span class="today-title">{s.title}</span>
           <span class="today-host">{s.host.name} · {s.district}</span>
+          {/* The workshop's selling line, where it has one — same badge the
+              calendar cards wear, so the two surfaces agree. */}
+          {s.usp && <span class="session-usp">{s.usp}</span>}
         </a>
       ))}
     </div>

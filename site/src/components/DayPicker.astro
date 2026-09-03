@@ -236,6 +236,11 @@ const dayLabel = (offset: number) =>
                           </span>
                           <a class="session-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
                           <span class="session-host">{s.host.name} · {s.district}</span>
+                          {/* The one thing that decides this workshop for
+                              somebody — under the picture rather than on it,
+                              where the time chip and the spots badge already
+                              sit. Only a few workshops carry one. */}
+                          {s.usp && <span class="session-usp">{s.usp}</span>}
                         </span>
                         {/* Price and Book share one row so every card's
                             action line sits at the same height; the spots
@@ -338,6 +343,7 @@ const dayLabel = (offset: number) =>
               </span>
               <a class="session-title" href={o.bookUrl} target="_blank" rel="noopener">{o.title}</a>
               <span class="session-host">{o.host.name} · {o.district}</span>
+              {o.usp && <span class="session-usp">{o.usp}</span>}
             </span>
             <span class="session-side">
               {o.price && <span class="session-price">{o.price}</span>}

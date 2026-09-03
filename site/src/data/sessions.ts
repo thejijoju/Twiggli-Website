@@ -8,7 +8,7 @@
  *  Dates are converted to `dayOffset` (0 = today, Europe/Berlin) at build
  *  time; the deploy workflow rebuilds daily so they stay true.
  */
-import { getHosts, getWorkshopReel, type Host } from './content.ts';
+import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
 
@@ -43,6 +43,9 @@ export type Session = {
   /** Fully booked right now — the card says so and offers "Notify me"
    *  instead of Book; the daily scrape flips it back when spots return. */
   soldOut?: boolean;
+  /** The one thing that sells this workshop, in two or three words — see
+   *  workshopUsps in content.ts. Absent for most. */
+  usp?: string;
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -93,6 +96,8 @@ export type OnRequestWorkshop = {
   duration?: string;
   price?: string;
   request?: boolean;
+  /** As on Session — see workshopUsps in content.ts. */
+  usp?: string;
 };
 
 /** How many on-request workshops the section shows at once — one line of
@@ -123,6 +128,9 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
       ...(o.duration ? { duration: o.duration } : {}),
       ...(o.price ? { price: o.price } : {}),
       ...(o.request ? { request: true } : {}),
+      ...(getWorkshopUsp(o.slug, o.title, lang)
+        ? { usp: getWorkshopUsp(o.slug, o.title, lang) }
+        : {}),
     };
     const forHost = byHost.get(o.slug);
     if (forHost) forHost.push(entry);
@@ -232,6 +240,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   const today = berlinTodayMs();
   const bySlug = new Map(hosts.map((h) => [h.slug, h]));
   const sessions: Session[] = [];
+  const usp = (slug: string, title: string) => getWorkshopUsp(slug, title, lang);
   const workshops = (liveData.workshops ?? []) as LiveWorkshop[];
   const ordinals = dateOrdinals(workshops);
 
@@ -258,6 +267,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.request ? { request: true } : {}),
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut ? { soldOut: true } : {}),
+      ...(usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
   }
 
@@ -287,6 +297,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         ...(r.price ? { price: r.price } : {}),
         ...(r.kids ? { kids: true } : {}),
         ...(r.request ? { request: true } : {}),
+        ...(usp(r.slug, r.title) ? { usp: usp(r.slug, r.title) } : {}),
       });
     }
   }

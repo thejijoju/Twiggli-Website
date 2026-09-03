@@ -1981,6 +1981,36 @@ a:hover { color: var(--color-accent); }
    takes the rounding and nothing else, or it loses both its centring and
    its colour to the rules above. */
 .session-thumb .media-monogram { border-radius: calc(16px - var(--phone-bezel)); }
+/* The workshop's one selling line, under the title. Accent-tinted so it
+   carries at a glance without shouting over the price and the Book button,
+   and set on its own line so it never competes with the host name beside it.
+   Two or three words by convention — see workshopUsps in content.ts. */
+.session-usp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: start;
+  margin-top: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--color-accent-200);
+  color: var(--color-accent-800);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+/* A small mark, so it reads as a badge rather than as another line of copy.
+   Drawn in CSS: one more inline SVG per card, on a page that can carry a
+   hundred of them, is markup for nothing. */
+.session-usp::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
 /* A reel tile plays on tap instead of linking out — see DayPicker. */
 .session-thumb:has(.session-video) { cursor: pointer; }
 /* The grid view's corner chips clear the bezel the same way the teaser's

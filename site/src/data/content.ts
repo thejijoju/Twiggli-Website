@@ -740,6 +740,37 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
   },
 };
 
+/** What a workshop puts on its card beyond the price and the clock — the one
+ *  thing that decides it for somebody. Bilingual, and keyed by host slug then
+ *  by the title exactly as the feed carries it (the German original, as with
+ *  the reels).
+ *
+ *  Exact titles only, deliberately: no topic matching here. A reel landing on
+ *  a neighbouring class of the same craft is a cosmetic slip, but "take home
+ *  4 products" landing on a class that gives you two is a promise the site
+ *  cannot keep. Her 2-hour Essentials cut and her shampoo class both carry
+ *  "Naturkosmetik" in the title and both would have been caught by a topic
+ *  key. So a workshop whose wording drifts loses its label rather than
+ *  lending it to the wrong course — list the new title here and it is back.
+ *
+ *  Keep them to two or three words: this sits under a card title, not in
+ *  place of the copy. */
+const workshopUsps: Record<string, Record<string, { en: string; de: string }>> = {
+  'karen-rose': {
+    // Her own catalogue for this one: four finished products go home with
+    // you. The 3-hour class only — Essentials is the shorter cut and nobody
+    // has told us it is the same four.
+    'Bio Naturkosmetik Workshop': {
+      en: 'Take home 4 products',
+      de: '4 Produkte mitnehmen',
+    },
+  },
+};
+
+/** A workshop's label, in this language, if it has one. */
+export const getWorkshopUsp = (slug: string, title: string, lang: Lang): string | undefined =>
+  workshopUsps[slug]?.[title]?.[lang];
+
 /** The reel for one workshop, if it has its own.
  *
  *  An exact title wins; failing that the title is matched against the keys
