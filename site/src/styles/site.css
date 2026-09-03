@@ -519,7 +519,11 @@ a:hover { color: var(--color-accent); }
    column starts lower so its info card ends level with the tall card. */
 .phone-feed {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, 1fr), not 1fr: a bare 1fr keeps an auto minimum, so the column
+     whose card title is the longer of the two was being pushed wider than
+     its neighbour — 155px against 131. Flooring the minimum at 0 makes the
+     two halves actually equal, and the titles wrap instead. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 10px;
   flex: 1;
   overflow: hidden;
@@ -552,6 +556,13 @@ a:hover { color: var(--color-accent); }
   overflow: hidden;
   border-radius: 14px;
   background: var(--color-surface);
+  /* A hairline round each thumbnail. An outline rather than a border so the
+     tile keeps its size, drawn inside its own edge and above the picture —
+     an inset shadow would sit under the <video> and never be seen. On the
+     bottom pair the lower edge falls outside the feed's crop, which is
+     right: those cards carry on under the nav. */
+  outline: 1px solid var(--phone-frame);
+  outline-offset: -1px;
 }
 /* The two titled cards, which carry the two named hosts' reels. Set to one
    height rather than one ratio: the feed's columns are deliberately unequal
@@ -598,7 +609,12 @@ a:hover { color: var(--color-accent); }
   display: flex;
   justify-content: space-between;
   gap: 6px;
-  font-size: 11px;
+  /* 10px, not 11: with the feed's columns now equal, the wider of the two
+     date lines ran 8px past its card at 11px. Letting it wrap instead cost
+     more than it saved — one card's line went to two, which pushed the
+     bottom card of that column up and left the bottom pair unequal. A point
+     smaller keeps every line single and all four cards the same. */
+  font-size: 10px;
   white-space: nowrap;
   color: color-mix(in srgb, var(--color-text) 78%, transparent);
   margin-top: 3px;

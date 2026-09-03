@@ -877,8 +877,10 @@ export type PhoneCard = {
   photo?: string;
   video?: string;
   poster?: string;
-  /** Waits for the pointer instead of playing with the rest of the feed. */
-  hoverOnly?: boolean;
+  /** Its place in the arrival sequence — 1 plays first, 2 second, three
+   *  seconds each, and then the feed waits for a pointer. A card without a
+   *  number never plays on its own. */
+  intro?: number;
   /** Drawn with its heart filled, the way a saved event looks in the app. */
   liked?: boolean;
 };
@@ -925,23 +927,20 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
  *
  *  Cards 3 and 4 show media alone, their info cropped by the app's bottom
  *  nav, so neither puts a name to what it is playing. */
-const phoneReels: Record<string, { video: string; poster: string; hoverOnly?: boolean }> = {
-  'phone-front-1': { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg' },
-  // Nicole's carving, and it waits for the pointer — two titled cards
-  // running at once fight each other for the eye.
-  'phone-front-2': { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg', hoverOnly: true },
-  // The two bottom cards carry real hosts now, in place of the unattributed
-  // reel-1/reel-2 clips that were standing in: Angelo's coffee roast bottom
-  // left, Faye's incense bench bottom right.
-  //
-  // Bottom left waits for the pointer as well: the two that run on their own
-  // are the top-left card and the one diagonally opposite it at the bottom
-  // right, so the movement crosses the screen instead of running down one
-  // side of it or setting the whole feed going at once. Angelo's is the
-  // heavier file by some way, so it is the better one to leave on the
-  // pointer — preload="none" means it costs nothing until asked for.
-  'phone-front-3': { video: '/video/angelo.mp4', poster: '/video/angelo-poster.jpg', hoverOnly: true },
-  'phone-front-4': { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg' },
+/* On arrival the feed plays itself in twice: the top-left card for three
+   seconds, then the one diagonally opposite at the bottom right for three,
+   and then it holds still. After that every card answers the pointer — hover
+   one and it plays, and whatever was playing stops, so only ever one clip
+   moves at a time. Only the two numbered here ever start by themselves, and
+   only once per visit. */
+const phoneReels: Record<string, { video: string; poster: string; intro?: number }> = {
+  'phone-front-1': { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg', intro: 1 },
+  'phone-front-2': { video: '/video/nicole.mp4', poster: '/video/nicole-poster.jpg' },
+  // Angelo's is much the heaviest file, so it is the better one to leave off
+  // the arrival pair — preload="none" means it costs nothing until a pointer
+  // asks for it.
+  'phone-front-3': { video: '/video/angelo.mp4', poster: '/video/angelo-poster.jpg' },
+  'phone-front-4': { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg', intro: 2 },
 };
 
 /** The sample cards inside the phone mockup. */
@@ -955,7 +954,7 @@ export const getPhoneCards = (lang: Lang): PhoneCard[] =>
         ? {
             video: withBase(reel.video),
             poster: withBase(reel.poster),
-            ...(reel.hoverOnly ? { hoverOnly: true } : {}),
+            ...(reel.intro ? { intro: reel.intro } : {}),
           }
         : {}),
     };

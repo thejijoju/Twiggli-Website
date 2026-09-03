@@ -133,14 +133,14 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {feature.video ? (
                   <video
                     class="phone-card-video"
-                    data-hover-only={feature.hoverOnly ? '' : undefined}
+                    data-intro={feature.intro}
                     src={feature.video}
                     poster={feature.poster}
                     muted
                     loop
                     playsinline
-                    autoplay={feature.hoverOnly ? undefined : true}
-                    preload={feature.hoverOnly ? 'none' : 'auto'}
+                    autoplay={feature.intro === 1 ? true : undefined}
+                    preload={feature.intro ? 'auto' : 'none'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -160,14 +160,14 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {mediaA.video ? (
                   <video
                     class="phone-card-video"
-                    data-hover-only={mediaA.hoverOnly ? '' : undefined}
+                    data-intro={mediaA.intro}
                     src={mediaA.video}
                     poster={mediaA.poster}
                     muted
                     loop
                     playsinline
-                    autoplay={mediaA.hoverOnly ? undefined : true}
-                    preload={mediaA.hoverOnly ? 'none' : 'auto'}
+                    autoplay={mediaA.intro === 1 ? true : undefined}
+                    preload={mediaA.intro ? 'auto' : 'none'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -186,14 +186,14 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {infoCard.video ? (
                   <video
                     class="phone-card-video"
-                    data-hover-only={infoCard.hoverOnly ? '' : undefined}
+                    data-intro={infoCard.intro}
                     src={infoCard.video}
                     poster={infoCard.poster}
                     muted
                     loop
                     playsinline
-                    autoplay={infoCard.hoverOnly ? undefined : true}
-                    preload={infoCard.hoverOnly ? 'none' : 'auto'}
+                    autoplay={infoCard.intro === 1 ? true : undefined}
+                    preload={infoCard.intro ? 'auto' : 'none'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -213,14 +213,14 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
                 {mediaB.video ? (
                   <video
                     class="phone-card-video"
-                    data-hover-only={mediaB.hoverOnly ? '' : undefined}
+                    data-intro={mediaB.intro}
                     src={mediaB.video}
                     poster={mediaB.poster}
                     muted
                     loop
                     playsinline
-                    autoplay={mediaB.hoverOnly ? undefined : true}
-                    preload={mediaB.hoverOnly ? 'none' : 'auto'}
+                    autoplay={mediaB.intro === 1 ? true : undefined}
+                    preload={mediaB.intro ? 'auto' : 'none'}
                     aria-hidden="true"
                   ></video>
                 ) : (
@@ -257,80 +257,108 @@ const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du
   /* The mockup's thumbnails are clips, so the phone shows the app doing the
      thing the page is describing rather than a frozen screenshot.
 
-     Two of the four run on their own — the top-left card and the one
-     diagonally opposite at the bottom right, so the movement reads across
-     the screen rather than down one side. The other two wait for the
-     pointer. They start only when the phone scrolls into view and stop when it leaves:
-     a mockup playing three videos off-screen costs the visitor bandwidth for
-     something nobody is looking at. `muted` + `playsinline` are what let a
-     clip autoplay at all — iOS blocks anything with sound, and without
-     playsinline it takes over the screen.
+     On arrival the feed plays itself in: the card marked data-intro="1" runs
+     for three seconds, then "2" runs for three, then everything holds still.
+     After that the feed answers the pointer — hover any card and it plays,
+     and whatever was playing stops, so only one clip is ever moving. Hovering
+     during the arrival sequence takes over from it.
 
-     The two that run carry the autoplay attribute as well as being started
-     from here: the browser's own handling of a muted autoplay is steadier
-     than one play() call from script, which is refused if it lands before
-     the clip has any data — and with preload="none" it always did. Those two
-     preload for real; the three that wait for a pointer keep preload="none",
-     so nothing but their posters loads until asked for. */
-  const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.phone-card-video'));
+     `muted` + `playsinline` are what let a clip play at all — iOS blocks
+     anything with sound, and without playsinline it takes over the screen.
+     The first card of the sequence also carries the autoplay attribute:
+     the browser's own handling of a muted autoplay is steadier than one
+     play() call from script, which is refused if it lands before the clip
+     has any data. The two in the sequence preload for real; the rest keep
+     preload="none", so nothing but their posters loads until asked for. */
+  const feed = Array.from(
+    document.querySelectorAll<HTMLVideoElement>('.phone-feed .phone-card-video'),
+  );
+  /* The back phone's full-screen reel answers the pointer like the rest, but
+     never plays on its own — a reel that size running behind the front phone
+     pulls the eye off the screen the page is actually showing. */
+  const back = Array.from(
+    document.querySelectorAll<HTMLVideoElement>('.phone-back .phone-card-video'),
+  );
+  const clips = [...feed, ...back];
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const phone = document.querySelector('.hero-visual');
 
-  /* Two kinds of clip in here. The ones that run with the feed show the app
-     doing the thing the page describes rather than sitting on a frozen
-     screenshot. The ones marked hover-only wait for the pointer and stop
-     when it leaves — the back phone's full-screen reel, which would
-     otherwise pull the eye off the screen in front of it, and the two feed
-     cards that would otherwise make the whole screen move at once. */
-  const auto = videos.filter((v) => v.dataset.hoverOnly === undefined);
-  const onDemand = videos.filter((v) => v.dataset.hoverOnly !== undefined);
+  if (clips.length && phone) {
+    const start = (v: HTMLVideoElement) =>
+      v.play().catch(() => {
+        /* A play() on a clip with nothing buffered yet is refused outright,
+           and that first attempt can land before a byte has arrived. One
+           retry, the moment there is a frame to show. */
+        v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
+      });
+    const pauseAllBut = (keep?: HTMLVideoElement) => {
+      for (const v of clips) if (v !== keep) v.pause();
+    };
 
-  /* Reduced motion has to win over the autoplay attribute the two running
-     clips carry in the markup — the browser acts on that before this script
-     is reached, so it is taken off them here rather than merely not called. */
-  if (still) {
-    for (const v of auto) {
-      v.autoplay = false;
-      v.removeAttribute('autoplay');
-      v.pause();
+    const order = feed
+      .filter((v) => v.dataset.intro)
+      .sort((a, b) => Number(a.dataset.intro) - Number(b.dataset.intro));
+
+    let timers: number[] = [];
+    let introSpent = false;
+    /* Called by the first hover as well as by the sequence itself, so a
+       pointer arriving mid-sequence stops it rather than fighting it. */
+    const endIntro = () => {
+      introSpent = true;
+      for (const t of timers) clearTimeout(t);
+      timers = [];
+    };
+
+    const runIntro = () => {
+      if (introSpent || still || !order.length) return;
+      introSpent = true;
+      const [first, second] = order;
+      start(first);
+      timers.push(
+        window.setTimeout(() => {
+          first.pause();
+          if (!second) return;
+          start(second);
+          timers.push(window.setTimeout(() => second.pause(), 3000));
+        }, 3000),
+      );
+    };
+
+    /* Reduced motion means nothing moves unasked — including the autoplay
+       attribute, which the browser acts on before this script is reached. */
+    if (still) {
+      for (const v of feed) {
+        v.autoplay = false;
+        v.removeAttribute('autoplay');
+        v.pause();
+      }
     }
-  }
 
-  const start = (v: HTMLVideoElement) =>
-    v.play().catch(() => {
-      /* A play() on a clip with nothing buffered yet gets refused outright,
-         and that first attempt is often made before a byte has arrived. One
-         retry, the moment there is a frame to show. Without it the two cards
-         that are supposed to run sit on their posters for good. */
-      v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
-    });
-  const playAuto = () => { if (!still) for (const v of auto) start(v); };
-
-  if (videos.length && phone) {
-    if (auto.length && !still) {
+    /* Wait for the phone to be on screen: a mockup playing itself in while
+       nobody is looking at it costs the visitor bandwidth for nothing. It
+       sits in the hero, so on the homepage this fires at once. */
+    if (!still) {
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) playAuto();
-          else for (const v of auto) v.pause();
+          if (!entry.isIntersecting) {
+            pauseAllBut();
+            return;
+          }
+          runIntro();
         },
         { threshold: 0.25 },
       );
       observer.observe(phone);
     }
 
-    // Autoplay is refused outright by reduced motion, and quietly by a
-    // phone in low-power mode or a browser with data saver on — and a
-    // mockup of a video app frozen on its posters is the one thing this
-    // block must not be. Pointing at the phone or touching it starts the
-    // feed's clips, whatever the browser decided. It deliberately does not
-    // start the hover-only ones: those answer to their own tile alone.
-    phone.addEventListener('pointerenter', playAuto);
-    phone.addEventListener('touchstart', playAuto, { passive: true });
-
-    for (const video of onDemand) {
+    for (const video of clips) {
       const tile = video.parentElement;
       if (!tile) continue;
-      tile.addEventListener('pointerenter', () => start(video));
+      tile.addEventListener('pointerenter', () => {
+        endIntro();
+        pauseAllBut(video);
+        start(video);
+      });
       tile.addEventListener('pointerleave', () => video.pause());
     }
   }
