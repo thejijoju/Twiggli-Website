@@ -89,7 +89,27 @@ a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent); }
 
 .page {
-  background: var(--color-bg);
+  /* A breath of the brand violet across the top of the page, fading out
+     before the fold — the white was flat on its own. Kept faint enough to
+     read as light rather than as a colour: the strongest point is 11% of the
+     accent, which is a couple of steps off white.
+
+     The glow is centred just below the dark social strip, since the strip
+     covers the top 60-odd pixels and a glow peaking at the very top edge
+     would be hidden behind it. It shows through the transparent nav, which
+     is the part that makes it look deliberate. background-size confines it
+     to the top 900px, so it is the head of the page and not a wash over the
+     whole of it. */
+  background-color: var(--color-bg);
+  background-image: radial-gradient(
+    155% 90% at 50% 6%,
+    color-mix(in srgb, var(--color-accent) 14%, transparent) 0%,
+    color-mix(in srgb, var(--color-accent) 7%, transparent) 34%,
+    color-mix(in srgb, var(--color-accent) 2%, transparent) 62%,
+    transparent 82%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 1100px;
   color: var(--color-text);
   font-family: var(--font-body);
   min-height: 100vh;
