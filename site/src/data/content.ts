@@ -599,6 +599,15 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Short at 4.4s: it is the whole clip, and it loops. Her workshop copy
   // still describes the collective-painting format rather than this one.
   pia: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
+  // Senlë Studio's incense bench: the ground blend mixed and weighed, the
+  // labelled jars of botanicals, then the trail pressed into the wooden
+  // frame. Hers, audio stripped. Her first reel — she had none, so she was
+  // absent from the carousel entirely despite carrying fourteen sessions.
+  //
+  // Her cut names each botanical as it goes in ("Rosemary", "Chamomile",
+  // "Nanmu powder") in small type over the picture, the last of them ending
+  // about 40.5s in; the 45s–67s window that ships is past all of them.
+  faye: { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg' },
   // Karen-Rose's herb- and flower-salt table: the salt going into the jar,
   // the blossoms stirred through it, and the finished KRÄUTERSALZ. Hers,
   // audio stripped like the rest.
