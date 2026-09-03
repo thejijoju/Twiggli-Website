@@ -301,7 +301,8 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Natural cosmetics, soap & terrazzo',
       blurb: 'Make-it-yourself workshops in Berlin: organic natural cosmetics, vegan soap and shampoo, scented candles, and terrazzo ceramics and jewellery. Few but good ingredients — and everything you make goes home with you.',
       group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },
-    // Copy from her own shop (gallerialucia.com); photos and reel to follow.
+    // Copy from her own shop (gallerialucia.com); photos to follow. Her reel
+    // has landed — see `reels` below.
     { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Scented candle workshops', studio: 'Galleria Lucia Atelier',
       blurb: 'Design your own scented candle in a real working candle atelier inside a historic Berlin artist building — pick your jar colour, premium fragrance oils, wax colours and crystals, and finish with your own label. 100% soy wax, vegan and sustainable, drinks included.',
       group: 'Up to 10', duration: '1.5–2 h', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
@@ -608,6 +609,21 @@ const reels: Record<string, { video: string; poster: string }> = {
   // "Nanmu powder") in small type over the picture, the last of them ending
   // about 40.5s in; the 45s–67s window that ships is past all of them.
   faye: { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg' },
+  // Her candle table: the long pink runner, the oil bottles, guests dipping
+  // and pouring, and the finished jars held up at the end. Hers, audio
+  // stripped. Her first reel — she had none, despite twelve dates.
+  //
+  // Her cut carries one caption ("pov: you spend your evening making scented
+  // candles with international women in Berlin") burnt into every frame, in
+  // the same place throughout, so there is no clean second to trim to. It
+  // sits low, at y 850–985 of the 1280, and the table and the guests are
+  // above it — so a 472×840 window off the top of the frame loses it and
+  // nothing else. Her general reel rather than a per-workshop one: it is the
+  // same table for all four of her formats.
+  'galleria-lucia': {
+    video: '/video/galleria-lucia.mp4',
+    poster: '/video/galleria-lucia-poster.jpg',
+  },
   // The school's benches, in the order their own montage runs them: a pot
   // rising on the wheel, a slab cut to a paper pattern, handbuilding, the
   // engobe-decorated pieces, glaze mixed, colour brushed on. Theirs, audio
