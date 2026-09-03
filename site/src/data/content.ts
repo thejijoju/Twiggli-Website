@@ -700,6 +700,18 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
       video: '/video/karen-rose-naturkosmetik.mp4',
       poster: '/video/karen-rose-naturkosmetik-poster.jpg',
     },
+    // The shampoo bar start to finish: the base melted over the bain-marie,
+    // weighed, worked to a paste, kneaded and pressed into the mould. Hers,
+    // audio stripped, no captions in it, so it ships whole.
+    //
+    // Keyed on both words rather than "Shampoo" alone. Her title carries
+    // "Naturkosmetik" too, and the longest matching key wins — a bare
+    // "Shampoo" would lose to it and the class would keep playing the
+    // cosmetics reel.
+    'Shampoo Naturkosmetik': {
+      video: '/video/karen-rose-shampoo.mp4',
+      poster: '/video/karen-rose-shampoo-poster.jpg',
+    },
     // Soap, two of them, shown in turn across her dates: the first is the
     // cured loaves out of their wooden moulds and cut into bars, dried
     // flowers through every one; the second is the class that made them —
