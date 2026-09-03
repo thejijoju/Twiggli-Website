@@ -102,14 +102,14 @@ a:hover { color: var(--color-accent); }
      whole of it. */
   background-color: var(--color-bg);
   background-image: radial-gradient(
-    155% 90% at 50% 6%,
+    62% 62% at 50% 2%,
     color-mix(in srgb, var(--color-accent) 14%, transparent) 0%,
-    color-mix(in srgb, var(--color-accent) 7%, transparent) 34%,
-    color-mix(in srgb, var(--color-accent) 2%, transparent) 62%,
-    transparent 82%
+    color-mix(in srgb, var(--color-accent) 6%, transparent) 32%,
+    color-mix(in srgb, var(--color-accent) 2%, transparent) 56%,
+    transparent 76%
   );
   background-repeat: no-repeat;
-  background-size: 100% 1100px;
+  background-size: 100% 820px;
   color: var(--color-text);
   font-family: var(--font-body);
   min-height: 100vh;
