@@ -642,7 +642,11 @@ const reels: Record<string, { video: string; poster: string }> = {
  *  workshop's own over the host's general one on that workshop's cards.
  *  Keyed by host slug, then by the title exactly as the feed carries it —
  *  the German original, which is what both languages are built from. */
-const workshopReels: Record<string, Record<string, { video: string; poster: string }>> = {
+type Reel = { video: string; poster: string };
+
+/** A workshop with more than one reel shows them in turn across its dates —
+ *  see `pick` on getWorkshopReel below. */
+const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
   nina: {
     'Klang & Farbe': {
       video: '/video/nina-klang-farbe.mp4',
@@ -696,8 +700,11 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
       video: '/video/karen-rose-naturkosmetik.mp4',
       poster: '/video/karen-rose-naturkosmetik-poster.jpg',
     },
-    // Soap: the cured loaves out of their wooden moulds and cut into bars,
-    // dried flowers through every one. Hers, audio stripped.
+    // Soap, two of them, shown in turn across her dates: the first is the
+    // cured loaves out of their wooden moulds and cut into bars, dried
+    // flowers through every one; the second is the class that made them —
+    // weighing, mixing, the swirled batter poured into the moulds. Both
+    // hers, audio stripped.
     //
     // Her cut is captioned start to finish — a typewriter track that runs
     // the length of it — so this is the one reel where the text is cropped
@@ -706,10 +713,10 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
     // thirds, so a 490×870 window off the top of the frame loses the
     // captions and nothing else. The opening block reaches higher, to about
     // y=754, so the cut starts past it at 14s.
-    Seife: {
-      video: '/video/karen-rose-seife.mp4',
-      poster: '/video/karen-rose-seife-poster.jpg',
-    },
+    Seife: [
+      { video: '/video/karen-rose-seife.mp4', poster: '/video/karen-rose-seife-poster.jpg' },
+      { video: '/video/karen-rose-seife-2.mp4', poster: '/video/karen-rose-seife-2-poster.jpg' },
+    ],
   },
   // Live, not dormant: her Vulva Painting Workshop runs weekly out of
   // vulvas.berlin (a recurring entry rather than a dated one) and takes
@@ -733,15 +740,23 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
 export const getWorkshopReel = (
   slug: string,
   title: string,
-): { video: string; poster: string } | undefined => {
+  /** Which reel to take where a workshop has several — its position among
+   *  that workshop's dates, so consecutive dates alternate rather than every
+   *  card of a workshop showing the same clip. Wraps, so any count works. */
+  pick = 0,
+): Reel | undefined => {
   const forHost = workshopReels[slug];
   if (!forHost) return undefined;
   const haystack = title.toLowerCase();
   const topicKey = Object.keys(forHost)
     .filter((key) => haystack.includes(key.toLowerCase()))
     .sort((a, b) => b.length - a.length)[0];
-  const reel = forHost[title] ?? (topicKey ? forHost[topicKey] : undefined);
-  return reel ? { video: withBase(reel.video), poster: withBase(reel.poster) } : undefined;
+  const entry = forHost[title] ?? (topicKey ? forHost[topicKey] : undefined);
+  if (!entry) return undefined;
+  const reel = Array.isArray(entry)
+    ? entry[((pick % entry.length) + entry.length) % entry.length]
+    : entry;
+  return { video: withBase(reel.video), poster: withBase(reel.poster) };
 };
 
 export const getHosts = (lang: Lang): Host[] =>

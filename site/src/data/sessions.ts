@@ -197,9 +197,31 @@ export const berlinTodayMs = (): number =>
  *  reel, on its cards only — everywhere a host is drawn as a host, their own
  *  reel still stands. Swapping it on the session's copy of the host is all
  *  that takes: every surface already reads the reel off there. */
-const withWorkshopReel = (host: Host, slug: string, title: string): Host => {
-  const reel = getWorkshopReel(slug, title);
+const withWorkshopReel = (host: Host, slug: string, title: string, pick = 0): Host => {
+  const reel = getWorkshopReel(slug, title, pick);
   return reel ? { ...host, video: reel.video, poster: reel.poster } : host;
+};
+
+/** Where a workshop has more than one reel they are shown in turn, so the
+ *  position of each date among that workshop's own dates is what picks one.
+ *  Counted in calendar order rather than file order — the scrape appends new
+ *  dates to the end of the feed, so the two would not agree. */
+const dateOrdinals = (rows: { slug: string; title: string; date: string; time?: string }[]) => {
+  const byWorkshop = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const key = `${row.slug}|${row.title}`;
+    const group = byWorkshop.get(key);
+    if (group) group.push(row);
+    else byWorkshop.set(key, [row]);
+  }
+  const ordinals = new Map<typeof rows[number], number>();
+  for (const group of byWorkshop.values()) {
+    group
+      .slice()
+      .sort((a, b) => `${a.date}${a.time ?? ''}`.localeCompare(`${b.date}${b.time ?? ''}`))
+      .forEach((row, i) => ordinals.set(row, i));
+  }
+  return ordinals;
 };
 
 /** Real sessions scraped weekly from hosts' public schedules — see
@@ -210,8 +232,10 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   const today = berlinTodayMs();
   const bySlug = new Map(hosts.map((h) => [h.slug, h]));
   const sessions: Session[] = [];
+  const workshops = (liveData.workshops ?? []) as LiveWorkshop[];
+  const ordinals = dateOrdinals(workshops);
 
-  for (const w of (liveData.workshops ?? []) as LiveWorkshop[]) {
+  for (const w of workshops) {
     const host = bySlug.get(w.slug);
     if (!host) continue;
     const dayOffset = Math.round((Date.parse(w.date) - today) / 86400000);
@@ -220,7 +244,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       id: `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`,
       dayOffset,
       time: w.time,
-      host: withWorkshopReel(host, w.slug, w.title),
+      host: withWorkshopReel(host, w.slug, w.title, ordinals.get(w) ?? 0),
       title: lang === 'en' && w.titleEn ? w.titleEn : w.title,
       place: host.place,
       // Real listings never get an invented district — the studio name is
@@ -244,6 +268,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     const host = bySlug.get(r.slug);
     if (!host) continue;
     const wanted = new Set(r.weekdays.map((d) => WEEKDAY_INDEX[d]));
+    let occurrence = 0;
     for (let dayOffset = 0; dayOffset < DAYS_AHEAD; dayOffset++) {
       const dow = new Date(today + dayOffset * 86400000).getUTCDay();
       if (!wanted.has(dow)) continue;
@@ -251,7 +276,9 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         id: `rec-${r.slug}-${hash(r.title)}-${dayOffset}`,
         dayOffset,
         time: r.time,
-        host: withWorkshopReel(host, r.slug, r.title),
+        // Post-increment: the first occurrence in the window is 0, so a
+        // recurring class starts on its first reel like a dated one does.
+        host: withWorkshopReel(host, r.slug, r.title, occurrence++),
         title: lang === 'en' && r.titleEn ? r.titleEn : r.title,
         place: host.place,
         district: r.district ?? host.studio ?? host.place,
