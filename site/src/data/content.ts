@@ -898,7 +898,7 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
     { id: 'phone-front-2', title: 'Wood & soap carving', date: 'Mon, Oct 16', time: '4PM–6PM',
       photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'DIY coffee roasting', photo: '/img/hero/cooking.jpg' },
-    { id: 'phone-front-4', title: 'Plant-based incense making', photo: '/img/hero/hiking.jpg' },
+    { id: 'phone-front-4', title: 'Wheel throwing & handbuilding', photo: '/img/hero/hiking.jpg' },
   ],
   de: [
     { id: 'phone-front-1', title: 'Vogelskizzen & Aquarell', date: 'Mo., 16. Okt.', time: '9–10.30 Uhr',
@@ -906,7 +906,7 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
     { id: 'phone-front-2', title: 'Holz- & Seifenschnitzen', date: 'Mo., 16. Okt.', time: '16–18 Uhr',
       photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'DIY-Kaffeerösten', photo: '/img/hero/cooking.jpg' },
-    { id: 'phone-front-4', title: 'Pflanzliche Räucherwaren', photo: '/img/hero/hiking.jpg' },
+    { id: 'phone-front-4', title: 'Töpferscheibe & Handaufbau', photo: '/img/hero/hiking.jpg' },
   ],
 };
 
@@ -940,7 +940,7 @@ const phoneReels: Record<string, { video: string; poster: string; intro?: number
   // the arrival pair — preload="none" means it costs nothing until a pointer
   // asks for it.
   'phone-front-3': { video: '/video/angelo.mp4', poster: '/video/angelo-poster.jpg' },
-  'phone-front-4': { video: '/video/faye.mp4', poster: '/video/faye-poster.jpg', intro: 2 },
+  'phone-front-4': { video: '/video/violaine.mp4', poster: '/video/violaine-poster.jpg', intro: 2 },
 };
 
 /** The sample cards inside the phone mockup. */
