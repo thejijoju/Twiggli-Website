@@ -591,10 +591,14 @@ const reels: Record<string, { video: string; poster: string }> = {
   // to the session footage — the back half of her clip was a slideshow of
   // Airbnb review screenshots, which is another platform's furniture.
   techno: { video: '/video/techno.mp4', poster: '/video/techno-poster.jpg' },
-  // reel-3 is an unattributed painting-session clip sitting with a painting
-  // host. UNCONFIRMED — if it was shot with a specific maker, move the slug
-  // here and the carousel and directory both follow.
-  pia: { video: '/video/reel-3.mp4', poster: '/video/reel-3-poster.jpg' },
+  // Two finished canvases from her vulva-painting workshop, held up and set
+  // on the table. Hers, audio stripped. It replaces reel-3, an unattributed
+  // painting clip that was standing in for her — this is her own work, so
+  // the carousel and the directory now draw her with it.
+  //
+  // Short at 4.4s: it is the whole clip, and it loops. Her workshop copy
+  // still describes the collective-painting format rather than this one.
+  pia: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
   // Karen-Rose's herb- and flower-salt table: the salt going into the jar,
   // the blossoms stirred through it, and the finished KRÄUTERSALZ. Hers,
   // audio stripped like the rest.
@@ -680,6 +684,14 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
       video: '/video/karen-rose-seife.mp4',
       poster: '/video/karen-rose-seife-poster.jpg',
     },
+  },
+  // Dormant until the feed carries one of her vulva-painting dates — she has
+  // no sessions in it at all today — but keyed now so the first one that
+  // appears plays this rather than falling back to her general reel. Which
+  // is the same file for the moment; they part company as soon as she has
+  // footage of the collective-painting format her copy describes.
+  pia: {
+    Vulva: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
   },
 };
 
