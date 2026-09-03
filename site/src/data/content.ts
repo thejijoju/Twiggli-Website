@@ -694,10 +694,10 @@ const workshopReels: Record<string, Record<string, { video: string; poster: stri
       poster: '/video/karen-rose-seife-poster.jpg',
     },
   },
-  // Dormant until the feed carries one of her vulva-painting dates — she has
-  // no sessions in it at all today — but keyed now so the first one that
-  // appears plays this rather than falling back to her general reel. Which
-  // is the same file for the moment; they part company as soon as she has
+  // Live, not dormant: her Vulva Painting Workshop runs weekly out of
+  // vulvas.berlin (a recurring entry rather than a dated one) and takes
+  // private groups on request, and both titles carry the word. Same file as
+  // her general reel for the moment; they part company as soon as she has
   // footage of the collective-painting format her copy describes.
   pia: {
     Vulva: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
