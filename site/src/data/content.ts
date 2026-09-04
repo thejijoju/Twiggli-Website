@@ -551,12 +551,15 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
-  // No footage of the apiary, so this is cut from Kohfink's five photographs
+  // No footage of the apiary, so this is cut from Kohfink's six photographs
   // the same way the sushi reel is: a second on each, dissolved over a third
-  // of one, with a slight push in. A frame lifted out to the class, the group
-  // at the hives, the roof apiary, capped honey up close, and the honey room
-  // — then back to the first, so the loop has no seam. It sits on the host
-  // rather than on a format: all four of their courses are the same bees.
+  // of one, with a slight push in. It opens on the beekeeper holding a full
+  // frame over the city — a face and the honey in one shot, so the card has
+  // something to lead with — then a frame lifted out to the class, the group
+  // at the hives, the roof apiary, capped honey up close, and the honey room,
+  // before returning to the first so the loop has no seam. It sits on the
+  // host rather than on a format: all four of their courses are the same
+  // bees.
   kohfink: { video: '/video/kohfink.mp4', poster: '/video/kohfink-poster.jpg' },
   // Rebeca's own linocut footage — pulling a print off the press. Supplied
   // by her, audio stripped (the reels play muted anyway).
