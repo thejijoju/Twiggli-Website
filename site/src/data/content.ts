@@ -624,6 +624,17 @@ const reels: Record<string, { video: string; poster: string }> = {
     video: '/video/galleria-lucia.mp4',
     poster: '/video/galleria-lucia-poster.jpg',
   },
+  // Fischtal Foodlab: the shelf of ferments, cabbages and citrus in a crate,
+  // Jem cutting and talking, the garden the produce comes out of, kombucha
+  // on the sideboard. Hers, audio stripped. Her first reel — she had none,
+  // so all nine of her dates were falling back to a still.
+  //
+  // Sent for the fermenting-vegetables workshop, but filed as her general
+  // reel: four of her six formats are fermentation (kimchi twice, kombucha,
+  // this one), and the other two — sushi and sourdough — are the same
+  // kitchen. Her cut opens on a "fermentation is complicated" caption that
+  // ends with a cut at 1.4s; it ships from 1.5s.
+  jem: { video: '/video/jem.mp4', poster: '/video/jem-poster.jpg' },
   // The school's benches, in the order their own montage runs them: a pot
   // rising on the wheel, a slab cut to a paper pattern, handbuilding, the
   // engobe-decorated pieces, glaze mixed, colour brushed on. Theirs, audio
@@ -818,6 +829,14 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
     'Dip-Dye & Design - Taper Candle Workshop in Berlin': {
       en: 'Held in English',
       de: 'Auf Englisch',
+    },
+  },
+  jem: {
+    // Her own listing: two jars of sauerkraut and brined pickles go home
+    // with you, and they carry on fermenting on your counter.
+    'Fermenting Vegetables: A Hands-On Workshop in Berlin': {
+      en: 'Take home 2 jars',
+      de: '2 Gläser mitnehmen',
     },
   },
 };
