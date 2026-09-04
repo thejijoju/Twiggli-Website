@@ -780,6 +780,38 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
       poster: '/video/galleria-lucia-dipdye-poster.jpg',
     },
   },
+  // Keyed by topic: Jem runs the sourdough course on repeat, so every future
+  // Sauerteig date of hers plays this. The word only appears in that one
+  // format of hers — the other Sauerteig classes on the site are
+  // Pasta Madre's, and this map is per host, so they are not touched.
+  jem: {
+    // Two of her own clips joined: the workshop table first — people
+    // weighing, the starter jars, the finished loaves and the recipe sheets
+    // — then a half-second fade into the dough itself, rye and wheat side by
+    // side under their lids. Audio stripped. The first had a
+    // "Can you tell which sourdough is which?" caption over the opening
+    // 4.6 seconds, so it starts at 4.8s, past it.
+    Sauerteig: {
+      video: '/video/jem-sauerteig.mp4',
+      poster: '/video/jem-sauerteig-poster.jpg',
+    },
+    // The vegetable class: cabbage shredded into the bowls, the tamper going
+    // into the jars, and the table of them at the end. Hers, audio stripped,
+    // no caption anywhere in it, so it ships whole. Covers both her dates —
+    // one title, one topic key.
+    Fermenting: {
+      video: '/video/jem-fermenting.mp4',
+      poster: '/video/jem-fermenting-poster.jpg',
+    },
+    // Hands turning cabbage through the gochugaru in the bowl, the jars from
+    // an earlier batch lined up behind. Hers, audio stripped, no caption.
+    // The key catches both wordings she books this under — "Let's make
+    // Kimchi!" and "Kimchi selber machen!".
+    Kimchi: {
+      video: '/video/jem-kimchi.mp4',
+      poster: '/video/jem-kimchi-poster.jpg',
+    },
+  },
 };
 
 /** What a workshop puts on its card beyond the price and the clock — the one
@@ -835,6 +867,23 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
     // Her own listing: two jars of sauerkraut and brined pickles go home
     // with you, and they carry on fermenting on your counter.
     'Fermenting Vegetables: A Hands-On Workshop in Berlin': {
+      en: 'Take home 2 jars',
+      de: '2 Gläser mitnehmen',
+    },
+    // Her listing sends three things home — the written method, a rye or
+    // wheat starter, and the pre-dough you made. The starter is the one that
+    // keeps working after the class, so it is the one on the card.
+    'Sauerteigbrot leicht gemacht: Backkurs in Berlin': {
+      en: 'Take home a starter',
+      de: 'Starter zum Mitnehmen',
+    },
+    // Two jars again, this time kimchi — listed under both of her wordings,
+    // since this map matches titles exactly and never by topic.
+    "Let's make Kimchi!": {
+      en: 'Take home 2 jars',
+      de: '2 Gläser mitnehmen',
+    },
+    'Kimchi selber machen!': {
       en: 'Take home 2 jars',
       de: '2 Gläser mitnehmen',
     },
