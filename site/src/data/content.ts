@@ -811,6 +811,19 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
       video: '/video/jem-kimchi.mp4',
       poster: '/video/jem-kimchi-poster.jpg',
     },
+    // No footage of the sushi class, so this one is built from her nine
+    // stills, cut in the order the evening runs: the plated result, the
+    // room, the bench of tools, the ingredients, nori and rice laid on the
+    // mat, hands rolling, the three finished rolls, the cut maki, and the
+    // bowl at the end. Each is held two seconds and dissolved into the next
+    // over half of one, with a slow 5% push in so it moves like a clip
+    // rather than a gallery. Landscape shots sit on a blurred fill of
+    // themselves so nothing is cropped away, and it opens and closes on the
+    // same plate, so the loop has no seam.
+    Sushi: {
+      video: '/video/jem-sushi.mp4',
+      poster: '/video/jem-sushi-poster.jpg',
+    },
   },
 };
 
@@ -886,6 +899,13 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
     'Kimchi selber machen!': {
       en: 'Take home 2 jars',
       de: '2 Gläser mitnehmen',
+    },
+    // Three rolls, not one: hosomaki, chu-maki and uramaki. That is what
+    // separates this from an evening of making cucumber rolls, and it is
+    // the promise her own page leads with.
+    'Sushi workshop: roll your own sushi in Berlin': {
+      en: 'Roll 3 maki types',
+      de: '3 Maki-Sorten rollen',
     },
   },
 };
