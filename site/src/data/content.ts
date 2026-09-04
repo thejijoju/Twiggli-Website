@@ -754,6 +754,21 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
   pia: {
     Vulva: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
   },
+  'galleria-lucia': {
+    // The dye pots, a taper going in, and the racks of finished candles.
+    // Hers, audio stripped. Her other two formats keep her general reel —
+    // the candle table — which is what they actually look like.
+    //
+    // Her cut carries a caption across the middle of the frame rather than
+    // low down, so no crop clears it cheaply: what ships is the 337×600
+    // window below it, about half the picture, upscaled 1.6× to 540 wide
+    // (encoded a notch finer than the rest to carry that). The candles are
+    // what survives, which for this workshop is the right half to keep.
+    'Dip-Dye': {
+      video: '/video/galleria-lucia-dipdye.mp4',
+      poster: '/video/galleria-lucia-dipdye-poster.jpg',
+    },
+  },
 };
 
 /** What a workshop puts on its card beyond the price and the clock — the one
@@ -795,6 +810,14 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
     'Candles & Prosecco: Scented Candle Workshop in Berlin': {
       en: 'Prosecco included',
       de: 'Prosecco inklusive',
+    },
+    // The card already carries an EN pill beside the duration, so this is
+    // the same fact said louder. It earns its place on the German page,
+    // where a German reader is choosing a class taught in English; on the
+    // English page it tells an English reader something they assumed.
+    'Dip-Dye & Design - Taper Candle Workshop in Berlin': {
+      en: 'Held in English',
+      de: 'Auf Englisch',
     },
   },
 };
