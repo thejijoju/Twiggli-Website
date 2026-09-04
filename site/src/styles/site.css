@@ -2535,6 +2535,14 @@ a:hover { color: var(--color-accent); }
   white-space: nowrap;
   color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
+/* The old price beside the new one, struck through and stepped back, so the
+   pill still reads as one price with a note rather than as two. */
+.session-price-was {
+  margin-left: 5px;
+  font-size: 0.82em;
+  font-weight: 600;
+  opacity: 0.55;
+}
 .session-price {
   padding: 5px 12px;
   border-radius: 999px;

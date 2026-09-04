@@ -246,7 +246,12 @@ const dayLabel = (offset: number) =>
                             action line sits at the same height; the spots
                             note drops underneath. */}
                         <span class="session-side">
-                          {s.price && <span class="session-price">{s.price}</span>}
+                          {s.price && (
+                            <span class="session-price">
+                              {s.price}
+                              {s.priceWas && <s class="session-price-was">{s.priceWas}</s>}
+                            </span>
+                          )}
                           {s.soldOut ? (
                             <button
                               class="session-book session-notify"
@@ -346,7 +351,12 @@ const dayLabel = (offset: number) =>
               {o.usp && <span class="session-usp">{o.usp}</span>}
             </span>
             <span class="session-side">
-              {o.price && <span class="session-price">{o.price}</span>}
+              {o.price && (
+                            <span class="session-price">
+                              {o.price}
+                              {o.priceWas && <s class="session-price-was">{o.priceWas}</s>}
+                            </span>
+                          )}
               <a class="session-book" href={o.request ? inquireHref(o) : o.bookUrl} target={o.request ? undefined : '_blank'} rel={o.request ? undefined : 'noopener'}>{t.inquire}</a>
             </span>
           </li>

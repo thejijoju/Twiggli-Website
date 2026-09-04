@@ -32,6 +32,10 @@ export type Session = {
   /** Unknown for scraped sessions — the card then omits the line. */
   spots?: number;
   price?: string;
+  /** The price before the reduction, where the host is running one. Shown
+   *  struck through beside the price, so a sale reads as a sale rather than
+   *  as a low number nobody can place. */
+  priceWas?: string;
   /** The workshop's own picture, scraped from the host's booking page —
    *  the card thumbnail prefers it over the host's stock tile. */
   image?: string;
@@ -59,6 +63,8 @@ type LiveWorkshop = {
   time?: string; // HH:MM; absent when only the booking page shows it
   duration?: string;
   price?: string;
+  /** Set where the host lists a sale price — see Session.priceWas. */
+  priceWas?: string;
   district?: string;
   /** Live spots left, where the host's booking API reports it. */
   spots?: number;
@@ -262,6 +268,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       bookUrl: w.url,
       ...(w.duration ? { duration: w.duration } : {}),
       ...(w.price ? { price: w.price } : {}),
+      ...(w.priceWas ? { priceWas: w.priceWas } : {}),
       ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),
       ...(w.image ? { image: w.image } : {}),
       ...(w.request ? { request: true } : {}),
