@@ -923,6 +923,14 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
       en: '20 real bee colonies',
       de: 'An 20 Bienenvölkern',
     },
+    // Their own page draws this line between the two beginners' courses: the
+    // swarm hanging in a tree is the thing you see on this one and not on
+    // the classic. Not the Steiner framing, which is the reason someone
+    // picks it but too long a thought for a label.
+    'Einsteigerkurs + wesensgemäße Imkerei (5 Termine, Apr–Jun)': {
+      en: 'See a wild swarm',
+      de: 'Bienenschwarm erleben',
+    },
     // The one label here that is not a selling point. Their own page calls
     // this a lecture that prepares you for a practical course at a Berlin
     // beekeeping club — a day in a room, no hive opened. At €18 beside their
