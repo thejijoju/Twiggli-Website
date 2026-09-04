@@ -54,7 +54,7 @@ const t = {
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
         filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
         kids: '🧸 For kids', share: 'Share', copied: 'Link copied',
-        soldOut: 'Sold out', notify: 'Notify me',
+        soldOut: 'Sold out', notify: 'Notify me', salesEnd: 'Booking closes',
         notifyTitle: 'Get notified when a spot opens',
         notifyHint: 'We check this host’s calendar automatically. Leave your email and we’ll let you know the moment this workshop takes bookings again — the message opens in your mail app, just hit send.',
         notifyEmail: 'Your email', notifySend: 'Set notification', cancel: 'Cancel',
@@ -66,7 +66,7 @@ const t = {
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
         filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
         kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert',
-        soldOut: 'Ausgebucht', notify: 'Benachrichtige mich',
+        soldOut: 'Ausgebucht', notify: 'Benachrichtige mich', salesEnd: 'Buchbar bis',
         notifyTitle: 'Bescheid bekommen, wenn ein Platz frei wird',
         notifyHint: 'Wir prüfen den Kalender dieses Hosts automatisch. Trag deine E-Mail ein und wir melden uns, sobald dieser Workshop wieder buchbar ist — die Nachricht öffnet sich in deinem Mailprogramm, einfach absenden.',
         notifyEmail: 'Deine E-Mail', notifySend: 'Benachrichtigung einrichten', cancel: 'Abbrechen',
@@ -106,6 +106,15 @@ const inquireHref = (o: OnRequestWorkshop): string => {
 
 const dayLabel = (offset: number) =>
   offset === 0 ? t.today : offset === 1 ? t.tomorrow : null;
+
+/* The booking deadline in the reader's own language. The stored value is an
+   ISO local datetime; only the day and the hour are worth showing. */
+const formatDeadline = (iso: string): string => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.valueOf())) return iso;
+  const locale = lang === 'de' ? 'de-DE' : 'en-GB';
+  return `${d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}, ${d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`;
+};
 ---
 
 <div
@@ -230,7 +239,7 @@ const dayLabel = (offset: number) =>
                             {s.duration ?? s.host.duration}
                             {/* Taught-in languages, one quiet pill each, so
                                 nobody books a class they can't follow. */}
-                            {(s.host.languages ?? '').split('·').map((l) => l.trim()).filter(Boolean).map((l) => (
+                            {(s.languages ?? s.host.languages ?? '').split('·').map((l) => l.trim()).filter(Boolean).map((l) => (
                               <span class="lang-pill">{l}</span>
                             ))}
                           </span>
@@ -241,6 +250,10 @@ const dayLabel = (offset: number) =>
                               where the time chip and the spots badge already
                               sit. Only a few workshops carry one. */}
                           {s.usp && <span class="session-usp">{s.usp}</span>}
+                          {/* Where the host closes sales before the day
+                              itself, so nobody arrives at a booking page
+                              that has already shut. */}
+                          {s.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(s.salesEnd)}</span>}
                         </span>
                         {/* Price and Book share one row so every card's
                             action line sits at the same height; the spots
@@ -342,13 +355,17 @@ const dayLabel = (offset: number) =>
             <span class="session-main">
               <span class="session-duration">
                 {o.duration ?? o.host.duration}
-                {(o.host.languages ?? '').split('·').map((l) => l.trim()).filter(Boolean).map((l) => (
+                {(o.languages ?? o.host.languages ?? '').split('·').map((l) => l.trim()).filter(Boolean).map((l) => (
                   <span class="lang-pill">{l}</span>
                 ))}
               </span>
               <a class="session-title" href={o.bookUrl} target="_blank" rel="noopener">{o.title}</a>
               <span class="session-host">{o.host.name} · {o.district}</span>
               {o.usp && <span class="session-usp">{o.usp}</span>}
+                          {/* Where the host closes sales before the day
+                              itself, so nobody arrives at a booking page
+                              that has already shut. */}
+                          {o.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(o.salesEnd)}</span>}
             </span>
             <span class="session-side">
               {o.price && (

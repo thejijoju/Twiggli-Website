@@ -29,6 +29,14 @@ export type Session = {
   bookUrl: string;
   /** Session-specific length; the card falls back to the host's. */
   duration?: string;
+  /** The language this one is taught in, where it differs from the host's
+   *  own list — a host who works in two does not run every class in both.
+   *  The card falls back to the host's. */
+  languages?: string;
+  /** When the host stops selling tickets, where their listing says so —
+   *  an ISO local datetime, so the card can put it in the reader's own
+   *  language rather than repeating the host's wording in one of them. */
+  salesEnd?: string;
   /** Unknown for scraped sessions — the card then omits the line. */
   spots?: number;
   price?: string;
@@ -62,6 +70,10 @@ type LiveWorkshop = {
   date: string; // YYYY-MM-DD, Europe/Berlin
   time?: string; // HH:MM; absent when only the booking page shows it
   duration?: string;
+  /** Overrides the host's language list for this workshop — see Session. */
+  languages?: string;
+  /** Booking deadline, ISO local datetime — see Session. */
+  salesEnd?: string;
   price?: string;
   /** Set where the host lists a sale price — see Session.priceWas. */
   priceWas?: string;
@@ -267,6 +279,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       district: w.district ?? host.studio ?? host.place,
       bookUrl: w.url,
       ...(w.duration ? { duration: w.duration } : {}),
+      ...(w.languages ? { languages: w.languages } : {}),
+      ...(w.salesEnd ? { salesEnd: w.salesEnd } : {}),
       ...(w.price ? { price: w.price } : {}),
       ...(w.priceWas ? { priceWas: w.priceWas } : {}),
       ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),

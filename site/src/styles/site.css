@@ -556,13 +556,6 @@ a:hover { color: var(--color-accent); }
   overflow: hidden;
   border-radius: 14px;
   background: var(--color-surface);
-  /* A hairline round each thumbnail. An outline rather than a border so the
-     tile keeps its size, drawn inside its own edge and above the picture —
-     an inset shadow would sit under the <video> and never be seen. On the
-     bottom pair the lower edge falls outside the feed's crop, which is
-     right: those cards carry on under the nav. */
-  outline: 1px solid var(--phone-frame);
-  outline-offset: -1px;
 }
 /* The two titled cards, which carry the two named hosts' reels. Set to one
    height rather than one ratio: the feed's columns are deliberately unequal
@@ -2079,6 +2072,16 @@ a:hover { color: var(--color-accent); }
   border-radius: 50%;
   background: currentColor;
   flex: none;
+}
+
+/* The booking deadline, where a host closes sales before the day. Quiet: it
+   matters only to somebody already reading this card, and most cards do not
+   carry one. */
+.session-deadline {
+  display: block;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
 
 /* A reel tile plays on tap instead of linking out — see DayPicker. */
