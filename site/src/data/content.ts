@@ -789,6 +789,14 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
       de: 'Gut zum Verschenken',
     },
   },
+  'galleria-lucia': {
+    // Straight off her own listing: a glass of Prosecco is included, and it
+    // is the one thing that separates this class from her other two.
+    'Candles & Prosecco: Scented Candle Workshop in Berlin': {
+      en: 'Prosecco included',
+      de: 'Prosecco inklusive',
+    },
+  },
 };
 
 /** A workshop's label, in this language, if it has one. */
