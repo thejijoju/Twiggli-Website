@@ -309,7 +309,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     // Copy from imkerei-kohfink.de; photos and reel to follow.
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Beekeeping & honey baking', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Learn beekeeping from a professional Bioland apiary in Berlin-Kaulsdorf: hands-on beginners’ courses with up to 20 real bee colonies, a theory lecture, and honey gingerbread baking workshops — bake traditional Lebkuchen with honey and take your creations home.',
-      group: 'Solo or pair', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
+      group: '≤ 17', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
     // Copy from pastamadre.de; photos and reel to follow.
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, sourdough & fermentation', studio: 'Pastamadre',
       blurb: 'Homemade Italian pasta, sourdough bread and pizza, and vegetable fermentation with Maria-Lucrezia and Frank in their Wedding kitchen — most workshops end around the dinner table. Solidarity pricing: pay the full Rose price, or the reduced Tulpe price when money is tight. Ingredients are organic, regional and largely from the SUPERCOOP co-op.',
@@ -484,7 +484,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
       group: 'Bis 10', duration: '1,5–2 Std.', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
-      group: 'Einzeln oder zu zweit', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
+      group: '≤ 17', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
     { slug: 'munio', name: 'The Munio', specialty: 'Kerzen & Duft-Workshops', studio: 'The Munio Studio',
       blurb: 'Das Berliner Studio einer lettischen Kerzenmanufaktur in der Akazienstraße. Gieße deine eigene Sojawachskerze mit Trockenblumen, mische Duftöl-Roll-ons aus ihrer Duftbibliothek oder stelle Duftwachs her — kurze, entspannte Sessions im Store, fast jeden Tag.',
       group: 'Bis 10', duration: '1–2 Std.', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
@@ -913,6 +913,24 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
     'Sushi workshop: roll your own sushi in Berlin': {
       en: 'Roll 3 maki types',
       de: '3 Maki-Sorten rollen',
+    },
+  },
+  kohfink: {
+    // Straight off their page: the practice runs on up to 20 real colonies
+    // across the five dates, which is what separates this from a course
+    // taught on one demonstration hive.
+    'Klassischer Einsteigerkurs (5 Termine, Apr–Jun)': {
+      en: '20 real bee colonies',
+      de: 'An 20 Bienenvölkern',
+    },
+    // The one label here that is not a selling point. Their own page calls
+    // this a lecture that prepares you for a practical course at a Berlin
+    // beekeeping club — a day in a room, no hive opened. At €18 beside their
+    // €200 hands-on courses, and under a reel of people standing at the
+    // hives, somebody would otherwise book it expecting bees.
+    'Theoriekurs: Einführung in die Imkerei': {
+      en: 'Theory only',
+      de: 'Nur Theorie',
     },
   },
 };
