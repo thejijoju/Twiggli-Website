@@ -1341,6 +1341,31 @@ a:hover { color: var(--color-accent); }
   .post-video { float: right; margin: 6px 0 24px 32px; max-width: 300px; }
 }
 
+/* A boxed aside inside an article — same outline-and-offset-block language as
+   the section labels, so a standing offer inside a piece of prose reads as
+   something pinned to the page rather than another paragraph. Used for the
+   things a host wants found rather than read past. */
+.post-callout {
+  margin: 34px 0;
+  padding: 20px 22px 22px;
+  background: #fff;
+  border: 3px solid #131313;
+  box-shadow: 9px 10px 0 color-mix(in srgb, var(--color-text) 30%, transparent);
+}
+.post-callout > :first-child { margin-top: 0; }
+.post-callout > :last-child { margin-bottom: 0; }
+.post-callout-label {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #131313;
+  margin: 0 0 10px;
+}
+
 /* Table of contents at the head of each legal document. */
 .legal-toc {
   border-top: 2px solid var(--color-divider);
