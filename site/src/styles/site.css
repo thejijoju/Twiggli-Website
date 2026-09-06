@@ -678,44 +678,45 @@ a:hover { color: var(--color-accent); }
   margin: 4px auto 10px;
 }
 
-/* — section headings — these are the headers for their sections, so they run
-   larger than the body text beneath them, and well short of the hero h1. The
-   short accent rule keeps them from reading as buttons. */
+/* — section headings — a hard-edged label: heavy italic caps in a boxed
+   outline, with a second block offset behind it. It reads as something
+   stuck on the page rather than typeset into it, which is the point — these
+   announce a section, they are not the section's headline.
+   inline-flex, not flex, so the box stops at the end of the words instead
+   of ruling across the column. The offset block is a spread-less box-shadow,
+   so it tracks the box's exact size, and it is a translucent ink rather than
+   a fixed grey so it picks up whichever band it lands on. */
 .kicker {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
   font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: clamp(22px, 2.1vw, 30px);
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-  text-transform: none;
-  color: var(--color-accent-800);
-  background: none;
-  padding: 0;
-  border-radius: 0;
-  margin: 0 0 24px;
-}
-.kicker::before {
-  content: '';
-  flex: none;
-  width: 30px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--color-accent);
-}
-/* Where a real headline follows (the split sections), the label steps back to
-   an eyebrow — otherwise a 30px label sits directly above a 34px heading and
-   the two compete. */
-.kicker-tight {
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(20px, 1.9vw, 27px);
+  line-height: 1;
+  letter-spacing: 0.005em;
   text-transform: uppercase;
-  margin: 0 0 14px;
+  color: #131313;
+  background: #fff;
+  border: 4px solid #131313;
+  padding: 13px 20px 14px;
+  border-radius: 0;
+  margin: 0 0 30px;
+  box-shadow: 11px 12px 0 color-mix(in srgb, var(--color-text) 34%, transparent);
 }
-.kicker-tight::before { width: 22px; height: 3px; }
+/* The accent rule the old label carried; the box replaces it. */
+.kicker::before { content: none; }
+/* Where a real headline follows (the split sections), the label steps back to
+   an eyebrow — otherwise a 27px box sits directly above a 34px heading and the
+   two compete. Same object, scaled down to a tag. */
+.kicker-tight {
+  font-size: 13px;
+  letter-spacing: 0.09em;
+  padding: 7px 11px 8px;
+  border-width: 2.5px;
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--color-text) 30%, transparent);
+  margin: 0 0 20px;
+}
 .section-lede {
   font-size: 17px;
   line-height: 1.6;
