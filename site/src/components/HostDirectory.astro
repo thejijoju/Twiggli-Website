@@ -50,7 +50,16 @@ const labels = {
       data-price-min={priceRanges.get(host.slug)?.[0]}
       data-price-max={priceRanges.get(host.slug)?.[1]}
     >
-      <div class="maker-media">
+      {/* No play button: the reels announce themselves by playing as the page
+          scrolls past them. The tile itself takes the focus and the keyboard
+          in the button's place, so a reel is still reachable without a
+          pointer. */}
+      <div
+        class="maker-media"
+        tabindex={host.video ? 0 : undefined}
+        role={host.video ? 'button' : undefined}
+        aria-label={host.video ? `${host.name} — ${labels.play}` : undefined}
+      >
         {host.video ? (
           <video
             class="maker-video"
@@ -60,17 +69,11 @@ const labels = {
             loop
             playsinline
             preload="none"
-            aria-label={`${host.name} — ${labels.play}`}
           ></video>
         ) : host.wide ? (
           <img src={host.wide} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
         ) : (
           <HostMonogram name={host.name} />
-        )}
-        {host.video && (
-          <button class="maker-play" type="button" aria-label={`${host.name} — ${labels.play}`}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-          </button>
         )}
       </div>
 
@@ -98,48 +101,126 @@ const labels = {
 </div>
 
 <script>
-  // Reels on the directory start when the pointer is over them and stop when
-  // it leaves; a click stops one under the cursor, and it stays stopped until
-  // the pointer leaves and comes back. Only ever one at a time. Touch has no
-  // hover, so there a tap toggles the tile instead. Everything else here is
-  // a still.
+  // Reels on the directory start by themselves as you scroll past them, so a
+  // page of tiles reads as video rather than as stills — but at most one per
+  // row, and only while that row is on screen. Pointing at any tile plays
+  // that one too; clicking a playing tile stops it until the pointer leaves
+  // and comes back. Touch has no hover, so there a tap toggles.
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
-  const hoverable = window.matchMedia('(hover: hover)').matches;
-  const stopAll = (except?: HTMLElement) =>
-    cards.forEach((c) => {
-      if (c === except) return;
-      c.querySelector<HTMLVideoElement>('.maker-video')?.pause();
-      c.classList.remove('is-playing');
-    });
+  const videoOf = (c: HTMLElement) => c.querySelector<HTMLVideoElement>('.maker-video');
+  const reels = cards.filter((c) => videoOf(c));
+  if (reels.length) {
+    const hoverable = window.matchMedia('(hover: hover)').matches;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  cards.forEach((card) => {
-    const video = card.querySelector<HTMLVideoElement>('.maker-video');
-    if (!video) return;
-    const media = card.querySelector('.maker-media');
-    const start = () => {
-      stopAll(card);
+    // Chosen to play unattended; on screen right now; stopped by hand.
+    const auto = new Set<HTMLElement>();
+    const onScreen = new Set<HTMLElement>();
+    const stopped = new Set<HTMLElement>();
+    let hovered: HTMLElement | null = null;
+
+    const play = (card: HTMLElement) => {
+      const v = videoOf(card);
+      if (!v || !v.paused) return;
       card.classList.add('is-playing');
-      video.play().catch(() => card.classList.remove('is-playing'));
+      // These load nothing until something asks them to. play() on an empty
+      // buffer is refused often enough to need the second attempt once there
+      // are frames to show.
+      v.preload = 'auto';
+      const attempt = () => { v.play().catch(() => {}); };
+      attempt();
+      if (v.readyState < 3) {
+        v.addEventListener('canplay', () => {
+          if (card.classList.contains('is-playing')) attempt();
+        }, { once: true });
+      }
     };
-    const halt = () => {
-      video.pause();
+    const halt = (card: HTMLElement) => {
+      const v = videoOf(card);
+      if (!v) return;
+      if (!v.paused) v.pause();
       card.classList.remove('is-playing');
     };
-    if (hoverable) {
-      let stopped = false;
-      media?.addEventListener('mouseenter', () => { if (!stopped) start(); });
-      media?.addEventListener('mouseleave', () => { stopped = false; halt(); });
-      media?.addEventListener('click', () => { stopped = true; halt(); });
-    } else {
-      media?.addEventListener('click', () => (video.paused ? start() : halt()));
-    }
-    // The play button is the tile's keyboard route in, so it toggles rather
-    // than following the click-to-stop rule the media itself uses.
-    card.querySelector('.maker-play')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (video.paused) start();
-      else halt();
+
+    // One per row, and a different column each row down the page, so the
+    // tiles that start on their own zig-zag instead of running down one edge.
+    // Cards in a grid row share an offsetTop, which is also how the row count
+    // follows the column count when the window changes width.
+    const chooseAuto = () => {
+      auto.clear();
+      if (calm) return;
+      const rows = new Map<number, HTMLElement[]>();
+      for (const card of reels) {
+        const top = Math.round(card.offsetTop);
+        const row = rows.get(top);
+        if (row) row.push(card);
+        else rows.set(top, [card]);
+      }
+      let n = 0;
+      for (const top of [...rows.keys()].sort((a, b) => a - b)) {
+        const row = rows.get(top)!;
+        auto.add(row[n % row.length]);
+        n++;
+      }
+    };
+
+    const sync = () => {
+      for (const card of reels) {
+        const wanted = !stopped.has(card) && (card === hovered || (auto.has(card) && onScreen.has(card)));
+        if (wanted) play(card);
+        else halt(card);
+      }
+    };
+
+    // Half the tile in view before it starts: a reel that fires while it is
+    // still a sliver at the edge is noise, not an invitation.
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const card = entry.target as HTMLElement;
+        if (entry.isIntersecting) onScreen.add(card);
+        else onScreen.delete(card);
+      }
+      sync();
+    }, { threshold: 0.5 });
+    reels.forEach((card) => io.observe(card));
+
+    reels.forEach((card) => {
+      const media = card.querySelector<HTMLElement>('.maker-media');
+      if (!media) return;
+      if (hoverable) {
+        media.addEventListener('mouseenter', () => { hovered = card; sync(); });
+        media.addEventListener('mouseleave', () => {
+          if (hovered === card) hovered = null;
+          stopped.delete(card);
+          sync();
+        });
+        media.addEventListener('click', () => { stopped.add(card); sync(); });
+      } else {
+        media.addEventListener('click', () => {
+          if (stopped.has(card)) stopped.delete(card);
+          else if (videoOf(card)!.paused) stopped.delete(card);
+          else stopped.add(card);
+          hovered = videoOf(card)!.paused ? card : null;
+          sync();
+        });
+      }
+      // The tile is the keyboard's way in now that the button is gone.
+      media.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        if (videoOf(card)!.paused) { stopped.delete(card); hovered = card; }
+        else { stopped.add(card); hovered = null; }
+        sync();
+      });
+      videoOf(card)!.addEventListener('pause', () => card.classList.remove('is-playing'));
     });
-    video.addEventListener('pause', () => card.classList.remove('is-playing'));
-  });
+
+    chooseAuto();
+    sync();
+    let redo = 0;
+    window.addEventListener('resize', () => {
+      clearTimeout(redo);
+      redo = window.setTimeout(() => { chooseAuto(); sync(); }, 150);
+    });
+  }
 </script>

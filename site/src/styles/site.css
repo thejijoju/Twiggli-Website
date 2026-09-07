@@ -1608,23 +1608,12 @@ a:hover { color: var(--color-accent); }
   height: calc(100% - 2 * var(--phone-bezel));
   border-radius: calc(14px - var(--phone-bezel));
 }
-.maker-play {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 50%;
-  background: color-mix(in srgb, #000 55%, transparent);
-  color: #fff;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+/* The play button is gone — the reels start themselves as the page scrolls
+   past — so the tile carries the focus ring in its place. */
+.maker-media:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
 }
-.maker.is-playing .maker-play { opacity: 0; }
 .maker-name {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
