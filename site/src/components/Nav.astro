@@ -34,7 +34,6 @@ const inlineLinks = navLinks.filter((link) => !link.external);
       <a
         href={link.href}
         aria-current={isCurrent(link) ? 'page' : undefined}
-        class:list={{ 'nav-link-emphasis': link.emphasis }}
       >{link.label}</a>
     ))}
     <LangSwitch lang={lang} />

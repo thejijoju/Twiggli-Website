@@ -551,6 +551,13 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Tania's own: slabs pinched and joined into cups at the long table, the
+  // pieces drying on their boards, the brunch laid out, and the window over
+  // Breitscheidplatz that says where the room is. Audio stripped. It opens on
+  // a "WORKSHOP 25.10." title that fades out over the first four seconds —
+  // dropped, since a date on a reel goes stale where nobody is watching for
+  // it. The poster is the glazed mug two-thirds in: what you leave with.
+  tania: { video: '/video/tania.mp4', poster: '/video/tania-poster.jpg' },
   // Ditte's own, two clips joined. It opens on a finished ink drawing of a
   // street — the thing you leave with, and the poster — then the sketching
   // itself: pads on knees, a drawing held up against the building it is of,

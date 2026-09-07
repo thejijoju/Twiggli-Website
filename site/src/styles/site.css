@@ -234,13 +234,16 @@ a:hover { color: var(--color-accent); }
 /* Nav links track normally — the widened 0.045em got too loose once the
    header grew to five links. */
 .nav-end a { letter-spacing: normal; }
-.nav a.nav-link-emphasis { font-weight: var(--font-heading-weight); color: var(--color-accent-700); }
-
-/* The current page reads as a solid rule under the label rather than the
-   system's hairline text-decoration underline. */
+/* The current page takes the accent, the heading weight and a solid rule
+   under the label — not the system's hairline text-decoration underline.
+   Every link is otherwise identical: the corporate one used to carry this
+   colour permanently, which made it read as the page you were on from every
+   page you were not on. */
 .nav a[aria-current='page'] {
   text-decoration: none;
-  border-bottom: 3px solid var(--color-text);
+  font-weight: var(--font-heading-weight);
+  color: var(--color-accent-700);
+  border-bottom: 3px solid var(--color-accent-700);
   padding-bottom: 3px;
 }
 

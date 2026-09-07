@@ -3,7 +3,7 @@
 
 import { href, withBase, type Lang } from '../lib/url.ts';
 
-export type NavLink = { label: string; href: string; external?: boolean; emphasis?: boolean };
+export type NavLink = { label: string; href: string; external?: boolean };
 
 /** The booking/host web app. Every "Get Started" on the site points here. */
 export const appUrl = 'https://app.twiggli.com/';
@@ -98,7 +98,7 @@ export function getSiteData(lang: Lang) {
     { label: navLabels[lang].happening, href: href(lang, '/happening-today/') },
     /* Points at /hosts/, which is the corporate page — the pitch and the
        directory of makers who can run the session are one page now. */
-    { label: navLabels[lang].corporate, href: href(lang, '/corporatebookings/'), emphasis: true },
+    { label: navLabels[lang].corporate, href: href(lang, '/corporatebookings/') },
     { label: navLabels[lang].blog, href: href(lang, '/blog/') },
     { label: navLabels[lang].contact, href: href(lang, '/contact/') },
   ];
