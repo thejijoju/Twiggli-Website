@@ -57,7 +57,7 @@ Mahlgrad und Wassertemperatur wie zwei verschiedene Getränke.
 
 Dazu gibt es Tee-Tastings, die separat laufen.
 
-Anmeldung fürs Tasting direkt bei Angelo: **0152 10615680** (auch per DM) oder
+Anmeldung fürs Tasting direkt bei Angelo: **+49 176 765 064 56** (auch per DM) oder
 **cafe@coffeeandbananas.com**.
 
 <div class="post-callout">
