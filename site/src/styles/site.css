@@ -113,6 +113,14 @@ body { margin: 0; text-wrap: pretty; }
 a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent); }
 
+/* The browser hides [hidden] with display:none from its own stylesheet, which
+   any display of ours then overrides — a flex or grid rule on the element
+   itself is enough. Several things here hide by setting the attribute from
+   script (the host filters, the calendar's empty day groups), so this has to
+   win, or an element is hidden to assistive tech and still on the page for
+   everyone else. */
+[hidden] { display: none !important; }
+
 .page {
   /* A breath of the brand violet across the top of the page, fading out
      before the fold — the white was flat on its own. Kept faint enough to
@@ -2318,7 +2326,6 @@ a:hover { color: var(--color-accent); }
 
 /* The hidden attribute must always win — filtering and the day switch
    set it on elements whose classes carry their own display values. */
-.daypicker [hidden] { display: none !important; }
 
 /* In grid view the whole day flows as ONE grid across the full panel
    width — no per-time sub-grids leaving rows half empty. The time
