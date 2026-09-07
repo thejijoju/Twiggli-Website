@@ -551,11 +551,20 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
-  // Evelyn's own: the blue Balkan motif being cross-stitched, then the
-  // finished red bookmark and its tassel. Audio stripped. Her cut opens on a
-  // nine-second "POV: your 10 minute festival break turns into learning
-  // Balkan embroidery" caption and closes on an @Holzmarkt25 card, so what
-  // ships is the eight seconds between them.
+  // Evelyn's own, two clips joined. The montage of her formats runs first —
+  // full tables of people embroidering, making vision boards, painting glass,
+  // cutting collage — because on the directory the question is what she can
+  // run for a group, not what one stitch looks like. Then the cross-stitch
+  // close-up: the blue Balkan motif worked stitch by stitch, the finished red
+  // bookmark, the tassel. Audio stripped.
+  // Both arrive bracketed by captions rather than carrying them: a "Thank you
+  // 2025!" title over the montage's first three seconds, and a "POV: your 10
+  // minute festival break…" card holding the embroidery clip's first nine,
+  // with an @Holzmarkt25 sign-off at its end. What ships is the clean stretch
+  // of each.
+  // Encoded a notch smaller and coarser than the other reels: at 33 seconds
+  // it is the longest of them, and on the directory it starts itself when the
+  // page scrolls past rather than waiting to be asked.
   evelyn: { video: '/video/evelyn.mp4', poster: '/video/evelyn-poster.jpg' },
   // Qian's own, two of her clips joined: the class first — the long table at
   // the window with everyone hand-building, hands shaping a bowl on the
