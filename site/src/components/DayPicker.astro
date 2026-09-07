@@ -54,7 +54,8 @@ const t = {
         today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
         filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
         kids: '🧸 For kids', share: 'Share', copied: 'Link copied',
-        soldOut: 'Sold out', notify: 'Notify me', salesEnd: 'Booking closes',
+        soldOut: 'Sold out', waitingList: 'Waiting list', free: 'Free',
+        notify: 'Notify me', salesEnd: 'Booking closes',
         notifyTitle: 'Get notified when a spot opens',
         notifyHint: 'We check this host’s calendar automatically. Leave your email and we’ll let you know the moment this workshop takes bookings again — the message opens in your mail app, just hit send.',
         notifyEmail: 'Your email', notifySend: 'Set notification', cancel: 'Cancel',
@@ -66,7 +67,8 @@ const t = {
         today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
         filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
         kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert',
-        soldOut: 'Ausgebucht', notify: 'Benachrichtige mich', salesEnd: 'Buchbar bis',
+        soldOut: 'Ausgebucht', waitingList: 'Warteliste', free: 'Kostenlos',
+        notify: 'Benachrichtige mich', salesEnd: 'Buchbar bis',
         notifyTitle: 'Bescheid bekommen, wenn ein Platz frei wird',
         notifyHint: 'Wir prüfen den Kalender dieses Hosts automatisch. Trag deine E-Mail ein und wir melden uns, sobald dieser Workshop wieder buchbar ist — die Nachricht öffnet sich in deinem Mailprogramm, einfach absenden.',
         notifyEmail: 'Deine E-Mail', notifySend: 'Benachrichtigung einrichten', cancel: 'Abbrechen',
@@ -109,6 +111,15 @@ const dayLabel = (offset: number) =>
 
 /* The booking deadline in the reader's own language. The stored value is an
    ISO local datetime; only the day and the hour are worth showing. */
+/** A workshop that costs nothing should say so in words. "€0" is a number
+ *  nobody reads as free, and leaving the price off hides the best thing about
+ *  the session — but the data keeps the €0 so the price filter can still
+ *  place it. */
+const showPrice = (price?: string) =>
+  price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price;
+/** Full with a waiting list is a different answer to "can I come?" than full
+ *  full, so it gets its own word. */
+const fullLabel = (s: { waitingList?: boolean }) => (s.waitingList ? t.waitingList : t.soldOut);
 const formatDeadline = (iso: string): string => {
   const d = new Date(iso);
   if (Number.isNaN(d.valueOf())) return iso;
@@ -214,7 +225,7 @@ const formatDeadline = (iso: string): string => {
                               chip on the picture. */}
                           {s.time && <span class="session-timechip">{s.time}</span>}
                           {s.soldOut ? (
-                            <span class="session-availbadge session-soldout">{t.soldOut}</span>
+                            <span class="session-availbadge session-soldout">{fullLabel(s)}</span>
                           ) : (
                             typeof s.spots === 'number' && <span class="session-availbadge">{s.spots} {t.spots}</span>
                           )}
@@ -261,7 +272,7 @@ const formatDeadline = (iso: string): string => {
                         <span class="session-side">
                           {s.price && (
                             <span class="session-price">
-                              {s.price}
+                              {showPrice(s.price)}
                               {s.priceWas && <s class="session-price-was">{s.priceWas}</s>}
                             </span>
                           )}
@@ -299,7 +310,7 @@ const formatDeadline = (iso: string): string => {
                             <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                           </button>
                           {s.soldOut ? (
-                            <span class="session-spots session-soldout">{t.soldOut}</span>
+                            <span class="session-spots session-soldout">{fullLabel(s)}</span>
                           ) : (
                             typeof s.spots === 'number' && <span class="session-spots">{s.spots} {t.spots}</span>
                           )}
@@ -370,7 +381,7 @@ const formatDeadline = (iso: string): string => {
             <span class="session-side">
               {o.price && (
                             <span class="session-price">
-                              {o.price}
+                              {showPrice(o.price)}
                               {o.priceWas && <s class="session-price-was">{o.priceWas}</s>}
                             </span>
                           )}

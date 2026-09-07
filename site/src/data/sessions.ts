@@ -55,6 +55,10 @@ export type Session = {
   /** Fully booked right now — the card says so and offers "Notify me"
    *  instead of Book; the daily scrape flips it back when spots return. */
   soldOut?: boolean;
+  /** Full, but the host keeps a waiting list you can still join. Reads as
+   *  "Waiting list" rather than "Sold out", because those are different
+   *  answers to "can I come?". Only meaningful alongside soldOut. */
+  waitingList?: boolean;
   /** The one thing that sells this workshop, in two or three words — see
    *  workshopUsps in content.ts. Absent for most. */
   usp?: string;
@@ -91,6 +95,8 @@ type LiveWorkshop = {
   kids?: boolean;
   /** True while the host's booking platform reports the session full. */
   soldOut?: boolean;
+  /** Full, but with a waiting list open on the host's page. */
+  waitingList?: boolean;
   url: string;
 };
 
@@ -288,6 +294,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.request ? { request: true } : {}),
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut ? { soldOut: true } : {}),
+      ...(w.waitingList ? { waitingList: true } : {}),
       ...(usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
   }

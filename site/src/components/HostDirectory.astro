@@ -28,6 +28,9 @@ const priceCopy = filterCopy[lang];
 const money = (n: number) => `€${Math.round(n)}`;
 const priceText = (range: [number, number] | undefined) =>
   !range ? priceCopy.priceUnknown
+    // A host whose only public sessions are free: "€0 · per person" is a
+    // sentence about nothing. Say the word instead.
+    : range[0] === 0 && range[1] === 0 ? priceCopy.priceFree
     : range[0] === range[1] ? `${money(range[0])} · ${priceCopy.priceMeta}`
     : `${money(range[0])}–${money(range[1])} · ${priceCopy.priceMeta}`;
 

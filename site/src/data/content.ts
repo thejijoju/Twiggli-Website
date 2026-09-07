@@ -942,6 +942,15 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
       de: '3 Maki-Sorten rollen',
     },
   },
+  evelyn: {
+    // Her Luma listing lists five things included and one of them keeps
+    // going after the afternoon does: a needle and thread to take away, so
+    // the bookmark is not the last thing you stitch.
+    'Romanian Embroidery Workshop': {
+      en: 'Kit to take home',
+      de: 'Kit zum Mitnehmen',
+    },
+  },
   kohfink: {
     // Straight off their page: the practice runs on up to 20 real colonies
     // across the five dates, which is what separates this from a course
@@ -1045,6 +1054,7 @@ export const filterCopy = {
     prices: { budget: 'Under €50', mid: '€50–100', high: '€100–200', premium: '€200+' },
     priceMeta: 'Per person',
     priceUnknown: 'On request',
+    priceFree: 'Free',
   },
   de: {
     activityLabel: 'Aktivität',
@@ -1065,6 +1075,7 @@ export const filterCopy = {
     prices: { budget: 'Unter 50 €', mid: '50–100 €', high: '100–200 €', premium: 'Ab 200 €' },
     priceMeta: 'Pro Person',
     priceUnknown: 'Auf Anfrage',
+    priceFree: 'Kostenlos',
   },
 } as const;
 
