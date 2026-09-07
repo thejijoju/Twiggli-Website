@@ -3,3 +3,4 @@
 # reads it to open an issue and then throws it away, so a local run of the
 # scraper should not leave it behind as something to commit.
 reopened-events.json
+.astro/
