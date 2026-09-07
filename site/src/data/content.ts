@@ -551,6 +551,16 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Simone's own: a fist on a chisel working the face of an alabaster block,
+  // outdoors on the B.L.O. yard. Audio stripped (hers carried music).
+  // The only landscape footage on the site — 16:9, where every other reel is
+  // shot upright. Her hand sits at the left of that frame and the stone fills
+  // the right, too far apart for a 9:16 window to hold both, so it ships
+  // square: the widest crop that keeps the hand, the chisel and the face it
+  // is cutting. That fills the directory tile exactly, which is where it
+  // mostly shows; the hosts carousel puts it in an upright phone frame and
+  // takes the middle of it, losing part of the fist.
+  simone: { video: '/video/simone.mp4', poster: '/video/simone-poster.jpg' },
   // Tania's own: slabs pinched and joined into cups at the long table, the
   // pieces drying on their boards, the brunch laid out, and the window over
   // Breitscheidplatz that says where the room is. Audio stripped. It opens on
