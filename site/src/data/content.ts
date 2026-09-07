@@ -551,6 +551,10 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Qian's own: the kiln opened on a full load, then the fired pieces held up
+  // one at a time — the speckled bowl, the ruffled rim, the black-and-white
+  // pour. Audio stripped, no caption anywhere in it, so it ships whole.
+  qian: { video: '/video/qian.mp4', poster: '/video/qian-poster.jpg' },
   // No footage of the apiary, so this is cut from Kohfink's six photographs
   // the same way the sushi reel is: a second on each, dissolved over a third
   // of one, with a slight push in. It opens on the beekeeper holding a full
