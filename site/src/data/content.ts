@@ -969,6 +969,16 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
       de: 'Kit zum Mitnehmen',
     },
   },
+  simone: {
+    // Stone carving reads as a thing you need training for, and her listing
+    // opens by saying the opposite — it is for anyone who wants to try, and
+    // alabaster is soft enough to work with a rasp. That is the sentence that
+    // decides it, so it goes on the card.
+    'Alabaster – Workshop: ein spielerischer Einstieg in die bildhauerische Arbeit': {
+      en: 'No experience needed',
+      de: 'Ohne Vorkenntnisse',
+    },
+  },
   kohfink: {
     // Straight off their page: the practice runs on up to 20 real colonies
     // across the five dates, which is what separates this from a course
