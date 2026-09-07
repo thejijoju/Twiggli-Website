@@ -123,6 +123,10 @@ const rows = [
         count.textContent = shown === 1 ? (count.dataset.one ?? '') : many.replace('0', String(shown));
       }
       if (clear) clear.hidden = !activity && !group && !hours && !price;
+      /* Hiding cards reflows the grid, so tiles change rows. The directory's
+         reels pick their players by row, and this is what tells them to look
+         again rather than waiting for the next scroll. */
+      document.dispatchEvent(new CustomEvent('twiggli:filtered'));
     };
 
     form.addEventListener('change', apply);

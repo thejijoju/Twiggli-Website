@@ -105,22 +105,26 @@ const labels = {
 
 <script>
   // Reels on the directory start by themselves as you scroll past them, so a
-  // page of tiles reads as video rather than as stills — but at most one per
-  // row, and only while that row is on screen. Pointing at any tile plays
-  // that one too; clicking a playing tile stops it until the pointer leaves
-  // and comes back. Touch has no hover, so there a tap toggles.
+  // page of tiles reads as video rather than as stills. Whatever is on screen
+  // decides: for each grid row with a tile in view, one of that row's tiles
+  // plays. Nothing is chosen in advance, so there is no state to go stale
+  // when the column count changes, the filters hide something, or a late font
+  // reflows the grid — if a tile is visible and its row is silent, it starts.
+  // Pointing at any tile plays that one too; clicking a playing tile stops it
+  // until the pointer leaves and comes back. Touch has no hover, so there a
+  // tap toggles.
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
   const videoOf = (c: HTMLElement) => c.querySelector<HTMLVideoElement>('.maker-video');
   const reels = cards.filter((c) => videoOf(c));
   if (reels.length) {
     const hoverable = window.matchMedia('(hover: hover)').matches;
-    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Chosen to play unattended; on screen right now; stopped by hand.
-    const auto = new Set<HTMLElement>();
     const onScreen = new Set<HTMLElement>();
     const stopped = new Set<HTMLElement>();
     let hovered: HTMLElement | null = null;
+    // Which tile a row is currently letting play, so a row does not hand over
+    // to a different tile every time the observer fires.
+    const holder = new Map<number, HTMLElement>();
 
     const play = (card: HTMLElement) => {
       const v = videoOf(card);
@@ -145,32 +149,35 @@ const labels = {
       card.classList.remove('is-playing');
     };
 
-    // One per row, and a different column each row down the page, so the
-    // tiles that start on their own zig-zag instead of running down one edge.
-    // Cards in a grid row share an offsetTop, which is also how the row count
-    // follows the column count when the window changes width.
-    const chooseAuto = () => {
-      auto.clear();
-      if (calm) return;
-      const rows = new Map<number, HTMLElement[]>();
-      for (const card of reels) {
-        const top = Math.round(card.offsetTop);
-        const row = rows.get(top);
-        if (row) row.push(card);
-        else rows.set(top, [card]);
-      }
-      let n = 0;
-      for (const top of [...rows.keys()].sort((a, b) => a - b)) {
-        const row = rows.get(top)!;
-        auto.add(row[n % row.length]);
-        n++;
-      }
-    };
+    // Cards in one grid row share an offsetTop, which is also how the row
+    // count follows the column count at any window width.
+    const rowOf = (card: HTMLElement) => Math.round(card.offsetTop);
 
     const sync = () => {
+      const wanted = new Set<HTMLElement>();
+      if (hovered && !stopped.has(hovered)) wanted.add(hovered);
+
+      // Group what is actually visible, then give each of those rows one
+      // player: the one it already had if that is still in view, otherwise
+      // the first of the row that is.
+      const visibleRows = new Map<number, HTMLElement[]>();
       for (const card of reels) {
-        const wanted = !stopped.has(card) && (card === hovered || (auto.has(card) && onScreen.has(card)));
-        if (wanted) play(card);
+        if (!onScreen.has(card) || stopped.has(card)) continue;
+        const row = rowOf(card);
+        const list = visibleRows.get(row);
+        if (list) list.push(card);
+        else visibleRows.set(row, [card]);
+      }
+      for (const [row, list] of visibleRows) {
+        const sitting = holder.get(row);
+        const pick = sitting && list.includes(sitting) ? sitting : list[0];
+        holder.set(row, pick);
+        wanted.add(pick);
+      }
+      for (const [row, card] of holder) if (!visibleRows.has(row)) holder.delete(row);
+
+      for (const card of reels) {
+        if (wanted.has(card)) play(card);
         else halt(card);
       }
     };
@@ -179,8 +186,6 @@ const labels = {
     // blurb and its details, so half of one is a poor proxy for "you can see
     // the video" — it can be satisfied while the tile is off the top of the
     // screen, and on a short window a tall card can never reach half at all.
-    // The tile is the thing that has to be visible, so the tile is what is
-    // measured, and the bottom margin starts it just before it arrives.
     const mediaOwner = new WeakMap<Element, HTMLElement>();
     const io = new IntersectionObserver((entries) => {
       for (const entry of entries) {
@@ -190,7 +195,7 @@ const labels = {
         else onScreen.delete(card);
       }
       sync();
-    }, { threshold: 0.4, rootMargin: '0px 0px -10% 0px' });
+    }, { threshold: 0.35 });
     reels.forEach((card) => {
       const media = card.querySelector('.maker-media');
       if (!media) return;
@@ -202,7 +207,7 @@ const labels = {
       const media = card.querySelector<HTMLElement>('.maker-media');
       if (!media) return;
       if (hoverable) {
-        media.addEventListener('mouseenter', () => { hovered = card; sync(); });
+        media.addEventListener('mouseenter', () => { hovered = card; stopped.delete(card); sync(); });
         media.addEventListener('mouseleave', () => {
           if (hovered === card) hovered = null;
           stopped.delete(card);
@@ -211,10 +216,8 @@ const labels = {
         media.addEventListener('click', () => { stopped.add(card); sync(); });
       } else {
         media.addEventListener('click', () => {
-          if (stopped.has(card)) stopped.delete(card);
-          else if (videoOf(card)!.paused) stopped.delete(card);
-          else stopped.add(card);
-          hovered = videoOf(card)!.paused ? card : null;
+          if (videoOf(card)!.paused) { stopped.delete(card); hovered = card; }
+          else { stopped.add(card); hovered = null; }
           sync();
         });
       }
@@ -229,12 +232,11 @@ const labels = {
       videoOf(card)!.addEventListener('pause', () => card.classList.remove('is-playing'));
     });
 
-    chooseAuto();
     sync();
     let redo = 0;
-    window.addEventListener('resize', () => {
-      clearTimeout(redo);
-      redo = window.setTimeout(() => { chooseAuto(); sync(); }, 150);
-    });
+    const resync = () => { clearTimeout(redo); redo = window.setTimeout(sync, 150); };
+    window.addEventListener('resize', resync);
+    // The filters reflow the grid, which changes which tiles share a row.
+    document.addEventListener('twiggli:filtered', resync);
   }
 </script>
