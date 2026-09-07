@@ -551,6 +551,17 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Ditte's own, two clips joined. It opens on a finished ink drawing of a
+  // street — the thing you leave with, and the poster — then the sketching
+  // itself: pads on knees, a drawing held up against the building it is of,
+  // the group working at the skate park and on the grass, and in the second
+  // clip the canal in summer, a sketchbook mid-line, and everyone sitting
+  // drawing. Audio stripped.
+  // One stretch of her first clip is left out rather than trimmed for
+  // captions: it walks past a wall carrying a political slogan, which is the
+  // street she happened to draw that day but reads as a statement in a
+  // workshop reel.
+  drawingwalks: { video: '/video/drawingwalks.mp4', poster: '/video/drawingwalks-poster.jpg' },
   // Evelyn's own, two clips joined. The montage of her formats runs first —
   // full tables of people embroidering, making vision boards, painting glass,
   // cutting collage — because on the directory the question is what she can
