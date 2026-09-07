@@ -157,24 +157,51 @@ const labels = {
       const wanted = new Set<HTMLElement>();
       if (hovered && !stopped.has(hovered)) wanted.add(hovered);
 
-      // Group what is actually visible, then give each of those rows one
-      // player: the one it already had if that is still in view, otherwise
-      // the first of the row that is.
-      const visibleRows = new Map<number, HTMLElement[]>();
+      // Every row that has a reel in it, in document order, each row's tiles
+      // left to right. Filtered-out cards are skipped: they report an
+      // offsetTop of 0 and would otherwise all collapse into one row.
+      const rows = new Map<number, HTMLElement[]>();
       for (const card of reels) {
-        if (!onScreen.has(card) || stopped.has(card)) continue;
+        if (card.hidden) continue;
         const row = rowOf(card);
-        const list = visibleRows.get(row);
+        const list = rows.get(row);
         if (list) list.push(card);
-        else visibleRows.set(row, [card]);
+        else rows.set(row, [card]);
       }
-      for (const [row, list] of visibleRows) {
+      const order = [...rows.keys()].sort((a, b) => a - b);
+
+      // The grid's real columns, read off every card's left edge rather than
+      // off the reels alone. A row often has no reel in the column whose turn
+      // it is, and the walk should carry on across the page rather than
+      // restart from the left every time it finds one.
+      const lefts = [...new Set(
+        cards.filter((c) => !c.hidden).map((c) => Math.round(c.offsetLeft)),
+      )].sort((a, b) => a - b);
+      const colOf = (c: HTMLElement) => lefts.indexOf(Math.round(c.offsetLeft));
+
+      order.forEach((row, i) => {
+        const list = rows.get(row)!.sort((a, b) => a.offsetLeft - b.offsetLeft);
+        const eligible = list.filter((c) => onScreen.has(c) && !stopped.has(c));
+        if (!eligible.length) { holder.delete(row); return; }
+        // One column further along with each row down the page: left, then
+        // the middle, then the right, then back to the left.
+        // Most rows carry a reel in only one or two of the columns, so
+        // insisting on the exact one would drop straight back to the left
+        // edge most of the time. The row plays whichever of its tiles sits
+        // nearest the column whose turn it is, which keeps the walk moving
+        // across the page instead of restarting.
+        const wantCol = lefts.length ? i % lefts.length : 0;
+        const nearest = eligible
+          .slice()
+          .sort((a, b) => Math.abs(colOf(a) - wantCol) - Math.abs(colOf(b) - wantCol)
+            || colOf(a) - colOf(b))[0];
         const sitting = holder.get(row);
-        const pick = sitting && list.includes(sitting) ? sitting : list[0];
+        const pick = sitting && eligible.includes(sitting) && colOf(sitting) === colOf(nearest)
+          ? sitting
+          : nearest;
         holder.set(row, pick);
         wanted.add(pick);
-      }
-      for (const [row, card] of holder) if (!visibleRows.has(row)) holder.delete(row);
+      });
 
       for (const card of reels) {
         if (wanted.has(card)) play(card);
