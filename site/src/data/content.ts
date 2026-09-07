@@ -551,6 +551,12 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Evelyn's own: the blue Balkan motif being cross-stitched, then the
+  // finished red bookmark and its tassel. Audio stripped. Her cut opens on a
+  // nine-second "POV: your 10 minute festival break turns into learning
+  // Balkan embroidery" caption and closes on an @Holzmarkt25 card, so what
+  // ships is the eight seconds between them.
+  evelyn: { video: '/video/evelyn.mp4', poster: '/video/evelyn-poster.jpg' },
   // Qian's own, two of her clips joined: the class first — the long table at
   // the window with everyone hand-building, hands shaping a bowl on the
   // turntable — then the kiln opened on a full load and the fired pieces held
