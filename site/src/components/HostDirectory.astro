@@ -175,17 +175,28 @@ const labels = {
       }
     };
 
-    // Half the tile in view before it starts: a reel that fires while it is
-    // still a sliver at the edge is noise, not an invitation.
+    // Watch the tile, not the card. A card runs to a thousand pixels with its
+    // blurb and its details, so half of one is a poor proxy for "you can see
+    // the video" — it can be satisfied while the tile is off the top of the
+    // screen, and on a short window a tall card can never reach half at all.
+    // The tile is the thing that has to be visible, so the tile is what is
+    // measured, and the bottom margin starts it just before it arrives.
+    const mediaOwner = new WeakMap<Element, HTMLElement>();
     const io = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        const card = entry.target as HTMLElement;
+        const card = mediaOwner.get(entry.target);
+        if (!card) continue;
         if (entry.isIntersecting) onScreen.add(card);
         else onScreen.delete(card);
       }
       sync();
-    }, { threshold: 0.5 });
-    reels.forEach((card) => io.observe(card));
+    }, { threshold: 0.4, rootMargin: '0px 0px -10% 0px' });
+    reels.forEach((card) => {
+      const media = card.querySelector('.maker-media');
+      if (!media) return;
+      mediaOwner.set(media, card);
+      io.observe(media);
+    });
 
     reels.forEach((card) => {
       const media = card.querySelector<HTMLElement>('.maker-media');
