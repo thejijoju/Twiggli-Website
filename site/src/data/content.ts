@@ -551,18 +551,21 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
-  // Sina's own: a watercolour quilt plan being painted in a sketchbook —
-  // the grid pencilled in, then pink and wine and orange blocks laid down
-  // one at a time, her hand and brush in the frame throughout. Silent
-  // already. It is the design half of her work rather than the sewing, and
-  // it is what she had.
+  // Sina's: four of her finished pieces first, one second each — a pink
+  // and orange hexagon hanging on a branch, a patched needle case, a tied
+  // quilt held up over a bed, a strip-pieced landscape on the wall — so the
+  // reel says what the workshop makes before it shows the making. Each still
+  // is fitted whole on a blurred fill of itself, the same as Jem's sushi
+  // reel, so no quilt loses an edge. Then her own footage: a watercolour
+  // quilt plan painted into a sketchbook, the blocks laid in one at a time,
+  // her hand and brush in frame throughout. Silent already.
   // Her cut carries a caption fixed across the upper third — "I changed my
   // mind like 20 times…", full width, all 26 seconds — with the paint
   // palette above it. No window keeps both the palette and loses the box, so
-  // this is cropped from y=520 of the 1280 down: 720x720 off the bottom of
-  // the frame, shipped square at 600x600 like Simone's. That fills the
-  // directory tile exactly and the carousel takes the middle of it. Checked
-  // frame by frame: no full-width bright band survives the crop.
+  // the clip is cropped from y=520 of the 1280 down: 720x720 off the bottom
+  // of the frame. Square at 600x600 like Simone's, which fills the directory
+  // tile exactly. Checked frame by frame: no full-width bright band survives.
+  // The poster is the first still, the hexagon hanging.
   sina: { video: '/video/sina.mp4', poster: '/video/sina-poster.jpg' },
   // Sümer's own: hands turning a small handbuilt cup on its cloth, a tool
   // walking a row of marks around the foot, the studio table and the group
