@@ -46,11 +46,21 @@ const copy = {
 </div>
 
 <script define:vars={{ STORAGE_KEY }}>
+  // The banner goes away the moment a button is pressed, whatever else
+  // happens: it is hidden first, and the choice is remembered second, inside
+  // a try — a browser that blocks storage (Safari in private browsing, "block
+  // all cookies", some Android browsers) throws on setItem, and the old
+  // order left the banner standing on every tap. Remembering it is a
+  // courtesy for the next visit; dismissing it is the visitor's decision.
   const banner = document.getElementById('cookie-banner');
+  const dismiss = (choice) => {
+    document.documentElement.classList.add('cookie-consent-set');
+    if (banner) banner.hidden = true;
+    try {
+      localStorage.setItem(STORAGE_KEY, choice);
+    } catch (e) {}
+  };
   banner?.querySelectorAll('[data-cookie-choice]').forEach((button) => {
-    button.addEventListener('click', () => {
-      localStorage.setItem(STORAGE_KEY, button.dataset.cookieChoice);
-      document.documentElement.classList.add('cookie-consent-set');
-    });
+    button.addEventListener('click', () => dismiss(button.dataset.cookieChoice));
   });
 </script>

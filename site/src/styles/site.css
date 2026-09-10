@@ -1466,6 +1466,27 @@ a:hover { color: var(--color-accent); }
   color: color-mix(in srgb, var(--color-text) 78%, transparent);
 }
 .cookie-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; flex: none; }
+/* Finger-sized, and no double-tap-to-zoom delay on the two buttons. */
+.cookie-banner-actions .btn { min-height: 44px; touch-action: manipulation; }
+
+/* On a phone the bar lifts off the bottom edge and becomes a card: on iOS
+   the browser's own toolbar owns the bottom strip of the screen, and taps
+   on buttons sitting in it go to the toolbar, not the page. The card keeps
+   clear of that zone and of the home indicator (the safe-area inset). */
+@media (max-width: 640px) {
+  .cookie-banner {
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom, 0px));
+    border: 2px solid var(--color-divider);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px color-mix(in srgb, var(--color-text) 18%, transparent);
+  }
+  .cookie-banner-inner { padding: 14px 16px 16px; gap: 12px; }
+  .cookie-banner-text { font-size: 14px; }
+  .cookie-banner-actions { width: 100%; }
+  .cookie-banner-actions .btn { flex: 1 1 auto; }
+}
 
 /* — contact form — */
 .form-grid {
@@ -1530,27 +1551,36 @@ a:hover { color: var(--color-accent); }
   }
   .nav a.nav-cta { padding: 10px 18px; font-size: 14px; }
 
-  /* At rest the nav wraps over three rows on a phone, which is fine at the
-     top of the page and far too much to pin there. Once it is stuck it
-     collapses into a single compact bar: a smaller mark, and the links in
-     one row that swipes sideways rather than wrapping — so nothing is
-     dropped from the navigation to buy the height. */
-  .site-header.is-stuck .nav {
+  /* On a phone the nav is one compact bar from the start — a smaller mark,
+     the links in a single row that swipes sideways, the CTA pill — and the
+     header is opaque, not the see-through pane the desktop keeps. It used
+     to wrap over three rows at rest and compress only once a script marked
+     it stuck; where that script did not run (seen in Instagram's in-app
+     browser) the pinned, transparent, three-row nav sat on top of the page
+     with the content showing through it. Nothing here waits on a script. */
+  .site-header {
+    background: var(--color-bg);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-text) 8%, transparent);
+  }
+  .site-header .nav {
     flex-wrap: nowrap;
     padding: 8px 16px;
     gap: 12px;
   }
-  .site-header.is-stuck .nav-logo { width: 40px; height: 40px; }
-  .site-header.is-stuck .nav-end {
+  .site-header .nav-logo { width: 40px; height: 40px; }
+  .site-header .nav-end {
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
     gap: 14px;
     font-size: 14px;
+    /* The row scrolls; nothing in it may push the bar wider than the screen. */
+    min-width: 0;
   }
-  .site-header.is-stuck .nav-end::-webkit-scrollbar { display: none; }
-  .site-header.is-stuck .nav-end a { white-space: nowrap; }
-  .site-header.is-stuck .nav a.nav-cta { padding: 8px 14px; font-size: 13px; }
+  .site-header .nav-end::-webkit-scrollbar { display: none; }
+  .site-header .nav-end a { white-space: nowrap; }
+  .site-header .nav a.nav-cta { padding: 8px 14px; font-size: 13px; flex: none; }
+  .site-header .nav-brand-block { flex: none; }
 }
 
 @media (max-width: 520px) {
@@ -2881,6 +2911,15 @@ a:hover { color: var(--color-accent); }
   .host-media { max-width: 420px; }
   .activity-links { grid-template-columns: minmax(0, 1fr); }
   .host-index { columns: 1; }
+}
+/* On a phone the count under a link — "Nächster: So., 13. Sept. · 11:00 ·
+   5 kommende Termine" — is wider than the screen if it may not wrap, and a
+   single unwrappable line widens the whole page: the browser zooms out to
+   fit it, and everything pinned to the viewport lands in the wrong place.
+   So it wraps, and sits under the title rather than beside it. */
+@media (max-width: 640px) {
+  .activity-links a { flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+  .activity-links-count { white-space: normal; }
 }
 @media (max-width: 640px) {
   .date-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
