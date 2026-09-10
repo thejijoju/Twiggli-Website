@@ -551,6 +551,19 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Sina's own: a watercolour quilt plan being painted in a sketchbook —
+  // the grid pencilled in, then pink and wine and orange blocks laid down
+  // one at a time, her hand and brush in the frame throughout. Silent
+  // already. It is the design half of her work rather than the sewing, and
+  // it is what she had.
+  // Her cut carries a caption fixed across the upper third — "I changed my
+  // mind like 20 times…", full width, all 26 seconds — with the paint
+  // palette above it. No window keeps both the palette and loses the box, so
+  // this is cropped from y=520 of the 1280 down: 720x720 off the bottom of
+  // the frame, shipped square at 600x600 like Simone's. That fills the
+  // directory tile exactly and the carousel takes the middle of it. Checked
+  // frame by frame: no full-width bright band survives the crop.
+  sina: { video: '/video/sina.mp4', poster: '/video/sina-poster.jpg' },
   // Sümer's own: hands turning a small handbuilt cup on its cloth, a tool
   // walking a row of marks around the foot, the studio table and the group
   // behind it. Audio stripped. Seven seconds, the shortest reel here, but it
