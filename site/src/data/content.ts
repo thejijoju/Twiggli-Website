@@ -551,6 +551,17 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Tuft Tuft's own, cut down from their reel: the market stall, two people
+  // filling a rainbow heart at the frame, then the studio itself — the pink
+  // room, the wall of yarn, guns working the canvas, and the finished rugs
+  // held up at the end. Audio stripped, like the rest.
+  // The original opens on a hook — a host to camera under "What if I'm not
+  // good at it", answered later by "What if we did it together?" — and both
+  // lines are burnt into the picture. Those 3.6 seconds are gone: the
+  // captions read as an ad on a page that is already selling the workshop,
+  // and the second one sits over footage nobody would miss. What is left is
+  // the room and the work, which is what the card is for.
+  tufttuft: { video: '/video/tufttuft.mp4', poster: '/video/tufttuft-poster.jpg' },
   // Simone's own: a fist on a chisel working the face of an alabaster block,
   // outdoors on the B.L.O. yard. Audio stripped (hers carried music).
   // The only landscape footage on the site — 16:9, where every other reel is
