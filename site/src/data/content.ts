@@ -551,6 +551,17 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Alessia's own: a pencil eye beside the photo it is drawn from, her
+  // talking the class through it, the table at work, and the finished
+  // portraits — a face in graphite that could be a photograph. Silent
+  // already, and no captions to cut.
+  // It arrived in the house format, 480x854, so this is her footage
+  // re-encoded only to carry the tv colour range every other reel uses; it
+  // was tagged full range, which some decoders render washed out.
+  // The poster is a finished portrait on the table with a hand still working
+  // beside it: the promise of the workshop in one frame. She had no photo
+  // either, so this replaces a bare "A" monogram on her card.
+  alessia: { video: '/video/alessia.mp4', poster: '/video/alessia-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
