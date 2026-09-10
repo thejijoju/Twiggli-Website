@@ -245,7 +245,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'alessia', name: 'Alessia Sinopoli', specialty: 'Realistic pencil portraits',
       blurb: 'An Italian artist based in Berlin teaching realistic portrait drawing from photographic references — a structured method rather than a knack. You work the grid for proportion, learn what pencils of different hardness actually do, and spend most of the afternoon on shading and hatching, which is where a portrait turns from flat to solid. Eight people at most, so the guidance follows your own way of drawing; beginners and improvers both. Professional materials, printed references, tea and a sweet treat at the break are all provided.',
       group: 'Up to 8', duration: '4 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
-    { slug: 'haki', name: 'Haki', specialty: 'Handbuilding & wheel throwing', studio: 'Haki Ceramics',
+    { slug: 'haki', name: 'Sümer', specialty: 'Handbuilding & wheel throwing', studio: 'Haki Ceramics',
       blurb: 'Clay in an artist studio building on the RAW-Gelände. The Tuesday evening group has no fixed start or end — beginners and improvers work side by side, picking up techniques as their own pieces call for them, up to seven at a time. Clay, tools, glazes and both firings are included: once your work has dried you come back to glaze it, so you leave with finished stoneware you shaped yourself. Wheel throwing runs one-to-one by appointment, and confident throwers can take the studio\u2019s single wheel spot during the group session.',
       group: 'Up to 7 \u00b7 1-to-1 \u00b7 teams to 6', duration: '2 h', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
     { slug: 'sina', name: 'Sina Becker', specialty: 'Quilting, mending & embroidery', studio: 'Ohma Studio',
@@ -425,7 +425,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
     { slug: 'alessia', name: 'Alessia Sinopoli', specialty: 'Realistische Bleistiftporträts',
       blurb: 'Italienische Künstlerin in Berlin, die realistisches Porträtzeichnen nach Fotovorlage unterrichtet — als klare Methode, nicht als Talentfrage. Ihr arbeitet mit dem Raster für die Proportionen, lernt, was Bleistifte unterschiedlicher Härte wirklich können, und verbringt den größten Teil des Nachmittags mit Schraffur und Schattierung, wo ein Porträt von flach zu plastisch wird. Höchstens acht Personen, die Anleitung folgt eurer eigenen Handschrift; Anfängerinnen wie Geübte. Profimaterial, gedruckte Vorlagen, Tee und etwas Süßes in der Pause sind inklusive.',
       group: 'Bis 8', duration: '4 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
-    { slug: 'haki', name: 'Haki', specialty: 'Aufbaukeramik & Drehscheibe', studio: 'Haki Ceramics',
+    { slug: 'haki', name: 'Sümer', specialty: 'Aufbaukeramik & Drehscheibe', studio: 'Haki Ceramics',
       blurb: 'Ton im K\u00fcnstlerhaus auf dem RAW-Gel\u00e4nde. Die Dienstagabend-Gruppe hat keinen festen Anfang und kein Ende \u2014 Einsteigerinnen und Ge\u00fcbte arbeiten nebeneinander und lernen die Techniken, die ihr St\u00fcck gerade braucht, zu siebt h\u00f6chstens. Ton, Werkzeug, Glasuren und beide Brände sind dabei: Ist deine Arbeit getrocknet, kommst du zum Glasieren wieder und nimmst fertiges Steinzeug mit, das du selbst geformt hast. Die Drehscheibe l\u00e4uft einzeln nach Absprache, und wer sicher dreht, kann w\u00e4hrend der Gruppe den einen Scheibenplatz belegen.',
       group: 'Bis 7 \u00b7 Einzel \u00b7 Teams bis 6', duration: '2 Std.', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
     { slug: 'sina', name: 'Sina Becker', specialty: 'Quilten, Reparieren & Sticken', studio: 'Ohma Studio',
@@ -551,6 +551,13 @@ const hostsCopy: Record<Lang, HostCopy[]> = {
 /** Reels, keyed by host slug. Add an entry as each host's footage lands and
  *  the carousel picks it up — no other change needed. */
 const reels: Record<string, { video: string; poster: string }> = {
+  // Sümer's own: hands turning a small handbuilt cup on its cloth, a tool
+  // walking a row of marks around the foot, the studio table and the group
+  // behind it. Audio stripped. Seven seconds, the shortest reel here, but it
+  // is one unbroken shot of the thing her Tuesday group actually does, so it
+  // loops without a seam. Her handbuilding dates play her other clip
+  // instead — see workshopReels below.
+  haki: { video: '/video/haki.mp4', poster: '/video/haki-poster.jpg' },
   // Alessia's own: a pencil eye beside the photo it is drawn from, her
   // talking the class through it, the table at work, and the finished
   // portraits — a face in graphite that could be a photograph. Silent
@@ -840,6 +847,19 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
       { video: '/video/karen-rose-seife.mp4', poster: '/video/karen-rose-seife-poster.jpg' },
       { video: '/video/karen-rose-seife-2.mp4', poster: '/video/karen-rose-seife-2-poster.jpg' },
     ],
+  },
+  // Her handbuilding class shows what comes out of it rather than the
+  // making: a tall pinched vessel pierced with holes, a painted koi down one
+  // side, being glazed on the table — then a small figure sitting on the rim
+  // of a plate, hugging its knees. Hers, audio stripped, no captions; the
+  // levels are converted from the full range it was tagged with.
+  // Her wheel dates and her card keep the general reel, which is the pinched
+  // cup in progress.
+  haki: {
+    Handbuilding: {
+      video: '/video/haki-handbuilding.mp4',
+      poster: '/video/haki-handbuilding-poster.jpg',
+    },
   },
   // Live, not dormant: her Vulva Painting Workshop runs weekly out of
   // vulvas.berlin (a recurring entry rather than a dated one) and takes
