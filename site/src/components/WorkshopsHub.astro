@@ -1,0 +1,91 @@
+---
+/** /workshops/ — the index of every activity page and every host page.
+ *  A crawler landing here reaches all of them in one hop, which is the
+ *  point of it; a visitor gets the same thing as a menu. */
+import Base from '../layouts/Base.astro';
+import { getHosts } from '../data/content.ts';
+import { getSessions } from '../data/sessions.ts';
+import {
+  ACTIVITY_ORDER, absolute, activityCopy, activityHref, formatWhen, hostHref, hostsIn, hubCopy,
+  hubHref, nextSessionByHost, pageCopy,
+} from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = pageCopy[lang];
+const copy = hubCopy[lang];
+
+const sessions = getSessions(lang);
+const next = nextSessionByHost(lang);
+const perActivity = ACTIVITY_ORDER.map((a) => ({
+  key: a,
+  copy: activityCopy[lang][a],
+  hosts: hostsIn(a, lang).length,
+  dates: sessions.filter((s) => s.host.activity === a).length,
+}));
+const hosts = getHosts(lang)
+  .slice()
+  .sort((a, b) => a.name.localeCompare(b.name, lang === 'de' ? 'de' : 'en'));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: copy.h1,
+  itemListElement: perActivity.map((a, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: a.copy.h1,
+    url: absolute(activityHref(lang, a.key)),
+  })),
+};
+---
+
+<Base title={copy.title} description={copy.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{copy.kicker}</span>
+      <h1 class="page-title">{copy.h1}</h1>
+      <p class="page-lede">{copy.lede}</p>
+      <p class="page-facts">{t.hosts(hosts.length)} · {t.dates(sessions.length)}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <ul class="activity-cards">
+        {perActivity.map((a) => (
+          <li>
+            <a class="activity-card" href={activityHref(lang, a.key)}>
+              <span class="activity-card-title">{a.copy.h1}</span>
+              <span class="activity-card-desc">{a.copy.lede}</span>
+              <span class="activity-card-facts">{t.hosts(a.hosts)} · {t.dates(a.dates)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{t.allHosts}</h2>
+      <ul class="host-index">
+        {hosts.map((h) => {
+          const n = next.get(h.slug);
+          return (
+            <li>
+              <a href={hostHref(lang, h)}>{h.name}</a>
+              <span class="host-index-spec"> — {h.specialty}</span>
+              {n && <span class="host-index-next"> · {t.next}: {formatWhen(n, lang)}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+</Base>

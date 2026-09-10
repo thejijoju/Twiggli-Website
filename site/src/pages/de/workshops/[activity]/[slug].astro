@@ -1,0 +1,11 @@
+---
+import HostPage from '../../../../components/HostPage.astro';
+import { getHosts } from '../../../../data/content.ts';
+
+export function getStaticPaths() {
+  return getHosts('en').map((h) => ({ params: { activity: h.activity, slug: h.slug } }));
+}
+const { slug } = Astro.params;
+---
+
+<HostPage lang="de" slug={slug!} />

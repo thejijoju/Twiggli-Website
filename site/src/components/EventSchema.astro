@@ -8,7 +8,8 @@
  *  markup can never drift from the page. Sessions deep-link back to
  *  their card via the feed's #live-… anchors.
  */
-import { getSessions, berlinTodayMs } from '../data/sessions.ts';
+import { getSessions } from '../data/sessions.ts';
+import { absolute, hostHref, sessionIso } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -18,11 +19,6 @@ interface Props {
 }
 
 const { lang, pageUrl } = Astro.props;
-const today = berlinTodayMs();
-
-const isoDate = (dayOffset: number): string =>
-  new Date(today + dayOffset * 86400000).toISOString().slice(0, 10);
-
 // Google caps how much markup it reads per page; the nearest sessions are
 // the ones a searcher can still act on anyway.
 const sessions = getSessions(lang).slice(0, 80);
@@ -30,7 +26,7 @@ const sessions = getSessions(lang).slice(0, 80);
 const events = sessions.map((s) => ({
   '@type': 'Event',
   name: s.title,
-  startDate: `${isoDate(s.dayOffset)}${s.time ? `T${s.time}:00` : ''}`,
+  startDate: sessionIso(s),
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   eventStatus: 'https://schema.org/EventScheduled',
   location: {
@@ -46,11 +42,13 @@ const events = sessions.map((s) => ({
   ...(s.image || s.host.photo ? { image: [s.image ?? s.host.photo] } : {}),
   description: `${s.host.specialty} — ${s.host.name}`,
   organizer: { '@type': 'Organization', name: s.host.name },
-  ...(s.price
+  // The from-price: "€40–100" is 40, not the 40100 that stripping every
+  // non-digit used to send.
+  ...(s.price && /\d/.test(s.price)
     ? {
         offers: {
           '@type': 'Offer',
-          price: s.price.replace(/[^\d.]/g, ''),
+          price: s.price.match(/\d+(?:[.,]\d+)?/)![0].replace(',', '.'),
           priceCurrency: 'EUR',
           url: s.bookUrl,
           availability: s.soldOut
@@ -59,7 +57,9 @@ const events = sessions.map((s) => ({
         },
       }
     : {}),
-  url: `${pageUrl}#${s.id}`,
+  // The host's own page, a URL of its own — an #anchor on this page folds
+  // into this page, and Google lists one event per URL.
+  url: absolute(hostHref(lang, s.host)),
 }));
 
 const schema = {

@@ -1,0 +1,36 @@
+---
+/** The homepage's way into the activity pages: one link per activity,
+ *  worded as the page it leads to is titled, so the words a visitor clicks
+ *  are the words a searcher types. */
+import { getHosts } from '../data/content.ts';
+import { ACTIVITY_ORDER, activityCopy, activityHref, hubCopy, hubHref, pageCopy } from '../data/seo.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const hosts = getHosts(lang);
+const counts = new Map<string, number>();
+for (const h of hosts) counts.set(h.activity, (counts.get(h.activity) ?? 0) + 1);
+const all = { en: 'All workshops in Berlin', de: 'Alle Workshops in Berlin' }[lang];
+---
+
+<section class="section activity-band band-seam" id="workshops">
+  <div class="container">
+    <span class="kicker">{hubCopy[lang].kicker}</span>
+    <ul class="activity-links activity-links-band">
+      {ACTIVITY_ORDER.map((a) => (
+        <li>
+          <a href={activityHref(lang, a)}>
+            {activityCopy[lang][a].h1}
+            <span class="activity-links-count">{pageCopy[lang].hosts(counts.get(a) ?? 0)}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="activity-band-actions">
+      <a href={hubHref(lang)} class="btn btn-primary">{all}</a>
+    </div>
+  </div>
+</section>

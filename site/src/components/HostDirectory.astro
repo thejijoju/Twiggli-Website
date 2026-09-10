@@ -3,6 +3,7 @@ import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import { filterCopy } from '../data/content.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
+import { hostHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
 
 /**
@@ -80,7 +81,7 @@ const labels = {
         )}
       </div>
 
-      <h2 class="maker-name">{host.name}</h2>
+      <h2 class="maker-name"><a href={hostHref(lang, host)}>{host.name}</a></h2>
       <p class="maker-specialty">{host.specialty}</p>
       <p class="maker-blurb">{host.blurb}</p>
 

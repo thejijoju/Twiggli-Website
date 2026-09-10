@@ -1,0 +1,81 @@
+---
+/** Structured data for one host's page: their upcoming sessions as
+ *  schema.org Events, and the breadcrumb trail.
+ *
+ *  Each Event's `url` is this page — a real URL Google can send a searcher
+ *  to, where the calendar's markup only had #anchors on one page, which it
+ *  folds into that page. Offers link straight to the host's booking page. */
+import type { Host } from '../data/content.ts';
+import type { Session } from '../data/sessions.ts';
+import { absolute, activityCopy, activityHref, hostHref, hostImage, hubHref, pageCopy, sessionIso } from '../data/seo.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  host: Host;
+  sessions: Session[];
+  lang: Lang;
+}
+const { host, sessions, lang } = Astro.props;
+
+const pageUrl = absolute(hostHref(lang, host));
+const image = hostImage(host);
+
+/** "€40–100" → 40, the from-price. The old calendar markup stripped every
+ *  non-digit and sent Google 40100. */
+const fromPrice = (price: string): string | undefined =>
+  price.match(/\d+(?:[.,]\d+)?/)?.[0].replace(',', '.');
+
+// Google reads a bounded amount of markup per page; a host's next thirty
+// dates is more than any searcher acts on.
+const events = sessions.slice(0, 30).map((s) => {
+  const price = s.price ? fromPrice(s.price) : undefined;
+  return {
+    '@type': 'Event',
+    name: s.title,
+    startDate: sessionIso(s),
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: host.studio ?? host.name,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: s.place,
+        addressLocality: 'Berlin',
+        addressCountry: 'DE',
+      },
+    },
+    ...(s.image || image ? { image: [s.image ?? image] } : {}),
+    description: `${host.specialty} — ${host.name}. ${s.duration ?? host.duration}, ${s.languages ?? host.languages}.`,
+    organizer: { '@type': 'Organization', name: host.studio ?? host.name, url: pageUrl },
+    performer: { '@type': 'Organization', name: host.name },
+    ...(price !== undefined
+      ? {
+          offers: {
+            '@type': 'Offer',
+            price,
+            priceCurrency: 'EUR',
+            url: s.bookUrl,
+            availability: s.soldOut
+              ? 'https://schema.org/SoldOut'
+              : 'https://schema.org/InStock',
+          },
+        }
+      : {}),
+    url: pageUrl,
+  };
+});
+
+const crumbs = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: pageCopy[lang].crumbsRoot, item: absolute(hubHref(lang)) },
+    { '@type': 'ListItem', position: 2, name: activityCopy[lang][host.activity].short, item: absolute(activityHref(lang, host.activity)) },
+    { '@type': 'ListItem', position: 3, name: host.name, item: pageUrl },
+  ],
+};
+
+const graph = { '@context': 'https://schema.org', '@graph': [...events, crumbs] };
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(graph)} is:inline />

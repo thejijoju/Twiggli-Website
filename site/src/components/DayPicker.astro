@@ -1,6 +1,7 @@
 ---
 import { getSessions, getOnRequest, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
+import { hostHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
@@ -255,7 +256,10 @@ const formatDeadline = (iso: string): string => {
                             ))}
                           </span>
                           <a class="session-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
-                          <span class="session-host">{s.host.name} · {s.district}</span>
+                          {/* The host's name leads to their own page — every
+                              date they run, in one place — where the title
+                              beside it leads to the booking. */}
+                          <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.name}</a> · {s.district}</span>
                           {/* The one thing that decides this workshop for
                               somebody — under the picture rather than on it,
                               where the time chip and the spots badge already

@@ -1,0 +1,13 @@
+---
+import HostPage from '../../../components/HostPage.astro';
+import { getHosts } from '../../../data/content.ts';
+
+/* One page per host, filed under their activity: /workshops/ceramics/haki/.
+   The slug list is language-neutral, so English is the source for both. */
+export function getStaticPaths() {
+  return getHosts('en').map((h) => ({ params: { activity: h.activity, slug: h.slug } }));
+}
+const { slug } = Astro.params;
+---
+
+<HostPage lang="en" slug={slug!} />

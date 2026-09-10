@@ -15,12 +15,16 @@ interface Props {
   /** Keep the page out of search results — for transactional landing pages
    *  (payment return URLs) that are meaningless without their flow. */
   noindex?: boolean;
+  /** The picture a share of this page shows — absolute or site-relative.
+   *  The logo stands in where a page has nothing better. */
+  image?: string;
 }
 
-const { title, description, lang = DEFAULT_LANG, noindex = false } = Astro.props;
+const { title, description, lang = DEFAULT_LANG, noindex = false, image } = Astro.props;
 const { brand } = getSiteData(lang);
 const pageDescription = description ?? brand.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const shareImage = new URL(image ?? brand.logo, Astro.site ?? Astro.url.origin);
 
 // The same page in the other language, for the hreflang alternates below —
 // same logic LangSwitch.astro uses to compute it.
@@ -76,7 +80,9 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
+    <meta property="og:image" content={shareImage.href} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={shareImage.href} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

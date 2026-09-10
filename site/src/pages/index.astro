@@ -6,6 +6,7 @@ import HostGrid from '../components/HostGrid.astro';
 import StoreButtons from '../components/StoreButtons.astro';
 import Newsletter from '../components/Newsletter.astro';
 import TodayTeaser from '../components/TodayTeaser.astro';
+import ActivityLinks from '../components/ActivityLinks.astro';
 import { getHosts } from '../data/content.ts';
 import { getSiteData, appUrl } from '../data/site.ts';
 import { withBase } from '../lib/url.ts';
@@ -15,13 +16,17 @@ const { brand } = getSiteData(lang);
 const hosts = getHosts(lang);
 ---
 
-<Base title={`${brand.name} — ${brand.tagline}`} lang={lang}>
+<Base
+  title="Workshops in Berlin — pottery, cooking, crafts, art & more, seen on video | Twiggli"
+  description="Find workshops in Berlin and see them on video before you book: pottery, cooking, candle making, printmaking, photography and more, run by independent hosts. Real dates, real prices."
+  lang={lang}
+>
   <div class="container">
     <section class="hero">
       <div class="hero-panel">
         <h1 class="hero-title">
-          <span>Discover Berlin's most unique experiences —</span>
-          <span>through video</span>
+          <span>Workshops in Berlin —</span>
+          <span>discover them through video</span>
         </h1>
         <div class="hero-quote">
           <div class="hero-copy">
@@ -51,6 +56,8 @@ const hosts = getHosts(lang);
   </section>
 
   <TodayTeaser lang={lang} />
+
+  <ActivityLinks lang={lang} />
 
   <div class="container">
 

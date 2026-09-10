@@ -137,13 +137,15 @@ export const ON_REQUEST_SHOWN = 5;
  *  host: hosts are the unit the window steps over, and a host offering
  *  several workshops cycles through them on the same clock.
  */
-export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
+/** Every undated inquiry-only workshop in the feed, in feed order. A host's
+ *  own page lists all of theirs; the calendar shows the window below. */
+export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
   const bySlug = new Map(getHosts(lang).map((h) => [h.slug, h]));
-  const byHost = new Map<string, OnRequestWorkshop[]>();
+  const out: OnRequestWorkshop[] = [];
   for (const o of ((liveData as { onRequest?: LiveOnRequest[] }).onRequest ?? [])) {
     const host = bySlug.get(o.slug);
     if (!host) continue;
-    const entry: OnRequestWorkshop = {
+    out.push({
       id: `req-${o.slug}-${hash(o.title)}`,
       host: withWorkshopReel(host, o.slug, o.title),
       title: lang === 'en' && o.titleEn ? o.titleEn : o.title,
@@ -155,10 +157,17 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
       ...(getWorkshopUsp(o.slug, o.title, lang)
         ? { usp: getWorkshopUsp(o.slug, o.title, lang) }
         : {}),
-    };
-    const forHost = byHost.get(o.slug);
+    });
+  }
+  return out;
+}
+
+export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
+  const byHost = new Map<string, OnRequestWorkshop[]>();
+  for (const entry of getOnRequestAll(lang)) {
+    const forHost = byHost.get(entry.host.slug);
     if (forHost) forHost.push(entry);
-    else byHost.set(o.slug, [entry]);
+    else byHost.set(entry.host.slug, [entry]);
   }
 
   const slugs = [...byHost.keys()];

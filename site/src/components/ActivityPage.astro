@@ -1,0 +1,130 @@
+---
+/** One activity's page — "Töpferkurse & Keramik-Workshops in Berlin": the
+ *  hosts who teach it, each with their next date, then the next dates
+ *  across all of them with times and Book links, then the other
+ *  activities. The head terms people search live in the title and H1. */
+import Base from '../layouts/Base.astro';
+import DateRows from './DateRows.astro';
+import HostMonogram from './HostMonogram.astro';
+import type { ActivityKey } from '../data/content.ts';
+import { getSessions } from '../data/sessions.ts';
+import {
+  ACTIVITY_ORDER, absolute, activityCopy, activityHref, formatWhen, hostHref, hostsIn, hubHref,
+  nextSessionByHost, pageCopy, sessionsFor,
+} from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  activity: ActivityKey;
+}
+const { lang, activity } = Astro.props;
+const t = pageCopy[lang];
+const copy = activityCopy[lang][activity];
+
+const next = nextSessionByHost(lang);
+// Hosts with a date soonest first; the rest keep their directory order.
+const hosts = hostsIn(activity, lang)
+  .map((h, i) => ({ h, i, n: next.get(h.slug) }))
+  .sort((a, b) => (a.n?.dayOffset ?? 1e6) - (b.n?.dayOffset ?? 1e6) || a.i - b.i)
+  .map(({ h }) => h);
+const upcoming = getSessions(lang).filter((s) => s.host.activity === activity);
+const shown = upcoming.slice(0, 24);
+const dateCounts = new Map(hosts.map((h) => [h.slug, sessionsFor(h.slug, lang).length]));
+
+const pageUrl = absolute(activityHref(lang, activity));
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ItemList',
+      name: copy.h1,
+      itemListElement: hosts.map((h, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${h.specialty} — ${h.name}`,
+        url: absolute(hostHref(lang, h)),
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t.crumbsRoot, item: absolute(hubHref(lang)) },
+        { '@type': 'ListItem', position: 2, name: copy.short, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Base title={copy.title} description={copy.description} lang={lang}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={hubHref(lang)}>{t.crumbsRoot}</a>
+      <span aria-hidden="true">›</span>
+      <span>{copy.short}</span>
+    </nav>
+
+    <section class="page-head">
+      <span class="kicker kicker-tight">{t.crumbsRoot} · Berlin</span>
+      <h1 class="page-title">{copy.h1}</h1>
+      <p class="page-lede">{copy.lede}</p>
+      <p class="page-facts">{t.hosts(hosts.length)} · {t.dates(upcoming.length)}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <ul class="host-cards">
+        {hosts.map((h) => {
+          const n = next.get(h.slug);
+          const count = dateCounts.get(h.slug) ?? 0;
+          return (
+            <li>
+              <a class="host-card" href={hostHref(lang, h)}>
+                <span class="host-card-media">
+                  {h.poster ? (
+                    <img src={h.poster} alt="" loading="lazy" decoding="async" />
+                  ) : h.photo ? (
+                    <img src={h.photo} alt="" loading="lazy" decoding="async" />
+                  ) : (
+                    <HostMonogram name={h.name} />
+                  )}
+                </span>
+                <span class="host-card-name">{h.name}</span>
+                <span class="host-card-spec">{h.specialty}</span>
+                <span class="host-card-next">
+                  {n ? `${t.next}: ${formatWhen(n, lang)}${n.price ? ` · ${n.price}` : ''}` : t.onRequest}
+                </span>
+                {count > 1 && <span class="host-card-count">{t.dates(count)}</span>}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    {shown.length > 0 && (
+      <>
+        <hr class="rule" />
+        <section class="section" id="dates">
+          <h2 class="section-title">{t.nextDates} — {copy.short}</h2>
+          <DateRows sessions={shown} lang={lang} withHost />
+          <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
+        </section>
+      </>
+    )}
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{t.otherActivities}</h2>
+      <ul class="activity-links">
+        {ACTIVITY_ORDER.filter((a) => a !== activity).map((a) => (
+          <li><a href={activityHref(lang, a)}>{activityCopy[lang][a].h1}</a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+</Base>

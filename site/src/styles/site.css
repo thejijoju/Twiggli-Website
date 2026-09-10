@@ -1213,7 +1213,7 @@ a:hover { color: var(--color-accent); }
 /* Hairline rules rather than boxes: the only structure the band needs. */
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 32px;
   padding: 24px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
@@ -2616,4 +2616,275 @@ a:hover { color: var(--color-accent); }
   .session-thumb .media-monogram { border-radius: calc(12px - var(--phone-bezel)); }
   .session-title { font-size: 17px; }
   .timegroup-head { font-size: 22px; }
+}
+
+/* ── Workshop pages: /workshops/, one per activity, one per host ─────────
+   The search-facing pages. Plain, text-first layouts: a breadcrumb, the
+   heading with the query in it, and lists a crawler reads as easily as a
+   visitor. Cards reuse the blog card's border and hover. */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 28px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.crumbs a { color: inherit; text-decoration: none; }
+.crumbs a:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
+.crumbs + .page-head { padding-top: 28px; }
+.page-facts {
+  margin: 14px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.section-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin: 0 0 24px;
+}
+.section-title a { color: inherit; text-decoration: none; }
+.section-title a:hover { color: var(--color-accent-700); }
+.section-subtitle {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 22px;
+  margin: 40px 0 6px;
+}
+.section-more { margin: 28px 0 0; font-weight: 700; }
+.section-more a { color: var(--color-accent-700); text-decoration: none; }
+.section-more a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* The host page's top half: reel on the left, blurb and facts beside it. */
+.host-body {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  align-items: start;
+}
+.host-media {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.host-media video,
+.host-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.host-blurb {
+  margin: 0 0 8px;
+  font-size: 17.5px;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--color-text) 85%, transparent);
+}
+.host-facts .maker-meta { font-size: 15px; margin: 20px 0 24px; }
+.host-facts .maker-request { align-self: flex-start; margin-top: 0; }
+
+/* Date rows: when · what · price and Book, one line each on desktop. */
+.dates {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-divider);
+}
+.date-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+.date-when { display: flex; flex-direction: column; gap: 2px; }
+.date-day { font-weight: 700; }
+.date-time { font-size: 14px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+.date-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.date-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 18px;
+  line-height: 1.3;
+  color: inherit;
+  text-decoration: none;
+}
+.date-title:hover { color: var(--color-accent-700); }
+.date-meta { font-size: 14px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+.date-host { color: inherit; font-weight: 700; text-decoration: none; }
+.date-host:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
+.date-side {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 16px;
+  align-items: center;
+  justify-items: end;
+  text-align: right;
+}
+.date-price { font-weight: 700; font-size: 17px; }
+.date-book {
+  display: inline-block;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.date-book:hover { background: var(--color-accent-700); color: var(--color-bg); }
+.date-full {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 2px solid var(--color-divider);
+  font-weight: 700;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.date-spots { grid-column: 2; font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.onrequest-block { margin-top: 8px; }
+
+/* Host cards, on the activity pages and under a host's own dates. */
+.host-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 28px 24px;
+}
+.host-card { display: block; color: inherit; text-decoration: none; }
+.host-card-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.host-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+.host-card:hover .host-card-media img { transform: scale(1.03); }
+.host-card-name {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 19px;
+  line-height: 1.25;
+}
+.host-card:hover .host-card-name { color: var(--color-accent-700); }
+.host-card-spec { display: block; margin-top: 3px; font-size: 15px; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
+.host-card-next { display: block; margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-800); }
+.host-card-count { display: block; margin-top: 2px; font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+
+/* Activity cards on the hub. */
+.activity-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 26px 26px;
+  border: 2px solid var(--color-divider);
+  border-radius: 16px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.activity-card:hover { border-color: var(--color-accent); transform: translateY(-2px); color: inherit; }
+.activity-card-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 22px;
+  line-height: 1.25;
+}
+.activity-card-desc { margin-top: 10px; font-size: 15.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 75%, transparent); }
+.activity-card-facts { margin-top: auto; padding-top: 16px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-accent-800); }
+
+/* Activity links: a two-column list of the activity pages, on the home
+   band and at the foot of each activity page. */
+.activity-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+}
+.activity-links li { border-bottom: 1px solid var(--color-divider); }
+.activity-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 16px 0;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 19px;
+  line-height: 1.3;
+  color: inherit;
+  text-decoration: none;
+}
+.activity-links a:hover { color: var(--color-accent-700); }
+.activity-links-count { font-family: var(--font-body); font-weight: 400; font-size: 14px; white-space: nowrap; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.activity-links-band { margin-top: 28px; }
+.activity-band-actions { margin-top: 32px; }
+
+/* The A–Z host index on the hub. */
+.host-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 40px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.host-index li { break-inside: avoid; padding: 6px 0; }
+.host-index a { font-weight: 700; color: inherit; text-decoration: none; }
+.host-index a:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
+.host-index-spec { color: color-mix(in srgb, var(--color-text) 70%, transparent); }
+.host-index-next { font-size: 14px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+
+/* Host names on the calendar rows and the directory cards now lead to the
+   host's own page; they keep their look, and underline when pointed at. */
+.session-host a,
+.maker-name a { color: inherit; text-decoration: none; }
+.session-host a:hover,
+.maker-name a:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 900px) {
+  .host-body { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .host-media { max-width: 420px; }
+  .activity-links { grid-template-columns: minmax(0, 1fr); }
+  .host-index { columns: 1; }
+}
+@media (max-width: 640px) {
+  .date-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .date-when { flex-direction: row; gap: 10px; align-items: baseline; }
+  .date-side { justify-items: start; text-align: left; grid-template-columns: auto auto; }
+  .date-spots { grid-column: 1 / -1; }
 }

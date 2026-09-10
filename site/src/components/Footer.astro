@@ -7,7 +7,7 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const { brand, navLinks, secondaryLinks, legalLinks, copyright } = getSiteData(lang);
+const { brand, navLinks, secondaryLinks, workshopLinks, workshopColumnLabel, legalLinks, copyright } = getSiteData(lang);
 
 const columnLabels = {
   en: { product: 'Product', explore: 'Explore', legal: 'Legal' },
@@ -53,6 +53,12 @@ const cta = {
         <p class="footer-col-title">{columnLabels.explore}</p>
         <div class="footer-links">
           {secondaryLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">{workshopColumnLabel}</p>
+        <div class="footer-links">
+          {workshopLinks.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>
       </div>
       <div class="footer-col">

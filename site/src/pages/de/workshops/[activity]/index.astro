@@ -1,0 +1,12 @@
+---
+import ActivityPage from '../../../../components/ActivityPage.astro';
+import { ACTIVITY_ORDER } from '../../../../data/seo.ts';
+import type { ActivityKey } from '../../../../data/content.ts';
+
+export function getStaticPaths() {
+  return ACTIVITY_ORDER.map((activity) => ({ params: { activity } }));
+}
+const activity = Astro.params.activity as ActivityKey;
+---
+
+<ActivityPage lang="de" activity={activity} />

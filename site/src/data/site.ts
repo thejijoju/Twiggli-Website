@@ -2,6 +2,7 @@
  *  Edit here, not in the components. */
 
 import { href, withBase, type Lang } from '../lib/url.ts';
+import { ACTIVITY_ORDER, activityCopy, activityHref, hubHref } from './seo.ts';
 
 export type NavLink = { label: string; href: string; external?: boolean };
 
@@ -21,13 +22,20 @@ const brandCopy = {
 
 const navLabels = {
   en: {
-    home: 'Home', getStarted: 'Get Started', happening: 'Happening today',
+    home: 'Home', getStarted: 'Get Started', workshops: 'Workshops', happening: 'Happening today',
     corporate: 'Corporate & Group Bookings', blog: 'Blog', contact: 'Contact',
   },
   de: {
-    home: 'Startseite', getStarted: 'Jetzt starten', happening: 'Heute los',
+    home: 'Startseite', getStarted: 'Jetzt starten', workshops: 'Workshops', happening: 'Heute los',
     corporate: 'Firmen- & Gruppenbuchungen', blog: 'Blog', contact: 'Kontakt',
   },
+};
+
+/** The footer's fourth column: one link per activity page, worded as that
+ *  page's heading — the words people search, in the site's own links. */
+const workshopColumnLabels = {
+  en: 'Workshops in Berlin',
+  de: 'Workshops in Berlin',
 };
 
 /* Blog and Happening today live in the header (navLinks), which the footer
@@ -95,6 +103,7 @@ export function getSiteData(lang: Lang) {
   const navLinks: NavLink[] = [
     { label: navLabels[lang].home, href: href(lang, '/') },
     { label: navLabels[lang].getStarted, href: appUrl, external: true },
+    { label: navLabels[lang].workshops, href: hubHref(lang) },
     { label: navLabels[lang].happening, href: href(lang, '/happening-today/') },
     /* Points at /hosts/, which is the corporate page — the pitch and the
        directory of makers who can run the session are one page now. */
@@ -108,6 +117,11 @@ export function getSiteData(lang: Lang) {
     { label: secondaryLabels[lang].hosts, href: href(lang, '/corporatebookings/') },
     { label: secondaryLabels[lang].host, href: href(lang, '/host/') },
   ];
+
+  const workshopLinks: NavLink[] = ACTIVITY_ORDER.map((activity) => ({
+    label: activityCopy[lang][activity].h1,
+    href: activityHref(lang, activity),
+  }));
 
   const legalLinks: NavLink[] = [
     { label: legalLabels[lang].terms, href: href(lang, '/terms-of-service/') },
@@ -124,6 +138,8 @@ export function getSiteData(lang: Lang) {
     brand,
     navLinks,
     secondaryLinks,
+    workshopLinks,
+    workshopColumnLabel: workshopColumnLabels[lang],
     legalLinks,
     socialLinks,
     storeLinks,

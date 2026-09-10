@@ -1,0 +1,62 @@
+---
+/** A plain list of sessions — date, time, what, how long, price, Book —
+ *  for the host and activity pages. Server-rendered text, one row per
+ *  date, no filters and no script: what a searcher and a crawler both want
+ *  from "when does this run". The calendar keeps its richer cards. */
+import type { Session } from '../data/sessions.ts';
+import { formatDay, hostHref, pageCopy } from '../data/seo.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  sessions: Session[];
+  lang: Lang;
+  /** Name the host on each row — on an activity page, where rows come from
+   *  several hosts. A host's own page leaves it off. */
+  withHost?: boolean;
+}
+const { sessions, lang, withHost = false } = Astro.props;
+const t = pageCopy[lang];
+
+const REQUEST_EMAIL = 'jirel.kuenen@gmail.com';
+const requestHref = (s: Session): string => {
+  const when = `${formatDay(s.dayOffset, lang)}${s.time ? ` ${s.time}` : ''}`;
+  const subject = lang === 'de'
+    ? `Buchungsanfrage: ${s.title} am ${when}`
+    : `Booking request: ${s.title} on ${when}`;
+  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}`;
+};
+const showPrice = (price?: string) =>
+  price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price;
+---
+
+<ul class="dates">
+  {sessions.map((s) => (
+    <li class="date-row" id={s.id}>
+      <span class="date-when">
+        <span class="date-day">{formatDay(s.dayOffset, lang)}</span>
+        <span class="date-time">{s.time ?? t.timeTba}</span>
+      </span>
+      <span class="date-main">
+        <a class="date-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
+        <span class="date-meta">
+          {withHost && <a class="date-host" href={hostHref(lang, s.host)}>{s.host.name}</a>}
+          {withHost && ' · '}
+          {s.duration ?? s.host.duration} · {s.district} · {s.languages ?? s.host.languages}
+        </span>
+      </span>
+      <span class="date-side">
+        {s.price && <span class="date-price">{showPrice(s.price)}</span>}
+        {s.soldOut ? (
+          <span class="date-full">{s.waitingList ? t.waitingList : t.soldOut}</span>
+        ) : s.request ? (
+          <a class="date-book" href={requestHref(s)}>{t.requestBooking}</a>
+        ) : (
+          <a class="date-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
+        )}
+        {!s.soldOut && typeof s.spots === 'number' && (
+          <span class="date-spots">{s.spots} {t.spots}</span>
+        )}
+      </span>
+    </li>
+  ))}
+</ul>
