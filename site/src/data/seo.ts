@@ -16,7 +16,7 @@
  *  category, and the title carries both. */
 
 import { filterCopy, getHosts, type ActivityKey, type Host } from './content.ts';
-import { berlinTodayMs, getOnRequestAll, getSessions, type OnRequestWorkshop, type Session } from './sessions.ts';
+import { berlinTodayMs, getOnRequestAll, getSessions, slugify, type OnRequestWorkshop, type Session } from './sessions.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 /** The canonical origin, for structured data and social tags, which need
@@ -359,3 +359,206 @@ export const hostImage = (host: Host): string | undefined =>
  *  two never disagree. */
 export const activityLabel = (activity: ActivityKey, lang: Lang): string =>
   filterCopy[lang].activities[activity];
+
+/* ── Workshop pages: one per class a host runs ────────────────────────── */
+
+export type Workshop = {
+  key: string;
+  title: string;
+  host: Host;
+  sessions: Session[];
+};
+
+export const workshopHref = (lang: Lang, host: Pick<Host, 'slug' | 'activity'>, key: string): string =>
+  href(lang, `/workshops/${host.activity}/${host.slug}/${key}/`);
+
+/** A host's classes, each with all of its upcoming dates, soonest first.
+ *  A class with no date in the window has no page — nothing is invented. */
+export const workshopsFor = (slug: string, lang: Lang): Workshop[] => {
+  const byKey = new Map<string, Workshop>();
+  for (const s of sessionsFor(slug, lang)) {
+    const w = byKey.get(s.workshopKey);
+    if (w) w.sessions.push(s);
+    else byKey.set(s.workshopKey, { key: s.workshopKey, title: s.title, host: s.host, sessions: [s] });
+  }
+  return [...byKey.values()].sort((a, b) => a.sessions[0].dayOffset - b.sessions[0].dayOffset);
+};
+
+export const allWorkshops = (lang: Lang): Workshop[] =>
+  getHosts(lang).flatMap((h) => workshopsFor(h.slug, lang));
+
+export const workshopTitle = (w: Workshop, lang: Lang): string =>
+  lang === 'de'
+    ? `${w.title} — ${w.host.specialty} mit ${w.host.name}, Berlin | Twiggli`
+    : `${w.title} — ${w.host.specialty} with ${w.host.name}, Berlin | Twiggli`;
+
+export const workshopLede = (w: Workshop, lang: Lang): string => {
+  const next = w.sessions[0];
+  const n = w.sessions.length;
+  const price = next.price ? `, ${next.price}` : '';
+  const facts = `${next.duration ?? w.host.duration} · ${next.languages ?? w.host.languages}`;
+  if (lang === 'de') {
+    const when = n === 1 ? `Termin: ${formatWhen(next, 'de')}${price}.` : `${n} kommende Termine — der nächste ${formatWhen(next, 'de')}${price}.`;
+    return `${w.title}: ${w.host.specialty} mit ${w.host.name} in ${next.district}, Berlin. ${when} ${facts}.`;
+  }
+  const spec = w.host.specialty;
+  const what = namesFormat(spec) ? spec : `${spec.charAt(0).toLowerCase()}${spec.slice(1)} workshop`;
+  const when = n === 1 ? `Date: ${formatWhen(next, 'en')}${price}.` : `${n} upcoming dates — next ${formatWhen(next, 'en')}${price}.`;
+  return `${w.title}: ${namesFormat(spec) ? '' : 'a '}${what} with ${w.host.name} in ${next.district}, Berlin. ${when} ${facts}.`;
+};
+
+export const clip = (text: string, max = 158): string => {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 3);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), max - 40))}…`;
+};
+
+/* ── District pages ───────────────────────────────────────────────────── */
+
+export type District = {
+  slug: string;
+  name: string;
+  hosts: Host[];
+  sessions: Session[];
+};
+
+/** A venue qualifier after the district folds into its district, as the
+ *  calendar's filter does; "Online" is not a place in Berlin. */
+const districtName = (s: Session): string => s.district.replace(/\s+St\.\s.*$/, '');
+const NOT_A_DISTRICT = new Set(['Online']);
+
+export const districtsFor = (lang: Lang): District[] => {
+  const byName = new Map<string, District>();
+  for (const s of getSessions(lang)) {
+    const name = districtName(s);
+    if (NOT_A_DISTRICT.has(name)) continue;
+    let d = byName.get(name);
+    if (!d) {
+      d = { slug: slugify(name), name, hosts: [], sessions: [] };
+      byName.set(name, d);
+    }
+    d.sessions.push(s);
+    if (!d.hosts.some((h) => h.slug === s.host.slug)) d.hosts.push(s.host);
+  }
+  // A host whose address names the district belongs on its page even
+  // between programmes.
+  for (const h of getHosts(lang)) {
+    for (const d of byName.values()) {
+      if (h.place.includes(d.name) && !d.hosts.some((x) => x.slug === h.slug)) d.hosts.push(h);
+    }
+  }
+  return [...byName.values()].sort((a, b) => b.sessions.length - a.sessions.length || a.name.localeCompare(b.name));
+};
+
+export const districtHref = (lang: Lang, slug: string): string => href(lang, `/workshops/berlin/${slug}/`);
+
+export const districtCopy = (d: District, lang: Lang) => {
+  const acts = ACTIVITY_ORDER.filter((a) => d.hosts.some((h) => h.activity === a));
+  const shorts = acts.map((a) => activityCopy[lang][a].short);
+  const list = shorts.length > 1 ? `${shorts.slice(0, -1).join(', ')} ${lang === 'de' ? 'und' : 'and'} ${shorts[shorts.length - 1]}` : shorts[0] ?? '';
+  const t = pageCopy[lang];
+  if (lang === 'de') {
+    return {
+      title: `Workshops in ${d.name}, Berlin — ${shorts.slice(0, 3).join(', ')} | Twiggli`,
+      h1: `Workshops in ${d.name}`,
+      lede: `Workshops in ${d.name}: ${list} — ${t.hosts(d.hosts.length)}, ${t.dates(d.sessions.length)}, mit Uhrzeiten, Preisen und direkter Buchung beim Host.`,
+      description: clip(`Workshops in ${d.name}, Berlin: ${list}. ${t.hosts(d.hosts.length)}, ${t.dates(d.sessions.length)} mit Uhrzeiten, Preisen und Buchung.`),
+      sectionTitle: (a: ActivityKey) => activityCopy.de[a].h1.replace(' in Berlin', ` in ${d.name}`),
+    };
+  }
+  return {
+    title: `Workshops in ${d.name}, Berlin — ${shorts.slice(0, 3).join(', ')} | Twiggli`,
+    h1: `Workshops in ${d.name}`,
+    lede: `Workshops in ${d.name}: ${list} — ${t.hosts(d.hosts.length)}, ${t.dates(d.sessions.length)}, with times, prices and direct booking with the host.`,
+    description: clip(`Workshops in ${d.name}, Berlin: ${list}. ${t.hosts(d.hosts.length)}, ${t.dates(d.sessions.length)} with times, prices and booking.`),
+    sectionTitle: (a: ActivityKey) => activityCopy.en[a].h1.replace(' in Berlin', ` in ${d.name}`),
+  };
+};
+
+/* ── Occasion pages: weekend, evenings, kids ──────────────────────────── */
+
+export type Occasion = 'weekend' | 'evenings' | 'kids';
+export const OCCASIONS: Occasion[] = ['weekend', 'evenings', 'kids'];
+
+const weekday = (s: Session): number =>
+  new Date(berlinTodayMs() + s.dayOffset * 86400000).getUTCDay();
+
+export const occasionSessions = (occasion: Occasion, lang: Lang): Session[] => {
+  const all = getSessions(lang);
+  if (occasion === 'weekend') return all.filter((s) => weekday(s) === 0 || weekday(s) === 6);
+  if (occasion === 'evenings') return all.filter((s) => s.time !== undefined && s.time >= '18:00' && weekday(s) >= 1 && weekday(s) <= 5);
+  return all.filter((s) => s.kids);
+};
+
+export const occasionHref = (lang: Lang, occasion: Occasion): string => href(lang, `/workshops/${occasion}/`);
+
+export const occasionCopy: Record<Lang, Record<Occasion, { short: string; title: string; h1: string; lede: string; description: string; empty: string }>> = {
+  en: {
+    weekend: {
+      short: 'At the weekend',
+      title: 'Workshops in Berlin at the weekend — Saturday & Sunday dates, prices, booking | Twiggli',
+      h1: 'Workshops in Berlin at the weekend',
+      lede: 'Every Saturday and Sunday workshop our hosts run in Berlin over the coming weeks — pottery, cooking, crafts, art and more — with times, prices and direct booking.',
+      description: 'Weekend workshops in Berlin: every Saturday and Sunday class from independent hosts — pottery, cooking, crafts, art. Times, prices and booking.',
+      empty: 'No weekend dates published right now.',
+    },
+    evenings: {
+      short: 'Evenings, after work',
+      title: 'Evening workshops in Berlin — after-work classes from 6 pm | Twiggli',
+      h1: 'Evening workshops in Berlin — after work',
+      lede: 'Weekday workshops starting at 18:00 or later: pottery, printmaking, cooking, candle making and more, an evening at a time, with times, prices and direct booking.',
+      description: 'Evening workshops in Berlin: weekday classes from 6 pm — pottery, printmaking, cooking, candles and more. Times, prices and booking.',
+      empty: 'No evening dates published right now.',
+    },
+    kids: {
+      short: 'For kids',
+      title: 'Workshops for kids in Berlin — classes for children, dates & booking | Twiggli',
+      h1: 'Workshops for kids in Berlin',
+      lede: 'Classes designed for children, run by our hosts in Berlin, with dates, prices and booking. Family sessions for groups run on request through any host.',
+      description: 'Workshops for kids in Berlin: classes designed for children from independent hosts, with upcoming dates, prices and booking.',
+      empty: 'No dates for children published right now — family sessions run on request.',
+    },
+  },
+  de: {
+    weekend: {
+      short: 'Am Wochenende',
+      title: 'Workshops in Berlin am Wochenende — Samstag & Sonntag, Termine & Buchung | Twiggli',
+      h1: 'Workshops in Berlin am Wochenende',
+      lede: 'Alle Samstags- und Sonntags-Workshops unserer Gastgeber in Berlin in den kommenden Wochen — Töpfern, Kochen, Kreatives, Kunst und mehr — mit Uhrzeiten, Preisen und direkter Buchung.',
+      description: 'Wochenend-Workshops in Berlin: alle Samstags- und Sonntagskurse unabhängiger Hosts — Töpfern, Kochen, Kreatives, Kunst. Uhrzeiten, Preise und Buchung.',
+      empty: 'Gerade keine Wochenend-Termine veröffentlicht.',
+    },
+    evenings: {
+      short: 'Abends, nach Feierabend',
+      title: 'Feierabend-Workshops in Berlin — Kurse ab 18 Uhr | Twiggli',
+      h1: 'Feierabend-Workshops in Berlin — abends ab 18 Uhr',
+      lede: 'Workshops unter der Woche, die um 18 Uhr oder später beginnen: Töpfern, Druck, Kochen, Kerzen gießen und mehr, ein Abend pro Kurs, mit Uhrzeiten, Preisen und direkter Buchung.',
+      description: 'Feierabend-Workshops in Berlin: Kurse unter der Woche ab 18 Uhr — Töpfern, Druck, Kochen, Kerzen und mehr. Uhrzeiten, Preise und Buchung.',
+      empty: 'Gerade keine Abend-Termine veröffentlicht.',
+    },
+    kids: {
+      short: 'Für Kinder',
+      title: 'Kinder-Workshops in Berlin — Kurse für Kinder, Termine & Buchung | Twiggli',
+      h1: 'Kinder-Workshops in Berlin',
+      lede: 'Kurse für Kinder bei unseren Gastgebern in Berlin, mit Terminen, Preisen und Buchung. Familien-Sessions für Gruppen laufen bei jedem Host auf Anfrage.',
+      description: 'Kinder-Workshops in Berlin: Kurse für Kinder bei unabhängigen Hosts, mit kommenden Terminen, Preisen und Buchung.',
+      empty: 'Gerade keine Kinder-Termine veröffentlicht — Familien-Sessions laufen auf Anfrage.',
+    },
+  },
+};
+
+export const hubExtraCopy = {
+  en: { byDistrict: 'Workshops by district', byOccasion: 'By occasion', theirWorkshops: 'Their workshops', allDates: 'all dates', backToHost: 'All workshops by', bookingNote: 'Booking opens on the host’s own page.' },
+  de: { byDistrict: 'Workshops nach Bezirk', byOccasion: 'Nach Anlass', theirWorkshops: 'Ihre Workshops', allDates: 'alle Termine', backToHost: 'Alle Workshops von', bookingNote: 'Die Buchung läuft über die Seite des Hosts.' },
+} satisfies Record<Lang, unknown>;
+
+/** Sessions grouped by day, in order, for the occasion pages. */
+export const byDay = (sessions: Session[]): [number, Session[]][] => {
+  const groups = new Map<number, Session[]>();
+  for (const s of sessions) {
+    const g = groups.get(s.dayOffset);
+    if (g) g.push(s);
+    else groups.set(s.dayOffset, [s]);
+  }
+  return [...groups.entries()].sort((a, b) => a[0] - b[0]);
+};

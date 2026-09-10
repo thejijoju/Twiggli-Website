@@ -7,6 +7,7 @@ import StoreButtons from '../components/StoreButtons.astro';
 import Newsletter from '../components/Newsletter.astro';
 import TodayTeaser from '../components/TodayTeaser.astro';
 import ActivityLinks from '../components/ActivityLinks.astro';
+import SiteSchema from '../components/SiteSchema.astro';
 import { getHosts } from '../data/content.ts';
 import { getSiteData, appUrl } from '../data/site.ts';
 import { withBase } from '../lib/url.ts';
@@ -113,4 +114,5 @@ const hosts = getHosts(lang);
 
     <Newsletter lang={lang} />
   </div>
+  <SiteSchema lang={lang} />
 </Base>

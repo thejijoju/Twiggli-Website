@@ -1,0 +1,15 @@
+---
+import WorkshopPage from '../../../../../components/WorkshopPage.astro';
+import { allWorkshops } from '../../../../../data/seo.ts';
+
+/* One page per class with upcoming dates: /workshops/ceramics/haki/handbuilding-workshop/.
+   Keys come from the host's own title, so both languages share them. */
+export function getStaticPaths() {
+  return allWorkshops('en').map((w) => ({
+    params: { activity: w.host.activity, slug: w.host.slug, workshop: w.key },
+  }));
+}
+const { slug, workshop } = Astro.params;
+---
+
+<WorkshopPage lang="de" slug={slug!} workshop={workshop!} />

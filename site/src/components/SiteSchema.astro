@@ -1,0 +1,39 @@
+---
+/** Who the site is, for the home page: an Organization with its logo and
+ *  its social profiles, and the WebSite it publishes. What a brand result
+ *  is built from. */
+import { getSiteData, socialLinks } from '../data/site.ts';
+import { SITE, absolute } from '../data/seo.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { brand } = getSiteData(lang);
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE}/#organization`,
+      name: brand.name,
+      url: `${SITE}/`,
+      logo: absolute(brand.logo),
+      sameAs: socialLinks.map((s) => s.href),
+      areaServed: { '@type': 'City', name: 'Berlin' },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE}/#website`,
+      url: `${SITE}/`,
+      name: brand.name,
+      description: brand.tagline,
+      inLanguage: lang === 'de' ? 'de-DE' : 'en',
+      publisher: { '@id': `${SITE}/#organization` },
+    },
+  ],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

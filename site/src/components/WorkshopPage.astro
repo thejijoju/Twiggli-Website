@@ -1,0 +1,152 @@
+---
+/** One class's page — "Try the wheel" under Ceramic Kingdom — with every
+ *  upcoming date of it. The long tail: someone who has heard the name of a
+ *  class, or searches the exact thing a host calls theirs. */
+import Base from '../layouts/Base.astro';
+import DateRows from './DateRows.astro';
+import HostMonogram from './HostMonogram.astro';
+import { getHosts } from '../data/content.ts';
+import {
+  absolute, activityCopy, activityHref, clip, formatWhen, hostHref, hostImage, hubExtraCopy, hubHref,
+  pageCopy, sessionIso, workshopHref, workshopLede, workshopTitle, workshopsFor,
+} from '../data/seo.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+  workshop: string;
+}
+const { lang, slug, workshop: key } = Astro.props;
+const host = getHosts(lang).find((h) => h.slug === slug);
+if (!host) throw new Error(`No host with slug ${slug}`);
+const all = workshopsFor(slug, lang);
+const w = all.find((x) => x.key === key);
+if (!w) throw new Error(`No workshop ${key} for ${slug}`);
+
+const t = pageCopy[lang];
+const x = hubExtraCopy[lang];
+const activity = activityCopy[lang][host.activity];
+const others = all.filter((o) => o.key !== key);
+const lede = workshopLede(w, lang);
+const next = w.sessions[0];
+// Every date of this class carries the class's own reel, where it has one.
+const media = next.host;
+const pageUrl = absolute(workshopHref(lang, host, key));
+const image = media.poster ? absolute(media.poster) : hostImage(host);
+
+const fromPrice = (price: string): string | undefined =>
+  price.match(/\d+(?:[.,]\d+)?/)?.[0].replace(',', '.');
+const events = w.sessions.slice(0, 30).map((s) => {
+  const price = s.price ? fromPrice(s.price) : undefined;
+  return {
+    '@type': 'Event',
+    name: s.title,
+    startDate: sessionIso(s),
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: host.studio ?? host.name,
+      address: { '@type': 'PostalAddress', streetAddress: s.place, addressLocality: 'Berlin', addressCountry: 'DE' },
+    },
+    ...(s.image || image ? { image: [s.image ?? image] } : {}),
+    description: clip(lede, 300),
+    organizer: { '@type': 'Organization', name: host.studio ?? host.name, url: absolute(hostHref(lang, host)) },
+    performer: { '@type': 'Organization', name: host.name },
+    ...(price !== undefined
+      ? { offers: { '@type': 'Offer', price, priceCurrency: 'EUR', url: s.bookUrl, availability: s.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' } }
+      : {}),
+    url: pageUrl,
+  };
+});
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    ...events,
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t.crumbsRoot, item: absolute(hubHref(lang)) },
+        { '@type': 'ListItem', position: 2, name: activity.short, item: absolute(activityHref(lang, host.activity)) },
+        { '@type': 'ListItem', position: 3, name: host.name, item: absolute(hostHref(lang, host)) },
+        { '@type': 'ListItem', position: 4, name: w.title, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Base title={workshopTitle(w, lang)} description={clip(lede)} lang={lang} image={image}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={hubHref(lang)}>{t.crumbsRoot}</a>
+      <span aria-hidden="true">›</span>
+      <a href={activityHref(lang, host.activity)}>{activity.short}</a>
+      <span aria-hidden="true">›</span>
+      <a href={hostHref(lang, host)}>{host.name}</a>
+      <span aria-hidden="true">›</span>
+      <span>{w.title}</span>
+    </nav>
+
+    <section class="page-head">
+      <span class="kicker kicker-tight">{host.name} · {activity.short}</span>
+      <h1 class="page-title">{w.title}</h1>
+      <p class="page-lede">{lede}</p>
+      {next.usp && <p class="page-facts">{next.usp}</p>}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section host-body">
+      <div class="host-media">
+        {media.video ? (
+          <video class="host-video" src={media.video} poster={media.poster} muted loop playsinline autoplay preload="metadata" aria-label={`${w.title} — ${host.name}`}></video>
+        ) : (next.image ?? host.photo) ? (
+          <img src={next.image ?? host.photo} alt={`${w.title} — ${host.name}`} loading="lazy" decoding="async" />
+        ) : (
+          <HostMonogram name={host.name} />
+        )}
+      </div>
+      <div class="host-facts">
+        <p class="host-blurb">{host.blurb}</p>
+        <dl class="maker-meta">
+          {host.studio && <div><dt>{t.studio}</dt><dd>{host.studio}</dd></div>}
+          <div><dt>{t.duration}</dt><dd>{next.duration ?? host.duration}</dd></div>
+          <div><dt>{t.place}</dt><dd>{host.place}</dd></div>
+          <div><dt>{t.languages}</dt><dd>{next.languages ?? host.languages}</dd></div>
+          {next.price && <div><dt>{t.price}</dt><dd>{next.price} · {t.perPerson}</dd></div>}
+        </dl>
+        <p class="section-more"><a href={hostHref(lang, host)}>{x.backToHost} {host.name} →</a></p>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section" id="dates">
+      <h2 class="section-title">{t.upcoming}</h2>
+      <DateRows sessions={w.sessions} lang={lang} linkTitlesTo="booking" />
+      <p class="section-more"><a href={activityHref(lang, host.activity)}>{t.moreIn(activity.short)} →</a></p>
+    </section>
+
+    {others.length > 0 && (
+      <>
+        <hr class="rule" />
+        <section class="section">
+          <h2 class="section-title">{x.theirWorkshops}</h2>
+          <ul class="activity-links">
+            {others.map((o) => (
+              <li>
+                <a href={workshopHref(lang, host, o.key)}>
+                  {o.title}
+                  <span class="activity-links-count">{t.next}: {formatWhen(o.sessions[0], lang)} · {t.dates(o.sessions.length)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </>
+    )}
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+</Base>

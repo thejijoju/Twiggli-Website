@@ -1,0 +1,73 @@
+---
+/** An occasion's page — the weekend, evenings after work, classes for
+ *  children — as a day-by-day list of the real sessions that fit it. */
+import Base from '../layouts/Base.astro';
+import DateRows from './DateRows.astro';
+import { OCCASIONS, absolute, byDay, formatDay, hubExtraCopy, hubHref, occasionCopy, occasionHref, occasionSessions, pageCopy, type Occasion } from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  occasion: Occasion;
+}
+const { lang, occasion } = Astro.props;
+const t = pageCopy[lang];
+const x = hubExtraCopy[lang];
+const copy = occasionCopy[lang][occasion];
+const sessions = occasionSessions(occasion, lang);
+const hosts = new Set(sessions.map((s) => s.host.slug)).size;
+// Enough days to fill a page; the calendar has the rest.
+const days = byDay(sessions).slice(0, 14);
+const pageUrl = absolute(occasionHref(lang, occasion));
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.crumbsRoot, item: absolute(hubHref(lang)) },
+    { '@type': 'ListItem', position: 2, name: copy.short, item: pageUrl },
+  ],
+};
+---
+
+<Base title={copy.title} description={copy.description} lang={lang}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={hubHref(lang)}>{t.crumbsRoot}</a>
+      <span aria-hidden="true">›</span>
+      <span>{copy.short}</span>
+    </nav>
+
+    <section class="page-head">
+      <span class="kicker kicker-tight">{t.crumbsRoot} · Berlin</span>
+      <h1 class="page-title">{copy.h1}</h1>
+      <p class="page-lede">{copy.lede}</p>
+      {sessions.length > 0 && <p class="page-facts">{t.hosts(hosts)} · {t.dates(sessions.length)}</p>}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section" id="dates">
+      {days.length ? days.map(([offset, list]) => (
+        <div class="dates-day">
+          <h2 class="dates-day-head">{formatDay(offset, lang)}</h2>
+          <DateRows sessions={list} lang={lang} withHost />
+        </div>
+      )) : (
+        <p class="section-lede">{copy.empty}</p>
+      )}
+      <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{x.byOccasion}</h2>
+      <ul class="activity-links">
+        {OCCASIONS.filter((o) => o !== occasion).map((o) => (
+          <li><a href={occasionHref(lang, o)}>{occasionCopy[lang][o].h1}</a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+</Base>

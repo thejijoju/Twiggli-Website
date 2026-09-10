@@ -38,3 +38,29 @@ jobs:
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
+
+  # IndexNow: tell Bing (and through it Ecosia and DuckDuckGo, which matter
+  # in Germany) which URLs changed, the moment the site is live. Google does
+  # not take IndexNow; it reads the sitemap. Best effort — a failure here
+  # never fails a deploy. The key file lives in site/public/.
+  indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions: {}
+    continue-on-error: true
+    steps:
+      - name: Submit every sitemap URL to IndexNow
+        env:
+          KEY: a701ea78c46d8fe0338c5fbeb7c1de82
+        run: |
+          curl -sS https://www.twiggli.com/sitemap-0.xml \
+            | grep -o '<loc>[^<]*' | sed 's/<loc>//' > urls.txt
+          echo "$(wc -l < urls.txt) urls"
+          jq -n --arg host www.twiggli.com --arg key "$KEY" \
+            --arg keyLocation "https://www.twiggli.com/$KEY.txt" \
+            --rawfile urls urls.txt \
+            '{host: $host, key: $key, keyLocation: $keyLocation, urlList: ($urls | split("\n") | map(select(length > 0)))}' \
+            > body.json
+          curl -sS -X POST https://api.indexnow.org/indexnow \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            --data @body.json -w '\nIndexNow HTTP %{http_code}\n'

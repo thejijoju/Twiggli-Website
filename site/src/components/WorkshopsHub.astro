@@ -6,8 +6,9 @@ import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { getSessions } from '../data/sessions.ts';
 import {
-  ACTIVITY_ORDER, absolute, activityCopy, activityHref, formatWhen, hostHref, hostsIn, hubCopy,
-  hubHref, nextSessionByHost, pageCopy,
+  ACTIVITY_ORDER, OCCASIONS, absolute, activityCopy, activityHref, districtHref, districtsFor,
+  formatWhen, hostHref, hostsIn, hubCopy, hubExtraCopy, hubHref, nextSessionByHost, occasionCopy,
+  occasionHref, occasionSessions, pageCopy,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 
@@ -16,7 +17,9 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = pageCopy[lang];
+const x = hubExtraCopy[lang];
 const copy = hubCopy[lang];
+const districts = districtsFor(lang);
 
 const sessions = getSessions(lang);
 const next = nextSessionByHost(lang);
@@ -67,6 +70,28 @@ const schema = {
         ))}
       </ul>
       <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{x.byOccasion}</h2>
+      <ul class="activity-links">
+        {OCCASIONS.map((o) => (
+          <li><a href={occasionHref(lang, o)}>{occasionCopy[lang][o].h1}<span class="activity-links-count">{t.dates(occasionSessions(o, lang).length)}</span></a></li>
+        ))}
+      </ul>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{x.byDistrict}</h2>
+      <ul class="activity-links">
+        {districts.map((d) => (
+          <li><a href={districtHref(lang, d.slug)}>Workshops in {d.name}<span class="activity-links-count">{t.hosts(d.hosts.length)} · {t.dates(d.sessions.length)}</span></a></li>
+        ))}
+      </ul>
     </section>
 
     <hr class="rule" />

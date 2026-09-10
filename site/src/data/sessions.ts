@@ -14,6 +14,10 @@ import liveData from './live-workshops.json';
 
 export type Session = {
   id: string;
+  /** The workshop this is a date of — the host's own title as a slug, the
+   *  same in both languages, so every date of "Try the wheel" shares one
+   *  page under the host's. */
+  workshopKey: string;
   dayOffset: number;
   /** Absent when the host's booking page reveals the time only during
    *  checkout — the card then says so instead of inventing an hour. */
@@ -217,6 +221,21 @@ const WEEKDAY_INDEX: Record<string, number> = {
   sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6,
 };
 
+/** A title as a URL segment: "Kerzengießen & Duftöl" → kerzengiessen-and-duftoel.
+ *  Umlauts are spelled out rather than stripped, which is how Germans type
+ *  them into a URL, and the result is capped so a host's paragraph-long
+ *  title does not become a paragraph-long path. */
+export const slugify = (title: string): string =>
+  title
+    .toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60)
+    .replace(/-+$/, '') || 'workshop';
+
 /** Deterministic, used for stable recurring-session ids. */
 const hash = (s: string): number => {
   let h = 0;
@@ -284,6 +303,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     if (dayOffset < 0 || dayOffset >= DAYS_AHEAD) continue;
     sessions.push({
       id: `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`,
+      workshopKey: slugify(w.title),
       dayOffset,
       time: w.time,
       host: withWorkshopReel(host, w.slug, w.title, ordinals.get(w) ?? 0),
@@ -321,6 +341,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       if (!wanted.has(dow)) continue;
       sessions.push({
         id: `rec-${r.slug}-${hash(r.title)}-${dayOffset}`,
+        workshopKey: slugify(r.title),
         dayOffset,
         time: r.time,
         // Post-increment: the first occurrence in the window is 0, so a

@@ -10,7 +10,8 @@ import { getHosts } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import {
   activityCopy, activityHref, formatWhen, hostDescription, hostH1, hostHref, hostImage,
-  hostLede, hostTitle, hostsIn, hubHref, nextSessionByHost, onRequestFor, pageCopy, sessionsFor,
+  hostLede, hostTitle, hostsIn, hubExtraCopy, hubHref, nextSessionByHost, onRequestFor, pageCopy,
+  sessionsFor, workshopHref, workshopsFor,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 
@@ -23,8 +24,10 @@ const host = getHosts(lang).find((h) => h.slug === slug);
 if (!host) throw new Error(`No host with slug ${slug}`);
 
 const t = pageCopy[lang];
+const x = hubExtraCopy[lang];
 const activity = activityCopy[lang][host.activity];
 const sessions = sessionsFor(host.slug, lang);
+const workshops = workshopsFor(host.slug, lang);
 const onRequest = onRequestFor(host.slug, lang);
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
@@ -107,6 +110,25 @@ const inquireHref = (title: string): string => {
     </section>
 
     <hr class="rule" />
+
+    {workshops.length > 1 && (
+      <>
+        <section class="section">
+          <h2 class="section-title">{x.theirWorkshops}</h2>
+          <ul class="activity-links">
+            {workshops.map((w) => (
+              <li>
+                <a href={workshopHref(lang, host, w.key)}>
+                  {w.title}
+                  <span class="activity-links-count">{t.next}: {formatWhen(w.sessions[0], lang)} · {t.dates(w.sessions.length)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <hr class="rule" />
+      </>
+    )}
 
     <section class="section" id="dates">
       <h2 class="section-title">{t.upcoming}</h2>

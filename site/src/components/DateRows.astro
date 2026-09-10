@@ -4,7 +4,7 @@
  *  date, no filters and no script: what a searcher and a crawler both want
  *  from "when does this run". The calendar keeps its richer cards. */
 import type { Session } from '../data/sessions.ts';
-import { formatDay, hostHref, pageCopy } from '../data/seo.ts';
+import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -13,8 +13,11 @@ interface Props {
   /** Name the host on each row — on an activity page, where rows come from
    *  several hosts. A host's own page leaves it off. */
   withHost?: boolean;
+  /** Where a row's title leads: the class's own page — every date of it,
+   *  in one place — or, on that page itself, straight to the booking. */
+  linkTitlesTo?: 'workshop' | 'booking';
 }
-const { sessions, lang, withHost = false } = Astro.props;
+const { sessions, lang, withHost = false, linkTitlesTo = 'workshop' } = Astro.props;
 const t = pageCopy[lang];
 
 const REQUEST_EMAIL = 'jirel.kuenen@gmail.com';
@@ -37,7 +40,11 @@ const showPrice = (price?: string) =>
         <span class="date-time">{s.time ?? t.timeTba}</span>
       </span>
       <span class="date-main">
-        <a class="date-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
+        {linkTitlesTo === 'workshop' ? (
+          <a class="date-title" href={workshopHref(lang, s.host, s.workshopKey)}>{s.title}</a>
+        ) : (
+          <a class="date-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
+        )}
         <span class="date-meta">
           {withHost && <a class="date-host" href={hostHref(lang, s.host)}>{s.host.name}</a>}
           {withHost && ' · '}

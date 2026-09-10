@@ -16,6 +16,15 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !/paymentcanceled|stripe-connect|corporate\/$|hosts\/$/.test(page),
+      // The pages built from the workshop feed change with every daily
+      // rebuild — a date passes, a new one lands — so they say so; the
+      // legal pages and the rest carry no lastmod rather than a false one.
+      serialize: (item) => {
+        if (/\/(workshops|happening-today)\/|twiggli\.com\/(de\/)?$/.test(item.url)) {
+          item.lastmod = new Date().toISOString();
+        }
+        return item;
+      },
     }),
   ],
 

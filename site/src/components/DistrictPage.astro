@@ -1,0 +1,111 @@
+---
+/** One district's page — "Workshops in Neukölln" — every host there, in
+ *  sections by activity so "Töpferkurs Neukölln" has a heading to land
+ *  on, and the next dates in the district with times and Book links. */
+import Base from '../layouts/Base.astro';
+import DateRows from './DateRows.astro';
+import HostMonogram from './HostMonogram.astro';
+import { ACTIVITY_ORDER, absolute, districtCopy, districtHref, districtsFor, formatWhen, hostHref, hubExtraCopy, hubHref, nextSessionByHost, pageCopy } from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  district: string;
+}
+const { lang, district: slug } = Astro.props;
+const d = districtsFor(lang).find((x) => x.slug === slug);
+if (!d) throw new Error(`No district ${slug}`);
+const t = pageCopy[lang];
+const x = hubExtraCopy[lang];
+const copy = districtCopy(d, lang);
+const next = nextSessionByHost(lang);
+const sections = ACTIVITY_ORDER
+  .map((a) => ({ a, hosts: d.hosts.filter((h) => h.activity === a) }))
+  .filter((s) => s.hosts.length);
+const shown = d.sessions.slice(0, 30);
+const others = districtsFor(lang).filter((o) => o.slug !== slug);
+const pageUrl = absolute(districtHref(lang, slug));
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ItemList',
+      name: copy.h1,
+      itemListElement: d.hosts.map((h, i) => ({ '@type': 'ListItem', position: i + 1, name: `${h.specialty} — ${h.name}`, url: absolute(hostHref(lang, h)) })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t.crumbsRoot, item: absolute(hubHref(lang)) },
+        { '@type': 'ListItem', position: 2, name: d.name, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Base title={copy.title} description={copy.description} lang={lang}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={hubHref(lang)}>{t.crumbsRoot}</a>
+      <span aria-hidden="true">›</span>
+      <span>{d.name}</span>
+    </nav>
+
+    <section class="page-head">
+      <span class="kicker kicker-tight">{t.crumbsRoot} · Berlin</span>
+      <h1 class="page-title">{copy.h1}</h1>
+      <p class="page-lede">{copy.lede}</p>
+    </section>
+
+    <hr class="rule" />
+
+    {sections.map(({ a, hosts }) => (
+      <section class="section">
+        <h2 class="section-title">{copy.sectionTitle(a)}</h2>
+        <ul class="host-cards">
+          {hosts.map((h) => {
+            const n = next.get(h.slug);
+            return (
+              <li>
+                <a class="host-card" href={hostHref(lang, h)}>
+                  <span class="host-card-media">
+                    {h.poster ? <img src={h.poster} alt="" loading="lazy" decoding="async" />
+                      : h.photo ? <img src={h.photo} alt="" loading="lazy" decoding="async" />
+                      : <HostMonogram name={h.name} />}
+                  </span>
+                  <span class="host-card-name">{h.name}</span>
+                  <span class="host-card-spec">{h.specialty}</span>
+                  <span class="host-card-next">{n ? `${t.next}: ${formatWhen(n, lang)}${n.price ? ` · ${n.price}` : ''}` : t.onRequest}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+
+    {shown.length > 0 && (
+      <>
+        <hr class="rule" />
+        <section class="section" id="dates">
+          <h2 class="section-title">{t.nextDates} — {d.name}</h2>
+          <DateRows sessions={shown} lang={lang} withHost />
+          <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
+        </section>
+      </>
+    )}
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{x.byDistrict}</h2>
+      <ul class="activity-links">
+        {others.map((o) => (
+          <li><a href={districtHref(lang, o.slug)}>Workshops in {o.name}<span class="activity-links-count">{t.hosts(o.hosts.length)} · {t.dates(o.sessions.length)}</span></a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+</Base>

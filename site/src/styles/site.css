@@ -2888,3 +2888,12 @@ a:hover { color: var(--color-accent); }
   .date-side { justify-items: start; text-align: left; grid-template-columns: auto auto; }
   .date-spots { grid-column: 1 / -1; }
 }
+
+/* Occasion pages: the sessions day by day. */
+.dates-day { margin-bottom: 36px; }
+.dates-day-head {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 22px;
+  margin: 0 0 10px;
+}
