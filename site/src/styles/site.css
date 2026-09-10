@@ -1484,8 +1484,8 @@ a:hover { color: var(--color-accent); }
   }
   .cookie-banner-inner { padding: 14px 16px 16px; gap: 12px; }
   .cookie-banner-text { font-size: 14px; }
-  .cookie-banner-actions { width: 100%; }
-  .cookie-banner-actions .btn { flex: 1 1 auto; }
+  .cookie-banner-actions { width: 100%; flex-wrap: nowrap; }
+  .cookie-banner-actions .btn { flex: 1 1 0; padding-inline: 8px; font-size: 15px; }
 }
 
 /* — contact form — */
@@ -1558,8 +1558,11 @@ a:hover { color: var(--color-accent); }
      it stuck; where that script did not run (seen in Instagram's in-app
      browser) the pinned, transparent, three-row nav sat on top of the page
      with the content showing through it. Nothing here waits on a script. */
-  .site-header {
+  .site-header,
+  .site-header.is-stuck {
     background: var(--color-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     box-shadow: 0 1px 0 color-mix(in srgb, var(--color-text) 8%, transparent);
   }
   .site-header .nav {
