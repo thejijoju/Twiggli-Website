@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07T09:09:29.778Z",
+  "updated": "2026-09-14T09:49:04.170Z",
   "sources": [
     {
       "slug": "qian",
@@ -29,7 +29,7 @@
       "slug": "karen-rose",
       "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
       "status": "failed: no upcoming events parsed",
-      "count": 2
+      "count": 1
     },
     {
       "slug": "karen-rose",
@@ -47,7 +47,7 @@
       "slug": "karen-rose",
       "url": "https://karen-rose.com/events-2/?re-product-id=320775",
       "status": "failed: no upcoming events parsed",
-      "count": 1
+      "count": 0
     },
     {
       "slug": "karen-rose",
@@ -59,13 +59,13 @@
       "slug": "galleria-lucia",
       "url": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "status": "ok",
-      "count": 8
+      "count": 3
     },
     {
       "slug": "kohfink",
       "url": "https://imkerei-kohfink.de/BACK-KURSE/",
       "status": "ok",
-      "count": 4
+      "count": 7
     },
     {
       "slug": "munio",
@@ -77,7 +77,7 @@
       "slug": "pastamadre",
       "url": "https://www.pastamadre.de/calendar-kurstermine",
       "status": "ok",
-      "count": 22
+      "count": 21
     },
     {
       "slug": "angelo",
@@ -95,25 +95,25 @@
       "slug": "ceramic-kingdom",
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "status": "ok",
-      "count": 45
+      "count": 39
     },
     {
       "slug": "sabine",
       "url": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "status": "ok",
-      "count": 14
+      "count": 12
     },
     {
       "slug": "sabine",
       "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
       "status": "ok",
-      "count": 6
+      "count": 5
     },
     {
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "status": "ok",
-      "count": 14
+      "count": 12
     },
     {
       "slug": "schmiede",
@@ -125,25 +125,25 @@
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
       "status": "ok",
-      "count": 1
+      "count": 2
     },
     {
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
       "status": "ok",
-      "count": 2
+      "count": 3
     },
     {
       "slug": "daisuki",
       "url": "https://berlindaisuki.de/japanischkochkurs/",
       "status": "ok",
-      "count": 17
+      "count": 18
     },
     {
       "slug": "druckrausch",
       "url": "https://www.druckrausch.com/termine",
       "status": "ok",
-      "count": 16
+      "count": 14
     },
     {
       "slug": "sov",
@@ -185,19 +185,19 @@
       "slug": "beat-etage",
       "url": "https://beat-etage.de/workshops/",
       "status": "ok",
-      "count": 7
+      "count": 5
     },
     {
       "slug": "faye",
       "url": "https://www.senle.studio/scheduling",
       "status": "ok",
-      "count": 15
+      "count": 13
     },
     {
       "slug": "celina",
       "url": "https://www.gestaltwandel.com/booking",
       "status": "ok",
-      "count": 22
+      "count": 21
     },
     {
       "slug": "kohfink",
@@ -215,7 +215,7 @@
       "slug": "jem",
       "url": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
       "status": "ok",
-      "count": 8
+      "count": 6
     },
     {
       "slug": "karen-rose",
@@ -227,7 +227,7 @@
       "slug": "whittle",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "status": "failed: HTTP 403",
-      "count": 12
+      "count": 11
     },
     {
       "slug": "loom-lab",
@@ -269,7 +269,7 @@
       "slug": "mampe",
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
-      "count": 87
+      "count": 79
     },
     {
       "slug": "drawingwalks",
@@ -280,8 +280,8 @@
     {
       "slug": "violaine",
       "url": "https://tothviolaine.com/collections/all/products.json?limit=250",
-      "status": "ok",
-      "count": 1
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "tania",
@@ -346,8 +346,8 @@
     {
       "slug": "celia",
       "url": "https://www.eventbrite.de/o/la-hoco-115794852461",
-      "status": "ok",
-      "count": 1
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "olivia",
@@ -359,7 +359,7 @@
       "slug": "helka",
       "url": "https://www.helkaceramics.com/pottery-classes-workshops",
       "status": "ok",
-      "count": 11
+      "count": 9
     },
     {
       "slug": "maximiliana",
@@ -389,7 +389,7 @@
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/learnlino",
       "status": "ok",
-      "count": 12
+      "count": 5
     },
     {
       "slug": "techno",
@@ -709,1135 +709,12 @@
   ],
   "workshops": [
     {
-      "slug": "drawingwalks",
-      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
-      "title": "Draw Berlin: Prenzlauer Berg",
-      "date": "2026-09-08",
-      "time": "13:00",
-      "spots": 15,
-      "duration": "2.75 h",
-      "price": "€30",
-      "district": "Prenzlauer Berg",
-      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-09-08",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/fmh9rk3d1tqni6ethfxx.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379516",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-09",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "drawingwalks",
-      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
-      "title": "Draw Berlin: Prenzlauer Berg",
-      "date": "2026-09-09",
-      "time": "13:00",
-      "spots": 15,
-      "duration": "2.75 h",
-      "price": "€30",
-      "district": "Prenzlauer Berg",
-      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "KLEINE SCHNAPSGESCHICHTEN",
-      "date": "2026-09-09",
-      "time": "14:00",
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
-      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-09",
-      "time": "15:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-09",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-09",
-      "time": "15:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "SMALL SCHNAPPS STORIES in English",
-      "date": "2026-09-09",
-      "time": "15:00",
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
-      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "GROßE SCHNAPSGESCHICHTEN",
-      "date": "2026-09-09",
-      "time": "16:00",
-      "duration": "1.5 h",
-      "price": "€24",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
-      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-09",
-      "time": "17:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-09",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-09",
-      "time": "17:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Full Body Proportions",
-      "date": "2026-09-09",
-      "time": "17:15",
-      "duration": "1 h",
-      "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_650,q_100,w_650,x_1,y_31/c_scale,h_250,q_85,w_250/v1/production/userfiles/nxmsfpye243zphgsksij.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348203"
-    },
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-09-09",
-      "time": "17:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg",
-      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "druckrausch",
-      "sourceUrl": "https://www.druckrausch.com/termine",
-      "title": "Basis-Siebdruckworkshop",
-      "date": "2026-09-09",
-      "time": "18:30",
-      "duration": "2 h",
-      "price": "€63",
-      "url": "https://www.druckrausch.com/booking-calendar/09-09-basis-siebdruckworkshop",
-      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
-      "district": "Friedenau"
-    },
-    {
-      "slug": "helka",
-      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
-      "title": "Evening pottery workshop",
-      "date": "2026-09-09",
-      "time": "19:00",
-      "duration": "2.5 h",
-      "soldOut": true,
-      "price": "€95",
-      "district": "Kreuzberg",
-      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
-      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-10",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-10",
-      "time": "13:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-10",
-      "time": "15:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-10",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-10",
-      "time": "15:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-10",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-10",
-      "time": "17:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-10",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-10",
-      "time": "17:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-09-10",
-      "time": "17:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg",
-      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-09-10",
-      "time": "18:00",
-      "duration": "1.5–2 h",
-      "price": "€70",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-10",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "sabine",
-      "sourceUrl": "https://www.mobile-dunkelkammer.com/workshops/termine/",
-      "title": "Offener Werkstattabend S/W",
-      "date": "2026-09-10",
-      "time": "18:00",
-      "duration": "4 h",
-      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
-      "request": true,
-      "district": "Lichtenberg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-10",
-      "time": "18:30",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "celia",
-      "sourceUrl": "https://www.eventbrite.de/o/la-hoco-115794852461",
-      "title": "Knitting Course - Market Bag",
-      "date": "2026-09-10",
-      "time": "18:30",
-      "price": "€102+",
-      "district": "Friedrichshain",
-      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1191878205%2F2891942369451%2F1%2Foriginal.20260825-183420?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=8472069279eabbca0f7f35f0d59292e1",
-      "url": "https://www.eventbrite.de/e/knitting-course-market-bag-tickets-1998912343629"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-11",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "helka",
-      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
-      "title": "Throw big with Anas Rifi-Zinati — September 11-12 – 2 Termine: 11. & 12.09.",
-      "titleEn": "Throw big with Anas Rifi-Zinati — September 11-12 – 2 dates: Sep 11 & 12",
-      "date": "2026-09-11",
-      "time": "11:00",
-      "duration": "2 × 7 h",
-      "spots": 4,
-      "price": "€420",
-      "district": "Kreuzberg",
-      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/8eb05cc4-7d77-4150-a207-8e818a45e313/dc68c668-8b1b-4bee-a114-1b0a27a80a7e.jpg",
-      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/throw-big-anas-rifi-zinati"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-11",
-      "time": "13:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-11",
-      "time": "15:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-11",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-11",
-      "time": "15:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-11",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-11",
-      "time": "17:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-11",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-11",
-      "time": "17:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "sabine",
-      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
-      "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
-      "date": "2026-09-11",
-      "time": "17:00",
-      "duration": "2 h",
-      "price": "€119",
-      "spots": 4,
-      "request": true,
-      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
-      "district": "Lichtenberg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
-    },
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-09-11",
-      "time": "17:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg",
-      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-11",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Kimchi selber machen!",
-      "date": "2026-09-11",
-      "time": "18:00",
-      "duration": "3 h",
-      "price": "€65",
-      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/kimchi-selber-machen-3",
-      "district": "Zehlendorf",
-      "languages": "DE",
-      "salesEnd": "2026-09-09T23:50"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-09-11",
-      "time": "18:30",
-      "duration": "1.5–2 h",
-      "price": "€70",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
-      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
-      "date": "2026-09-11",
-      "time": "19:15",
-      "duration": "2 h",
-      "price": "€65",
-      "spots": 1,
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
-      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "celina",
-      "sourceUrl": "https://www.gestaltwandel.com/booking",
-      "title": "Mosaic Tile Making",
-      "date": "2026-09-12",
-      "time": "09:30",
-      "spots": 6,
-      "duration": "4.5 h",
-      "price": "€89",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-95116740.jpg?1782735863",
-      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/95116740/calendar/12995646",
-      "district": "Gesundbrunnen"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "3D Printing in Clay - Intro & Production",
-      "date": "2026-09-12",
-      "time": "10:00",
-      "spots": 6,
-      "duration": "4 h",
-      "price": "€163",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/65358096/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "schmiede",
-      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
-      "title": "Kompaktkurs Messerschmieden – 1 Tag",
-      "date": "2026-09-12",
-      "time": "10:00",
-      "price": "€225",
-      "soldOut": true,
-      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
-      "request": true,
-      "district": "Blankenburg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
-    },
-    {
-      "slug": "violaine",
-      "sourceUrl": "https://tothviolaine.com/collections/all/products.json?limit=250",
-      "title": "Limited edition : Black cups workshop (September)",
-      "date": "2026-09-12",
-      "time": "10:00",
-      "duration": "6 h",
-      "price": "€180",
-      "image": "https://cdn.shopify.com/s/files/1/0972/8036/0832/files/B3E155E9-5824-4764-9D9A-F6769B654EBB.jpg?v=1785853953",
-      "url": "https://tothviolaine.com/products/limited-edition-black-cups-workshop-september",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-09-12",
-      "time": "10:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg",
-      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "druckrausch",
-      "sourceUrl": "https://www.druckrausch.com/termine",
-      "title": "Siebdruck + Papercutting",
-      "date": "2026-09-12",
-      "time": "10:30",
-      "duration": "3.5 h",
-      "price": "€77",
-      "url": "https://www.druckrausch.com/booking-calendar/12-09-siebdruck-papercutting",
-      "image": "https://static.wixstatic.com/media/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg/v1/fit/w_1134,h_756,al_c,q_85/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg",
-      "district": "Friedenau"
-    },
-    {
-      "slug": "whittle",
-      "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
-      "title": "Schnitzkurs Whittle",
-      "titleEn": "Whittling Day Course",
-      "date": "2026-09-12",
-      "time": "11:00",
-      "duration": "5 h",
-      "price": "€150",
-      "district": "Charlottenburg",
-      "spots": 1,
-      "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-12",
-      "time": "13:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "KLEINE SCHNAPSGESCHICHTEN",
-      "date": "2026-09-12",
-      "time": "14:00",
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
-      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
-    },
-    {
-      "slug": "beat-etage",
-      "sourceUrl": "https://beat-etage.de/workshops/",
-      "title": "Handpan Workshop",
-      "date": "2026-09-12",
-      "time": "14:30",
-      "duration": "2 h",
-      "price": "€75",
-      "url": "https://beat-etage.de/workshops/",
-      "district": "Treptow",
-      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-12",
-      "time": "15:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-12",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-12",
-      "time": "15:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "pastamadre",
-      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
-      "title": "Sourdough Pizza Workshop",
-      "date": "2026-09-12",
-      "time": "15:00",
-      "duration": "5 h",
-      "price": "€76–100",
-      "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "GROßE SCHNAPSGESCHICHTEN",
-      "date": "2026-09-12",
-      "time": "16:00",
-      "duration": "1.5 h",
-      "price": "€24",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
-      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "beat-etage",
-      "sourceUrl": "https://beat-etage.de/workshops/",
-      "title": "Cajon Workshop",
-      "date": "2026-09-12",
-      "time": "17:00",
-      "duration": "2 h",
-      "price": "€50",
-      "url": "https://beat-etage.de/workshops/",
-      "district": "Treptow",
-      "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-12",
-      "time": "18:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
-      "date": "2026-09-12",
-      "time": "18:00",
-      "duration": "2–2.5 h",
-      "price": "€77",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
-      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
-      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
-      "date": "2026-09-12",
-      "time": "19:15",
-      "duration": "2 h",
-      "price": "€65",
-      "spots": 3,
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
-      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Flexible Glazing Group Class",
-      "date": "2026-09-13",
-      "time": "10:00",
-      "spots": 2,
-      "duration": "2 h",
-      "price": "€69",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/64701453/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "sabine",
-      "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
-      "title": "Schwarz-Weiß-Film & Abzüge: Kurs in Berlin – bis 3 Pers.",
-      "date": "2026-09-13",
-      "time": "10:00",
-      "duration": "9 h",
-      "price": "€189",
-      "spots": 3,
-      "request": true,
-      "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
-      "district": "Lichtenberg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
-    },
-    {
-      "slug": "schmiede",
-      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
-      "title": "Kompaktkurs Messerschmieden – 1 Tag",
-      "date": "2026-09-13",
-      "time": "10:00",
-      "price": "€225",
-      "soldOut": true,
-      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
-      "request": true,
-      "district": "Blankenburg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
-    },
-    {
-      "slug": "celina",
-      "sourceUrl": "https://www.gestaltwandel.com/booking",
-      "title": "Stamp Carving",
-      "date": "2026-09-13",
-      "time": "10:00",
-      "spots": 20,
-      "duration": "2.5 h",
-      "price": "€50",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-94361705.jpg?1781177694",
-      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/94361705/calendar/12995646",
-      "district": "Gesundbrunnen"
-    },
-    {
-      "slug": "karen-rose",
-      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
-      "title": "Keramikgießen | Terrazzo Workshop",
-      "date": "2026-09-13",
-      "duration": "3 h",
-      "price": "€59",
-      "district": "Treptow",
-      "url": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
-      "time": "11:00",
-      "titleEn": "Ceramic Casting | Terrazzo Workshop",
-      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "The OG | 30 x 40cm",
-      "date": "2026-09-13",
-      "time": "11:00",
-      "spots": 4,
-      "duration": "3.5 h",
-      "price": "€140",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "The Big One | 50 x 50cm",
-      "date": "2026-09-13",
-      "time": "11:00",
-      "spots": 4,
-      "duration": "5 h",
-      "price": "€200",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Design your own scented candle with crystals, Workshop in Berlin",
-      "date": "2026-09-13",
-      "time": "13:00",
-      "soldOut": true,
-      "duration": "1.5–2 h",
-      "price": "€66",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
-      "date": "2026-09-13",
-      "time": "13:00",
-      "soldOut": true,
-      "duration": "1.5–2 h",
-      "price": "€70",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/candles_and_prosecco.jpg?v=1773247722",
-      "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "drawingwalks",
-      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
-      "title": "Draw Berlin: Prenzlauer Berg",
-      "date": "2026-09-13",
-      "time": "13:00",
-      "spots": 15,
-      "duration": "2.75 h",
-      "price": "€30",
-      "district": "Prenzlauer Berg",
-      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
-    },
-    {
-      "slug": "faye",
-      "sourceUrl": "https://www.senle.studio/scheduling",
-      "title": "Incense Lab I: Grundlagen des Dufts",
-      "date": "2026-09-13",
-      "time": "14:00",
-      "spots": 15,
-      "duration": "2.5 h",
-      "price": "€64",
-      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
-      "district": "Friedrichshain",
-      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
-    },
-    {
-      "slug": "karen-rose",
-      "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=320775",
-      "title": "Terrazzo Schmuck",
-      "titleEn": "Terrazzo Jewelry",
-      "date": "2026-09-13",
-      "time": "15:00",
-      "duration": "3 h",
-      "price": "€59",
-      "district": "Treptow",
-      "url": "https://karen-rose.com/events-2/?re-product-id=320775",
-      "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg",
-      "spots": 8
-    },
-    {
-      "slug": "pastamadre",
-      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
-      "title": "Fermenting Vegetables",
-      "date": "2026-09-13",
-      "time": "15:00",
-      "duration": "3 h",
-      "price": "€76–100",
-      "url": "https://en.pastamadre.de/contact",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
-    },
-    {
-      "slug": "jem",
-      "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
-      "title": "Let's make Kimchi!",
-      "date": "2026-09-13",
-      "time": "15:00",
-      "duration": "3 h",
-      "price": "€65",
-      "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
-      "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-7",
-      "district": "Zehlendorf",
-      "languages": "EN",
-      "salesEnd": "2026-09-09T23:50"
-    },
-    {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-09-13",
-      "time": "16:00",
-      "soldOut": true,
-      "price": "€59",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-14",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "drawingwalks",
-      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
-      "title": "Draw Berlin: Prenzlauer Berg",
-      "date": "2026-09-14",
-      "time": "13:00",
-      "spots": 15,
-      "duration": "2.75 h",
-      "price": "€30",
-      "district": "Prenzlauer Berg",
-      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Intro to Handbuilding + 2 hour glazing session (Week 38)",
       "date": "2026-09-14",
       "time": "18:00",
-      "spots": 6,
+      "spots": 3,
       "duration": "4 h",
       "price": "€121",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337214/calendar/10335256",
@@ -1845,32 +722,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 38)",
-      "date": "2026-09-14",
-      "time": "19:30",
-      "spots": 1,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97550723/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-15",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "drawingwalks",
       "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
       "title": "Draw Berlin: Prenzlauer Berg",
@@ -1889,32 +740,10 @@
       "date": "2026-09-15",
       "time": "18:00",
       "soldOut": true,
-      "price": "€59",
+      "price": "€58",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "sina",
-      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
-      "title": "The Unfinished Thread: A Monthly Fiber Arts Meet-Up",
-      "date": "2026-09-15",
-      "time": "18:30",
-      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170913667%2F2441551045951%2F1%2Foriginal.20251113-202419?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.356&fp-y=0.358&s=3640ce0d7ff3149ac8dfda13a0455407",
-      "url": "https://www.eventbrite.de/e/the-unfinished-thread-a-monthly-fiber-arts-meet-up-tickets-1999476417790",
-      "duration": "2 h",
-      "district": "Friedrichshain"
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-09-15",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/sqpf1ri0yg5qo5axczv3.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379517",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "helka",
@@ -1931,17 +760,29 @@
       "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/intermediate-pottery-course"
     },
     {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 38)",
-      "date": "2026-09-15",
-      "time": "19:30",
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-09-16",
+      "time": "09:00",
       "spots": 1,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97550723/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-09-16",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "mampe",
@@ -2060,13 +901,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Torso (Front)",
+      "title": "Anatomy Course - Full Body Proportions",
       "date": "2026-09-16",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_630,q_100,w_631,x_1,y_27/c_scale,h_250,q_85,w_250/v1/production/userfiles/a0ojgpzoudbwkezb53ep.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348232"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_650,q_100,w_650,x_1,y_31/c_scale,h_250,q_85,w_250/v1/production/userfiles/nxmsfpye243zphgsksij.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348203"
     },
     {
       "slug": "angelo",
@@ -2107,6 +948,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-09-17",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -2114,10 +968,22 @@
       "time": "13:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 6,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-09-17",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "munio",
@@ -2274,17 +1140,17 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 38)",
-      "date": "2026-09-17",
-      "time": "19:30",
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-09-18",
+      "time": "09:00",
       "spots": 1,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97550723/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "munio",
@@ -2298,6 +1164,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-09-18",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "sabine",
@@ -2485,32 +1363,6 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "The OG | 30 x 40cm",
-      "date": "2026-09-19",
-      "time": "10:00",
-      "spots": 6,
-      "duration": "3.5 h",
-      "price": "€140",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "The Big One | 50 x 50cm",
-      "date": "2026-09-19",
-      "time": "10:00",
-      "spots": 3,
-      "duration": "5 h",
-      "price": "€200",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "sina",
       "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
       "title": "Intro to Quilting",
@@ -2529,7 +1381,7 @@
       "date": "2026-09-19",
       "time": "10:30",
       "soldOut": true,
-      "price": "€59",
+      "price": "€58",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
@@ -2586,6 +1438,18 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "drawingwalks",
+      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+      "title": "Draw Berlin: Prenzlauer Berg",
+      "date": "2026-09-19",
+      "time": "13:00",
+      "spots": 15,
+      "duration": "2.75 h",
+      "price": "€30",
+      "district": "Prenzlauer Berg",
+      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
     },
     {
       "slug": "mampe",
@@ -2670,23 +1534,10 @@
       "date": "2026-09-19",
       "time": "16:00",
       "soldOut": true,
-      "price": "€59",
+      "price": "€58",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "faye",
-      "sourceUrl": "https://www.senle.studio/scheduling",
-      "title": "Incense Lab I: Grundlagen des Dufts",
-      "date": "2026-09-19",
-      "time": "16:00",
-      "spots": 16,
-      "duration": "2.5 h",
-      "price": "€64",
-      "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
-      "district": "Friedrichshain",
-      "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
       "slug": "mampe",
@@ -2760,7 +1611,7 @@
       "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 7,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
@@ -2859,7 +1710,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-09-20",
       "time": "14:00",
-      "spots": 15,
+      "spots": 14,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -2930,12 +1781,25 @@
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-09-21",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Flexible Glazing Group Class",
       "date": "2026-09-21",
       "time": "18:00",
-      "spots": 2,
+      "spots": 1,
       "duration": "2 h",
       "price": "€69",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/64701453/calendar/10335256",
@@ -2948,12 +1812,25 @@
       "title": "Intro to Handbuilding + 2 hour glazing session (Week 38)",
       "date": "2026-09-21",
       "time": "18:00",
-      "spots": 6,
+      "spots": 3,
       "duration": "4 h",
       "price": "€121",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337214/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-09-22",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "drawingwalks",
@@ -2991,17 +1868,6 @@
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "spots": 3
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-09-22",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/kwrl6aukbbtrzl1fw03d.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379518",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "drawingwalks",
@@ -3145,13 +2011,26 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Torso (Back)",
+      "title": "Anatomy Course - Torso (Front)",
       "date": "2026-09-23",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_570,q_100,w_570,x_2,y_30/c_scale,h_250,q_85,w_250/v1/production/userfiles/ctibozlnftydpxvymlxs.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348235"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_631,q_100,w_631,x_1,y_27/c_scale,h_250,q_85,w_250/v1/production/userfiles/a0ojgpzoudbwkezb53ep.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348232"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-23",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "tufttuft",
@@ -3186,7 +2065,7 @@
       "time": "13:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 8,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
@@ -3281,6 +2160,19 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
       "url": "https://themunio.de/products/candle-workshop-30min",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-24",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "munio",
@@ -3305,9 +2197,7 @@
       "price": "€75",
       "image": "https://static.wixstatic.com/media/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg/v1/fill/w_3371,h_2528,al_c,q_90/d918f6_7a65a0ee4bb646a592a5dbca549f680b~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sushi-workshop-roll-your-own-sushi-in-berlin-2",
-      "district": "Zehlendorf",
-      "languages": "EN",
-      "salesEnd": "2026-09-22T23:50"
+      "district": "Zehlendorf"
     },
     {
       "slug": "munio",
@@ -3321,19 +2211,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 38)",
-      "date": "2026-09-24",
-      "time": "19:30",
-      "spots": 1,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97550723/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
     },
     {
       "slug": "schmiede",
@@ -3465,6 +2342,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-25",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
+    },
+    {
       "slug": "qian",
       "sourceUrl": "https://www.claygarden.studio/pottery-classes",
       "title": "Handbuilding Class with Clay Garden Studio",
@@ -3487,6 +2377,19 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
+    },
+    {
+      "slug": "ceramic-kingdom",
+      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
+      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
+      "date": "2026-09-25",
+      "time": "19:15",
+      "duration": "2 h",
+      "price": "€65",
+      "spots": 8,
+      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
+      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
+      "district": "Neukölln"
     },
     {
       "slug": "celina",
@@ -3527,6 +2430,31 @@
       "url": "https://checkout.the-monk-garden.de/pilzwanderung-berlin-26-september",
       "district": "Berliner Wald",
       "image": "https://the-monk-garden.de/wp-content/uploads/2026/02/logo_icon_black.png"
+    },
+    {
+      "slug": "sina",
+      "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
+      "title": "Baby Patchwork Quilt Workshop",
+      "date": "2026-09-26",
+      "time": "10:00",
+      "price": "€168+",
+      "district": "Friedrichshain",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1183308652%2F2441551045951%2F1%2Foriginal.20260429-083226?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=7765fb0b0d2d7013e7a4b9297497097f",
+      "url": "https://www.eventbrite.de/e/baby-patchwork-quilt-workshop-tickets-2000054540972",
+      "duration": "6 h"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-09-26",
+      "time": "10:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "druckrausch",
@@ -3674,7 +2602,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 8,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
@@ -3757,19 +2685,6 @@
       "district": "Neukölln"
     },
     {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
-      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
-      "date": "2026-09-26",
-      "time": "19:15",
-      "duration": "2 h",
-      "price": "€65",
-      "spots": 8,
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
-      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
-      "district": "Neukölln"
-    },
-    {
       "slug": "celina",
       "sourceUrl": "https://www.gestaltwandel.com/booking",
       "title": "Stamp Carving",
@@ -3788,24 +2703,11 @@
       "title": "The OG | 30 x 40cm",
       "date": "2026-09-27",
       "time": "10:00",
-      "spots": 4,
+      "spots": 3,
       "duration": "3.5 h",
       "price": "€140",
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
       "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
-      "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "The Big One | 50 x 50cm",
-      "date": "2026-09-27",
-      "time": "10:00",
-      "spots": 1,
-      "duration": "5 h",
-      "price": "€200",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
       "district": "Prenzlauer Berg"
     },
     {
@@ -3832,8 +2734,7 @@
       "soldOut": true,
       "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-4",
-      "district": "Zehlendorf",
-      "languages": "DE"
+      "district": "Zehlendorf"
     },
     {
       "slug": "helka",
@@ -3869,9 +2770,9 @@
       "date": "2026-09-29",
       "time": "18:30",
       "duration": "2 h",
+      "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ne5k0c5upuvql1vvy89s.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379519",
-      "district": "Prenzlauer Berg"
+      "url": "https://www.tickettailor.com/events/learnlino/2379519"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4029,13 +2930,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Legs",
+      "title": "Anatomy Course - Torso (Back)",
       "date": "2026-09-30",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_507,q_100,w_507,x_3,y_128/c_scale,h_250,q_85,w_250/v1/production/userfiles/osobpuwvwymgncpurqqx.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348236"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_570,q_100,w_570,x_2,y_30/c_scale,h_250,q_85,w_250/v1/production/userfiles/ctibozlnftydpxvymlxs.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348235"
     },
     {
       "slug": "druckrausch",
@@ -4352,7 +3253,7 @@
       "time": "19:15",
       "duration": "2 h",
       "price": "€65",
-      "spots": 8,
+      "spots": 7,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -4569,7 +3470,7 @@
       "title": "Mini Pottery Experience Workshop",
       "date": "2026-10-03",
       "time": "19:00",
-      "spots": 5,
+      "spots": 3,
       "duration": "1.5 h",
       "price": "€54",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/65357547/calendar/10335256",
@@ -4793,17 +3694,6 @@
       "duration": "2.75 h"
     },
     {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-10-06",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/dvk3agz9shgtfsest7vo.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379520",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "schmiede",
       "sourceUrl": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
       "title": "16.-19 Uhr WIG Schweißkurs",
@@ -4931,13 +3821,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Arms",
+      "title": "Anatomy Course - Legs",
       "date": "2026-10-07",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_492,q_100,w_492,x_0,y_146/c_scale,h_250,q_85,w_250/v1/production/userfiles/wuxibdr05ujjofxot29r.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348237"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_507,q_100,w_507,x_3,y_128/c_scale,h_250,q_85,w_250/v1/production/userfiles/osobpuwvwymgncpurqqx.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348236"
     },
     {
       "slug": "tufttuft",
@@ -5283,7 +4173,7 @@
       "time": "19:15",
       "duration": "2 h",
       "price": "€65",
-      "spots": 8,
+      "spots": 4,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -5294,7 +4184,7 @@
       "title": "Teapots, Lids, Handles, & Spouts (Week 41)",
       "date": "2026-10-10",
       "time": "10:00",
-      "spots": 4,
+      "spots": 3,
       "duration": "7.5 h",
       "price": "€170",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/94359481/calendar/10335256",
@@ -5500,9 +4390,7 @@
       "price": "€65",
       "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin",
-      "district": "Zehlendorf",
-      "languages": "EN",
-      "salesEnd": "2026-10-07T23:50"
+      "district": "Zehlendorf"
     },
     {
       "slug": "mampe",
@@ -5638,7 +4526,7 @@
       "title": "Teapots, Lids, Handles, & Spouts (Week 41)",
       "date": "2026-10-11",
       "time": "10:00",
-      "spots": 4,
+      "spots": 3,
       "duration": "7.5 h",
       "price": "€170",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/94359481/calendar/10335256",
@@ -5801,9 +4689,9 @@
       "date": "2026-10-13",
       "time": "18:30",
       "duration": "2 h",
+      "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/mhrvytaqs1nuiaqtoyuv.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379521",
-      "district": "Prenzlauer Berg"
+      "url": "https://www.tickettailor.com/events/learnlino/2379521"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5924,13 +4812,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Feet",
+      "title": "Anatomy Course - Arms",
       "date": "2026-10-14",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_536,q_100,w_536,x_21,y_104/c_scale,h_250,q_85,w_250/v1/production/userfiles/gcw9cnm94ttnruxepg99.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348238"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_492,q_100,w_492,x_0,y_146/c_scale,h_250,q_85,w_250/v1/production/userfiles/wuxibdr05ujjofxot29r.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348237"
     },
     {
       "slug": "druckrausch",
@@ -5951,7 +4839,7 @@
       "date": "2026-10-14",
       "time": "19:00",
       "duration": "2.5 h",
-      "spots": 2,
+      "spots": 1,
       "price": "€95",
       "district": "Kreuzberg",
       "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
@@ -6261,7 +5149,7 @@
       "time": "19:15",
       "duration": "2 h",
       "price": "€65",
-      "spots": 6,
+      "spots": 3,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -6294,6 +5182,32 @@
       "image": "https://taniavarelastudio.com/wp-content/uploads/2026/08/Post-Dein-Keramik-workshop-im-bikini-berlin.png"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-10-17",
+      "time": "11:00",
+      "spots": 4,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-10-17",
+      "time": "11:00",
+      "spots": 4,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -6305,18 +5219,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "KLEINE SCHNAPSGESCHICHTEN",
-      "date": "2026-10-17",
-      "time": "14:00",
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
-      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
     {
       "slug": "munio",
@@ -6506,7 +5408,7 @@
       "time": "19:15",
       "duration": "2 h",
       "price": "€65",
-      "spots": 8,
+      "spots": 4,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -6517,7 +5419,7 @@
       "title": "Teapots, Lids, Handles, & Spouts (Week 41)",
       "date": "2026-10-18",
       "time": "10:00",
-      "spots": 4,
+      "spots": 3,
       "duration": "7.5 h",
       "price": "€170",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/94359481/calendar/10335256",
@@ -6564,6 +5466,32 @@
       "image": "https://sarahniklowitz.de/wp-content/uploads/2026/05/sarah-niklowitz-6a08c423d00f9.png"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The OG | 30 x 40cm",
+      "date": "2026-10-18",
+      "time": "11:00",
+      "spots": 5,
+      "duration": "3.5 h",
+      "price": "€140",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-10-18",
+      "time": "11:00",
+      "spots": 4,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "daisuki",
       "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
       "district": "Online",
@@ -6590,7 +5518,7 @@
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-10-18",
       "time": "14:00",
-      "spots": 12,
+      "spots": 11,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
@@ -6682,17 +5610,6 @@
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg",
       "kids": true
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-10-20",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/vj7czcbkfhxnjkpy10l5.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379522",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "mampe",
@@ -6811,13 +5728,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Hands",
+      "title": "Anatomy Course - Feet",
       "date": "2026-10-21",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_537,q_100,w_536,x_12,y_66/c_scale,h_250,q_85,w_250/v1/production/userfiles/wx3p9f6st1zuitfhjqha.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348239"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_536,q_100,w_536,x_21,y_104/c_scale,h_250,q_85,w_250/v1/production/userfiles/gcw9cnm94ttnruxepg99.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348238"
     },
     {
       "slug": "munio",
@@ -6969,23 +5886,128 @@
       "date": "2026-10-23",
       "time": "10:00",
       "price": "€225",
-      "spots": 4,
+      "spots": 1,
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "SMALL SCHNAPPS STORIES in English",
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-23",
-      "time": "14:00",
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
-      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-23",
+      "time": "15:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-23",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-23",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-10-23",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-23",
+      "time": "17:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-23",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-23",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-10-23",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7053,6 +6075,19 @@
       "image": "https://taniavarelastudio.com/wp-content/uploads/2026/05/Taniavarela-Tanita-tarara-Keramik-scaled.jpg"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "The Big One | 50 x 50cm",
+      "date": "2026-10-24",
+      "time": "11:00",
+      "spots": 4,
+      "duration": "5 h",
+      "price": "€200",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "dirt",
       "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
       "title": "Masterclass: Nerikomi with Angela – 2 Termine: 24. & 25.10.",
@@ -7066,6 +6101,19 @@
       "url": "https://empireofdirt.studio/products/masterclass-nerikomi-with-angela"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-10-24",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "mampe",
       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "title": "KLEINE SCHNAPSGESCHICHTEN",
@@ -7076,6 +6124,45 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-24",
+      "time": "15:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-24",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-24",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "mampe",
@@ -7091,6 +6178,58 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-10-24",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 8,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-24",
+      "time": "17:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-24",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-24",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "faye",
       "sourceUrl": "https://www.senle.studio/scheduling",
       "title": "Wearable Scent: Incense Bracelet Making & Jewelry Design",
@@ -7102,6 +6241,19 @@
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97365416/calendar/13025469",
       "district": "Friedrichshain",
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-10-24",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7124,7 +6276,7 @@
       "time": "19:15",
       "duration": "2 h",
       "price": "€65",
-      "spots": 8,
+      "spots": 5,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -7148,7 +6300,7 @@
       "title": "Incense Lab I: Foundations of Scent",
       "date": "2026-10-25",
       "time": "14:00",
-      "spots": 16,
+      "spots": 14,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85541570/calendar/13025469",
@@ -7215,9 +6367,9 @@
       "date": "2026-10-27",
       "time": "18:30",
       "duration": "2 h",
+      "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/dq1kfbt4uxgcozqfxut8.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379523",
-      "district": "Prenzlauer Berg"
+      "url": "https://www.tickettailor.com/events/learnlino/2379523"
     },
     {
       "slug": "helka",
@@ -7259,6 +6411,45 @@
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-28",
+      "time": "15:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-28",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-28",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "mampe",
       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "title": "SMALL SCHNAPPS STORIES in English",
@@ -7283,15 +6474,54 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-28",
+      "time": "17:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-28",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-28",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Neck & Shoulders",
+      "title": "Anatomy Course - Hands",
       "date": "2026-10-28",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_536,q_100,w_537,x_26,y_1/c_scale,h_250,q_85,w_250/v1/production/userfiles/d4vcohnv1kd6chut2mcq.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348240"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_536,q_100,w_536,x_12,y_66/c_scale,h_250,q_85,w_250/v1/production/userfiles/wx3p9f6st1zuitfhjqha.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348239"
     },
     {
       "slug": "tufttuft",
@@ -7307,17 +6537,134 @@
       "district": "Prenzlauer Berg"
     },
     {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
-      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-10-29",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-29",
+      "time": "15:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-29",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-29",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-10-29",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-10-29",
+      "time": "17:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-10-29",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-10-29",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
       "date": "2026-10-29",
       "time": "18:00",
-      "duration": "2 h",
-      "price": "€65",
-      "spots": 8,
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
-      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
-      "district": "Neukölln"
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-10-29",
+      "time": "18:30",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -7365,7 +6712,7 @@
       "time": "10:00",
       "duration": "2 h",
       "price": "€65",
-      "spots": 8,
+      "spots": 6,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -7524,6 +6871,18 @@
       "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
     },
     {
+      "slug": "pastamadre",
+      "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+      "title": "\"Ravioli\" Stuffed Pasta Workshop",
+      "date": "2026-11-01",
+      "time": "15:00",
+      "duration": "4.5 h",
+      "price": "€76–100",
+      "url": "https://en.pastamadre.de/contact",
+      "district": "Wedding",
+      "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
       "slug": "celina",
       "sourceUrl": "https://www.gestaltwandel.com/booking",
       "title": "Bookbinding: Softcover",
@@ -7548,17 +6907,6 @@
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "spots": 3
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-11-03",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/amsduvuitbfexl2o8hs4.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379524",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "mampe",
@@ -7599,13 +6947,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Full Head Proportions",
+      "title": "Anatomy Course - Neck & Shoulders",
       "date": "2026-11-04",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_519,q_100,w_519,x_1,y_41/c_scale,h_250,q_85,w_250/v1/production/userfiles/t21pozdmmye93bslnli3.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348241"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_537,q_100,w_537,x_26,y_1/c_scale,h_250,q_85,w_250/v1/production/userfiles/d4vcohnv1kd6chut2mcq.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348240"
     },
     {
       "slug": "druckrausch",
@@ -7631,6 +6979,19 @@
       "district": "Kreuzberg",
       "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
       "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
+      "title": "Schweißkurs",
+      "date": "2026-11-05",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€130",
+      "url": "https://www.schmiedekurse-berlin.de/schwei%C3%9Fkurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=1820x1280:format=jpg/path/s670a799786839477/image/i0efa98ebb5097ebc/version/1670396528/image.jpg"
     },
     {
       "slug": "sabine",
@@ -7950,17 +7311,6 @@
       "spots": 3
     },
     {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-11-10",
-      "time": "18:30",
-      "duration": "2 h",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/pdy2pidkgcwxkbxhgkbm.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379525",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "mampe",
       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "title": "KLEINE SCHNAPSGESCHICHTEN",
@@ -7999,13 +7349,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Eyes & Nose",
+      "title": "Anatomy Course - Full Head Proportions",
       "date": "2026-11-11",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_619,q_100,w_618,x_72,y_52/c_scale,h_250,q_85,w_250/v1/production/userfiles/nvnznshot0441qjogufy.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348242"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_519,q_100,w_519,x_1,y_41/c_scale,h_250,q_85,w_250/v1/production/userfiles/t21pozdmmye93bslnli3.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348241"
     },
     {
       "slug": "tufttuft",
@@ -8103,7 +7453,7 @@
       "time": "10:00",
       "duration": "2 Tage",
       "price": "€450",
-      "spots": 2,
+      "soldOut": true,
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "request": true,
       "district": "Blankenburg",
@@ -8292,9 +7642,9 @@
       "date": "2026-11-17",
       "time": "18:30",
       "duration": "2 h",
+      "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_fill,h_250,q_85,w_250/v1/production/userfiles/cgguph62jnoe63nwyda2.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379526",
-      "district": "Prenzlauer Berg"
+      "url": "https://www.tickettailor.com/events/learnlino/2379526"
     },
     {
       "slug": "ceramic-kingdom",
@@ -8346,15 +7696,28 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
+      "title": "Messerschärfkurs – Abendkurs",
+      "date": "2026-11-18",
+      "time": "17:00",
+      "duration": "2 h",
+      "spots": 3,
+      "url": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Ears",
+      "title": "Anatomy Course - Eyes & Nose",
       "date": "2026-11-18",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_601,q_100,w_601,x_5,y_48/c_scale,h_250,q_85,w_250/v1/production/userfiles/a9i37rd86mgjapmfvmye.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348243"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_618,q_100,w_618,x_72,y_52/c_scale,h_250,q_85,w_250/v1/production/userfiles/nvnznshot0441qjogufy.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348242"
     },
     {
       "slug": "ceramic-kingdom",
@@ -8403,9 +7766,7 @@
       "price": "€65",
       "image": "https://static.wixstatic.com/media/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg/v1/fill/w_3024,h_4032,al_c,q_90/d918f6_498c0f5a07d0408abdcf1218b8718253~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/lets-make-kimchi-8",
-      "district": "Zehlendorf",
-      "languages": "EN",
-      "salesEnd": "2026-11-19T23:50"
+      "district": "Zehlendorf"
     },
     {
       "slug": "ceramic-kingdom",
@@ -8419,6 +7780,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "celina",
+      "sourceUrl": "https://www.gestaltwandel.com/booking",
+      "title": "Mosaic Tile Making",
+      "date": "2026-11-21",
+      "time": "09:30",
+      "spots": 6,
+      "duration": "4.5 h",
+      "price": "€89",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-95116740.jpg?1782735863",
+      "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/95116740/calendar/12995646",
+      "district": "Gesundbrunnen"
     },
     {
       "slug": "schmiede",
@@ -8469,6 +7843,18 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-11-21",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7504519239669121442.html",
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
       "slug": "mampe",
@@ -8542,9 +7928,7 @@
       "price": "€65",
       "image": "https://static.wixstatic.com/media/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg/v1/fill/w_2812,h_2116,al_c,q_90/d918f6_562ad157d3584b4ea2af1e234cc750c9~mv2.jpg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/sauerteigbrot-leicht-gemacht-backkurs-in-berlin-8",
-      "district": "Zehlendorf",
-      "languages": "DE",
-      "salesEnd": "2026-11-18T23:50"
+      "district": "Zehlendorf"
     },
     {
       "slug": "daisuki",
@@ -8584,17 +7968,6 @@
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "spots": 3
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
-      "title": "Lino Café",
-      "date": "2026-11-24",
-      "time": "18:30",
-      "duration": "2 h",
-      "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/grzwlt3lwnwnequdgdwe.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/learnlino/2379527"
     },
     {
       "slug": "helka",
@@ -8649,13 +8022,13 @@
     {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Chin & Mouth",
+      "title": "Anatomy Course - Ears",
       "date": "2026-11-25",
       "time": "17:15",
       "duration": "1 h",
       "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_550,q_100,w_550,x_44,y_2/c_scale,h_250,q_85,w_250/v1/production/userfiles/fm1ltoardj0o8k7tubhp.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348244"
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_601,q_100,w_601,x_5,y_48/c_scale,h_250,q_85,w_250/v1/production/userfiles/a9i37rd86mgjapmfvmye.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348243"
     },
     {
       "slug": "helka",
@@ -8807,9 +8180,7 @@
       "price": "€65",
       "image": "https://static.wixstatic.com/media/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg/v1/fill/w_3526,h_2644,al_c,q_90/d918f6_52d94077d93b4db885bb03e140df2e32~mv2.jpeg",
       "url": "https://www.fischtal-foodlab.com/event-details-registration/fermenting-vegetables-a-hands-on-workshop-in-berlin-2",
-      "district": "Zehlendorf",
-      "languages": "EN",
-      "salesEnd": "2026-11-26T23:50"
+      "district": "Zehlendorf"
     },
     {
       "slug": "mampe",
@@ -8900,6 +8271,17 @@
       "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
+      "slug": "rebeca",
+      "sourceUrl": "https://www.tickettailor.com/events/learnlino",
+      "title": "Lino Café",
+      "date": "2026-12-01",
+      "time": "18:30",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_0,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/cfukpknv5ft3qh6occm0.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/learnlino/2413607"
+    },
+    {
       "slug": "mampe",
       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "title": "KLEINE SCHNAPSGESCHICHTEN",
@@ -8936,6 +8318,17 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "rebeca",
+      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+      "title": "Anatomy Course - Chin & Mouth",
+      "date": "2026-12-02",
+      "time": "17:15",
+      "duration": "1 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_550,q_100,w_550,x_44,y_2/c_scale,h_250,q_85,w_250/v1/production/userfiles/fm1ltoardj0o8k7tubhp.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/turnedartist/2348244"
+    },
+    {
       "slug": "kohfink",
       "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
       "title": "Honiglebkuchen backen",
@@ -8955,7 +8348,7 @@
       "time": "19:15",
       "duration": "2 h",
       "price": "€65",
-      "spots": 8,
+      "spots": 6,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
@@ -9007,6 +8400,18 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-12-05",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7504520805608340829.html",
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
       "slug": "mampe",
@@ -9094,6 +8499,18 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "kohfink",
+      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+      "title": "Honiglebkuchen backen",
+      "date": "2026-12-10",
+      "time": "18:00",
+      "duration": "4 h",
+      "price": "€55",
+      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7504521817408703502.html",
+      "district": "Kaulsdorf",
+      "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
       "slug": "ceramic-kingdom",
@@ -9495,6 +8912,57 @@
       "district": "Neukölln"
     },
     {
+      "slug": "daisuki",
+      "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
+      "district": "Online",
+      "title": "Online Ramen Kochkurs",
+      "date": "2026-12-27",
+      "time": "12:30",
+      "duration": "3 h",
+      "price": "€69",
+      "url": "https://berlindaisuki.de/produkt/online-kochkurs-ramen/",
+      "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Ramen_Produkt.png"
+    },
+    {
+      "slug": "ceramic-kingdom",
+      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
+      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
+      "date": "2027-01-01",
+      "time": "19:15",
+      "duration": "2 h",
+      "price": "€65",
+      "spots": 8,
+      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
+      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
+      "district": "Neukölln"
+    },
+    {
+      "slug": "ceramic-kingdom",
+      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
+      "title": "Try Handbuilding",
+      "date": "2027-01-02",
+      "time": "19:00",
+      "duration": "2 h",
+      "price": "€59",
+      "spots": 7,
+      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
+      "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
+      "district": "Neukölln"
+    },
+    {
+      "slug": "ceramic-kingdom",
+      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
+      "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
+      "date": "2027-01-02",
+      "time": "19:15",
+      "duration": "2 h",
+      "price": "€65",
+      "spots": 8,
+      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
+      "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
+      "district": "Neukölln"
+    },
+    {
       "slug": "kohfink",
       "sourceUrl": "https://imkerei-kohfink.regiondo.de/theoriekurs-einfuhrung-in-die-imkerei",
       "title": "Theoriekurs: Einführung in die Imkerei",
@@ -9518,57 +8986,6 @@
       "url": "https://imkerei-kohfink.regiondo.de/klassische-einsteigerkurse",
       "image": "https://cdn.regiondo.net/media/catalog/product/cache/5/image/265x/5e06319eda06f020e43594a9c230972d/b/i/big-ticket-image-5fbf76c933c6b983211814-cropped600-400/klassischer-einsteigerkurs-38139.jpg",
       "duration": "2,5 h"
-    },
-    {
-      "slug": "kohfink",
-      "sourceUrl": "https://imkerei-kohfink.regiondo.de/einsteigerkurs-wesensgemasse-imkerei",
-      "title": "Einsteigerkurs + wesensgemäße Imkerei (5 Termine, Apr–Jun)",
-      "titleEn": "Beginners' Course + Holistic Beekeeping (5 dates, Apr–Jun)",
-      "date": "2027-04-19",
-      "time": "18:00",
-      "price": "€200",
-      "duration": "2,5 h",
-      "district": "Kaulsdorf",
-      "url": "https://imkerei-kohfink.regiondo.de/einsteigerkurs-wesensgemasse-imkerei",
-      "image": "https://imkerei-kohfink.de/.cm4all/uproc.php/0/Hotelhonig%201.jpg"
-    },
-    {
-      "slug": "evelyn",
-      "sourceUrl": "https://luma.com/tukacreativeclub",
-      "title": "Romanian Embroidery Workshop",
-      "date": "2026-09-12",
-      "time": "13:00",
-      "duration": "3 h",
-      "price": "€0",
-      "soldOut": true,
-      "waitingList": true,
-      "languages": "EN · DE · RO",
-      "url": "https://luma.com/tukacreativeclub",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "simone",
-      "sourceUrl": "https://kiezkalender-lichtenberg.de/veranstalter/simone-klag/",
-      "title": "Alabaster – Workshop: ein spielerischer Einstieg in die bildhauerische Arbeit",
-      "titleEn": "Alabaster Workshop: a playful way into sculpture",
-      "date": "2026-09-18",
-      "time": "10:00",
-      "duration": "4,5 h",
-      "price": "€89",
-      "district": "Lichtenberg",
-      "url": "https://kiezkalender-lichtenberg.de/veranstaltung/alabaster-workshop-ein-spielerischer-einstieg-in-die-bildhauerische-arbeit/2026-09-18/"
-    },
-    {
-      "slug": "simone",
-      "sourceUrl": "https://kiezkalender-lichtenberg.de/veranstalter/simone-klag/",
-      "title": "Alabaster – Workshop: ein spielerischer Einstieg in die bildhauerische Arbeit",
-      "titleEn": "Alabaster Workshop: a playful way into sculpture",
-      "date": "2026-10-03",
-      "time": "12:00",
-      "duration": "4,5 h",
-      "price": "€89",
-      "district": "Lichtenberg",
-      "url": "https://kiezkalender-lichtenberg.de/veranstaltung/alabaster-workshop-ein-spielerischer-einstieg-in-die-bildhauerische-arbeit/2026-10-03/"
     }
   ]
 }
