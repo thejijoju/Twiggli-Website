@@ -2939,3 +2939,9 @@ a:hover { color: var(--color-accent); }
   font-size: 22px;
   margin: 0 0 10px;
 }
+
+/* Under the contact form's button: how the message travels, and the
+   address in the open for anyone whose device has no mail app. */
+.form-note { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 65%, transparent); }
+.form-note a { color: var(--color-accent-700); }
+.form-note-sent { font-weight: 700; color: var(--color-accent-800); }

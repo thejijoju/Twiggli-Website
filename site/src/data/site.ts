@@ -9,6 +9,12 @@ export type NavLink = { label: string; href: string; external?: boolean };
 /** The booking/host web app. Every "Get Started" on the site points here. */
 export const appUrl = 'https://app.twiggli.com/';
 
+/** Where every request the site sends lands: corporate and group enquiries
+ *  from the contact form, and the calendar's "Request to book" mails. The
+ *  site is static, so a request is a prefilled email the visitor sends
+ *  from their own mail app — there is no server to post a form to. */
+export const requestEmail = 'jirel.kuenen@gmail.com';
+
 const brandCopy = {
   en: {
     name: 'Twiggli',

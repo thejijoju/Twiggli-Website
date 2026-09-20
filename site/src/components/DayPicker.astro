@@ -2,6 +2,7 @@
 import { getSessions, getOnRequest, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
+import { requestEmail } from '../data/site.ts';
 import HostMonogram from './HostMonogram.astro';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 
@@ -81,7 +82,7 @@ const t = {
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
  *  instead of a booking page. Built at render time — the daily rebuild
  *  keeps the session's real date in the subject. */
-const REQUEST_EMAIL = 'jirel.kuenen@gmail.com';
+const REQUEST_EMAIL = requestEmail;
 const isoDate = (offset: number) =>
   new Date(berlinTodayMs() + offset * 86400000).toISOString().slice(0, 10);
 const requestHref = (s: Session): string => {

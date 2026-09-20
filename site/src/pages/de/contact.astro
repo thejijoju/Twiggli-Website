@@ -1,13 +1,16 @@
 ---
 import Base from '../../layouts/Base.astro';
 import SocialIcon from '../../components/SocialIcon.astro';
-import { getSiteData } from '../../data/site.ts';
+import { getSiteData, requestEmail } from '../../data/site.ts';
 
 const lang = 'de';
 const { socialLinks } = getSiteData(lang);
 
-/* PLACEHOLDER page. The form posts nowhere yet — wire `action` to your form
-   handler (Formspree, a serverless function, your own API) before launch. */
+/* The form used to post to "#" — nowhere — so every enquiry sent through
+   it was lost. The site is static, so on submit the fields are composed into
+   an email to requestEmail and handed to the visitor's mail app, the same way
+   the calendar's "Request to book" works; the address is printed under the
+   form as well, for anyone whose device has no mail app wired up. */
 ---
 
 <Base
@@ -29,7 +32,7 @@ const { socialLinks } = getSiteData(lang);
 
     <section class="section">
       <div class="form-grid">
-        <form class="form-rows" method="post" action="#">
+        <form class="form-rows" method="post" action="#" data-request-form data-request-email={requestEmail}>
           <div class="field">
             <label for="name">Name</label>
             <input class="input" type="text" id="name" name="name" required />
@@ -52,6 +55,14 @@ const { socialLinks } = getSiteData(lang);
           </div>
           <div>
             <button type="submit" class="btn btn-primary">Nachricht senden</button>
+            <p class="form-note">
+              Öffnet die Nachricht in deinem Mailprogramm — einfach absenden. Oder schreib uns direkt an
+              <a href={`mailto:${requestEmail}`}>{requestEmail}</a>.
+            </p>
+            <p class="form-note form-note-sent" data-request-sent hidden>
+              Dein Mailprogramm sollte sich mit der fertigen Nachricht geöffnet haben. Falls nichts passiert ist, schick sie an
+              <a href={`mailto:${requestEmail}`}>{requestEmail}</a>.
+            </p>
           </div>
         </form>
 
@@ -88,6 +99,30 @@ const { socialLinks } = getSiteData(lang);
       const message = document.getElementById('message');
       if (message && !message.value)
         message.value = `Hallo! Ich möchte ein Event mit ${host} anfragen.`;
+    })();
+
+    // Submit composes the mail and opens it in the visitor's mail app. The
+    // composed link is also written onto the form, so it can be checked.
+    (() => {
+      const form = document.querySelector('[data-request-form]');
+      if (!form) return;
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const v = (id) => (document.getElementById(id) || {}).value || '';
+        const host = new URLSearchParams(location.search).get('host');
+        const topic = v('topic');
+        const corporate = /corporate|firmen/i.test(topic) || !!host;
+        const subject = corporate
+          ? `Firmenanfrage: ${host || topic} — ${v('name')}`
+          : `Nachricht über twiggli.com: ${topic} — ${v('name')}`;
+        const body = [`Name: ${v('name')}`, `E-Mail: ${v('email')}`, `Thema: ${topic}`, host ? `Host: ${host}` : '', '', `Nachricht:`, v('message')]
+          .filter((line, i) => line !== '' || i === 4).join('\n');
+        const mailto = `mailto:${form.dataset.requestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        form.dataset.mailto = mailto;
+        const sent = form.querySelector('[data-request-sent]');
+        if (sent) sent.hidden = false;
+        location.href = mailto;
+      });
     })();
   </script>
 </Base>

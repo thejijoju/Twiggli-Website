@@ -14,6 +14,7 @@ import {
   sessionsFor, workshopHref, workshopsFor,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
+import { requestEmail } from '../data/site.ts';
 
 interface Props {
   lang: Lang;
@@ -40,7 +41,7 @@ const priceText = !priceRange
   : priceRange[0] === priceRange[1] ? `${money(priceRange[0])} · ${t.perPerson}`
   : `${money(priceRange[0])}–${money(priceRange[1])} · ${t.perPerson}`;
 
-const REQUEST_EMAIL = 'jirel.kuenen@gmail.com';
+const REQUEST_EMAIL = requestEmail;
 const inquireHref = (title: string): string => {
   const subject = lang === 'de'
     ? `Terminanfrage: ${title} (${host.name})`

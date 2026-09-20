@@ -5,6 +5,7 @@
  *  from "when does this run". The calendar keeps its richer cards. */
 import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
+import { requestEmail } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -20,7 +21,7 @@ interface Props {
 const { sessions, lang, withHost = false, linkTitlesTo = 'workshop' } = Astro.props;
 const t = pageCopy[lang];
 
-const REQUEST_EMAIL = 'jirel.kuenen@gmail.com';
+const REQUEST_EMAIL = requestEmail;
 const requestHref = (s: Session): string => {
   const when = `${formatDay(s.dayOffset, lang)}${s.time ? ` ${s.time}` : ''}`;
   const subject = lang === 'de'
