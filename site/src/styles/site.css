@@ -2282,12 +2282,13 @@ a:hover { color: var(--color-accent); }
   font-size: 14px;
   color: #6e6a75;
 }
-/* One line of five cards, laid out like the feed's grid view rather than
-   as list rows — the five rotate daily (see getOnRequest), so the strip
-   stays short and still turns over. Below 900px the line scrolls sideways
-   instead of squeezing five cards into a phone. */
+/* One line of four cards, laid out like the feed's grid view rather than
+   as list rows — the four rotate daily (see getOnRequest), so the strip
+   stays short and still turns over. Four, not five, so each card is the
+   size of the day grid's. Below 900px the line scrolls sideways instead
+   of squeezing four cards into a phone. */
 .onrequest .session-list {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px 16px;
   align-items: stretch;
 }
@@ -2337,7 +2338,7 @@ a:hover { color: var(--color-accent); }
 }
 @media (max-width: 900px) {
   .onrequest .session-list {
-    grid-template-columns: repeat(5, minmax(190px, 1fr));
+    grid-template-columns: repeat(4, minmax(190px, 1fr));
     overflow-x: auto;
     padding-bottom: 8px;
     scroll-snap-type: x proximity;
@@ -2432,10 +2433,13 @@ a:hover { color: var(--color-accent); }
    already sorted by hour, so the order still tells the day's story.
    Everything is scoped to .daysessions: the "On request" panel below
    keeps its list rows in both views. */
+/* Four to a row, not as many as fit: five 190px cards read as a contact
+   sheet, four at ~240px read as pictures. Three between a tablet and a
+   phone, two on a phone (below). */
 .daypicker[data-view='grid'] .daysessions .daygroup {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
-  gap: 28px 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px 20px;
   align-items: stretch; /* cards in a row share a height… */
 }
 .daypicker[data-view='grid'] .daysessions .timegroup,
@@ -2537,6 +2541,9 @@ a:hover { color: var(--color-accent); }
   width: 100%;
   justify-content: center;
   text-align: center;
+}
+@media (max-width: 860px) {
+  .daypicker[data-view='grid'] .daysessions .daygroup { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 /* Phones: two tidy columns instead of one huge card per row. */
 @media (max-width: 640px) {

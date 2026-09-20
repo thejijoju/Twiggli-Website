@@ -131,14 +131,14 @@ export type OnRequestWorkshop = {
 
 /** How many on-request workshops the section shows at once — one line of
  *  cards under the day feed. */
-export const ON_REQUEST_SHOWN = 5;
+export const ON_REQUEST_SHOWN = 4;
 
 /** Undated inquiry-only workshops for the feed's "on request" section.
  *
  *  There are more of these than fit on one line, so the section shows a
  *  window of ON_REQUEST_SHOWN that walks one place along per day — the
  *  deploy workflow rebuilds every morning, so a visitor coming back finds
- *  different makers rather than the same five forever. Never two from one
+ *  different makers rather than the same four forever. Never two from one
  *  host: hosts are the unit the window steps over, and a host offering
  *  several workshops cycles through them on the same clock.
  */
