@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import type { Lang } from './url.ts';
+import { LANG_META, type Lang } from './url.ts';
 
 export type Post = CollectionEntry<'blog'>;
 
@@ -22,7 +22,7 @@ export async function getPosts(lang: Lang): Promise<Post[]> {
 }
 
 export const formatDate = (date: Date, lang: Lang): string =>
-  date.toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', {
+  date.toLocaleDateString(LANG_META[lang].locale, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

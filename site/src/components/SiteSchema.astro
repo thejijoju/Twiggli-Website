@@ -4,7 +4,7 @@
  *  is built from. */
 import { getSiteData, socialLinks } from '../data/site.ts';
 import { SITE, absolute } from '../data/seo.ts';
-import type { Lang } from '../lib/url.ts';
+import { LANG_META, type Lang } from '../lib/url.ts';
 
 interface Props {
   lang: Lang;
@@ -29,7 +29,7 @@ const schema = {
       url: `${SITE}/`,
       name: brand.name,
       description: brand.tagline,
-      inLanguage: lang === 'de' ? 'de-DE' : 'en',
+      inLanguage: LANG_META[lang].locale,
       publisher: { '@id': `${SITE}/#organization` },
     },
   ],

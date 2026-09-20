@@ -1,6 +1,7 @@
 ---
 import { getSessions, berlinTodayMs } from '../data/sessions.ts';
-import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { href, DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 import HostMonogram from './HostMonogram.astro';
 
 /** The homepage's taste of the live calendar: the next few real sessions —
@@ -10,23 +11,8 @@ import HostMonogram from './HostMonogram.astro';
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 
-const t = {
-  en: {
-    kicker: 'Happening today',
-    copy: 'Real classes from our hosts — running today and through the week. Spots go fast.',
-    cta: 'See the full calendar',
-    today: 'Today',
-    tomorrow: 'Tomorrow',
-  },
-  de: {
-    kicker: 'Heute los',
-    copy: 'Echte Kurse unserer Gastgeber — heute und die ganze Woche. Die Plätze gehen schnell.',
-    cta: 'Zum ganzen Kalender',
-    today: 'Heute',
-    tomorrow: 'Morgen',
-  },
-}[lang];
-const locale = lang === 'de' ? 'de-DE' : 'en-GB';
+const t = ui(lang).teaser;
+const locale = LANG_META[lang].locale;
 
 // The next sessions, one per host, three hosts at most — variety sells the
 // calendar better than three cards from the same maker.

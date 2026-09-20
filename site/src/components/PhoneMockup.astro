@@ -1,6 +1,7 @@
 ---
 import ImageSlot from './ImageSlot.astro';
 import { getPhoneCards, getPhoneFilters } from '../data/content.ts';
+import { ui } from '../data/i18n.ts';
 import { withBase, type Lang } from '../lib/url.ts';
 
 /** The hero's device visual, rebuilt to match the app's real home screen:
@@ -38,7 +39,7 @@ const {
 const cards = getPhoneCards(lang);
 const [feature, infoCard, mediaA, mediaB] = cards;
 const phoneFilters = getPhoneFilters(lang);
-const searchPlaceholder = { en: 'What do you want to do?', de: 'Was möchtest du machen?' }[lang];
+const searchPlaceholder = ui(lang).phone.search;
 ---
 
 <div class="hero-visual">

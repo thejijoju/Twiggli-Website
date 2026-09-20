@@ -1,7 +1,7 @@
 ---
 import Base from './Base.astro';
 import { getSiteData } from '../data/site.ts';
-import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { DEFAULT_LANG, LEGAL_LANGS, type Lang } from '../lib/url.ts';
 
 interface Props {
   title: string;
@@ -14,17 +14,23 @@ interface Props {
   toc?: { id: string; label: string }[];
   updated?: string;
   lang?: Lang;
+  /** The languages this page exists in — the legal pages by default, the
+   *  single German-only Impressum passes just its own. */
+  translations?: Lang[];
 }
 
 const {
   title, kicker, heading, description, lede, toc = [], updated, lang = DEFAULT_LANG,
+  translations = LEGAL_LANGS,
 } = Astro.props;
 const { legalUpdated } = getSiteData(lang);
-const lastUpdatedLabel = { en: 'Last updated:', de: 'Zuletzt aktualisiert:' }[lang];
-const onThisPageLabel = { en: 'On this page', de: 'Auf dieser Seite' }[lang];
+/* The legal pages exist in English and German only (LEGAL_LANGS), so
+   their labels do too, and Base is told which versions there are. */
+const lastUpdatedLabel = lang === 'de' ? 'Zuletzt aktualisiert:' : 'Last updated:';
+const onThisPageLabel = lang === 'de' ? 'Auf dieser Seite' : 'On this page';
 ---
 
-<Base title={title} description={description} lang={lang}>
+<Base title={title} description={description} lang={lang} translations={translations}>
   <div class="container">
     <section class="page-head">
       <span class="kicker">{kicker}</span>

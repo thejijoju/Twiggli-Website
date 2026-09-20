@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageSlot from './ImageSlot.astro';
+import { ui } from '../data/i18n.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang).becomeHost;
+const nums = ['01', '02', '03'];
+---
+
+<Base title={t.title} description={t.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{t.kicker}</span>
+      <h1 class="page-title">{t.h1}</h1>
+      <p class="page-lede">{t.lede}</p>
+      <div class="hero-actions">
+        <a href={href(lang, '/contact/')} class="btn btn-primary">{t.cta}</a>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {t.points.map((point, i) => (
+        <div class="step">
+          <p class="step-num">{nums[i]}</p>
+          <h3 class="step-title">{point.title}</h3>
+          <p class="step-copy">{point.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-media-first">
+      <div class="media-4x3 grayscale">
+        <ImageSlot shape="rect" placeholder="Drop a host/workshop photo" alt="" />
+      </div>
+      <div>
+        <span class="kicker kicker-tight">{t.whoKicker}</span>
+        <h2 class="split-title">{t.whoTitle}</h2>
+        <p class="split-copy">{t.whoCopy}</p>
+        <div class="split-actions">
+          <a href={href(lang, '/corporatebookings/')} class="btn btn-primary">{t.seeHosts}</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import DayPicker from './DayPicker.astro';
+import EventSchema from './EventSchema.astro';
+import { SITE } from '../data/seo.ts';
+import { ui } from '../data/i18n.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang).calendarPage;
+---
+
+<Base title={t.title} description={t.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      {/* One heading: the place and the selected day together. The script
+          rewrites it as the visitor moves along the day strip. */}
+      <h1 class="page-title" data-happening-title>{t.h1}</h1>
+    </section>
+
+    <section class="section section-flush">
+      <DayPicker lang={lang} />
+    </section>
+
+  </div>
+  <EventSchema lang={lang} pageUrl={`${SITE}${href(lang, '/happening-today/')}`} />
+</Base>

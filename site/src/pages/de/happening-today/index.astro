@@ -1,27 +1,5 @@
 ---
-import Base from '../../../layouts/Base.astro';
-import DayPicker from '../../../components/DayPicker.astro';
-import EventSchema from '../../../components/EventSchema.astro';
-
-const lang = 'de';
+import CalendarPage from '../../../components/CalendarPage.astro';
 ---
 
-<Base
-  title="Workshops in Berlin heute & diese Woche — Termine, Uhrzeiten, Preise | Twiggli"
-  description="Alle Workshops, die heute und in den kommenden Wochen in Berlin stattfinden — Töpfern, Kochen, Kreativkurse, Kunst, Fotografie — mit Uhrzeiten, Preisen, freien Plätzen und direkter Buchung."
-  lang={lang}
->
-  <div class="container">
-    <section class="page-head">
-      {/* Eine Überschrift: Ort und gewählter Tag zusammen. Das Skript
-          schreibt sie um, sobald ein anderer Tag gewählt wird. */}
-      <h1 class="page-title" data-happening-title>Was heute in Berlin läuft</h1>
-    </section>
-
-    <section class="section section-flush">
-      <DayPicker lang={lang} />
-    </section>
-
-  </div>
-  <EventSchema lang={lang} pageUrl="https://www.twiggli.com/de/happening-today/" />
-</Base>
+<CalendarPage lang="de" />

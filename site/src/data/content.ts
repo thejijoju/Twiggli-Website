@@ -6,6 +6,12 @@ import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { withBase, type Lang } from '../lib/url.ts';
+import { hosts as hostsFr } from './hosts/fr.ts';
+import { hosts as hostsEs } from './hosts/es.ts';
+import { hosts as hostsIt } from './hosts/it.ts';
+import { hosts as hostsNl } from './hosts/nl.ts';
+import { hosts as hostsPl } from './hosts/pl.ts';
+import { hosts as hostsTr } from './hosts/tr.ts';
 
 /** The blank cream squares the design export dropped in for hosts whose
  *  photography had not been shot yet — byte-identical fillers, two sizes and
@@ -42,38 +48,44 @@ export type Step = { num: string; title: string; copy: string };
 
 const stepsCopy: Record<Lang, Step[]> = {
   en: [
-    {
-      num: '01',
-      title: 'Browse videos',
-      copy: 'Scroll real videos of workshops and activities happening near you, not staged photos.',
-    },
-    {
-      num: '02',
-      title: 'Book your spot',
-      copy: 'Reserve a free or paid activity in a couple of taps, right from the app.',
-    },
-    {
-      num: '03',
-      title: 'Show up and enjoy',
-      copy: 'Meet your host, learn something new, and meet people around Berlin.',
-    },
+    { num: '01', title: 'Browse videos', copy: 'Scroll real videos of workshops and activities happening near you, not staged photos.' },
+    { num: '02', title: 'Book your spot', copy: 'Reserve a free or paid activity in a couple of taps, right from the app.' },
+    { num: '03', title: 'Show up and enjoy', copy: 'Meet your host, learn something new, and meet people around Berlin.' },
   ],
   de: [
-    {
-      num: '01',
-      title: 'Videos entdecken',
-      copy: 'Scrolle durch echte Videos von Workshops und Aktivitäten in deiner Nähe — keine gestellten Fotos.',
-    },
-    {
-      num: '02',
-      title: 'Platz reservieren',
-      copy: 'Reserviere eine kostenlose oder kostenpflichtige Aktivität in wenigen Taps, direkt in der App.',
-    },
-    {
-      num: '03',
-      title: 'Hingehen und genießen',
-      copy: 'Triff deinen Gastgeber, lerne etwas Neues und lerne Leute in Berlin kennen.',
-    },
+    { num: '01', title: 'Videos entdecken', copy: 'Scrolle durch echte Videos von Workshops und Aktivitäten in deiner Nähe — keine gestellten Fotos.' },
+    { num: '02', title: 'Platz reservieren', copy: 'Reserviere eine kostenlose oder kostenpflichtige Aktivität in wenigen Taps, direkt in der App.' },
+    { num: '03', title: 'Hingehen und genießen', copy: 'Triff deinen Gastgeber, lerne etwas Neues und lerne Leute in Berlin kennen.' },
+  ],
+  fr: [
+    { num: '01', title: 'Parcourez les vidéos', copy: 'Faites défiler de vraies vidéos d’ateliers et d’activités près de chez vous — pas de photos posées.' },
+    { num: '02', title: 'Réservez votre place', copy: 'Réservez une activité gratuite ou payante en deux tapotements, directement dans l’app.' },
+    { num: '03', title: 'Venez et profitez', copy: 'Rencontrez votre hôte, apprenez quelque chose de nouveau et faites des rencontres à Berlin.' },
+  ],
+  es: [
+    { num: '01', title: 'Explora los vídeos', copy: 'Desliza por vídeos reales de talleres y actividades cerca de ti, sin fotos posadas.' },
+    { num: '02', title: 'Reserva tu plaza', copy: 'Reserva una actividad gratuita o de pago con un par de toques, directamente desde la app.' },
+    { num: '03', title: 'Ve y disfruta', copy: 'Conoce a tu anfitrión, aprende algo nuevo y conoce gente por todo Berlín.' },
+  ],
+  it: [
+    { num: '01', title: 'Sfoglia i video', copy: 'Scorri video veri di workshop e attività vicino a te, non foto in posa.' },
+    { num: '02', title: 'Prenota il tuo posto', copy: 'Prenota un’attività gratuita o a pagamento con un paio di tap, direttamente dall’app.' },
+    { num: '03', title: 'Vieni e divertiti', copy: 'Incontra chi tiene il workshop, impara qualcosa di nuovo e conosci gente a Berlino.' },
+  ],
+  nl: [
+    { num: '01', title: 'Bekijk video’s', copy: 'Scroll door echte video’s van workshops en activiteiten bij jou in de buurt — geen geposeerde foto’s.' },
+    { num: '02', title: 'Reserveer je plek', copy: 'Reserveer een gratis of betaalde activiteit met een paar tikken, rechtstreeks in de app.' },
+    { num: '03', title: 'Kom langs en geniet', copy: 'Ontmoet je host, leer iets nieuws en leer mensen kennen in Berlijn.' },
+  ],
+  pl: [
+    { num: '01', title: 'Przeglądaj filmy', copy: 'Przewijaj prawdziwe filmy z warsztatów i zajęć w Twojej okolicy — bez pozowanych zdjęć.' },
+    { num: '02', title: 'Zarezerwuj miejsce', copy: 'Zarezerwuj bezpłatne lub płatne zajęcia kilkoma dotknięciami, prosto w aplikacji.' },
+    { num: '03', title: 'Przyjdź i baw się dobrze', copy: 'Poznaj prowadzącego, naucz się czegoś nowego i poznaj ludzi w Berlinie.' },
+  ],
+  tr: [
+    { num: '01', title: 'Videolara göz at', copy: 'Yakınındaki atölye ve etkinliklerin gerçek videolarını kaydır — kurgulanmış fotoğraflar değil.' },
+    { num: '02', title: 'Yerini ayırt', copy: 'Ücretsiz ya da ücretli bir etkinliği birkaç dokunuşla, doğrudan uygulamadan ayırt.' },
+    { num: '03', title: 'Gel ve keyfini çıkar', copy: 'Eğitmeninle tanış, yeni bir şey öğren ve Berlin’de insanlarla tanış.' },
   ],
 };
 
@@ -205,12 +217,16 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
  *  attach by slug as footage lands — see `reels` below. */
-type HostCopy = Omit<
+export type HostCopy = Omit<
   Host,
   'id' | 'photo' | 'wide' | 'video' | 'poster' | 'activity' | 'groupRange' | 'hourRange'
 >;
 
-const hostsCopy: Record<Lang, HostCopy[]> = {
+/* English and German live here; the other six languages each have a file
+   under ./hosts/, written from the English. Below, every language is
+   re-ordered to the English list and any host a translation lacks falls
+   back to the English entry, so a new host never breaks a language. */
+const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
   en: [
     { slug: 'qian', name: 'Qian', specialty: 'Pottery & hand-building', studio: 'Clay Garden Pottery Studio',
       blurb: 'Hands-on hand-building and pottery — calming, creative and beginner-friendly. Teams learn the basics while shaping their own ceramic pieces to take home.',
@@ -965,7 +981,9 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
  *
  *  Keep them to two or three words: this sits under a card title, not in
  *  place of the copy. */
-const workshopUsps: Record<string, Record<string, { en: string; de: string }>> = {
+/* English and German only: a label that has no translation shows in
+   English. Two or three words on a card, written once per workshop. */
+const workshopUsps: Record<string, Record<string, Partial<Record<Lang, string>> & { en: string }>> = {
   'karen-rose': {
     // Her own catalogue for this one: four finished products go home with
     // you. The 3-hour class only — Essentials is the shorter cut and nobody
@@ -1079,8 +1097,10 @@ const workshopUsps: Record<string, Record<string, { en: string; de: string }>> =
 };
 
 /** A workshop's label, in this language, if it has one. */
-export const getWorkshopUsp = (slug: string, title: string, lang: Lang): string | undefined =>
-  workshopUsps[slug]?.[title]?.[lang];
+export const getWorkshopUsp = (slug: string, title: string, lang: Lang): string | undefined => {
+  const usp = workshopUsps[slug]?.[title];
+  return usp ? (usp[lang] ?? usp.en) : undefined;
+};
 
 /** The reel for one workshop, if it has its own.
  *
@@ -1113,6 +1133,24 @@ export const getWorkshopReel = (
   return { video: withBase(reel.video), poster: withBase(reel.poster) };
 };
 
+const hostsCopy: Record<Lang, HostCopy[]> = (() => {
+  const en = hostsCopyBase.en;
+  const align = (list: HostCopy[]): HostCopy[] => {
+    const bySlug = new Map(list.map((h) => [h.slug, h]));
+    return en.map((h) => bySlug.get(h.slug) ?? h);
+  };
+  return {
+    en,
+    de: align(hostsCopyBase.de),
+    fr: align(hostsFr),
+    es: align(hostsEs),
+    it: align(hostsIt),
+    nl: align(hostsNl),
+    pl: align(hostsPl),
+    tr: align(hostsTr),
+  };
+})();
+
 export const getHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
     const reel = reels[h.slug];
@@ -1133,13 +1171,20 @@ export const getHosts = (lang: Lang): Host[] =>
 /** The filter vocabulary, in both languages. Bucket ids are matched against
  *  a host's ranges in HostFilters — the labels are only ever shown, never
  *  compared, so they can be reworded freely. */
-export const filterCopy = {
+type FilterCopy = {
+  activityLabel: string; groupLabel: string; durationLabel: string; all: string; clear: string;
+  count: (n: number) => string; empty: string;
+  activities: Record<ActivityKey, string>;
+  groups: { small: string; medium: string; large: string };
+  durations: { short: string; medium: string; long: string };
+  priceLabel: string;
+  prices: { budget: string; mid: string; high: string; premium: string };
+  priceMeta: string; priceUnknown: string; priceFree: string;
+};
+
+export const filterCopy: Record<Lang, FilterCopy> = {
   en: {
-    activityLabel: 'Activity',
-    groupLabel: 'Group size',
-    durationLabel: 'Length',
-    all: 'All',
-    clear: 'Clear filters',
+    activityLabel: 'Activity', groupLabel: 'Group size', durationLabel: 'Length', all: 'All', clear: 'Clear filters',
     count: (n: number) => (n === 1 ? '1 host' : `${n} hosts`),
     empty: 'No host matches every filter. Try widening one.',
     activities: {
@@ -1151,16 +1196,10 @@ export const filterCopy = {
     durations: { short: 'Up to 2 h', medium: '2–4 h', long: 'Half day or more' },
     priceLabel: 'Price per person',
     prices: { budget: 'Under €50', mid: '€50–100', high: '€100–200', premium: '€200+' },
-    priceMeta: 'Per person',
-    priceUnknown: 'On request',
-    priceFree: 'Free',
+    priceMeta: 'Per person', priceUnknown: 'On request', priceFree: 'Free',
   },
   de: {
-    activityLabel: 'Aktivität',
-    groupLabel: 'Gruppengröße',
-    durationLabel: 'Dauer',
-    all: 'Alle',
-    clear: 'Filter zurücksetzen',
+    activityLabel: 'Aktivität', groupLabel: 'Gruppengröße', durationLabel: 'Dauer', all: 'Alle', clear: 'Filter zurücksetzen',
     count: (n: number) => (n === 1 ? '1 Gastgeber' : `${n} Gastgeber`),
     empty: 'Kein Gastgeber passt zu allen Filtern. Erweitere einen davon.',
     activities: {
@@ -1172,11 +1211,99 @@ export const filterCopy = {
     durations: { short: 'Bis 2 Std.', medium: '2–4 Std.', long: 'Ab einem halben Tag' },
     priceLabel: 'Preis pro Person',
     prices: { budget: 'Unter 50 €', mid: '50–100 €', high: '100–200 €', premium: 'Ab 200 €' },
-    priceMeta: 'Pro Person',
-    priceUnknown: 'Auf Anfrage',
-    priceFree: 'Kostenlos',
+    priceMeta: 'Pro Person', priceUnknown: 'Auf Anfrage', priceFree: 'Kostenlos',
   },
-} as const;
+  fr: {
+    activityLabel: 'Activité', groupLabel: 'Taille du groupe', durationLabel: 'Durée', all: 'Tout', clear: 'Réinitialiser les filtres',
+    count: (n: number) => (n === 1 ? '1 hôte' : `${n} hôtes`),
+    empty: 'Aucun hôte ne correspond à tous les filtres. Élargissez-en un.',
+    activities: {
+      ceramics: 'Céramique', art: 'Art & gravure', craft: 'Artisanat & DIY',
+      food: 'Cuisine & boissons', photography: 'Photographie', wellbeing: 'Bien-être',
+      music: 'Musique & rythme',
+    },
+    groups: { small: 'Jusqu’à 10', medium: '10–30', large: '30+' },
+    durations: { short: 'Jusqu’à 2 h', medium: '2–4 h', long: 'Une demi-journée ou plus' },
+    priceLabel: 'Prix par personne',
+    prices: { budget: 'Moins de 50 €', mid: '50–100 €', high: '100–200 €', premium: '200 € et plus' },
+    priceMeta: 'Par personne', priceUnknown: 'Sur demande', priceFree: 'Gratuit',
+  },
+  es: {
+    activityLabel: 'Actividad', groupLabel: 'Tamaño del grupo', durationLabel: 'Duración', all: 'Todo', clear: 'Quitar filtros',
+    count: (n: number) => (n === 1 ? '1 anfitrión' : `${n} anfitriones`),
+    empty: 'Ningún anfitrión cumple todos los filtros. Prueba a ampliar alguno.',
+    activities: {
+      ceramics: 'Cerámica', art: 'Arte & grabado', craft: 'Artesanía & DIY',
+      food: 'Comida & bebida', photography: 'Fotografía', wellbeing: 'Bienestar',
+      music: 'Música & ritmo',
+    },
+    groups: { small: 'Hasta 10', medium: '10–30', large: '30+' },
+    durations: { short: 'Hasta 2 h', medium: '2–4 h', long: 'Media jornada o más' },
+    priceLabel: 'Precio por persona',
+    prices: { budget: 'Menos de 50 €', mid: '50–100 €', high: '100–200 €', premium: 'Más de 200 €' },
+    priceMeta: 'Por persona', priceUnknown: 'A consultar', priceFree: 'Gratis',
+  },
+  it: {
+    activityLabel: 'Attività', groupLabel: 'Dimensione del gruppo', durationLabel: 'Durata', all: 'Tutti', clear: 'Azzera i filtri',
+    count: (n: number) => (n === 1 ? '1 host' : `${n} host`),
+    empty: 'Nessun host corrisponde a tutti i filtri. Prova ad allargarne uno.',
+    activities: {
+      ceramics: 'Ceramica', art: 'Arte & stampa', craft: 'Artigianato & fai da te',
+      food: 'Cibo & bevande', photography: 'Fotografia', wellbeing: 'Benessere',
+      music: 'Musica & ritmo',
+    },
+    groups: { small: 'Fino a 10', medium: '10–30', large: '30+' },
+    durations: { short: 'Fino a 2 h', medium: '2–4 h', long: 'Mezza giornata o più' },
+    priceLabel: 'Prezzo a persona',
+    prices: { budget: 'Meno di 50 €', mid: '50–100 €', high: '100–200 €', premium: 'Oltre 200 €' },
+    priceMeta: 'A persona', priceUnknown: 'Su richiesta', priceFree: 'Gratis',
+  },
+  nl: {
+    activityLabel: 'Activiteit', groupLabel: 'Groepsgrootte', durationLabel: 'Duur', all: 'Alles', clear: 'Filters wissen',
+    count: (n: number) => (n === 1 ? '1 host' : `${n} hosts`),
+    empty: 'Geen enkele host past bij alle filters. Verruim er eentje.',
+    activities: {
+      ceramics: 'Keramiek', art: 'Kunst & druk', craft: 'Ambacht & DIY',
+      food: 'Eten & drinken', photography: 'Fotografie', wellbeing: 'Welzijn',
+      music: 'Muziek & ritme',
+    },
+    groups: { small: 'Tot 10', medium: '10–30', large: '30+' },
+    durations: { short: 'Tot 2 u', medium: '2–4 u', long: 'Een halve dag of langer' },
+    priceLabel: 'Prijs per persoon',
+    prices: { budget: 'Onder € 50', mid: '€ 50–100', high: '€ 100–200', premium: '€ 200+' },
+    priceMeta: 'Per persoon', priceUnknown: 'Op aanvraag', priceFree: 'Gratis',
+  },
+  pl: {
+    activityLabel: 'Aktywność', groupLabel: 'Wielkość grupy', durationLabel: 'Czas trwania', all: 'Wszystkie', clear: 'Wyczyść filtry',
+    count: (n: number) => (n === 1 ? '1 prowadzący' : `${n} prowadzących`),
+    empty: 'Żaden prowadzący nie pasuje do wszystkich filtrów. Poluzuj jeden z nich.',
+    activities: {
+      ceramics: 'Ceramika', art: 'Sztuka & grafika', craft: 'Rękodzieło & DIY',
+      food: 'Jedzenie & napoje', photography: 'Fotografia', wellbeing: 'Dobrostan',
+      music: 'Muzyka & rytm',
+    },
+    groups: { small: 'Do 10 osób', medium: '10–30', large: '30+' },
+    durations: { short: 'Do 2 godz.', medium: '2–4 godz.', long: 'Pół dnia lub dłużej' },
+    priceLabel: 'Cena za osobę',
+    prices: { budget: 'Poniżej 50 €', mid: '50–100 €', high: '100–200 €', premium: 'Od 200 €' },
+    priceMeta: 'Za osobę', priceUnknown: 'Na zapytanie', priceFree: 'Bezpłatnie',
+  },
+  tr: {
+    activityLabel: 'Etkinlik', groupLabel: 'Grup büyüklüğü', durationLabel: 'Süre', all: 'Tümü', clear: 'Filtreleri temizle',
+    count: (n: number) => (n === 1 ? '1 eğitmen' : `${n} eğitmen`),
+    empty: 'Tüm filtrelere uyan eğitmen yok. Birini genişletmeyi dene.',
+    activities: {
+      ceramics: 'Seramik', art: 'Sanat & baskı', craft: 'El sanatları & DIY',
+      food: 'Yemek & içecek', photography: 'Fotoğraf', wellbeing: 'İyi yaşam',
+      music: 'Müzik & ritim',
+    },
+    groups: { small: '10 kişiye kadar', medium: '10–30', large: '30+' },
+    durations: { short: '2 saate kadar', medium: '2–4 sa', long: 'Yarım gün ve üzeri' },
+    priceLabel: 'Kişi başı fiyat',
+    prices: { budget: '50 € altı', mid: '50–100 €', high: '100–200 €', premium: '200 € ve üzeri' },
+    priceMeta: 'Kişi başı', priceUnknown: 'Talep üzerine', priceFree: 'Ücretsiz',
+  },
+};
 
 /** A listing card inside the phone mockup, mirroring the app's real feed:
  *  a media thumbnail plus the booking facts a card shows under it. The two
@@ -1220,6 +1347,54 @@ const phoneCardsCopy: Record<Lang, Omit<PhoneCard, 'video' | 'poster'>[]> = {
       photo: '/img/hero/bouldering.jpg' },
     { id: 'phone-front-3', title: 'DIY-Kaffeerösten', photo: '/img/hero/cooking.jpg' },
     { id: 'phone-front-4', title: 'Töpferscheibe & Handaufbau', photo: '/img/hero/hiking.jpg' },
+  ],
+  fr: [
+    { id: 'phone-front-1', title: 'Croquis d’oiseaux & aquarelle', date: 'lun. 16 oct.', time: '9h–10h30',
+      liked: true, photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Sculpture sur bois & savon', date: 'lun. 16 oct.', time: '16h–18h',
+      photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-3', title: 'Torréfaction de café DIY', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Tournage & modelage', photo: '/img/hero/hiking.jpg' },
+  ],
+  es: [
+    { id: 'phone-front-1', title: 'Bocetos de aves & acuarela', date: 'lun., 16 oct.', time: '9:00–10:30',
+      liked: true, photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Talla en madera & jabón', date: 'lun., 16 oct.', time: '16:00–18:00',
+      photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-3', title: 'Tueste de café DIY', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Torno & modelado', photo: '/img/hero/hiking.jpg' },
+  ],
+  it: [
+    { id: 'phone-front-1', title: 'Schizzi di uccelli & acquerello', date: 'lun 16 ott', time: '9:00–10:30',
+      liked: true, photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Intaglio di legno & sapone', date: 'lun 16 ott', time: '16:00–18:00',
+      photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-3', title: 'Tostatura del caffè fai da te', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Tornio & modellazione', photo: '/img/hero/hiking.jpg' },
+  ],
+  nl: [
+    { id: 'phone-front-1', title: 'Vogels schetsen & aquarel', date: 'ma 16 okt', time: '9:00–10:30',
+      liked: true, photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Hout & zeep snijden', date: 'ma 16 okt', time: '16:00–18:00',
+      photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-3', title: 'Zelf koffie branden', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Draaien & handvormen', photo: '/img/hero/hiking.jpg' },
+  ],
+  pl: [
+    { id: 'phone-front-1', title: 'Szkicowanie ptaków & akwarela', date: 'pon., 16 paź', time: '9:00–10:30',
+      liked: true, photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Rzeźbienie w drewnie & mydle', date: 'pon., 16 paź', time: '16:00–18:00',
+      photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-3', title: 'Palenie kawy DIY', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Koło garncarskie & lepienie', photo: '/img/hero/hiking.jpg' },
+  ],
+  tr: [
+    { id: 'phone-front-1', title: 'Kuş eskizi & suluboya', date: 'Pzt, 16 Eki', time: '9:00–10:30',
+      liked: true, photo: '/img/hero/bachata.jpg' },
+    { id: 'phone-front-2', title: 'Ahşap & sabun oyma', date: 'Pzt, 16 Eki', time: '16:00–18:00',
+      photo: '/img/hero/bouldering.jpg' },
+    { id: 'phone-front-3', title: 'Evde kahve kavurma', photo: '/img/hero/cooking.jpg' },
+    { id: 'phone-front-4', title: 'Çark & elle şekillendirme', photo: '/img/hero/hiking.jpg' },
   ],
 };
 
@@ -1276,6 +1451,12 @@ export const getPhoneCards = (lang: Lang): PhoneCard[] =>
 const phoneFiltersCopy: Record<Lang, string[]> = {
   en: ['All', 'Today', 'Tomorrow', 'Free', 'Paid'],
   de: ['Alle', 'Heute', 'Morgen', 'Kostenlos', 'Kostenpflichtig'],
+  fr: ['Tout', 'Aujourd’hui', 'Demain', 'Gratuit', 'Payant'],
+  es: ['Todo', 'Hoy', 'Mañana', 'Gratis', 'De pago'],
+  it: ['Tutti', 'Oggi', 'Domani', 'Gratis', 'A pagamento'],
+  nl: ['Alles', 'Vandaag', 'Morgen', 'Gratis', 'Betaald'],
+  pl: ['Wszystkie', 'Dziś', 'Jutro', 'Bezpłatne', 'Płatne'],
+  tr: ['Tümü', 'Bugün', 'Yarın', 'Ücretsiz', 'Ücretli'],
 };
 
 export const getPhoneFilters = (lang: Lang): string[] => phoneFiltersCopy[lang];

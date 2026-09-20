@@ -6,6 +6,7 @@
 import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { requestEmail } from '../data/site.ts';
+import { ui } from '../data/i18n.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -24,9 +25,7 @@ const t = pageCopy[lang];
 const REQUEST_EMAIL = requestEmail;
 const requestHref = (s: Session): string => {
   const when = `${formatDay(s.dayOffset, lang)}${s.time ? ` ${s.time}` : ''}`;
-  const subject = lang === 'de'
-    ? `Buchungsanfrage: ${s.title} am ${when}`
-    : `Booking request: ${s.title} on ${when}`;
+  const subject = ui(lang).calendar.mailBookSubject(s.title, when);
   return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}`;
 };
 const showPrice = (price?: string) =>

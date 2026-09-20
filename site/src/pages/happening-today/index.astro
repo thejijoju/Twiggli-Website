@@ -1,27 +1,5 @@
 ---
-import Base from '../../layouts/Base.astro';
-import DayPicker from '../../components/DayPicker.astro';
-import EventSchema from '../../components/EventSchema.astro';
-
-const lang = 'en';
+import CalendarPage from '../../components/CalendarPage.astro';
 ---
 
-<Base
-  title="Workshops in Berlin today & this week — dates, times, prices | Twiggli"
-  description="Every workshop running in Berlin today and over the coming weeks — pottery, cooking, crafts, art, photography — with times, prices, spots left and direct booking."
-  lang={lang}
->
-  <div class="container">
-    <section class="page-head">
-      {/* One heading: the place and the selected day together. The script
-          rewrites it as the visitor moves along the day strip. */}
-      <h1 class="page-title" data-happening-title>What is on in Berlin today</h1>
-    </section>
-
-    <section class="section section-flush">
-      <DayPicker lang={lang} />
-    </section>
-
-  </div>
-  <EventSchema lang={lang} pageUrl="https://www.twiggli.com/happening-today/" />
-</Base>
+<CalendarPage lang="en" />

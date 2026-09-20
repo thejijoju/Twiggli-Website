@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import PhoneMockup from './PhoneMockup.astro';
+import { getSteps } from '../data/content.ts';
+import { ui } from '../data/i18n.ts';
+import { appUrl } from '../data/site.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang).howItWorks;
+const steps = getSteps(lang);
+---
+
+<Base title={t.title} description={t.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{t.kicker}</span>
+      <h1 class="page-title">{t.h1}</h1>
+      <p class="page-lede">{t.lede}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {steps.map((step) => (
+        <div class="step">
+          <p class="step-num">{step.num}</p>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-copy">{step.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">{t.appKicker}</span>
+        <h2 class="split-title">{t.appTitle}</h2>
+        <p class="split-copy">{t.appCopy}</p>
+        <div class="split-actions">
+          <a href={appUrl} class="btn btn-primary" target="_blank" rel="noopener">{t.cta}</a>
+        </div>
+      </div>
+      <PhoneMockup lang={lang} layout="single" screen="listing" />
+    </section>
+  </div>
+</Base>

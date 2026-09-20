@@ -73,7 +73,8 @@ type LiveWorkshop = {
   slug: string;
   sourceUrl: string;
   title: string;
-  /** English page title; `title` (the host's own wording) serves German. */
+  /** English page title, used by every language but German; `title` (the
+   *  host's own wording, usually German) serves German. */
   titleEn?: string;
   date: string; // YYYY-MM-DD, Europe/Berlin
   time?: string; // HH:MM; absent when only the booking page shows it
@@ -152,7 +153,7 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
     out.push({
       id: `req-${o.slug}-${hash(o.title)}`,
       host: withWorkshopReel(host, o.slug, o.title),
-      title: lang === 'en' && o.titleEn ? o.titleEn : o.title,
+      title: lang !== 'de' && o.titleEn ? o.titleEn : o.title,
       district: o.district ?? host.studio ?? host.place,
       bookUrl: o.url,
       ...(o.duration ? { duration: o.duration } : {}),
@@ -307,7 +308,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       dayOffset,
       time: w.time,
       host: withWorkshopReel(host, w.slug, w.title, ordinals.get(w) ?? 0),
-      title: lang === 'en' && w.titleEn ? w.titleEn : w.title,
+      title: lang !== 'de' && w.titleEn ? w.titleEn : w.title,
       place: host.place,
       // Real listings never get an invented district — the studio name is
       // accurate where the scrape carries no location.
@@ -347,7 +348,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         // Post-increment: the first occurrence in the window is 0, so a
         // recurring class starts on its first reel like a dated one does.
         host: withWorkshopReel(host, r.slug, r.title, occurrence++),
-        title: lang === 'en' && r.titleEn ? r.titleEn : r.title,
+        title: lang !== 'de' && r.titleEn ? r.titleEn : r.title,
         place: host.place,
         district: r.district ?? host.studio ?? host.place,
         bookUrl: r.url,

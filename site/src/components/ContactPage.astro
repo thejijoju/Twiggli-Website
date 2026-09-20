@@ -1,0 +1,135 @@
+---
+import Base from '../layouts/Base.astro';
+import SocialIcon from './SocialIcon.astro';
+import { getSiteData, requestEmail } from '../data/site.ts';
+import { ui } from '../data/i18n.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang).contact;
+const { socialLinks } = getSiteData(lang);
+
+/* The site is static, so on submit the fields are composed into an email
+   to requestEmail and handed to the visitor's mail app, the same way the
+   calendar's "Request to book" works; the address is printed under the
+   form as well, for anyone whose device has no mail app wired up. The
+   wording of the mail travels with the form as data attributes, so the
+   script below is the same in every language. */
+const mailCopy = {
+  corporateTopic: t.topics[1],
+  subjectCorporate: t.subjectCorporate,
+  subjectGeneral: t.subjectGeneral,
+  ...t.bodyLabels,
+};
+---
+
+<Base title={t.title} description={t.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{t.kicker}</span>
+      <h1 class="page-title">{t.h1}</h1>
+      <p class="page-lede">{t.lede}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <div class="form-grid">
+        <form
+          class="form-rows"
+          method="post"
+          action="#"
+          data-request-form
+          data-request-email={requestEmail}
+          data-mail-copy={JSON.stringify(mailCopy)}
+          data-prefill={t.prefill('{host}')}
+        >
+          <div class="field">
+            <label for="name">{t.name}</label>
+            <input class="input" type="text" id="name" name="name" required />
+          </div>
+          <div class="field">
+            <label for="email">{t.email}</label>
+            <input class="input" type="email" id="email" name="email" required />
+          </div>
+          <div class="field">
+            <label for="topic">{t.topic}</label>
+            <select class="input" id="topic" name="topic">
+              {t.topics.map((topic, i) => <option data-corporate={i === 1 ? 'true' : undefined}>{topic}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">{t.message}</label>
+            <textarea class="input" id="message" name="message" rows="5" required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary">{t.send}</button>
+            <p class="form-note">
+              {t.note}
+              <a href={`mailto:${requestEmail}`}>{requestEmail}</a>.
+            </p>
+            <p class="form-note form-note-sent" data-request-sent hidden>
+              {t.sent}
+              <a href={`mailto:${requestEmail}`}>{requestEmail}</a>.
+            </p>
+          </div>
+        </form>
+
+        <div class="form-aside">
+          <span class="kicker kicker-tight">{t.elsewhereKicker}</span>
+          <p>{t.elsewhere}</p>
+          <div class="nav-social" style="margin-left:0">
+            {socialLinks.map((s) => (
+              <a
+                href={s.href}
+                aria-label={s.label}
+                target={s.href.startsWith('http') ? '_blank' : undefined}
+                rel={s.href.startsWith('http') ? 'noopener' : undefined}
+              ><SocialIcon name={s.icon} size={20} /></a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  {/* "Request event" buttons on /corporatebookings/ land here with ?host=<name>: pick
+      the corporate topic and start the message for the visitor. is:inline
+      because it's plain DOM glue — no imports, nothing to bundle. */}
+  <script is:inline>
+    (() => {
+      const form = document.querySelector('[data-request-form]');
+      if (!form) return;
+      const copy = JSON.parse(form.dataset.mailCopy || '{}');
+      const host = new URLSearchParams(location.search).get('host');
+      if (host) {
+        const topic = document.getElementById('topic');
+        if (topic) topic.value = copy.corporateTopic;
+        const message = document.getElementById('message');
+        if (message && !message.value)
+          message.value = (form.dataset.prefill || '').replace('{host}', host);
+      }
+
+      // Submit composes the mail and opens it in the visitor's mail app. The
+      // composed link is also written onto the form, so it can be checked.
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const v = (id) => (document.getElementById(id) || {}).value || '';
+        const topicEl = document.getElementById('topic');
+        const topic = v('topic');
+        const corporate = !!host || !!(topicEl && topicEl.selectedOptions[0] && topicEl.selectedOptions[0].dataset.corporate);
+        const subject = corporate
+          ? `${copy.subjectCorporate}: ${host || topic} — ${v('name')}`
+          : `${copy.subjectGeneral}: ${topic} — ${v('name')}`;
+        const body = [`${copy.name}: ${v('name')}`, `${copy.email}: ${v('email')}`, `${copy.topic}: ${topic}`, host ? `${copy.host}: ${host}` : '', '', `${copy.message}:`, v('message')]
+          .filter((line, i) => line !== '' || i === 4).join('\n');
+        const mailto = `mailto:${form.dataset.requestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        form.dataset.mailto = mailto;
+        const sent = form.querySelector('[data-request-sent]');
+        if (sent) sent.hidden = false;
+        location.href = mailto;
+      });
+    })();
+  </script>
+</Base>

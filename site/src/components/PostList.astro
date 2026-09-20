@@ -1,13 +1,14 @@
 ---
 import { formatDate, postSlug, type Post } from '../lib/blog.ts';
 import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 
 interface Props {
   posts: Post[];
   lang?: Lang;
 }
 const { posts, lang = DEFAULT_LANG } = Astro.props;
-const readMore = { en: 'Read', de: 'Lesen' }[lang];
+const readMore = ui(lang).blog.readMore;
 ---
 
 <div class="post-list">

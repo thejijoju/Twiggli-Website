@@ -15,6 +15,7 @@ import {
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 import { requestEmail } from '../data/site.ts';
+import { ui } from '../data/i18n.ts';
 
 interface Props {
   lang: Lang;
@@ -43,9 +44,7 @@ const priceText = !priceRange
 
 const REQUEST_EMAIL = requestEmail;
 const inquireHref = (title: string): string => {
-  const subject = lang === 'de'
-    ? `Terminanfrage: ${title} (${host.name})`
-    : `Workshop inquiry: ${title} (${host.name})`;
+  const subject = ui(lang).calendar.mailInquireSubject(title, host.name);
   return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}`;
 };
 ---

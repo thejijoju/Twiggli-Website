@@ -4,7 +4,7 @@ import SocialBar from '../components/SocialBar.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import { getSiteData } from '../data/site.ts';
-import { href, DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { href, splitLang, DEFAULT_LANG, LANGS, LANG_META, type Lang } from '../lib/url.ts';
 import '../styles/modernist.css';
 import '../styles/site.css';
 
@@ -18,22 +18,30 @@ interface Props {
   /** The picture a share of this page shows — absolute or site-relative.
    *  The logo stands in where a page has nothing better. */
   image?: string;
+  /** Which languages this page exists in. Everything but the legal pages
+   *  and the blog exists in all of them; those two pass ['en', 'de'] so the
+   *  hreflang set, the switcher and the redirect only ever name a page
+   *  that is really there. */
+  translations?: Lang[];
 }
 
-const { title, description, lang = DEFAULT_LANG, noindex = false, image } = Astro.props;
+const { title, description, lang = DEFAULT_LANG, noindex = false, image, translations = LANGS } = Astro.props;
 const { brand } = getSiteData(lang);
 const pageDescription = description ?? brand.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const shareImage = new URL(image ?? brand.logo, Astro.site ?? Astro.url.origin);
 
-// The same page in the other language, for the hreflang alternates below —
-// same logic LangSwitch.astro uses to compute it.
+// The same page in every language it exists in, for the hreflang
+// alternates below — same logic LangSwitch.astro uses to build its menu.
 const base = import.meta.env.BASE_URL;
-let bare = Astro.url.pathname;
-if (bare.startsWith(base)) bare = `/${bare.slice(base.length)}`;
-bare = bare.replace(/^\/de(\/|$)/, '/') || '/';
-const enUrl = new URL(href('en', bare), Astro.site ?? Astro.url.origin);
-const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
+const { bare } = splitLang(Astro.url.pathname);
+const origin = Astro.site ?? Astro.url.origin;
+const alternates = LANGS.filter((l) => translations.includes(l)).map((l) => ({
+  lang: l,
+  url: new URL(href(l, bare), origin).href,
+}));
+const defaultUrl = new URL(href(DEFAULT_LANG, bare), origin).href;
+const available = alternates.map((a) => a.lang);
 ---
 
 <!doctype html>
@@ -41,27 +49,34 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline define:vars={{ deployBase: base }}>
+    <script is:inline define:vars={{ deployBase: base, langs: available, current: lang, defaultLang: DEFAULT_LANG }}>
       try {
         if (localStorage.getItem('twiggli-cookie-consent')) {
           document.documentElement.classList.add('cookie-consent-set');
         }
-        // First-visit language detection: if the visitor hasn't picked a
-        // language before (LangSwitch.astro records that choice) and their
-        // browser prefers German, send them to the /de/ equivalent of this
-        // page. Runs once, only away from an already-German page, and never
-        // fights a stored preference — see LangSwitch.astro and this same
-        // path-stripping logic in Base.astro / LangSwitch.astro.
-        // deployBase comes from BASE_URL above rather than a literal, so it
-        // cannot drift out of sync with astro.config.mjs.
+        // First-visit language detection: if the visitor has not picked a
+        // language before (LangSwitch.astro records that choice), walk the
+        // browser's preferred languages and send them to the first one this
+        // page exists in — unless that is the language they are already
+        // reading. Runs once per page, never fights a stored preference, and
+        // only ever names a language in `langs`, which is the list of
+        // versions this page really has. deployBase comes from BASE_URL
+        // rather than a literal, so it cannot drift from astro.config.mjs.
         var storedLang = localStorage.getItem('twiggli-lang');
-        var path = location.pathname;
-        var rel = path.indexOf(deployBase) === 0 ? path.slice(deployBase.length) : path.replace(/^\//, '');
-        var onGerman = rel === 'de' || rel.indexOf('de/') === 0;
-        if (!storedLang && !onGerman) {
-          var prefers = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-          if (prefers.indexOf('de') === 0) {
-            location.replace(deployBase + 'de/' + rel);
+        if (!storedLang) {
+          var prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+          var wanted = null;
+          for (var i = 0; i < prefs.length && !wanted; i++) {
+            var code = String(prefs[i] || '').toLowerCase().slice(0, 2);
+            if (langs.indexOf(code) !== -1) wanted = code;
+          }
+          if (wanted && wanted !== current) {
+            var path = location.pathname;
+            var rel = path.indexOf(deployBase) === 0 ? path.slice(deployBase.length) : path.replace(/^\//, '');
+            var m = rel.match(/^([a-z]{2})(\/|$)/);
+            if (m && langs.indexOf(m[1]) !== -1) rel = rel.slice(m[0].length);
+            var target = deployBase + (wanted === defaultLang ? '' : wanted + '/') + rel;
+            if (target !== path) location.replace(target + location.search + location.hash);
           }
         }
       } catch (e) {}
@@ -70,16 +85,18 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
     <meta name="description" content={pageDescription} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical.href} />
-    <link rel="alternate" hreflang="en" href={enUrl.href} />
-    <link rel="alternate" hreflang="de" href={deUrl.href} />
-    <link rel="alternate" hreflang="x-default" href={enUrl.href} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.url} />)}
+    <link rel="alternate" hreflang="x-default" href={defaultUrl} />
     <link rel="icon" href={brand.logo} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={brand.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical.href} />
-    <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
+    <meta property="og:locale" content={LANG_META[lang].og} />
+    {alternates.filter((a) => a.lang !== lang).map((a) => (
+      <meta property="og:locale:alternate" content={LANG_META[a.lang].og} />
+    ))}
     <meta property="og:image" content={shareImage.href} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={shareImage.href} />
@@ -96,7 +113,7 @@ const deUrl = new URL(href('de', bare), Astro.site ?? Astro.url.origin);
       {/* The nav is pinned; the dark social strip above it is not, so it
           scrolls away and leaves the transparent nav at the top edge. */}
       <header class="site-header" data-site-header>
-        <Nav lang={lang} />
+        <Nav lang={lang} translations={available} />
       </header>
       <main>
         <slot />

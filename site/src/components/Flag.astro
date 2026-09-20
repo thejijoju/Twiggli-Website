@@ -1,0 +1,86 @@
+---
+/** A small flag, drawn inline. Emoji flags are the obvious choice and the
+ *  wrong one: Windows draws them as two letters ("DE"), which is exactly
+ *  the text switcher these replace. Each flag is a few rectangles, so the
+ *  set costs nothing and renders the same everywhere. Stripes are given as
+ *  fractions of a 4:3 box. */
+import type { Lang } from '../lib/url.ts';
+import { LANG_META } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  size?: number;
+  class?: string;
+}
+const { lang, size = 20, class: className } = Astro.props;
+const flag = LANG_META[lang].flag;
+const w = 24;
+const h = 18;
+---
+
+<svg
+  class:list={['flag', className]}
+  width={size}
+  height={Math.round((size * h) / w)}
+  viewBox={`0 0 ${w} ${h}`}
+  aria-hidden="true"
+  focusable="false"
+>
+  {flag === 'gb' && (
+    <>
+      <rect width={w} height={h} fill="#012169" />
+      <path d="M0 0 L24 18 M24 0 L0 18" stroke="#fff" stroke-width="3.6" />
+      <path d="M0 0 L24 18 M24 0 L0 18" stroke="#C8102E" stroke-width="1.2" />
+      <path d="M12 0 V18 M0 9 H24" stroke="#fff" stroke-width="6" />
+      <path d="M12 0 V18 M0 9 H24" stroke="#C8102E" stroke-width="3.6" />
+    </>
+  )}
+  {flag === 'de' && (
+    <>
+      <rect width={w} height={6} fill="#000" />
+      <rect y={6} width={w} height={6} fill="#DD0000" />
+      <rect y={12} width={w} height={6} fill="#FFCE00" />
+    </>
+  )}
+  {flag === 'fr' && (
+    <>
+      <rect width={8} height={h} fill="#0055A4" />
+      <rect x={8} width={8} height={h} fill="#fff" />
+      <rect x={16} width={8} height={h} fill="#EF4135" />
+    </>
+  )}
+  {flag === 'es' && (
+    <>
+      <rect width={w} height={h} fill="#AA151B" />
+      <rect y={4.5} width={w} height={9} fill="#F1BF00" />
+    </>
+  )}
+  {flag === 'it' && (
+    <>
+      <rect width={8} height={h} fill="#009246" />
+      <rect x={8} width={8} height={h} fill="#fff" />
+      <rect x={16} width={8} height={h} fill="#CE2B37" />
+    </>
+  )}
+  {flag === 'nl' && (
+    <>
+      <rect width={w} height={6} fill="#AE1C28" />
+      <rect y={6} width={w} height={6} fill="#fff" />
+      <rect y={12} width={w} height={6} fill="#21468B" />
+    </>
+  )}
+  {flag === 'pl' && (
+    <>
+      <rect width={w} height={9} fill="#fff" />
+      <rect y={9} width={w} height={9} fill="#DC143C" />
+    </>
+  )}
+  {flag === 'tr' && (
+    <>
+      <rect width={w} height={h} fill="#E30A17" />
+      <circle cx={9} cy={9} r={4.5} fill="#fff" />
+      <circle cx={10} cy={9} r={3.6} fill="#E30A17" />
+      <path d="M13.2 9 l2.4 -0.8 l-1.5 2 l0 -2.5 l1.5 2 z" fill="#fff" />
+    </>
+  )}
+</svg>

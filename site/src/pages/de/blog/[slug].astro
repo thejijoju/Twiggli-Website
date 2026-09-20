@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import { getPosts, postSlug, formatDate } from '../../../lib/blog.ts';
-import { withBase } from '../../../lib/url.ts';
+import { withBase, LEGAL_LANGS } from '../../../lib/url.ts';
 
 export async function getStaticPaths() {
   const posts = await getPosts('de');
@@ -14,7 +14,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<Base title={`${post.data.title} — Twiggli`} description={post.data.description} lang={lang}>
+<Base title={`${post.data.title} — Twiggli`} description={post.data.description} lang={lang} translations={LEGAL_LANGS}>
   <div class="container">
     <article class="post">
       <p class="post-meta">

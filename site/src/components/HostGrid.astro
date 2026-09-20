@@ -4,6 +4,7 @@ import type { Host } from '../data/content.ts';
 import { hostHref as hostPageHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 
 interface Props {
   hosts: Host[];
@@ -32,10 +33,7 @@ const hostHref = (slug: string) => {
   return host ? hostPageHref(lang, host) : href(lang, '/workshops/');
 };
 
-const videoPlaceholder = {
-  en: 'Video preview coming soon',
-  de: 'Video-Vorschau folgt in Kürze',
-}[lang];
+const videoPlaceholder = ui(lang).hostGrid.placeholder;
 ---
 
 {layout === 'carousel' ? (

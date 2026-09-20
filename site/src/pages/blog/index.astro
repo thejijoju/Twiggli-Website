@@ -1,4 +1,5 @@
 ---
+import { LEGAL_LANGS } from '../../lib/url.ts';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { getPosts } from '../../lib/blog.ts';
@@ -11,6 +12,7 @@ const posts = await getPosts(lang);
   title="Blog — Twiggli"
   description="Workshop guides, Berlin picks and notes on running a good team session."
   lang={lang}
+  translations={LEGAL_LANGS}
 >
   <div class="container">
     <section class="page-head">

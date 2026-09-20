@@ -1,29 +1,13 @@
 ---
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 
 interface Props {
   lang?: Lang;
 }
 const { lang = DEFAULT_LANG } = Astro.props;
 
-const copy = {
-  en: {
-    kicker: 'Newsletter',
-    heading: 'Stay in the loop',
-    lede: 'New workshops, new hosts, and Berlin picks worth knowing about — straight to your inbox. No spam, unsubscribe anytime.',
-    label: 'Email address',
-    placeholder: 'you@email.com',
-    button: 'Subscribe',
-  },
-  de: {
-    kicker: 'Newsletter',
-    heading: 'Bleib auf dem Laufenden',
-    lede: 'Neue Workshops, neue Gastgeber und Berlin-Tipps, die sich lohnen — direkt in dein Postfach. Kein Spam, jederzeit abbestellbar.',
-    label: 'E-Mail-Adresse',
-    placeholder: 'du@email.com',
-    button: 'Abonnieren',
-  },
-}[lang];
+const copy = ui(lang).newsletter;
 
 /* PLACEHOLDER — the form posts nowhere yet. Wire `action` to a real
    newsletter provider (Mailchimp, Brevo, a serverless function) before

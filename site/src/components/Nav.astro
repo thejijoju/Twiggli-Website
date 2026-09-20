@@ -2,19 +2,22 @@
 import ImageSlot from './ImageSlot.astro';
 import LangSwitch from './LangSwitch.astro';
 import { getSiteData, appUrl } from '../data/site.ts';
-import { href, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
+import { href, LANGS, type Lang } from '../lib/url.ts';
 
 interface Props {
   lang: Lang;
+  /** The languages this page exists in — handed on to the switcher. */
+  translations?: Lang[];
 }
-const { lang } = Astro.props;
+const { lang, translations = LANGS } = Astro.props;
 const { brand, navLinks } = getSiteData(lang);
 
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const isCurrent = (link: (typeof navLinks)[number]) =>
   !link.external && (link.href.replace(/\/+$/, '') || '/') === path;
 
-const ctaLabel = { en: 'Get started', de: 'Jetzt starten' }[lang];
+const ctaLabel = ui(lang).nav.cta;
 
 /* The "Get Started" entry is promoted to the black CTA pill on the right,
    so it is dropped from the inline link list to avoid showing twice. */
@@ -36,7 +39,7 @@ const inlineLinks = navLinks.filter((link) => !link.external);
         aria-current={isCurrent(link) ? 'page' : undefined}
       >{link.label}</a>
     ))}
-    <LangSwitch lang={lang} />
+    <LangSwitch lang={lang} translations={translations} />
     <a href={appUrl} class="nav-cta" target="_blank" rel="noopener">
       {ctaLabel}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

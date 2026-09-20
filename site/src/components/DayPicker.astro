@@ -4,7 +4,8 @@ import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
 import { requestEmail } from '../data/site.ts';
 import HostMonogram from './HostMonogram.astro';
-import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 
 /** The schedule feed, styled after the app's search screen: the borderless
  *  day strip right at the top, one row of activity pills under it (the only
@@ -50,34 +51,7 @@ const byTime = (list: Session[]): [string, Session[]][] => {
   return [...groups.entries()];
 };
 
-const t = {
-  en: { spots: 'spots left', book: 'Book', request: 'Request to book', timeTba: 'Time when booking', none: 'Nothing scheduled for this day yet.',
-        noMatch: 'Nothing in this activity on this day — try another.',
-        today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
-        filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
-        kids: '🧸 For kids', share: 'Share', copied: 'Link copied',
-        soldOut: 'Sold out', waitingList: 'Waiting list', free: 'Free',
-        notify: 'Notify me', salesEnd: 'Booking closes',
-        notifyTitle: 'Get notified when a spot opens',
-        notifyHint: 'We check this host’s calendar automatically. Leave your email and we’ll let you know the moment this workshop takes bookings again — the message opens in your mail app, just hit send.',
-        notifyEmail: 'Your email', notifySend: 'Set notification', cancel: 'Cancel',
-        onRequestHead: 'On request', inquire: 'Inquire',
-        onRequestNote: 'These workshops run whenever you ask — the host schedules a date around you.',
-        viewGrid: 'Grid view', viewList: 'List view' },
-  de: { spots: 'Plätze frei', book: 'Buchen', request: 'Buchung anfragen', timeTba: 'Uhrzeit bei Buchung', none: 'Für diesen Tag ist noch nichts geplant.',
-        noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
-        today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
-        filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
-        kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert',
-        soldOut: 'Ausgebucht', waitingList: 'Warteliste', free: 'Kostenlos',
-        notify: 'Benachrichtige mich', salesEnd: 'Buchbar bis',
-        notifyTitle: 'Bescheid bekommen, wenn ein Platz frei wird',
-        notifyHint: 'Wir prüfen den Kalender dieses Hosts automatisch. Trag deine E-Mail ein und wir melden uns, sobald dieser Workshop wieder buchbar ist — die Nachricht öffnet sich in deinem Mailprogramm, einfach absenden.',
-        notifyEmail: 'Deine E-Mail', notifySend: 'Benachrichtigung einrichten', cancel: 'Abbrechen',
-        onRequestHead: 'Auf Anfrage', inquire: 'Termin anfragen',
-        onRequestNote: 'Diese Workshops laufen, wann du willst — der Host legt den Termin mit dir fest.',
-        viewGrid: 'Rasteransicht', viewList: 'Listenansicht' },
-}[lang];
+const t = ui(lang).calendar;
 
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
  *  instead of a booking page. Built at render time — the daily rebuild
@@ -87,29 +61,55 @@ const isoDate = (offset: number) =>
   new Date(berlinTodayMs() + offset * 86400000).toISOString().slice(0, 10);
 const requestHref = (s: Session): string => {
   const when = `${isoDate(s.dayOffset)}${s.time ? ` ${s.time}` : ''}`;
-  const subject = lang === 'de'
-    ? `Buchungsanfrage: ${s.title} am ${when}`
-    : `Booking request: ${s.title} on ${when}`;
-  const body = lang === 'de'
-    ? `Hallo Twiggli,\n\nich möchte diesen Workshop buchen:\n\nWorkshop: ${s.title}\nGastgeber: ${s.host.name}\nTermin: ${when}\n${s.price ? `Preis: ${s.price}\n` : ''}\nMein Name:\nAnzahl Personen:\n\nDanke!`
-    : `Hi Twiggli,\n\nI'd like to book this workshop:\n\nWorkshop: ${s.title}\nHost: ${s.host.name}\nDate: ${when}\n${s.price ? `Price: ${s.price}\n` : ''}\nMy name:\nNumber of people:\n\nThanks!`;
+  const subject = t.mailBookSubject(s.title, when);
+  const body = t.mailBookBody(s.title, s.host.name, when, s.price);
   return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };
 
 /** Inquiry mail for undated on-request workshops — no date in the
  *  subject, the visitor proposes one in the body. */
 const inquireHref = (o: OnRequestWorkshop): string => {
-  const subject = lang === 'de'
-    ? `Terminanfrage: ${o.title} (${o.host.name})`
-    : `Workshop inquiry: ${o.title} (${o.host.name})`;
-  const body = lang === 'de'
-    ? `Hallo Twiggli,\n\nich möchte diesen Workshop anfragen:\n\nWorkshop: ${o.title}\nGastgeber: ${o.host.name}\n${o.price ? `Preis: ${o.price}\n` : ''}\nMein Wunschtermin:\nMein Name:\nAnzahl Personen:\n\nDanke!`
-    : `Hi Twiggli,\n\nI'd like to inquire about this workshop:\n\nWorkshop: ${o.title}\nHost: ${o.host.name}\n${o.price ? `Price: ${o.price}\n` : ''}\nMy preferred date:\nMy name:\nNumber of people:\n\nThanks!`;
+  const subject = t.mailInquireSubject(o.title, o.host.name);
+  const body = t.mailInquireBody(o.title, o.host.name, o.price);
   return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };
 
 const dayLabel = (offset: number) =>
   offset === 0 ? t.today : offset === 1 ? t.tomorrow : null;
+
+/** Wording the client script composes at run time — the page heading as
+ *  the visitor moves along the day strip, the share text, the notify-me
+ *  mail. Plain strings with {placeholders}, handed over as JSON, so the
+ *  script itself carries no language. */
+const clientCopy: Record<Lang, {
+  today: string; tomorrow: string; thisDay: string; nextDay: string; onDate: string; heading: string;
+  share: string; shareTime: string; notifyBody: string;
+}> = {
+  en: { today: 'today', tomorrow: 'tomorrow', thisDay: 'this {weekday}', nextDay: 'next {weekday}', onDate: 'on {date}', heading: 'What is on in Berlin {when}',
+        share: '{title} with {host} on {when}{time} — found on twiggli.com', shareTime: ' at {time}',
+        notifyBody: 'Hi Twiggli,\n\nplease notify me when this sold-out workshop is bookable again:\n\nWorkshop: {title}\nHost: {host}\nDate: {when}\nNotify this address: {address}\n\nThanks!' },
+  de: { today: 'heute', tomorrow: 'morgen', thisDay: 'diesen {weekday}', nextDay: 'nächsten {weekday}', onDate: 'am {date}', heading: 'Was {when} in Berlin läuft',
+        share: '{title} bei {host} am {when}{time} — gefunden auf twiggli.com', shareTime: ' um {time} Uhr',
+        notifyBody: 'Hallo Twiggli,\n\nbitte benachrichtigt mich, sobald dieser ausgebuchte Workshop wieder buchbar ist:\n\nWorkshop: {title}\nGastgeber: {host}\nTermin: {when}\nBenachrichtigung an: {address}\n\nDanke!' },
+  fr: { today: 'aujourd’hui', tomorrow: 'demain', thisDay: 'ce {weekday}', nextDay: '{weekday} prochain', onDate: 'le {date}', heading: 'Ce qui se passe à Berlin {when}',
+        share: '{title} avec {host} le {when}{time} — trouvé sur twiggli.com', shareTime: ' à {time}',
+        notifyBody: 'Bonjour Twiggli,\n\nmerci de me prévenir dès que cet atelier complet est de nouveau réservable :\n\nAtelier : {title}\nHôte : {host}\nDate : {when}\nAdresse à prévenir : {address}\n\nMerci !' },
+  es: { today: 'hoy', tomorrow: 'mañana', thisDay: 'este {weekday}', nextDay: 'el próximo {weekday}', onDate: 'el {date}', heading: 'Qué hay en Berlín {when}',
+        share: '{title} con {host} el {when}{time} — encontrado en twiggli.com', shareTime: ' a las {time}',
+        notifyBody: 'Hola Twiggli:\n\navisadme cuando este taller agotado vuelva a estar disponible:\n\nTaller: {title}\nAnfitrión: {host}\nFecha: {when}\nAvisar a: {address}\n\n¡Gracias!' },
+  it: { today: 'oggi', tomorrow: 'domani', thisDay: 'questo {weekday}', nextDay: '{weekday} prossimo', onDate: 'il {date}', heading: 'Cosa c’è a Berlino {when}',
+        share: '{title} con {host} {when}{time} — trovato su twiggli.com', shareTime: ' alle {time}',
+        notifyBody: 'Ciao Twiggli,\n\navvisatemi quando questo workshop esaurito sarà di nuovo prenotabile:\n\nWorkshop: {title}\nHost: {host}\nData: {when}\nAvvisare: {address}\n\nGrazie!' },
+  nl: { today: 'vandaag', tomorrow: 'morgen', thisDay: 'deze {weekday}', nextDay: 'volgende week {weekday}', onDate: 'op {date}', heading: 'Wat er {when} in Berlijn te doen is',
+        share: '{title} met {host} op {when}{time} — gevonden op twiggli.com', shareTime: ' om {time}',
+        notifyBody: 'Hallo Twiggli,\n\nlaat me weten zodra deze uitverkochte workshop weer te boeken is:\n\nWorkshop: {title}\nHost: {host}\nDatum: {when}\nBericht naar: {address}\n\nBedankt!' },
+  pl: { today: 'dziś', tomorrow: 'jutro', thisDay: 'w ten {weekday}', nextDay: 'w przyszły {weekday}', onDate: '{date}', heading: 'Co dzieje się w Berlinie {when}',
+        share: '{title} — {host}, {when}{time} — znalezione na twiggli.com', shareTime: ' o {time}',
+        notifyBody: 'Cześć Twiggli,\n\nproszę o powiadomienie, gdy te wyprzedane warsztaty znów będzie można zarezerwować:\n\nWarsztaty: {title}\nProwadzący: {host}\nTermin: {when}\nPowiadomić na adres: {address}\n\nDziękuję!' },
+  tr: { today: 'bugün', tomorrow: 'yarın', thisDay: 'bu {weekday}', nextDay: 'gelecek {weekday}', onDate: '{date}', heading: 'Berlin’de {when} neler var',
+        share: '{title} — {host}, {when}{time} — twiggli.com’da bulundu', shareTime: ' saat {time}',
+        notifyBody: 'Merhaba Twiggli,\n\nbu tükenmiş atölye yeniden rezervasyona açıldığında lütfen bana haber verin:\n\nAtölye: {title}\nEğitmen: {host}\nTarih: {when}\nBildirim adresi: {address}\n\nTeşekkürler!' },
+};
 
 /* The booking deadline in the reader's own language. The stored value is an
    ISO local datetime; only the day and the hour are worth showing. */
@@ -125,7 +125,7 @@ const fullLabel = (s: { waitingList?: boolean }) => (s.waitingList ? t.waitingLi
 const formatDeadline = (iso: string): string => {
   const d = new Date(iso);
   if (Number.isNaN(d.valueOf())) return iso;
-  const locale = lang === 'de' ? 'de-DE' : 'en-GB';
+  const locale = LANG_META[lang].locale;
   return `${d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}, ${d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`;
 };
 ---
@@ -134,7 +134,8 @@ const formatDeadline = (iso: string): string => {
   class="daypicker"
   data-daypicker
   data-view="grid"
-  data-locale={lang === 'de' ? 'de-DE' : 'en-GB'}
+  data-locale={LANG_META[lang].locale}
+  data-client-copy={JSON.stringify(clientCopy[lang])}
   data-today={t.today}
   data-tomorrow={t.tomorrow}
   data-request-email={REQUEST_EMAIL}
@@ -426,6 +427,9 @@ const formatDeadline = (iso: string): string => {
   // HTML for search engines and still readable if this never runs.
   document.querySelectorAll<HTMLElement>('[data-daypicker]').forEach((root) => {
     const locale = root.dataset.locale || 'en-GB';
+    const copy: Record<string, string> = JSON.parse(root.dataset.clientCopy || '{}');
+    const fill = (template: string, values: Record<string, string>) =>
+      template.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? '');
     const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.daychip'));
     const groups = Array.from(root.querySelectorAll<HTMLElement>('.daygroup'));
     const monthEl = root.querySelector<HTMLElement>('[data-month]');
@@ -454,17 +458,14 @@ const formatDeadline = (iso: string): string => {
     // One title carries both the place and the chosen day, so the page has
     // a single heading rather than a kicker repeating it.
     const headingFor = (offset: number, date: Date): string => {
-      const de = locale.startsWith('de');
       const weekday = date.toLocaleDateString(locale, { weekday: 'long' });
       const when =
-        offset === 0 ? (de ? 'heute' : 'today')
-        : offset === 1 ? (de ? 'morgen' : 'tomorrow')
-        : offset <= 6 ? (de ? `diesen ${weekday}` : `this ${weekday}`)
-        : offset <= 13 ? (de ? `nächsten ${weekday}` : `next ${weekday}`)
-        : de
-          ? `am ${date.toLocaleDateString(locale, { day: 'numeric', month: 'long' })}`
-          : `on ${date.toLocaleDateString(locale, { day: 'numeric', month: 'long' })}`;
-      return de ? `Was ${when} in Berlin läuft` : `What is on in Berlin ${when}`;
+        offset === 0 ? copy.today
+        : offset === 1 ? copy.tomorrow
+        : offset <= 6 ? fill(copy.thisDay, { weekday })
+        : offset <= 13 ? fill(copy.nextDay, { weekday })
+        : fill(copy.onDate, { date: date.toLocaleDateString(locale, { day: 'numeric', month: 'long' }) });
+      return fill(copy.heading, { when });
     };
 
     chips.forEach((chip) => {
@@ -560,9 +561,10 @@ const formatDeadline = (iso: string): string => {
               weekday: 'long', day: 'numeric', month: 'long',
             })
           : '';
-        const text = locale.startsWith('de')
-          ? `${d.shareTitle} bei ${d.shareHost} am ${when}${d.shareTime ? ` um ${d.shareTime} Uhr` : ''} — gefunden auf twiggli.com`
-          : `${d.shareTitle} with ${d.shareHost} on ${when}${d.shareTime ? ` at ${d.shareTime}` : ''} — found on twiggli.com`;
+        const text = fill(copy.share, {
+          title: d.shareTitle || '', host: d.shareHost || '', when,
+          time: d.shareTime ? fill(copy.shareTime, { time: d.shareTime }) : '',
+        });
         const url = d.shareUrl || location.href;
         try {
           if (navigator.share) {
@@ -608,9 +610,9 @@ const formatDeadline = (iso: string): string => {
       if (!d || !address) return;
       const when = `${d.notifyDate}${d.notifyTime ? ` ${d.notifyTime}` : ''}`;
       const subject = `Notify me: ${d.notifyTitle} on ${d.notifyDate}`;
-      const body = locale.startsWith('de')
-        ? `Hallo Twiggli,\n\nbitte benachrichtigt mich, sobald dieser ausgebuchte Workshop wieder buchbar ist:\n\nWorkshop: ${d.notifyTitle}\nGastgeber: ${d.notifyHost}\nTermin: ${when}\nBenachrichtigung an: ${address}\n\nDanke!`
-        : `Hi Twiggli,\n\nplease notify me when this sold-out workshop is bookable again:\n\nWorkshop: ${d.notifyTitle}\nHost: ${d.notifyHost}\nDate: ${when}\nNotify this address: ${address}\n\nThanks!`;
+      const body = fill(copy.notifyBody, {
+        title: d.notifyTitle || '', host: d.notifyHost || '', when, address,
+      });
       location.href = `mailto:${root.dataset.requestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
 

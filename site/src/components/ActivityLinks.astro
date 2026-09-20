@@ -5,6 +5,7 @@
 import { getHosts } from '../data/content.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, hubCopy, hubHref, pageCopy } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 
 interface Props {
   lang: Lang;
@@ -13,7 +14,7 @@ const { lang } = Astro.props;
 const hosts = getHosts(lang);
 const counts = new Map<string, number>();
 for (const h of hosts) counts.set(h.activity, (counts.get(h.activity) ?? 0) + 1);
-const all = { en: 'All workshops in Berlin', de: 'Alle Workshops in Berlin' }[lang];
+const all = ui(lang).home.activitiesAll;
 ---
 
 <section class="section activity-band band-seam" id="workshops">

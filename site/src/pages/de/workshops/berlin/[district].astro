@@ -3,7 +3,7 @@ import DistrictPage from '../../../../components/DistrictPage.astro';
 import { districtsFor } from '../../../../data/seo.ts';
 
 export function getStaticPaths() {
-  return districtsFor('en').map((d) => ({ params: { district: d.slug } }));
+  return districtsFor('de').map((d) => ({ params: { district: d.slug } }));
 }
 const { district } = Astro.params;
 ---

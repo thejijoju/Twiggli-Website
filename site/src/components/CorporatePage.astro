@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import HostDirectory from './HostDirectory.astro';
+import HostFilters from './HostFilters.astro';
+import { getHosts } from '../data/content.ts';
+import { ui } from '../data/i18n.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang);
+const c = t.corporate;
+const hosts = getHosts(lang);
+---
+
+<Base title={c.title} description={c.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{c.kicker}</span>
+      <h1 class="page-title">{c.h1}</h1>
+      <p class="page-lede">{c.lede}</p>
+      <div class="hero-actions">
+        <a href={href(lang, '/contact/')} class="btn btn-primary">{c.cta}</a>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <HostFilters lang={lang} />
+      <HostDirectory hosts={hosts} lang={lang} />
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">{t.home.hostEarnKicker}</span>
+        <h2 class="split-title">{t.home.hostEarnTitle}</h2>
+        <p class="split-copy">{c.hostEarnCopy}</p>
+        <div class="split-actions">
+          <a href={href(lang, '/host/')} class="btn btn-primary">{t.home.becomeHost}</a>
+        </div>
+      </div>
+      <div class="media-4x3 grayscale">
+        <img src={withBase('/img/hosts/dominik-wide.jpg')} alt="" loading="lazy"
+             style="width:100%;height:100%;object-fit:cover" />
+      </div>
+    </section>
+  </div>
+</Base>

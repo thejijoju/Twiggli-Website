@@ -1,6 +1,7 @@
 ---
 import StoreButtons from './StoreButtons.astro';
 import { getSiteData } from '../data/site.ts';
+import { ui } from '../data/i18n.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
@@ -9,15 +10,9 @@ interface Props {
 const { lang } = Astro.props;
 const { brand, navLinks, secondaryLinks, workshopLinks, workshopColumnLabel, legalLinks, copyright } = getSiteData(lang);
 
-const columnLabels = {
-  en: { product: 'Product', explore: 'Explore', legal: 'Legal' },
-  de: { product: 'Produkt', explore: 'Entdecken', legal: 'Rechtliches' },
-}[lang];
-
-const cta = {
-  en: { title: 'Ready to dive in? Download now on Apple Store and Google Play.' },
-  de: { title: 'Bereit loszulegen? Jetzt im App Store und bei Google Play herunterladen.' },
-}[lang];
+const t = ui(lang).footer;
+const columnLabels = { product: t.product, explore: t.explore, legal: t.legal };
+const cta = { title: t.appCta };
 ---
 
 <footer id="footer" class="footer">

@@ -31,7 +31,7 @@ const perActivity = ACTIVITY_ORDER.map((a) => ({
 }));
 const hosts = getHosts(lang)
   .slice()
-  .sort((a, b) => a.name.localeCompare(b.name, lang === 'de' ? 'de' : 'en'));
+  .sort((a, b) => a.name.localeCompare(b.name, lang));
 
 const schema = {
   '@context': 'https://schema.org',

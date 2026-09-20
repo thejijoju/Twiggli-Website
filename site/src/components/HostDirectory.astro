@@ -3,6 +3,7 @@ import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import { filterCopy } from '../data/content.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
+import { ui } from '../data/i18n.ts';
 import { hostHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
 
@@ -35,10 +36,7 @@ const priceText = (range: [number, number] | undefined) =>
     : range[0] === range[1] ? `${money(range[0])} · ${priceCopy.priceMeta}`
     : `${money(range[0])}–${money(range[1])} · ${priceCopy.priceMeta}`;
 
-const labels = {
-  en: { studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages', price: 'Price', play: 'Play reel', request: 'Request event' },
-  de: { studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen', price: 'Preis', play: 'Reel abspielen', request: 'Event anfragen' },
-}[lang];
+const labels = ui(lang).directory;
 ---
 
 <div class="maker-grid">

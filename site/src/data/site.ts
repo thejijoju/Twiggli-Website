@@ -1,8 +1,9 @@
 /** Site-wide chrome: nav, footer columns, social, store links.
  *  Edit here, not in the components. */
 
-import { href, withBase, type Lang } from '../lib/url.ts';
+import { href, withBase, LEGAL_LANGS, type Lang } from '../lib/url.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, hubHref } from './seo.ts';
+import { ui } from './i18n.ts';
 
 export type NavLink = { label: string; href: string; external?: boolean };
 
@@ -15,62 +16,17 @@ export const appUrl = 'https://app.twiggli.com/';
  *  from their own mail app — there is no server to post a form to. */
 export const requestEmail = 'jirel.kuenen@gmail.com';
 
-const brandCopy = {
-  en: {
-    name: 'Twiggli',
-    tagline: "Discover Berlin's most unique experiences — through video",
-  },
-  de: {
-    name: 'Twiggli',
-    tagline: 'Entdecke Berlins einzigartigste Erlebnisse — im Video',
-  },
-};
-
-const navLabels = {
-  en: {
-    home: 'Home', getStarted: 'Get Started', workshops: 'Workshops', happening: 'Happening today',
-    corporate: 'Corporate & Group Bookings', blog: 'Blog', contact: 'Contact',
-  },
-  de: {
-    home: 'Startseite', getStarted: 'Jetzt starten', workshops: 'Workshops', happening: 'Heute los',
-    corporate: 'Firmen- & Gruppenbuchungen', blog: 'Blog', contact: 'Kontakt',
-  },
-};
-
-/** The footer's fourth column: one link per activity page, worded as that
- *  page's heading — the words people search, in the site's own links. */
-const workshopColumnLabels = {
-  en: 'Workshops in Berlin',
-  de: 'Workshops in Berlin',
-};
-
-/* Blog and Happening today live in the header (navLinks), which the footer
-   already renders as its "Product" column — so they are deliberately absent
-   here to avoid listing them twice in the footer. */
-const secondaryLabels = {
-  en: { howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli' },
-  de: { howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden' },
-};
-
-const legalLabels = {
-  en: { terms: 'Terms of Service', privacy: 'Privacy Policy', impressum: 'Impressum' },
-  de: { terms: 'Nutzungsbedingungen', privacy: 'Datenschutzerklärung', impressum: 'Impressum' },
-};
-
-const storeLabels = {
-  en: { appStore: 'Download on the App Store', googlePlay: 'Get it on Google Play' },
-  de: { appStore: 'Laden im App Store', googlePlay: 'Jetzt bei Google Play' },
-};
-
-const copyrightText = {
-  en: '© 2026 Twiggli. All rights reserved.',
-  de: '© 2026 Twiggli. Alle Rechte vorbehalten.',
-};
-
-/** Shown on the legal pages. Update when the documents change. */
-const legalUpdatedText = {
+/** Shown on the legal pages, which exist in English and German only.
+ *  Update when the documents change. */
+const legalUpdatedText: Record<Lang, string> = {
   en: '5 August 2026',
   de: '5. August 2026',
+  fr: '5 août 2026',
+  es: '5 de agosto de 2026',
+  it: '5 agosto 2026',
+  nl: '5 augustus 2026',
+  pl: '5 sierpnia 2026',
+  tr: '5 Ağustos 2026',
 };
 
 /* '#' means the account does not exist yet — the icon renders but goes
@@ -92,38 +48,49 @@ export const socialLinks = [
 /**
  * Official Apple / Google badge artwork, one per language — both stores
  * ship localized marks (labels baked into the SVG), so the badge itself
- * switches with the site language, not just its alt text.
+ * switches with the site language, not just its alt text. Languages
+ * without their own artwork here fall back to the English badge.
  */
-const storeBadges = {
+const storeBadges: Partial<Record<Lang, { appStore: string; googlePlay: string }>> = {
   en: { appStore: '/img/store/app-store-badge-en.svg', googlePlay: '/img/store/google-play-badge-en.svg' },
   de: { appStore: '/img/store/app-store-badge-de.svg', googlePlay: '/img/store/google-play-badge-de.svg' },
 };
 
 /** Everything the chrome (Nav, Footer, CookieBanner, StoreButtons) needs,
- *  resolved for one language. Impressum is a single German-only page
- *  shared by both language versions of the site — see impressum.astro —
- *  so its link always points at the root path, never /de/impressum/. */
+ *  resolved for one language. The wording comes from i18n.ts; this only
+ *  pairs each label with its URL.
+ *
+ *  Impressum is a single German-only page shared by every language version
+ *  of the site — see impressum.astro — so its link always points at the root
+ *  path. The other legal pages and the blog exist in English and German
+ *  only (LEGAL_LANGS): from any other language they link to the English
+ *  version rather than to a page that is not there. */
 export function getSiteData(lang: Lang) {
+  const t = ui(lang);
+  /* The language the legal pages and the blog are read in from this one. */
+  const docLang: Lang = LEGAL_LANGS.includes(lang) ? lang : 'en';
+
   /* PNG, not JPEG — the mark's rounded corners need real transparency, or
      they render as white notches against the page and the dark footer. */
-  const brand = { ...brandCopy[lang], logo: withBase('/img/logo.png') };
+  const brand = { name: 'Twiggli', tagline: t.brand.tagline, logo: withBase('/img/logo.png') };
 
   const navLinks: NavLink[] = [
-    { label: navLabels[lang].home, href: href(lang, '/') },
-    { label: navLabels[lang].getStarted, href: appUrl, external: true },
-    { label: navLabels[lang].workshops, href: hubHref(lang) },
-    { label: navLabels[lang].happening, href: href(lang, '/happening-today/') },
-    /* Points at /hosts/, which is the corporate page — the pitch and the
-       directory of makers who can run the session are one page now. */
-    { label: navLabels[lang].corporate, href: href(lang, '/corporatebookings/') },
-    { label: navLabels[lang].blog, href: href(lang, '/blog/') },
-    { label: navLabels[lang].contact, href: href(lang, '/contact/') },
+    { label: t.nav.home, href: href(lang, '/') },
+    { label: t.nav.getStarted, href: appUrl, external: true },
+    { label: t.nav.workshops, href: hubHref(lang) },
+    { label: t.nav.happening, href: href(lang, '/happening-today/') },
+    /* Points at /corporatebookings/, which is the corporate page — the
+       pitch and the directory of makers who can run the session are one
+       page now. */
+    { label: t.nav.corporate, href: href(lang, '/corporatebookings/') },
+    { label: t.nav.blog, href: href(docLang, '/blog/') },
+    { label: t.nav.contact, href: href(lang, '/contact/') },
   ];
 
   const secondaryLinks: NavLink[] = [
-    { label: secondaryLabels[lang].howItWorks, href: href(lang, '/how-it-works/') },
-    { label: secondaryLabels[lang].hosts, href: href(lang, '/corporatebookings/') },
-    { label: secondaryLabels[lang].host, href: href(lang, '/host/') },
+    { label: t.footer.howItWorks, href: href(lang, '/how-it-works/') },
+    { label: t.footer.hosts, href: href(lang, '/corporatebookings/') },
+    { label: t.footer.host, href: href(lang, '/host/') },
   ];
 
   const workshopLinks: NavLink[] = ACTIVITY_ORDER.map((activity) => ({
@@ -132,14 +99,15 @@ export function getSiteData(lang: Lang) {
   }));
 
   const legalLinks: NavLink[] = [
-    { label: legalLabels[lang].terms, href: href(lang, '/terms-of-service/') },
-    { label: legalLabels[lang].privacy, href: href(lang, '/privacy-policy/') },
-    { label: legalLabels[lang].impressum, href: href('en', '/impressum/') },
+    { label: t.footer.terms, href: href(docLang, '/terms-of-service/') },
+    { label: t.footer.privacy, href: href(docLang, '/privacy-policy/') },
+    { label: t.footer.impressum, href: href('en', '/impressum/') },
   ];
 
+  const badges = storeBadges[lang] ?? storeBadges.en!;
   const storeLinks = {
-    appStore: { label: storeLabels[lang].appStore, href: '#', badge: withBase(storeBadges[lang].appStore) },
-    googlePlay: { label: storeLabels[lang].googlePlay, href: '#', badge: withBase(storeBadges[lang].googlePlay) },
+    appStore: { label: t.footer.appStore, href: '#', badge: withBase(badges.appStore) },
+    googlePlay: { label: t.footer.googlePlay, href: '#', badge: withBase(badges.googlePlay) },
   };
 
   return {
@@ -147,11 +115,13 @@ export function getSiteData(lang: Lang) {
     navLinks,
     secondaryLinks,
     workshopLinks,
-    workshopColumnLabel: workshopColumnLabels[lang],
+    workshopColumnLabel: t.footer.workshops,
     legalLinks,
     socialLinks,
     storeLinks,
-    copyright: copyrightText[lang],
+    copyright: t.footer.copyright,
     legalUpdated: legalUpdatedText[lang],
+    /** Where the legal pages and the blog are read from this language. */
+    docLang,
   };
 }

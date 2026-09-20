@@ -1,36 +1,75 @@
 ---
-import { href, type Lang } from '../lib/url.ts';
+import Flag from './Flag.astro';
+import { ui } from '../data/i18n.ts';
+import { href, splitLang, LANGS, LANG_META, type Lang } from '../lib/url.ts';
 
+/** The language switcher: the current language's flag, and behind it a
+ *  list of the languages this page exists in, each with its flag and its
+ *  own name. A <details> element, so it opens and closes with no script
+ *  and works as a keyboard menu for free; the script only remembers a
+ *  choice, so the browser-language redirect in Base.astro never overrides
+ *  it on a later visit. */
 interface Props {
   lang: Lang;
+  /** Which languages this page exists in — the legal pages and the blog
+   *  are English and German only, and the menu must not offer a French
+   *  version that would 404. */
+  translations?: Lang[];
 }
-const { lang } = Astro.props;
+const { lang, translations = LANGS } = Astro.props;
 
-/** Strip the deploy base and the /de/ language prefix (if any) off the
- *  current URL, leaving a bare in-site path like '/corporate/' — then
- *  rebuild it in each language. Keeps the switcher correct on every page
- *  without every page having to pass its own "same page, other language"
- *  link down. */
-const base = import.meta.env.BASE_URL;
-let path = Astro.url.pathname;
-if (path.startsWith(base)) path = `/${path.slice(base.length)}`;
-const bare = path.replace(/^\/de(\/|$)/, '/') || '/';
+const { bare } = splitLang(Astro.url.pathname);
+const options = LANGS.filter((l) => translations.includes(l));
 ---
 
-<div class="lang-switch" id="lang-switch">
-  <a href={href('en', bare)} class:list={{ 'lang-active': lang === 'en' }} data-lang="en">EN</a>
-  <span aria-hidden="true">/</span>
-  <a href={href('de', bare)} class:list={{ 'lang-active': lang === 'de' }} data-lang="de">DE</a>
-</div>
+<details class="lang-switch" id="lang-switch">
+  <summary
+    class="lang-switch-current"
+    aria-label={`${ui(lang).nav.language}: ${LANG_META[lang].name}`}
+    title={ui(lang).nav.language}
+  >
+    <Flag lang={lang} size={22} />
+    <span class="lang-switch-code" aria-hidden="true">{lang.toUpperCase()}</span>
+  </summary>
+  <ul class="lang-switch-menu">
+    {options.map((l) => (
+      <li>
+        <a
+          href={href(l, bare)}
+          hreflang={l}
+          lang={l}
+          data-lang={l}
+          aria-current={l === lang ? 'true' : undefined}
+          class:list={{ 'lang-active': l === lang }}
+        >
+          <Flag lang={l} size={20} />
+          <span>{LANG_META[l].name}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
 
 <script>
   // A manual switch is a deliberate choice — remember it so the auto-detect
   // redirect in Base.astro's <head> never overrides it on a later visit.
-  document.getElementById('lang-switch')?.querySelectorAll('a[data-lang]').forEach((link) => {
-    link.addEventListener('click', () => {
-      const chosen = link.getAttribute('data-lang');
-      if (chosen) localStorage.setItem('twiggli-lang', chosen);
+  // The menu also closes on a click outside it and on Escape, which a bare
+  // <details> does not do by itself.
+  const root = document.getElementById('lang-switch') as HTMLDetailsElement | null;
+  if (root) {
+    root.querySelectorAll('a[data-lang]').forEach((link) => {
+      link.addEventListener('click', () => {
+        const chosen = link.getAttribute('data-lang');
+        try {
+          if (chosen) localStorage.setItem('twiggli-lang', chosen);
+        } catch (e) {}
+      });
     });
-  });
+    document.addEventListener('click', (event) => {
+      if (root.open && !root.contains(event.target as Node)) root.open = false;
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && root.open) root.open = false;
+    });
+  }
 </script>
-

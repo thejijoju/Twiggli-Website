@@ -20,7 +20,7 @@ export default defineConfig({
       // rebuild — a date passes, a new one lands — so they say so; the
       // legal pages and the rest carry no lastmod rather than a false one.
       serialize: (item) => {
-        if (/\/(workshops|happening-today)\/|twiggli\.com\/(de\/)?$/.test(item.url)) {
+        if (/\/(workshops|happening-today)\/|twiggli\.com\/([a-z]{2}\/)?$/.test(item.url)) {
           item.lastmod = new Date().toISOString();
         }
         return item;
