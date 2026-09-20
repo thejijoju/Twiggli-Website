@@ -601,6 +601,15 @@ const reels: Record<string, { video: string; poster: string }> = {
   // beside it: the promise of the workshop in one frame. She had no photo
   // either, so this replaces a bare "A" monogram on her card.
   alessia: { video: '/video/alessia.mp4', poster: '/video/alessia-poster.jpg' },
+  // Olivia's own, 5 s: a sheet of alcohol-ink circles held up against a
+  // garden fence, then a whip cut to the group at the studio table with the
+  // ink bottles lined up. Audio stripped. The poster is the sheet of inks.
+  olivia: { video: '/video/olivia.mp4', poster: '/video/olivia-poster.jpg' },
+  // Helka's own studio tour, 52 s cut to 13: her opening the red double
+  // door onto the tiled room of wheels, hands trimming a cup, the shelves of
+  // greenware, her reaching up to a shelf, and a hand's shadow on a wheel.
+  // No captions anywhere in it. Audio stripped. Poster: her at the door.
+  helka: { video: '/video/helka.mp4', poster: '/video/helka-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs

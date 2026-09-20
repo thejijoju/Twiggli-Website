@@ -13,7 +13,7 @@ import type { Lang } from '../lib/url.ts';
 const en = {
   brand: { tagline: "Discover Berlin's most unique experiences — through video" },
   nav: {
-    home: 'Home', getStarted: 'Get Started', workshops: 'Workshops', happening: 'Happening today',
+    home: 'Home', getStarted: 'Get Started', workshops: 'Workshops', happening: 'Calendar',
     corporate: 'Corporate & Group Bookings', blog: 'Blog', contact: 'Contact', cta: 'Get started',
     language: 'Language',
   },
@@ -152,7 +152,7 @@ export type UiCopy = typeof en;
 const de: UiCopy = {
   brand: { tagline: 'Entdecke Berlins einzigartigste Erlebnisse — im Video' },
   nav: {
-    home: 'Startseite', getStarted: 'Jetzt starten', workshops: 'Workshops', happening: 'Heute los',
+    home: 'Startseite', getStarted: 'Jetzt starten', workshops: 'Workshops', happening: 'Kalender',
     corporate: 'Firmen- & Gruppenbuchungen', blog: 'Blog', contact: 'Kontakt', cta: 'Jetzt starten',
     language: 'Sprache',
   },
@@ -289,7 +289,7 @@ const de: UiCopy = {
 const fr: UiCopy = {
   brand: { tagline: 'Découvrez les expériences les plus singulières de Berlin — en vidéo' },
   nav: {
-    home: 'Accueil', getStarted: 'Commencer', workshops: 'Ateliers', happening: "Aujourd'hui",
+    home: 'Accueil', getStarted: 'Commencer', workshops: 'Ateliers', happening: 'Calendrier',
     corporate: 'Entreprises & groupes', blog: 'Blog', contact: 'Contact', cta: 'Commencer',
     language: 'Langue',
   },
@@ -426,7 +426,7 @@ const fr: UiCopy = {
 const es: UiCopy = {
   brand: { tagline: 'Descubre las experiencias más singulares de Berlín — en vídeo' },
   nav: {
-    home: 'Inicio', getStarted: 'Empezar', workshops: 'Talleres', happening: 'Hoy en Berlín',
+    home: 'Inicio', getStarted: 'Empezar', workshops: 'Talleres', happening: 'Calendario',
     corporate: 'Empresas y grupos', blog: 'Blog', contact: 'Contacto', cta: 'Empezar',
     language: 'Idioma',
   },
@@ -563,7 +563,7 @@ const es: UiCopy = {
 const it: UiCopy = {
   brand: { tagline: 'Scopri le esperienze più originali di Berlino — in video' },
   nav: {
-    home: 'Home', getStarted: 'Inizia', workshops: 'Workshop', happening: 'Oggi a Berlino',
+    home: 'Home', getStarted: 'Inizia', workshops: 'Workshop', happening: 'Calendario',
     corporate: 'Aziende e gruppi', blog: 'Blog', contact: 'Contatti', cta: 'Inizia',
     language: 'Lingua',
   },
@@ -700,7 +700,7 @@ const it: UiCopy = {
 const nl: UiCopy = {
   brand: { tagline: 'Ontdek de bijzonderste ervaringen van Berlijn — op video' },
   nav: {
-    home: 'Home', getStarted: 'Aan de slag', workshops: 'Workshops', happening: 'Vandaag',
+    home: 'Home', getStarted: 'Aan de slag', workshops: 'Workshops', happening: 'Kalender',
     corporate: 'Zakelijk & groepen', blog: 'Blog', contact: 'Contact', cta: 'Aan de slag',
     language: 'Taal',
   },
@@ -837,7 +837,7 @@ const nl: UiCopy = {
 const pl: UiCopy = {
   brand: { tagline: 'Odkryj najbardziej wyjątkowe doświadczenia Berlina — na wideo' },
   nav: {
-    home: 'Start', getStarted: 'Zacznij', workshops: 'Warsztaty', happening: 'Dziś w Berlinie',
+    home: 'Start', getStarted: 'Zacznij', workshops: 'Warsztaty', happening: 'Kalendarz',
     corporate: 'Firmy i grupy', blog: 'Blog', contact: 'Kontakt', cta: 'Zacznij',
     language: 'Język',
   },
@@ -974,7 +974,7 @@ const pl: UiCopy = {
 const tr: UiCopy = {
   brand: { tagline: 'Berlin’in en özgün deneyimlerini keşfedin — videoyla' },
   nav: {
-    home: 'Ana sayfa', getStarted: 'Başla', workshops: 'Atölyeler', happening: 'Bugün Berlin’de',
+    home: 'Ana sayfa', getStarted: 'Başla', workshops: 'Atölyeler', happening: 'Takvim',
     corporate: 'Kurumsal & grup', blog: 'Blog', contact: 'İletişim', cta: 'Başla',
     language: 'Dil',
   },
