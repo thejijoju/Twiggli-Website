@@ -613,12 +613,15 @@ const reels: Record<string, { video: string; poster: string }> = {
   // dropped, since a date on a reel goes stale where nobody is watching for
   // it. The poster is the glazed mug two-thirds in: what you leave with.
   tania: { video: '/video/tania.mp4', poster: '/video/tania-poster.jpg' },
-  // Ditte's own, two clips joined. It opens on a finished ink drawing of a
-  // street — the thing you leave with, and the poster — then the sketching
-  // itself: pads on knees, a drawing held up against the building it is of,
-  // the group working at the skate park and on the grass, and in the second
-  // clip the canal in summer, a sketchbook mid-line, and everyone sitting
-  // drawing. Audio stripped.
+  // Ditte's own, two clips joined: the sketching itself — pads on knees, a
+  // drawing held up against the building it is of, the group working at the
+  // skate park and on the grass, and in the second clip the canal in summer,
+  // a sketchbook mid-line, and everyone sitting drawing — then, for the last
+  // second and a half, the finished ink drawing of a street: the thing you
+  // leave with, as the closing beat the loop lands on. It used to open on
+  // that drawing, held still for 2.4 seconds, which on the carousel — where
+  // a card plays for a moment as you pass — read as a photo. The poster is
+  // a sketchbook mid-line with the street behind it. Audio stripped.
   // One stretch of her first clip is left out rather than trimmed for
   // captions: it walks past a wall carrying a political slogan, which is the
   // street she happened to draw that day but reads as a statement in a

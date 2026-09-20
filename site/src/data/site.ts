@@ -76,9 +76,11 @@ export const socialLinks = [
      having arrived from one particular share link, which skews the channel's
      traffic-source stats. The bare handle URL works the same. */
   { label: 'YouTube', href: 'https://www.youtube.com/@twiggliapp', icon: 'youtube' },
-  /* The public company page, not the /admin/dashboard/ URL — that one only
-     resolves for page admins and 404s for everyone else. */
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/105193590/', icon: 'linkedin' },
+  /* The company page under its vanity name — the same page as
+     /company/105193590/, readable as a link. The admin-only forms of the
+     URL (/admin/dashboard/, ?viewAsMember=true) resolve for page admins and
+     nobody else, so they stay out. */
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/twiggliapp/', icon: 'linkedin' },
 ] as const;
 
 /**
