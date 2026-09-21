@@ -421,6 +421,8 @@ const formatDeadline = (iso: string): string => {
 </div>
 
 <script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
   // The build is static, so the calendar cannot know what "today" is. Every
   // chip's date is resolved here against the visitor's own clock, and the
   // groups underneath are plain show/hide — which means the schedule is in the
@@ -631,165 +633,13 @@ const formatDeadline = (iso: string): string => {
       }
     }
 
-    /* Reels play themselves, one at a time, walking forward through the
-       feed: the second tile on screen runs for a few seconds, the tile two
-       places along takes over, and so on. A page of stills then reads as
-       video without a hundred clips running at once — only ever one, and
-       only ever one that is really on screen, so a day of fifty sessions
-       costs the same as a day of five.
-       Scrolling moves it along: when the playing tile leaves the screen the
-       walk carries straight on with the next one in view rather than
-       waiting out its turn.
-       Pointing at a tile plays that one instead, and clicking it stops it;
-       the walk resumes from there when the pointer leaves. Touch has no
-       hover, so there a tap toggles the tile it lands on. */
-    const reels = Array.from(root.querySelectorAll<HTMLVideoElement>('.session-video'));
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const hoverable = window.matchMedia('(hover: hover)').matches;
-    /** How long a tile holds the spotlight, and how far along the next one
-     *  sits. Two places along rather than the next one over, so the eye is
-     *  pulled across the row instead of down a single column. */
-    const HOLD_MS = 3500;
-    const STEP = 2;
-
-    const onScreen = new Set<HTMLVideoElement>();
-    const stopped = new Set<HTMLVideoElement>();
-    let hovered: HTMLVideoElement | null = null;
-    let current: HTMLVideoElement | null = null;
-    /** The tile the walk played last, even once it has scrolled away — it is
-     *  where the next step counts from. */
-    let last: HTMLVideoElement | null = null;
-    /** Where a lap starts. A screen holding an even number of tiles would
-     *  otherwise step 1, 3, 1, 3 … and never reach the other two, so each
-     *  lap begins one place further along than the last. */
-    let lap = 1;
-    let timer = 0;
-
-    const eligible = (video: HTMLVideoElement) => onScreen.has(video) && !stopped.has(video);
-
-    const start = (video: HTMLVideoElement) => {
-      if (!video.paused) return;
-      // Nothing is loaded until something asks for it, and play() on an
-      // empty buffer is refused often enough to need a second attempt once
-      // there are frames to show.
-      video.preload = 'auto';
-      const attempt = () => video.play().catch(() => {});
-      attempt();
-      if (video.readyState < 3) {
-        video.addEventListener('canplay', () => {
-          if (current === video || hovered === video) attempt();
-        }, { once: true });
-      }
-    };
-
-    const show = (video: HTMLVideoElement | null) => {
-      if (current && current !== video) current.pause();
-      current = video;
-      if (video) {
-        last = video;
-        start(video);
-      }
-    };
-
-    /** Whose turn it is: two places on from the last tile, counted among the
-     *  tiles actually on screen. Where the last one has scrolled away — or
-     *  nothing has played yet — the walk starts at the second tile in view,
-     *  so arriving somewhere new always starts a clip a little way in rather
-     *  than at the corner of the screen. */
-    const nextUp = (): HTMLVideoElement | null => {
-      const live = reels.filter(eligible);
-      if (!live.length) return null;
-      const at = last ? live.indexOf(last) : -1;
-      if (at < 0) return live[Math.min(lap, live.length - 1)];
-      const next = at + STEP;
-      if (next < live.length) return live[next];
-      lap = (lap + 1) % STEP;
-      return live[Math.min(lap, live.length - 1)];
-    };
-
-    const advance = () => {
-      if (hovered) return; // the pointer outranks the walk
-      show(nextUp());
-    };
-
-    const restart = () => {
-      clearInterval(timer);
-      if (!still) timer = window.setInterval(advance, HOLD_MS);
-    };
-
-    if (reels.length && !still) {
-      const io = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          const video = entry.target as HTMLVideoElement;
-          if (entry.isIntersecting) onScreen.add(video);
-          else {
-            onScreen.delete(video);
-            if (current === video) current = null;
-          }
-          if (!entry.isIntersecting && !video.paused) video.pause();
-        }
-        // Whatever was playing has gone, or the first tiles have just come
-        // into view: take the next turn now instead of at the next tick.
-        if (!current && !hovered) {
-          advance();
-          restart();
-        }
-      }, { threshold: 0.4 });
-      reels.forEach((video) => io.observe(video));
-      restart();
-    } else if (reels.length) {
-      // Reduced motion: nothing starts by itself, but a clip the pointer or
-      // a tap started still stops when it scrolls away.
-      const io = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) (entry.target as HTMLVideoElement).pause();
-        }
-      }, { threshold: 0.1 });
-      reels.forEach((video) => io.observe(video));
-    }
-
-    for (const video of reels) {
-      const tile = video.closest('.session-thumb');
-      if (!tile) continue;
-      if (hoverable) {
-        tile.addEventListener('mouseenter', () => {
-          hovered = video;
-          stopped.delete(video);
-          show(video);
-        });
-        tile.addEventListener('mouseleave', () => {
-          if (hovered !== video) return;
-          hovered = null;
-          stopped.delete(video);
-          // Carry on from the tile the pointer visited, so the walk picks up
-          // where the reader was looking.
-          last = video;
-          video.pause();
-          if (current === video) current = null;
-          advance();
-          restart();
-        });
-        tile.addEventListener('click', () => {
-          stopped.add(video);
-          video.pause();
-          if (current === video) current = null;
-        });
-      } else {
-        // The tile links nowhere, so a tap has nothing else to do — and on
-        // the phones whose low-power mode refuses the autoplay above, it is
-        // the only way to start a reel at all.
-        tile.addEventListener('click', () => {
-          if (video.paused) {
-            stopped.delete(video);
-            show(video);
-            restart();
-          } else {
-            stopped.add(video);
-            video.pause();
-            if (current === video) current = null;
-          }
-        });
-      }
-    }
+    /* Reels play themselves, one at a time, walking across the feed — see
+       lib/reelwalk.ts, which the host directory uses too. */
+    const tiles = Array.from(root.querySelectorAll<HTMLElement>('.session-thumb'));
+    startReelWalk(
+      tiles
+        .map((tile) => ({ tile, video: tile.querySelector<HTMLVideoElement>('.session-video') }))
+        .filter((r): r is { tile: HTMLElement; video: HTMLVideoElement } => !!r.video),
+    );
   });
 </script>

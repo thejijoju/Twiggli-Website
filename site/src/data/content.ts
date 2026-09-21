@@ -610,6 +610,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // greenware, her reaching up to a shelf, and a hand's shadow on a wheel.
   // No captions anywhere in it. Audio stripped. Poster: her at the door.
   helka: { video: '/video/helka.mp4', poster: '/video/helka-poster.jpg' },
+  // Cèlia's own, cut to lead with the knitting itself: her at the mirror
+  // working the needles, then the stitches close up, the finished beige
+  // square held out, and the red one beside it. Audio stripped.
+  celia: { video: '/video/celia.mp4', poster: '/video/celia-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs

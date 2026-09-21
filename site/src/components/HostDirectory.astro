@@ -103,166 +103,24 @@ const labels = ui(lang).directory;
 </div>
 
 <script>
-  // Reels on the directory start by themselves as you scroll past them, so a
-  // page of tiles reads as video rather than as stills. Whatever is on screen
-  // decides: for each grid row with a tile in view, one of that row's tiles
-  // plays. Nothing is chosen in advance, so there is no state to go stale
-  // when the column count changes, the filters hide something, or a late font
-  // reflows the grid — if a tile is visible and its row is silent, it starts.
-  // Pointing at any tile plays that one too; clicking a playing tile stops it
-  // until the pointer leaves and comes back. Touch has no hover, so there a
-  // tap toggles.
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // Reels on the directory play themselves, one at a time, walking across
+  // the grid: the first tile, then the third, then the one in the middle on
+  // the next lap, and scrolling carries the walk along with the reader. The
+  // whole mechanism lives in lib/reelwalk.ts, which the calendar uses too —
+  // the two pages behave the same way on purpose.
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
-  const videoOf = (c: HTMLElement) => c.querySelector<HTMLVideoElement>('.maker-video');
-  const reels = cards.filter((c) => videoOf(c));
-  if (reels.length) {
-    const hoverable = window.matchMedia('(hover: hover)').matches;
+  const reels = cards
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.maker-media'),
+      video: card.querySelector<HTMLVideoElement>('.maker-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } =>
+      !!r.tile && !!r.video);
 
-    const onScreen = new Set<HTMLElement>();
-    const stopped = new Set<HTMLElement>();
-    let hovered: HTMLElement | null = null;
-    // Which tile a row is currently letting play, so a row does not hand over
-    // to a different tile every time the observer fires.
-    const holder = new Map<number, HTMLElement>();
-
-    const play = (card: HTMLElement) => {
-      const v = videoOf(card);
-      if (!v || !v.paused) return;
-      card.classList.add('is-playing');
-      // These load nothing until something asks them to. play() on an empty
-      // buffer is refused often enough to need the second attempt once there
-      // are frames to show.
-      v.preload = 'auto';
-      const attempt = () => { v.play().catch(() => {}); };
-      attempt();
-      if (v.readyState < 3) {
-        v.addEventListener('canplay', () => {
-          if (card.classList.contains('is-playing')) attempt();
-        }, { once: true });
-      }
-    };
-    const halt = (card: HTMLElement) => {
-      const v = videoOf(card);
-      if (!v) return;
-      if (!v.paused) v.pause();
-      card.classList.remove('is-playing');
-    };
-
-    // Cards in one grid row share an offsetTop, which is also how the row
-    // count follows the column count at any window width.
-    const rowOf = (card: HTMLElement) => Math.round(card.offsetTop);
-
-    const sync = () => {
-      const wanted = new Set<HTMLElement>();
-      if (hovered && !stopped.has(hovered)) wanted.add(hovered);
-
-      // Every row that has a reel in it, in document order, each row's tiles
-      // left to right. Filtered-out cards are skipped: they report an
-      // offsetTop of 0 and would otherwise all collapse into one row.
-      const rows = new Map<number, HTMLElement[]>();
-      for (const card of reels) {
-        if (card.hidden) continue;
-        const row = rowOf(card);
-        const list = rows.get(row);
-        if (list) list.push(card);
-        else rows.set(row, [card]);
-      }
-      const order = [...rows.keys()].sort((a, b) => a - b);
-
-      // The grid's real columns, read off every card's left edge rather than
-      // off the reels alone. A row often has no reel in the column whose turn
-      // it is, and the walk should carry on across the page rather than
-      // restart from the left every time it finds one.
-      const lefts = [...new Set(
-        cards.filter((c) => !c.hidden).map((c) => Math.round(c.offsetLeft)),
-      )].sort((a, b) => a - b);
-      const colOf = (c: HTMLElement) => lefts.indexOf(Math.round(c.offsetLeft));
-
-      order.forEach((row, i) => {
-        const list = rows.get(row)!.sort((a, b) => a.offsetLeft - b.offsetLeft);
-        const eligible = list.filter((c) => onScreen.has(c) && !stopped.has(c));
-        if (!eligible.length) { holder.delete(row); return; }
-        // One column further along with each row down the page: left, then
-        // the middle, then the right, then back to the left.
-        // Most rows carry a reel in only one or two of the columns, so
-        // insisting on the exact one would drop straight back to the left
-        // edge most of the time. The row plays whichever of its tiles sits
-        // nearest the column whose turn it is, which keeps the walk moving
-        // across the page instead of restarting.
-        const wantCol = lefts.length ? i % lefts.length : 0;
-        const nearest = eligible
-          .slice()
-          .sort((a, b) => Math.abs(colOf(a) - wantCol) - Math.abs(colOf(b) - wantCol)
-            || colOf(a) - colOf(b))[0];
-        const sitting = holder.get(row);
-        const pick = sitting && eligible.includes(sitting) && colOf(sitting) === colOf(nearest)
-          ? sitting
-          : nearest;
-        holder.set(row, pick);
-        wanted.add(pick);
-      });
-
-      for (const card of reels) {
-        if (wanted.has(card)) play(card);
-        else halt(card);
-      }
-    };
-
-    // Watch the tile, not the card. A card runs to a thousand pixels with its
-    // blurb and its details, so half of one is a poor proxy for "you can see
-    // the video" — it can be satisfied while the tile is off the top of the
-    // screen, and on a short window a tall card can never reach half at all.
-    const mediaOwner = new WeakMap<Element, HTMLElement>();
-    const io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        const card = mediaOwner.get(entry.target);
-        if (!card) continue;
-        if (entry.isIntersecting) onScreen.add(card);
-        else onScreen.delete(card);
-      }
-      sync();
-    }, { threshold: 0.35 });
-    reels.forEach((card) => {
-      const media = card.querySelector('.maker-media');
-      if (!media) return;
-      mediaOwner.set(media, card);
-      io.observe(media);
-    });
-
-    reels.forEach((card) => {
-      const media = card.querySelector<HTMLElement>('.maker-media');
-      if (!media) return;
-      if (hoverable) {
-        media.addEventListener('mouseenter', () => { hovered = card; stopped.delete(card); sync(); });
-        media.addEventListener('mouseleave', () => {
-          if (hovered === card) hovered = null;
-          stopped.delete(card);
-          sync();
-        });
-        media.addEventListener('click', () => { stopped.add(card); sync(); });
-      } else {
-        media.addEventListener('click', () => {
-          if (videoOf(card)!.paused) { stopped.delete(card); hovered = card; }
-          else { stopped.add(card); hovered = null; }
-          sync();
-        });
-      }
-      // The tile is the keyboard's way in now that the button is gone.
-      media.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter' && e.key !== ' ') return;
-        e.preventDefault();
-        if (videoOf(card)!.paused) { stopped.delete(card); hovered = card; }
-        else { stopped.add(card); hovered = null; }
-        sync();
-      });
-      videoOf(card)!.addEventListener('pause', () => card.classList.remove('is-playing'));
-    });
-
-    sync();
-    let redo = 0;
-    const resync = () => { clearTimeout(redo); redo = window.setTimeout(sync, 150); };
-    window.addEventListener('resize', resync);
-    // The filters reflow the grid, which changes which tiles share a row.
-    document.addEventListener('twiggli:filtered', resync);
-  }
+  const walk = startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.35, startAt: 0 });
+  // The filters hide cards, which changes which reels are in the walk.
+  document.addEventListener('twiggli:filtered', () => walk.resync());
 </script>
