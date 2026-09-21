@@ -1,6 +1,66 @@
 {
-  "updated": "2026-09-21T09:49:35.842Z",
+  "updated": "2026-09-21T10:37:05.487Z",
   "sources": [
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "status": "ok",
+      "count": 3
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/make-your-own-leather-journal-cover/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "status": "ok",
+      "count": 8
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/make-your-own-leather-plant-holder/",
+      "status": "ok",
+      "count": 1
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "status": "ok",
+      "count": 8
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "status": "ok",
+      "count": 3
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/create-a-sustainable-leather-harness-leash-for-your-pup/",
+      "status": "ok",
+      "count": 2
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/design-and-make-your-own-leather-harness/",
+      "status": "ok",
+      "count": 2
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/make-one-of-our-emblematic-beltbags/",
+      "status": "ok",
+      "count": 2
+    },
+    {
+      "slug": "lama",
+      "url": "https://lamaleathergoods.com/leather-sandal-workshop/",
+      "status": "failed: no upcoming events parsed",
+      "count": 0
+    },
     {
       "slug": "qian",
       "url": "https://www.claygarden.studio/pottery-classes",
@@ -1023,6 +1083,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "title": "Design & craft your own leather earrings",
+      "date": "2026-09-24",
+      "time": "17:00",
+      "duration": "2.5 h",
+      "price": "€69",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSC05935-copy.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -1228,6 +1301,32 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-09-25",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-09-25",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -1341,6 +1440,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-95116740.jpg?1782735863",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/95116740/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-one-of-our-emblematic-beltbags/",
+      "title": "Make one of our emblematic Beltbags",
+      "date": "2026-09-26",
+      "time": "10:00",
+      "duration": "6 h",
+      "price": "€220",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-one-of-our-emblematic-beltbags/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2024/03/DSCF5281-scaled.webp"
     },
     {
       "slug": "schmiede",
@@ -1592,7 +1704,7 @@
       "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 8,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
@@ -2159,6 +2271,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/create-a-sustainable-leather-harness-leash-for-your-pup/",
+      "title": "Create a sustainable leather harness & leash for your pup",
+      "date": "2026-10-02",
+      "time": "16:00",
+      "duration": "5 h",
+      "price": "€160",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/create-a-sustainable-leather-harness-leash-for-your-pup/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2024/03/DSCF6969.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -2166,7 +2291,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 8,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
@@ -2283,6 +2408,32 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-10-03",
+      "time": "10:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-10-03",
+      "time": "10:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -2986,6 +3137,32 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-10-08",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-10-08",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -3201,6 +3378,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "title": "Make a leather collar + leash for your pet",
+      "date": "2026-10-09",
+      "time": "17:00",
+      "duration": "4 h",
+      "price": "€120",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3065-scaled-1-e1710774496420.webp"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -3303,6 +3493,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-own-leather-harness/",
+      "title": "Design and make your own leather harness",
+      "date": "2026-10-10",
+      "time": "10:00",
+      "duration": "6 h",
+      "price": "€220",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-own-leather-harness/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF5625-e1700689114504.webp"
     },
     {
       "slug": "galleria-lucia",
@@ -5082,6 +5285,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-own-leather-plant-holder/",
+      "title": "Make your own leather plant holder",
+      "date": "2026-10-22",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-own-leather-plant-holder/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/IMG_0127-1.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -5261,6 +5477,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/create-a-sustainable-leather-harness-leash-for-your-pup/",
+      "title": "Create a sustainable leather harness & leash for your pup",
+      "date": "2026-10-23",
+      "time": "16:00",
+      "duration": "5 h",
+      "price": "€160",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/create-a-sustainable-leather-harness-leash-for-your-pup/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2024/03/DSCF6969.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -5362,6 +5591,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-95116740.jpg?1782735863",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/95116740/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-10-24",
+      "time": "10:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -6022,6 +6264,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-10-29",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -6200,6 +6455,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "title": "Make a leather collar + leash for your pet",
+      "date": "2026-10-30",
+      "time": "17:00",
+      "duration": "4 h",
+      "price": "€120",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3065-scaled-1-e1710774496420.webp"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -6288,6 +6556,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-own-leather-harness/",
+      "title": "Design and make your own leather harness",
+      "date": "2026-10-31",
+      "time": "10:00",
+      "duration": "6 h",
+      "price": "€220",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-own-leather-harness/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF5625-e1700689114504.webp"
     },
     {
       "slug": "galleria-lucia",
@@ -6905,6 +7186,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "title": "Design & craft your own leather earrings",
+      "date": "2026-11-05",
+      "time": "17:00",
+      "duration": "2.5 h",
+      "price": "€69",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSC05935-copy.jpg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -7054,6 +7348,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-11-06",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
     },
     {
       "slug": "sabine",
@@ -7626,6 +7933,32 @@
       "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-11-12",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-11-12",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -7659,6 +7992,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "title": "Make a leather collar + leash for your pet",
+      "date": "2026-11-13",
+      "time": "17:00",
+      "duration": "4 h",
+      "price": "€120",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3065-scaled-1-e1710774496420.webp"
     },
     {
       "slug": "galleria-lucia",
@@ -8117,6 +8463,19 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "title": "Design & craft your own leather earrings",
+      "date": "2026-11-19",
+      "time": "17:00",
+      "duration": "2.5 h",
+      "price": "€69",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSC05935-copy.jpg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -8163,6 +8522,32 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-11-20",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "title": "Make your pet a collar + name tag",
+      "date": "2026-11-20",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
     },
     {
       "slug": "kohfink",
@@ -8225,6 +8610,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-95116740.jpg?1782735863",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/95116740/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/make-one-of-our-emblematic-beltbags/",
+      "title": "Make one of our emblematic Beltbags",
+      "date": "2026-11-21",
+      "time": "10:00",
+      "duration": "6 h",
+      "price": "€220",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/make-one-of-our-emblematic-beltbags/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2024/03/DSCF5281-scaled.webp"
     },
     {
       "slug": "galleria-lucia",
@@ -8681,6 +9079,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-11-28",
+      "time": "10:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -9035,6 +9446,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-12-03",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
+    },
+    {
       "slug": "kohfink",
       "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
       "title": "Honiglebkuchen backen",
@@ -9251,6 +9675,19 @@
       "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7504521817408703502.html",
       "district": "Kaulsdorf",
       "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
+    },
+    {
+      "slug": "lama",
+      "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "title": "Handcraft a sustainable leather belt",
+      "date": "2026-12-11",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€92",
+      "district": "Kreuzberg",
+      "languages": "EN · FR · ES",
+      "url": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
+      "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
     },
     {
       "slug": "ceramic-kingdom",
