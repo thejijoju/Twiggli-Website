@@ -213,12 +213,12 @@ a:hover { color: var(--color-accent); }
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
 .nav {
-  /* Wider than .container on purpose. Seven links, the language switcher and
-     the CTA do not fit inside the 1200px text measure — they used to wrap to
-     two lines each — so the bar is allowed a little more of the window than
-     the page below it, and the mark closes it at the right edge. */
+  /* The bar spans the window rather than the 1200px text measure: the mark
+     sits on the left edge and the CTA on the right, which is the only way
+     seven links, a switcher and a pill fit on one line without shrinking to
+     nothing. Below a laptop width the links swipe — see .nav-links. */
   width: 100%;
-  max-width: 1360px;
+  max-width: none;
   margin-inline: auto;
   /* 14px either side of a 55px mark — a quarter off the header's height. */
   padding: 14px var(--gutter);
@@ -234,14 +234,18 @@ a:hover { color: var(--color-accent); }
   display: flex;
   align-items: center;
   gap: 16px;
+  /* Holds the left edge and pushes the links and the CTA to the right. */
+  margin-right: auto;
 }
-/* The page links, running from the left edge of the bar. They take the room
-   they need and no more; whatever is left over falls between them and the
-   cluster on the right rather than being shared out between the labels. */
+/* The page links, sitting against the cluster on the right. Tighter than the
+   rest of the chrome and a touch smaller: seven labels, a switcher and the
+   CTA only fit the page's measure at this size, and a label that wraps to
+   two lines makes the whole bar look crowded. */
 .nav-links {
   display: flex;
   align-items: center;
   gap: 18px;
+  font-size: 14.5px;
   /* Shrinks below its content and swipes sideways rather than pushing the
      bar wider than the window. At a desktop width the whole row fits and
      there is nothing to swipe; between a phone and a laptop this is what

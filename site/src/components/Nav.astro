@@ -25,10 +25,16 @@ const inlineLinks = navLinks.filter((link) => !link.external);
 ---
 
 <nav class="nav">
-  {/* The links lead, starting at the left edge, and the mark closes the row
-      on the right. Packed against the mark on the left they had to share
-      what was left over with the CTA and wrapped to two lines each; given
-      the run of the bar they sit on one. */}
+  <div class="nav-brand-block">
+    {/* Mark only — the wordmark is not repeated here. The link keeps an
+        aria-label so it still announces as "Twiggli — home". */}
+    <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
+      <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
+    </a>
+  </div>
+  {/* The links and the cluster beside them sit against the right edge, in
+      line with the page below. They are two groups rather than one so the
+      links can swipe on a narrow screen without taking the CTA with them. */}
   <div class="nav-links">
     {inlineLinks.map((link) => (
       <a
@@ -49,12 +55,5 @@ const inlineLinks = navLinks.filter((link) => !link.external);
         <path d="M8 7h9v9" />
       </svg>
     </a>
-    <div class="nav-brand-block">
-      {/* Mark only — the wordmark is not repeated here. The link keeps an
-          aria-label so it still announces as "Twiggli — home". */}
-      <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
-        <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
-      </a>
-    </div>
   </div>
 </nav>
