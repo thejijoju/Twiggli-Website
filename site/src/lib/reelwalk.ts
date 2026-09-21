@@ -54,7 +54,14 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
   const { holdMs = 3500, step = 2, threshold = 0.4, playingClass, startAt = 1, graceMs = 6000 } = options;
   if (!reels.length) return { resync: () => {} };
 
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* A reader who asks for reduced motion gets a calmer version of the walk
+     rather than none of it. The reels are the site's content, not decoration
+     — a page of workshops with nothing moving does not say "these are
+     videos" to anyone. So one muted clip keeps playing at a time, each holding
+     the screen four times as long, which means far fewer changes rather than
+     a page that flickers between tiles. */
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const turnMs = calm ? holdMs * 4 : holdMs;
   const hoverable = window.matchMedia('(hover: hover)').matches;
   const marked = (reel: Reel) => reel.card ?? reel.tile;
 
@@ -104,7 +111,7 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
    *  shown, and a whole page of reels sat still. */
   const hold = (ms: number) => {
     clearTimeout(timer);
-    if (!still) timer = window.setTimeout(advance, ms);
+    timer = window.setTimeout(advance, ms);
   };
 
   const show = (reel: Reel | null) => {
@@ -113,19 +120,19 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     if (!reel) {
       // Nothing in view to play — look again shortly rather than stopping,
       // since the reader may simply be between two rows.
-      hold(holdMs);
+      hold(turnMs);
       return;
     }
     last = reel;
     play(reel);
     if (!reel.video.paused && reel.video.readyState >= 3) {
-      hold(holdMs);
+      hold(turnMs);
     } else {
       // Give it the grace window to get going; the moment it does, the turn
       // starts again from there.
-      hold(holdMs + graceMs);
+      hold(turnMs + graceMs);
       reel.video.addEventListener('playing', () => {
-        if (current === reel) hold(holdMs);
+        if (current === reel) hold(turnMs);
       }, { once: true });
     }
   };
@@ -188,10 +195,10 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     }
     // Whatever was playing has gone, or the first tiles have just come into
     // view: take the next turn now instead of at the next tick.
-    if (!still && !current && !hovered) {
+    if (!current && !hovered) {
       advance();
     }
-  }, { threshold: still ? 0.1 : threshold });
+  }, { threshold });
   reels.forEach((reel) => io.observe(reel.tile));
 
   const pin = (reel: Reel) => {
@@ -207,9 +214,7 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     last = reel;
     halt(reel);
     if (current === reel) current = null;
-    if (!still) {
-      advance();
-    }
+    advance();
   };
 
   for (const reel of reels) {
@@ -271,7 +276,7 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
       halt(current);
       current = null;
     }
-    if (!still && !current && !hovered) {
+    if (!current && !hovered) {
       advance();
     }
   };
