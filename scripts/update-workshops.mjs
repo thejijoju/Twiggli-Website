@@ -33,6 +33,49 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
  *  site/src/data/content.ts; `url` is both the page scraped and where the
  *  feed's Book button sends people. Add a line per host as pages are found. */
 const SOURCES = [
+  // LAMA Leather Goods — one WooCommerce product per workshop, each with a
+  // DATE dropdown of its real dates. Prices and durations come from the
+  // catalogue page; the dropdown supplies the dates and the hours.
+  { slug: 'lama', name: 'LAMA — leather earrings', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/',
+    title: 'Design & craft your own leather earrings', price: '€69', duration: '2.5 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — leather journal cover', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/make-your-own-leather-journal-cover/',
+    title: 'Leather Notebook Cover Workshop', price: '€75', duration: '2.5 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — leather belt', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/',
+    title: 'Handcraft a sustainable leather belt', price: '€92', duration: '3 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — leather plant holder', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/make-your-own-leather-plant-holder/',
+    title: 'Make your own leather plant holder', price: '€92', duration: '3 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — pet collar & name tag', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/',
+    title: 'Make your pet a collar + name tag', price: '€92', duration: '3 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — pet collar & leash', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/',
+    title: 'Make a leather collar + leash for your pet', price: '€120', duration: '4 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — dog harness & leash', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/create-a-sustainable-leather-harness-leash-for-your-pup/',
+    title: 'Create a sustainable leather harness & leash for your pup', price: '€160', duration: '5 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — leather harness', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/design-and-make-your-own-leather-harness/',
+    title: 'Design and make your own leather harness', price: '€220', duration: '6 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — beltbag', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/make-one-of-our-emblematic-beltbags/',
+    title: 'Make one of our emblematic Beltbags', price: '€220', duration: '6 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
+  { slug: 'lama', name: 'LAMA — leather sandals', mode: 'woo-date-options',
+    url: 'https://lamaleathergoods.com/leather-sandal-workshop/',
+    title: 'Leather Sandal Workshop', price: '€240', duration: '8.5 h',
+    district: 'Kreuzberg', languages: 'EN · FR · ES' },
   // Each page carries one Acuity class widget, so title and fallback price
   // come from config; dates arrive via the headless render of the widget.
   { slug: 'qian', name: 'Qian — Clay Garden pottery classes', mode: 'dates-de',
@@ -2610,6 +2653,50 @@ function yearForWeekday(month, day, weekday) {
  *  The options carry a weekday but no year, which is exactly enough:
  *  yearForWeekday settles it, so the January and February dates land in the
  *  following year without anyone hard-coding a rollover. */
+/** WooCommerce date variations. A product page's DATE dropdown carries the
+ *  class's dates as option labels — "September 24, 2026┃17:00-19:30h" — and
+ *  an "open date voucher" option for the gift version, which is not a date
+ *  and is skipped. Options whose value starts with "soldout_" are the ones
+ *  the shop has closed, and are kept as sold out rather than dropped: a
+ *  full class still tells a reader the host is running.
+ *
+ *  The year is on the label, so unlike the weekday formats elsewhere in
+ *  this file nothing has to be inferred. */
+function fromWooDateOptions(html, source) {
+  const out = [];
+  const months = Object.keys(EN_MONTHS).map((m) => m[0].toUpperCase() + m.slice(1)).join('|');
+  const selects = [...html.matchAll(
+    /<select[^>]*name="attribute_(?:date|workshop-session|session|termin)"[^>]*>([\s\S]*?)<\/select>/gi,
+  )].map((m) => m[1]);
+  const re = new RegExp(
+    `<option[^>]*value="([^"]*)"[^>]*>\\s*(${months})\\s+(\\d{1,2}),\\s*(\\d{4})` +
+    `(?:[^<]*?(\\d{1,2}):(\\d{2})\\s*[-\\u2013\\u2014]\\s*(\\d{1,2}):(\\d{2}))?`,
+    'gi',
+  );
+  for (const block of selects) {
+    for (const m of block.matchAll(re)) {
+      const month = String(EN_MONTHS[m[2].toLowerCase()]).padStart(2, '0');
+      const day = m[3].padStart(2, '0');
+      const soldOut = /^soldout[_-]/i.test(m[1]);
+      const time = m[5] ? `${m[5].padStart(2, '0')}:${m[6]}` : undefined;
+      const hours = m[5] ? Number(m[7]) + Number(m[8]) / 60 - (Number(m[5]) + Number(m[6]) / 60) : 0;
+      out.push({
+        title: source.title ?? stripTags(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '').trim(),
+        date: `${m[4]}-${month}-${day}`,
+        ...(time ? { time } : {}),
+        ...(hours > 0 && hours <= 12 ? { duration: `${Math.round(hours * 2) / 2} h` } : source.duration ? { duration: source.duration } : {}),
+        ...(source.price ? { price: source.price } : {}),
+        ...(source.district ? { district: source.district } : {}),
+        ...(source.languages ? { languages: source.languages } : {}),
+        ...(soldOut ? { soldOut: true } : {}),
+        url: source.url,
+      });
+    }
+  }
+  console.log(`[${source.slug}] woo-date-options: ${selects.length} date dropdown(s), ${out.length} dated option(s)`);
+  return out;
+}
+
 function fromOptionDates(html, source) {
   const out = [];
   const months = Object.keys(EN_MONTHS).map((m) => m[0].toUpperCase() + m.slice(1)).join('|');
@@ -3489,6 +3576,15 @@ async function scrapeSource(source) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
   console.log(`[${source.slug}] fetched ${html.length} bytes`);
+
+  if (source.mode === 'woo-date-options') {
+    const found = fromWooDateOptions(html, source);
+    const inRange = found
+      .filter((w) => w.date >= todayISO && w.date <= maxISO)
+      .map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w }));
+    console.log(`[${source.slug}] woo-date-options sessions kept: ${inRange.length} of ${found.length} listed`);
+    return { workshops: inRange, recurring: [] };
+  }
 
   if (source.mode === 'option-dates') {
     const found = fromOptionDates(html, source);

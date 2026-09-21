@@ -213,6 +213,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   ronnadel:         { activity: 'art',       groupRange: [1, 10], hourRange: [2.5, 2.5] },
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   elinorsahm:       { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2] },
+  // PLACEHOLDER group range — the studio says "small groups" and publishes
+  // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
+  lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -406,6 +409,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'elinorsahm', name: 'Elinor Sahm', specialty: 'Alcohol ink painting', studio: 'Kunstraum Heartspace',
       blurb: 'Alcohol ink is fluid, vivid and startlingly fast — it gives striking results almost immediately, even if you have never painted. Elinor Sahm has spent years exploring, exhibiting and teaching with it, and brings that to Berlin: the techniques she developed for steering and controlling the ink on Yupo paper, while leaving room for flow, chance and surprise. Complete beginners and working artists both welcome; everyone leaves with original pieces.',
       group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
+    { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
+      blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
+      group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -561,6 +567,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'elinorsahm', name: 'Elinor Sahm', specialty: 'Malen mit Alkoholtinte', studio: 'Kunstraum Heartspace',
       blurb: 'Alkoholtinte ist flüssig, leuchtend und verblüffend schnell — sie liefert fast sofort eindrucksvolle Ergebnisse, auch wenn du noch nie gemalt hast. Elinor Sahm hat jahrelang mit ihr gearbeitet, ausgestellt und unterrichtet und bringt das nun nach Berlin: die Techniken, die sie entwickelt hat, um die Tinte auf Yupo-Papier zu lenken und zu kontrollieren — und ihr trotzdem Raum für Fluss, Zufall und Überraschung zu lassen. Für komplette Anfänger wie für arbeitende Künstlerinnen; alle nehmen eigene Arbeiten mit.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
+    { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
+      blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
+      group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
   ],
 };
 
@@ -614,6 +623,11 @@ const reels: Record<string, { video: string; poster: string }> = {
   // working the needles, then the stitches close up, the finished beige
   // square held out, and the red one beside it. Audio stripped.
   celia: { video: '/video/celia.mp4', poster: '/video/celia-poster.jpg' },
+  // LAMA's own sandal-workshop reel, picked up after its caption ends at
+  // six seconds: drawing the pattern, cutting the leather, a foot traced on
+  // paper on the studio floor, straps laid onto soles, and the finished
+  // sandals worn. Audio stripped.
+  lama: { video: '/video/lama.mp4', poster: '/video/lama-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
