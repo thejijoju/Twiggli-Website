@@ -25,27 +25,36 @@ const inlineLinks = navLinks.filter((link) => !link.external);
 ---
 
 <nav class="nav">
-  <div class="nav-brand-block">
-    {/* Mark only — the wordmark is not repeated here. The link keeps an
-        aria-label so it still announces as "Twiggli — home". */}
-    <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
-      <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
-    </a>
-  </div>
-  <div class="nav-end">
+  {/* The links lead, starting at the left edge, and the mark closes the row
+      on the right. Packed against the mark on the left they had to share
+      what was left over with the CTA and wrapped to two lines each; given
+      the run of the bar they sit on one. */}
+  <div class="nav-links">
     {inlineLinks.map((link) => (
       <a
         href={link.href}
         aria-current={isCurrent(link) ? 'page' : undefined}
       >{link.label}</a>
     ))}
+  </div>
+  <div class="nav-end">
     <LangSwitch lang={lang} translations={translations} />
-    <a href={appUrl} class="nav-cta" target="_blank" rel="noopener">
-      {ctaLabel}
+    {/* The label is a span so a phone can drop it and leave the arrow: on a
+        390px bar the words cost more room than the links can spare. The
+        aria-label keeps the button announced either way. */}
+    <a href={appUrl} class="nav-cta" target="_blank" rel="noopener" aria-label={ctaLabel}>
+      <span class="nav-cta-label">{ctaLabel}</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M7 17 17 7" />
         <path d="M8 7h9v9" />
       </svg>
     </a>
+    <div class="nav-brand-block">
+      {/* Mark only — the wordmark is not repeated here. The link keeps an
+          aria-label so it still announces as "Twiggli — home". */}
+      <a href={href(lang, '/')} class="nav-logo" aria-label={`${brand.name} — home`}>
+        <ImageSlot src={brand.logo} shape="rect" placeholder="Logo" alt={`${brand.name} logo`} />
+      </a>
+    </div>
   </div>
 </nav>

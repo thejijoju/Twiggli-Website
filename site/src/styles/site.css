@@ -213,11 +213,12 @@ a:hover { color: var(--color-accent); }
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
 .nav {
-  /* Same measure as .container, so the nav's right cluster lands on the same
-     vertical line as the page content below it. Without this the nav ran the
-     full viewport width and nothing in the header aligned with anything else. */
+  /* Wider than .container on purpose. Seven links, the language switcher and
+     the CTA do not fit inside the 1200px text measure — they used to wrap to
+     two lines each — so the bar is allowed a little more of the window than
+     the page below it, and the mark closes it at the right edge. */
   width: 100%;
-  max-width: 1200px;
+  max-width: 1360px;
   margin-inline: auto;
   /* 14px either side of a 55px mark — a quarter off the header's height. */
   padding: 14px var(--gutter);
@@ -225,17 +226,39 @@ a:hover { color: var(--color-accent); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+  /* Enough to read as two groups, no more: German's longer labels need the
+     rest of the bar at a laptop width. */
+  gap: 24px;
 }
 .nav-brand-block {
   display: flex;
   align-items: center;
   gap: 16px;
 }
+/* The page links, running from the left edge of the bar. They take the room
+   they need and no more; whatever is left over falls between them and the
+   cluster on the right rather than being shared out between the labels. */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  /* Shrinks below its content and swipes sideways rather than pushing the
+     bar wider than the window. At a desktop width the whole row fits and
+     there is nothing to swipe; between a phone and a laptop this is what
+     keeps the links on one line without spilling off the page. */
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+/* A label that wraps to two lines makes the whole bar look crowded, and the
+   row has space for them all on one line now. */
+.nav-links a { white-space: nowrap; }
+/* The switcher, the CTA and the mark, closing the row on the right. */
 .nav-end {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
 }
 /* The mark stands alone in the nav — no wordmark beside it. */
 .nav-logo { display: block; width: 55px; height: 55px; flex: none; }
@@ -1600,6 +1623,7 @@ a:hover { color: var(--color-accent); }
     gap: 12px;
     row-gap: 10px;
   }
+  .nav-links,
   .nav-end {
     gap: 14px;
     flex-wrap: wrap;
@@ -1626,7 +1650,10 @@ a:hover { color: var(--color-accent); }
     gap: 12px;
   }
   .site-header .nav-logo { width: 40px; height: 40px; }
-  .site-header .nav-end {
+  /* The page links are the part that cannot fit, so they are the part that
+     swipes: one row, scrolled sideways, clipped to the space left over by
+     the switcher, the CTA and the mark beside them. */
+  .site-header .nav-links {
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
@@ -1635,10 +1662,20 @@ a:hover { color: var(--color-accent); }
     /* The row scrolls; nothing in it may push the bar wider than the screen. */
     min-width: 0;
   }
-  .site-header .nav-end::-webkit-scrollbar { display: none; }
-  .site-header .nav-end a { white-space: nowrap; }
+  .site-header .nav-links::-webkit-scrollbar { display: none; }
+  .site-header .nav-end {
+    flex-wrap: nowrap;
+    gap: 10px;
+    flex: none;
+  }
   .site-header .nav a.nav-cta { padding: 8px 14px; font-size: 13px; flex: none; }
   .site-header .nav-brand-block { flex: none; }
+  /* Below a phone's width the CTA keeps its arrow and drops its words — a
+     hundred pixels of label leaves the links nothing to swipe through. */
+  @media (max-width: 560px) {
+    .site-header .nav-cta-label { display: none; }
+    .site-header .nav a.nav-cta { padding: 9px; border-radius: 999px; }
+  }
   /* The links row scrolls sideways and clips what overflows it, so the
      menu leaves the row: pinned under the bar, at the right edge. */
   .site-header .lang-switch { position: static; }
