@@ -105,11 +105,10 @@ const labels = ui(lang).directory;
 <script>
   import { startReelWalk } from '../lib/reelwalk.ts';
 
-  // Reels on the directory play themselves, one at a time, walking across
-  // the grid: the first tile, then the third, then the one in the middle on
-  // the next lap, and scrolling carries the walk along with the reader. The
-  // whole mechanism lives in lib/reelwalk.ts, which the calendar uses too —
-  // the two pages behave the same way on purpose.
+  // Reels on the directory play themselves, one after the other: whichever
+  // tiles are on screen take a turn each, two and a half seconds apiece, so
+  // a page of stills reads as video wherever the reader happens to be. The
+  // mechanism lives in lib/reelwalk.ts, which the calendar uses too.
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
   const reels = cards
     .map((card) => ({
@@ -120,7 +119,15 @@ const labels = ui(lang).directory;
     .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } =>
       !!r.tile && !!r.video);
 
-  const walk = startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.35, startAt: 0 });
+  const walk = startReelWalk(reels, {
+    playingClass: 'is-playing',
+    threshold: 0.35,
+    startAt: 0,
+    // Straight down the line rather than skipping a tile: every reel on
+    // screen gets its turn, in the order they are read.
+    step: 1,
+    holdMs: 2500,
+  });
   // The filters hide cards, which changes which reels are in the walk.
   document.addEventListener('twiggli:filtered', () => walk.resync());
 </script>

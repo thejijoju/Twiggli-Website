@@ -45,10 +45,13 @@ export type ReelWalkOptions = {
    *  The calendar starts on the second card of a four-wide row; the
    *  directory, three wide, starts on the first. */
   startAt?: number;
+  /** How long to wait for a clip that has not started yet before giving up
+   *  on it and moving along. */
+  graceMs?: number;
 };
 
 export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
-  const { holdMs = 3500, step = 2, threshold = 0.4, playingClass, startAt = 1 } = options;
+  const { holdMs = 3500, step = 2, threshold = 0.4, playingClass, startAt = 1, graceMs = 6000 } = options;
   if (!reels.length) return { resync: () => {} };
 
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -93,12 +96,37 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     if (!reel.video.paused) reel.video.pause();
   };
 
+  /** The turn's clock. A turn is three and a half seconds of a clip actually
+   *  running, not three and a half seconds of waiting for one: a reel loads
+   *  nothing until its turn comes, and a two-megabyte clip on a slow
+   *  connection needs a moment before its first frame. Timing the turn from
+   *  the play() call instead moved the spotlight on before anything had
+   *  shown, and a whole page of reels sat still. */
+  const hold = (ms: number) => {
+    clearTimeout(timer);
+    if (!still) timer = window.setTimeout(advance, ms);
+  };
+
   const show = (reel: Reel | null) => {
     if (current && current !== reel) halt(current);
     current = reel;
-    if (reel) {
-      last = reel;
-      play(reel);
+    if (!reel) {
+      // Nothing in view to play — look again shortly rather than stopping,
+      // since the reader may simply be between two rows.
+      hold(holdMs);
+      return;
+    }
+    last = reel;
+    play(reel);
+    if (!reel.video.paused && reel.video.readyState >= 3) {
+      hold(holdMs);
+    } else {
+      // Give it the grace window to get going; the moment it does, the turn
+      // starts again from there.
+      hold(holdMs + graceMs);
+      reel.video.addEventListener('playing', () => {
+        if (current === reel) hold(holdMs);
+      }, { once: true });
     }
   };
 
@@ -136,15 +164,12 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     return live[Math.min(lap, live.length - 1)];
   };
 
-  const advance = () => {
+  // Declared as a function so `hold` above can schedule it before it is
+  // defined — the two call each other, one turn at a time.
+  function advance() {
     if (hovered) return; // the pointer outranks the walk
     show(nextUp());
-  };
-
-  const restart = () => {
-    clearInterval(timer);
-    if (!still) timer = window.setInterval(advance, holdMs);
-  };
+  }
 
   const byTile = new WeakMap<Element, Reel>();
   reels.forEach((reel) => byTile.set(reel.tile, reel));
@@ -165,7 +190,6 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     // view: take the next turn now instead of at the next tick.
     if (!still && !current && !hovered) {
       advance();
-      restart();
     }
   }, { threshold: still ? 0.1 : threshold });
   reels.forEach((reel) => io.observe(reel.tile));
@@ -185,7 +209,6 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     if (current === reel) current = null;
     if (!still) {
       advance();
-      restart();
     }
   };
 
@@ -211,7 +234,6 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
           pin(reel);
           hovered = null;
           last = reel;
-          restart();
         } else {
           stopped.add(reel);
           hovered = null;
@@ -229,7 +251,6 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
         pin(reel);
         hovered = null;
         last = reel;
-        restart();
       } else {
         stopped.add(reel);
         halt(reel);
@@ -241,7 +262,7 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     });
   }
 
-  restart();
+  advance();
 
   /** Something reflowed or filtered the grid: drop anything no longer
    *  eligible and take the next turn if the spotlight went with it. */
@@ -252,7 +273,6 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     }
     if (!still && !current && !hovered) {
       advance();
-      restart();
     }
   };
 
