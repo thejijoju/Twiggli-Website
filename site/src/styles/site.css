@@ -213,10 +213,10 @@ a:hover { color: var(--color-accent); }
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
 .nav {
-  /* The bar spans the window rather than the 1200px text measure: the mark
-     sits on the left edge and the CTA on the right, which is the only way
-     seven links, a switcher and a pill fit on one line without shrinking to
-     nothing. Below a laptop width the links swipe — see .nav-links. */
+  /* The bar spans the window rather than the 1200px text measure, so the
+     mark can sit on the page's left edge while the links line up with the
+     column of text below them — see .nav-inner. */
+  position: relative;
   width: 100%;
   max-width: none;
   margin-inline: auto;
@@ -237,6 +237,42 @@ a:hover { color: var(--color-accent); }
   /* Holds the left edge and pushes the links and the CTA to the right. */
   margin-right: auto;
 }
+/* Holds the links and the cluster beside them. Narrow windows keep them
+   packed against the right of the bar, after the mark. */
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* German needs every pixel of the column: its links and the cluster
+     beside them come to within a dozen pixels of the measure. */
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+/* Wide enough for the page's margin to hold the mark on its own: the links
+   and the CTA then take the exact column the page below them uses, so the
+   first link begins on the same line as the heading and the CTA ends where
+   that heading's measure ends. The mark steps out into the margin at the
+   window's edge. The 1360px floor is where that margin first has room for
+   it — any narrower and the mark would sit under the first link. */
+@media (min-width: 1360px) {
+  .nav-inner {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    justify-content: space-between;
+    flex: none;
+  }
+  .nav-brand-block {
+    position: absolute;
+    left: var(--gutter);
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 0;
+  }
+}
+
 /* The page links, sitting against the cluster on the right. Tighter than the
    rest of the chrome and a touch smaller: seven labels, a switcher and the
    CTA only fit the page's measure at this size, and a label that wraps to
@@ -244,8 +280,11 @@ a:hover { color: var(--color-accent); }
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 18px;
-  font-size: 14.5px;
+  gap: 16px;
+  /* A point under the rest of the chrome. German's labels — "Firmen- &
+     Gruppenbuchungen" among them — only fit the page's column at this
+     size, and fitting is what keeps every label on one line. */
+  font-size: 14px;
   /* Shrinks below its content and swipes sideways rather than pushing the
      bar wider than the window. At a desktop width the whole row fits and
      there is nothing to swipe; between a phone and a laptop this is what
