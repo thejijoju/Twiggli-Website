@@ -1,6 +1,12 @@
 {
-  "updated": "2026-09-21T10:37:05.487Z",
+  "updated": "2026-09-21T13:43:22.732Z",
   "sources": [
+    {
+      "slug": "blauhaus",
+      "url": "https://www.blauhaus.studio/event-pages-sitemap.xml",
+      "status": "failed: HTTP 404",
+      "count": 0
+    },
     {
       "slug": "lama",
       "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
@@ -155,7 +161,7 @@
       "slug": "ceramic-kingdom",
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "status": "ok",
-      "count": 43
+      "count": 42
     },
     {
       "slug": "sabine",
@@ -304,7 +310,7 @@
     {
       "slug": "ronnadel",
       "url": "https://www.tickettailor.com/events/ronnadel",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 1
     },
     {
@@ -316,7 +322,7 @@
     {
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/turnedartist",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 12
     },
     {
@@ -778,19 +784,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Flexible Glazing Group Class",
-      "date": "2026-09-21",
-      "time": "18:00",
-      "spots": 1,
-      "duration": "2 h",
-      "price": "€69",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/64701453/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
     },
     {
       "slug": "drawingwalks",
