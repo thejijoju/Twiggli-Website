@@ -216,6 +216,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
+  // PLACEHOLDER group range — the studio publishes no cap; its own reviews
+  // call it a small group.
+  blauhaus:         { activity: 'photography', groupRange: [1, 10], hourRange: [2.5, 2.5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -412,6 +415,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
+    { slug: 'blauhaus', name: 'Benedikt Emig', specialty: 'Cyanotype printing', studio: 'Blauhaus',
+      blurb: 'The oldest photographic process still in daily use, and the one that needs no darkroom: you brush a light-sensitive coating onto paper, lay leaves, flowers or finds from your last walk on top, and let the sun do the rest. What lifts out of the water tray is Prussian blue — a print, a postcard or a folded card to take home. Benedikt works with complete beginners as readily as with people who already draw or photograph; no experience is needed, every material is provided, and the moment the paper turns in the water is the one everyone remembers.',
+      group: 'Small group', duration: '2.5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -570,6 +576,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
+    { slug: 'blauhaus', name: 'Benedikt Emig', specialty: 'Cyanotypie', studio: 'Blauhaus',
+      blurb: 'Eines der ältesten fotografischen Verfahren — und eines, das keine Dunkelkammer braucht: Du streichst eine lichtempfindliche Schicht auf Papier, legst Blätter, Blüten oder Fundstücke vom letzten Spaziergang darauf und lässt die Sonne den Rest machen. Was aus der Wasserschale kommt, ist Preußischblau: ein Druck, eine Postkarte oder eine Klappkarte zum Mitnehmen. Benedikt arbeitet mit absoluten Anfängerinnen genauso wie mit Leuten, die schon zeichnen oder fotografieren; Vorkenntnisse braucht es keine, alle Materialien sind da, und der Moment, in dem das Papier im Wasser umschlägt, bleibt allen im Kopf.',
+      group: 'Kleine Gruppe', duration: '2,5 Std.', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
   ],
 };
 
@@ -628,6 +637,12 @@ const reels: Record<string, { video: string; poster: string }> = {
   // paper on the studio floor, straps laid onto soles, and the finished
   // sandals worn. Audio stripped.
   lama: { video: '/video/lama.mp4', poster: '/video/lama-poster.jpg' },
+  // Blauhaus's own, cut from a minute of a workshop: Benedikt in the studio,
+  // the emulsion brushed on, botanicals laid out, the exposure frame, a moon
+  // print coming up blue in the water, and a finished dandelion held to the
+  // light. No captions; audio stripped. The end card with their logo is left
+  // off — it reads as a caption on a card this size.
+  blauhaus: { video: '/video/blauhaus.mp4', poster: '/video/blauhaus-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs

@@ -36,6 +36,13 @@ const SOURCES = [
   // LAMA Leather Goods — one WooCommerce product per workshop, each with a
   // DATE dropdown of its real dates. Prices and durations come from the
   // catalogue page; the dropdown supplies the dates and the hours.
+  // Blauhaus runs its dates through Wix Events, so the events sitemap and the
+  // schema.org block on each detail page carry the whole schedule — nothing
+  // to configure per date. Price and duration from the workshop page, which
+  // states them once for every session.
+  { slug: 'blauhaus', name: 'Blauhaus — Cyanotypie', mode: 'wix-events-sitemap',
+    url: 'https://www.blauhaus.studio/event-pages-sitemap.xml',
+    price: '€59', duration: '2.5 h', district: 'Berlin' },
   { slug: 'lama', name: 'LAMA — leather earrings', mode: 'woo-date-options',
     url: 'https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/',
     title: 'Design & craft your own leather earrings', price: '€69', duration: '2.5 h',
