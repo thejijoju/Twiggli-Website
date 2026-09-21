@@ -83,6 +83,7 @@ export function getSiteData(lang: Lang) {
        pitch and the directory of makers who can run the session are one
        page now. */
     { label: t.nav.corporate, href: href(lang, '/corporatebookings/') },
+    { label: t.nav.spaces, href: href(lang, '/studio-rental/') },
     { label: t.nav.blog, href: href(docLang, '/blog/') },
     { label: t.nav.contact, href: href(lang, '/contact/') },
   ];

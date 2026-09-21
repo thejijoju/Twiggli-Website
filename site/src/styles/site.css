@@ -3023,3 +3023,67 @@ a:hover { color: var(--color-accent); }
 .form-note { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 65%, transparent); }
 .form-note a { color: var(--color-accent-700); }
 .form-note-sent { font-weight: 700; color: var(--color-accent-800); }
+
+/* — rentable studios (/studio-rental/) — one card per space: the host's
+   reel on the left at a comfortable size, the practical lines on the right,
+   stacking on a phone. Close kin to .maker, but a space is a bigger thing
+   than a host card and gets more room to breathe. */
+.space-grid {
+  display: grid;
+  gap: 36px;
+}
+.space-card {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 28px;
+  align-items: start;
+}
+.space-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  aspect-ratio: 4 / 3;
+}
+.space-media video,
+.space-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.space-name { font-size: 26px; margin: 0 0 4px; }
+.space-where {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+}
+.space-copy { margin: 0 0 18px; }
+.space-meta {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 20px;
+  font-size: 15px;
+}
+.space-meta > div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; }
+.space-meta dt {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  padding-top: 2px;
+}
+.space-meta dd { margin: 0; }
+.space-ask { display: inline-flex; }
+.space-note { margin-top: 28px; }
+
+@media (max-width: 860px) {
+  .space-card { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .space-media { aspect-ratio: 16 / 10; }
+  .space-meta > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .space-ask { width: 100%; justify-content: center; text-align: center; }
+}

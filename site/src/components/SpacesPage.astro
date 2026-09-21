@@ -1,0 +1,108 @@
+---
+/** Studios our hosts rent out when they are not teaching in them — one
+ *  card per space, the host's own reel playing on it, and an enquiry that
+ *  lands as a mail like every other request on the site. */
+import Base from '../layouts/Base.astro';
+import HostMonogram from './HostMonogram.astro';
+import { getHosts } from '../data/content.ts';
+import { spaces } from '../data/spaces.ts';
+import { ui } from '../data/i18n.ts';
+import { hostHref } from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang).spaces;
+const hosts = getHosts(lang);
+
+const cards = spaces.map((space) => {
+  const host = hosts.find((h) => h.slug === space.slug);
+  return { space, host };
+});
+const nums = ['01', '02', '03'];
+---
+
+<Base title={t.title} description={t.description} lang={lang}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker">{t.kicker}</span>
+      <h1 class="page-title">{t.h1}</h1>
+      <p class="page-lede">{t.lede}</p>
+      <div class="hero-actions">
+        <a href={href(lang, '/contact/')} class="btn btn-primary">{t.cta}</a>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <div class="space-grid">
+        {cards.map(({ space, host }) => (
+          <article class="space-card">
+            <div class="space-media">
+              {host?.video ? (
+                <video
+                  class="space-video"
+                  src={host.video}
+                  poster={host.poster}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                ></video>
+              ) : host?.wide || host?.photo ? (
+                <img src={host.wide ?? host.photo} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <HostMonogram name={space.name} />
+              )}
+            </div>
+            <div class="space-body">
+              <h2 class="space-name">{space.name}</h2>
+              <p class="space-where">{space.address} · {space.district}</p>
+              <p class="space-copy">{space.copy[lang]}</p>
+              <dl class="space-meta">
+                <div><dt>{t.labelSuits}</dt><dd>{space.suits[lang]}</dd></div>
+                <div>
+                  <dt>{t.labelHost}</dt>
+                  <dd>{host ? <a href={hostHref(lang, host)}>{host.name}</a> : space.name}</dd>
+                </div>
+                <div><dt>{t.labelPrice}</dt><dd>{space.price ?? t.priceOnRequest}</dd></div>
+              </dl>
+              {/* Lands on the contact form with the space already named, the
+                  same route the directory's "Request event" takes. */}
+              <a class="btn btn-primary space-ask" href={`${href(lang, '/contact/')}?space=${encodeURIComponent(space.name)}`}>
+                {t.askAbout} {space.name}
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="form-note space-note">{t.note}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      {t.points.map((point, i) => (
+        <div class="step">
+          <p class="step-num">{nums[i]}</p>
+          <h3 class="step-title">{point.title}</h3>
+          <p class="step-copy">{point.copy}</p>
+        </div>
+      ))}
+    </section>
+
+    <hr class="rule" />
+
+    <section class="split split-text-first">
+      <div>
+        <span class="kicker kicker-tight">{t.moreKicker}</span>
+        <p class="split-copy">{t.more}</p>
+        <div class="split-actions">
+          <a href={href(lang, '/contact/')} class="btn btn-primary">{t.cta}</a>
+        </div>
+      </div>
+      <div></div>
+    </section>
+  </div>
+</Base>

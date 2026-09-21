@@ -44,6 +44,7 @@ const mailCopy = {
           data-request-email={requestEmail}
           data-mail-copy={JSON.stringify(mailCopy)}
           data-prefill={t.prefill('{host}')}
+          data-prefill-space={t.prefillSpace('{host}')}
         >
           <div class="field">
             <label for="name">{t.name}</label>
@@ -102,13 +103,17 @@ const mailCopy = {
       const form = document.querySelector('[data-request-form]');
       if (!form) return;
       const copy = JSON.parse(form.dataset.mailCopy || '{}');
-      const host = new URLSearchParams(location.search).get('host');
+      const params = new URLSearchParams(location.search);
+      // A space enquiry (from /studio-rental/) asks about renting the room;
+      // a host enquiry (from the directory) asks about an event.
+      const space = params.get('space');
+      const host = params.get('host') || space;
       if (host) {
         const topic = document.getElementById('topic');
         if (topic) topic.value = copy.corporateTopic;
         const message = document.getElementById('message');
         if (message && !message.value)
-          message.value = (form.dataset.prefill || '').replace('{host}', host);
+          message.value = ((space ? form.dataset.prefillSpace : form.dataset.prefill) || '').replace('{host}', host);
       }
 
       // Submit composes the mail and opens it in the visitor's mail app. The
