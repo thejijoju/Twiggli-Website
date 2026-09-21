@@ -2103,7 +2103,7 @@ a:hover { color: var(--color-accent); }
   font-family: inherit;
   color: inherit;
   cursor: pointer;
-  transition: color 0.15s ease, opacity 0.15s ease;
+  transition: color 0.15s ease, opacity 0.15s ease, transform 0.18s ease;
 }
 .daychip-dow {
   font-size: 15px;
@@ -2121,6 +2121,11 @@ a:hover { color: var(--color-accent); }
 .daychip.is-before .daychip-num { color: color-mix(in srgb, var(--color-text) 32%, transparent); }
 .daychip[aria-selected='true'] .daychip-dow,
 .daychip[aria-selected='true'] .daychip-num { color: var(--color-accent); }
+/* The chosen day also sits a little larger than the rest of the strip.
+   A transform rather than a bigger font: the chip keeps its measured width,
+   so the strip does not shuffle sideways every time a day is picked. */
+.daychip[aria-selected='true'] { transform: scale(1.18); }
+.daychip[aria-selected='true'] .daychip-dow { font-weight: 900; }
 
 /* The day feed reads as one block, like the "On request" panel below it —
    a light baby blue instead of that panel's lavender, so the two areas
