@@ -93,24 +93,19 @@ const videoPlaceholder = ui(lang).hostGrid.placeholder;
 )}
 
 <script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
   // Center-focused "coverflow" carousel: on scroll, scale/fade each card by
-  // its distance from the track's centre. Click a side card to snap-scroll
-  // it to centre; click the already-centred card to play its reel (or reveal
-  // the "coming soon" state where there is no reel yet). A card scrolled away
-  // from the centre stops and rewinds, so only one reel ever plays at a time.
+  // its distance from the track's centre.
+  //
+  // The reels themselves are the shared walk the directory and the calendar
+  // use — one clip at a time, taking its turn as the row comes into view.
+  // This row used to start a reel on hover alone, which is no start at all
+  // on a phone: the whole section sat still until something was tapped.
   // Runs once per `.host-coverflow` instance on the page.
   function initCoverflow(track: HTMLElement) {
     const cards = Array.from(track.querySelectorAll<HTMLElement>('.host-coverflow-card'));
     if (!cards.length) return;
-
-    const videoOf = (card: HTMLElement) =>
-      card.querySelector<HTMLVideoElement>('.host-coverflow-video');
-
-    const stop = (card: HTMLElement) => {
-      card.classList.remove('is-playing');
-      const v = videoOf(card);
-      if (v) { v.pause(); v.currentTime = 0; }
-    };
 
     // One card-plus-gap. Distance from the centre is measured in these, so a
     // card's place in the row (centre, neighbour, edge) is the same number
@@ -143,10 +138,9 @@ const videoPlaceholder = ui(lang).hostGrid.placeholder;
         if (media) media.style.transform = `scale(${scale})`;
         card.style.opacity = String(fade);
         card.classList.toggle('is-active', norm < 0.5);
-        // Every card is watchable, so being off-centre no longer means being
-        // too small to watch: a reel only stops once its card has scrolled
-        // out of the row.
-        if (norm > 3.5 && card.classList.contains('is-playing')) stop(card);
+        // A reel scrolled out of the row stops on its own: the walk watches
+        // each card, and a card clipped away by the track's own overflow
+        // counts as off screen.
       });
     };
     const onScroll = () => {
@@ -156,47 +150,34 @@ const videoPlaceholder = ui(lang).hostGrid.placeholder;
     track.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
 
-    const hoverable = window.matchMedia('(hover: hover)').matches;
-
-    const play = (card: HTMLElement) => {
-      const v = videoOf(card);
-      if (!v || card.classList.contains('is-playing')) return;
-      cards.forEach((other) => { if (other !== card) stop(other); });
-      card.classList.add('is-playing');
-      // Muted + playsinline, so autoplay policies allow this; the promise
-      // still rejects on some browsers, and an un-played card should not
-      // sit there claiming to be playing.
-      v.play().catch(() => card.classList.remove('is-playing'));
-    };
-
-    cards.forEach((card) => {
-      // There is no play button, so on a touch screen — where there is no
-      // pointer to hover with — a tap on the card is what starts and stops
-      // the reel. With a mouse the hover handlers below do it instead.
-      const activate = () => {
-        if (card.classList.contains('is-playing')) {
-          stop(card);
-          return;
-        }
-        play(card);
-      };
-      card.addEventListener('click', activate);
-      // The name below the reel is a link out to the calendar; without this
-      // the card's own click would swallow it and just recentre the card.
+    // The name below the reel is a link out to that host's page; without
+    // this the card's own click would swallow it and only toggle the reel.
+    for (const card of cards) {
       card.querySelector('.host-coverflow-link')?.addEventListener('click', (e) => e.stopPropagation());
-      // With a mouse, the reel starts the moment the pointer is over the
-      // card — no need to centre it first — and stops when the pointer
-      // leaves, the same way scrolling the card off centre stops it.
-      if (hoverable) {
-        card.addEventListener('mouseenter', () => play(card));
-        card.addEventListener('mouseleave', () => stop(card));
-      }
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          activate();
-        }
-      });
+    }
+
+    // Hovering a card plays it, tapping one toggles it, and left alone the
+    // row plays itself — three seconds a card, in the order they are read.
+    // All of that is the shared walk; the carousel only says which cards it
+    // is made of.
+    const reels = cards
+      .map((card) => ({
+        card,
+        tile: card,
+        video: card.querySelector<HTMLVideoElement>('.host-coverflow-video'),
+      }))
+      .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.video);
+    startReelWalk(reels, {
+      playingClass: 'is-playing',
+      // A quarter of the card, not half. The row is horizontal and a phone
+      // holds barely one card at a time, so a stricter threshold left a
+      // single card eligible — and a walk with one place to go plays the
+      // same reel over and over. A quarter takes in the card edging in at
+      // the side, which is the one the walk hands over to.
+      threshold: 0.25,
+      startAt: 0,
+      step: 1,
+      holdMs: 3000,
     });
 
     // Open at the left edge: the row starts with its first reel against the
