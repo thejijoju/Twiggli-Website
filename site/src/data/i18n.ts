@@ -44,6 +44,7 @@ const en = {
   directory: {
     studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages',
     price: 'Price', play: 'Play reel', request: 'Request event',
+    more: 'See more', less: 'See less',
   },
   hostGrid: { placeholder: 'Video preview coming soon' },
   phone: { search: 'What do you want to do?' },
@@ -202,6 +203,7 @@ const de: UiCopy = {
   directory: {
     studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen',
     price: 'Preis', play: 'Reel abspielen', request: 'Event anfragen',
+    more: 'Mehr anzeigen', less: 'Weniger anzeigen',
   },
   hostGrid: { placeholder: 'Video-Vorschau folgt in Kürze' },
   phone: { search: 'Was möchtest du machen?' },
@@ -358,6 +360,7 @@ const fr: UiCopy = {
   directory: {
     studio: 'Atelier', group: 'Groupe', duration: 'Durée', place: 'Où', languages: 'Langues',
     price: 'Prix', play: 'Lire la vidéo', request: 'Demander un événement',
+    more: 'Voir plus', less: 'Voir moins',
   },
   hostGrid: { placeholder: 'Aperçu vidéo bientôt disponible' },
   phone: { search: 'Qu’avez-vous envie de faire ?' },
@@ -514,6 +517,7 @@ const es: UiCopy = {
   directory: {
     studio: 'Estudio', group: 'Grupo', duration: 'Duración', place: 'Dónde', languages: 'Idiomas',
     price: 'Precio', play: 'Ver vídeo', request: 'Solicitar evento',
+    more: 'Ver más', less: 'Ver menos',
   },
   hostGrid: { placeholder: 'Vista previa en vídeo próximamente' },
   phone: { search: '¿Qué te apetece hacer?' },
@@ -670,6 +674,7 @@ const it: UiCopy = {
   directory: {
     studio: 'Studio', group: 'Gruppo', duration: 'Durata', place: 'Dove', languages: 'Lingue',
     price: 'Prezzo', play: 'Guarda il video', request: 'Richiedi un evento',
+    more: 'Mostra altro', less: 'Mostra meno',
   },
   hostGrid: { placeholder: 'Anteprima video in arrivo' },
   phone: { search: 'Cosa ti va di fare?' },
@@ -826,6 +831,7 @@ const nl: UiCopy = {
   directory: {
     studio: 'Studio', group: 'Groep', duration: 'Duur', place: 'Waar', languages: 'Talen',
     price: 'Prijs', play: 'Video afspelen', request: 'Evenement aanvragen',
+    more: 'Meer tonen', less: 'Minder tonen',
   },
   hostGrid: { placeholder: 'Videopreview volgt binnenkort' },
   phone: { search: 'Wat wil je doen?' },
@@ -982,6 +988,7 @@ const pl: UiCopy = {
   directory: {
     studio: 'Pracownia', group: 'Grupa', duration: 'Czas trwania', place: 'Gdzie', languages: 'Języki',
     price: 'Cena', play: 'Odtwórz wideo', request: 'Zapytaj o wydarzenie',
+    more: 'Pokaż więcej', less: 'Pokaż mniej',
   },
   hostGrid: { placeholder: 'Podgląd wideo wkrótce' },
   phone: { search: 'Co chcesz robić?' },
@@ -1138,6 +1145,7 @@ const tr: UiCopy = {
   directory: {
     studio: 'Stüdyo', group: 'Grup', duration: 'Süre', place: 'Nerede', languages: 'Diller',
     price: 'Fiyat', play: 'Videoyu oynat', request: 'Etkinlik talep et',
+    more: 'Devamını göster', less: 'Daha az göster',
   },
   hostGrid: { placeholder: 'Video önizlemesi yakında' },
   phone: { search: 'Ne yapmak istersiniz?' },

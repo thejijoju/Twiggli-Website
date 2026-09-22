@@ -81,7 +81,20 @@ const labels = ui(lang).directory;
 
       <h2 class="maker-name"><a href={hostHref(lang, host)}>{host.name}</a></h2>
       <p class="maker-specialty">{host.specialty}</p>
-      <p class="maker-blurb">{host.blurb}</p>
+      {/* Four lines, then the rest on request: the blurbs run long enough
+          that a page of them buries the details row a team lead is looking
+          for. The button appears only where there is something under the
+          fold — see the script. */}
+      <p class="maker-blurb" id={`blurb-${host.slug}`}>{host.blurb}</p>
+      <button
+        class="maker-more"
+        type="button"
+        hidden
+        aria-expanded="false"
+        aria-controls={`blurb-${host.slug}`}
+        data-more={labels.more}
+        data-less={labels.less}
+      >{labels.more}</button>
 
       <dl class="maker-meta">
         {host.studio && <div><dt>{labels.studio}</dt><dd>{host.studio}</dd></div>}
@@ -130,4 +143,45 @@ const labels = ui(lang).directory;
   });
   // The filters hide cards, which changes which reels are in the walk.
   document.addEventListener('twiggli:filtered', () => walk.resync());
+
+  // The blurb is clamped to four lines in CSS. A card only gets the toggle
+  // where the text actually runs past that — measured rather than guessed
+  // from a character count, since the same sentence wraps differently in
+  // eight languages and at every width. Measuring waits for the webfont:
+  // laid out in the fallback face, a blurb that fits can look as though it
+  // overflows, and the button would appear for nothing.
+  // The clamp itself waits for this class, so the four-line cut and the
+  // button that undoes it arrive together or not at all.
+  document.documentElement.classList.add('js-clamp');
+  const clamped = Array.from(document.querySelectorAll<HTMLElement>('.maker-blurb'));
+  const sync = () => {
+    for (const blurb of clamped) {
+      const card = blurb.closest('.maker');
+      const button = card?.querySelector<HTMLButtonElement>('.maker-more');
+      if (!button) continue;
+      // An open card stays open through a resize; only a closed one is
+      // measured, since an expanded blurb never overflows.
+      if (button.getAttribute('aria-expanded') === 'true') continue;
+      button.hidden = blurb.scrollHeight <= blurb.clientHeight + 1;
+    }
+  };
+  const ready = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+  if (ready) ready.then(sync);
+  else sync();
+  sync();
+
+  let resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(sync, 150);
+  });
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('.maker-more')) {
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!open));
+      button.closest('.maker')?.classList.toggle('is-open', !open);
+      button.textContent = (open ? button.dataset.more : button.dataset.less) ?? '';
+    });
+  }
 </script>

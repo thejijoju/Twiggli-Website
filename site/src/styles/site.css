@@ -1824,6 +1824,47 @@ a:hover { color: var(--color-accent); }
   margin: 12px 0 0;
   color: color-mix(in srgb, var(--color-text) 78%, transparent);
 }
+/* Four lines on a directory of thirty-odd cards, so the details row and the
+   enquiry button stay within reach; the rest is a click away. The card
+   carries the open state, not the paragraph, so the button can sit outside
+   it. Both properties: the unprefixed one is what browsers standardised on,
+   the -webkit- pair is what older ones still read.
+
+   Gated on the class the directory's own script sets, because the button
+   that opens a clamped blurb is drawn by that script: were the clamp to
+   apply on its own, a reader whose script never ran would get four lines
+   and no way past them. */
+.js-clamp .maker-blurb {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+.js-clamp .maker.is-open .maker-blurb {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+/* Reads as the quiet link it is, not another button competing with
+   "Request event" below it. */
+.maker-more {
+  /* The card is a flex column, so a stretched button would centre its own
+     label; this keeps it under the first word of the blurb. */
+  align-self: flex-start;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-accent-700);
+  cursor: pointer;
+}
+.maker-more:hover { text-decoration: underline; }
+.maker-more:focus-visible { outline: 2px solid var(--color-accent-700); outline-offset: 3px; border-radius: 4px; }
+.maker-more[hidden] { display: none; }
 .maker-meta {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
