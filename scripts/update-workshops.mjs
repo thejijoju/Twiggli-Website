@@ -2976,6 +2976,14 @@ async function fromSquarespace(source) {
   for (const item of items) {
     const sc = item.structuredContent ?? {};
     const title = stripTags(String(item.title ?? '')).trim();
+    // A shop that parks a class rather than deleting it says so in the
+    // title ("Paused - …"). What is left are last season's dates, which the
+    // year inference would push a year on, so the product is skipped
+    // outright and comes back the day they unpause it.
+    if (/^\s*paused\b/i.test(title)) {
+      console.log(`[${source.slug}] squarespace: skipped paused product "${title}"`);
+      continue;
+    }
     const common = {
       ...(source.district ? { district: source.district } : {}),
       ...(item.assetUrl ? { image: item.assetUrl } : {}),
