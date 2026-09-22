@@ -141,7 +141,7 @@ const en = {
   },
   spaces: {
     title: 'Rent a studio or workshop space in Berlin — by the hour or the day | Twiggli',
-    description: 'Rent a Berlin maker studio for your own workshop, shoot, team session or private party. Real ateliers from our hosts, in Gesundbrunnen and Prenzlauer Berg, with the tools already there.',
+    description: 'Rent a Berlin maker studio for your own workshop, shoot, team session or private party. Real ateliers from our hosts, in Friedrichshain, Gesundbrunnen and Prenzlauer Berg, with the tools already there.',
     kicker: 'Rent a studio', h1: 'Rent a studio in Berlin',
     lede: 'Our hosts open their ateliers when they are not teaching in them. Hire a real working studio by the hour or the day — for your own workshop, a course you run yourself, a shoot, an offsite, a rehearsal or a private celebration. The benches, the light and the tools are already there.',
     cta: 'Ask about a space',
@@ -299,7 +299,7 @@ const de: UiCopy = {
   },
   spaces: {
     title: 'Raum mieten in Berlin — Atelier & Werkstatt stunden- oder tageweise | Twiggli',
-    description: 'Miete ein echtes Berliner Atelier für deinen eigenen Workshop, ein Shooting, eine Team-Session oder eine private Feier. Räume unserer Gastgeber in Gesundbrunnen und Prenzlauer Berg, Werkzeug inklusive.',
+    description: 'Miete ein echtes Berliner Atelier für deinen eigenen Workshop, ein Shooting, eine Team-Session oder eine private Feier. Räume unserer Gastgeber in Friedrichshain, Gesundbrunnen und Prenzlauer Berg, Werkzeug inklusive.',
     kicker: 'Raum mieten', h1: 'Raum mieten in Berlin',
     lede: 'Unsere Gastgeber öffnen ihre Ateliers, wenn sie gerade nicht darin unterrichten. Miete eine echte Werkstatt stunden- oder tageweise — für deinen eigenen Workshop, einen Kurs, ein Shooting, ein Offsite, eine Probe oder eine private Feier. Werkbänke, Licht und Werkzeug sind schon da.',
     cta: 'Raum anfragen',
@@ -455,7 +455,7 @@ const fr: UiCopy = {
   },
   spaces: {
     title: 'Louer un atelier à Berlin — à l’heure ou à la journée | Twiggli',
-    description: 'Louez un véritable atelier berlinois pour votre propre atelier, un tournage, une session d’équipe ou une fête privée. Les espaces de nos hôtes, à Gesundbrunnen et Prenzlauer Berg, outils compris.',
+    description: 'Louez un véritable atelier berlinois pour votre propre atelier, un tournage, une session d’équipe ou une fête privée. Les espaces de nos hôtes, à Friedrichshain, Gesundbrunnen et Prenzlauer Berg, outils compris.',
     kicker: 'Louer un atelier', h1: 'Louer un atelier à Berlin',
     lede: 'Nos hôtes ouvrent leurs ateliers quand ils n’y enseignent pas. Louez un vrai atelier de travail à l’heure ou à la journée — pour votre propre workshop, un cours que vous animez, un tournage, un séminaire, une répétition ou une fête privée. Les établis, la lumière et les outils sont déjà là.',
     cta: 'Demander un espace',
@@ -611,7 +611,7 @@ const es: UiCopy = {
   },
   spaces: {
     title: 'Alquilar un taller o estudio en Berlín — por horas o por días | Twiggli',
-    description: 'Alquila un estudio de verdad en Berlín para tu propio taller, una sesión de fotos, un evento de equipo o una fiesta privada. Espacios de nuestros anfitriones en Gesundbrunnen y Prenzlauer Berg, con las herramientas ya puestas.',
+    description: 'Alquila un estudio de verdad en Berlín para tu propio taller, una sesión de fotos, un evento de equipo o una fiesta privada. Espacios de nuestros anfitriones en Friedrichshain, Gesundbrunnen y Prenzlauer Berg, con las herramientas ya puestas.',
     kicker: 'Alquilar un taller', h1: 'Alquilar un taller en Berlín',
     lede: 'Nuestros anfitriones abren sus estudios cuando no están dando clase. Alquila un taller en uso por horas o por días — para tu propio workshop, un curso que impartas tú, una sesión de fotos, un offsite, un ensayo o una celebración privada. Los bancos, la luz y las herramientas ya están allí.',
     cta: 'Consultar un espacio',
@@ -767,7 +767,7 @@ const it: UiCopy = {
   },
   spaces: {
     title: 'Affittare uno studio o laboratorio a Berlino — a ore o a giornata | Twiggli',
-    description: 'Affitta un vero studio berlinese per il tuo workshop, uno shooting, una sessione di team o una festa privata. Gli spazi dei nostri host a Gesundbrunnen e Prenzlauer Berg, attrezzi inclusi.',
+    description: 'Affitta un vero studio berlinese per il tuo workshop, uno shooting, una sessione di team o una festa privata. Gli spazi dei nostri host a Friedrichshain, Gesundbrunnen e Prenzlauer Berg, attrezzi inclusi.',
     kicker: 'Affittare uno studio', h1: 'Affittare uno studio a Berlino',
     lede: 'I nostri host aprono i loro studi quando non ci insegnano. Affitta un laboratorio vero a ore o a giornata — per il tuo workshop, un corso che tieni tu, uno shooting, un offsite, una prova o una festa privata. Banchi, luce e attrezzi sono già lì.',
     cta: 'Chiedi uno spazio',
@@ -923,7 +923,7 @@ const nl: UiCopy = {
   },
   spaces: {
     title: 'Atelier of werkruimte huren in Berlijn — per uur of per dag | Twiggli',
-    description: 'Huur een echt Berlijns atelier voor je eigen workshop, een shoot, een teamsessie of een privéfeest. Ruimtes van onze hosts in Gesundbrunnen en Prenzlauer Berg, gereedschap aanwezig.',
+    description: 'Huur een echt Berlijns atelier voor je eigen workshop, een shoot, een teamsessie of een privéfeest. Ruimtes van onze hosts in Friedrichshain, Gesundbrunnen en Prenzlauer Berg, gereedschap aanwezig.',
     kicker: 'Ruimte huren', h1: 'Een atelier huren in Berlijn',
     lede: 'Onze hosts stellen hun ateliers open wanneer ze er geen les geven. Huur een echte werkplaats per uur of per dag — voor je eigen workshop, een cursus die je zelf geeft, een shoot, een offsite, een repetitie of een privéfeest. De werkbanken, het licht en het gereedschap staan er al.',
     cta: 'Vraag een ruimte aan',
@@ -1079,7 +1079,7 @@ const pl: UiCopy = {
   },
   spaces: {
     title: 'Wynajem pracowni w Berlinie — na godziny lub na cały dzień | Twiggli',
-    description: 'Wynajmij prawdziwą berlińską pracownię na własne warsztaty, sesję zdjęciową, spotkanie zespołu lub prywatną imprezę. Przestrzenie naszych prowadzących w Gesundbrunnen i Prenzlauer Bergu, z narzędziami na miejscu.',
+    description: 'Wynajmij prawdziwą berlińską pracownię na własne warsztaty, sesję zdjęciową, spotkanie zespołu lub prywatną imprezę. Przestrzenie naszych prowadzących we Friedrichshain, Gesundbrunnen i Prenzlauer Bergu, z narzędziami na miejscu.',
     kicker: 'Wynajem pracowni', h1: 'Wynajem pracowni w Berlinie',
     lede: 'Nasi prowadzący udostępniają swoje pracownie, kiedy akurat w nich nie uczą. Wynajmij działającą pracownię na godziny lub na cały dzień — na własne warsztaty, kurs, który prowadzisz, sesję zdjęciową, wyjazd firmowy, próbę albo prywatne święto. Stoły, światło i narzędzia już tam są.',
     cta: 'Zapytaj o przestrzeń',
@@ -1235,7 +1235,7 @@ const tr: UiCopy = {
   },
   spaces: {
     title: 'Berlin’de atölye ya da çalışma alanı kirala — saatlik veya günlük | Twiggli',
-    description: 'Kendi atölyen, çekimin, ekip buluşman ya da özel kutlaman için Berlin’de gerçek bir atölye kirala. Gesundbrunnen ve Prenzlauer Berg’deki eğitmen mekânları, aletler yerinde.',
+    description: 'Kendi atölyen, çekimin, ekip buluşman ya da özel kutlaman için Berlin’de gerçek bir atölye kirala. Friedrichshain, Gesundbrunnen ve Prenzlauer Berg’deki eğitmen mekânları, aletler yerinde.',
     kicker: 'Atölye kirala', h1: 'Berlin’de atölye kirala',
     lede: 'Eğitmenlerimiz ders vermedikleri zamanlarda atölyelerini açıyor. Çalışan bir atölyeyi saatlik ya da günlük kirala — kendi atölye çalışman, verdiğin bir kurs, bir çekim, ekip buluşması, prova ya da özel bir kutlama için. Tezgâhlar, ışık ve aletler hazır.',
     cta: 'Mekân sor',
