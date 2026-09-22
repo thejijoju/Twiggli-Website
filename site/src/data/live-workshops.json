@@ -1,11 +1,11 @@
 {
-  "updated": "2026-09-21T13:43:22.732Z",
+  "updated": "2026-09-22T15:11:11.860Z",
   "sources": [
     {
-      "slug": "blauhaus",
-      "url": "https://www.blauhaus.studio/event-pages-sitemap.xml",
-      "status": "failed: HTTP 404",
-      "count": 0
+      "slug": "loam",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin",
+      "status": "ok",
+      "count": 26
     },
     {
       "slug": "lama",
@@ -125,7 +125,7 @@
       "slug": "galleria-lucia",
       "url": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "status": "ok",
-      "count": 99
+      "count": 98
     },
     {
       "slug": "kohfink",
@@ -137,7 +137,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 220
+      "count": 229
     },
     {
       "slug": "pastamadre",
@@ -209,7 +209,7 @@
       "slug": "druckrausch",
       "url": "https://www.druckrausch.com/termine",
       "status": "ok",
-      "count": 19
+      "count": 18
     },
     {
       "slug": "sov",
@@ -310,7 +310,7 @@
     {
       "slug": "ronnadel",
       "url": "https://www.tickettailor.com/events/ronnadel",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 1
     },
     {
@@ -322,26 +322,26 @@
     {
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/turnedartist",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 12
     },
     {
       "slug": "elinorsahm",
       "url": "https://www.tickettailor.com/events/elinorsahm",
-      "status": "failed: no upcoming events parsed",
-      "count": 0
+      "status": "ok",
+      "count": 5
     },
     {
       "slug": "mampe",
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
-      "count": 71
+      "count": 68
     },
     {
       "slug": "drawingwalks",
       "url": "https://www.drawingwalks.art/join-a-walk",
       "status": "ok",
-      "count": 4
+      "count": 3
     },
     {
       "slug": "violaine",
@@ -389,7 +389,7 @@
       "slug": "alessia",
       "url": "https://alessiasinopoli.it/portrait-workshop/",
       "status": "ok",
-      "count": 4
+      "count": 5
     },
     {
       "slug": "haki",
@@ -425,7 +425,7 @@
       "slug": "helka",
       "url": "https://www.helkaceramics.com/pottery-classes-workshops",
       "status": "ok",
-      "count": 8
+      "count": 9
     },
     {
       "slug": "maximiliana",
@@ -454,7 +454,7 @@
     {
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/learnlino",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 6
     },
     {
@@ -775,29 +775,6 @@
   ],
   "workshops": [
     {
-      "slug": "galleria-lucia",
-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
-      "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
-      "date": "2026-09-21",
-      "time": "18:00",
-      "price": "€58",
-      "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
-      "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "drawingwalks",
-      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
-      "title": "Draw Berlin: Kreuzberg",
-      "date": "2026-09-22",
-      "time": "13:00",
-      "spots": 10,
-      "duration": "2.5 h",
-      "price": "€30",
-      "district": "Kreuzberg",
-      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/62601571/calendar/10021038"
-    },
-    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Basis",
@@ -809,19 +786,6 @@
       "district": "Charlottenburg",
       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "spots": 3
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-23",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "drawingwalks",
@@ -841,6 +805,7 @@
       "title": "KLEINE SCHNAPSGESCHICHTEN",
       "date": "2026-09-23",
       "time": "14:00",
+      "soldOut": true,
       "duration": "0.75–1 h",
       "price": "€12",
       "district": "Kreuzberg",
@@ -904,6 +869,7 @@
       "title": "GROßE SCHNAPSGESCHICHTEN",
       "date": "2026-09-23",
       "time": "16:00",
+      "soldOut": true,
       "duration": "1.5 h",
       "price": "€24",
       "district": "Kreuzberg",
@@ -985,18 +951,6 @@
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
       "district": "Prenzlauer Berg",
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "druckrausch",
-      "sourceUrl": "https://www.druckrausch.com/termine",
-      "title": "Basis-Siebdruckworkshop",
-      "date": "2026-09-23",
-      "time": "18:30",
-      "duration": "2 h",
-      "price": "€60",
-      "url": "https://www.druckrausch.com/booking-calendar/23-09-basis-siebdruckworkshop",
-      "image": "https://static.wixstatic.com/media/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg/v1/fit/w_1772,h_1181,al_c,q_90/daf795_4e63d180fe004c46ab21e3e405c4a9d4~mv2.jpg",
-      "district": "Friedenau"
     },
     {
       "slug": "tufttuft",
@@ -1162,7 +1116,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1500,6 +1454,19 @@
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Vases & Carafes - build larger ceramic vessels",
+      "date": "2026-09-26",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€119",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/fce52dc9-052c-44a7-b800-1eb45e774b98/IMG_8159.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/vases-carafes-build-larger-ceramic-vessels"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -1533,7 +1500,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -1572,6 +1539,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-09-26",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 5,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
     },
     {
       "slug": "munio",
@@ -1746,7 +1726,7 @@
       "title": "The OG | 30 x 40cm",
       "date": "2026-09-27",
       "time": "10:00",
-      "spots": 3,
+      "spots": 1,
       "duration": "3.5 h",
       "price": "€140",
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
@@ -1857,6 +1837,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
       "url": "https://empireofdirt.studio/products/five-week-pottery-class"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-09-30",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "mampe",
@@ -2384,7 +2377,7 @@
       "date": "2026-10-02",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -2479,6 +2472,19 @@
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Plates, Trays & Bowls Workshop",
+      "date": "2026-10-03",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€99",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -2525,8 +2531,21 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Cups & Mugs Pottery Class",
+      "date": "2026-10-03",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
     },
     {
       "slug": "munio",
@@ -2664,7 +2683,7 @@
       "date": "2026-10-03",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -2716,7 +2735,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -2890,7 +2909,7 @@
       "date": "2026-10-04",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -3253,7 +3272,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -3294,6 +3313,17 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/64701453/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
+    },
+    {
+      "slug": "elinorsahm",
+      "sourceUrl": "https://www.tickettailor.com/events/elinorsahm",
+      "title": "Flow & Form - Introduction to Alcohol Ink",
+      "date": "2026-10-09",
+      "time": "10:30",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_167,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/bsrd0axvnw1tjvhdw00w.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/elinorsahm/2400136?date=2026-10-09"
     },
     {
       "slug": "munio",
@@ -3469,7 +3499,7 @@
       "date": "2026-10-09",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -3588,6 +3618,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-10-10",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -3646,7 +3689,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -3660,6 +3703,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Candle Holder Pottery Workshop",
+      "date": "2026-10-10",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 5,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://static1.squarespace.com/static/6161890ad6b5a65d83380589/61712c321285743673936f29/635bfbf20e079e070a5a48f1/1789039216089/",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/candle-holder-workshop"
     },
     {
       "slug": "munio",
@@ -3834,7 +3890,7 @@
       "date": "2026-10-10",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -3874,7 +3930,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -4005,7 +4061,7 @@
       "date": "2026-10-11",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -4358,7 +4414,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -4546,7 +4602,7 @@
       "date": "2026-10-16",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -4596,11 +4652,24 @@
       "time": "10:00",
       "duration": "2 Tage",
       "price": "€280",
-      "spots": 2,
+      "soldOut": true,
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Plates, Trays & Bowls Workshop",
+      "date": "2026-10-17",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€99",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
     },
     {
       "slug": "tania",
@@ -4663,8 +4732,21 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Cups & Mugs Pottery Class",
+      "date": "2026-10-17",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
     },
     {
       "slug": "munio",
@@ -4827,7 +4909,7 @@
       "date": "2026-10-17",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -4854,7 +4936,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -5012,7 +5094,7 @@
       "date": "2026-10-18",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -5364,7 +5446,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -5554,7 +5636,7 @@
       "date": "2026-10-23",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -5630,11 +5712,24 @@
       "time": "10:00",
       "duration": "2 Tage",
       "price": "€350",
-      "spots": 5,
+      "soldOut": true,
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-10-24",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
     },
     {
       "slug": "tania",
@@ -5701,6 +5796,19 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Vases & Carafes - build larger ceramic vessels",
+      "date": "2026-10-24",
+      "time": "14:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€119",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/fce52dc9-052c-44a7-b800-1eb45e774b98/IMG_8159.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/vases-carafes-build-larger-ceramic-vessels"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -5709,7 +5817,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -5861,7 +5969,7 @@
       "date": "2026-10-24",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -5901,7 +6009,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -5961,7 +6069,7 @@
       "date": "2026-10-25",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -6016,6 +6124,20 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramics Hand-Building 6-week Course – 6 Termine",
+      "titleEn": "Ceramics Hand-Building 6-week Course – 6 dates",
+      "date": "2026-10-27",
+      "time": "18:30",
+      "duration": "6 × 2.5 h",
+      "spots": 6,
+      "price": "€319",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/1639062913634-9FWZU64RL2J312N583I8/edit+Jana+coil9647.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/ceramics-hand-building-6-week-course"
     },
     {
       "slug": "rebeca",
@@ -6205,6 +6327,19 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "helka",
+      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
+      "title": "Evening pottery workshop",
+      "date": "2026-10-28",
+      "time": "19:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€95",
+      "district": "Kreuzberg",
+      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
+      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -6343,7 +6478,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -6532,7 +6667,7 @@
       "date": "2026-10-30",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -6640,6 +6775,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Plates, Trays & Bowls Workshop",
+      "date": "2026-10-31",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€99",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+    },
+    {
       "slug": "karen-rose",
       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
       "title": "Bio Naturkosmetik Workshop",
@@ -6673,8 +6821,21 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Cups & Mugs Pottery Class",
+      "date": "2026-10-31",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 6,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
     },
     {
       "slug": "munio",
@@ -6812,7 +6973,7 @@
       "date": "2026-10-31",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -6839,7 +7000,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -6936,7 +7097,7 @@
       "date": "2026-11-01",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -7290,7 +7451,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -7320,6 +7481,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-11-06",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -7343,6 +7517,45 @@
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-11-06",
+      "time": "15:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-11-06",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-11-06",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
       "title": "Make your pet a collar + name tag",
@@ -7354,6 +7567,58 @@
       "languages": "EN · FR · ES",
       "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
       "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-11-06",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-11-06",
+      "time": "17:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-11-06",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-11-06",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
     },
     {
       "slug": "sabine",
@@ -7370,13 +7635,26 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=4096x4096:format=jpg/path/s457c259d711bd244/image/ia66835944f7c3c9a/version/1498050146/image.jpg"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-11-06",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
       "date": "2026-11-06",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -7437,7 +7715,7 @@
       "title": "Intermediate Wheel | Plates & Bottles (WEEK 45)",
       "date": "2026-11-07",
       "time": "10:00",
-      "spots": 3,
+      "spots": 2,
       "duration": "7.5 h",
       "price": "€170",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95112588/calendar/10335256",
@@ -7468,6 +7746,19 @@
       "url": "https://www.druckrausch.com/booking-calendar/07-11-siebdruck-papercutting",
       "image": "https://static.wixstatic.com/media/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg/v1/fit/w_1134,h_756,al_c,q_85/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg",
       "district": "Friedenau"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-11-07",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
     },
     {
       "slug": "whittle",
@@ -7515,20 +7806,21 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "KLEINE SCHNAPSGESCHICHTEN",
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Candle Holder Pottery Workshop",
       "date": "2026-11-07",
-      "time": "14:00",
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
-      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://static1.squarespace.com/static/6161890ad6b5a65d83380589/61712c321285743673936f29/635bfbf20e079e070a5a48f1/1789039216089/",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/candle-holder-workshop"
     },
     {
       "slug": "karen-rose",
@@ -7557,18 +7849,6 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "GROßE SCHNAPSGESCHICHTEN",
-      "date": "2026-11-07",
-      "time": "16:00",
-      "duration": "1.5 h",
-      "price": "€24",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
-      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
-    },
-    {
       "slug": "celina",
       "sourceUrl": "https://www.gestaltwandel.com/booking",
       "title": "Strawstar Binding",
@@ -7582,25 +7862,13 @@
       "district": "Gesundbrunnen"
     },
     {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
-      "date": "2026-11-07",
-      "time": "18:00",
-      "duration": "2–2.5 h",
-      "price": "€77",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/03GT.jpg?v=1713779097",
-      "url": "https://mampe.berlin/de-engl/products/mampe-gin-tasting-mit-eigener-gin-herstellung"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
       "date": "2026-11-07",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -7640,7 +7908,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -7649,7 +7917,7 @@
       "title": "Intermediate Wheel | Plates & Bottles (WEEK 45)",
       "date": "2026-11-08",
       "time": "10:00",
-      "spots": 3,
+      "spots": 2,
       "duration": "7.5 h",
       "price": "€170",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95112588/calendar/10335256",
@@ -7763,7 +8031,7 @@
       "date": "2026-11-08",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -7914,18 +8182,6 @@
       "district": "Friedenau"
     },
     {
-      "slug": "dirt",
-      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
-      "title": "Mini: Wheel Throwing",
-      "date": "2026-11-12",
-      "time": "11:00",
-      "duration": "3 h",
-      "price": "€80",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
-      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
-    },
-    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
       "title": "Handcraft a sustainable leather belt",
@@ -7960,7 +8216,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -8006,7 +8262,7 @@
       "date": "2026-11-13",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -8067,7 +8323,7 @@
       "title": "Intermediate Wheel | Plates & Bottles (WEEK 45)",
       "date": "2026-11-14",
       "time": "10:00",
-      "spots": 3,
+      "spots": 2,
       "duration": "7.5 h",
       "price": "€170",
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95112588/calendar/10335256",
@@ -8100,6 +8356,19 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Plates, Trays & Bowls Workshop",
+      "date": "2026-11-14",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€99",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
     },
     {
       "slug": "druckrausch",
@@ -8148,7 +8417,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -8164,6 +8433,19 @@
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Cups & Mugs Pottery Class",
+      "date": "2026-11-14",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 6,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
+    },
+    {
       "slug": "pastamadre",
       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
       "title": "\"Maccheroni\" Pasta Workshop",
@@ -8174,6 +8456,17 @@
       "url": "https://www.pastamadre.de/contact",
       "district": "Wedding",
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
+    },
+    {
+      "slug": "elinorsahm",
+      "sourceUrl": "https://www.tickettailor.com/events/elinorsahm",
+      "title": "Flow & Form - Introduction to Alcohol Ink",
+      "date": "2026-11-14",
+      "time": "16:00",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_167,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/bsrd0axvnw1tjvhdw00w.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/elinorsahm/2400139?date=2026-11-14"
     },
     {
       "slug": "mampe",
@@ -8219,7 +8512,7 @@
       "date": "2026-11-14",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -8259,7 +8552,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -8287,6 +8580,18 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85334520.jpg?1763198865",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85334520/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "dirt",
+      "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
+      "title": "Mini: Wheel Throwing",
+      "date": "2026-11-15",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€80",
+      "district": "Kreuzberg",
+      "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
+      "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
       "slug": "daisuki",
@@ -8331,7 +8636,7 @@
       "date": "2026-11-15",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -8477,7 +8782,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -8573,7 +8878,7 @@
       "date": "2026-11-20",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -8656,6 +8961,19 @@
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-11-21",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -8664,7 +8982,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -8734,7 +9052,7 @@
       "date": "2026-11-21",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -8774,7 +9092,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -8844,7 +9162,7 @@
       "date": "2026-11-22",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -9005,7 +9323,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -9053,7 +9371,7 @@
       "date": "2026-11-27",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -9135,6 +9453,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Plates, Trays & Bowls Workshop",
+      "date": "2026-11-28",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€99",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -9168,7 +9499,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -9182,6 +9513,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Cups & Mugs Pottery Class",
+      "date": "2026-11-28",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
     },
     {
       "slug": "pastamadre",
@@ -9208,6 +9552,17 @@
       "district": "Zehlendorf"
     },
     {
+      "slug": "elinorsahm",
+      "sourceUrl": "https://www.tickettailor.com/events/elinorsahm",
+      "title": "Introduction to Alcohol Ink: Form & Flow",
+      "date": "2026-11-28",
+      "time": "16:00",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_941,q_100,w_940,x_366,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/iwhcnmxaj5nqnqcm8eqk.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/elinorsahm/2432128?date=2026-11-28"
+    },
+    {
       "slug": "mampe",
       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "title": "GROßE SCHNAPSGESCHICHTEN",
@@ -9226,7 +9581,7 @@
       "date": "2026-11-28",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -9266,7 +9621,7 @@
       "duration": "1.5–2 h",
       "price": "€65",
       "district": "Lichtenberg",
-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented_candle_workshop.jpg?v=1773247722",
+      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
@@ -9351,7 +9706,7 @@
       "date": "2026-11-29",
       "time": "18:30",
       "duration": "1.5–2 h",
-      "price": "€70",
+      "price": "€69",
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
@@ -9488,6 +9843,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-12-05",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+    },
+    {
       "slug": "arcoiris",
       "sourceUrl": "https://rausgegangen.de/en/events/vulva-flower-embroidery-workshop-9/",
       "title": "Vulva Flower Embroidery Workshop",
@@ -9510,6 +9878,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Candle Holder Pottery Workshop",
+      "date": "2026-12-05",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://static1.squarespace.com/static/6161890ad6b5a65d83380589/61712c321285743673936f29/635bfbf20e079e070a5a48f1/1789039216089/",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/candle-holder-workshop"
     },
     {
       "slug": "pastamadre",
@@ -9683,6 +10064,17 @@
       "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3475-1-scaled.jpg"
     },
     {
+      "slug": "elinorsahm",
+      "sourceUrl": "https://www.tickettailor.com/events/elinorsahm",
+      "title": "Introduction to Alcohol Ink: Form & Flow",
+      "date": "2026-12-11",
+      "time": "18:30",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_941,q_100,w_940,x_366,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/iwhcnmxaj5nqnqcm8eqk.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/elinorsahm/2432128?date=2026-12-11"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try the wheel: Experience workshop in Wheel-throwing clay",
@@ -9735,6 +10127,19 @@
       "district": "Friedenau"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Ceramic Plates, Trays & Bowls Workshop",
+      "date": "2026-12-12",
+      "time": "11:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€99",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+    },
+    {
       "slug": "mampe",
       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "title": "KLEINE SCHNAPSGESCHICHTEN",
@@ -9745,6 +10150,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Cups & Mugs Pottery Class",
+      "date": "2026-12-12",
+      "time": "14:30",
+      "duration": "2.5 h",
+      "spots": 6,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
     },
     {
       "slug": "pastamadre",
@@ -9981,6 +10399,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Introduction to Hand-Building Pottery",
+      "date": "2026-12-19",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "spots": 8,
+      "price": "€89",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -10016,6 +10447,19 @@
       "url": "https://www.eversports.de/org/activity/93760373-1bae-43fe-a000-8bffeee016b6",
       "district": "Treptow",
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+    },
+    {
+      "slug": "loam",
+      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+      "title": "Vases & Carafes - build larger ceramic vessels",
+      "date": "2026-12-19",
+      "time": "14:00",
+      "duration": "3 h",
+      "spots": 8,
+      "price": "€119",
+      "district": "Moabit",
+      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/fce52dc9-052c-44a7-b800-1eb45e774b98/IMG_8159.jpeg",
+      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/vases-carafes-build-larger-ceramic-vessels"
     },
     {
       "slug": "mampe",
@@ -10219,6 +10663,17 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "elinorsahm",
+      "sourceUrl": "https://www.tickettailor.com/events/elinorsahm",
+      "title": "Introduction to Alcohol Ink: Form & Flow",
+      "date": "2027-01-09",
+      "time": "15:30",
+      "duration": "2 h",
+      "district": "Prenzlauer Berg",
+      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_941,q_100,w_940,x_366,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/iwhcnmxaj5nqnqcm8eqk.jpg?_a=BAAHWXDQ",
+      "url": "https://www.tickettailor.com/events/elinorsahm/2432128?date=2027-01-09"
+    },
+    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
       "title": "Try Handbuilding",
@@ -10243,6 +10698,19 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "alessia",
+      "sourceUrl": "https://alessiasinopoli.it/portrait-workshop/",
+      "title": "Realistic Portrait Drawing with Pencil",
+      "date": "2027-01-10",
+      "time": "14:00",
+      "duration": "4 h",
+      "district": "Prenzlauer Berg",
+      "request": true,
+      "url": "https://alessiasinopoli.it/portrait-workshop/",
+      "price": "€55",
+      "image": "https://alessiasinopoli.it/wp-content/uploads/2025/10/AlessiaSinopoli-PortraitDrawingWorkshop-3-scaled.jpg"
     },
     {
       "slug": "kohfink",
