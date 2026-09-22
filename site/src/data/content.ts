@@ -652,6 +652,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // light. No captions; audio stripped. The end card with their logo is left
   // off — it reads as a caption on a card this size.
   blauhaus: { video: '/video/blauhaus.mp4', poster: '/video/blauhaus-poster.jpg' },
+  // Loam's own, a class in progress: hands pinching and scoring clay at the
+  // bench, a horse built up mane and all on its board, and the finished
+  // pieces drying beside the glazed ones. No captions; audio stripped.
+  loam: { video: '/video/loam.mp4', poster: '/video/loam-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
