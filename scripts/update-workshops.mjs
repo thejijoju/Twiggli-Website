@@ -4026,7 +4026,10 @@ async function scrapeSource(source) {
   }
 
   if (source.mode === 'dated-lines-de') {
-    const workshops = fromGermanLineList(html, source);
+    // A season's list keeps the dates that have been and gone; only what is
+    // still ahead reaches the feed, the same window every other mode uses.
+    const workshops = fromGermanLineList(html, source)
+      .filter((w) => w.date >= todayISO && w.date <= maxISO);
     for (const w of workshops) {
       console.log(`[${source.slug}] line: "${w.title}" ${w.date} ${w.time} ${w.duration ?? ''} ${w.price}`);
     }
