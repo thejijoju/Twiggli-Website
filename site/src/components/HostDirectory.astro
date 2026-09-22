@@ -40,7 +40,7 @@ const labels = ui(lang).directory;
 ---
 
 <div class="maker-grid">
-  {hosts.map((host) => (
+  {hosts.map((host, i) => (
     <article
       class="maker"
       id={host.slug}
@@ -62,11 +62,18 @@ const labels = ui(lang).directory;
         role={host.video ? 'button' : undefined}
         aria-label={host.video ? `${host.name} — ${labels.play}` : undefined}
       >
+        {/* The poster is the one thing a reel loads before its turn, and a
+            directory of thirty-six of them fetched two and a half megabytes
+            of stills the moment the page opened — on a phone that lands
+            while the reader is trying to scroll. Only the top few carry
+            theirs in the markup; the rest are attached as they come within
+            a screen of view (see the script). */}
         {host.video ? (
           <video
             class="maker-video"
             src={host.video}
-            poster={host.poster}
+            poster={i < 3 ? host.poster : undefined}
+            data-poster={i < 3 ? undefined : host.poster}
             muted
             loop
             playsinline
@@ -144,6 +151,22 @@ const labels = ui(lang).directory;
   // The filters hide cards, which changes which reels are in the walk.
   document.addEventListener('twiggli:filtered', () => walk.resync());
 
+  // Each still is attached a screen before it is needed, so a phone fetches
+  // the two or three it is about to show rather than all thirty-six at once.
+  const waiting = document.querySelectorAll<HTMLVideoElement>('.maker-video[data-poster]');
+  if (waiting.length) {
+    const posters = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const video = entry.target as HTMLVideoElement;
+        if (video.dataset.poster) video.poster = video.dataset.poster;
+        delete video.dataset.poster;
+        posters.unobserve(video);
+      }
+    }, { rootMargin: '600px 0px' });
+    for (const video of waiting) posters.observe(video);
+  }
+
   // The blurb is clamped to four lines in CSS. A card only gets the toggle
   // where the text actually runs past that — measured rather than guessed
   // from a character count, since the same sentence wraps differently in
@@ -170,8 +193,15 @@ const labels = ui(lang).directory;
   else sync();
   sync();
 
+  // Width only. A phone fires resize every time its address bar slides away
+  // during a scroll, and re-measuring fifty-seven paragraphs against the
+  // layout on each of those is felt as the scroll stuttering — while the
+  // wrapping it would measure has not changed at all.
   let resizeTimer = 0;
+  let lastWidth = window.innerWidth;
   window.addEventListener('resize', () => {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
     clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(sync, 150);
   });

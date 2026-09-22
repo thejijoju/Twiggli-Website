@@ -269,6 +269,17 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
 
   advance();
 
+  /* A phone that refuses the first play() — low power mode, a data saver,
+     a browser that wants a gesture first — leaves the page still. The
+     reader's first touch anywhere is that gesture, so the walk takes its
+     turn again then. Once only, and never when something is already
+     running, so it costs nothing where autoplay worked. */
+  const nudge = () => {
+    if (!current || current.video.paused) advance();
+  };
+  document.addEventListener('touchstart', nudge, { once: true, passive: true });
+  document.addEventListener('pointerdown', nudge, { once: true, passive: true });
+
   /** Something reflowed or filtered the grid: drop anything no longer
    *  eligible and take the next turn if the spotlight went with it. */
   const resync = () => {
