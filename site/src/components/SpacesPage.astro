@@ -40,6 +40,10 @@ const nums = ['01', '02', '03'];
         {cards.map(({ space, host }) => (
           <article class="space-card">
             <div class="space-media">
+              {/* Which part of town, on the picture rather than in the
+                  details: it is the first thing anyone looking for a room
+                  checks, and it reads before the copy does. */}
+              <span class="space-district">{space.district}</span>
               {host?.video ? (
                 <video
                   class="space-video"
@@ -58,7 +62,7 @@ const nums = ['01', '02', '03'];
             </div>
             <div class="space-body">
               <h2 class="space-name">{space.name}</h2>
-              <p class="space-where">{space.address} · {space.district}</p>
+              <p class="space-where">{space.address}</p>
               <p class="space-copy">{space.copy[lang]}</p>
               <dl class="space-meta">
                 <div><dt>{t.labelSuits}</dt><dd>{space.suits[lang]}</dd></div>
