@@ -1,6 +1,12 @@
 {
-  "updated": "2026-09-22T15:57:58.767Z",
+  "updated": "2026-09-22T18:54:00.404Z",
   "sources": [
+    {
+      "slug": "landsinn",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "status": "ok",
+      "count": 14
+    },
     {
       "slug": "lomu",
       "url": "https://r.jina.ai/https://www.lomudesign.de/workshop/",
@@ -693,6 +699,17 @@
   ],
   "onRequest": [
     {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Workshop auf Anfrage: privater Termin (Geburtstag, JGA, Teamevent)",
+      "titleEn": "On request: a private date (birthday, hen do, team event)",
+      "duration": "2–3 h",
+      "price": "€42–65",
+      "district": "Potsdam",
+      "request": true,
+      "url": "https://landsinn-potsdam.de/workshops-2/"
+    },
+    {
       "slug": "lomu",
       "sourceUrl": "https://r.jina.ai/https://www.lomudesign.de/workshop/",
       "title": "Workshop auf Anfrage: Geldbörse aus veganem Leder",
@@ -806,6 +823,66 @@
     }
   ],
   "workshops": [
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Makramee-Schlüsselanhänger mit Silvia",
+      "date": "2026-07-17",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€42",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Makramee-Windlicht mit Silvia",
+      "date": "2026-07-24",
+      "time": "18:00",
+      "duration": "2.5 h",
+      "price": "€42",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "freie Gestaltung von Schmuck aus Polymermodelliermasse und Resin mit Natalia",
+      "date": "2026-08-07",
+      "time": "17:00",
+      "duration": "3 h",
+      "price": "€60",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Dottpainting-Magie der Punkte mit Silvia",
+      "date": "2026-08-09",
+      "time": "14:00",
+      "duration": "2.5 h",
+      "price": "€42",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Modern Collage mit Constanze",
+      "date": "2026-09-03",
+      "time": "18:00",
+      "duration": "2.5 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
     {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
@@ -3778,6 +3855,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Herbstlicher Textildruck mit Constanze",
+      "date": "2026-10-10",
+      "time": "14:00",
+      "duration": "2.5 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -4000,7 +4089,7 @@
       "time": "19:00",
       "duration": "2 h",
       "price": "€59",
-      "spots": 7,
+      "spots": 4,
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/67e926d9cd3cec2c4def782b/1580394425498/IMG_0177.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/try-handbuilding",
       "district": "Neukölln"
@@ -8135,6 +8224,18 @@
       "image": "https://static.wixstatic.com/media/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg/v1/fit/w_2500,h_1330,al_c/6195de_f5da5f81231b46a8adce2d3c5aa28091.jpg"
     },
     {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Modern Collage mit Constanze",
+      "date": "2026-11-08",
+      "time": "18:00",
+      "duration": "2.5 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -8932,6 +9033,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Adventskranz binden mit Karina",
+      "date": "2026-11-20",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-perfect-fit-sustainable-leather-belt/",
       "title": "Handcraft a sustainable leather belt",
@@ -9082,6 +9195,18 @@
       "district": "Moabit",
       "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
       "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Adventskranz binden mit Karina",
+      "date": "2026-11-21",
+      "time": "14:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -9461,6 +9586,18 @@
       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
     },
     {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Adventskranz binden mit Karina",
+      "date": "2026-11-27",
+      "time": "17:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
       "slug": "sabine",
       "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "title": "Dunkelkammer Workshop in Berlin: Farbfilm-Entwicklung",
@@ -9601,6 +9738,18 @@
       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
     },
     {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Adventskranz binden mit Karina",
+      "date": "2026-11-28",
+      "time": "14:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Design your own scented candle with crystals, Workshop in Berlin",
@@ -9721,6 +9870,18 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Adventskranz binden mit Karina",
+      "date": "2026-11-29",
+      "time": "10:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
     },
     {
       "slug": "galleria-lucia",
@@ -10100,6 +10261,18 @@
       "price": "€69",
       "url": "https://berlindaisuki.de/produkt/online-kochkurs-sushi-rollen/",
       "image": "https://berlindaisuki.de/wp-content/uploads/2024/02/Sushi_Rollen_insideout.png"
+    },
+    {
+      "slug": "landsinn",
+      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+      "title": "Gilli-Print Weihnachtskarten & Winterbilder mit Constanze",
+      "date": "2026-12-06",
+      "time": "15:00",
+      "duration": "2.5 h",
+      "price": "€65",
+      "url": "https://landsinn-potsdam.de/workshops-2/",
+      "district": "Potsdam",
+      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
     },
     {
       "slug": "mampe",
