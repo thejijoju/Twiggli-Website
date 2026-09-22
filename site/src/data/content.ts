@@ -694,6 +694,12 @@ const reels: Record<string, { video: string; poster: string }> = {
   // the other reels, so it is left at that rather than upscaled into
   // mush. Audio stripped.
   lomu: { video: '/video/lomu.mp4', poster: '/video/lomu-poster.jpg' },
+  // Ana's own, from a session in the hall: a turn with the arms open,
+  // then the weight settling, the tall windows behind. Shot landscape, so
+  // the frame is cut to the vertical the cards use around her rather than
+  // down the middle — centring would have taken her hand off at the edge.
+  // Audio stripped.
+  ana: { video: '/video/ana.mp4', poster: '/video/ana-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
