@@ -23,6 +23,9 @@ export type Space = {
   copy: Record<Lang, string>;
   /** Shown where the host has published a rate; absent means "on request". */
   price?: string;
+  /** A line under the card's details, for what the host wants said about
+   *  the terms — a written agreement for a standing booking, say. */
+  terms?: Record<Lang, string>;
 };
 
 export const spaces: Space[] = [
@@ -50,6 +53,16 @@ export const spaces: Space[] = [
       nl: 'De rustige werkruimte waar Celina haar negen ambachten geeft — boekbinden, zijde schilderen, glas solderen, mozaïek, beton, stempels. Lange tafels, gereedschap binnen handbereik en alles wat een rommelige middag nodig heeft, in een stille straat in Gesundbrunnen. Er kunnen twintig mensen aan tafel.',
       pl: 'Spokojna pracownia, w której Celina uczy swoich dziewięciu rzemiosł — oprawy książek, malowania na jedwabiu, lutowania szkła, mozaiki, betonu, stempli. Długie stoły, narzędzia pod ręką i wszystko, czego wymaga popołudnie z klejem i farbą, przy cichej ulicy w Gesundbrunnen. Przy stołach zmieści się dwadzieścia osób.',
       tr: 'Celina’nın dokuz zanaatını öğrettiği sakin atölye odası — ciltleme, ipek boyama, cam lehimleme, mozaik, beton, mühür. Uzun masalar, elinin altında aletler ve dağınık bir öğleden sonranın gerektirdiği her şey, Gesundbrunnen’de sessiz bir sokakta. Masada yirmi kişiye kadar yer var.',
+    },
+    terms: {
+      en: 'A written usage agreement can be drawn up for regular or longer-term use, setting out dates, access and terms.',
+      de: 'Für regelmäßige oder längerfristige Nutzung kann eine schriftliche Nutzungsvereinbarung getroffen werden, die Termine, Zugang und Konditionen festhält.',
+      fr: 'Pour une utilisation régulière ou de plus longue durée, une convention d’utilisation écrite peut être établie, fixant les dates, l’accès et les conditions.',
+      es: 'Para un uso regular o de mayor duración se puede formalizar un acuerdo de uso por escrito, que fije fechas, acceso y condiciones.',
+      it: 'Per un utilizzo regolare o di più lungo periodo è possibile stipulare un accordo d’uso scritto che definisca date, accesso e condizioni.',
+      nl: 'Voor regelmatig of langduriger gebruik kan een schriftelijke gebruiksovereenkomst worden opgesteld, met data, toegang en voorwaarden.',
+      pl: 'W przypadku regularnego lub dłuższego korzystania można zawrzeć pisemną umowę użytkowania, określającą terminy, dostęp i warunki.',
+      tr: 'Düzenli ya da daha uzun süreli kullanım için tarihleri, erişimi ve koşulları belirleyen yazılı bir kullanım sözleşmesi düzenlenebilir.',
     },
   },
   {

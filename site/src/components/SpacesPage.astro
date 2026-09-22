@@ -68,6 +68,7 @@ const nums = ['01', '02', '03'];
                 </div>
                 <div><dt>{t.labelPrice}</dt><dd>{space.price ?? t.priceOnRequest}</dd></div>
               </dl>
+              {space.terms && <p class="space-terms">{space.terms[lang]}</p>}
               {/* Lands on the contact form with the space already named, the
                   same route the directory's "Request event" takes. */}
               <a class="btn btn-primary space-ask" href={`${href(lang, '/contact/')}?space=${encodeURIComponent(space.name)}`}>

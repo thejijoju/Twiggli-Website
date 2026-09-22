@@ -3158,6 +3158,15 @@ a:hover { color: var(--color-accent); }
   padding-top: 2px;
 }
 .space-meta dd { margin: 0; }
+/* What the host wants said about the terms, under the details and before
+   the enquiry button — quieter than the description, since it answers a
+   question rather than making the case. */
+.space-terms {
+  margin: -8px 0 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
 .space-ask { display: inline-flex; }
 .space-note { margin-top: 28px; }
 
