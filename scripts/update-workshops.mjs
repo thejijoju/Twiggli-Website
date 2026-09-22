@@ -33,6 +33,15 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
  *  site/src/data/content.ts; `url` is both the page scraped and where the
  *  feed's Book button sends people. Add a line per host as pages are found. */
 const SOURCES = [
+  // Pausify — Ksenia and Barbara's co-reading community, whose schedule
+  // runs on Odoo's events app: /event lists what is scheduled and each
+  // event page carries its own times, price and cap. They open a few weeks
+  // at a time rather than a season, so a short list is the resting state,
+  // not a parse failure.
+  { slug: 'pausify', name: 'Pausify — weekend sessions', mode: 'odoo-events',
+    url: 'https://www.pausify.org/event',
+    district: 'Moabit' },
+
   // Loam. — Jana Marlene Lippert's ceramics studio in Moabit. Every class
   // sells from one Squarespace products collection, where a session lives in
   // a variant's date option ("Sat 26th Sept l 11:00 - 14:00 l Deutsch &
@@ -2823,6 +2832,72 @@ function fromOptionDates(html, source) {
   return out;
 }
 
+/** Odoo's events app, which is what Pausify's schedule runs on. /event
+ *  lists what is scheduled; each event page then carries the whole thing
+ *  machine-readably. The times are taken from the page's own
+ *  "Add to calendar" link, whose dates are written out in Berlin time
+ *  ("dates=20261010T110000/20261010T133000&ctz=Europe/Berlin") — the
+ *  schema.org block next to it states the same moment in UTC, and reading
+ *  the local one keeps the clock right across the October changeover. The
+ *  ticket line gives the price and the cap ("9.90 € … (Max. 30)"); Odoo
+ *  writes "Sold Out" in place of the register button once a date fills.
+ */
+async function fromOdooEvents(html, source) {
+  const base = new URL(source.url);
+  // Every card links to its registration; the event page is that without
+  // the last segment. The /de/ copies of each link are the same events.
+  const pages = [...new Set(
+    [...html.matchAll(/href="([^"]*\/event\/[^"?#]+?)\/register"/gi)]
+      .map((m) => m[1])
+      .filter((u) => !/\/de\/event\//.test(u))
+      .map((u) => new URL(u, base).href),
+  )];
+  console.log(`[${source.slug}] odoo events listed: ${pages.length}`);
+  const out = [];
+  for (const pageUrl of pages) {
+    try {
+      const res = await fetch(pageUrl, {
+        redirect: 'follow',
+        headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' },
+      });
+      if (!res.ok) {
+        console.log(`[${source.slug}] ${pageUrl}: HTTP ${res.status}`);
+        continue;
+      }
+      const page = await res.text();
+      const when = page.match(
+        /dates=(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})\d{2}(?:%2F|\/)(?:\d{8})T(\d{2})(\d{2})/i,
+      );
+      if (!when) {
+        console.log(`[${source.slug}] ${pageUrl}: no calendar link — skipped`);
+        continue;
+      }
+      const date = `${when[1]}-${when[2]}-${when[3]}`;
+      if (date < todayISO || date > maxISO) continue;
+      const hours = Number(when[6]) + Number(when[7]) / 60 - (Number(when[4]) + Number(when[5]) / 60);
+      const title = stripTags(page.match(/<h2[^>]*itemprop="name"[^>]*>([\s\S]*?)<\/h2>/i)?.[1] ?? '');
+      if (!title) {
+        console.log(`[${source.slug}] ${pageUrl}: no title — skipped`);
+        continue;
+      }
+      const price = page.match(/(\d{1,3})[.,](\d{2})\s*€/);
+      out.push({
+        title,
+        date,
+        time: `${when[4]}:${when[5]}`,
+        ...(hours > 0 && hours <= 12 ? { duration: `${Math.round(hours * 2) / 2} h` } : {}),
+        ...(price ? { price: `€${price[1]}${price[2] === '00' ? '' : `.${price[2]}`}` } : {}),
+        ...(/sold\s*out|ausverkauft/i.test(stripTags(page)) ? { soldOut: true } : {}),
+        url: pageUrl,
+      });
+    } catch (err) {
+      console.log(`[${source.slug}] ${pageUrl}: ${err.message.split('\n')[0]}`);
+    }
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  return out;
+}
+
 /** Eventbrite organiser pages render their event list in the browser, and
  *  CloudFront answers the JSON behind it with a 403 to CI runners, so the
  *  page is read through the r.jina.ai text relay \u2014 the same route that
@@ -3864,6 +3939,23 @@ async function scrapeSource(source) {
     }
     console.log(`[${source.slug}] eventfrog events kept: ${workshops.length}`);
     return { workshops, recurring: [] };
+  }
+
+  if (source.mode === 'odoo-events') {
+    const events = await fromOdooEvents(html, source);
+    for (const ev of events) {
+      console.log(`[${source.slug}] event: "${ev.title}" ${ev.date} ${ev.time} ${ev.duration ?? ''} ${ev.price ?? 'no price'}`);
+    }
+    console.log(`[${source.slug}] odoo events kept: ${events.length}`);
+    return {
+      workshops: events.map((ev) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...ev,
+        ...(source.district ? { district: source.district } : {}),
+      })),
+      recurring: [],
+    };
   }
 
   if (source.mode === 'wix-events-sitemap') {

@@ -222,6 +222,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // Eight seats per class on the shop's own stock counts; the courses run
   // 2.5 h, the plate and vase workshops 3.
   loam:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [2.5, 3] },
+  // Thirty is the cap their own ticket line names; every session runs
+  // 11:00–13:30.
+  pausify:          { activity: 'wellbeing', groupRange: [1, 30], hourRange: [2.5, 2.5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -424,6 +427,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'loam', name: 'Loam Berlin', specialty: 'Handbuilding pottery & courses', studio: 'Loam.',
       blurb: 'Jana Marlene Lippert’s ceramics studio in Moabit — workshop, learning place and shop in one. Everything is built by hand rather than thrown: slab building, pinching and coiling, then surface decoration, and the studio glazes and fires your pieces for you to collect later. Classes take eight at most and run two and a half to three hours — an introduction to handbuilding, cups and mugs, plates and trays, candle holders, illustrated bowls, larger vases and carafes — alongside a six-week evening course, private one-to-one sessions, team events and open studio time. Every class is taught in English and German.',
       group: 'Up to 8', duration: '2.5–3 h · 6-week course', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+    { slug: 'pausify', name: 'Pausify', specialty: 'Co-reading & focus sessions', studio: 'Pausify',
+      blurb: 'Ksenia and Barbara’s reading and focus community — a book club where nobody assigns the reading. You bring whatever you are in the middle of: a novel, a sketchbook, a laptop, a half-finished project. Twenty minutes of hellos, then an hour of silence with everyone working side by side, then coffee and the conversation that comes out of it. It runs every weekend in a glass-walled space by Hauptbahnhof, in English and German, drinks and snacks included — single ticket or membership, and people often stay on for lunch. Book swaps, talks and writing workshops come round as special editions.',
+      group: 'Up to 30', duration: '2.5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -588,6 +594,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'loam', name: 'Loam Berlin', specialty: 'Aufbaukeramik & Kurse', studio: 'Loam.',
       blurb: 'Das Keramikstudio von Jana Marlene Lippert in Moabit — Werkstatt, Lernort und Laden in einem. Gearbeitet wird von Hand statt an der Scheibe: Plattentechnik, Pinchen und Wulstaufbau, dazu Oberflächengestaltung; glasiert und gebrannt wird im Studio, abgeholt wird später. Die Kurse nehmen höchstens acht Leute und dauern zweieinhalb bis drei Stunden — Einführung in die Aufbaukeramik, Tassen und Becher, Teller und Schalen, Kerzenhalter, illustrierte Schüsseln, größere Vasen und Karaffen — dazu ein sechswöchiger Abendkurs, Einzelstunden, Team-Events und offene Studiozeit. Unterrichtet wird auf Deutsch und Englisch.',
       group: 'Bis 8', duration: '2,5–3 Std. · 6-Wochen-Kurs', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+    { slug: 'pausify', name: 'Pausify', specialty: 'Gemeinsam lesen & fokussiert arbeiten', studio: 'Pausify',
+      blurb: 'Die Lese- und Fokus-Community von Ksenia und Barbara — ein Buchclub, in dem niemand vorgibt, was gelesen wird. Du bringst mit, woran du gerade bist: einen Roman, ein Skizzenbuch, einen Laptop, ein halbfertiges Projekt. Zwanzig Minuten Ankommen, dann eine Stunde Stille, in der alle nebeneinander arbeiten, danach Kaffee und die Gespräche, die daraus entstehen. Jedes Wochenende in einem verglasten Raum am Hauptbahnhof, auf Deutsch und Englisch, Getränke und Snacks inklusive — Einzelticket oder Mitgliedschaft, und viele bleiben danach noch zum Mittagessen. Book Swaps, Talks und Schreibwerkstätten kommen als Sonderausgaben dazu.',
+      group: 'Bis 30', duration: '2,5 Std.', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
   ],
 };
 
@@ -656,6 +665,11 @@ const reels: Record<string, { video: string; poster: string }> = {
   // bench, a horse built up mane and all on its board, and the finished
   // pieces drying beside the glazed ones. No captions; audio stripped.
   loam: { video: '/video/loam.mp4', poster: '/video/loam-poster.jpg' },
+  // Pausify's own, cut between their caption and their end card: the
+  // booths full of readers over the street, the staircase people read on,
+  // the bean bags mid-conversation and the room before a session. Audio
+  // stripped.
+  pausify: { video: '/video/pausify.mp4', poster: '/video/pausify-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
