@@ -33,6 +33,19 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
  *  site/src/data/content.ts; `url` is both the page scraped and where the
  *  feed's Book button sends people. Add a line per host as pages are found. */
 const SOURCES = [
+  // Loam. — Jana Marlene Lippert's ceramics studio in Moabit. Every class
+  // sells from one Squarespace products collection, where a session lives in
+  // a variant's date option ("Sat 26th Sept l 11:00 - 14:00 l Deutsch &
+  // English") and the seats left are the variant's stock. The six-week
+  // course names only its first and last evening, so the reader expands the
+  // weekly range into the six meetings it stands for. The gift card carries
+  // amounts rather than dates and drops out on its own. The shop page
+  // (/classes-workshops) only embeds the collection; /pottery-classes-berlin
+  // is the collection itself, and the one that answers ?format=json.
+  { slug: 'loam', name: 'Loam. — pottery classes & workshops', mode: 'squarespace',
+    url: 'https://www.loamberlin.com/pottery-classes-berlin',
+    district: 'Moabit' },
+
   // LAMA Leather Goods — one WooCommerce product per workshop, each with a
   // DATE dropdown of its real dates. Prices and durations come from the
   // catalogue page; the dropdown supplies the dates and the hours.
@@ -2315,6 +2328,61 @@ const hoursFromMinutes = (a, b) => {
   return `${h(a)}${b ? `–${h(b)}` : ''} h`;
 };
 
+/** Day-first English dates with short month names — the shape Loam's
+ *  Squarespace date options are written in: "Sat 12th Sept l 14:30 - 17:00 l
+ *  English", or a weekly course given as its first and last meeting,
+ *  "Tuesdays 8th Sept - 13th Oct l 18:30 - 21:00". englishCourseDates reads
+ *  month-first with full month names, so the dates are rewritten into that
+ *  shape and everything after them (the clock, the languages) is carried
+ *  along untouched. A weekly range is expanded into the meetings it stands
+ *  for — six Tuesdays rather than two dates — so the card counts them
+ *  right. Returns null when no day-first date is there, and the caller
+ *  reads the option as written.
+ */
+function monthFirstDates(text) {
+  const names = Object.keys(EN_MONTHS);
+  const hits = [...String(text).matchAll(
+    /(\d{1,2})(?:st|nd|rd|th)?\.?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?/gi,
+  )]
+    .map((m) => {
+      const month = names.findIndex((n) => n.startsWith(m[2].toLowerCase())) + 1;
+      return { day: Number(m[1]), month, end: m.index + m[0].length };
+    })
+    .filter((h) => h.month >= 1 && h.day >= 1 && h.day <= 31);
+  if (!hits.length) return null;
+  const name = (m) => names[m - 1][0].toUpperCase() + names[m - 1].slice(1);
+  // The year these listings leave out, inferred the way englishCourseDates
+  // infers it, so an expanded range lands on the same days it does.
+  const yearOf = (h) => {
+    const mmdd = `${String(h.month).padStart(2, '0')}-${String(h.day).padStart(2, '0')}`;
+    const year = Number(todayISO.slice(0, 4));
+    const iso = `${year}-${mmdd}`;
+    return iso < todayISO && Date.parse(todayISO) - Date.parse(iso) > 120 * 86400000 ? year + 1 : year;
+  };
+  let days = hits;
+  if (/^\s*\w+days\b/i.test(String(text)) && hits.length === 2) {
+    const from = Date.UTC(yearOf(hits[0]), hits[0].month - 1, hits[0].day);
+    const year = hits[1].month < hits[0].month ? yearOf(hits[0]) + 1 : yearOf(hits[0]);
+    const to = Date.UTC(year, hits[1].month - 1, hits[1].day);
+    if (to > from && to - from <= 200 * 86400000) {
+      days = [];
+      for (let t = from; t <= to; t += 7 * 86400000) {
+        const d = new Date(t);
+        days.push({ day: d.getUTCDate(), month: d.getUTCMonth() + 1 });
+      }
+    }
+  }
+  // One stretch per month, so "September 8 & 15 & 22 & 29 & October 6 & 13"
+  // reads back as six meetings rather than six separate months.
+  let out = '';
+  let month = 0;
+  for (const d of days) {
+    out += d.month === month ? ` & ${d.day}` : `${out ? ' & ' : ''}${name(d.month)} ${d.day}`;
+    month = d.month;
+  }
+  return `${out} ${String(text).slice(hits[hits.length - 1].end)}`;
+}
+
 /** Reads an English list of course dates — "October 24 & 25", "August 31 +
  *  September 07, 14, 21", "September 15, 22, 29 + October 6, 13, 20,
  *  19-22.00" — into the first meeting's date, the start time, the length of
@@ -2974,7 +3042,7 @@ async function fromSquarespace(source) {
         kept++;
         continue;
       }
-      const course = englishCourseDates(String(dateText));
+      const course = englishCourseDates(monthFirstDates(dateText) ?? String(dateText));
       if (!course) continue;
       out.push({ ...courseEntry(course), ...avail, ...price, ...common });
       kept++;

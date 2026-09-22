@@ -219,6 +219,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — the studio publishes no cap; its own reviews
   // call it a small group.
   blauhaus:         { activity: 'photography', groupRange: [1, 10], hourRange: [2.5, 2.5] },
+  // Eight seats per class on the shop's own stock counts; the courses run
+  // 2.5 h, the plate and vase workshops 3.
+  loam:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [2.5, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -418,6 +421,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'blauhaus', name: 'Benedikt Emig', specialty: 'Cyanotype printing', studio: 'Blauhaus',
       blurb: 'The oldest photographic process still in daily use, and the one that needs no darkroom: you brush a light-sensitive coating onto paper, lay leaves, flowers or finds from your last walk on top, and let the sun do the rest. What lifts out of the water tray is Prussian blue — a print, a postcard or a folded card to take home. Benedikt works with complete beginners as readily as with people who already draw or photograph; no experience is needed, every material is provided, and the moment the paper turns in the water is the one everyone remembers.',
       group: 'Small group', duration: '2.5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+    { slug: 'loam', name: 'Loam Berlin', specialty: 'Handbuilding pottery & courses', studio: 'Loam.',
+      blurb: 'Jana Marlene Lippert’s ceramics studio in Moabit — workshop, learning place and shop in one. Everything is built by hand rather than thrown: slab building, pinching and coiling, then surface decoration, and the studio glazes and fires your pieces for you to collect later. Classes take eight at most and run two and a half to three hours — an introduction to handbuilding, cups and mugs, plates and trays, candle holders, illustrated bowls, larger vases and carafes — alongside a six-week evening course, private one-to-one sessions, team events and open studio time. Every class is taught in English and German.',
+      group: 'Up to 8', duration: '2.5–3 h · 6-week course', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -579,6 +585,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'blauhaus', name: 'Benedikt Emig', specialty: 'Cyanotypie', studio: 'Blauhaus',
       blurb: 'Eines der ältesten fotografischen Verfahren — und eines, das keine Dunkelkammer braucht: Du streichst eine lichtempfindliche Schicht auf Papier, legst Blätter, Blüten oder Fundstücke vom letzten Spaziergang darauf und lässt die Sonne den Rest machen. Was aus der Wasserschale kommt, ist Preußischblau: ein Druck, eine Postkarte oder eine Klappkarte zum Mitnehmen. Benedikt arbeitet mit absoluten Anfängerinnen genauso wie mit Leuten, die schon zeichnen oder fotografieren; Vorkenntnisse braucht es keine, alle Materialien sind da, und der Moment, in dem das Papier im Wasser umschlägt, bleibt allen im Kopf.',
       group: 'Kleine Gruppe', duration: '2,5 Std.', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+    { slug: 'loam', name: 'Loam Berlin', specialty: 'Aufbaukeramik & Kurse', studio: 'Loam.',
+      blurb: 'Das Keramikstudio von Jana Marlene Lippert in Moabit — Werkstatt, Lernort und Laden in einem. Gearbeitet wird von Hand statt an der Scheibe: Plattentechnik, Pinchen und Wulstaufbau, dazu Oberflächengestaltung; glasiert und gebrannt wird im Studio, abgeholt wird später. Die Kurse nehmen höchstens acht Leute und dauern zweieinhalb bis drei Stunden — Einführung in die Aufbaukeramik, Tassen und Becher, Teller und Schalen, Kerzenhalter, illustrierte Schüsseln, größere Vasen und Karaffen — dazu ein sechswöchiger Abendkurs, Einzelstunden, Team-Events und offene Studiozeit. Unterrichtet wird auf Deutsch und Englisch.',
+      group: 'Bis 8', duration: '2,5–3 Std. · 6-Wochen-Kurs', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
   ],
 };
 
