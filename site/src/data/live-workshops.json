@@ -1,11 +1,11 @@
 {
-  "updated": "2026-09-22T18:54:00.404Z",
+  "updated": "2026-09-22T19:02:54.953Z",
   "sources": [
     {
       "slug": "landsinn",
       "url": "https://landsinn-potsdam.de/workshops-2/",
       "status": "ok",
-      "count": 14
+      "count": 9
     },
     {
       "slug": "lomu",
@@ -824,66 +824,6 @@
   ],
   "workshops": [
     {
-      "slug": "landsinn",
-      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
-      "title": "Makramee-Schlüsselanhänger mit Silvia",
-      "date": "2026-07-17",
-      "time": "18:00",
-      "duration": "2 h",
-      "price": "€42",
-      "url": "https://landsinn-potsdam.de/workshops-2/",
-      "district": "Potsdam",
-      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
-    },
-    {
-      "slug": "landsinn",
-      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
-      "title": "Makramee-Windlicht mit Silvia",
-      "date": "2026-07-24",
-      "time": "18:00",
-      "duration": "2.5 h",
-      "price": "€42",
-      "url": "https://landsinn-potsdam.de/workshops-2/",
-      "district": "Potsdam",
-      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
-    },
-    {
-      "slug": "landsinn",
-      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
-      "title": "freie Gestaltung von Schmuck aus Polymermodelliermasse und Resin mit Natalia",
-      "date": "2026-08-07",
-      "time": "17:00",
-      "duration": "3 h",
-      "price": "€60",
-      "url": "https://landsinn-potsdam.de/workshops-2/",
-      "district": "Potsdam",
-      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
-    },
-    {
-      "slug": "landsinn",
-      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
-      "title": "Dottpainting-Magie der Punkte mit Silvia",
-      "date": "2026-08-09",
-      "time": "14:00",
-      "duration": "2.5 h",
-      "price": "€42",
-      "url": "https://landsinn-potsdam.de/workshops-2/",
-      "district": "Potsdam",
-      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
-    },
-    {
-      "slug": "landsinn",
-      "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
-      "title": "Modern Collage mit Constanze",
-      "date": "2026-09-03",
-      "time": "18:00",
-      "duration": "2.5 h",
-      "price": "€65",
-      "url": "https://landsinn-potsdam.de/workshops-2/",
-      "district": "Potsdam",
-      "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
-    },
-    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Basis",
@@ -1060,19 +1000,6 @@
       "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
       "district": "Prenzlauer Berg",
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-24",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "drawingwalks",
@@ -2159,6 +2086,19 @@
       "url": "https://www.eventbrite.de/e/the-unfinished-thread-a-monthly-fiber-arts-meet-up-tickets-2001380960328",
       "duration": "2 h",
       "district": "Friedrichshain"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-10-01",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "munio",
