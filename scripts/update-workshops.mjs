@@ -33,6 +33,28 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
  *  site/src/data/content.ts; `url` is both the page scraped and where the
  *  feed's Book button sends people. Add a line per host as pages are found. */
 const SOURCES = [
+  // lomu design — Monique Wiesner's label. Cloudflare turns away both the
+  // runner and a headless browser on her Jimdo site, so the watcher reads
+  // the workshop index through the r.jina.ai text relay, the same route the
+  // other walled hosts take. That page carries no dates — both formats are
+  // booked by mail — so the two seeds below are what reaches the calendar,
+  // each linking to its own page. The index is watched rather than a detail
+  // page on purpose: the jewellery page still describes a pop-up from last
+  // May, and a parser reading "am 15. und 16. Mai" would invent a session.
+  { slug: 'lomu', name: 'lomu design — workshops (watched via relay)',
+    url: 'https://r.jina.ai/https://www.lomudesign.de/workshop/',
+    district: 'Mitte',
+    seedOnRequest: [
+      { title: 'Workshop auf Anfrage: Geldbörse aus veganem Leder',
+        titleEn: 'On request: make your own vegan-leather wallet',
+        duration: '2 h', district: 'Mitte', request: true,
+        url: 'https://www.lomudesign.de/workshop/accessoire/' },
+      { title: 'Workshop auf Anfrage: Power-Schmuck im 80er-Look',
+        titleEn: 'On request: 80s statement jewellery',
+        duration: '1–2 h', district: 'Mitte', request: true,
+        url: 'https://www.lomudesign.de/workshop/fetziger-power-schmuck/' },
+    ] },
+
   // Pausify — Ksenia and Barbara's co-reading community, whose schedule
   // runs on Odoo's events app: /event lists what is scheduled and each
   // event page carries its own times, price and cap. They open a few weeks

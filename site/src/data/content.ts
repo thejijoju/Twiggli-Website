@@ -225,6 +225,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // Thirty is the cap their own ticket line names; every session runs
   // 11:00–13:30.
   pausify:          { activity: 'wellbeing', groupRange: [1, 30], hourRange: [2.5, 2.5] },
+  // PLACEHOLDER upper bound — she names a minimum per format (four for the
+  // wallets, five for the jewellery) and no cap.
+  lomu:             { activity: 'craft',     groupRange: [4, 20], hourRange: [1, 2] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -430,6 +433,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'pausify', name: 'Pausify', specialty: 'Co-reading & focus sessions', studio: 'Pausify',
       blurb: 'Ksenia and Barbara’s reading and focus community — a book club where nobody assigns the reading. You bring whatever you are in the middle of: a novel, a sketchbook, a laptop, a half-finished project. Twenty minutes of hellos, then an hour of silence with everyone working side by side, then coffee and the conversation that comes out of it. It runs every weekend in a glass-walled space by Hauptbahnhof, in English and German, drinks and snacks included — single ticket or membership, and people often stay on for lunch. Book swaps, talks and writing workshops come round as special editions.',
       group: 'Up to 30', duration: '2.5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+    { slug: 'lomu', name: 'Monique Wiesner', specialty: 'Vegan leather wallets & neon jewellery', studio: 'lomu design',
+      blurb: 'Monique Wiesner’s Berlin label makes wallets from a plastic-free, waterproof material that does what leather used to — bold, minimal, washable at 60°. Her workshops use the same stuff. In one you build your own wallet, card case or clutch and choose the colours, shapes and details as you go; in the other you make statement jewellery in full 80s neon, where glitter and wild shapes are the point. Four people upwards for the wallets, five for the jewellery, one to two hours, every material and tool provided, and a material chat about what this stuff actually is. She comes to your space, or hosts at Grimms Garten in Mitte.',
+      group: 'Groups from 4', duration: '1–2 h', place: 'Grimms Garten, Mitte / your space', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -597,6 +603,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'pausify', name: 'Pausify', specialty: 'Gemeinsam lesen & fokussiert arbeiten', studio: 'Pausify',
       blurb: 'Die Lese- und Fokus-Community von Ksenia und Barbara — ein Buchclub, in dem niemand vorgibt, was gelesen wird. Du bringst mit, woran du gerade bist: einen Roman, ein Skizzenbuch, einen Laptop, ein halbfertiges Projekt. Zwanzig Minuten Ankommen, dann eine Stunde Stille, in der alle nebeneinander arbeiten, danach Kaffee und die Gespräche, die daraus entstehen. Jedes Wochenende in einem verglasten Raum am Hauptbahnhof, auf Deutsch und Englisch, Getränke und Snacks inklusive — Einzelticket oder Mitgliedschaft, und viele bleiben danach noch zum Mittagessen. Book Swaps, Talks und Schreibwerkstätten kommen als Sonderausgaben dazu.',
       group: 'Bis 30', duration: '2,5 Std.', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+    { slug: 'lomu', name: 'Monique Wiesner', specialty: 'Geldbörsen aus veganem Leder & Neon-Schmuck', studio: 'lomu design',
+      blurb: 'Das Berliner Label von Monique Wiesner macht Geldbörsen aus einem plastikfreien, wasserfesten Material, das kann, was Leder konnte — bold, minimal, bei 60° waschbar. In den Workshops wird mit demselben Material gearbeitet. Im einen baust du deine eigene Geldbörse, ein Etui oder eine Clutch und entscheidest Farben, Formen und Details selbst; im anderen entsteht Statement-Schmuck im 80er-Neon-Look, bei dem Glitzer und wilde Formen der Punkt sind. Ab vier Personen für die Geldbörsen, ab fünf für den Schmuck, ein bis zwei Stunden, Material und Werkzeug komplett gestellt, dazu ein Material-Chat darüber, was das Zeug eigentlich ist. Sie kommt zu euch oder gibt die Kurse bei Grimms Garten in Mitte.',
+      group: 'Gruppen ab 4', duration: '1–2 Std.', place: 'Grimms Garten, Mitte / euer Raum', languages: 'DE' },
   ],
 };
 
@@ -670,6 +679,13 @@ const reels: Record<string, { video: string; poster: string }> = {
   // the bean bags mid-conversation and the room before a session. Audio
   // stripped.
   pausify: { video: '/video/pausify.mp4', poster: '/video/pausify-poster.jpg' },
+  // lomu's own. Their clip is captioned for most of its length — a title,
+  // a date, a booking line — so the reel is the two stretches between
+  // them: the cut pieces laid out, the table at work, then a wallet being
+  // built and its studs set. Their export is 360×640, half the size of
+  // the other reels, so it is left at that rather than upscaled into
+  // mush. Audio stripped.
+  lomu: { video: '/video/lomu.mp4', poster: '/video/lomu-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
