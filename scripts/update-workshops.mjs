@@ -40,6 +40,7 @@ const SOURCES = [
   // not a parse failure.
   { slug: 'pausify', name: 'Pausify — weekend sessions', mode: 'odoo-events',
     url: 'https://www.pausify.org/event',
+    title: 'Lese- & Fokus-Session', titleEn: 'Co-reading & focus session',
     district: 'Moabit' },
 
   // Loam. — Jana Marlene Lippert's ceramics studio in Moabit. Every class
@@ -2875,19 +2876,32 @@ async function fromOdooEvents(html, source) {
       const date = `${when[1]}-${when[2]}-${when[3]}`;
       if (date < todayISO || date > maxISO) continue;
       const hours = Number(when[6]) + Number(when[7]) / 60 - (Number(when[4]) + Number(when[5]) / 60);
-      const title = stripTags(page.match(/<h2[^>]*itemprop="name"[^>]*>([\s\S]*?)<\/h2>/i)?.[1] ?? '');
-      if (!title) {
+      const named = stripTags(page.match(/<h2[^>]*itemprop="name"[^>]*>([\s\S]*?)<\/h2>/i)?.[1] ?? '');
+      if (!named) {
         console.log(`[${source.slug}] ${pageUrl}: no title — skipped`);
         continue;
       }
-      const price = page.match(/(\d{1,3})[.,](\d{2})\s*€/);
+      // Their regular dates are named after the weekday they fall on
+      // ("Saturday Event - Oct 10"), which says nothing a card does not
+      // already show, so the source names them instead. A special edition
+      // — a book swap, the Christmas one — keeps the name they gave it.
+      const plain = /^(?:mon|tues|wednes|thurs|fri|satur|sun)day\s+event\b/i.test(named);
+      const title = plain ? source.title ?? named : named;
+      const titleEn = plain ? source.titleEn : undefined;
+      // The price sits in a ticket table split across tags and written with
+      // a non-breaking space, so it is read from the page's text, not its
+      // markup. So is the sold-out mark, which Odoo puts in place of the
+      // register button once a date fills.
+      const text = stripTags(page);
+      const price = text.match(/(\d{1,3})[.,](\d{2})\s*€/);
       out.push({
         title,
+        ...(titleEn ? { titleEn } : {}),
         date,
         time: `${when[4]}:${when[5]}`,
         ...(hours > 0 && hours <= 12 ? { duration: `${Math.round(hours * 2) / 2} h` } : {}),
         ...(price ? { price: `€${price[1]}${price[2] === '00' ? '' : `.${price[2]}`}` } : {}),
-        ...(/sold\s*out|ausverkauft/i.test(stripTags(page)) ? { soldOut: true } : {}),
+        ...(/sold\s*out|ausverkauft/i.test(text) ? { soldOut: true } : {}),
         url: pageUrl,
       });
     } catch (err) {
