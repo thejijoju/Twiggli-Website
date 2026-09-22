@@ -33,6 +33,22 @@ const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../site/src/data/l
  *  site/src/data/content.ts; `url` is both the page scraped and where the
  *  feed's Book button sends people. Add a line per host as pages are found. */
 const SOURCES = [
+  // Landsinn Concept Store, Potsdam-Babelsberg. A season's dates are one
+  // German line each on their workshops page — date, clock, what it is, who
+  // teaches it, price — so the whole programme reads with nothing configured
+  // but the district. The room itself is next door at BabelsWERK. They take
+  // bookings by mail (and mention Konfetti, which the Konfetti rule below
+  // strips), and every format is bookable privately, which the seed carries.
+  { slug: 'landsinn', name: 'Landsinn — Workshoptermine', mode: 'dated-lines-de',
+    url: 'https://landsinn-potsdam.de/workshops-2/',
+    district: 'Potsdam',
+    seedOnRequest: [
+      { title: 'Workshop auf Anfrage: privater Termin (Geburtstag, JGA, Teamevent)',
+        titleEn: 'On request: a private date (birthday, hen do, team event)',
+        duration: '2–3 h', price: '€42–65', district: 'Potsdam', request: true,
+        url: 'https://landsinn-potsdam.de/workshops-2/' },
+    ] },
+
   // lomu design — Monique Wiesner's label. Cloudflare turns away both the
   // runner and a headless browser on her Jimdo site, so the watcher reads
   // the workshop index through the r.jina.ai text relay, the same route the
@@ -899,6 +915,38 @@ function fromJsonLd(html, sourceUrl) {
 }
 
 const UA = 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)';
+
+/** A season's dates written as one German line each, the way Landsinn
+ *  lists them — "10.10.2026 (14-16.30 Uhr) Herbstlicher Textildruck mit
+ *  Constanze / 65 €/pro Person". Every line carries its own title, tutor,
+ *  clock and price, so nothing here comes from the source's configuration
+ *  but the district. The closing hour is written with a dot for its
+ *  minutes ("16.30"), and half of them give the hour alone ("17-19 Uhr").
+ */
+function fromGermanLineList(html, source) {
+  const text = stripTags(html);
+  const out = [];
+  const seen = new Set();
+  for (const m of text.matchAll(
+    /(\d{1,2})\.(\d{1,2})\.(\d{4})\s*\(\s*(\d{1,2})(?:[.:](\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?:[.:](\d{2}))?\s*Uhr\s*\)\s*([^/]{3,120}?)\s*\/\s*(\d{1,3})(?:[.,](\d{2}))?\s*\u20ac/g,
+  )) {
+    const date = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+    const time = `${m[4].padStart(2, '0')}:${m[5] ?? '00'}`;
+    if (seen.has(`${date} ${time}`)) continue;
+    seen.add(`${date} ${time}`);
+    const span = Number(m[6]) + Number(m[7] ?? 0) / 60 - (Number(m[4]) + Number(m[5] ?? 0) / 60);
+    const title = m[8].replace(/\s+/g, ' ').trim();
+    out.push({
+      title,
+      date,
+      time,
+      ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+      price: `€${m[9]}${m[10] && m[10] !== '00' ? `.${m[10]}` : ''}`,
+      url: source.bookUrl ?? source.url,
+    });
+  }
+  return out;
+}
 
 /** Parser for pages listing workshops as German pipe-separated lines —
  *  "29.08.2026 | Samstag, 13-15 Uhr | ANFÄNGER:INNEN | … | 49 € | Buchung
@@ -3975,6 +4023,23 @@ async function scrapeSource(source) {
     }
     console.log(`[${source.slug}] eventfrog events kept: ${workshops.length}`);
     return { workshops, recurring: [] };
+  }
+
+  if (source.mode === 'dated-lines-de') {
+    const workshops = fromGermanLineList(html, source);
+    for (const w of workshops) {
+      console.log(`[${source.slug}] line: "${w.title}" ${w.date} ${w.time} ${w.duration ?? ''} ${w.price}`);
+    }
+    console.log(`[${source.slug}] dated lines parsed: ${workshops.length}`);
+    return {
+      workshops: workshops.map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      })),
+      recurring: [],
+    };
   }
 
   if (source.mode === 'odoo-events') {

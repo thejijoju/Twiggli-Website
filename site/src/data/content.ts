@@ -228,6 +228,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER upper bound — she names a minimum per format (four for the
   // wallets, five for the jewellery) and no cap.
   lomu:             { activity: 'craft',     groupRange: [4, 20], hourRange: [1, 2] },
+  // PLACEHOLDER upper bound — the page names a minimum of five and no cap.
+  landsinn:         { activity: 'craft',     groupRange: [5, 12], hourRange: [2, 3] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -436,6 +438,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'lomu', name: 'Monique Wiesner', specialty: 'Vegan leather wallets & neon jewellery', studio: 'lomu design',
       blurb: 'Monique Wiesner’s Berlin label makes wallets from a plastic-free, waterproof material that does what leather used to — bold, minimal, washable at 60°. Her workshops use the same stuff. In one you build your own wallet, card case or clutch and choose the colours, shapes and details as you go; in the other you make statement jewellery in full 80s neon, where glitter and wild shapes are the point. Four people upwards for the wallets, five for the jewellery, one to two hours, every material and tool provided, and a material chat about what this stuff actually is. She comes to your space, or hosts at Grimms Garten in Mitte.',
       group: 'Groups from 4', duration: '1–2 h', place: 'Grimms Garten, Mitte / your space', languages: 'DE' },
+    { slug: 'landsinn', name: 'Landsinn', specialty: 'Macramé, collage & seasonal craft', studio: 'Landsinn Concept Store',
+      blurb: 'A concept store in Potsdam-Babelsberg that keeps a workshop room next door at BabelsWERK and fills it with a different maker every few weeks. Silvia teaches macramé and dot painting, Natalia jewellery in polymer clay and resin, Constanze modern collage, textile printing and gelli-print cards, Karina advent wreaths in the weeks before Christmas, Tina braiding and ceramics. Afternoons and evenings of two to three hours, from five people up, with every material and tool, a snack and a drink included — and any of them can be booked privately for a birthday, a hen do or a team.',
+      group: 'From 5', duration: '2–3 h', place: 'BabelsWERK, Garnstr. 18, Potsdam-Babelsberg', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -606,6 +611,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'lomu', name: 'Monique Wiesner', specialty: 'Geldbörsen aus veganem Leder & Neon-Schmuck', studio: 'lomu design',
       blurb: 'Das Berliner Label von Monique Wiesner macht Geldbörsen aus einem plastikfreien, wasserfesten Material, das kann, was Leder konnte — bold, minimal, bei 60° waschbar. In den Workshops wird mit demselben Material gearbeitet. Im einen baust du deine eigene Geldbörse, ein Etui oder eine Clutch und entscheidest Farben, Formen und Details selbst; im anderen entsteht Statement-Schmuck im 80er-Neon-Look, bei dem Glitzer und wilde Formen der Punkt sind. Ab vier Personen für die Geldbörsen, ab fünf für den Schmuck, ein bis zwei Stunden, Material und Werkzeug komplett gestellt, dazu ein Material-Chat darüber, was das Zeug eigentlich ist. Sie kommt zu euch oder gibt die Kurse bei Grimms Garten in Mitte.',
       group: 'Gruppen ab 4', duration: '1–2 Std.', place: 'Grimms Garten, Mitte / euer Raum', languages: 'DE' },
+    { slug: 'landsinn', name: 'Landsinn', specialty: 'Makramee, Collage & Saisonhandwerk', studio: 'Landsinn Concept Store',
+      blurb: 'Ein Concept Store in Potsdam-Babelsberg, der nebenan im BabelsWERK einen Workshopraum hat und ihn alle paar Wochen mit einer anderen Macherin füllt. Silvia unterrichtet Makramee und Dot Painting, Natalia Schmuck aus Polymermodelliermasse und Resin, Constanze Modern Collage, Textildruck und Gelli-Print-Karten, Karina in den Wochen vor Weihnachten das Adventskranzbinden, Tina Flechten und Keramik. Nachmittage und Abende von zwei bis drei Stunden, ab fünf Personen, Material und Werkzeug komplett dabei, dazu ein kleiner Snack und ein Getränk — und jeder Workshop ist auch privat buchbar, für Geburtstag, JGA oder Team.',
+      group: 'Ab 5', duration: '2–3 Std.', place: 'BabelsWERK, Garnstr. 18, Potsdam-Babelsberg', languages: 'DE' },
   ],
 };
 
