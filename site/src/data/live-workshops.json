@@ -1,6 +1,12 @@
 {
-  "updated": "2026-09-22T15:11:11.860Z",
+  "updated": "2026-09-22T15:37:55.291Z",
   "sources": [
+    {
+      "slug": "pausify",
+      "url": "https://www.pausify.org/event",
+      "status": "ok",
+      "count": 6
+    },
     {
       "slug": "loam",
       "url": "https://www.loamberlin.com/pottery-classes-berlin",
@@ -454,7 +460,7 @@
     {
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/learnlino",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 6
     },
     {
@@ -1454,6 +1460,17 @@
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
+      "slug": "pausify",
+      "sourceUrl": "https://www.pausify.org/event",
+      "title": "Saturday Event - Sep 26",
+      "date": "2026-09-26",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "url": "https://www.pausify.org/event/saturday-event-sep-26-183",
+      "district": "Moabit",
+      "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+    },
+    {
       "slug": "loam",
       "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
       "title": "Vases & Carafes - build larger ceramic vessels",
@@ -1732,6 +1749,17 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475781.png?1779375548",
       "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475781/calendar/11574829",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "pausify",
+      "sourceUrl": "https://www.pausify.org/event",
+      "title": "Sunday Event - Sep 27",
+      "date": "2026-09-27",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "url": "https://www.pausify.org/event/sunday-event-sep-27-184",
+      "district": "Moabit",
+      "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
     },
     {
       "slug": "alessia",
@@ -2472,6 +2500,17 @@
       "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
+      "slug": "pausify",
+      "sourceUrl": "https://www.pausify.org/event",
+      "title": "Saturday Event - Oct 3",
+      "date": "2026-10-03",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "url": "https://www.pausify.org/event/saturday-event-oct-3-185",
+      "district": "Moabit",
+      "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+    },
+    {
       "slug": "loam",
       "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
       "title": "Ceramic Plates, Trays & Bowls Workshop",
@@ -2763,6 +2802,17 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85334520.jpg?1763198865",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85334520/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "pausify",
+      "sourceUrl": "https://www.pausify.org/event",
+      "title": "Saturday Event - Oct 4",
+      "date": "2026-10-04",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "url": "https://www.pausify.org/event/saturday-event-oct-4-186",
+      "district": "Moabit",
+      "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
     },
     {
       "slug": "sarah",
@@ -3618,6 +3668,17 @@
       "district": "Friedenau"
     },
     {
+      "slug": "pausify",
+      "sourceUrl": "https://www.pausify.org/event",
+      "title": "Saturday Event - Oct 10",
+      "date": "2026-10-10",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "url": "https://www.pausify.org/event/saturday-event-oct-10-188",
+      "district": "Moabit",
+      "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+    },
+    {
       "slug": "loam",
       "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
       "title": "Introduction to Hand-Building Pottery",
@@ -3957,6 +4018,17 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0560/1329/1681/files/BK_10.png?v=1712674710",
       "url": "https://berliner-bumerang.de/products/kopie-von-september-bumerang-workshop"
+    },
+    {
+      "slug": "pausify",
+      "sourceUrl": "https://www.pausify.org/event",
+      "title": "Saturday Event - Oct 11",
+      "date": "2026-10-11",
+      "time": "11:00",
+      "duration": "2.5 h",
+      "url": "https://www.pausify.org/event/saturday-event-oct-11-189",
+      "district": "Moabit",
+      "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
     },
     {
       "slug": "karen-rose",
