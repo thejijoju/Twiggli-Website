@@ -4,3 +4,8 @@
 # scraper should not leave it behind as something to commit.
 reopened-events.json
 .astro/
+
+# Comparison shots composed to show a change side by side. They are written
+# to the repo root so they can be opened from the app, and are throwaway —
+# the site never serves them.
+/*-compare.png
