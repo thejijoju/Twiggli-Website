@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-23T15:40:56.649Z",
+  "updated": "2026-09-23T17:57:58.659Z",
   "sources": [
     {
       "slug": "landsinn",
@@ -10,14 +10,14 @@
     {
       "slug": "mijita",
       "url": "https://r.jina.ai/https://www.mijita.de/service-page/schmuck-schmieden",
-      "status": "ok",
-      "count": 3
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "mijita",
       "url": "https://r.jina.ai/https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "status": "ok",
-      "count": 3
+      "status": "failed: no upcoming events parsed",
+      "count": 0
     },
     {
       "slug": "lomu",
@@ -150,6 +150,12 @@
       "url": "https://karen-rose.com/events-2/?re-product-id=229220",
       "status": "failed: no upcoming events parsed",
       "count": 1
+    },
+    {
+      "slug": "tessia",
+      "url": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "status": "ok",
+      "count": 9
     },
     {
       "slug": "galleria-lucia",
@@ -1693,19 +1699,6 @@
       "district": "Prenzlauer Berg"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/schmuck-schmieden",
-      "title": "Schmuck schmieden",
-      "titleEn": "Forge your own jewellery",
-      "date": "2026-09-27",
-      "time": "11:00",
-      "duration": "4 h",
-      "price": "€98",
-      "url": "https://www.mijita.de/service-page/schmuck-schmieden",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_00833cc7eea34b53abb886cb7a75db76~mv2.jpeg/v1/fit/w_1709,h_1167,al_c,q_90/3c80c2_00833cc7eea34b53abb886cb7a75db76~mv2.jpeg"
-    },
-    {
       "slug": "pausify",
       "sourceUrl": "https://www.pausify.org/event",
       "title": "Lese- & Fokus-Session",
@@ -1756,19 +1749,6 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
       "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
       "district": "Prenzlauer Berg"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/schmuck-schmieden",
-      "title": "Schmuck schmieden",
-      "titleEn": "Forge your own jewellery",
-      "date": "2026-09-28",
-      "time": "17:00",
-      "duration": "4 h",
-      "price": "€98",
-      "url": "https://www.mijita.de/service-page/schmuck-schmieden",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_00833cc7eea34b53abb886cb7a75db76~mv2.jpeg/v1/fit/w_1709,h_1167,al_c,q_90/3c80c2_00833cc7eea34b53abb886cb7a75db76~mv2.jpeg"
     },
     {
       "slug": "helka",
@@ -2952,19 +2932,6 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "title": "Gestalte deinen Ring",
-      "titleEn": "Shape your own ring in wax",
-      "date": "2026-10-05",
-      "time": "17:00",
-      "duration": "3 h",
-      "price": "€69",
-      "url": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg/v1/fit/w_1776,h_1184,al_c,q_90/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg"
-    },
-    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -3682,6 +3649,18 @@
       "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
     },
     {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Wax Carving Ring Workshop (halber Tag)",
+      "date": "2026-10-10",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€190",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/image00001.jpg?v=1757070967",
+      "url": "https://tessia-shop.com/products/wax-carving-ring-workshop-halber-tag"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -4047,6 +4026,19 @@
       "image": "http://karen-rose.com/wp-content/uploads/2021/01/Karen_Rose_Workshop_2019_kl-216x300.jpg"
     },
     {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Wax Carving Ring Workshop (halber Tag)",
+      "date": "2026-10-11",
+      "time": "11:00",
+      "soldOut": true,
+      "duration": "3 h",
+      "price": "€190",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/image00001.jpg?v=1757070967",
+      "url": "https://tessia-shop.com/products/wax-carving-ring-workshop-halber-tag"
+    },
+    {
       "slug": "dirt",
       "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
       "title": "Mini: Wheel Throwing",
@@ -4141,19 +4133,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/schmuck-schmieden",
-      "title": "Schmuck schmieden",
-      "titleEn": "Forge your own jewellery",
-      "date": "2026-10-12",
-      "time": "17:00",
-      "duration": "4 h",
-      "price": "€98",
-      "url": "https://www.mijita.de/service-page/schmuck-schmieden",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_00833cc7eea34b53abb886cb7a75db76~mv2.jpeg/v1/fit/w_1709,h_1167,al_c,q_90/3c80c2_00833cc7eea34b53abb886cb7a75db76~mv2.jpeg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -4798,6 +4777,19 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-89475803.png?1779375660",
       "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/89475803/calendar/11574829",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Sandguss + Wax Carving Workshop (ganzer Tag)",
+      "date": "2026-10-17",
+      "time": "12:00",
+      "soldOut": true,
+      "duration": "6 h",
+      "price": "€260",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/IMG_1954.heic?v=1738508693",
+      "url": "https://tessia-shop.com/products/sand-casting-wax-carving-ring-workshop"
     },
     {
       "slug": "munio",
@@ -6553,7 +6545,7 @@
       "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 8,
+      "spots": 10,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
@@ -7850,6 +7842,18 @@
       "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
     },
     {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Wax Carving Ring Workshop (halber Tag)",
+      "date": "2026-11-07",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€190",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/image00001.jpg?v=1757070967",
+      "url": "https://tessia-shop.com/products/wax-carving-ring-workshop-halber-tag"
+    },
+    {
       "slug": "whittle",
       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
       "title": "Schnitzkurs Whittle",
@@ -8438,6 +8442,18 @@
       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
     },
     {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Sandguss + Wax Carving Workshop (ganzer Tag)",
+      "date": "2026-11-13",
+      "time": "12:00",
+      "duration": "6 h",
+      "price": "€260",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/IMG_1954.heic?v=1738508693",
+      "url": "https://tessia-shop.com/products/sand-casting-wax-carving-ring-workshop"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -8625,6 +8641,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6963.jpg?v=1745264480",
       "url": "https://empireofdirt.studio/products/express-wheel-throwing"
+    },
+    {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Sandguss + Wax Carving Workshop (ganzer Tag)",
+      "date": "2026-11-14",
+      "time": "12:00",
+      "soldOut": true,
+      "duration": "6 h",
+      "price": "€260",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/IMG_1954.heic?v=1738508693",
+      "url": "https://tessia-shop.com/products/sand-casting-wax-carving-ring-workshop"
     },
     {
       "slug": "galleria-lucia",
@@ -8858,19 +8887,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "title": "Gestalte deinen Ring",
-      "titleEn": "Shape your own ring in wax",
-      "date": "2026-11-16",
-      "time": "17:00",
-      "duration": "3 h",
-      "price": "€69",
-      "url": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg/v1/fit/w_1776,h_1184,al_c,q_90/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg"
     },
     {
       "slug": "ceramic-kingdom",
@@ -10110,6 +10126,18 @@
       "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
     },
     {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Sandguss + Wax Carving Workshop (ganzer Tag)",
+      "date": "2026-12-04",
+      "time": "12:00",
+      "duration": "6 h",
+      "price": "€260",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/IMG_1954.heic?v=1738508693",
+      "url": "https://tessia-shop.com/products/sand-casting-wax-carving-ring-workshop"
+    },
+    {
       "slug": "rebeca",
       "sourceUrl": "https://www.tickettailor.com/events/learnlino",
       "title": "Make Your Xmas Cards - Linocut Evening",
@@ -10145,6 +10173,18 @@
       "district": "Moabit",
       "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
       "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+    },
+    {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Wax Carving Ring Workshop (halber Tag)",
+      "date": "2026-12-05",
+      "time": "11:00",
+      "duration": "3 h",
+      "price": "€190",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/image00001.jpg?v=1757070967",
+      "url": "https://tessia-shop.com/products/wax-carving-ring-workshop-halber-tag"
     },
     {
       "slug": "arcoiris",
@@ -10338,7 +10378,6 @@
       "duration": "2.5 h",
       "price": "€87",
       "url": "https://www.druckrausch.com/booking-calendar/09-12-basis-siebdruck-kurs-fotografie",
-      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
       "district": "Friedenau"
     },
     {
@@ -10529,19 +10568,6 @@
       "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/97550781/calendar/10335256",
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
       "district": "Neukölln"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "title": "Gestalte deinen Ring",
-      "titleEn": "Shape your own ring in wax",
-      "date": "2026-12-13",
-      "time": "11:00",
-      "duration": "3 h",
-      "price": "€69",
-      "url": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg/v1/fit/w_1776,h_1184,al_c,q_90/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg"
     },
     {
       "slug": "sarah",
@@ -10965,6 +10991,18 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "tessia",
+      "sourceUrl": "https://tessia-shop.com/collections/workshop/products.json?limit=250",
+      "title": "Sandguss + Wax Carving Workshop (ganzer Tag)",
+      "date": "2027-01-09",
+      "time": "12:00",
+      "duration": "6 h",
+      "price": "€260",
+      "district": "Prenzlauer Berg",
+      "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/IMG_1954.heic?v=1738508693",
+      "url": "https://tessia-shop.com/products/sand-casting-wax-carving-ring-workshop"
     },
     {
       "slug": "beat-etage",
