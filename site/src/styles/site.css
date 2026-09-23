@@ -3187,6 +3187,33 @@ a:hover { color: var(--color-accent); }
   .timegroup-head { font-size: 22px; }
 }
 
+/* A host's own pictures of the work, under their reel. Two up, or one on a
+   phone: these are photographs of walls and benches rather than tiles in a
+   grid, and shrinking them to thumbnails wastes what they show. */
+.host-gallery {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.host-gallery li { margin: 0; }
+.host-gallery img {
+  display: block;
+  width: 100%;
+  /* One shape for all of them, whatever the camera was held like, so the
+     row does not stagger. */
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+@media (max-width: 720px) {
+  .host-gallery { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .host-gallery img { border-radius: 10px; }
+}
+
 /* ── Workshop pages: /workshops/, one per activity, one per host ─────────
    The search-facing pages. Plain, text-first layouts: a breadcrumb, the
    heading with the query in it, and lists a crawler reads as easily as a

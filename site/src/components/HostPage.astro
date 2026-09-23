@@ -109,6 +109,20 @@ const inquireHref = (title: string): string => {
       </div>
     </section>
 
+    {/* More of the work, where the host has sent pictures of it. The reel
+        above shows one session; these show what the sessions produce. */}
+    {host.gallery && host.gallery.length > 0 && (
+      <section class="section section-flush">
+        <ul class="host-gallery">
+          {host.gallery.map((src) => (
+            <li>
+              <img src={src} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     <hr class="rule" />
 
     {workshops.length > 1 && (

@@ -111,6 +111,11 @@ export type Host = {
   /** Square crop, for cards. `wide` is the brochure strip, for directory rows. */
   photo?: string;
   wide?: string;
+  /** Further pictures of the work, shown on the host's own page. Files are
+   *  found by convention — `<slug>-1.jpg`, `-2.jpg` and so on, up to eight —
+   *  so a host gets a gallery by dropping numbered pictures in
+   *  public/img/hosts and nothing else. */
+  gallery?: string[];
   /** A reel under /public/video. When set, the carousel card plays this
    *  instead of showing a still — `poster` is the frame shown until it does. */
   video?: string;
@@ -725,6 +730,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // the frame from below them keeps the full width and every scene. A 4:5
   // export, which is the shape the tiles crop to anyway.
   tessia: { video: '/video/tessia.mp4', poster: '/video/tessia-poster.jpg' },
+  // The still is the photograph his card already carried, not a frame from
+  // the clip: it was asked to stay, and it is the better picture — the reel
+  // is a grey March morning, the photograph a sunlit wall.
+  dominik: { video: '/video/dominik.mp4', poster: '/img/hosts/dominik.jpg' },
   // Ana's own, from a session in the hall: a turn with the arms open,
   // then the weight settling, the tall windows behind. Shot landscape, so
   // the frame is cut to the vertical the cards use around her rather than
@@ -1292,12 +1301,21 @@ export const getHosts = (lang: Lang): Host[] =>
     const reel = reels[h.slug];
     const photo = shipped(`/img/hosts/${h.slug}.jpg`);
     const wide = shipped(`/img/hosts/${h.slug}-wide.jpg`);
+    // Numbered pictures, in order, stopping at the first gap so a missing
+    // -3 cannot hide a -4 that was meant to show.
+    const gallery: string[] = [];
+    for (let n = 1; n <= 8; n++) {
+      const pic = shipped(`/img/hosts/${h.slug}-${n}.jpg`);
+      if (!pic) break;
+      gallery.push(pic);
+    }
     return {
       ...h,
       ...facets[h.slug],
       id: i + 1,
       ...(photo ? { photo } : {}),
       ...(wide ? { wide } : {}),
+      ...(gallery.length ? { gallery } : {}),
       ...(reel
         ? { video: withBase(reel.video), poster: withBase(reel.poster) }
         : {}),
