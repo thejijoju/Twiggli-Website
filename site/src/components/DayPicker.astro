@@ -272,15 +272,27 @@ const formatDeadline = (iso: string): string => {
                             typeof s.spots === 'number' && <span class="session-availbadge">{s.spots} {t.spots}</span>
                           )}
                           {s.host.video ? (
-                            <video
-                              class="session-video"
-                              src={s.host.video}
-                              poster={s.host.poster}
-                              muted
-                              loop
-                              playsinline
-                              preload="none"
-                            ></video>
+                            <>
+                              {/* The still the tile rests on, as a picture
+                                  under the reel rather than as the video's
+                                  poster attribute. Safari drops a poster
+                                  the moment play() starts fetching, which
+                                  left a pale tile between the still and the
+                                  first frame — a white flash on every tile
+                                  the walk reached. Underneath, it simply
+                                  stays there until the reel fades over it. */}
+                              {s.host.poster && (
+                                <img class="session-still" src={s.host.poster} alt="" loading="lazy" decoding="async" />
+                              )}
+                              <video
+                                class="session-video"
+                                src={s.host.video}
+                                muted
+                                loop
+                                playsinline
+                                preload="none"
+                              ></video>
+                            </>
                           ) : (s.image ?? s.host.photo) ? (
                             <img src={s.image ?? s.host.photo} alt="" loading="lazy" decoding="async" />
                           ) : (

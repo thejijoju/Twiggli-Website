@@ -262,8 +262,21 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
         if (current === reel) current = null;
       }
     });
+    /* The tile rests on a still and the reel fades over it, so `is-live`
+       tracks frames on screen rather than the play() call: a clip that is
+       still fetching would otherwise fade in over nothing. */
+    reel.video.addEventListener('playing', () => reel.tile.classList.add('is-live'));
     reel.video.addEventListener('pause', () => {
       if (playingClass) marked(reel).classList.remove(playingClass);
+      reel.tile.classList.remove('is-live');
+      /* Rewound as it fades out, so a tile at rest shows the frame that was
+         chosen for it rather than wherever the clip happened to stop, and
+         its next turn opens the reel rather than resuming it. */
+      try {
+        reel.video.currentTime = 0;
+      } catch {
+        /* nothing loaded yet — there is no time to rewind to */
+      }
     });
   }
 

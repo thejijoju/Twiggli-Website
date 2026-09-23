@@ -1778,6 +1778,16 @@ a:hover { color: var(--color-accent); }
   object-fit: cover;
   display: block;
 }
+/* As on the calendar: the still underneath, the reel fading over it once it
+   has frames to show. */
+.maker-video {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.maker-media.is-live .maker-video { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .maker-video { transition-duration: 0.01ms; }
+}
 /* Reels are shot vertical, and the brochure-strip banner crops them to a
    sliver, so a card with a reel goes square instead. 420px is the widest a
    directory column gets, so the square never outgrows its card. */
@@ -1790,7 +1800,8 @@ a:hover { color: var(--color-accent); }
 /* The reel is positioned rather than in flow, and an absolutely positioned
    child is laid out against the *padding* box — padding on the tile would
    not move it. Insetting it by the bezel is the same result. */
-.maker:has(.maker-video) .maker-video {
+.maker:has(.maker-video) .maker-video,
+.maker:has(.maker-video) .maker-still {
   inset: var(--phone-bezel);
   /* Spelled out for the same reason as the carousel's reels above: auto on
      a replaced element means its intrinsic size, which drops the right and
@@ -1952,6 +1963,10 @@ a:hover { color: var(--color-accent); }
   list-style: none;
 }
 .filterbtn::-webkit-details-marker { display: none; }
+/* A <button> takes neither the page's colour nor its face from the cascade,
+   and Safari paints one in the system blue. The calendar's Filters control
+   is a button where the directory's is a <summary>, so it needs both said. */
+.filterbtn { color: var(--color-text); font-family: inherit; }
 .filterbtn:hover { border-color: color-mix(in srgb, var(--color-text) 38%, transparent); }
 .filterbtn:focus-visible { outline: 2px solid var(--color-accent-700); outline-offset: 3px; }
 .filterbtn svg {
@@ -2508,6 +2523,33 @@ a:hover { color: var(--color-accent); }
   border-radius: 16px;
   overflow: hidden;
 }
+/* A tile with a reel stacks two pictures: the still it rests on, and the
+   clip over it. The still is a real <img> rather than the video's poster
+   attribute, because Safari drops a poster the moment play() starts
+   fetching — which left the tile's own pale ground showing between the
+   still and the first frame, a white flash on every tile the walk reached. */
+.session-thumb:has(.session-video) { position: relative; }
+.session-still,
+.session-thumb .session-video {
+  position: absolute;
+  inset: 0;
+}
+/* The reel is invisible until it is really running — `is-live` is set on the
+   first frame, not on the play() call — and fades back to the still when its
+   turn ends, so a tile at rest shows the frame chosen for it. */
+/* Two classes, because the shared `.session-thumb video` rule below is more
+   specific than a single one and would put its pale ground back. */
+.session-thumb .session-video {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  /* No ground of its own: the still is the ground, and a pale one here would
+     wash through the fade. */
+  background: none;
+}
+.session-thumb.is-live .session-video { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .session-thumb .session-video { transition-duration: 0.01ms; }
+}
 .session-thumb img,
 .session-thumb video {
   width: 100%;
@@ -2912,10 +2954,19 @@ a:hover { color: var(--color-accent); }
   .page-flush main { --gutter: 11px; }
   .page-flush { background-image: none; }
   .page-flush .daysessions {
-    margin-top: 28px;
+    margin-top: 22px;
     padding: 0 0 26px;
     background: none;
     border-radius: 0;
+  }
+  /* Grid/list hung on a -37px pull into the 57px gap above the day panel.
+     With the panel gone and the gap closed, that pull dropped the two
+     buttons onto the first row of tiles. They go up beside the Filters
+     button instead — the row is one control at each end, and the space the
+     toggle had to itself goes back to the workshops. */
+  .page-flush .view-toggle {
+    margin-top: -37px;
+    margin-bottom: 0;
   }
   .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb {
     aspect-ratio: 4 / 5;
@@ -2946,7 +2997,8 @@ a:hover { color: var(--color-accent); }
        and at 185px the frame was mostly flash anyway. */
     background: var(--color-surface);
   }
-  .page-flush .maker:has(.maker-video) .maker-video {
+  .page-flush .maker:has(.maker-video) .maker-video,
+  .page-flush .maker:has(.maker-video) .maker-still {
     inset: 0;
     width: 100%;
     height: 100%;

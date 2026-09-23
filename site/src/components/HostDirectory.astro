@@ -69,16 +69,28 @@ const labels = ui(lang).directory;
             theirs in the markup; the rest are attached as they come within
             a screen of view (see the script). */}
         {host.video ? (
-          <video
-            class="maker-video"
-            src={host.video}
-            poster={i < 3 ? host.poster : undefined}
-            data-poster={i < 3 ? undefined : host.poster}
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+          <>
+            {/* The still sits under the reel rather than riding on it as a
+                poster: Safari drops a poster the moment play() starts
+                fetching, and the tile went pale between the still and the
+                first frame. */}
+            <img
+              class="maker-still"
+              src={i < 3 ? host.poster : undefined}
+              data-src={i < 3 ? undefined : host.poster}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+            <video
+              class="maker-video"
+              src={host.video}
+              muted
+              loop
+              playsinline
+              preload="none"
+            ></video>
+          </>
         ) : host.wide ? (
           <img src={host.wide} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
         ) : (
@@ -153,18 +165,18 @@ const labels = ui(lang).directory;
 
   // Each still is attached a screen before it is needed, so a phone fetches
   // the two or three it is about to show rather than all thirty-six at once.
-  const waiting = document.querySelectorAll<HTMLVideoElement>('.maker-video[data-poster]');
+  const waiting = document.querySelectorAll<HTMLImageElement>('.maker-still[data-src]');
   if (waiting.length) {
     const posters = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
-        const video = entry.target as HTMLVideoElement;
-        if (video.dataset.poster) video.poster = video.dataset.poster;
-        delete video.dataset.poster;
-        posters.unobserve(video);
+        const img = entry.target as HTMLImageElement;
+        if (img.dataset.src) img.src = img.dataset.src;
+        delete img.dataset.src;
+        posters.unobserve(img);
       }
     }, { rootMargin: '600px 0px' });
-    for (const video of waiting) posters.observe(video);
+    for (const img of waiting) posters.observe(img);
   }
 
   // The blurb is clamped to four lines in CSS. A card only gets the toggle
