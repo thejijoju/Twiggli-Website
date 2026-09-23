@@ -52,6 +52,9 @@ const byTime = (list: Session[]): [string, Session[]][] => {
 };
 
 const t = ui(lang).calendar;
+/** The filter bar's own words, shared with the corporate directory's so the
+ *  two read the same. */
+const f = filterCopy[lang];
 
 /** Request-by-mail hosts: the button opens a prefilled email to Twiggli
  *  instead of a booking page. Built at render time — the daily rebuild
@@ -159,25 +162,61 @@ const formatDeadline = (iso: string): string => {
   </div>
 
   {/* Two discreet filter rows in the accent, after themakery.de's category
-      pills: what to do, and where. They combine. */}
-  <div class="activity-pills" role="group" aria-label={t.filter}>
-    <button class="activity-pill is-active" type="button" data-activity-filter="all">{t.all}</button>
-    {activities.map((a) => (
-      <button class="activity-pill" type="button" data-activity-filter={a}>
-        <span class="pill-icon" aria-hidden="true">{activityIcons[a]}</span>{activityLabels[a]}
-      </button>
-    ))}
-    {/* An on/off toggle rather than one of the either-or activity pills —
-        "kids + ceramics" is a sensible combination. */}
-    {hasKids && (
-      <button class="activity-pill kids-pill" type="button" data-kids-filter aria-pressed="false">{t.kids}</button>
-    )}
+      pills: what to do, and where. They combine.
+
+      On a phone those two rows wrap into a wall around 450px tall — eight
+      activities and every district Berlin has — and the first workshop of
+      the day lands a full screen below the fold. There they fold behind one
+      Filters button and open as a sheet on the bottom edge; the bar keeps
+      the names of whatever is on, so a shut sheet is never a hidden state.
+      On a wider screen the rows cost two lines and stay where they are.
+
+      The class goes on before the rows are parsed, so the pills are never
+      painted on a phone and then taken away. Without scripting nothing is
+      hidden at all: the rows render as they always did. */}
+  <script is:inline>document.documentElement.classList.add('js-pilldrop');</script>
+  <div class="pillbar">
+    <button type="button" class="filterbtn pillbtn" aria-expanded="false" aria-controls="day-pills">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7h10" /><path d="M18 7h2" /><circle cx="16" cy="7" r="2" />
+        <path d="M4 17h4" /><path d="M12 17h8" /><circle cx="10" cy="17" r="2" />
+      </svg>
+      <span>{f.filters}</span>
+    </button>
+    {/* What is on, in words, beside the shut button. */}
+    <div class="pillbar-on" hidden></div>
   </div>
-  <div class="activity-pills district-pills" role="group" aria-label={t.filterDistrict}>
-    <button class="activity-pill is-active" type="button" data-district-filter="all">{t.all}</button>
-    {districts.map((d) => (
-      <button class="activity-pill" type="button" data-district-filter={d}>{d}</button>
-    ))}
+
+  <div class="pillgroups is-shut" id="day-pills">
+    <h3 class="pillgroup-head" id="day-pills-activity">{t.filter}</h3>
+    <div class="activity-pills" role="group" aria-labelledby="day-pills-activity">
+      <button class="activity-pill is-active" type="button" data-activity-filter="all">{t.all}</button>
+      {activities.map((a) => (
+        <button class="activity-pill" type="button" data-activity-filter={a}>
+          <span class="pill-icon" aria-hidden="true">{activityIcons[a]}</span>{activityLabels[a]}
+        </button>
+      ))}
+      {/* An on/off toggle rather than one of the either-or activity pills —
+          "kids + ceramics" is a sensible combination. */}
+      {hasKids && (
+        <button class="activity-pill kids-pill" type="button" data-kids-filter aria-pressed="false">{t.kids}</button>
+      )}
+    </div>
+    <h3 class="pillgroup-head" id="day-pills-district">{t.filterDistrict}</h3>
+    <div class="activity-pills district-pills" role="group" aria-labelledby="day-pills-district">
+      <button class="activity-pill is-active" type="button" data-district-filter="all">{t.all}</button>
+      {districts.map((d) => (
+        <button class="activity-pill" type="button" data-district-filter={d}>{d}</button>
+      ))}
+    </div>
+
+    {/* Only ever seen inside the sheet: on a wide screen the rows are the
+        page's own, and there is nothing to close. */}
+    <div class="pillgroups-foot">
+      <button type="button" class="pill-clear" hidden>{f.clear}</button>
+      <button type="button" class="btn btn-primary pill-done" data-show={f.show('%s')}
+        data-one={t.results(1)} data-many={t.results(0)}></button>
+    </div>
   </div>
 
   {/* Grid ↔ list. Grid is the default; the choice sticks per visitor. */}
@@ -503,6 +542,8 @@ const formatDeadline = (iso: string): string => {
         if (monthEl) monthEl.textContent = monthOf(date);
         if (happeningTitle) happeningTitle.textContent = headingFor(offset, date);
         chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        // The sheet counts the day on show, so a new day is a new count.
+        applyFilters();
       });
     });
 
@@ -516,12 +557,24 @@ const formatDeadline = (iso: string): string => {
     let districtFilter = 'all';
     let kidsOnly = false;
 
+    /* The phone's folded bar. On a wide screen none of this is on screen,
+       but it costs nothing to keep in step. */
+    const pillBtn = root.querySelector<HTMLButtonElement>('.pillbtn');
+    const pillGroups = root.querySelector<HTMLElement>('.pillgroups');
+    const pillOn = root.querySelector<HTMLElement>('.pillbar-on');
+    const pillClear = root.querySelector<HTMLButtonElement>('.pill-clear');
+    const pillDone = root.querySelector<HTMLButtonElement>('.pill-done');
+
     const applyFilters = () => {
+      let shown = 0;
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
         const matchesActivity = activityFilter === 'all' || li.dataset.activity === activityFilter;
         const matchesDistrict = districtFilter === 'all' || li.dataset.district === districtFilter;
         const matchesKids = !kidsOnly || li.dataset.kids === 'true';
         li.hidden = !(matchesActivity && matchesDistrict && matchesKids);
+        /* Only the day on show counts — every other day is in the page too,
+           and counting those would promise workshops that are not there. */
+        if (!li.hidden && li.closest('[data-day]:not([hidden])')) shown++;
       });
       root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
         group.hidden = !group.querySelector('.session:not([hidden])');
@@ -530,6 +583,35 @@ const formatDeadline = (iso: string): string => {
         const empty = day.querySelector<HTMLElement>('[data-empty]');
         if (empty) empty.hidden = !!day.querySelector('.timegroup:not([hidden])');
       });
+
+      /* The names of what is on, beside the shut button — a number would
+         say how many filters, which is not what anyone wants to know. */
+      if (pillOn) {
+        const names: string[] = [];
+        const label = (el: Element | null) => (el?.textContent ?? '').trim();
+        if (activityFilter !== 'all')
+          names.push(label(root.querySelector(`[data-activity-filter="${activityFilter}"]`)));
+        if (districtFilter !== 'all')
+          names.push(label(root.querySelector(`[data-district-filter="${districtFilter}"]`)));
+        if (kidsOnly) names.push(label(kidsPill));
+        pillOn.textContent = '';
+        for (const name of names) {
+          const chip = document.createElement('span');
+          chip.className = 'onpill';
+          chip.textContent = name;
+          pillOn.append(chip);
+        }
+        pillOn.hidden = names.length === 0;
+        if (pillClear) pillClear.hidden = names.length === 0;
+      }
+      // "Show 6 workshops" on the button that shuts the sheet, so the reader
+      // sees what they are about to be left with before it closes.
+      if (pillDone) {
+        const label = shown === 1
+          ? (pillDone.dataset.one ?? '')
+          : (pillDone.dataset.many ?? '').replace('0', String(shown));
+        pillDone.textContent = (pillDone.dataset.show ?? '%s').replace('%s', label);
+      }
     };
 
     activityPills.forEach((pill) => {
@@ -552,6 +634,44 @@ const formatDeadline = (iso: string): string => {
       kidsPill.setAttribute('aria-pressed', String(kidsOnly));
       applyFilters();
     });
+
+    /* The sheet. `hidden` is what closes it, so nothing on a wide screen is
+       ever hidden: the button is not shown there, so it cannot be set. The
+       CSS keeps the rows visible regardless of it above the breakpoint. */
+    if (pillBtn && pillGroups) {
+      const shut = () => pillGroups.classList.contains('is-shut');
+      const setOpen = (open: boolean) => {
+        pillGroups.classList.toggle('is-shut', !open);
+        pillBtn.setAttribute('aria-expanded', String(open));
+        pillBtn.classList.toggle('is-open', open);
+      };
+      pillBtn.addEventListener('click', () => setOpen(shut()));
+      // Done choosing: shut it and hand focus back to the button that opened
+      // it, so the keyboard does not land at the top of the page.
+      pillDone?.addEventListener('click', () => {
+        setOpen(false);
+        pillBtn.focus();
+      });
+      pillClear?.addEventListener('click', () => {
+        activityPills.find((p) => p.dataset.activityFilter === 'all')?.click();
+        districtPills.find((p) => p.dataset.districtFilter === 'all')?.click();
+        if (kidsOnly) kidsPill?.click();
+      });
+      // A tap anywhere else means the reader has moved on.
+      document.addEventListener('click', (event) => {
+        const target = event.target as Node;
+        if (shut() || pillBtn.contains(target) || pillGroups.contains(target)) return;
+        setOpen(false);
+      });
+      document.addEventListener('keydown', (event) => {
+        if ((event as KeyboardEvent).key !== 'Escape' || shut()) return;
+        setOpen(false);
+        pillBtn.focus();
+      });
+    }
+
+    // First paint: the bar and the count start out true.
+    applyFilters();
 
     // Share: the native sheet where the browser offers one (phones), a
     // copied link elsewhere — the text carries workshop, host and date.

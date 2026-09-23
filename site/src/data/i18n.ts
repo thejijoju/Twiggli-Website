@@ -63,6 +63,7 @@ const en = {
     onRequestHead: 'On request', inquire: 'Inquire',
     onRequestNote: 'These workshops run whenever you ask — the host schedules a date around you.',
     viewGrid: 'Grid view', viewList: 'List view',
+    results: (n: number) => (n === 1 ? '1 workshop' : `${n} workshops`),
     mailBookSubject: (title: string, when: string) => `Booking request: ${title} on ${when}`,
     mailBookBody: (title: string, host: string, when: string, price?: string) =>
       `Hi Twiggli,\n\nI'd like to book this workshop:\n\nWorkshop: ${title}\nHost: ${host}\nDate: ${when}\n${price ? `Price: ${price}\n` : ''}\nMy name:\nNumber of people:\n\nThanks!`,
@@ -222,6 +223,7 @@ const de: UiCopy = {
     onRequestHead: 'Auf Anfrage', inquire: 'Termin anfragen',
     onRequestNote: 'Diese Workshops laufen, wann du willst — der Host legt den Termin mit dir fest.',
     viewGrid: 'Rasteransicht', viewList: 'Listenansicht',
+    results: (n: number) => (n === 1 ? '1 Workshop' : `${n} Workshops`),
     mailBookSubject: (title, when) => `Buchungsanfrage: ${title} am ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Hallo Twiggli,\n\nich möchte diesen Workshop buchen:\n\nWorkshop: ${title}\nGastgeber: ${host}\nTermin: ${when}\n${price ? `Preis: ${price}\n` : ''}\nMein Name:\nAnzahl Personen:\n\nDanke!`,
@@ -379,6 +381,7 @@ const fr: UiCopy = {
     onRequestHead: 'Sur demande', inquire: 'Demander une date',
     onRequestNote: 'Ces ateliers ont lieu quand vous le souhaitez — l’hôte fixe la date avec vous.',
     viewGrid: 'Vue grille', viewList: 'Vue liste',
+    results: (n: number) => (n === 1 ? '1 atelier' : `${n} ateliers`),
     mailBookSubject: (title, when) => `Demande de réservation : ${title} le ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Bonjour Twiggli,\n\nje souhaite réserver cet atelier :\n\nAtelier : ${title}\nHôte : ${host}\nDate : ${when}\n${price ? `Prix : ${price}\n` : ''}\nMon nom :\nNombre de personnes :\n\nMerci !`,
@@ -536,6 +539,7 @@ const es: UiCopy = {
     onRequestHead: 'Bajo petición', inquire: 'Pedir fecha',
     onRequestNote: 'Estos talleres se hacen cuando tú quieras — el anfitrión fija la fecha contigo.',
     viewGrid: 'Vista en cuadrícula', viewList: 'Vista en lista',
+    results: (n: number) => (n === 1 ? '1 taller' : `${n} talleres`),
     mailBookSubject: (title, when) => `Solicitud de reserva: ${title} el ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Hola Twiggli:\n\nMe gustaría reservar este taller:\n\nTaller: ${title}\nAnfitrión: ${host}\nFecha: ${when}\n${price ? `Precio: ${price}\n` : ''}\nMi nombre:\nNúmero de personas:\n\n¡Gracias!`,
@@ -693,6 +697,7 @@ const it: UiCopy = {
     onRequestHead: 'Su richiesta', inquire: 'Chiedi una data',
     onRequestNote: 'Questi workshop si tengono quando vuoi tu — l’host fissa la data con te.',
     viewGrid: 'Vista a griglia', viewList: 'Vista a elenco',
+    results: (n: number) => `${n} workshop`,
     mailBookSubject: (title, when) => `Richiesta di prenotazione: ${title} il ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Ciao Twiggli,\n\nvorrei prenotare questo workshop:\n\nWorkshop: ${title}\nHost: ${host}\nData: ${when}\n${price ? `Prezzo: ${price}\n` : ''}\nIl mio nome:\nNumero di persone:\n\nGrazie!`,
@@ -850,6 +855,7 @@ const nl: UiCopy = {
     onRequestHead: 'Op aanvraag', inquire: 'Datum aanvragen',
     onRequestNote: 'Deze workshops vinden plaats wanneer jij wilt — de host prikt de datum samen met jou.',
     viewGrid: 'Rasterweergave', viewList: 'Lijstweergave',
+    results: (n: number) => (n === 1 ? '1 workshop' : `${n} workshops`),
     mailBookSubject: (title, when) => `Boekingsaanvraag: ${title} op ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Hallo Twiggli,\n\nik wil deze workshop graag boeken:\n\nWorkshop: ${title}\nHost: ${host}\nDatum: ${when}\n${price ? `Prijs: ${price}\n` : ''}\nMijn naam:\nAantal personen:\n\nBedankt!`,
@@ -1007,6 +1013,14 @@ const pl: UiCopy = {
     onRequestHead: 'Na życzenie', inquire: 'Zapytaj o termin',
     onRequestNote: 'Te warsztaty odbywają się, kiedy chcesz — prowadzący ustala termin razem z Tobą.',
     viewGrid: 'Widok siatki', viewList: 'Widok listy',
+    // 'warsztaty' is plural-only in Polish, so it carries the count in its
+    // base form; 2–4 take that form, everything else the genitive.
+    results: (n: number) => {
+      const ones = n % 10;
+      const teens = n % 100;
+      if (n === 1 || (ones >= 2 && ones <= 4 && !(teens >= 12 && teens <= 14))) return `${n} warsztaty`;
+      return `${n} warsztatów`;
+    },
     mailBookSubject: (title, when) => `Prośba o rezerwację: ${title}, ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Cześć Twiggli,\n\nchciał(a)bym zarezerwować te warsztaty:\n\nWarsztaty: ${title}\nProwadzący: ${host}\nTermin: ${when}\n${price ? `Cena: ${price}\n` : ''}\nMoje imię i nazwisko:\nLiczba osób:\n\nDziękuję!`,
@@ -1164,6 +1178,7 @@ const tr: UiCopy = {
     onRequestHead: 'Talep üzerine', inquire: 'Tarih sor',
     onRequestNote: 'Bu atölyeler siz istediğinizde yapılır — tarihi eğitmen sizinle birlikte belirler.',
     viewGrid: 'Izgara görünümü', viewList: 'Liste görünümü',
+    results: (n: number) => `${n} atölye`,
     mailBookSubject: (title, when) => `Rezervasyon talebi: ${title}, ${when}`,
     mailBookBody: (title, host, when, price) =>
       `Merhaba Twiggli,\n\nbu atölye için rezervasyon yapmak istiyorum:\n\nAtölye: ${title}\nEğitmen: ${host}\nTarih: ${when}\n${price ? `Fiyat: ${price}\n` : ''}\nAdım:\nKişi sayısı:\n\nTeşekkürler!`,

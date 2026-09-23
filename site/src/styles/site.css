@@ -2217,6 +2217,112 @@ a:hover { color: var(--color-accent); }
    whitespace and type weight do the separating. */
 /* The one filter: activity pills after themakery.de's category row —
    thin-outlined, rounded, in the accent purple; the active one fills. */
+/* The calendar's two filter rows. On a wide screen they are the page's own
+   two lines and the bar above them is not drawn at all.
+
+   Every phone rule below is gated on `js-pilldrop`, the class the component
+   sets before the rows are parsed: only scripting can open the sheet, so
+   without it there must be no sheet and no button to open one — the rows
+   simply stay where they always were. On a phone those
+   rows wrap into some 450px of pills — every activity and every district
+   Berlin has — and the first workshop of the day lands below the fold, so
+   there they fold into a sheet behind one button. */
+.pillbar { display: none; }
+.pillgroups { display: block; }
+.pillgroups-foot { display: none; }
+/* Only inside the sheet: out on the page the rows are two lines under a day
+   strip and read as what they are. */
+.pillgroup-head { display: none; }
+@media (max-width: 720px) {
+  html.js-pilldrop .pillbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    /* The named filters run off the edge rather than wrapping the bar onto
+       a second line — one line is the whole point of folding them away. */
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pillbar::-webkit-scrollbar { display: none; }
+  html.js-pilldrop .pillbtn { flex: none; padding: 10px 18px; }
+  .pillbtn.is-open { border-color: var(--color-text); }
+  /* What is on, in the accent the pills themselves use, after a hairline
+     that separates the control from the state it reports. */
+  html.js-pilldrop .pillbar-on {
+    display: flex;
+    gap: 6px;
+    flex: none;
+    padding-left: 10px;
+    border-left: 1.5px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  }
+  .pillbar-on[hidden] { display: none; }
+  .onpill {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 15px;
+    border-radius: 999px;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  /* The sheet. Only scripting can shut it, so with none the rows stay where
+     they were and nothing is lost. */
+  html.js-pilldrop .pillgroups.is-shut { display: none; }
+  html.js-pilldrop .pillgroups {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 40;
+    max-height: 80vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 20px var(--gutter) 0;
+    border-radius: 22px 22px 0 0;
+    background: var(--color-bg);
+    box-shadow: 0 -12px 50px rgba(0, 0, 0, 0.22);
+  }
+  html.js-pilldrop .pillgroups .activity-pills { margin-top: 0; }
+  html.js-pilldrop .pillgroups .district-pills { margin-top: 0; }
+  html.js-pilldrop .pillgroup-head {
+    display: block;
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  }
+  /* Air between the two groups, on the second heading only. */
+  html.js-pilldrop .pillgroup-head + .activity-pills + .pillgroup-head { margin-top: 20px; }
+  html.js-pilldrop .pillgroups-foot {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 18px;
+    padding: 16px 0 18px;
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+    background: var(--color-bg);
+  }
+  .pill-clear {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  /* With nothing to clear the button still holds its side of the row, so
+     the done button does not slide across as filters come and go. */
+  .pill-clear[hidden] { display: block; visibility: hidden; }
+  .pill-done { padding: 11px 22px; font-size: 15px; }
+}
 .activity-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
 /* The unselected pill's stroke carries the avatar ring's two colours — a
    two-layer background does the gradient border: an opaque inner layer
