@@ -11,6 +11,9 @@ import '../styles/site.css';
 interface Props {
   title: string;
   description?: string;
+  /** An extra class on the page wrapper, for a page that wants its own
+   *  ground or its own edges — see `page-flush` in site.css. */
+  pageClass?: string;
   lang?: Lang;
   /** Keep the page out of search results — for transactional landing pages
    *  (payment return URLs) that are meaningless without their flow. */
@@ -25,7 +28,7 @@ interface Props {
   translations?: Lang[];
 }
 
-const { title, description, lang = DEFAULT_LANG, noindex = false, image, translations = LANGS } = Astro.props;
+const { title, description, pageClass, lang = DEFAULT_LANG, noindex = false, image, translations = LANGS } = Astro.props;
 const { brand } = getSiteData(lang);
 const pageDescription = description ?? brand.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
@@ -108,7 +111,7 @@ const available = alternates.map((a) => a.lang);
     />
   </head>
   <body>
-    <div class="page">
+    <div class:list={['page', pageClass]}>
       <SocialBar lang={lang} />
       {/* The nav is pinned; the dark social strip above it is not, so it
           scrolls away and leaves the transparent nav at the top edge. */}

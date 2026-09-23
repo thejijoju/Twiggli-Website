@@ -2848,11 +2848,16 @@ a:hover { color: var(--color-accent); }
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  /* Workshop titles are the hosts' own — one of them is KLEINE
+     SCHNAPSGESCHICHTE, a single word wider than the column, and with
+     nothing to wrap on it ran out of the card and off the screen. */
+  overflow-wrap: anywhere;
 }
 .daypicker[data-view='grid'] .daysessions .session-host {
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
+  overflow-wrap: anywhere;
 }
 /* …and the action area pins to the card's bottom edge: price and share
    on one line, the Book/Request/Notify pill full-width beneath (so long
@@ -2885,6 +2890,81 @@ a:hover { color: var(--color-accent); }
     gap: 22px 10px;
   }
   .daypicker[data-view='grid'] .daysessions .session-title { font-size: 15px; }
+}
+
+/* ── The flush pages on a phone: the calendar and corporate bookings ─────
+   Both are grids of video, and on a phone the video is the page. Three
+   things get out of its way.
+
+   The ground goes flat: the violet glow across the head of every page, and
+   the calendar's pale blue panel under the day, both give way to the page's
+   own #f9f8f6. On a wide screen they frame the content; at 393px they are
+   two tints inside 11 pixels of each other, read as a smudge, and cost the
+   panel's own inset on top of the page's.
+
+   The rail is 11px a side, down from 17 plus the panel's 14. The nav keeps
+   its own, since it is a bar across the top rather than part of the column.
+
+   And the tiles come out at 4:5 with a 10px corner, which at this rail and
+   a 10px gutter between the columns is 185 x 232 on a 402pt phone — the
+   measurements the tiles were asked to match. */
+@media (max-width: 720px) {
+  .page-flush main { --gutter: 11px; }
+  .page-flush { background-image: none; }
+  .page-flush .daysessions {
+    margin-top: 28px;
+    padding: 0 0 26px;
+    background: none;
+    border-radius: 0;
+  }
+  .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb {
+    aspect-ratio: 4 / 5;
+    border-radius: 10px;
+  }
+  /* The picture, a stand-in monogram and the tile itself all take the same
+     corner, or the photo's square edge shows past the tile's rounded one. */
+  .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb img,
+  .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb video,
+  .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb .media-monogram {
+    border-radius: 10px;
+  }
+
+  /* Corporate's directory is the same grid of video, so it gets the same
+     two columns and the same tile. */
+  .page-flush .maker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 10px;
+  }
+  .page-flush .maker-media,
+  .page-flush .maker:has(.maker-video) .maker-media {
+    aspect-ratio: 4 / 5;
+    max-width: none;
+    border-radius: 10px;
+    /* No phone frame here. Posters load as the page nears them, so until
+       one arrives the frame was all there was to see — a black tile that
+       turned into a reel. The page's own surface waits far more quietly,
+       and at 185px the frame was mostly flash anyway. */
+    background: var(--color-surface);
+  }
+  .page-flush .maker:has(.maker-video) .maker-video {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+  }
+  /* Two columns leave no room for a label beside its value, so the label
+     goes above it. */
+  .page-flush .maker-meta {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px 0;
+    font-size: 13px;
+  }
+  .page-flush .maker-meta > div {
+    display: block;
+  }
+  .page-flush .maker-meta dt { padding-top: 0; }
+  .page-flush .maker-name { font-size: 20px; }
+  .page-flush .maker-request { align-self: stretch; justify-content: center; }
 }
 /* Share sits beside the Book pill — the classic curved forward arrow in
    the price pill's exact colours, so the row reads as one family and the

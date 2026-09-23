@@ -11,7 +11,7 @@ const { lang } = Astro.props;
 const t = ui(lang).calendarPage;
 ---
 
-<Base title={t.title} description={t.description} lang={lang}>
+<Base title={t.title} description={t.description} lang={lang} pageClass="page-flush">
   <div class="container">
     <section class="page-head">
       {/* One heading: the place and the selected day together. The script
