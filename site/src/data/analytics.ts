@@ -11,7 +11,7 @@
  *  id is visible to anyone reading the page source.
  */
 export const umamiWebsiteId =
-  import.meta.env.PUBLIC_UMAMI_ID ?? '';
+  import.meta.env.PUBLIC_UMAMI_ID ?? '2a2d9060-5a35-4dd3-8ce7-3eb0bf375a1f';
 
 /** Umami Cloud's EU endpoint. Self-hosting later means changing this line
  *  and nothing else. */
