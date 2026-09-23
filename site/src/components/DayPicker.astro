@@ -245,7 +245,8 @@ const formatDeadline = (iso: string): string => {
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (
-                      <li class="session" id={s.id} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}>
+                      <li class="session" id={s.id} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                        data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
                             the app — then prefers the workshop's own scraped
@@ -395,7 +396,8 @@ const formatDeadline = (iso: string): string => {
       <p class="onrequest-note">{t.onRequestNote}</p>
       <ul class="session-list">
         {onRequest.map((o) => (
-          <li class="session" id={o.id} data-activity={o.host.activity}>
+          <li class="session" id={o.id} data-activity={o.host.activity}
+            data-track-card="on-request" data-track-host={o.host.name} data-track-title={o.title}>
             {/* Same tile as a dated card: the host's reel where footage
                 exists, otherwise the stock photo. */}
             <a

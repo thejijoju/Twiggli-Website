@@ -28,6 +28,8 @@ interface Props {
   translations?: Lang[];
 }
 
+import { umamiWebsiteId, umamiScript, analyticsOn } from '../data/analytics.ts';
+
 const { title, description, pageClass, lang = DEFAULT_LANG, noindex = false, image, translations = LANGS } = Astro.props;
 const { brand } = getSiteData(lang);
 const pageDescription = description ?? brand.tagline;
@@ -109,6 +111,12 @@ const available = alternates.map((a) => a.lang);
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Source+Sans+Pro:wght@700&display=swap"
     />
+    {/* Cookie-free, so the consent banner does not change. It counts the
+        clicks that hand a visitor to a host and nothing about the visitor;
+        see lib/track.ts. Absent until a website id is configured. */}
+    {analyticsOn && (
+      <script is:inline defer src={umamiScript} data-website-id={umamiWebsiteId}></script>
+    )}
   </head>
   <body>
     <div class:list={['page', pageClass]}>
@@ -124,6 +132,14 @@ const available = alternates.map((a) => a.lang);
       <Footer lang={lang} />
     </div>
     <CookieBanner lang={lang} />
+    <script>
+      // Every outbound click, labelled with the card it came from. Runs
+      // whether or not the analytics script loaded — track() is a no-op
+      // until it does, and stays one if an ad blocker takes it.
+      import { startOutboundTracking } from '../lib/track.ts';
+      startOutboundTracking();
+    </script>
+
     <script>
       // The header paints nothing at rest — the page shows through it. Once
       // the page has scrolled at all, content starts passing underneath, so
