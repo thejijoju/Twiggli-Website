@@ -232,6 +232,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   landsinn:         { activity: 'craft',     groupRange: [5, 12], hourRange: [2, 3] },
   // PLACEHOLDER group range — her booking pages carry no class size.
   mijita:           { activity: 'craft',     groupRange: [1, 8],  hourRange: [3, 4] },
+  tessia:           { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 6] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -446,6 +447,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'mijita', name: 'Mareen Ledebur', specialty: 'Jewellery smithing & wax carving', studio: 'Mijita',
       blurb: 'Mareen learned to forge jewellery in Santiago de Chile in 2013 and has been making it by hand ever since, in brass, silver and gold. She teaches two formats at Studio Blinkblink in Wedding. In the longer one you cut, shape and solder metal and go home with a ring, a pendant or a pair of earrings you made yourself. In the shorter one you carve a ring in wax — it is cast afterwards and posted to you, and because the wax is lost in the casting no two can ever be the same. No experience needed; brass is included and silver is weighed on the day. Mostly Mondays, and any format can be booked privately for a birthday, a hen do or a team.',
       group: 'Small group', duration: '3–4 h', place: 'Studio Blinkblink, Gerichtstr. 25, Wedding', languages: 'DE' },
+    { slug: 'tessia', name: 'Tessia', specialty: 'Wax carving & silver casting', studio: 'Tessia',
+      blurb: 'A jewellery shop on the Oderberger Straße with a goldsmith\u2019s bench built into the back of it, where what is on the shelves was made a few metres away. Two workshops, both for absolute beginners. In the half day you carve a ring out of wax, shaping it exactly as you want it; it is cast in sterling silver — or gold, if you ask — and ready to collect about three or four weeks later. The full day takes you the whole way in one sitting: you carve the wax, then cast it yourself in sand, set a stone into the pour if you like, and file and polish the ring until it is finished, going home with your own silver ring the same evening. Up to ten grams of silver, the wax and the use of every tool are in the price, along with a list of what to buy and where if you want to keep going. Six people on the half day, three on the full one, since the casting takes its time. She also opens the bench to anyone who has been before and wants to work alone.',
+      group: 'Up to 6', duration: '3\u20136 h', place: 'Oderberger Str. 40, Prenzlauer Berg', languages: 'DE \u00b7 EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -622,6 +626,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'mijita', name: 'Mareen Ledebur', specialty: 'Schmuckschmieden & Wachsmodellieren', studio: 'Mijita',
       blurb: 'Mareen hat 2013 in Santiago de Chile das Schmuckschmieden gelernt und macht seitdem alles von Hand, in Messing, Silber und Gold. Im Studio Blinkblink im Wedding unterrichtet sie zwei Formate. Im längeren schneidest, bearbeitest und lötest du Metall und nimmst einen Ring, einen Anhänger oder ein Paar Ohrringe mit nach Hause. Im kürzeren formst du deinen Ring aus Wachs — er wird danach gegossen und dir zugeschickt, und weil das Wachs beim Guss verloren geht, ist jeder ein Unikat. Vorkenntnisse braucht es keine; Messing ist inklusive, Silber wird vor Ort gewogen. Meist montags, und jedes Format ist auch privat buchbar, für Geburtstag, JGA oder Team.',
       group: 'Kleine Gruppe', duration: '3–4 Std.', place: 'Studio Blinkblink, Gerichtstr. 25, Wedding', languages: 'DE' },
+    { slug: 'tessia', name: 'Tessia', specialty: 'Wachsmodellieren & Silberguss', studio: 'Tessia',
+      blurb: 'Ein Schmuckladen in der Oderberger Stra\u00dfe mit einer Goldschmiede hinten drin \u2014 was in der Auslage liegt, ist ein paar Meter weiter entstanden. Zwei Workshops, beide f\u00fcr komplette Anf\u00e4nger:innen. Im Halbtagskurs schnitzt du deinen Ring aus Wachs, genau so, wie du ihn haben willst; gegossen wird er danach in Sterlingsilber \u2014 auf Wunsch in Gold \u2014 und ist nach drei bis vier Wochen abholbereit. Der ganze Tag f\u00fchrt dich in einem Rutsch durch alles: Wachs schnitzen, selbst im Sandguss gie\u00dfen, auf Wunsch einen Stein mit eingie\u00dfen, dann vers\u00e4ubern und polieren \u2014 und am Abend h\u00e4ltst du deinen eigenen Silberring in den H\u00e4nden. Bis zu zehn Gramm Silber, das Wachs und die Werkzeugnutzung sind dabei, dazu eine Liste, was man braucht und wo man es bekommt, falls du weitermachen willst. Sechs Pl\u00e4tze am halben Tag, drei am ganzen, weil der Guss seine Zeit braucht. Wer schon mal da war, kann die Werkstatt auch zum eigenst\u00e4ndigen Arbeiten nutzen.',
+      group: 'Bis 6', duration: '3\u20136 Std.', place: 'Oderberger Str. 40, Prenzlauer Berg', languages: 'DE \u00b7 EN' },
   ],
 };
 
@@ -713,6 +720,11 @@ const reels: Record<string, { video: string; poster: string }> = {
   // flowers laid out, the prints rinsing in the tub, a finished sheet, then
   // the portrait the process is famous for.
   sabine: { video: '/video/sabine.mp4', poster: '/video/sabine-poster.jpg' },
+  // Her own, with the captions cropped away rather than cut out: they sat
+  // in a band across the top fifth of every second of the clip, so taking
+  // the frame from below them keeps the full width and every scene. A 4:5
+  // export, which is the shape the tiles crop to anyway.
+  tessia: { video: '/video/tessia.mp4', poster: '/video/tessia-poster.jpg' },
   // Ana's own, from a session in the hall: a turn with the arms open,
   // then the weight settling, the tall windows behind. Shot landscape, so
   // the frame is cut to the vertical the cards use around her rather than

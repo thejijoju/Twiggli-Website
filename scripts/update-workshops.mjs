@@ -203,6 +203,16 @@ const SOURCES = [
   // its dated sessions (variants titled "DD.MM.YYYY - HH:MM"), per-date
   // price and availability — fully automatic, nothing configured per
   // workshop. New products in the collection appear on their own.
+  // Tessia's shop in the Oderberger Straße, with a goldsmith's bench built
+  // into the back of it. Two products, each variant a date — "13.11 12-18
+  // Uhr", German, no year, with the length in the range. Her shop keeps
+  // last season's options in the list, so a spent date rolls a year on and
+  // falls outside the 110-day window rather than reaching the calendar; the
+  // one that genuinely belongs to next year, 09.01, lands inside it. The
+  // "Gutschein" option is a voucher and carries no date, so it is skipped.
+  { slug: 'tessia', name: 'Tessia — Wax Carving & Sandguss', mode: 'shopify',
+    url: 'https://tessia-shop.com/collections/workshop/products.json?limit=250',
+    district: 'Prenzlauer Berg' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia — workshops', mode: 'shopify',
     url: 'https://www.gallerialucia.com/collections/workshops/products.json?limit=250',
     district: 'Lichtenberg' },
@@ -2788,6 +2798,35 @@ function fromShopify(jsonText, source) {
           ...(variant.available === false ? { soldOut: true } : {}),
           ...(duration ? { duration } : {}),
           ...(variant.price != null ? { price: `€${Math.round(Number(variant.price))}` } : {}),
+          ...(source.district ? { district: source.district } : {}),
+          ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
+          url: productUrl,
+        });
+        kept++;
+        continue;
+      }
+      // Numeric German variants, one per date (Tessia): "13.11 12-18 Uhr",
+      // "12.09 15-18 Uhr". No year — the shop reuses the option list across
+      // seasons — so the next occurrence is meant; and the range gives the
+      // length, which these products state nowhere else. A "Gutschein
+      // (Termin nach Absprache)" option is a voucher, not a date.
+      const nm = vt.match(
+        /^\s*(\d{1,2})\.(\d{1,2})\.?\s+(\d{1,2})(?:[:.](\d{2}))?\s*[-\u2013]\s*(\d{1,2})(?:[:.](\d{2}))?\s*Uhr/i,
+      );
+      if (nm) {
+        const mm = nm[2].padStart(2, '0');
+        const dd = nm[1].padStart(2, '0');
+        const thisYear = Number(todayISO.slice(0, 4));
+        let date = `${thisYear}-${mm}-${dd}`;
+        if (date < todayISO) date = `${thisYear + 1}-${mm}-${dd}`;
+        const span = Number(nm[5]) + Number(nm[6] ?? 0) / 60 - (Number(nm[3]) + Number(nm[4] ?? 0) / 60);
+        out.push({
+          title: productTitle,
+          date,
+          time: `${nm[3].padStart(2, '0')}:${nm[4] ?? '00'}`,
+          ...(variant.available === false ? { soldOut: true } : {}),
+          ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : duration ? { duration } : {}),
+          ...(variant.price != null ? { price: `\u20ac${Math.round(Number(variant.price))}` } : {}),
           ...(source.district ? { district: source.district } : {}),
           ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
           url: productUrl,
