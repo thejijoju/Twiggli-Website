@@ -1279,6 +1279,11 @@ export const getHosts = (lang: Lang): Host[] =>
 type FilterCopy = {
   activityLabel: string; groupLabel: string; durationLabel: string; all: string; clear: string;
   count: (n: number) => string; empty: string;
+  /** The button that opens the filter panel, and the one that closes it.
+   *  `show` takes the already-counted label ("12 hosts") because where the
+   *  verb sits differs by language — "Show 12 hosts", "12 Gastgeber
+   *  anzeigen". */
+  filters: string; show: (countLabel: string) => string;
   activities: Record<ActivityKey, string>;
   groups: { small: string; medium: string; large: string };
   durations: { short: string; medium: string; long: string };
@@ -1292,6 +1297,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     activityLabel: 'Activity', groupLabel: 'Group size', durationLabel: 'Length', all: 'All', clear: 'Clear filters',
     count: (n: number) => (n === 1 ? '1 host' : `${n} hosts`),
     empty: 'No host matches every filter. Try widening one.',
+    filters: 'Filters', show: (c) => `Show ${c}`,
     activities: {
       ceramics: 'Ceramics', art: 'Art & print', craft: 'Craft & making',
       food: 'Food & drink', photography: 'Photography', wellbeing: 'Wellbeing',
@@ -1306,6 +1312,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   de: {
     activityLabel: 'Aktivität', groupLabel: 'Gruppengröße', durationLabel: 'Dauer', all: 'Alle', clear: 'Filter zurücksetzen',
     count: (n: number) => (n === 1 ? '1 Gastgeber' : `${n} Gastgeber`),
+    filters: 'Filter', show: (c) => `${c} anzeigen`,
     empty: 'Kein Gastgeber passt zu allen Filtern. Erweitere einen davon.',
     activities: {
       ceramics: 'Keramik', art: 'Kunst & Druck', craft: 'Handwerk',
@@ -1321,6 +1328,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   fr: {
     activityLabel: 'Activité', groupLabel: 'Taille du groupe', durationLabel: 'Durée', all: 'Tout', clear: 'Réinitialiser les filtres',
     count: (n: number) => (n === 1 ? '1 hôte' : `${n} hôtes`),
+    filters: 'Filtres', show: (c) => `Afficher ${c}`,
     empty: 'Aucun hôte ne correspond à tous les filtres. Élargissez-en un.',
     activities: {
       ceramics: 'Céramique', art: 'Art & gravure', craft: 'Artisanat & DIY',
@@ -1336,6 +1344,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   es: {
     activityLabel: 'Actividad', groupLabel: 'Tamaño del grupo', durationLabel: 'Duración', all: 'Todo', clear: 'Quitar filtros',
     count: (n: number) => (n === 1 ? '1 anfitrión' : `${n} anfitriones`),
+    filters: 'Filtros', show: (c) => `Ver ${c}`,
     empty: 'Ningún anfitrión cumple todos los filtros. Prueba a ampliar alguno.',
     activities: {
       ceramics: 'Cerámica', art: 'Arte & grabado', craft: 'Artesanía & DIY',
@@ -1351,6 +1360,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   it: {
     activityLabel: 'Attività', groupLabel: 'Dimensione del gruppo', durationLabel: 'Durata', all: 'Tutti', clear: 'Azzera i filtri',
     count: (n: number) => (n === 1 ? '1 host' : `${n} host`),
+    filters: 'Filtri', show: (c) => `Mostra ${c}`,
     empty: 'Nessun host corrisponde a tutti i filtri. Prova ad allargarne uno.',
     activities: {
       ceramics: 'Ceramica', art: 'Arte & stampa', craft: 'Artigianato & fai da te',
@@ -1366,6 +1376,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   nl: {
     activityLabel: 'Activiteit', groupLabel: 'Groepsgrootte', durationLabel: 'Duur', all: 'Alles', clear: 'Filters wissen',
     count: (n: number) => (n === 1 ? '1 host' : `${n} hosts`),
+    filters: 'Filters', show: (c) => `${c} tonen`,
     empty: 'Geen enkele host past bij alle filters. Verruim er eentje.',
     activities: {
       ceramics: 'Keramiek', art: 'Kunst & druk', craft: 'Ambacht & DIY',
@@ -1381,6 +1392,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   pl: {
     activityLabel: 'Aktywność', groupLabel: 'Wielkość grupy', durationLabel: 'Czas trwania', all: 'Wszystkie', clear: 'Wyczyść filtry',
     count: (n: number) => (n === 1 ? '1 prowadzący' : `${n} prowadzących`),
+    filters: 'Filtry', show: (c) => `Pokaż ${c}`,
     empty: 'Żaden prowadzący nie pasuje do wszystkich filtrów. Poluzuj jeden z nich.',
     activities: {
       ceramics: 'Ceramika', art: 'Sztuka & grafika', craft: 'Rękodzieło & DIY',
@@ -1396,6 +1408,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
   tr: {
     activityLabel: 'Etkinlik', groupLabel: 'Grup büyüklüğü', durationLabel: 'Süre', all: 'Tümü', clear: 'Filtreleri temizle',
     count: (n: number) => (n === 1 ? '1 eğitmen' : `${n} eğitmen`),
+    filters: 'Filtreler', show: (c) => `${c} göster`,
     empty: 'Tüm filtrelere uyan eğitmen yok. Birini genişletmeyi dene.',
     activities: {
       ceramics: 'Seramik', art: 'Sanat & baskı', craft: 'El sanatları & DIY',

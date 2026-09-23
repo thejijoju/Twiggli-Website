@@ -1922,9 +1922,117 @@ a:hover { color: var(--color-accent); }
    and still the thing that carries state, so keyboard and reset work on
    their own. :has() styles the label from the input's checked state. */
 .filters {
+  margin: 0 0 28px;
+}
+/* The closed state: one button and the count beside it, so the reels start
+   within the first screen instead of below four rows of chips. */
+.filterbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.filterdrop {
+  position: relative;
+}
+.filterbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 20px;
+  border: 1.5px solid color-mix(in srgb, var(--color-text) 16%, transparent);
+  border-radius: 999px;
+  background: var(--color-bg);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  /* A <summary> shows a disclosure triangle by default, in two different
+     ways depending on the browser. */
+  list-style: none;
+}
+.filterbtn::-webkit-details-marker { display: none; }
+.filterbtn:hover { border-color: color-mix(in srgb, var(--color-text) 38%, transparent); }
+.filterbtn:focus-visible { outline: 2px solid var(--color-accent-700); outline-offset: 3px; }
+.filterbtn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+/* How many filters are on, for when the panel is shut. */
+.filterbtn-on {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+.filterbtn-on[hidden] { display: none; }
+.filterdrop[open] .filterbtn {
+  border-color: var(--color-text);
+}
+/* The panel hangs under the button rather than pushing the page down, so
+   opening it does not move the reels the reader came for. It is wider than
+   the button and pinned to its left edge, and on a narrow screen it spans
+   the page instead. */
+.filterdrop-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 10px);
+  left: 0;
+  width: max(320px, min(560px, calc(100vw - 2 * var(--gutter))));
   display: grid;
-  gap: 18px;
-  margin: 0 0 40px;
+  gap: 16px;
+  padding: 22px 24px 0;
+  border-radius: 20px;
+  background: var(--color-bg);
+  border: 1.5px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+  /* Four rows of chips are taller than a phone. The panel scrolls inside
+     itself past that, and the two buttons stay on its bottom edge, so
+     "Clear" and "Show 12 hosts" are always one reach away. */
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.filterdrop-foot {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 2px;
+  padding: 16px 0 18px;
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  background: var(--color-bg);
+}
+/* Where there is nothing to clear, the button still holds its side of the
+   row so the done button does not slide across as filters come and go. */
+.filter-clear[hidden] { display: block; visibility: hidden; }
+.filterdrop-done { padding: 11px 22px; font-size: 15px; }
+/* On a phone the panel is a sheet on the bottom edge rather than something
+   hanging off a button halfway down the screen: anchored there it ran past
+   the fold, and the reader had to scroll the page to reach the chips. */
+@media (max-width: 720px) {
+  .filterdrop-panel {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: auto;
+    max-height: 80vh;
+    border-radius: 22px 22px 0 0;
+    border-bottom: 0;
+    box-shadow: 0 -12px 50px rgba(0, 0, 0, 0.22);
+  }
 }
 .filter-row {
   display: flex;
@@ -1976,12 +2084,6 @@ a:hover { color: var(--color-accent); }
 }
 .chip:has(input:focus-visible) { outline: 2px solid var(--color-accent-700); outline-offset: 2px; }
 
-.filter-status {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 24px;
-}
 .filter-count {
   margin: 0;
   font-size: 15px;
