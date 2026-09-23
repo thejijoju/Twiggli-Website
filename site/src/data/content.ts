@@ -706,6 +706,13 @@ const reels: Record<string, { video: string; poster: string }> = {
   // shaped, then worn — the whole arc of her short format in nine seconds.
   // A 360x640 export, left at its own size rather than upscaled.
   mijita: { video: '/video/mijita.mp4', poster: '/video/mijita-poster.jpg' },
+  // No footage of the darkroom, only stills, so the five she sent become one
+  // clip the way Kohfink's did: a second on each, dissolved over a third of a
+  // second, a light push in, and back to the first so the loop has no seam.
+  // They run the order of the work — the solution and the brushes, the
+  // flowers laid out, the prints rinsing in the tub, a finished sheet, then
+  // the portrait the process is famous for.
+  sabine: { video: '/video/sabine.mp4', poster: '/video/sabine-poster.jpg' },
   // Ana's own, from a session in the hall: a turn with the arms open,
   // then the weight settling, the tall windows behind. Shot landscape, so
   // the frame is cut to the vertical the cards use around her rather than
