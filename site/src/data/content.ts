@@ -700,6 +700,12 @@ const reels: Record<string, { video: string; poster: string }> = {
   // down the middle — centring would have taken her hand off at the edge.
   // Audio stripped.
   ana: { video: '/video/ana.mp4', poster: '/video/ana-poster.jpg' },
+  // The Loom Lab's own, opening two seconds in at their request: the
+  // nozzle laying coil on coil of clay into a textured pot, then a gloved
+  // hand setting the printed pots down by the kiln. The rest of their
+  // clip — glazing, firing, the finished pots among the plants — is left
+  // off; eleven seconds is a card's worth. Audio stripped.
+  'loom-lab': { video: '/video/loom-lab.mp4', poster: '/video/loom-lab-poster.jpg' },
   // Tuft Tuft's own, cut down from their reel: the market stall, two people
   // filling a rainbow heart at the frame, then the studio itself — the pink
   // room, the wall of yarn, guns working the canvas, and the finished rugs
