@@ -49,6 +49,27 @@ const SOURCES = [
         url: 'https://landsinn-potsdam.de/workshops-2/' },
     ] },
 
+  // Mijita — Mareen Ledebur's jewellery label, teaching at Studio Blinkblink
+  // in Wedding. Her site is Wix with the Bookings app, so /book-online draws
+  // its dates client-side and a plain fetch returns a widget and no
+  // schedule; each service page goes through the r.jina.ai relay, which
+  // renders it and hands back the "Bevorstehende Sessions" list. One source
+  // per service, since that list carries neither title nor price. The
+  // retreat is not here: it runs out at Landpraxis Altfriedland rather than
+  // in Berlin, and its page showed last year's dates.
+  { slug: 'mijita', name: 'Mijita — Schmuck schmieden (watched via relay)', mode: 'wix-sessions',
+    url: 'https://r.jina.ai/https://www.mijita.de/service-page/schmuck-schmieden',
+    bookUrl: 'https://www.mijita.de/service-page/schmuck-schmieden',
+    district: 'Wedding',
+    title: 'Schmuck schmieden', titleEn: 'Forge your own jewellery',
+    price: '\u20ac98' },
+  { slug: 'mijita', name: 'Mijita — Gestalte deinen Ring (watched via relay)', mode: 'wix-sessions',
+    url: 'https://r.jina.ai/https://www.mijita.de/service-page/gestalte-deinen-ring',
+    bookUrl: 'https://www.mijita.de/service-page/gestalte-deinen-ring',
+    district: 'Wedding',
+    title: 'Gestalte deinen Ring', titleEn: 'Shape your own ring in wax',
+    price: '\u20ac69' },
+
   // lomu design — Monique Wiesner's label. Cloudflare turns away both the
   // runner and a headless browser on her Jimdo site, so the watcher reads
   // the workshop index through the r.jina.ai text relay, the same route the
@@ -1828,6 +1849,68 @@ async function fromWixServiceList(html, source) {
       `[${source.slug}] service: "${w.title}" ${w.date} ${w.time ?? 'no time'} ${w.price ?? 'no price'} ${w.image ? 'img' : 'no img'}`,
     );
     out.push(w);
+  }
+  return out;
+}
+
+/** A Wix Bookings service page, read through the r.jina.ai relay.
+ *
+ *  Wix draws its dates client-side, so a plain fetch of the page returns a
+ *  booking widget and no schedule; the relay renders it first and hands back
+ *  the "Bevorstehende Sessions" list as text:
+ *
+ *      ## Bevorstehende Sessions
+ *      *   Sonntag, 27. Sept.
+ *          *   11:00
+ *      4 Stunden
+ *      Mareen Ledebur
+ *      * * *
+ *
+ *  One service per source, since the list carries neither the title nor the
+ *  price — those come from the source entry. The year is never printed, so
+ *  a date already past is read as next year's.
+ */
+function fromWixSessions(text, source) {
+  const head = text.search(/Bevorstehende\s+Sessions/i);
+  if (head < 0) {
+    console.log(`[${source.slug}] wix-sessions: no "Bevorstehende Sessions" heading`);
+    return [];
+  }
+  // The list ends at the next heading — "Kontaktangaben" in practice.
+  const rest = text.slice(head + 'Bevorstehende Sessions'.length);
+  const endAt = rest.search(/\n#{1,3}\s/);
+  const section = endAt < 0 ? rest : rest.slice(0, endAt);
+
+  const year = Number(todayISO.slice(0, 4));
+  const out = [];
+  const seen = new Set();
+  for (const block of section.split(/\*\s\*\s\*/)) {
+    const dm = block.match(/(\d{1,2})\.\s*([A-Za-zÄÖÜäöü]{3,10})\.?/);
+    if (!dm) continue;
+    const month = deMonth(dm[2]);
+    if (!month) continue;
+    const dd = dm[1].padStart(2, '0');
+    const mm = String(month).padStart(2, '0');
+    let date = `${year}-${mm}-${dd}`;
+    if (date < todayISO) date = `${year + 1}-${mm}-${dd}`;
+
+    const tm = block.match(/(\d{1,2}):(\d{2})/);
+    const time = tm ? `${tm[1].padStart(2, '0')}:${tm[2]}` : undefined;
+    if (seen.has(`${date} ${time ?? ''}`)) continue;
+    seen.add(`${date} ${time ?? ''}`);
+
+    const hm = block.match(/(\d+(?:[.,]\d+)?)\s*Stunden/);
+    const hours = hm ? Number(hm[1].replace(',', '.')) : 0;
+
+    out.push({
+      title: source.title,
+      ...(source.titleEn ? { titleEn: source.titleEn } : {}),
+      date,
+      ...(time ? { time } : {}),
+      ...(hours > 0 && hours <= 12 ? { duration: `${hours} h` } : {}),
+      ...(source.price ? { price: source.price } : {}),
+      url: source.bookUrl ?? source.url,
+    });
   }
   return out;
 }
@@ -3951,6 +4034,24 @@ async function scrapeSource(source) {
       }));
     console.log(`[${source.slug}] wix-service-list sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'wix-sessions') {
+    const found = fromWixSessions(stripTags(html), source)
+      .filter((w) => w.date >= todayISO && w.date <= maxISO);
+    for (const w of found) {
+      console.log(`[${source.slug}] session: "${w.title}" ${w.date} ${w.time ?? 'no time'} ${w.duration ?? ''} ${w.price ?? ''}`);
+    }
+    console.log(`[${source.slug}] wix-sessions kept: ${found.length}`);
+    return {
+      workshops: found.map((w) => ({
+        slug: source.slug,
+        sourceUrl: source.bookUrl ?? source.url,
+        ...w,
+        ...(source.district ? { district: source.district } : {}),
+      })),
+      recurring: [],
+    };
   }
 
   if (source.mode === 'pipe-list-de') {

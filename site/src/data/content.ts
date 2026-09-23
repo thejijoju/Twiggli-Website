@@ -230,6 +230,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   lomu:             { activity: 'craft',     groupRange: [4, 20], hourRange: [1, 2] },
   // PLACEHOLDER upper bound — the page names a minimum of five and no cap.
   landsinn:         { activity: 'craft',     groupRange: [5, 12], hourRange: [2, 3] },
+  // PLACEHOLDER group range — her booking pages carry no class size.
+  mijita:           { activity: 'craft',     groupRange: [1, 8],  hourRange: [3, 4] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -441,6 +443,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'landsinn', name: 'Landsinn', specialty: 'Macramé, collage & seasonal craft', studio: 'Landsinn Concept Store',
       blurb: 'A concept store in Potsdam-Babelsberg that keeps a workshop room next door at BabelsWERK and fills it with a different maker every few weeks. Silvia teaches macramé and dot painting, Natalia jewellery in polymer clay and resin, Constanze modern collage, textile printing and gelli-print cards, Karina advent wreaths in the weeks before Christmas, Tina braiding and ceramics. Afternoons and evenings of two to three hours, from five people up, with every material and tool, a snack and a drink included — and any of them can be booked privately for a birthday, a hen do or a team.',
       group: 'From 5', duration: '2–3 h', place: 'BabelsWERK, Garnstr. 18, Potsdam-Babelsberg', languages: 'DE' },
+    { slug: 'mijita', name: 'Mareen Ledebur', specialty: 'Jewellery smithing & wax carving', studio: 'Mijita',
+      blurb: 'Mareen learned to forge jewellery in Santiago de Chile in 2013 and has been making it by hand ever since, in brass, silver and gold. She teaches two formats at Studio Blinkblink in Wedding. In the longer one you cut, shape and solder metal and go home with a ring, a pendant or a pair of earrings you made yourself. In the shorter one you carve a ring in wax — it is cast afterwards and posted to you, and because the wax is lost in the casting no two can ever be the same. No experience needed; brass is included and silver is weighed on the day. Mostly Mondays, and any format can be booked privately for a birthday, a hen do or a team.',
+      group: 'Small group', duration: '3–4 h', place: 'Studio Blinkblink, Gerichtstr. 25, Wedding', languages: 'DE' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -614,6 +619,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'landsinn', name: 'Landsinn', specialty: 'Makramee, Collage & Saisonhandwerk', studio: 'Landsinn Concept Store',
       blurb: 'Ein Concept Store in Potsdam-Babelsberg, der nebenan im BabelsWERK einen Workshopraum hat und ihn alle paar Wochen mit einer anderen Macherin füllt. Silvia unterrichtet Makramee und Dot Painting, Natalia Schmuck aus Polymermodelliermasse und Resin, Constanze Modern Collage, Textildruck und Gelli-Print-Karten, Karina in den Wochen vor Weihnachten das Adventskranzbinden, Tina Flechten und Keramik. Nachmittage und Abende von zwei bis drei Stunden, ab fünf Personen, Material und Werkzeug komplett dabei, dazu ein kleiner Snack und ein Getränk — und jeder Workshop ist auch privat buchbar, für Geburtstag, JGA oder Team.',
       group: 'Ab 5', duration: '2–3 Std.', place: 'BabelsWERK, Garnstr. 18, Potsdam-Babelsberg', languages: 'DE' },
+    { slug: 'mijita', name: 'Mareen Ledebur', specialty: 'Schmuckschmieden & Wachsmodellieren', studio: 'Mijita',
+      blurb: 'Mareen hat 2013 in Santiago de Chile das Schmuckschmieden gelernt und macht seitdem alles von Hand, in Messing, Silber und Gold. Im Studio Blinkblink im Wedding unterrichtet sie zwei Formate. Im längeren schneidest, bearbeitest und lötest du Metall und nimmst einen Ring, einen Anhänger oder ein Paar Ohrringe mit nach Hause. Im kürzeren formst du deinen Ring aus Wachs — er wird danach gegossen und dir zugeschickt, und weil das Wachs beim Guss verloren geht, ist jeder ein Unikat. Vorkenntnisse braucht es keine; Messing ist inklusive, Silber wird vor Ort gewogen. Meist montags, und jedes Format ist auch privat buchbar, für Geburtstag, JGA oder Team.',
+      group: 'Kleine Gruppe', duration: '3–4 Std.', place: 'Studio Blinkblink, Gerichtstr. 25, Wedding', languages: 'DE' },
   ],
 };
 
@@ -694,6 +702,10 @@ const reels: Record<string, { video: string; poster: string }> = {
   // the other reels, so it is left at that rather than upscaled into
   // mush. Audio stripped.
   lomu: { video: '/video/lomu.mp4', poster: '/video/lomu-poster.jpg' },
+  // Mareen's own: the ring drawn out on a sizer at the bench, then filed and
+  // shaped, then worn — the whole arc of her short format in nine seconds.
+  // A 360x640 export, left at its own size rather than upscaled.
+  mijita: { video: '/video/mijita.mp4', poster: '/video/mijita-poster.jpg' },
   // Ana's own, from a session in the hall: a turn with the arms open,
   // then the weight settling, the tall windows behind. Shot landscape, so
   // the frame is cut to the vertical the cards use around her rather than
