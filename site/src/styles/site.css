@@ -41,10 +41,10 @@
    instead of just the primary color changing. accent-2 mirrors accent, per
    the system being a mono scheme. */
 :root {
-  /* Page background moved from the system's warm grey (#f3f2f2) to white.
+  /* Page background: a warm off-white, per request, rather than pure white.
      --color-surface lifts off it in the other direction (a hair darker) so
      inputs and cards still read as distinct from the page. */
-  --color-bg: #ffffff;
+  --color-bg: #f9f8f6;
   --color-surface: #f2f1f1;
 
   --color-accent: #6a3eec;
@@ -516,7 +516,7 @@ a:hover { color: var(--color-accent); }
 .phone-back-screen {
   position: relative;
   height: 100%;
-  background: #fff;
+  background: var(--color-bg);
   border-radius: 34px;
   overflow: hidden;
   display: flex;
@@ -540,11 +540,12 @@ a:hover { color: var(--color-accent); }
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.22);
 }
 .phone-front::before {
-  /* The screen: everything inside sits on this white, rounded panel. */
+  /* The screen: everything inside sits on this rounded panel, in the page's
+     own colour — the mock is the app, and the app is the same off-white. */
   content: '';
   position: absolute;
   inset: 8px;
-  background: #fff;
+  background: var(--color-bg);
   border-radius: 38px;
 }
 .phone-front > * { position: relative; }
@@ -774,7 +775,7 @@ a:hover { color: var(--color-accent); }
   justify-content: center;
   border: 3px solid transparent;
   background:
-    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
     linear-gradient(135deg, var(--color-accent), #c026d3) border-box;
 }
 .phone-nav-plus svg {
@@ -829,7 +830,7 @@ a:hover { color: var(--color-accent); }
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: #131313;
-  background: #fff;
+  background: var(--color-bg);
   border: 4px solid #131313;
   padding: 13px 20px 14px;
   border-radius: 0;
@@ -1480,7 +1481,7 @@ a:hover { color: var(--color-accent); }
 .post-callout {
   margin: 34px 0;
   padding: 20px 22px 22px;
-  background: #fff;
+  background: var(--color-bg);
   border: 3px solid #131313;
   box-shadow: 9px 10px 0 color-mix(in srgb, var(--color-text) 30%, transparent);
 }
@@ -2284,10 +2285,11 @@ a:hover { color: var(--color-accent); }
   align-items: center;
   gap: 6px 20px;
 }
-/* Every tile is framed, whether it carries a reel, a photo or a monogram —
-   the frame is the house style here, not a marker for which ones move. And
-   the tile is a fifth taller than it is wide rather than square: enough to
-   lean towards the shape of a phone without stretching to one. */
+/* Unframed, unlike the reels elsewhere on the site: a day of workshops is
+   a wall of these tiles, and the dark phone frame around every one of them
+   drew a black grid over the page. The picture goes straight to its own
+   rounded edge here. The tile is still a fifth taller than it is wide,
+   which is what made it read as a phone in the first place. */
 .session-thumb {
   display: block;
   /* The tile is a link where the host has a photo; a monogram standing in
@@ -2297,29 +2299,25 @@ a:hover { color: var(--color-accent); }
   height: 206px;
   border-radius: 16px;
   overflow: hidden;
-  padding: var(--phone-bezel);
-  background: var(--phone-frame);
 }
 .session-thumb img,
 .session-thumb video {
   width: 100%;
   height: 100%;
-  /* The screen inside the frame. It carries the page's own surface colour so
-     that a scraped photo which fails to load leaves a blank screen in the
-     frame rather than a black slab — the frame is dark now, and an <img>
-     with nothing behind it would show straight through to it. */
+  /* A scraped photo that fails to load leaves a blank tile in the page's
+     own surface colour rather than a hole. */
   background: var(--color-surface);
   /* Fill the tile and crop from the middle — scraped workshop photos arrive
      in every aspect ratio, and the subject stays centered. */
   object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: calc(16px - var(--phone-bezel));
+  border-radius: 16px;
 }
 /* The monogram is a flex box with its own tinted ground, not a picture — it
    takes the rounding and nothing else, or it loses both its centring and
    its colour to the rules above. */
-.session-thumb .media-monogram { border-radius: calc(16px - var(--phone-bezel)); }
+.session-thumb .media-monogram { border-radius: 16px; }
 /* The workshop's one selling line, under the title. Accent-tinted so it
    carries at a glance without shouting over the price and the Book button,
    and set on its own line so it never competes with the host name beside it.
@@ -2362,15 +2360,15 @@ a:hover { color: var(--color-accent); }
 
 /* A reel tile plays on tap instead of linking out — see DayPicker. */
 .session-thumb:has(.session-video) { cursor: pointer; }
-/* The grid view's corner chips clear the bezel the same way the teaser's
-   do — 8px off the tile's edge would land them half on the frame. */
+/* The corner chips sit against the picture's own edge now that no frame
+   stands between them and it. */
 .daypicker[data-view='grid'] .daysessions .session-thumb .session-timechip {
-  top: calc(8px + var(--phone-bezel));
-  left: calc(8px + var(--phone-bezel));
+  top: 8px;
+  left: 8px;
 }
 .daypicker[data-view='grid'] .daysessions .session-thumb .session-availbadge {
-  bottom: calc(8px + var(--phone-bezel));
-  right: calc(8px + var(--phone-bezel));
+  bottom: 8px;
+  right: 8px;
 }
 /* Stand-in for a host whose photos have not arrived — see HostMonogram.
    Fills whatever tile it sits in, square or banner. */
@@ -2842,10 +2840,9 @@ a:hover { color: var(--color-accent); }
   .session { grid-template-columns: 96px minmax(0, 1fr) auto; gap: 4px 14px; }
   .session-side { column-gap: 10px; }
   .session-thumb { width: 96px; height: 115px; border-radius: 12px; }
-  /* Concentric with the smaller tile — the bezel itself keeps its width. */
   .session-thumb img,
   .session-thumb video,
-  .session-thumb .media-monogram { border-radius: calc(12px - var(--phone-bezel)); }
+  .session-thumb .media-monogram { border-radius: 12px; }
   .session-title { font-size: 17px; }
   .timegroup-head { font-size: 22px; }
 }
