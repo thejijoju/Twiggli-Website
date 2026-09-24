@@ -1,11 +1,17 @@
 {
-  "updated": "2026-09-23T17:57:58.659Z",
+  "updated": "2026-09-24T13:49:16.411Z",
   "sources": [
     {
       "slug": "landsinn",
       "url": "https://landsinn-potsdam.de/workshops-2/",
       "status": "ok",
       "count": 9
+    },
+    {
+      "slug": "tinkery",
+      "url": "https://r.jina.ai/https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/",
+      "status": "ok",
+      "count": 4
     },
     {
       "slug": "mijita",
@@ -173,7 +179,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 232
+      "count": 228
     },
     {
       "slug": "pastamadre",
@@ -215,7 +221,7 @@
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "status": "ok",
-      "count": 11
+      "count": 13
     },
     {
       "slug": "schmiede",
@@ -233,7 +239,7 @@
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
       "status": "ok",
-      "count": 3
+      "count": 2
     },
     {
       "slug": "daisuki",
@@ -359,7 +365,7 @@
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/turnedartist",
       "status": "failed: no upcoming events parsed",
-      "count": 12
+      "count": 11
     },
     {
       "slug": "elinorsahm",
@@ -371,13 +377,13 @@
       "slug": "mampe",
       "url": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
       "status": "ok",
-      "count": 68
+      "count": 65
     },
     {
       "slug": "drawingwalks",
       "url": "https://www.drawingwalks.art/join-a-walk",
       "status": "ok",
-      "count": 2
+      "count": 1
     },
     {
       "slug": "violaine",
@@ -490,7 +496,7 @@
     {
       "slug": "rebeca",
       "url": "https://www.tickettailor.com/events/learnlino",
-      "status": "ok",
+      "status": "failed: no upcoming events parsed",
       "count": 6
     },
     {
@@ -842,146 +848,6 @@
   ],
   "workshops": [
     {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "KLEINE SCHNAPSGESCHICHTEN",
-      "date": "2026-09-23",
-      "time": "14:00",
-      "soldOut": true,
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
-      "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "SMALL SCHNAPPS STORIES in English",
-      "date": "2026-09-23",
-      "time": "15:00",
-      "soldOut": true,
-      "duration": "0.75–1 h",
-      "price": "€12",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/SG01.png?v=1777382092",
-      "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
-    },
-    {
-      "slug": "mampe",
-      "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
-      "title": "GROßE SCHNAPSGESCHICHTEN",
-      "date": "2026-09-23",
-      "time": "16:00",
-      "soldOut": true,
-      "duration": "1.5 h",
-      "price": "€24",
-      "district": "Kreuzberg",
-      "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
-      "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
-    },
-    {
-      "slug": "schmiede",
-      "sourceUrl": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
-      "title": "Messerschärfkurs – Abendkurs",
-      "date": "2026-09-23",
-      "time": "17:00",
-      "duration": "2 h",
-      "spots": 4,
-      "url": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
-      "request": true,
-      "district": "Blankenburg",
-      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
-    },
-    {
-      "slug": "rebeca",
-      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
-      "title": "Anatomy Course - Full Body Proportions",
-      "date": "2026-09-23",
-      "time": "17:15",
-      "duration": "1 h",
-      "district": "Prenzlauer Berg",
-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_650,q_100,w_650,x_1,y_31/c_scale,h_250,q_85,w_250/v1/production/userfiles/nxmsfpye243zphgsksij.jpg?_a=BAAHWXDQ",
-      "url": "https://www.tickettailor.com/events/turnedartist/2348203"
-    },
-    {
-      "slug": "angelo",
-      "sourceUrl": "https://www.coffeeandbananas.com/",
-      "title": "DIY Kaffeerösten",
-      "titleEn": "DIY Coffee Roasting",
-      "date": "2026-09-23",
-      "time": "17:30",
-      "duration": "2 h",
-      "price": "€59",
-      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
-      "district": "Prenzlauer Berg",
-      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
-    },
-    {
-      "slug": "drawingwalks",
-      "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
-      "title": "Draw Berlin: Prenzlauer Berg",
-      "date": "2026-09-24",
-      "time": "10:00",
-      "spots": 15,
-      "duration": "2.75 h",
-      "price": "€30",
-      "district": "Prenzlauer Berg",
-      "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Duftöl-Roll-on Workshop",
-      "date": "2026-09-24",
-      "time": "13:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 8,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzen und Wachspättchen Workshop",
-      "date": "2026-09-24",
-      "time": "15:00",
-      "duration": "1.5 h",
-      "price": "€50",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Körperpeeling & Badesalz Workshop",
-      "date": "2026-09-24",
-      "time": "15:00",
-      "duration": "1 h",
-      "price": "€45",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
-      "slug": "munio",
-      "sourceUrl": "https://themunio.de/collections/workshops",
-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
-      "date": "2026-09-24",
-      "time": "15:00",
-      "duration": "0.5 h",
-      "price": "€30",
-      "spots": 10,
-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
-      "url": "https://themunio.de/products/candle-workshop-30min",
-      "district": "Schöneberg"
-    },
-    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
       "title": "Design & craft your own leather earrings",
@@ -1110,19 +976,6 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-25",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "schmiede",
       "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "title": "Kompaktkurs Messerschmieden – 1 Tag",
@@ -1181,7 +1034,7 @@
       "time": "15:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 7,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
       "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
       "district": "Schöneberg"
@@ -1333,7 +1186,7 @@
       "title": "Mosaic Tile Making",
       "date": "2026-09-26",
       "time": "09:30",
-      "spots": 6,
+      "spots": 5,
       "duration": "4.5 h",
       "price": "€89",
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-95116740.jpg?1782735863",
@@ -2173,6 +2026,19 @@
       "district": "Neukölln"
     },
     {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-10-02",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -2777,7 +2643,7 @@
       "time": "11:00",
       "duration": "2.5 h",
       "price": "€9.90",
-      "url": "https://www.pausify.org/event/saturday-event-oct-4-186",
+      "url": "https://www.pausify.org/event/sunday-event-festive-potluck-lunch-186",
       "district": "Moabit",
       "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
     },
@@ -3088,6 +2954,19 @@
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_570,q_100,w_570,x_2,y_30/c_scale,h_250,q_85,w_250/v1/production/userfiles/ctibozlnftydpxvymlxs.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/turnedartist/2348235"
+    },
+    {
+      "slug": "angelo",
+      "sourceUrl": "https://www.coffeeandbananas.com/",
+      "title": "DIY Kaffeerösten",
+      "titleEn": "DIY Coffee Roasting",
+      "date": "2026-10-07",
+      "time": "17:30",
+      "duration": "2 h",
+      "price": "€59",
+      "url": "https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/",
+      "district": "Prenzlauer Berg",
+      "image": "https://tenfarmersandbananas.com/wp-content/uploads/2024/02/diy-coffee-roasting-workshop.jpg"
     },
     {
       "slug": "tufttuft",
@@ -3535,6 +3414,16 @@
       "district": "Neukölln"
     },
     {
+      "slug": "tinkery",
+      "sourceUrl": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/",
+      "title": "Wie hat Oma das nochmal gemacht? (2 Termine)",
+      "date": "2026-10-10",
+      "time": "10:00",
+      "duration": "2 × 3.75 h",
+      "district": "Marzahn-Hellersdorf",
+      "url": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/"
+    },
+    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/design-and-make-your-own-leather-harness/",
       "title": "Design and make your own leather harness",
@@ -3753,7 +3642,7 @@
       "date": "2026-10-10",
       "time": "14:30",
       "duration": "2.5 h",
-      "spots": 5,
+      "spots": 4,
       "price": "€89",
       "district": "Moabit",
       "image": "https://static1.squarespace.com/static/6161890ad6b5a65d83380589/61712c321285743673936f29/635bfbf20e079e070a5a48f1/1789039216089/",
@@ -6545,7 +6434,7 @@
       "time": "18:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 8,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
       "district": "Schöneberg"
@@ -7096,6 +6985,16 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85334520.jpg?1763198865",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85334520/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "tinkery",
+      "sourceUrl": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/",
+      "title": "Wie hat Oma das nochmal gemacht?",
+      "date": "2026-11-01",
+      "time": "11:00",
+      "duration": "3.5 h",
+      "district": "Mitte",
+      "url": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/"
     },
     {
       "slug": "rose",
@@ -8202,7 +8101,7 @@
       "title": "Incense Lab I: Grundlagen des Dufts",
       "date": "2026-11-08",
       "time": "14:00",
-      "spots": 14,
+      "spots": 11,
       "duration": "2.5 h",
       "price": "€64",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/85769426/calendar/13025469",
@@ -8513,6 +8412,14 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "tinkery",
+      "sourceUrl": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/",
+      "title": "Wie hat Oma das nochmal gemacht? (2 Termine)",
+      "date": "2026-11-14",
+      "district": "Marzahn-Hellersdorf",
+      "url": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/"
     },
     {
       "slug": "karen-rose",
@@ -9213,7 +9120,7 @@
       "time": "10:00",
       "duration": "2 Tage",
       "price": "€350",
-      "spots": 6,
+      "soldOut": true,
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "request": true,
       "district": "Blankenburg",
@@ -10162,6 +10069,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-12-05",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "loam",
       "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
       "title": "Introduction to Hand-Building Pottery",
@@ -10378,6 +10299,7 @@
       "duration": "2.5 h",
       "price": "€87",
       "url": "https://www.druckrausch.com/booking-calendar/09-12-basis-siebdruck-kurs-fotografie",
+      "image": "https://static.wixstatic.com/media/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg/v1/fit/w_1772,h_1329,al_c,q_90/daf795_1f24a350d689494faac3d52a675b63ff~mv2.jpg",
       "district": "Friedenau"
     },
     {
@@ -10741,6 +10663,20 @@
       "district": "Neukölln"
     },
     {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden 2 Tage",
+      "date": "2026-12-19",
+      "time": "10:00",
+      "duration": "2 Tage",
+      "price": "€350",
+      "spots": 6,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+    },
+    {
       "slug": "loam",
       "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
       "title": "Introduction to Hand-Building Pottery",
@@ -11052,6 +10988,16 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "tinkery",
+      "sourceUrl": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/",
+      "title": "Wie hat Oma das nochmal gemacht?",
+      "date": "2027-01-10",
+      "time": "11:00",
+      "duration": "3.5 h",
+      "district": "Mitte",
+      "url": "https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/"
     },
     {
       "slug": "alessia",
