@@ -238,6 +238,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>
   // PLACEHOLDER group range — her booking pages carry no class size.
   mijita:           { activity: 'craft',     groupRange: [1, 8],  hourRange: [3, 4] },
   tessia:           { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 6] },
+  // PLACEHOLDER group range — neither her page nor the VHS listings give a
+  // class size; the VHS rooms seat about a dozen.
+  tinkery:          { activity: 'craft',     groupRange: [1, 12], hourRange: [3.5, 7.5] },
 };
 
 /** The seventeen-plus Berlin makers, from the team-events brochure. Reels
@@ -455,6 +458,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'tessia', name: 'Tessia', specialty: 'Wax carving & silver casting', studio: 'Tessia',
       blurb: 'A jewellery shop on the Oderberger Straße with a goldsmith\u2019s bench built into the back of it, where what is on the shelves was made a few metres away. Two workshops, both for absolute beginners. In the half day you carve a ring out of wax, shaping it exactly as you want it; it is cast in sterling silver — or gold, if you ask — and ready to collect about three or four weeks later. The full day takes you the whole way in one sitting: you carve the wax, then cast it yourself in sand, set a stone into the pour if you like, and file and polish the ring until it is finished, going home with your own silver ring the same evening. Up to ten grams of silver, the wax and the use of every tool are in the price, along with a list of what to buy and where if you want to keep going. Six people on the half day, three on the full one, since the casting takes its time. She also opens the bench to anyone who has been before and wants to work alone.',
       group: 'Up to 6', duration: '3\u20136 h', place: 'Oderberger Str. 40, Prenzlauer Berg', languages: 'DE \u00b7 EN' },
+    { slug: 'tinkery', name: 'Astrid Grabner', specialty: 'Mending, embroidery & polymer clay', studio: 'the tinkery',
+      blurb: 'An Austrian artist who has lived in Berlin since 2014 — art school in Linz, a degree in German at Graz, and most of what she teaches taught to herself, in order to run a sustainability workshop for a school in Potsdam. Her courses are about keeping clothes rather than replacing them. Over two days you learn darning, sashiko, doodle-stitching, hemming and buttons, then spend the second day putting them to work on the garments you brought, and leave with a handout so you can do it again at home. Shorter sessions add hand embroidery to a favourite piece, or turn a hole into a patch worth showing off. She also models 5–7 cm figurines in polymer clay, built up from the skeleton and painted at the end. Beginners throughout, in German or English, and she teaches the techniques that survive everyday use rather than the textbook ones.',
+      group: 'Up to 12', duration: '3.5–7.5 h', place: 'VHS Marzahn-Hellersdorf / Grimms Garten, Mitte', languages: 'DE · EN' },
   ],
   de: [
     { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
@@ -634,6 +640,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'tessia', name: 'Tessia', specialty: 'Wachsmodellieren & Silberguss', studio: 'Tessia',
       blurb: 'Ein Schmuckladen in der Oderberger Stra\u00dfe mit einer Goldschmiede hinten drin \u2014 was in der Auslage liegt, ist ein paar Meter weiter entstanden. Zwei Workshops, beide f\u00fcr komplette Anf\u00e4nger:innen. Im Halbtagskurs schnitzt du deinen Ring aus Wachs, genau so, wie du ihn haben willst; gegossen wird er danach in Sterlingsilber \u2014 auf Wunsch in Gold \u2014 und ist nach drei bis vier Wochen abholbereit. Der ganze Tag f\u00fchrt dich in einem Rutsch durch alles: Wachs schnitzen, selbst im Sandguss gie\u00dfen, auf Wunsch einen Stein mit eingie\u00dfen, dann vers\u00e4ubern und polieren \u2014 und am Abend h\u00e4ltst du deinen eigenen Silberring in den H\u00e4nden. Bis zu zehn Gramm Silber, das Wachs und die Werkzeugnutzung sind dabei, dazu eine Liste, was man braucht und wo man es bekommt, falls du weitermachen willst. Sechs Pl\u00e4tze am halben Tag, drei am ganzen, weil der Guss seine Zeit braucht. Wer schon mal da war, kann die Werkstatt auch zum eigenst\u00e4ndigen Arbeiten nutzen.',
       group: 'Bis 6', duration: '3\u20136 Std.', place: 'Oderberger Str. 40, Prenzlauer Berg', languages: 'DE \u00b7 EN' },
+    { slug: 'tinkery', name: 'Astrid Grabner', specialty: 'Flicken, Sticken & Polymer Clay', studio: 'the tinkery',
+      blurb: 'Österreicherin, seit 2014 in Berlin — Kunstschule in Linz, Germanistik in Graz, und das meiste, was sie unterrichtet, hat sie sich selbst beigebracht, um an einer Potsdamer Schule einen Nachhaltigkeits-Workshop zu geben. In ihren Kursen geht es darum, Kleidung zu behalten statt sie zu ersetzen. An zwei Tagen lernst du Stopfen, Sashiko, Doodlestitching, Säumen und Knöpfe annähen und wendest das am zweiten Tag direkt an mitgebrachten Stücken an; ein Handout nimmst du mit, damit du es zu Hause wiederholen kannst. Kürzere Sessions bringen Handstickerei auf ein Lieblingsstück oder machen aus einem Loch einen Flicken, den man herzeigt. Dazu modelliert sie 5–7 cm große Figuren aus Polymerton, vom Skelett aufgebaut und am Ende bemalt. Alles für Anfänger:innen, auf Deutsch oder Englisch — und sie unterrichtet die Techniken, die den Alltag überstehen, nicht die aus dem Lehrbuch.',
+      group: 'Bis 12', duration: '3,5–7,5 Std.', place: 'VHS Marzahn-Hellersdorf / Grimms Garten, Mitte', languages: 'DE · EN' },
   ],
 };
 

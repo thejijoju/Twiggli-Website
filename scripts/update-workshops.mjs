@@ -49,6 +49,17 @@ const SOURCES = [
         url: 'https://landsinn-potsdam.de/workshops-2/' },
     ] },
 
+  // the tinkery — Astrid Grabner, mending, embroidery and polymer clay. Her
+  // Jimdo site is behind Cloudflare, so it comes through the r.jina.ai
+  // relay like the other walled hosts. Her own page is watched rather than
+  // the VHS course pages: VHS ids change every term, and the courses she
+  // runs at Grimms Garten never appear on VHS at all. No price on the page
+  // — the VHS ones are €34–36 plus €5 for materials, the Grimms Garten ones
+  // unpublished — so the cards go without one rather than carry a guess.
+  { slug: 'tinkery', name: 'the tinkery — Kurse (watched via relay)', mode: 'tinkery',
+    url: 'https://r.jina.ai/https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/',
+    bookUrl: 'https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/' },
+
   // Mijita — Mareen Ledebur's jewellery label, teaching at Studio Blinkblink
   // in Wedding. Her site is Wix with the Bookings app, so /book-online draws
   // its dates client-side and a plain fetch returns a widget and no
@@ -1921,6 +1932,88 @@ function fromWixSessions(text, source) {
       ...(source.price ? { price: source.price } : {}),
       url: source.bookUrl ?? source.url,
     });
+  }
+  return out;
+}
+
+/** Astrid Grabner's course page (the tinkery), read through the relay.
+ *
+ *  Her Jimdo site sits behind Cloudflare, which turns the runner away, so it
+ *  comes through r.jina.ai as markdown. Each course is a `##` heading and
+ *  each run of it a `###` heading naming the venue and the dates:
+ *
+ *      ## Kleidung besticken
+ *      ### Grimms Garten am 1.11. 2026 von 11-14:30 am 10.1. 2027 von 11-14:30
+ *      ## Wie hat Oma das nochmal gemacht?
+ *      ### VHS Marzahn-Hellersdorf am 10.10.-11.10. 2026 10:00 - 13:45 Uhr
+ *
+ *  Three date shapes appear: a run of single days, a range across two days,
+ *  and two days joined by an ampersand. The last two are one course taught
+ *  over a weekend rather than two bookings, so they become a single session
+ *  on the first day carrying the number of dates — the same way the weekly
+ *  courses elsewhere do.
+ *
+ *  Her own page is watched rather than the VHS course pages it links to:
+ *  VHS ids change every term, and the courses she runs at Grimms Garten
+ *  never appear on VHS at all.
+ */
+function fromTinkery(text, source) {
+  const out = [];
+  // Whitespace rather than line breaks, so a relay that reflows the markdown
+  // cannot hide a heading.
+  const heads = [...text.matchAll(/(^|\s)(#{2,3})\s*([^\n#]{3,120})/g)];
+  let course = '';
+  for (const [, , hashes, rawHead] of heads) {
+    const head = rawHead.replace(/\s+/g, ' ').trim();
+    const dated = /\d{1,2}\.\s*\d{1,2}\.|\d{1,2}\.\s*&/.test(head);
+    if (hashes === '##' || !dated) {
+      // A '##' is always a new course; a '###' with no date is its subtitle,
+      // which says what the course actually is where the title is a joke.
+      if (hashes === '##') course = head;
+      else if (course && head.length > course.length / 2 && !/^You would like/i.test(head)) {
+        // Keep the title; the subtitle is description, not a name.
+      }
+      continue;
+    }
+    const venue = head.split(/\s+am\s+/i)[0].replace(/[–-]\s*$/, '').trim();
+    const when = head.slice(venue.length);
+    // Each 'am …' is one entry; a head with no 'am' is a single run.
+    const parts = when.split(/\bam\b/i).map((x) => x.trim()).filter(Boolean);
+    for (const part of parts.length ? parts : [when]) {
+      const time = part.match(/(?:von\s*)?(\d{1,2})(?::(\d{2}))?\s*[-–]\s*(\d{1,2})(?::(\d{2}))?(?!\s*\.)/);
+      const clock = time
+        ? {
+            time: `${time[1].padStart(2, '0')}:${time[2] ?? '00'}`,
+            span:
+              Number(time[3]) + Number(time[4] ?? 0) / 60 - (Number(time[1]) + Number(time[2] ?? 0) / 60),
+          }
+        : null;
+      let date = null;
+      let dates = 1;
+      const range = part.match(/(\d{1,2})\.(\d{1,2})\.\s*[-–]\s*(\d{1,2})\.(\d{1,2})\.\s*(20\d{2})/);
+      const amp = part.match(/(\d{1,2})\.\s*&\s*(\d{1,2})\.(\d{1,2})\.\s*(20\d{2})/);
+      const one = part.match(/(\d{1,2})\.(\d{1,2})\.\s*(20\d{2})/);
+      if (range) {
+        date = `${range[5]}-${range[2].padStart(2, '0')}-${range[1].padStart(2, '0')}`;
+        dates = 2;
+      } else if (amp) {
+        date = `${amp[4]}-${amp[3].padStart(2, '0')}-${amp[1].padStart(2, '0')}`;
+        dates = 2;
+      } else if (one) {
+        date = `${one[3]}-${one[2].padStart(2, '0')}-${one[1].padStart(2, '0')}`;
+      }
+      if (!date) continue;
+      out.push({
+        title: dates > 1 ? `${course} (${dates} Termine)` : course,
+        date,
+        ...(clock ? { time: clock.time } : {}),
+        ...(clock && clock.span > 0 && clock.span <= 12
+          ? { duration: dates > 1 ? `${dates} × ${Math.round(clock.span * 4) / 4} h` : `${Math.round(clock.span * 4) / 4} h` }
+          : {}),
+        district: /grimms/i.test(venue) ? 'Mitte' : /marzahn/i.test(venue) ? 'Marzahn-Hellersdorf' : /neuk/i.test(venue) ? 'Neukölln' : (source.district ?? 'Berlin'),
+        url: source.bookUrl ?? source.url,
+      });
+    }
   }
   return out;
 }
@@ -4073,6 +4166,19 @@ async function scrapeSource(source) {
       }));
     console.log(`[${source.slug}] wix-service-list sessions kept: ${inRange.length}`);
     return { workshops: inRange, recurring: [] };
+  }
+
+  if (source.mode === 'tinkery') {
+    const found = fromTinkery(stripTags(html), source)
+      .filter((w) => w.date >= todayISO && w.date <= maxISO);
+    for (const w of found) {
+      console.log(`[${source.slug}] course: "${w.title}" ${w.date} ${w.time ?? 'no time'} ${w.duration ?? ''} ${w.district}`);
+    }
+    console.log(`[${source.slug}] tinkery courses kept: ${found.length}`);
+    return {
+      workshops: found.map((w) => ({ slug: source.slug, sourceUrl: source.bookUrl ?? source.url, ...w })),
+      recurring: [],
+    };
   }
 
   if (source.mode === 'wix-sessions') {
