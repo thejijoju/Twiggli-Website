@@ -87,7 +87,7 @@ export const hosts: HostCopy[] = [
     group: '6–100', duration: '2–4 u', place: 'Mauerpark / jouw locatie', languages: 'DE · EN · ES · RU' },
   { slug: 'ana', name: 'Ana', specialty: 'Ademwerk, beweging & stem', studio: 'Resonant Body',
     blurb: 'Een belichaamde welzijnspraktijk die ademwerk, beweging, stem, somatisch bewustzijn en creatieve verkenning combineert. Speelse, toegankelijke oefeningen helpen teams weer verbinding te maken en stress te verminderen.',
-    group: '8–20', duration: '1,5–6 u', place: 'Je kantoor / een studio in Berlijn', languages: 'EN · DE · ES · FR · PT' },
+    group: '8–20', duration: '1,5–6 u', place: 'Je kantoor / een studio in Berlijn', languages: 'EN · DE · ES · FR · PT', priceNote: 'vanafprijs' },
   { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Natuurcosmetica, zeep & terrazzo',
     blurb: 'Zelfmaakworkshops in Berlijn: biologische natuurcosmetica, veganistische zeep en shampoo, geurkaarsen, en terrazzo-keramiek en -sieraden. Weinig maar goede ingrediënten — en alles wat je maakt gaat mee naar huis.',
     group: '4–12', duration: '2–3 u', place: 'Berlijn', languages: 'DE' },

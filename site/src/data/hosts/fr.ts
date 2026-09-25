@@ -87,7 +87,7 @@ export const hosts: HostCopy[] = [
     group: '6–100', duration: '2–4 h', place: 'Mauerpark / votre site', languages: 'DE · EN · ES · RU' },
   { slug: 'ana', name: 'Ana', specialty: 'Respiration, mouvement & voix', studio: 'Resonant Body',
     blurb: 'Une pratique de bien-être incarnée qui combine travail du souffle, mouvement, voix, conscience somatique et exploration créative. Des exercices ludiques et accessibles aident les équipes à se reconnecter et à réduire le stress.',
-    group: '8–20', duration: '1,5–6 h', place: 'Vos bureaux / un studio à Berlin', languages: 'EN · DE · ES · FR · PT' },
+    group: '8–20', duration: '1,5–6 h', place: 'Vos bureaux / un studio à Berlin', languages: 'EN · DE · ES · FR · PT', priceNote: 'tarif de départ' },
   { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Cosmétiques naturels, savon & terrazzo',
     blurb: 'Des ateliers « faites-le vous-même » à Berlin : cosmétiques naturels bio, savon et shampoing végans, bougies parfumées, et céramiques et bijoux en terrazzo. Peu d’ingrédients, mais de bons — et tout ce que vous fabriquez repart avec vous.',
     group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },

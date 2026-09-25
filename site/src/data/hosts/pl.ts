@@ -87,7 +87,7 @@ export const hosts: HostCopy[] = [
     group: '6–100', duration: '2–4 godz.', place: 'Mauerpark / u was na miejscu', languages: 'DE · EN · ES · RU' },
   { slug: 'ana', name: 'Ana', specialty: 'Oddech, ruch & głos', studio: 'Resonant Body',
     blurb: 'Ucieleśniona praktyka dobrostanu łącząca pracę z oddechem, ruch, głos, świadomość somatyczną i twórcze poszukiwania. Zabawne, dostępne dla każdego ćwiczenia pomagają zespołom odzyskać kontakt ze sobą i zredukować stres.',
-    group: '8–20', duration: '1,5–6 godz.', place: 'Twoje biuro / berlińskie studio', languages: 'EN · DE · ES · FR · PT' },
+    group: '8–20', duration: '1,5–6 godz.', place: 'Twoje biuro / berlińskie studio', languages: 'EN · DE · ES · FR · PT', priceNote: 'cena wyjściowa' },
   { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Kosmetyki naturalne, mydło & lastryko',
     blurb: 'Warsztaty „zrób to sam” w Berlinie: organiczne kosmetyki naturalne, wegańskie mydło i szampon, świece zapachowe oraz ceramika i biżuteria z lastryko. Niewiele składników, ale dobrych — i wszystko, co zrobisz, zabierasz do domu.',
     group: '4–12', duration: '2–3 godz.', place: 'Berlin', languages: 'DE' },

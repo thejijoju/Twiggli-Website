@@ -190,7 +190,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   angelo:       { activity: 'food',        groupRange: [6, 14],   hourRange: [3, 3], groupPrice: 59 },
   faye:         { activity: 'craft',       groupRange: [8, 18],   hourRange: [2.5, 4] },
   dominik:      { activity: 'art',         groupRange: [6, 100],  hourRange: [2, 4] },
-  ana:          { activity: 'wellbeing',   groupRange: [8, 20],   hourRange: [1.5, 6] },
+  ana:          { activity: 'wellbeing',   groupRange: [8, 20],   hourRange: [1.5, 6], groupPrice: 25 },
   // PLACEHOLDER ranges — Karen-Rose's group sizes and formats are unconfirmed.
   'karen-rose': { activity: 'craft',       groupRange: [4, 12],   hourRange: [2, 3] },
   'galleria-lucia': { activity: 'craft',   groupRange: [1, 10],   hourRange: [1.5, 2] },
@@ -349,7 +349,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: '6–100', duration: '2–4 h', place: 'Mauerpark / your site', languages: 'DE · EN · ES · RU' },
     { slug: 'ana', name: 'Ana', specialty: 'Breathwork, movement & voice', studio: 'Resonant Body',
       blurb: 'An embodied wellbeing practice combining breathwork, movement, voice, somatic awareness and creative exploration. Playful, accessible exercises help teams reconnect and reduce stress.',
-      group: '8–20', duration: '1.5–6 h', place: 'Your office / a Berlin studio', languages: 'EN · DE · ES · FR · PT' },
+      group: '8–20', duration: '1.5–6 h', place: 'Your office / a Berlin studio', languages: 'EN · DE · ES · FR · PT', priceNote: 'starting price' },
     // Copy from her own catalog (karen-rose.com); photos to follow. Her reel
     // has landed — see `reels` below.
     { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Natural cosmetics, soap & terrazzo',
@@ -556,7 +556,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: '6–100', duration: '2–4 Std.', place: 'Mauerpark / euer Standort', languages: 'DE · EN · ES · RU' },
     { slug: 'ana', name: 'Ana', specialty: 'Atemarbeit, Bewegung & Stimme', studio: 'Resonant Body',
       blurb: 'Eine verkörperte Wellbeing-Praxis aus Atemarbeit, Bewegung, Stimme und somatischer Wahrnehmung. Zugängliche Übungen bauen Stress ab und stärken den Zusammenhalt.',
-      group: '8–20', duration: '1,5–6 Std.', place: 'Euer Büro / ein Berliner Studio', languages: 'EN · DE · ES · FR · PT' },
+      group: '8–20', duration: '1,5–6 Std.', place: 'Euer Büro / ein Berliner Studio', languages: 'EN · DE · ES · FR · PT', priceNote: 'Einstiegspreis' },
     { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Naturkosmetik, Seife & Terrazzo',
       blurb: 'Selbermach-Workshops in Berlin: Bio-Naturkosmetik, vegane Seife und Shampoo, Duftkerzen sowie Terrazzo-Keramik und -Schmuck. Wenige, aber gute Zutaten — und alles, was du machst, nimmst du mit nach Hause.',
       group: '4–12', duration: '2–3 Std.', place: 'Berlin', languages: 'DE' },

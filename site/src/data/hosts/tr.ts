@@ -87,7 +87,7 @@ export const hosts: HostCopy[] = [
     group: '6–100', duration: '2–4 sa', place: 'Mauerpark / senin mekânın', languages: 'DE · EN · ES · RU' },
   { slug: 'ana', name: 'Ana', specialty: 'Nefes çalışması, hareket & ses', studio: 'Resonant Body',
     blurb: 'Nefes çalışması, hareket, ses, bedensel farkındalık ve yaratıcı keşfi birleştiren bedenlenmiş bir iyi olma pratiği. Eğlenceli, herkesin katılabileceği egzersizler ekiplerin yeniden bağ kurmasına ve stresi azaltmasına yardımcı oluyor.',
-    group: '8–20', duration: '1,5–6 sa', place: 'Senin ofisin / Berlin’de bir stüdyo', languages: 'EN · DE · ES · FR · PT' },
+    group: '8–20', duration: '1,5–6 sa', place: 'Senin ofisin / Berlin’de bir stüdyo', languages: 'EN · DE · ES · FR · PT', priceNote: 'başlangıç fiyatı' },
   { slug: 'karen-rose', name: 'Karen-Rose', specialty: 'Doğal kozmetik, sabun & terrazzo',
     blurb: 'Berlin’de kendin yap atölyeleri: organik doğal kozmetik, vegan sabun ve şampuan, kokulu mumlar ve terrazzo seramik ile takı. Az ama iyi malzeme — ve yaptığın her şey seninle eve gidiyor.',
     group: '4–12', duration: '2–3 sa', place: 'Berlin', languages: 'DE' },
