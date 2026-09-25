@@ -760,14 +760,17 @@ const reels: Record<string, { video: string; poster: string }> = {
      alone was the room and not the class, which is why it now only opens.
      No caption in either. Audio stripped. */
   'beat-etage': { video: '/video/beat-etage.mp4', poster: '/video/beat-etage-poster.jpg' },
-  /* Two of their own clips cut down to the walk end to end: a picked leaf
-     held up against the meadow, the guide in the garden with a plant in his
-     hands, the plant itself worked loose and lifted with its roots and soil
-     on, then the kitchen half — the herbs chopped on the board, turned
-     through the bowl, and pressed into the jar. Both clips run long on one
-     beat each, the talking and the mixing, so each contributes the moments
-     that move. No caption in either. Audio stripped, which is why the
-     talking is kept short. */
+  /* Three of their own clips cut to the walk end to end: a picked leaf held
+     up against the meadow, the plant worked loose and lifted with its roots
+     and soil still on, the herbs chopped and pressed into the jar, and then
+     the table — the canapes going onto the tray, the plates finished at the
+     long table, the party at the end of it. The third clip is a sponsored
+     film of a garden dinner, so only food, the table and people are taken
+     from it: it opens on a brand card, carries the same mark again on a
+     jacket at 47s, and cuts to raw meat on a board twice, none of which
+     belongs on a host's card. No caption in any of them. Audio stripped,
+     which is also why the guide talking to the group is left out — silent,
+     it says nothing the pictures do not. */
   'monk-garden': { video: '/video/monk-garden.mp4', poster: '/video/monk-garden-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
