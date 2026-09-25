@@ -364,11 +364,11 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Beekeeping & honey baking', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Learn beekeeping from a professional Bioland apiary in Berlin-Kaulsdorf: hands-on beginners’ courses with up to 20 real bee colonies, a theory lecture, and honey gingerbread baking workshops — bake traditional Lebkuchen with honey and take your creations home.',
       group: '≤ 17', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
-    // Copy from pastamadre.de; photos and reel to follow.
+    // Copy from pastamadre.de; photos to follow.
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, sourdough & fermentation', studio: 'Pastamadre',
       blurb: 'Homemade Italian pasta, sourdough bread and pizza, and vegetable fermentation with Maria-Lucrezia and Frank in their Wedding kitchen — most workshops end around the dinner table. Solidarity pricing: pay the full Rose price, or the reduced Tulpe price when money is tight. Ingredients are organic, regional and largely from the SUPERCOOP co-op.',
       group: 'Small groups', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
-    // Copy from themunio.de; photos and reel to follow.
+    // Copy from themunio.de; photos to follow.
     { slug: 'munio', name: 'The Munio', specialty: 'Candle & fragrance making', studio: 'The Munio Studio',
       blurb: 'A Latvian candle-maker’s Berlin studio on Akazienstraße. Pour your own natural soy-wax candle with dried flowers, blend fragrance-oil roll-ons from their scent library, or make scented wax melts — short, relaxed sessions in the store, most days of the week.',
       group: 'Up to 10', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
@@ -737,6 +737,21 @@ const reels: Record<string, { video: string; poster: string }> = {
   // shaped, then worn — the whole arc of her short format in nine seconds.
   // A 360x640 export, left at its own size rather than upscaled.
   mijita: { video: '/video/mijita.mp4', poster: '/video/mijita-poster.jpg' },
+  /* Two of their own clips joined. A team event first — the room clapping
+     in aprons, then the long table with the dough balls in front of everyone
+     — dissolving into the cooking: the sauce going through the pan, the
+     trays of cavatelli the group rolled, and the plate of them under the
+     burrata. Both clips carry burnt-in captions ("Pasta burrata e pomodoro /
+     team event", and subtitles of what is being said), so only the stretches
+     between them are used; painting them out was tried and the box is too
+     wide a share of the frame for it. Audio stripped. */
+  pastamadre: { video: '/video/pastamadre.mp4', poster: '/video/pastamadre-poster.jpg' },
+  /* The Munio's own, from the second half of their clip: the wax poured from
+     the jug, the trays of dried botanicals and scent jars down the middle of
+     the table, and the candles the group set flowers into. The opening — the
+     shop, the introductions, the scent testing — is left off; the making is
+     what a card has room to say. No caption anywhere in it. Audio stripped. */
+  munio: { video: '/video/munio.mp4', poster: '/video/munio-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
