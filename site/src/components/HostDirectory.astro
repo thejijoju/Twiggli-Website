@@ -26,6 +26,12 @@ const { hosts, lang = DEFAULT_LANG } = Astro.props;
    is quoted separately — hence "per person" on the row rather than a figure
    presented as the price of the booking. */
 const priceRanges = getHostPriceRanges();
+/* A host who has quoted a price for private groups is quoting the thing this
+   page is about, so that figure wins over the span of their public sessions. */
+const rangeFor = (host: Host): [number, number] | undefined =>
+  host.groupPrice == null ? priceRanges.get(host.slug)
+    : Array.isArray(host.groupPrice) ? host.groupPrice
+    : [host.groupPrice, host.groupPrice];
 const priceCopy = filterCopy[lang];
 const money = (n: number) => `€${Math.round(n)}`;
 const priceText = (range: [number, number] | undefined) =>
@@ -51,8 +57,8 @@ const labels = ui(lang).directory;
       data-group-max={host.groupRange[1]}
       data-hours-min={host.hourRange[0]}
       data-hours-max={host.hourRange[1]}
-      data-price-min={priceRanges.get(host.slug)?.[0]}
-      data-price-max={priceRanges.get(host.slug)?.[1]}
+      data-price-min={rangeFor(host)?.[0]}
+      data-price-max={rangeFor(host)?.[1]}
     >
       {/* No play button: the reels announce themselves by playing as the page
           scrolls past them. The tile itself takes the focus and the keyboard
@@ -123,7 +129,7 @@ const labels = ui(lang).directory;
         <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
         <div><dt>{labels.place}</dt><dd>{host.place}</dd></div>
         <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
-        <div><dt>{labels.price}</dt><dd>{priceText(priceRanges.get(host.slug))}</dd></div>
+        <div><dt>{labels.price}</dt><dd>{priceText(rangeFor(host))}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
       </dl>
 
       {/* Lands on the contact form with this host in the query string, so

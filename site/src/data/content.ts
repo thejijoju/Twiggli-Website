@@ -108,6 +108,9 @@ export type Host = {
   duration: string;
   place: string;
   languages: string;
+  /** What the group price covers, where the host said — "material included".
+   *  Shown after the figure on the directory card. */
+  priceNote?: string;
   /** Square crop, for cards. `wide` is the brochure strip, for directory rows. */
   photo?: string;
   wide?: string;
@@ -129,6 +132,12 @@ export type Host = {
   groupRange: [number, number];
   /** Session length in hours, shortest to longest format. */
   hourRange: [number, number];
+  /** What a seat costs when a team books the host privately, per person —
+   *  one figure, or the span where it depends on the format. Set it only
+   *  where the host has quoted one: otherwise the directory card falls back
+   *  to the span of their own public sessions, and a host with neither says
+   *  "on request". */
+  groupPrice?: number | [number, number];
 };
 
 export type ActivityKey =
@@ -145,10 +154,10 @@ export type ActivityKey =
  *  Ranges are the union across a host's formats — Celina runs up to 20 in the
  *  studio and 50–100 mobile, so she is [1, 100] and shows up whether a team
  *  is looking for something small or something company-wide. */
-const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange'>> = {
+const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' | 'groupPrice'>> = {
   qian:         { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [2, 2] },
-  rebeca:       { activity: 'art',         groupRange: [3, 24],   hourRange: [1, 3] },
-  nicole:       { activity: 'craft',       groupRange: [2, 12],   hourRange: [2.5, 5] },
+  rebeca:       { activity: 'art',         groupRange: [4, 24],   hourRange: [1, 3], groupPrice: 65 },
+  nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
   evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [3, 3] },
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
@@ -262,10 +271,10 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Up to 8', duration: '2 h', place: 'Clay Garden Studio / your office', languages: 'EN' },
     { slug: 'rebeca', name: 'Rebeca', specialty: 'Linocut & portrait painting', studio: 'Arte Gorda',
       blurb: 'Two hands-on formats: bold linocut printmaking, or a portrait-painting session where teammates paint each other and take the canvas home. Playful and made to bring the team closer. She also teaches anatomy for artists at Kunstraum Heartspace — a twelve-part head-to-toe course co-taught with Alice Bischof, plus her own specials on the bodies standard anatomy classes leave out: where fat gathers and folds, and how skin ages.',
-      group: '3–24', duration: '2–3 h', place: 'Prenzlauer Berg / mobile', languages: 'EN · DE · PT · ES' },
+      group: '4–24', duration: '2–3 h', place: 'Prenzlauer Berg / mobile', languages: 'EN · DE · PT · ES' },
     { slug: 'nicole', name: 'Nicole', specialty: 'Wood & soap carving', studio: 'Anybody Can Whittle',
       blurb: 'Mindful carving workshops that pull teams out of screen-time and into a calm, hands-on craft. Learn freehand technique with simple hand tools and turn wood or soap into your own handmade object.',
-      group: '2–4 studio · 5–12 on-site', duration: '2.5–5 h', place: 'Charlottenburg / on-site', languages: 'DE · EN' },
+      group: '1–5 studio · 6–14 on-site', duration: '2.5–5 h', place: 'Charlottenburg / on-site', languages: 'DE · EN', priceNote: 'material included' },
     { slug: 'celina', name: 'Celina', specialty: 'Bookbinding, mosaic & stamps', studio: 'Gestaltwandel',
       blurb: 'Switch off and get making — expert-guided craft in a calm studio, with nine formats to pick from: bookbinding, silk painting, envelope folding, stained glass soldering (Tiffany technique), mosaic making, tin ornaments, concrete tile making, straw stars and stamp carving. No experience needed; every format also runs as a private group session on a date of your choice.',
       group: 'Up to 20 studio · 50–100 mobile', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
@@ -469,10 +478,10 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Bis 8', duration: '2 Std.', place: 'Clay Garden Studio / euer Büro', languages: 'EN' },
     { slug: 'rebeca', name: 'Rebeca', specialty: 'Linoldruck & Porträtmalerei', studio: 'Arte Gorda',
       blurb: 'Zwei Formate zum Mitmachen: ausdrucksstarker Linoldruck oder eine Porträtmalerei-Session, in der sich das Team gegenseitig malt und die Leinwand mitnimmt. Außerdem unterrichtet sie Anatomie für Zeichnende im Kunstraum Heartspace — einen zwölfteiligen Kurs von Kopf bis Fuß zusammen mit Alice Bischof, dazu ihre eigenen Specials über die Körper, die in üblichen Anatomiekursen fehlen: wo sich Fett sammelt und faltet, und wie Haut altert.',
-      group: '3–24', duration: '2–3 Std.', place: 'Prenzlauer Berg / mobil', languages: 'EN · DE · PT · ES' },
+      group: '4–24', duration: '2–3 Std.', place: 'Prenzlauer Berg / mobil', languages: 'EN · DE · PT · ES' },
     { slug: 'nicole', name: 'Nicole', specialty: 'Holz- & Seifenschnitzen', studio: 'Anybody Can Whittle',
       blurb: 'Achtsames Schnitzen, das Teams aus der Bildschirmzeit holt. Freihandtechnik mit einfachem Handwerkzeug — aus Holz oder Seife entsteht ein eigenes Objekt.',
-      group: '2–4 Studio · 5–12 vor Ort', duration: '2,5–5 Std.', place: 'Charlottenburg / vor Ort', languages: 'DE · EN' },
+      group: '1–5 Studio · 6–14 vor Ort', duration: '2,5–5 Std.', place: 'Charlottenburg / vor Ort', languages: 'DE · EN', priceNote: 'inkl. Material' },
     { slug: 'celina', name: 'Celina', specialty: 'Buchbinden, Mosaik & Stempel', studio: 'Gestaltwandel',
       blurb: 'Abschalten und gestalten — angeleitetes Handwerk im ruhigen Studio, mit neun Formaten zur Wahl: Buchbinden, Seidenmalerei, Briefumschläge falten, Tiffany-Glaslöten, Mosaik, Blechornamente, Betonfliesen, Strohsterne und Stempelschnitzen. Ohne Vorkenntnisse; jedes Format auch als private Gruppensession an einem Wunschtermin.',
       group: 'Bis 20 Studio · 50–100 mobil', duration: '2–4 Std.', place: 'Koloniestraße 111, Berlin', languages: 'DE · EN' },
