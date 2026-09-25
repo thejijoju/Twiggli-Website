@@ -209,6 +209,21 @@ a:hover { color: var(--color-accent); }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .site-header.is-stuck { background: color-mix(in srgb, var(--color-bg) 92%, transparent); }
 }
+/* Nothing ever adds .is-stuck where that script did not run — an in-app
+   browser that blocks module scripts was where this last bit — and a bar
+   that is transparent forever sits unreadable over the page's own content.
+   So the pane is the default and the transparency is what gets handed back,
+   by a marker Base.astro sets inline, before the first paint. */
+.site-header:not(.is-stuck) {
+  background: color-mix(in srgb, var(--color-bg) 62%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+}
+[data-header-live] .site-header:not(.is-stuck) {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
 
 /* — nav — brand lockup on the left, links and the CTA pill pushed to the
    right edge. Social icons live in the footer only. */
@@ -1658,9 +1673,10 @@ a:hover { color: var(--color-accent); }
 }
 
 @media (max-width: 720px) {
-  /* The compressed height, below — an anchor is only ever jumped to with
-     the page scrolled, which is exactly when the header is compressed. */
-  :root { --header-h: 62px; }
+  /* What the bar below actually measures: a 46px mark with 14px of padding
+     either side of it. Anchors clear this, and the language menu hangs off
+     the bottom of it. */
+  :root { --header-h: 74px; }
   .nav {
     padding: 16px 20px;
     flex-wrap: wrap;
@@ -1675,25 +1691,19 @@ a:hover { color: var(--color-accent); }
   .nav a.nav-cta { padding: 10px 18px; font-size: 14px; }
 
   /* On a phone the nav is one compact bar from the start — a smaller mark,
-     the links in a single row that swipes sideways, the CTA pill — and the
-     header is opaque, not the see-through pane the desktop keeps. It used
-     to wrap over three rows at rest and compress only once a script marked
-     it stuck; where that script did not run (seen in Instagram's in-app
-     browser) the pinned, transparent, three-row nav sat on top of the page
-     with the content showing through it. Nothing here waits on a script. */
-  .site-header,
-  .site-header.is-stuck {
-    background: var(--color-bg);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-text) 8%, transparent);
-  }
+     the links in a single row that swipes sideways, the CTA pill. It used to
+     be painted opaque here, because at the time it wrapped over three rows
+     at rest and only compressed once a script marked it stuck, so where that
+     script did not run the page showed through a three-row bar. The single
+     row above is CSS and waits on nothing, and the pane is now the default
+     rather than what the script adds, so the phone can keep the same
+     see-through header the desktop has. */
   .site-header .nav {
     flex-wrap: nowrap;
-    padding: 8px 16px;
+    padding: 14px 16px;
     gap: 12px;
   }
-  .site-header .nav-logo { width: 40px; height: 40px; }
+  .site-header .nav-logo { width: 46px; height: 46px; }
   /* The page links are the part that cannot fit, so they are the part that
      swipes: one row, scrolled sideways, clipped to the space left over by
      the switcher, the CTA and the mark beside them. */

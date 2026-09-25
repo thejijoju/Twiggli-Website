@@ -56,6 +56,12 @@ const available = alternates.map((a) => a.lang);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline define:vars={{ deployBase: base, langs: available, current: lang, defaultLang: DEFAULT_LANG }}>
       try {
+        // Says that scripts run here, before anything paints. The header is
+        // see-through only under this marker, so where scripts are blocked
+        // it keeps the frosted pane instead of sitting invisible over the
+        // page's own content — which is what an in-app browser that never
+        // ran the scroll listener below used to get.
+        document.documentElement.dataset.headerLive = '';
         if (localStorage.getItem('twiggli-cookie-consent')) {
           document.documentElement.classList.add('cookie-consent-set');
         }
@@ -144,7 +150,8 @@ const available = alternates.map((a) => a.lang);
       // The header paints nothing at rest — the page shows through it. Once
       // the page has scrolled at all, content starts passing underneath, so
       // a frosted layer fades in behind the links to keep them readable.
-      // Class toggle only; the appearance itself lives in site.css.
+      // Class toggle only; the appearance itself lives in site.css, which
+      // also decides what a browser that never gets here is shown.
       const header = document.querySelector('[data-site-header]');
       if (header) {
         let raf = 0;
