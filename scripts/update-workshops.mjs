@@ -2430,8 +2430,13 @@ function fromIcs(icsText, pageUrl, source) {
       soldOut = true;
       summary = summary.replace(/\s*\(\s*(?:ausgebucht|ausverkauft|sold\s*out)\s*\)\s*$/i, '').trim();
     }
-    // "Kosten: 98 € pro Person" in the event's own notes.
-    const cost = get('DESCRIPTION')?.match(/Kosten:?\s*(\d{1,4})(?:[.,](\d{2}))?\s*(?:\\u20ac|€|EUR)/i);
+    /* "Kosten: 98 € pro Person" in the event's own notes. Google's rich-text
+       editor puts the label in a tag of its own — "<b>Kosten</b>: 69 €" — so
+       the markup comes out before the number is looked for, or the colon
+       would be a tag away from its label and the price would be missed. */
+    const cost = stripTags(get('DESCRIPTION') ?? '').match(
+      /Kosten\s*:?\s*(\d{1,4})(?:[.,](\d{2}))?\s*(?:\\u20ac|€|EUR)/i,
+    );
 
     out.push({
       title: summary || source.title || 'Workshop',
