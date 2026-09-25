@@ -372,7 +372,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'munio', name: 'The Munio', specialty: 'Candle & fragrance making', studio: 'The Munio Studio',
       blurb: 'A Latvian candle-maker’s Berlin studio on Akazienstraße. Pour your own natural soy-wax candle with dried flowers, blend fragrance-oil roll-ons from their scent library, or make scented wax melts — short, relaxed sessions in the store, most days of the week.',
       group: 'Up to 10', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
-    // Copy from beat-etage.de; photos and reel to follow.
+    // Copy from beat-etage.de; photos to follow.
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
       group: 'Small groups', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
@@ -752,6 +752,14 @@ const reels: Record<string, { video: string; poster: string }> = {
      shop, the introductions, the scent testing — is left off; the making is
      what a card has room to say. No caption anywhere in it. Audio stripped. */
   munio: { video: '/video/munio.mp4', poster: '/video/munio-poster.jpg' },
+  /* Two of their own clips joined. The instruments first, from the walk
+     through the empty studio — the balafons with the shakers laid beside
+     them, then the wall of drums — dissolving into the end of the second
+     clip, which is the workshop itself: the circle seated at their djembes,
+     the leaders in front of them, the room opening out behind. The tour
+     alone was the room and not the class, which is why it now only opens.
+     No caption in either. Audio stripped. */
+  'beat-etage': { video: '/video/beat-etage.mp4', poster: '/video/beat-etage-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
