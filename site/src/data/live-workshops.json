@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-25T12:47:28.950Z",
+  "updated": "2026-09-25T12:55:34.574Z",
   "sources": [
     {
       "slug": "landsinn",
@@ -358,7 +358,7 @@
     {
       "slug": "ronnadel",
       "url": "https://www.tickettailor.com/events/ronnadel",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 1
     },
     {
@@ -376,7 +376,7 @@
     {
       "slug": "elinorsahm",
       "url": "https://www.tickettailor.com/events/elinorsahm",
-      "status": "failed: no upcoming events parsed",
+      "status": "ok",
       "count": 5
     },
     {
