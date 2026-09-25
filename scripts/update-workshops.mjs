@@ -872,7 +872,14 @@ const decodeEntities = (s) =>
   s
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ')
-    .replace(/&#8211;|&ndash;/gi, '–').replace(/&#8212;|&mdash;/gi, '—');
+    .replace(/&#8211;|&ndash;/gi, '–').replace(/&#8212;|&mdash;/gi, '—')
+    // Anything numeric that is left. WordPress writes every ampersand in an
+    // attribute as "&#038;", which hides the query parameters of an embedded
+    // url from a parser that only knows "&amp;".
+    .replace(/&#(\d{1,6});/g, (m, n) => (+n > 0x10ffff ? m : String.fromCodePoint(+n)))
+    .replace(/&#x([0-9a-f]{1,5});/gi, (m, n) =>
+      parseInt(n, 16) > 0x10ffff ? m : String.fromCodePoint(parseInt(n, 16)),
+    );
 
 const stripTags = (s) =>
   decodeEntities(
