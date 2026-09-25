@@ -60,6 +60,21 @@ const SOURCES = [
     url: 'https://r.jina.ai/https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/',
     bookUrl: 'https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/' },
 
+  // Studio Blinkblink, the studio Mareen teaches in, publishes her dates as
+  // a public Google Calendar embedded on its workshops page — and it is far
+  // fuller than her own booking pages: thirteen sittings against six, with
+  // the places left written into each event's title. It goes before those
+  // pages so that where both carry a sitting, this one wins the dedupe and
+  // the card keeps its "2 places left" or "sold out".
+  //
+  // The studio's own events are left out. The Bastel Brunch and the Lange
+  // Nacht der Manufakturen are Studio Blinkblink's, not Mareen's, and
+  // filing them under her would put her name on somebody else's evening.
+  { slug: 'mijita', name: 'Studio Blinkblink — Kalender', mode: 'gcal-embed',
+    url: 'https://studioblinkblink.com/workshops/',
+    district: 'Wedding',
+    excludeTitle: 'Lange Nacht|Bastel[- ]?Brunch|Vermietung|Gutschein' },
+
   // Mijita — Mareen Ledebur's jewellery label, teaching at Studio Blinkblink
   // in Wedding. Her site is Wix with the Bookings app, so /book-online draws
   // its dates client-side and a plain fetch returns a widget and no
@@ -2393,12 +2408,32 @@ function fromIcs(icsText, pageUrl, source) {
       }
       summary = summary.slice(0, range.index).trim();
     }
+    /* Studio Blinkblink keeps availability in the summary itself — "(noch 2
+       freie Plätze)", "(ausgebucht)". That belongs in the card's own fields,
+       not in its title: the badge is what a reader looks for, and leaving it
+       in the title would also stop this event matching the same session read
+       from the host's booking page, so both would show. */
+    let spots;
+    let soldOut;
+    const avail = summary?.match(/\s*\((?:noch\s*)?(\d{1,3})\s*(?:freie?\s*)?Pl[äa]tze?(?:\s*frei)?\)\s*$/i);
+    if (avail) {
+      spots = Number(avail[1]);
+      summary = summary.slice(0, avail.index).trim();
+    } else if (/\(\s*(?:ausgebucht|ausverkauft|sold\s*out)\s*\)\s*$/i.test(summary ?? '')) {
+      soldOut = true;
+      summary = summary.replace(/\s*\(\s*(?:ausgebucht|ausverkauft|sold\s*out)\s*\)\s*$/i, '').trim();
+    }
+    // "Kosten: 98 € pro Person" in the event's own notes.
+    const cost = get('DESCRIPTION')?.match(/Kosten:?\s*(\d{1,4})(?:[.,](\d{2}))?\s*(?:\\u20ac|€|EUR)/i);
+
     out.push({
       title: summary || source.title || 'Workshop',
       date,
       ...(time ? { time } : {}),
       ...(duration ? { duration } : {}),
-      ...(source.price ? { price: source.price } : {}),
+      ...(spots !== undefined ? { spots } : {}),
+      ...(soldOut ? { soldOut: true } : {}),
+      ...(cost ? { price: `€${cost[1]}${cost[2] && cost[2] !== '00' ? `.${cost[2]}` : ''}` } : source.price ? { price: source.price } : {}),
       url: pageUrl,
     });
   }
