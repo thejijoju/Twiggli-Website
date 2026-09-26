@@ -380,7 +380,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'monk-garden', name: 'The Monk Garden', specialty: 'Foraging walks & wild herbs', studio: 'The Monk Garden',
       blurb: 'Martin Rötzel’s modern monastery garden on the old Mariendorf gasworks. Join a guided wild-herb walk across Tempelhofer Feld — yarrow, ribwort, sorrel and what to do with them in the kitchen — or head into the forest hunting porcini and medicinal mushrooms, basket in hand.',
       group: 'Small groups (from 10)', duration: '2.5–3 h', place: 'Tempelhofer Feld & Berlin’s forests', languages: 'DE' },
-    // Copy from berliner-bumerang.de; photos and reel to follow.
+    // Copy from berliner-bumerang.de; photos to follow.
     { slug: 'bumerang', name: 'Berliner Bumerang', specialty: 'Boomerang building', studio: 'Berliner Bumerang Werkstatt',
       blurb: 'Christian Kliem’s boomerang workshop in the Kaskelkiez. Build two boomerangs of your own — one indoor, one outdoor — with rasps, files and sandpaper only, no power tools, then learn the throwing theory so it actually comes back. A full day of handcraft for ages 8 to 99.',
       group: 'Small groups', duration: '7 h', place: 'Kaskelstr. 46, Berlin', languages: 'DE' },
@@ -772,6 +772,11 @@ const reels: Record<string, { video: string; poster: string }> = {
      which is also why the guide talking to the group is left out — silent,
      it says nothing the pictures do not. */
   'monk-garden': { video: '/video/monk-garden.mp4', poster: '/video/monk-garden-poster.jpg' },
+  /* Their own, and the only one so far that needed no cutting at all: one
+     boomerang from the outline traced on the plywood through the sawing,
+     the rasp and the sandpaper to the oil going on with a brush, in under
+     seventeen seconds. No caption. Audio stripped. */
+  bumerang: { video: '/video/bumerang.mp4', poster: '/video/bumerang-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
