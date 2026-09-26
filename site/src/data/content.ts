@@ -401,7 +401,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'whittle', name: 'Anybody Can Whittle', specialty: 'Whittling & spoon carving', studio: 'Anybody Can Whittle',
       blurb: 'Nicole’s whittling school in Charlottenburg. Step-by-step courses from the first knife strokes to your own carved spoon — safety, wood, sharpening and finishing included, with a tea break to rest your hands. Material for one piece is in the course price, and wood- and soap-carving team events run for companies of 6–12.',
       group: 'Up to 12', duration: '2.5–5 h', place: 'Spielhagenstraße 13, Berlin', languages: 'DE · EN' },
-    // Copy from empireofdirt.studio; photos and reel to follow.
+    // Copy from empireofdirt.studio; photos to follow.
     { slug: 'dirt', name: 'Empire of Dirt', specialty: 'Wheel throwing & ceramics classes', studio: 'Empire of Dirt',
       blurb: 'Kerstin El-Khawad and Julia Koxholt’s ceramics studio in Kreuzberg. Wheel-throwing classes from express weekends to multi-week intensives, masterclasses with guest artists (Nerikomi and more), Wednesday drop-in pottery for kids (“Matsch Love”), and an open-studio membership for independent work. Courses meeting on two or three dates are marked right on the calendar.',
       group: 'Small groups', duration: '1.25–4 h', place: 'Großbeerenstraße 28C, Berlin', languages: 'EN · DE' },
@@ -795,6 +795,13 @@ const reels: Record<string, { video: string; poster: string }> = {
      and a 360-wide source, this is the softest reel on the site; the
      photos, when they come, will do better. Audio stripped. */
   daisuki: { video: '/video/daisuki.mp4', poster: '/video/daisuki-poster.jpg' },
+  /* Theirs, three stretches of a minute's walk through the studio: hands
+     centring clay on the wheel, the glazed bowls waiting on the table, and
+     a class at the wheels with the room behind them. The rest of it — the
+     street front, the shelves, a group outside with drinks — is the studio
+     rather than the class, and the last second turns into a garden, which
+     is where this stops. No caption. Audio stripped. */
+  dirt: { video: '/video/dirt.mp4', poster: '/video/dirt-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
