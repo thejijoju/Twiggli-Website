@@ -385,7 +385,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Pottery school & open studio', studio: 'Ceramic Kingdom',
       blurb: 'Madeline Stillwell’s ceramics school in the Reuterkiez. Wheel-throwing from taster to intermediate, handbuilding, mold making and slip casting, glaze chemistry, sgraffito — even 3D printing in clay. Small classes of about seven, taught in English and German, with open studio time and kiln firing for those who keep going.',
       group: 'Up to 7', duration: '2–4 h', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
-    // Copy from druckrausch.com; photos and reel to follow.
+    // Copy from druckrausch.com; photos to follow.
     { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Screen printing', studio: 'Druckrausch — mobile Druckwerkstatt',
       blurb: 'A screen-printing workshop in Friedenau — and a mobile print studio for events. Learn the basics on shirts, totes and paper, squeeze in an after-work express session, print from your own photo stencil, or go big with "Print like Warhol". Also runs live printing at parties, team events and kids’ birthdays.',
       group: 'Small groups', duration: '1.5–4 h', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
@@ -766,6 +766,13 @@ const reels: Record<string, { video: string; poster: string }> = {
      the rasp and the sandpaper to the oil going on with a brush, in under
      seventeen seconds. No caption. Audio stripped. */
   bumerang: { video: '/video/bumerang.mp4', poster: '/video/bumerang-poster.jpg' },
+  /* Two of their own: the red pulled across the rocket screen and the sheet
+     lifted off it, then a shirt printed colour by colour and worn at the
+     end. Both were shot square rather than upright, so this one is 4:5 —
+     the shape the cards crop to anyway — instead of the 9:16 the rest are;
+     cropping a square to the taller frame would have taken the squeegee off
+     at both edges. No caption in either. Audio stripped. */
+  druckrausch: { video: '/video/druckrausch.mp4', poster: '/video/druckrausch-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
