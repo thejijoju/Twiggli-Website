@@ -413,7 +413,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'techno', name: 'Techno Painting', specialty: 'Techno painting sessions', studio: 'Techno Painting Studio',
       blurb: 'Berlin artist Dina Shneider’s original Techno Painting workshop, running since 2018 and rated one of the top five Airbnb experiences in Berlin. Techno music meets intuitive, therapeutic acrylic painting in her Mitte studio: you pick a palette, work in layers, slip into flow state — one break with drinks — and leave with your own 70 × 50 cm canvas. All materials provided, no experience needed, sessions every day of the week.',
       group: 'Up to 6', duration: '3 h', place: 'Studio in Berlin-Mitte', languages: 'EN' },
-    // Copy from her event page; photos and reel to follow.
+    // Copy from her event page; photos to follow.
     { slug: 'arcoiris', name: 'Barbara', specialty: 'Upcycled embroidery workshops', studio: 'ArcoIris Embroidery',
       blurb: 'Barbara Amaral’s embroidery sessions at That Pink Café in Neukölln. Stitch a bold vulva flower while learning versatile stitches, clean thread work and secure knots — on fabrics that are entirely upcycled: scraps, secondhand finds and rescued textiles from Berlin’s Zu-Verschenken boxes. Beginner-friendly and open to everyone; you head home with a finished hoop and a stitch guide to keep going.',
       group: 'Small groups', duration: '2.5 h', place: 'That Pink Café, Schwarzastraße 9, Berlin', languages: 'EN' },
@@ -809,6 +809,13 @@ const reels: Record<string, { video: string; poster: string }> = {
      rolling mill, and a cast pendant on its cord. Square photos, so the
      clip is 4:5. */
   rose: { video: '/video/rose.mp4', poster: '/video/rose-poster.jpg' },
+  /* Two of hers joined: the table first — the threads out, the embroidered
+     pouch, two of them stitching — then the mending, a hole in a grey knit
+     turning into a daisy, bees and a butterfly. Each clip opens on a line
+     of her own over the first couple of seconds ("making new friends while
+     embroidering", "what if broken things could bloom again?"), so each
+     starts after its own, past the fade rather than on it. Audio stripped. */
+  arcoiris: { video: '/video/arcoiris.mp4', poster: '/video/arcoiris-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
