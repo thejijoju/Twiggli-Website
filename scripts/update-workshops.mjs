@@ -343,12 +343,6 @@ const SOURCES = [
   // server-side with its own booking-calendar link, time range and price.
   { slug: 'druckrausch', name: 'Druckrausch — Siebdruck-Termine', mode: 'wix-service-list',
     url: 'https://www.druckrausch.com/termine', district: 'Friedenau' },
-  // Readymag site whose PROG_CAL page embeds a Luma calendar — empty today
-  // ("No Upcoming Events"), so this watches the calendar's public API and
-  // events flow in the week the gallery publishes them.
-  { slug: 'sov', name: 'SOV Gallery — program calendar (Luma)', mode: 'luma',
-    calendarId: 'cal-qJfZ6kCnFfwad4g', url: 'https://www.sov.gallery/prog_calendar/',
-    district: 'Prenzlauer Berg' },
   // One Shopify product per workshop date; the date lives in the product
   // description ("Sonntag, 11. Oktober 2026 von 10 bis 17 Uhr"), which the
   // shopify mode's body-date fallback reads.
@@ -1566,10 +1560,12 @@ async function fromKonfetti(source) {
   return out;
 }
 
-/** A Luma calendar embed (lu.ma / luma.com — SOV Gallery's PROG_CAL page).
- *  The embed's public API serves every upcoming event as JSON with UTC
- *  start/end, ticket price and spots — nothing to render or click. An empty
- *  calendar simply parses to zero events until the host publishes dates. */
+/** A Luma calendar embed (lu.ma / luma.com). The embed's public API serves
+ *  every upcoming event as JSON with UTC start/end, ticket price and spots —
+ *  nothing to render or click. An empty calendar simply parses to zero events
+ *  until the host publishes dates. No source uses this today; it is kept for
+ *  the next host who runs their dates off Luma, which is a common enough
+ *  choice that writing it again would be the waste. */
 async function fromLuma(source) {
   const res = await fetch(
     `https://api.lu.ma/calendar/get-items?calendar_api_id=${source.calendarId}&period=future&pagination_limit=100`,

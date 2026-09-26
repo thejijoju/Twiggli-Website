@@ -205,9 +205,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
   bumerang:      { activity: 'craft',      groupRange: [1, 10],   hourRange: [7, 7] },
   'ceramic-kingdom': { activity: 'ceramics', groupRange: [1, 7],  hourRange: [2, 4] },
-  // PLACEHOLDER ranges — the gallery's program calendar is empty today;
-  // events define their own size and length once published.
-  sov:              { activity: 'art',       groupRange: [1, 50], hourRange: [1, 4] },
   // PLACEHOLDER group range — no published cap on the course pages.
   druckrausch:      { activity: 'art',       groupRange: [1, 10], hourRange: [1.5, 4] },
   schmiede:         { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 7] },
@@ -388,11 +385,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Pottery school & open studio', studio: 'Ceramic Kingdom',
       blurb: 'Madeline Stillwell’s ceramics school in the Reuterkiez. Wheel-throwing from taster to intermediate, handbuilding, mold making and slip casting, glaze chemistry, sgraffito — even 3D printing in clay. Small classes of about seven, taught in English and German, with open studio time and kiln firing for those who keep going.',
       group: 'Up to 7', duration: '2–4 h', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
-    // Copy from sov.gallery (manifesto + footer); program calendar watched —
-    // events appear as the gallery publishes them. Photos and reel to follow.
-    { slug: 'sov', name: 'SOV Gallery', specialty: 'Art events & gatherings', studio: 'SEE OUR VISION',
-      blurb: 'A gallery and community space in Prenzlauer Berg — "for us, art is a dialogue, a space of interaction." Exhibitions, a media lab and a collective, with a program calendar of events and gatherings around the shows. Open Tuesday to Saturday, 2–7 pm.',
-      group: 'Open to all', duration: 'Varies', place: 'Erich-Weinert-Str. 135, Berlin', languages: 'EN · DE' },
     // Copy from druckrausch.com; photos and reel to follow.
     { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Screen printing', studio: 'Druckrausch — mobile Druckwerkstatt',
       blurb: 'A screen-printing workshop in Friedenau — and a mobile print studio for events. Learn the basics on shirts, totes and paper, squeeze in an after-work express session, print from your own photo stencil, or go big with "Print like Warhol". Also runs live printing at parties, team events and kids’ birthdays.',
@@ -584,9 +576,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Töpferschule & offene Werkstatt', studio: 'Ceramic Kingdom',
       blurb: 'Madeline Stillwells Keramikschule im Reuterkiez. Drehscheibe vom Schnupperkurs bis zur Mittelstufe, Aufbautechnik, Formenbau und Schlickerguss, Glasurchemie, Sgraffito — sogar 3D-Druck mit Ton. Kleine Kurse mit etwa sieben Plätzen auf Englisch und Deutsch, dazu offene Werkstatt und Brennservice für alle, die dranbleiben.',
       group: 'Bis 7', duration: '2–4 Std.', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
-    { slug: 'sov', name: 'SOV Gallery', specialty: 'Kunst-Events & Begegnungen', studio: 'SEE OUR VISION',
-      blurb: 'Galerie und Community-Raum in Prenzlauer Berg — "Kunst ist für uns ein Dialog, ein Raum der Begegnung." Ausstellungen, ein Media Lab und ein Kollektiv, dazu ein Programmkalender mit Events und Treffen rund um die Shows. Geöffnet Dienstag bis Samstag, 14–19 Uhr.',
-      group: 'Offen für alle', duration: 'Variiert', place: 'Erich-Weinert-Str. 135, Berlin', languages: 'EN · DE' },
     { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Siebdruck', studio: 'Druckrausch — mobile Druckwerkstatt',
       blurb: 'Siebdruck-Werkstatt in Friedenau — und mobiles Druckstudio für Events. Grundlagen auf Shirts, Beuteln und Papier lernen, ein Express-Kurs nach Feierabend, Drucken von der eigenen Fotoschablone oder groß rauskommen mit "Drucken wie Warhol". Dazu Live-Siebdruck auf Partys, Team-Events und Kindergeburtstagen.',
       group: 'Kleine Gruppen', duration: '1,5–4 Std.', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
