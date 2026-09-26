@@ -1489,11 +1489,37 @@ a:hover { color: var(--color-accent); }
   .post-video { float: right; margin: 6px 0 24px 32px; max-width: 300px; }
 }
 
+/* A photograph in an article, sharing the reel's caption and its habit of
+   stepping aside once the column is wide enough. No fixed aspect: a portrait
+   and a picture of a workbench are both shown as they were taken. */
+.post-figure {
+  margin: 32px 0;
+  max-width: 320px;
+}
+.post-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+}
+.post-figure figcaption {
+  margin-top: 10px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+@media (min-width: 900px) {
+  .post-figure { float: right; margin: 6px 0 24px 32px; max-width: 300px; }
+}
+
 /* A boxed aside inside an article — same outline-and-offset-block language as
    the section labels, so a standing offer inside a piece of prose reads as
    something pinned to the page rather than another paragraph. Used for the
    things a host wants found rather than read past. */
 .post-callout {
+  /* Never beside a floated figure: the box is the width of the column by
+     design, so a reel floated up the page would otherwise sit on top of it. */
+  clear: both;
   margin: 34px 0;
   padding: 20px 22px 22px;
   background: var(--color-bg);
