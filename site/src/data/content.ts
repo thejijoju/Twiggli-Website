@@ -945,7 +945,13 @@ const reels: Record<string, { video: string; poster: string }> = {
   maximiliana: { video: '/video/maximiliana.mp4', poster: '/video/maximiliana-poster.jpg' },
   // Dina's studio, canvases going up on easels. Audio stripped, and trimmed
   // to the session footage — the back half of her clip was a slideshow of
-  // Airbnb review screenshots, which is another platform's furniture.
+  // Airbnb review screenshots, which is another platform's furniture. The
+  // last two and a half seconds went the same way on a second pass: a
+  // "Join me for an original creative experience" card fades up over the
+  // group holding their canvases, and a five-star review card lands on top
+  // of it at the very end. Both sit across the middle of the frame, too
+  // wide to paint out, so the clip now stops just before the first one
+  // does — on a canvas being painted, which is what it is about.
   techno: { video: '/video/techno.mp4', poster: '/video/techno-poster.jpg' },
   // Two finished canvases from her vulva-painting workshop, held up and set
   // on the table. Hers, audio stripped. It replaces reel-3, an unattributed
