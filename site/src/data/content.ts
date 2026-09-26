@@ -393,7 +393,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'schmiede', name: 'Schmiedekurse Berlin', specialty: 'Blacksmithing & knife forging', studio: 'Schmiede im Hof',
       blurb: 'A working forge in an old leather-factory yard in Blankenburg. Learn the classic techniques over a weekend, forge your own kitchen or outdoor knife — up to Japanese Damascus steel with a hand-fitted wooden handle — and take everything you make home. Small groups of five or six around the fire, plus three-day forging introductions for kids aged 10–14 in the school holidays.',
       group: 'Up to 6', duration: '1–2 days', place: 'Pankstraße 13, Berlin', languages: 'DE' },
-    // Copy from berlindaisuki.de; photos and reel to follow.
+    // Copy from berlindaisuki.de; photos to follow.
     { slug: 'daisuki', name: 'Berlin Daisuki', specialty: 'Japanese cooking classes', studio: 'BERLINDAISUKI Kochstudio',
       blurb: 'Naoko Yasuda’s Japanese cooking school in Charlottenburg — sushi, vegan sushi, and ramen & gyoza in the Kochstudio on Otto-Suhr-Allee, plus live online courses in sushi, ramen, bento box and homemade miso. Also runs team events, Agile Cooking, five-hour offline “digital detox” dinners and Japanese language courses. 5/5 on Google.',
       group: '5–20', duration: '~3 h', place: 'Otto-Suhr-Allee 94, Berlin', languages: 'DE' },
@@ -782,6 +782,19 @@ const reels: Record<string, { video: string; poster: string }> = {
      The photos are landscape, so the clip is 4:5 rather than 9:16: the
      taller frame would have left about a quarter of each one. */
   schmiede: { video: '/video/schmiede.mp4', poster: '/video/schmiede-poster.jpg' },
+  /* Two of their own. The studio opens it — a slow pan down the counter,
+     the utensils hanging over it, the range at the end — then the food:
+     the nigiri on the board, the salmon sliced for it, the noodles, the
+     pork in the pot.
+
+     The food clip carries a "Kochkurs — Arigato" overlay on every frame of
+     it, top centre and a third of the height, with no clean frame anywhere
+     to paint from. So it is cropped to what sits under the overlay instead:
+     a 4:5 window off the bottom of the 9:16 original, which is where the
+     food is anyway. The studio pan is cropped to match. Between the crop
+     and a 360-wide source, this is the softest reel on the site; the
+     photos, when they come, will do better. Audio stripped. */
+  daisuki: { video: '/video/daisuki.mp4', poster: '/video/daisuki-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
