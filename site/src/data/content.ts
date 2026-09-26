@@ -405,7 +405,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'dirt', name: 'Empire of Dirt', specialty: 'Wheel throwing & ceramics classes', studio: 'Empire of Dirt',
       blurb: 'Kerstin El-Khawad and Julia Koxholt’s ceramics studio in Kreuzberg. Wheel-throwing classes from express weekends to multi-week intensives, masterclasses with guest artists (Nerikomi and more), Wednesday drop-in pottery for kids (“Matsch Love”), and an open-studio membership for independent work. Courses meeting on two or three dates are marked right on the calendar.',
       group: 'Small groups', duration: '1.25–4 h', place: 'Großbeerenstraße 28C, Berlin', languages: 'EN · DE' },
-    // Copy from rose-williams.com; photos and reel to follow.
+    // Copy from rose-williams.com.
     { slug: 'rose', name: 'Rose Williams', specialty: 'Silversmithing & jewelry workshops', studio: 'Rose Williams Jewelry',
       blurb: 'Rosemary Nan Williams’s jewelry studio in Wedding. Four-hour short courses for complete beginners, taught in German or English in groups of 3–4: texture a silver ring at the rolling mill, cast a pendant by pouring molten silver over organic matter, or try cuttlefish casting. Tools, materials and silver are included — and you wear your piece home the same day.',
       group: '3–4', duration: '4 h', place: 'Tegeler Straße 35, Berlin', languages: 'DE · EN' },
@@ -802,6 +802,13 @@ const reels: Record<string, { video: string; poster: string }> = {
      rather than the class, and the last second turns into a garden, which
      is where this stops. No caption. Audio stripped. */
   dirt: { video: '/video/dirt.mp4', poster: '/video/dirt-poster.jpg' },
+  /* Three photos rather than footage, so the same treatment as Sabine's and
+     the forge's: a couple of seconds on each, dissolved, a slow push, and
+     back to the first for the loop. They happen to be her three courses in
+     order — the torch on a piece at the bench, the bands textured at the
+     rolling mill, and a cast pendant on its cord. Square photos, so the
+     clip is 4:5. */
+  rose: { video: '/video/rose.mp4', poster: '/video/rose-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
