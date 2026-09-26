@@ -389,7 +389,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Screen printing', studio: 'Druckrausch — mobile Druckwerkstatt',
       blurb: 'A screen-printing workshop in Friedenau — and a mobile print studio for events. Learn the basics on shirts, totes and paper, squeeze in an after-work express session, print from your own photo stencil, or go big with "Print like Warhol". Also runs live printing at parties, team events and kids’ birthdays.',
       group: 'Small groups', duration: '1.5–4 h', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
-    // Copy from schmiedekurse-berlin.de; photos and reel to follow.
+    // Copy from schmiedekurse-berlin.de.
     { slug: 'schmiede', name: 'Schmiedekurse Berlin', specialty: 'Blacksmithing & knife forging', studio: 'Schmiede im Hof',
       blurb: 'A working forge in an old leather-factory yard in Blankenburg. Learn the classic techniques over a weekend, forge your own kitchen or outdoor knife — up to Japanese Damascus steel with a hand-fitted wooden handle — and take everything you make home. Small groups of five or six around the fire, plus three-day forging introductions for kids aged 10–14 in the school holidays.',
       group: 'Up to 6', duration: '1–2 days', place: 'Pankstraße 13, Berlin', languages: 'DE' },
@@ -773,6 +773,15 @@ const reels: Record<string, { video: string; poster: string }> = {
      cropping a square to the taller frame would have taken the squeegee off
      at both edges. No caption in either. Audio stripped. */
   druckrausch: { video: '/video/druckrausch.mp4', poster: '/video/druckrausch-poster.jpg' },
+  /* No footage of the forge either, so the five photos become a clip the way
+     Sabine's and Kohfink's did: a second and a half on each, dissolved over
+     a third of a second, a slow push in and out, and back to the first so
+     the loop has no seam. They run the order of the work — the bar in the
+     fire, the steel out of it and glowing, the ring being drawn on the horn
+     of the anvil, the blades that come of it, and the yard on a course day.
+     The photos are landscape, so the clip is 4:5 rather than 9:16: the
+     taller frame would have left about a quarter of each one. */
+  schmiede: { video: '/video/schmiede.mp4', poster: '/video/schmiede-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
