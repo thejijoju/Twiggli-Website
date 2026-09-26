@@ -163,10 +163,16 @@ const labels = ui(lang).directory;
     playingClass: 'is-playing',
     threshold: 0.35,
     startAt: 0,
-    // Straight down the line rather than skipping a tile: every reel on
-    // screen gets its turn, in the order they are read.
+    // One row along at a time — and with byRow, one reel per row rather
+    // than every reel in it, so a line of three plays one of the three.
     step: 1,
     holdMs: 2500,
+    /* These cards run to most of a screen each, so a row arrives on its own
+       and the walk picks up where the reader is looking — the middle of the
+       viewport, which on a three-wide grid is the middle column, row after
+       row. The column is now the row's to decide instead: middle, left,
+       right, and round again down the page. */
+    byRow: true,
   });
   // The filters hide cards, which changes which reels are in the walk.
   document.addEventListener('twiggli:filtered', () => walk.resync());

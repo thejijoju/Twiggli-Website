@@ -48,10 +48,16 @@ export type ReelWalkOptions = {
   /** How long to wait for a clip that has not started yet before giving up
    *  on it and moving along. */
   graceMs?: number;
+  /** One reel per row of the grid, and a different column each row: the
+   *  middle one, then the left, then the right, then round again. For a
+   *  grid whose cards are tall enough that a row fills the screen on its
+   *  own — without it the walk restarts nearest the middle of the viewport
+   *  every time a row scrolls in, which is the middle column, every time. */
+  byRow?: boolean;
 };
 
 export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
-  const { holdMs = 3500, step = 2, threshold = 0.4, playingClass, startAt = 1, graceMs = 6000 } = options;
+  const { holdMs = 3500, step = 2, threshold = 0.4, playingClass, startAt = 1, graceMs = 6000, byRow = false } = options;
   if (!reels.length) return { resync: () => {} };
 
   /* A reader who asks for reduced motion gets a calmer version of the walk
@@ -154,13 +160,47 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     return live.reduce((best, reel) => (offBy(reel) < offBy(best) ? reel : best), live[0]);
   };
 
+  /** Which column plays in a row: the middle one, then the left, then the
+   *  right, then round again. A grid two wide has no middle to land on, so
+   *  it alternates instead; one wide has no choice to make. */
+  const columnFor = (rowIndex: number, width: number) => {
+    if (width <= 1) return 0;
+    if (width === 2) return rowIndex % 2;
+    return [Math.floor((width - 1) / 2), 0, width - 1][rowIndex % 3];
+  };
+
+  /** One reel per row: the rows as the grid has actually laid them out —
+   *  tiles sharing a top edge — rather than as the markup lists them, since
+   *  the filters hide cards and the grid reflows around what is left. Read
+   *  fresh each turn for the same reason, which is a row of rect reads every
+   *  few seconds and nothing next to what a playing video costs. */
+  const perRow = (): Reel[] => {
+    const shown = reels.filter((reel) => !marked(reel).hidden);
+    const rows: Reel[][] = [];
+    let top = NaN;
+    for (const reel of shown) {
+      const y = reel.tile.getBoundingClientRect().top;
+      // A row's tiles share a top to the pixel; the tolerance is for the
+      // sub-pixel rounding a zoomed page introduces.
+      if (!rows.length || Math.abs(y - top) > 8) {
+        rows.push([reel]);
+        top = y;
+      } else {
+        rows[rows.length - 1].push(reel);
+      }
+    }
+    const width = rows.reduce((wide, row) => Math.max(wide, row.length), 1);
+    // The last row can be short of a full set; it plays whatever it has.
+    return rows.map((row, i) => row[Math.min(columnFor(i, width), row.length - 1)]);
+  };
+
   /** Whose turn it is: `step` places on from the last one, counted among the
    *  tiles actually on screen. Nothing played yet, so the walk opens where
    *  `startAt` says; the last one scrolled away, so it picks up in the middle
    *  of the screen; the step ran off the end, so a new lap begins one place
    *  further along than the last. */
   const nextUp = (): Reel | null => {
-    const live = reels.filter(eligible);
+    const live = (byRow ? perRow() : reels).filter(eligible);
     if (!live.length) return null;
     if (!last) return live[Math.min(startAt, live.length - 1)];
     const at = live.indexOf(last);
