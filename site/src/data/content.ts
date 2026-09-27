@@ -221,7 +221,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   mampe:            { activity: 'food',      groupRange: [1, 20], hourRange: [0.75, 2.5] },
   // PLACEHOLDER group ranges — the Heartspace artists publish no caps; the
   // room is small, so these are deliberately modest.
-  ronnadel:         { activity: 'art',       groupRange: [1, 10], hourRange: [2.5, 2.5] },
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   elinorsahm:       { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2] },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
@@ -425,11 +424,8 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'mampe', name: 'Mampe', specialty: 'Manufactory tours & spirit tastings', studio: 'MAMPE Manufaktur',
       blurb: 'Berlin’s oldest liquor manufacturer, pouring since 1831. A guided tour walks you through 195 years of the city’s drinking history and the workings of the manufactory, then sits you down to taste the schnapps — several still made to the original recipes. Short tours run 45–60 minutes in German or English, the long one 90; the gin seminar goes further, and you distil and bottle your own to take home.',
       group: 'Groups welcome', duration: '45 min – 2.5 h', place: 'Am Tempelhofer Berg 6, Berlin', languages: 'DE · EN' },
-    // The three Heartspace artists. Copy from their own box offices and the
+    // The two Heartspace artists. Copy from their own box offices and the
     // venue's course pages; photos to follow.
-    { slug: 'ronnadel', name: 'Ron Nadel', specialty: 'Cyanotype printmaking', studio: 'Kunstraum Heartspace',
-      blurb: 'Cyanotype past the sun-print cliché. Most people know it as a leaf left on paper; Ron teaches the control that turns it into a real printmaking medium — up to seven distinct tones in a single print, from a hand-drawn negative on tracing paper or a grayscale file printed on the spot. You coat your own paper, expose it under UV lamps, rinse, and take your prints home. All levels, no digital skills needed, every material provided.',
-      group: 'Small groups', duration: '2.5 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotype on fabric', studio: 'Kunstraum Heartspace',
       blurb: 'A Berlin artist working across moving image, photography, writing and sound design, who teaches to help people reconnect with their curiosity. Her Saturday cyanotype session is a hands-on introduction to the process on fabric: botanicals, found objects and prepared imagery printed onto a cotton tote you take home, plus a care guide for it. No experience needed, all materials included — good for anyone drawn to analogue photography, printmaking or textiles, or just wanting to slow down and make something by hand.',
       group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
@@ -606,9 +602,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'mampe', name: 'Mampe', specialty: 'Manufaktur-Führungen & Spirituosen-Verkostung', studio: 'MAMPE Manufaktur',
       blurb: 'Berlins älteste Spirituosenmanufaktur, seit 1831 im Ausschank. Die Führung nimmt euch mit durch 195 Jahre Berliner Trinkgeschichte und durch die Manufaktur — und danach wird verkostet, einiges davon noch nach den Originalrezepturen gebrannt. Die kurzen Führungen dauern 45–60 Minuten auf Deutsch oder Englisch, die große 90; im Gin-Seminar geht ihr weiter und brennt und abfüllt euren eigenen Gin zum Mitnehmen.',
       group: 'Gruppen willkommen', duration: '45 Min. – 2,5 Std.', place: 'Am Tempelhofer Berg 6, Berlin', languages: 'DE · EN' },
-    { slug: 'ronnadel', name: 'Ron Nadel', specialty: 'Cyanotypie-Druck', studio: 'Kunstraum Heartspace',
-      blurb: 'Cyanotypie jenseits des Sonnendruck-Klischees. Die meisten kennen sie als Blatt auf Papier; Ron bringt dir die Kontrolle bei, die daraus ein echtes Druckverfahren macht — bis zu sieben Tonwerte in einem einzigen Druck, von einem handgezeichneten Negativ auf Transparentpapier oder einer Graustufendatei, die vor Ort gedruckt wird. Du beschichtest dein Papier selbst, belichtest unter UV-Lampen, wässerst und nimmst deine Drucke mit. Alle Level, keine Digitalkenntnisse nötig, Material komplett gestellt.',
-      group: 'Kleine Gruppen', duration: '2,5 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotypie auf Stoff', studio: 'Kunstraum Heartspace',
       blurb: 'Eine Berliner Künstlerin, die zwischen bewegtem Bild, Fotografie, Text und Sounddesign arbeitet — und unterrichtet, um Menschen wieder mit ihrer Neugier zu verbinden. Ihre Samstags-Session ist ein praktischer Einstieg in die Cyanotypie auf Stoff: Pflanzen, gefundene Objekte und vorbereitete Motive werden auf einen Baumwollbeutel gedruckt, den du mitnimmst, samt Pflegeanleitung. Keine Vorkenntnisse nötig, Material inklusive — für alle, die analoge Fotografie, Druck oder Textiles mögen oder einfach mal wieder etwas mit den Händen machen wollen.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },

@@ -470,8 +470,6 @@ const SOURCES = [
   // (already here via 'learnlino') and Sarah's Sunday Morning Pages, so each
   // artist is onboarded on their own box office instead. All of them sit at
   // the same address, hence the shared district.
-  { slug: 'ronnadel', name: 'Ron Nadel — Ticket Tailor box office', mode: 'tickettailor',
-    url: 'https://www.tickettailor.com/events/ronnadel', district: 'Prenzlauer Berg' },
   { slug: 'cateduckwall', name: 'Cate Duckwall — Ticket Tailor box office', mode: 'tickettailor',
     url: 'https://www.tickettailor.com/events/cateduckwall', district: 'Prenzlauer Berg' },
   // 'turnedartist' is Rebeca's second box office: the Fat Bodies and Older
@@ -612,9 +610,9 @@ const SOURCES = [
     scheduleHash: '85685f54', url: 'https://tufttuftberlin.as.me/schedule/85685f54',
     district: 'Prenzlauer Berg' },
 
-  // Alessia Sinopoli is the fifth Kunstraum Heartspace artist here, after
-  // Ron Nadel, Cate Duckwall, Rebeca and Elinor Sahm — the venue itself is
-  // not a host, so each artist is read from wherever they sell.
+  // Alessia Sinopoli is the fourth Kunstraum Heartspace artist here, after
+  // Cate Duckwall, Rebeca and Elinor Sahm — the venue itself is not a host,
+  // so each artist is read from wherever they sell.
   //
   // Hers is a WooCommerce site, but the workshop is not sold through the
   // shop: you pick a date in a booking form and she mails back with payment
