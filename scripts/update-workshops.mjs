@@ -479,8 +479,6 @@ const SOURCES = [
   // than duplicate each other — both land on her one host card.
   { slug: 'rebeca', name: 'Arte Gorda — anatomy box office', mode: 'tickettailor',
     url: 'https://www.tickettailor.com/events/turnedartist', district: 'Prenzlauer Berg' },
-  { slug: 'elinorsahm', name: 'Elinor Sahm — Ticket Tailor box office', mode: 'tickettailor',
-    url: 'https://www.tickettailor.com/events/elinorsahm', district: 'Prenzlauer Berg' },
 
   // Mampe is Berlin's oldest liquor manufacturer (recipes back to 1831) and
   // runs guided manufactory tours with a tasting at the end, in German and
@@ -610,9 +608,9 @@ const SOURCES = [
     scheduleHash: '85685f54', url: 'https://tufttuftberlin.as.me/schedule/85685f54',
     district: 'Prenzlauer Berg' },
 
-  // Alessia Sinopoli is the fourth Kunstraum Heartspace artist here, after
-  // Cate Duckwall, Rebeca and Elinor Sahm — the venue itself is not a host,
-  // so each artist is read from wherever they sell.
+  // Alessia Sinopoli is the third Kunstraum Heartspace artist here, after
+  // Cate Duckwall and Rebeca — the venue itself is not a host, so each
+  // artist is read from wherever they sell.
   //
   // Hers is a WooCommerce site, but the workshop is not sold through the
   // shop: you pick a date in a booking form and she mails back with payment
