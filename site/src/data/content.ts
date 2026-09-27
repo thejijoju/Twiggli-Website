@@ -802,6 +802,14 @@ const reels: Record<string, { video: string; poster: string }> = {
      embroidering", "what if broken things could bloom again?"), so each
      starts after its own, past the fade rather than on it. Audio stripped. */
   arcoiris: { video: '/video/arcoiris.mp4', poster: '/video/arcoiris-poster.jpg' },
+  /* Five photos, no footage, so the same carousel as Sabine's and the
+     forge's: two seconds on each, dissolved, a slow push, and back to the
+     first for a seamless loop. They are five of the makers who take the
+     room in turn — the dried flowers laid out, the hoop that comes of them,
+     Silvia's dot-painted stones, Tina's ceramic-lined baskets, and one of
+     Constanze's collages framed. The photos are near square, so the clip
+     is 4:5. */
+  landsinn: { video: '/video/landsinn.mp4', poster: '/video/landsinn-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
