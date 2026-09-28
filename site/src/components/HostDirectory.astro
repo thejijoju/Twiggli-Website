@@ -43,6 +43,18 @@ const priceText = (range: [number, number] | undefined) =>
     : `${money(range[0])}–${money(range[1])} · ${priceCopy.priceMeta}`;
 
 const labels = ui(lang).directory;
+
+/* The card goes by the host's first name alone, or by the workshop itself
+   where no person is named: a surname or a studio name is a search away
+   from booking around us. The enquiry carries the activity alongside the
+   name, so a message about "Nicole" still says which Nicole. */
+const headingFor = (host: Host) => host.firstName ?? host.specialty;
+const enquiryFor = (host: Host) =>
+  host.firstName ? `${host.firstName} (${host.specialty})` : host.specialty;
+/* For the same reason the card says where by district, not by venue or
+   street — the host page keeps the full address. */
+const whereFor = (host: Host) =>
+  !host.area ? host.place : host.onSite ? `${host.area} / ${labels.onsite}` : host.area;
 ---
 
 <div class="maker-grid">
@@ -68,7 +80,7 @@ const labels = ui(lang).directory;
         class="maker-media"
         tabindex={host.video ? 0 : undefined}
         role={host.video ? 'button' : undefined}
-        aria-label={host.video ? `${host.name} — ${labels.play}` : undefined}
+        aria-label={host.video ? `${headingFor(host)} — ${labels.play}` : undefined}
       >
         {/* The poster is the one thing a reel loads before its turn, and a
             directory of thirty-six of them fetched two and a half megabytes
@@ -100,14 +112,14 @@ const labels = ui(lang).directory;
             ></video>
           </>
         ) : host.wide ? (
-          <img src={host.wide} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
+          <img src={host.wide} alt={host.specialty} loading="lazy" decoding="async" />
         ) : (
-          <HostMonogram name={host.name} />
+          <HostMonogram name={headingFor(host)} />
         )}
       </div>
 
-      <h2 class="maker-name"><a href={hostHref(lang, host)}>{host.name}</a></h2>
-      <p class="maker-specialty">{host.specialty}</p>
+      <h2 class="maker-name"><a href={hostHref(lang, host)}>{headingFor(host)}</a></h2>
+      {host.firstName && <p class="maker-specialty">{host.specialty}</p>}
       {/* Four lines, then the rest on request: the blurbs run long enough
           that a page of them buries the details row a team lead is looking
           for. The button appears only where there is something under the
@@ -124,17 +136,16 @@ const labels = ui(lang).directory;
       >{labels.more}</button>
 
       <dl class="maker-meta">
-        {host.studio && <div><dt>{labels.studio}</dt><dd>{host.studio}</dd></div>}
         <div><dt>{labels.group}</dt><dd>{host.group}</dd></div>
         <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
-        <div><dt>{labels.place}</dt><dd>{host.place}</dd></div>
+        <div><dt>{labels.place}</dt><dd>{whereFor(host)}</dd></div>
         <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
         <div><dt>{labels.price}</dt><dd>{priceText(rangeFor(host))}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
       </dl>
 
       {/* Lands on the contact form with this host in the query string, so
           the form can pre-fill the enquiry. */}
-      <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`}>
+      <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(enquiryFor(host))}`}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
         {labels.request}
       </a>
@@ -164,14 +175,14 @@ const labels = ui(lang).directory;
     threshold: 0.35,
     startAt: 0,
     // One row along at a time — and with byRow, one reel per row rather
-    // than every reel in it, so a line of three plays one of the three.
+    // than every reel in it, so a line of four plays one of the four.
     step: 1,
     holdMs: 2500,
     /* These cards run to most of a screen each, so a row arrives on its own
        and the walk picks up where the reader is looking — the middle of the
-       viewport, which on a three-wide grid is the middle column, row after
-       row. The column is now the row's to decide instead: middle, left,
-       right, and round again down the page. */
+       viewport, which on a grid was the middle column, row after row. The
+       column is now the row's to decide instead — see columnFor in
+       lib/reelwalk.ts for the round it takes on three and four across. */
     byRow: true,
   });
   // The filters hide cards, which changes which reels are in the walk.

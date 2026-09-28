@@ -162,10 +162,13 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
 
   /** Which column plays in a row: the middle one, then the left, then the
    *  right, then round again. A grid two wide has no middle to land on, so
-   *  it alternates instead; one wide has no choice to make. */
+   *  it alternates instead; one wide has no choice to make. Four wide has
+   *  two middles, so the round is inner-left, left, right, inner-right —
+   *  every column gets its turn and no two rows running play the same. */
   const columnFor = (rowIndex: number, width: number) => {
     if (width <= 1) return 0;
     if (width === 2) return rowIndex % 2;
+    if (width === 4) return [1, 0, 3, 2][rowIndex % 4];
     return [Math.floor((width - 1) / 2), 0, width - 1][rowIndex % 3];
   };
 

@@ -138,6 +138,16 @@ export type Host = {
    *  to the span of their own public sessions, and a host with neither says
    *  "on request". */
   groupPrice?: number | [number, number];
+  /** What the group-bookings directory calls the host: the person's first
+   *  name, never a surname or a studio, so a team lead finds the booking
+   *  through us rather than by searching the name. Unset where no person
+   *  is named — the card then leads with what the workshop is. */
+  firstName?: string;
+  /** The district alone, for the same directory, where `place` names a
+   *  studio or gives a street address; `onSite` marks a host who also comes
+   *  to the team, which the card adds in the reader's language. */
+  area?: string;
+  onSite?: boolean;
 };
 
 export type ActivityKey =
@@ -1417,6 +1427,53 @@ const hostsCopy: Record<Lang, HostCopy[]> = (() => {
   };
 })();
 
+/** First names for the group-bookings directory, keyed by slug — see
+ *  `firstName` on Host. Language-neutral, so kept apart from the copy. Where
+ *  a studio is run by a named person the card uses them (Berlin Daisuki is
+ *  Naoko); a business with nobody named — a shop, a manufactory, a studio
+ *  whose teachers rotate — is left out and leads with its activity. */
+const firstNames: Record<string, string> = {
+  qian: 'Qian', rebeca: 'Rebeca', nicole: 'Nicole', celina: 'Celina', evelyn: 'Evelyn',
+  drawingwalks: 'Ditte', violaine: 'Violaine', tania: 'Tania', simone: 'Simone',
+  alessia: 'Alessia', haki: 'Sümer', sina: 'Sina', celia: 'Cèlia', olivia: 'Olivia',
+  nina: 'Nina', helka: 'Helka', jem: 'Jem', maximiliana: 'Maximiliana', pia: 'Pia',
+  sarah: 'Sarah', anne: 'Anne', sabine: 'Sabine', angelo: 'Angelo', faye: 'Faye',
+  dominik: 'Dominik', ana: 'Ana', 'karen-rose': 'Karen-Rose',
+  pastamadre: 'Maria-Lucrezia & Frank', 'monk-garden': 'Martin', bumerang: 'Christian',
+  'ceramic-kingdom': 'Madeline', daisuki: 'Naoko', whittle: 'Nicole',
+  dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
+  redrum: 'Michael', cateduckwall: 'Cate', lama: 'Dani', blauhaus: 'Benedikt',
+  loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique', mijita: 'Mareen',
+  tinkery: 'Astrid',
+};
+
+/** Districts for the group-bookings directory, keyed by slug — see `area`
+ *  on Host. Only hosts whose `place` names a venue or a street are here; the
+ *  rest already say no more than a district. Taken from the districts the
+ *  schedule scraper files each host under. `onSite` hosts also travel. */
+const areas: Record<string, { area: string; onSite?: boolean }> = {
+  qian: { area: 'Prenzlauer Berg', onSite: true }, celina: { area: 'Gesundbrunnen' },
+  evelyn: { area: 'Friedrichshain', onSite: true }, violaine: { area: 'Neukölln' },
+  tania: { area: 'Charlottenburg' }, simone: { area: 'Lichtenberg' },
+  tufttuft: { area: 'Prenzlauer Berg' }, alessia: { area: 'Prenzlauer Berg' },
+  haki: { area: 'Friedrichshain' }, sina: { area: 'Friedrichshain' },
+  celia: { area: 'Friedrichshain' }, olivia: { area: 'Friedrichshain' },
+  jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
+  maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },
+  faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Lichtenberg' },
+  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg' },
+  'beat-etage': { area: 'Treptow' }, bumerang: { area: 'Lichtenberg' },
+  'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau' },
+  schmiede: { area: 'Blankenburg' }, daisuki: { area: 'Charlottenburg' },
+  whittle: { area: 'Charlottenburg' }, dirt: { area: 'Kreuzberg' }, rose: { area: 'Wedding' },
+  arcoiris: { area: 'Neukölln' }, redrum: { area: 'Kreuzberg' }, mampe: { area: 'Kreuzberg' },
+  studio32: { area: 'Schöneberg / Kreuzberg' }, cateduckwall: { area: 'Prenzlauer Berg' },
+  lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
+  pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
+  landsinn: { area: 'Potsdam-Babelsberg' }, mijita: { area: 'Wedding' },
+  tessia: { area: 'Prenzlauer Berg' }, tinkery: { area: 'Marzahn-Hellersdorf / Mitte' },
+};
+
 export const getHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
     const reel = reels[h.slug];
@@ -1433,6 +1490,8 @@ export const getHosts = (lang: Lang): Host[] =>
     return {
       ...h,
       ...facets[h.slug],
+      ...(firstNames[h.slug] ? { firstName: firstNames[h.slug] } : {}),
+      ...(areas[h.slug] ?? {}),
       id: i + 1,
       ...(photo ? { photo } : {}),
       ...(wide ? { wide } : {}),
