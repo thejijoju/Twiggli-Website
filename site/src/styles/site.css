@@ -163,6 +163,14 @@ a:hover { color: var(--color-accent); }
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
+/* The group-bookings page runs wider than the rest, for bigger reels: a
+   third of the margin either side of the page is given over to the grid.
+   The margin is (100vw − 1200px) / 2 + gutter; keeping two thirds of it
+   solves to this width. Below about 1260px it exceeds the viewport and the
+   gutter alone is left, exactly as on every other page. */
+.container-directory {
+  max-width: calc(100vw / 3 + 800px + var(--gutter) * 2 / 3);
+}
 .container-padded {
   max-width: 1200px;
   margin: 0 auto;
@@ -1785,11 +1793,12 @@ a:hover { color: var(--color-accent); }
 /* — maker directory — one card per host on /hosts/. The brochure photo
    strips are wide, so the card leads with a banner rather than an avatar;
    hosts with a reel play it in place of the still. */
-/* Four across on a desktop: 250px is the narrowest a card reads at, and the
-   1200px container fits four of those with their gaps but never five. */
+/* Four across on a desktop, never more: 250px is the narrowest a card reads
+   at, and a column is never narrower than a quarter of the row, so a wide
+   screen makes the four bigger rather than adding a fifth. */
 .maker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(max(250px, calc((100% - 3 * 24px) / 4)), 1fr));
   gap: 40px 24px;
 }
 /* Flex column so the request button can pin to the card's bottom edge.
