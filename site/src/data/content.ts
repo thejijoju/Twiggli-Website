@@ -219,6 +219,11 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   redrum:           { activity: 'food',      groupRange: [2, 8],  hourRange: [2, 2] },
   // PLACEHOLDER group range — the shop publishes no cap per tour.
   mampe:            { activity: 'food',      groupRange: [1, 20], hourRange: [0.75, 2.5] },
+  // Thirty is the studios' own figure for events; the public cooking classes
+  // seat fifteen. Hours span the two-hour cocktail classes to the four-hour
+  // bread and pasta days. €119 is their published starting price for a
+  // cooking class — no separate group rate has been quoted.
+  studio32:         { activity: 'food',      groupRange: [1, 30], hourRange: [2, 4], groupPrice: 119 },
   // PLACEHOLDER group ranges — the Heartspace artists publish no caps; the
   // room is small, so these are deliberately modest.
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
@@ -425,6 +430,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Groups welcome', duration: '45 min – 2.5 h', place: 'Am Tempelhofer Berg 6, Berlin', languages: 'DE · EN' },
     // The Heartspace artist. Copy from her own box office and the venue's
     // course pages; photos to follow.
+    { slug: 'studio32', name: 'studio32 Berlin', specialty: 'Cooking, baking & cocktail classes', studio: 'studio32 Berlin',
+      blurb: 'The cooking studio of Bonvivant, the Schöneberg cocktail bistro whose vegetable-led fine dining won a Michelin star in 2023 — opened next door on Goltzstraße, with a second, loft studio on Kottbusser Damm in Kreuzberg since late 2024. The kitchen and bar team teach what they cook and pour: fresh pasta, sourdough bread, croissants and macarons, vegan and Asian menus, fermentation, classic and alcohol-free cocktails, wine tastings. Built for teams: the studios take up to thirty, larger groups swap halfway between the stove and the bar, and the course can come to your own venue. Everything that gets made is eaten together at the end.',
+      group: 'Up to 30', duration: '2–4 h', place: 'Goltzstr. 32, Schöneberg / Kottbusser Damm 74, Kreuzberg', languages: 'DE · EN', priceNote: 'starting price' },
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotype on fabric', studio: 'Kunstraum Heartspace',
       blurb: 'A Berlin artist working across moving image, photography, writing and sound design, who teaches to help people reconnect with their curiosity. Her Saturday cyanotype session is a hands-on introduction to the process on fabric: botanicals, found objects and prepared imagery printed onto a cotton tote you take home, plus a care guide for it. No experience needed, all materials included — good for anyone drawn to analogue photography, printmaking or textiles, or just wanting to slow down and make something by hand.',
       group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
@@ -598,6 +606,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'mampe', name: 'Mampe', specialty: 'Manufaktur-Führungen & Spirituosen-Verkostung', studio: 'MAMPE Manufaktur',
       blurb: 'Berlins älteste Spirituosenmanufaktur, seit 1831 im Ausschank. Die Führung nimmt euch mit durch 195 Jahre Berliner Trinkgeschichte und durch die Manufaktur — und danach wird verkostet, einiges davon noch nach den Originalrezepturen gebrannt. Die kurzen Führungen dauern 45–60 Minuten auf Deutsch oder Englisch, die große 90; im Gin-Seminar geht ihr weiter und brennt und abfüllt euren eigenen Gin zum Mitnehmen.',
       group: 'Gruppen willkommen', duration: '45 Min. – 2,5 Std.', place: 'Am Tempelhofer Berg 6, Berlin', languages: 'DE · EN' },
+    { slug: 'studio32', name: 'studio32 Berlin', specialty: 'Koch-, Back- & Cocktailkurse', studio: 'studio32 Berlin',
+      blurb: 'Das Kochstudio des Bonvivant, des Schöneberger Cocktailbistros, das 2023 für seine gemüsebasierte Fine-Dining-Küche einen Michelin-Stern bekam — direkt nebenan in der Goltzstraße eröffnet, seit Ende 2024 mit einem zweiten Loft-Studio am Kottbusser Damm in Kreuzberg. Küchen- und Barteam unterrichten, was sie selbst kochen und mixen: frische Pasta, Sauerteigbrot, Croissants und Macarons, vegane und asiatische Menüs, Fermentieren, klassische und alkoholfreie Cocktails, Weintastings. Für Teams gemacht: bis zu dreißig Gäste, größere Gruppen wechseln zur Halbzeit zwischen Herd und Bar, und der Kurs kommt auf Wunsch auch in eure Location. Was entsteht, wird am Ende gemeinsam gegessen.',
+      group: 'Bis 30', duration: '2–4 Std.', place: 'Goltzstr. 32, Schöneberg / Kottbusser Damm 74, Kreuzberg', languages: 'DE · EN', priceNote: 'Einstiegspreis' },
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotypie auf Stoff', studio: 'Kunstraum Heartspace',
       blurb: 'Eine Berliner Künstlerin, die zwischen bewegtem Bild, Fotografie, Text und Sounddesign arbeitet — und unterrichtet, um Menschen wieder mit ihrer Neugier zu verbinden. Ihre Samstags-Session ist ein praktischer Einstieg in die Cyanotypie auf Stoff: Pflanzen, gefundene Objekte und vorbereitete Motive werden auf einen Baumwollbeutel gedruckt, den du mitnimmst, samt Pflegeanleitung. Keine Vorkenntnisse nötig, Material inklusive — für alle, die analoge Fotografie, Druck oder Textiles mögen oder einfach mal wieder etwas mit den Händen machen wollen.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
@@ -810,6 +821,9 @@ const reels: Record<string, { video: string; poster: string }> = {
      Constanze's collages framed. The photos are near square, so the clip
      is 4:5. */
   landsinn: { video: '/video/landsinn.mp4', poster: '/video/landsinn-poster.jpg' },
+  // Their sourdough class, kneading to the finished spread. The phone clip
+  // flashed white into its last shot; that is cut and dissolved over instead.
+  studio32: { video: '/video/studio32.mp4', poster: '/video/studio32-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
