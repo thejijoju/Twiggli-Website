@@ -185,10 +185,10 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   // so the range starts at one and reaches past the corporate two hours.
   pia:          { activity: 'art',         groupRange: [1, 20],   hourRange: [2, 2.5] },
   sarah:        { activity: 'wellbeing',   groupRange: [3, 12],   hourRange: [1, 7] },
-  anne:         { activity: 'photography', groupRange: [5, 20],   hourRange: [1.5, 2] },
+  anne:         { activity: 'photography', groupRange: [5, 20],   hourRange: [1.5, 2], groupPrice: 35 },
   sabine:       { activity: 'photography', groupRange: [1, 12],   hourRange: [4, 5], groupPrice: [25, 30] },
   angelo:       { activity: 'food',        groupRange: [6, 14],   hourRange: [3, 3], groupPrice: 59 },
-  faye:         { activity: 'craft',       groupRange: [8, 18],   hourRange: [2.5, 4] },
+  faye:         { activity: 'craft',       groupRange: [8, 18],   hourRange: [2.5, 4], groupPrice: [64, 106] },
   dominik:      { activity: 'art',         groupRange: [6, 100],  hourRange: [2, 4], groupPrice: [75, 89] },
   ana:          { activity: 'wellbeing',   groupRange: [8, 20],   hourRange: [1.5, 6], groupPrice: 25 },
   // PLACEHOLDER ranges — Karen-Rose's group sizes and formats are unconfirmed.
