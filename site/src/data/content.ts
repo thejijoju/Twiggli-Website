@@ -155,7 +155,7 @@ export type ActivityKey =
  *  studio and 50–100 mobile, so she is [1, 100] and shows up whether a team
  *  is looking for something small or something company-wide. */
 const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' | 'groupPrice'>> = {
-  qian:         { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [2, 2] },
+  qian:         { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [2, 2], groupPrice: 65 },
   rebeca:       { activity: 'art',         groupRange: [4, 24],   hourRange: [1, 3], groupPrice: 65 },
   nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
