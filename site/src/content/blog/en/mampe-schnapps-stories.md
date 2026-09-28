@@ -17,6 +17,11 @@ description of the room is hard to improve on: *an almost sacred ambience, and
 the opportunity to breathe in the rich history of Berlin. More Berlin is not
 possible.*
 
+<figure class="post-video">
+  <video src="/video/mampe.mp4" poster="/video/mampe-poster.jpg" muted loop playsinline autoplay preload="metadata" aria-label="A group tasting at the Mampe manufactory: glasses raised in the old brewhouse"></video>
+  <figcaption>A group tasting in the old brewhouse.</figcaption>
+</figure>
+
 ## Four ways in
 
 **Little Liquor Stories** (€12, 45–60 minutes) is the short version, in German

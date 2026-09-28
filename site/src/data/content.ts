@@ -821,6 +821,10 @@ const reels: Record<string, { video: string; poster: string }> = {
      Constanze's collages framed. The photos are near square, so the clip
      is 4:5. */
   landsinn: { video: '/video/landsinn.mp4', poster: '/video/landsinn-poster.jpg' },
+  // Their own footage of a group tasting in the manufactory — the talk at
+  // the bar, the tray of glasses, the toast. Their logo card at the end is
+  // cut; the card and strip stills are frames from the toast.
+  mampe: { video: '/video/mampe.mp4', poster: '/video/mampe-poster.jpg' },
   // Their sourdough class, kneading to the finished spread, then their
   // Maultaschen class: the sheet through the roller with the spinach pressed
   // in, cutting, and the brown butter over the bowl. The bread clip flashed

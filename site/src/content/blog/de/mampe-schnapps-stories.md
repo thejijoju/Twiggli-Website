@@ -16,6 +16,11 @@ Schnapsladen in einem. Ihre eigene Beschreibung des Raums ist kaum zu
 verbessern: *ein nahezu sakrales Ambiente und die Möglichkeit, hochprozentige
 Berliner Geschichte zu atmen. Mehr Berlin geht nicht.*
 
+<figure class="post-video">
+  <video src="/video/mampe.mp4" poster="/video/mampe-poster.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Gruppenverkostung in der Mampe-Manufaktur: erhobene Gläser im alten Sudhaus"></video>
+  <figcaption>Eine Gruppenverkostung im alten Sudhaus.</figcaption>
+</figure>
+
 ## Vier Wege hinein
 
 **Kleine Schnapsgeschichten** (12 €, 45–60 Minuten) ist die kurze Fassung auf
