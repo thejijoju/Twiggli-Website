@@ -821,8 +821,13 @@ const reels: Record<string, { video: string; poster: string }> = {
      Constanze's collages framed. The photos are near square, so the clip
      is 4:5. */
   landsinn: { video: '/video/landsinn.mp4', poster: '/video/landsinn-poster.jpg' },
-  // Their sourdough class, kneading to the finished spread. The phone clip
-  // flashed white into its last shot; that is cut and dissolved over instead.
+  // Their sourdough class, kneading to the finished spread, then their
+  // Maultaschen class: the sheet through the roller with the spinach pressed
+  // in, cutting, and the brown butter over the bowl. The bread clip flashed
+  // white into its last shot, so that is dissolved over instead; the pasta
+  // clip carries their logo along the bottom and captions over its middle,
+  // so it is cropped above the logo and cut only from the stretches with no
+  // caption on screen.
   studio32: { video: '/video/studio32.mp4', poster: '/video/studio32-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
