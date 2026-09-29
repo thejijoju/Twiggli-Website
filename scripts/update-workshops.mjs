@@ -711,12 +711,13 @@ const SOURCES = [
   // studio32 (Bonvivant's cooking studio) sells every public class on its
   // own Eventbrite organiser page — cooking and baking at Goltzstraße,
   // cocktails at their bar academy on Großbeerenstraße, and the loft on
-  // Kottbusser Damm. Each session takes the district of its street. The
-  // event pages state the length, so those are read too.
+  // Kottbusser Damm. Each session takes the district of its street. Their
+  // events are multi-date series, whose pages state no length (Highlights
+  // says only "In person"), so no detail pass: cards fall back to the
+  // host's own 2–4 h.
   { slug: 'studio32', name: 'studio32 Berlin — Eventbrite box office', mode: 'eventbrite',
     url: 'https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503',
-    venueDistricts: { 'Goltzstraße': 'Schöneberg', 'Großbeerenstraße': 'Kreuzberg', 'Kottbusser Damm': 'Kreuzberg' },
-    detail: true },
+    venueDistricts: { 'Goltzstraße': 'Schöneberg', 'Großbeerenstraße': 'Kreuzberg', 'Kottbusser Damm': 'Kreuzberg' } },
 
   // Olivia sells her own workshops through the Wix Events widget on this
   // page, which is empty today and has never published an event (the site
@@ -3325,7 +3326,9 @@ async function fromEventbrite(source) {
       const img = [...before.matchAll(/\((https:\/\/img\.evbuc\.com\/[^)\s]+)\)/g)].pop();
       // The venue sits between the time and the price. A session somewhere
       // other than the host's usual room should not inherit its district.
-      const venue = block.match(/\d{1,2}:\d{2}\s+([^\n]*?)\s+(?:Ab|From)\s/)?.[1]?.trim();
+      // A series says so first ("18:00 and 3 more Goltzstraße 32"), which
+      // is not part of the venue, and may break the line there.
+      const venue = block.match(/\d{1,2}:\d{2}(?:\s+(?:and|und)\s+\d+\+?\s+(?:more|weitere))?\s+([^\n]*?)\s+(?:Ab|From)\s/)?.[1]?.trim();
       // A host with rooms in more than one district names each by its
       // street; the session takes the district of whichever it is at.
       const byStreet = source.venueDistricts && venue
