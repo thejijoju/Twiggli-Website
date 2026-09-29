@@ -14,15 +14,15 @@ const { lang = DEFAULT_LANG } = Astro.props;
 const t = ui(lang).teaser;
 const locale = LANG_META[lang].locale;
 
-// The next sessions, one per host, three hosts at most — variety sells the
-// calendar better than three cards from the same maker.
+// The next sessions, one per host, five hosts at most — variety sells the
+// calendar better than five cards from the same maker.
 const picks: ReturnType<typeof getSessions> = [];
 const seenHosts = new Set<string>();
 for (const s of getSessions(lang)) {
   if (seenHosts.has(s.host.slug)) continue;
   seenHosts.add(s.host.slug);
   picks.push(s);
-  if (picks.length === 3) break;
+  if (picks.length === 5) break;
 }
 
 const base = berlinTodayMs();
@@ -85,20 +85,40 @@ const calendarHref = href(lang, '/happening-today/');
   // The teaser's reels wait for the pointer: hovering a card plays its clip
   // straight away, leaving stops it — same manners as the schedule feed, so
   // only the card being looked at ever loads. Touch has no hover, so there
-  // they play while on screen and pause off it.
+  // exactly one plays: whichever is most in view. Scrolling hands the turn
+  // down the stack — the card leaving stops as the next one takes over,
+  // rather than every card on screen running at once.
   const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.today-video'));
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hoverable = window.matchMedia('(hover: hover)').matches;
   if (videos.length && !hoverable && !still) {
+    const seen = new Map<HTMLVideoElement, number>();
+    let current: HTMLVideoElement | null = null;
+    const pick = () => {
+      // The most visible, as long as a fair part of it is on screen; ties
+      // (two cards wholly in view on a tall phone) go to the upper one,
+      // which is the one being read.
+      let best: HTMLVideoElement | null = null;
+      let bestRatio = 0.35;
+      for (const video of videos) {
+        const ratio = seen.get(video) ?? 0;
+        if (ratio > bestRatio + 0.01) { best = video; bestRatio = ratio; }
+      }
+      if (best === current) return;
+      current?.pause();
+      current = best;
+      current?.play().catch(() => {});
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          const video = entry.target as HTMLVideoElement;
-          if (entry.isIntersecting) video.play().catch(() => {});
-          else video.pause();
+          seen.set(entry.target as HTMLVideoElement, entry.isIntersecting ? entry.intersectionRatio : 0);
         }
+        pick();
       },
-      { threshold: 0.3 },
+      // Fine steps, so the ratios stay current while a card slides through
+      // rather than updating only as it crosses a single line.
+      { threshold: Array.from({ length: 21 }, (_, i) => i / 20) },
     );
     videos.forEach((video) => observer.observe(video));
   } else if (videos.length) {

@@ -1048,8 +1048,8 @@ a:hover { color: var(--color-accent); }
 }
 .today-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px;
   margin-top: 36px;
 }
 .today-card {
@@ -1123,8 +1123,13 @@ a:hover { color: var(--color-accent); }
   margin-top: 14px;
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 20px;
+  font-size: 17px;
   line-height: 1.25;
+  /* A fifth of the row is narrow enough that one long German compound
+     ("KLEINE SCHNAPSGESCHICHTEN") ran past its card; it hyphenates where
+     the language allows and breaks where it has to. */
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .today-card:hover .today-title { color: var(--color-accent-700); }
 .today-host {
@@ -1138,9 +1143,33 @@ a:hover { color: var(--color-accent); }
 }
 .today-actions { margin-top: 36px; }
 
+/* Five across needs a full desktop; short of one, the first three carry
+   the row rather than five squeezed or a row of three over a row of two. */
+@media (max-width: 1100px) and (min-width: 981px) {
+  .today-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .today-card:nth-child(n + 4) { display: none; }
+}
+/* On a phone the cards stack, and each reel runs edge to edge of the
+   screen. The height is the one the card had inside the page margins —
+   16:10 of the column — so it is wider, not taller, and a thumb's scroll
+   still moves one card along. The phone frame goes: a bezel on a picture
+   that already meets the glass is a frame inside a frame. */
 @media (max-width: 980px) {
   .today-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .today-media { aspect-ratio: 16 / 10; }
+  .today-media {
+    aspect-ratio: auto;
+    height: calc((100vw - 2 * var(--gutter)) * 10 / 16);
+    margin-inline: calc(-1 * var(--gutter));
+    border-radius: 0;
+    padding: 0;
+    background: var(--color-surface);
+  }
+  .today-media img,
+  .today-video,
+  .today-media .media-monogram { border-radius: 0; }
+  .today-when { left: var(--gutter); top: 12px; }
+  .today-price { right: var(--gutter); bottom: 12px; }
+  .today-title { font-size: 20px; }
 }
 
 .host-coverflow {
