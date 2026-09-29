@@ -708,6 +708,16 @@ const SOURCES = [
     url: 'https://www.eventbrite.de/o/la-hoco-115794852461',
     district: 'Friedrichshain', venue: 'Ohma Studio' },
 
+  // studio32 (Bonvivant's cooking studio) sells every public class on its
+  // own Eventbrite organiser page — cooking and baking at Goltzstraße,
+  // cocktails at their bar academy on Großbeerenstraße, and the loft on
+  // Kottbusser Damm. Each session takes the district of its street. The
+  // event pages state the length, so those are read too.
+  { slug: 'studio32', name: 'studio32 Berlin — Eventbrite box office', mode: 'eventbrite',
+    url: 'https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503',
+    venueDistricts: { 'Goltzstraße': 'Schöneberg', 'Großbeerenstraße': 'Kreuzberg', 'Kottbusser Damm': 'Kreuzberg' },
+    detail: true },
+
   // Olivia sells her own workshops through the Wix Events widget on this
   // page, which is empty today and has never published an event (the site
   // has no events sitemap at all). Watched rather than seeded: she runs
@@ -3266,8 +3276,11 @@ async function fromEventbrite(source) {
     return [];
   }
   const md = await res.text();
+  // The next two days are headed "Heute Dienstag" / "Morgen Mittwoch" with
+  // no date at all, so those are read too and dated from today — checked
+  // against the weekday they name, as the dated headings are.
   const heads = [...md.matchAll(
-    new RegExp(`(\\d{1,2})\\.\\s*(${MONTHS_DE_RE})\\s+(${WEEKDAYS_DE.join('|')})\\b`, 'gi'),
+    new RegExp(`(\\d{1,2})\\.\\s*(${MONTHS_DE_RE})\\s+(${WEEKDAYS_DE.join('|')})\\b|\\b(Heute|Morgen)\\s+(${WEEKDAYS_DE.join('|')})\\b`, 'gi'),
   )];
   if (!heads.length) {
     console.log(`[${source.slug}] eventbrite: no dated headings (${/nichts geplant|Nothing scheduled/i.test(md) ? 'organiser has nothing scheduled' : 'unexpected page'})`);
@@ -3278,14 +3291,25 @@ async function fromEventbrite(source) {
   for (let i = 0; i < heads.length; i++) {
     const h = heads[i];
     const segment = md.slice(h.index + h[0].length, heads[i + 1]?.index ?? md.length);
-    const day = h[1].padStart(2, '0');
-    const month = String(MONTHS_DE[h[2].toLowerCase()]);
-    const year = yearForWeekday(month, day, h[3]);
-    if (!year) {
-      console.log(`[${source.slug}] eventbrite: "${h[0]}" is no ${h[3]} this year or next \u2014 skipped`);
-      continue;
+    let date;
+    if (h[4]) {
+      const d = new Date(`${todayISO}T12:00:00Z`);
+      if (/^morgen$/i.test(h[4])) d.setUTCDate(d.getUTCDate() + 1);
+      if (WEEKDAYS_DE[d.getUTCDay()].toLowerCase() !== h[5].toLowerCase()) {
+        console.log(`[${source.slug}] eventbrite: "${h[0]}" does not fall on ${h[5]} \u2014 skipped`);
+        continue;
+      }
+      date = d.toISOString().slice(0, 10);
+    } else {
+      const day = h[1].padStart(2, '0');
+      const month = String(MONTHS_DE[h[2].toLowerCase()]);
+      const year = yearForWeekday(month, day, h[3]);
+      if (!year) {
+        console.log(`[${source.slug}] eventbrite: "${h[0]}" is no ${h[3]} this year or next \u2014 skipped`);
+        continue;
+      }
+      date = `${year}-${month}-${day}`;
     }
-    const date = `${year}-${month}-${day}`;
     const headings = [...segment.matchAll(/###\s*\[([^\]]+)\]\((https:\/\/www\.eventbrite\.[a-z.]+\/e\/[^)\s]+)\)/g)];
     for (let j = 0; j < headings.length; j++) {
       const ev = headings[j];
@@ -3302,9 +3326,15 @@ async function fromEventbrite(source) {
       // The venue sits between the time and the price. A session somewhere
       // other than the host's usual room should not inherit its district.
       const venue = block.match(/\d{1,2}:\d{2}\s+([^\n]*?)\s+(?:Ab|From)\s/)?.[1]?.trim();
-      const atHome = !source.venue || (venue && venue.toLowerCase().includes(source.venue.toLowerCase()));
+      // A host with rooms in more than one district names each by its
+      // street; the session takes the district of whichever it is at.
+      const byStreet = source.venueDistricts && venue
+        ? Object.entries(source.venueDistricts).find(([street]) => venue.includes(street))?.[1]
+        : undefined;
+      const atHome = source.venueDistricts ? !!byStreet
+        : !source.venue || (venue && venue.toLowerCase().includes(source.venue.toLowerCase()));
       if (!atHome) {
-        console.log(`[${source.slug}] eventbrite: "${ev[1]}" is at "${venue}", not ${source.venue} \u2014 no district`);
+        console.log(`[${source.slug}] eventbrite: "${ev[1]}" is at "${venue}", not ${source.venue ?? Object.keys(source.venueDistricts).join(' / ')} \u2014 no district`);
       }
       out.push({
         title: stripTags(ev[1]).trim(),
@@ -3312,7 +3342,7 @@ async function fromEventbrite(source) {
         ...(tm ? { time: `${tm[1].padStart(2, '0')}:${tm[2]}` } : {}),
         ...(/Ausverkauft|Sold\s*Out/i.test(block) ? { soldOut: true } : {}),
         ...(pm ? { price: `\u20ac${Math.round(Number(pm[1].replace(/\./g, '')))}+` } : {}),
-        ...(atHome && source.district ? { district: source.district } : {}),
+        ...(byStreet ? { district: byStreet } : atHome && source.district ? { district: source.district } : {}),
         ...(img ? { image: img[1] } : {}),
         url,
       });
