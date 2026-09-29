@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-28T10:49:43.063Z",
+  "updated": "2026-09-29T07:07:27.862Z",
   "sources": [
     {
       "slug": "landsinn",
@@ -17,13 +17,13 @@
       "slug": "mijita",
       "url": "https://studioblinkblink.com/workshops/",
       "status": "ok",
-      "count": 12
+      "count": 11
     },
     {
       "slug": "mijita",
       "url": "https://r.jina.ai/https://www.mijita.de/service-page/schmuck-schmieden",
       "status": "ok",
-      "count": 2
+      "count": 1
     },
     {
       "slug": "mijita",
@@ -185,7 +185,7 @@
       "slug": "munio",
       "url": "https://themunio.de/collections/workshops",
       "status": "ok",
-      "count": 220
+      "count": 229
     },
     {
       "slug": "pastamadre",
@@ -209,7 +209,7 @@
       "slug": "ceramic-kingdom",
       "url": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "status": "ok",
-      "count": 44
+      "count": 40
     },
     {
       "slug": "sabine",
@@ -227,7 +227,7 @@
       "slug": "schmiede",
       "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
       "status": "ok",
-      "count": 14
+      "count": 15
     },
     {
       "slug": "schmiede",
@@ -446,6 +446,12 @@
       "count": 0
     },
     {
+      "slug": "studio32",
+      "url": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "status": "ok",
+      "count": 12
+    },
+    {
       "slug": "olivia",
       "url": "https://www.oliviabarney.com/workshops",
       "status": "failed: no upcoming events parsed",
@@ -455,7 +461,7 @@
       "slug": "helka",
       "url": "https://www.helkaceramics.com/pottery-classes-workshops",
       "status": "ok",
-      "count": 9
+      "count": 8
     },
     {
       "slug": "maximiliana",
@@ -836,59 +842,6 @@
   ],
   "workshops": [
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-09-28",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 2,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
-      "slug": "helka",
-      "sourceUrl": "https://www.helkaceramics.com/pottery-classes-workshops",
-      "title": "4-week tableware course – 4 Termine",
-      "titleEn": "4-week tableware course – 4 dates",
-      "date": "2026-09-28",
-      "time": "19:00",
-      "duration": "4 × 3 h",
-      "spots": 3,
-      "price": "€295",
-      "district": "Kreuzberg",
-      "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/402fabcd-7fc0-422b-9bbb-4765f204ed67/Daniel%2BFar%25C3%25B2_Helka%2BCeramics_050_0Q1A3067_compressed.jpg",
-      "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/4-week-tableware-class"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 40)",
-      "date": "2026-09-28",
-      "time": "19:30",
-      "spots": 3,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337181/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 40)",
-      "date": "2026-09-29",
-      "time": "19:30",
-      "spots": 3,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337181/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
-    },
-    {
       "slug": "dirt",
       "sourceUrl": "https://empireofdirt.studio/products.json?limit=250",
       "title": "Intensive: Wheel Throwing for Beginners – 5 Termine",
@@ -900,19 +853,6 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6962.jpg?v=1745264657",
       "url": "https://empireofdirt.studio/products/five-week-pottery-class"
-    },
-    {
-      "slug": "tufttuft",
-      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
-      "title": "Hot desk",
-      "date": "2026-09-30",
-      "time": "09:00",
-      "spots": 1,
-      "duration": "9 h",
-      "price": "€22",
-      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
-      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "mampe",
@@ -1078,6 +1018,16 @@
       "district": "Friedenau"
     },
     {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Mediterrane Spitzenküche",
+      "date": "2026-09-30",
+      "time": "18:00",
+      "price": "€127+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1173043993%2F1615024444013%2F1%2Foriginal.20251216-094727?w=640&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C48%2C1600%2C800&s=b2bc0c7eef81e61404f81699ffc6ea76",
+      "url": "https://www.eventbrite.de/e/mediterrane-spitzenkuche-tickets-1978094016452"
+    },
+    {
       "slug": "sina",
       "sourceUrl": "https://www.eventbrite.de/o/sinamaker-99895128061",
       "title": "The Unfinished Thread: A Monthly Fiber Arts Meet-Up",
@@ -1232,6 +1182,16 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Unsere Lieblingsrezepte aus Japan, Vietnam und Indien",
+      "date": "2026-10-01",
+      "time": "18:00",
+      "price": "€119+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170956444%2F1615024444013%2F1%2Foriginal.20251114-104544?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.511&fp-y=0.453&s=d5141d0c87fe90712a6ab1f29c839959",
+      "url": "https://www.eventbrite.de/e/unsere-lieblingsrezepte-aus-japan-vietnam-und-indien-tickets-1970215913835"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -1243,19 +1203,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 40)",
-      "date": "2026-10-01",
-      "time": "19:30",
-      "spots": 3,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337181/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
     },
     {
       "slug": "tufttuft",
@@ -1472,6 +1419,16 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Cocktailkurs in Berlin: Klassiker & Neues",
+      "date": "2026-10-02",
+      "time": "20:00",
+      "price": "€65+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170866000%2F1615024444013%2F1%2Foriginal.20251113-112148?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.434&s=59d073291ac14c71743dc761ae3f5660",
+      "url": "https://www.eventbrite.de/e/cocktailkurs-in-berlin-klassiker-neues-tickets-1969157961471"
     },
     {
       "slug": "lama",
@@ -1742,6 +1699,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Feiertagsspecial: Trüffel-Pasta",
+      "date": "2026-10-03",
+      "time": "17:00",
+      "price": "€138+",
+      "district": "Schöneberg",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1173043342%2F1615024444013%2F1%2Foriginal.20251216-092741?w=640&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C96%2C1600%2C800&s=bfbf3f9cddb49a9ae4e7c5ebcbf90fee",
+      "url": "https://www.eventbrite.de/e/feiertagsspecial-truffel-pasta-tickets-1978090290307"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Duftöl-Roll-on Workshop",
@@ -1766,6 +1734,16 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-thumb-85335443.jpg?1764245598",
       "url": "https://app.acuityscheduling.com/schedule/eadb79a4/appointment/85335443/calendar/12995646",
       "district": "Gesundbrunnen"
+    },
+    {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Pasta Kochkurs in Berlin: Pasta selber machen",
+      "date": "2026-10-03",
+      "time": "18:00",
+      "price": "€119+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170956845%2F1615024444013%2F1%2Foriginal.20251114-105403?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=a5f87f8d550c2af034c5daf7f7d0c5d7",
+      "url": "https://www.eventbrite.de/e/pasta-kochkurs-in-berlin-pasta-selber-machen-tickets-1969128925624"
     },
     {
       "slug": "galleria-lucia",
@@ -1804,6 +1782,16 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Alkoholfreier Cocktailkurs",
+      "date": "2026-10-03",
+      "time": "20:00",
+      "price": "€70+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1173045919%2F1615024444013%2F1%2Foriginal.20251216-103226?w=640&auto=format%2Ccompress&q=75&sharp=10&s=3150d2b4c8e4c3339f04aa831367bd03",
+      "url": "https://www.eventbrite.de/e/alkoholfreier-cocktailkurs-tickets-1978103612153"
     },
     {
       "slug": "daisuki",
@@ -1933,6 +1921,16 @@
       "district": "Prenzlauer Berg"
     },
     {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Brotbackkurs in Berlin: Sauerteig Brot selber backen",
+      "date": "2026-10-04",
+      "time": "11:00",
+      "price": "€119+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170954161%2F1615024444013%2F1%2Foriginal.20251114-095924?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=01ec345bac9f36289fd4a8a41448f9d0",
+      "url": "https://www.eventbrite.de/e/brotbackkurs-in-berlin-sauerteig-brot-selber-backen-tickets-1970194829772"
+    },
+    {
       "slug": "daisuki",
       "sourceUrl": "https://berlindaisuki.de/japanischkochkurs/",
       "district": "Online",
@@ -1961,7 +1959,7 @@
       "title": "Wearable Scent: Incense Bracelet Making & Jewelry Design",
       "date": "2026-10-04",
       "time": "14:00",
-      "spots": 11,
+      "spots": 8,
       "duration": "2.5 h",
       "price": "€74",
       "url": "https://app.acuityscheduling.com/schedule/e106b6b2/appointment/97365416/calendar/13025469",
@@ -2114,6 +2112,19 @@
       "request": true,
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=1820x1280:format=jpg/path/s670a799786839477/image/i0efa98ebb5097ebc/version/1670396528/image.jpg"
+    },
+    {
+      "slug": "tufttuft",
+      "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+      "title": "Hot desk",
+      "date": "2026-10-07",
+      "time": "09:00",
+      "spots": 1,
+      "duration": "9 h",
+      "price": "€22",
+      "image": "https://cdn-s.acuityscheduling.com/appointmentType-97706194.jpg?1788077011",
+      "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/97706194/calendar/14467295",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "mampe",
@@ -2483,19 +2494,6 @@
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
-    },
-    {
-      "slug": "ceramic-kingdom",
-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
-      "title": "Wheel Throwing | Evening Course (WEEK 40)",
-      "date": "2026-10-08",
-      "time": "19:30",
-      "spots": 3,
-      "duration": "8 h",
-      "price": "€246",
-      "url": "https://app.acuityscheduling.com/schedule/03d6f9da/appointment/95337181/calendar/10335256",
-      "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
-      "district": "Neukölln"
     },
     {
       "slug": "ceramic-kingdom",
@@ -3039,6 +3037,16 @@
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
     },
     {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Fermentations Workshop in Berlin: Natürlich. Kreativ. Fermentieren.",
+      "date": "2026-10-10",
+      "time": "16:00",
+      "price": "€119+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170874115%2F1615024444013%2F1%2Foriginal.20251113-133442?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=0a8689829fc3a33158df395a06225ab1",
+      "url": "https://www.eventbrite.de/e/fermentations-workshop-in-berlin-naturlich-kreativ-fermentieren-tickets-1969281891148"
+    },
+    {
       "slug": "munio",
       "sourceUrl": "https://themunio.de/collections/workshops",
       "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
@@ -3046,7 +3054,7 @@
       "time": "17:00",
       "duration": "1 h",
       "price": "€45",
-      "spots": 10,
+      "spots": 8,
       "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
       "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
       "district": "Schöneberg"
@@ -3227,6 +3235,16 @@
       "district": "Prenzlauer Berg",
       "image": "https://cdn.shopify.com/s/files/1/0771/7499/7318/files/image00001.jpg?v=1757070967",
       "url": "https://tessia-shop.com/products/wax-carving-ring-workshop-halber-tag"
+    },
+    {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Croissants & Pain au Chocolat",
+      "date": "2026-10-11",
+      "time": "11:00",
+      "price": "€127+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1173046498%2F1615024444013%2F1%2Foriginal.20251216-104536?w=640&auto=format%2Ccompress&q=75&sharp=10&s=32282cfac5ab65cffae68a1258595cbc",
+      "url": "https://www.eventbrite.de/e/croissants-pain-au-chocolat-tickets-1978106091569"
     },
     {
       "slug": "dirt",
@@ -4926,6 +4944,17 @@
       "district": "Schöneberg"
     },
     {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Vegan & Augregend!",
+      "date": "2026-10-23",
+      "time": "18:00",
+      "soldOut": true,
+      "price": "€127+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1173046918%2F1615024444013%2F1%2Foriginal.20251216-105353?w=640&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C48%2C1600%2C800&s=a5d29ef346888da8228a73820096c6a7",
+      "url": "https://www.eventbrite.de/e/vegan-augregend-tickets-1978107804693"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Candles & Prosecco: Scented Candle Workshop in Berlin",
@@ -4949,6 +4978,16 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Wine Club - Deine Wein Verkostung in Berlin",
+      "date": "2026-10-23",
+      "time": "19:30",
+      "price": "€64+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1171219602%2F1615024444013%2F1%2Foriginal.20251118-084700?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=1e4685cb29926cbe5e57ca2b85d5e9df",
+      "url": "https://www.eventbrite.de/e/wine-club-deine-wein-verkostung-in-berlin-tickets-1973062277385"
     },
     {
       "slug": "celina",
@@ -5346,6 +5385,16 @@
       "image": "https://cdn-s.acuityscheduling.com/appointmentType-98706152.jpg?1790324698",
       "url": "https://app.acuityscheduling.com/schedule/85685f54/appointment/98706152/calendar/11574829",
       "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "studio32",
+      "sourceUrl": "https://www.eventbrite.de/o/studio32-berlin-kochkurse-und-events-67481012503",
+      "title": "Macaron Backkurs in Berlin: Französische Versuchungen",
+      "date": "2026-10-25",
+      "time": "11:00",
+      "price": "€119+",
+      "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170875439%2F1615024444013%2F1%2Foriginal.20251113-135338?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.502&fp-y=0.555&s=3fe6cb5b1cde333124d62c7d71313f5d",
+      "url": "https://www.eventbrite.de/e/macaron-backkurs-in-berlin-franzosische-versuchungen-tickets-1969296380486"
     },
     {
       "slug": "galleria-lucia",
@@ -7988,6 +8037,19 @@
       "url": "https://tessia-shop.com/products/sand-casting-wax-carving-ring-workshop"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-11-13",
+      "time": "13:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -8011,6 +8073,45 @@
       "url": "https://mampe.berlin/de-engl/products/small-schnapps-stories-45-60min-in-english"
     },
     {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-11-13",
+      "time": "15:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-11-13",
+      "time": "15:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-11-13",
+      "time": "15:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
       "title": "Make a leather collar + leash for your pet",
@@ -8022,6 +8123,71 @@
       "languages": "EN · FR · ES",
       "url": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
       "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSCF3065-scaled-1-e1710774496420.webp"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+      "date": "2026-11-13",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzen und Wachspättchen Workshop",
+      "date": "2026-11-13",
+      "time": "17:00",
+      "duration": "1.5 h",
+      "price": "€50",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Körperpeeling & Badesalz Workshop",
+      "date": "2026-11-13",
+      "time": "17:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+      "date": "2026-11-13",
+      "time": "17:00",
+      "duration": "0.5 h",
+      "price": "€30",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+      "url": "https://themunio.de/products/candle-workshop-30min",
+      "district": "Schöneberg"
+    },
+    {
+      "slug": "munio",
+      "sourceUrl": "https://themunio.de/collections/workshops",
+      "title": "Duftöl-Roll-on Workshop",
+      "date": "2026-11-13",
+      "time": "18:00",
+      "duration": "1 h",
+      "price": "€45",
+      "spots": 10,
+      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+      "district": "Schöneberg"
     },
     {
       "slug": "galleria-lucia",
@@ -8879,6 +9045,7 @@
       "title": "GIN TASTING & GIN SEMINAR mit eigener GIN HERSTELLUNG",
       "date": "2026-11-21",
       "time": "18:00",
+      "soldOut": true,
       "duration": "2–2.5 h",
       "price": "€77",
       "district": "Kreuzberg",
@@ -10988,6 +11155,20 @@
       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/65e6db58ba5e2700193ca8c4/1580394479998/_DSC8033.jpg?format=1500w",
       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
       "district": "Neukölln"
+    },
+    {
+      "slug": "schmiede",
+      "sourceUrl": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "title": "Messerschmieden mit japanischem Damaszenerstahl 23. Lagen",
+      "date": "2027-01-17",
+      "time": "10:00",
+      "duration": "7 h",
+      "price": "€450",
+      "spots": 5,
+      "url": "https://www.schmiedekurse-berlin.de/schmiedekurse-kurstermine/",
+      "request": true,
+      "district": "Blankenburg",
+      "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
     },
     {
       "slug": "kohfink",
