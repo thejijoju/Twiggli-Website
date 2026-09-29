@@ -406,16 +406,24 @@ const formatDeadline = (iso: string): string => {
               tabindex="-1"
               aria-hidden="true"
             >
+              {/* The still underneath, as on a dated card: the reel stays
+                  transparent until its first frame, so a tile resting on
+                  the video's own poster showed nothing but the panel until
+                  the walk (or a hover) reached it. */}
               {o.host.video ? (
-                <video
-                  class="session-video"
-                  src={o.host.video}
-                  poster={o.host.poster}
-                  muted
-                  loop
-                  playsinline
-                  preload="none"
-                ></video>
+                <>
+                  {o.host.poster && (
+                    <img class="session-still" src={o.host.poster} alt="" loading="lazy" decoding="async" />
+                  )}
+                  <video
+                    class="session-video"
+                    src={o.host.video}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                  ></video>
+                </>
               ) : o.host.photo ? (
                 <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
               ) : (
