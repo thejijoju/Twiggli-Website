@@ -1,0 +1,67 @@
+name: Fetch assets
+
+# On-demand helper: downloads files from the open internet on the Actions
+# runner (development sandboxes cannot reach most hosts' sites) and commits
+# them into the repository — photos a host has published for a page we are
+# building, say. Each line of `files` is "URL -> path/in/repo". Nothing is
+# overwritten unless `overwrite` is set, and only images are accepted.
+
+on:
+  workflow_dispatch:
+    inputs:
+      files:
+        description: 'One "URL -> repo/path.jpg" per line (or separated by ";")'
+        required: true
+        type: string
+      overwrite:
+        description: 'Replace files that already exist'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-assets
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Download
+        env:
+          FILES: ${{ inputs.files }}
+          OVERWRITE: ${{ inputs.overwrite }}
+        run: |
+          fetched=0
+          while IFS= read -r line; do
+            line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+            [ -z "$line" ] && continue
+            url="${line%% -> *}"; dest="${line##* -> }"
+            if [ "$url" = "$line" ] || [ -z "$dest" ]; then echo "SKIP (no ' -> '): $line"; continue; fi
+            case "$dest" in /*|*..*) echo "SKIP (unsafe path): $dest"; continue;; esac
+            if [ -e "$dest" ] && [ "$OVERWRITE" != "true" ]; then echo "SKIP (exists): $dest"; continue; fi
+            mkdir -p "$(dirname "$dest")"
+            tmp="$(mktemp)"
+            code=$(curl -sSL -m 60 -A 'Mozilla/5.0 (compatible; TwiggliAssetBot/1.0; +https://www.twiggli.com)' -o "$tmp" -w '%{http_code} %{content_type}' "$url" || echo "000 -")
+            type="${code#* }"
+            if [ "${code%% *}" != "200" ] || [ "${type#image/}" = "$type" ]; then
+              echo "FAILED ($code): $url"; rm -f "$tmp"; continue
+            fi
+            mv "$tmp" "$dest"; fetched=$((fetched + 1))
+            echo "OK $(stat -c %s "$dest") bytes ($type): $url -> $dest"
+          done < <(printf '%s\n' "$FILES" | tr ';' '\n')
+          echo "fetched=$fetched" >> "$GITHUB_ENV"
+      - name: Commit
+        if: env.fetched != '0'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m "Fetch ${fetched} asset(s)" -m "Downloaded by the fetch-assets workflow."
+          git push origin HEAD:${{ github.ref_name }}
