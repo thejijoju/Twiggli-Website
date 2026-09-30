@@ -83,6 +83,7 @@ const nums = ['01', '02', '03'];
             </div>
             <div class="space-body">
               <h2 class="space-name">{space.name}</h2>
+              {space.badge && <p class="space-badge">{space.badge[lang]}</p>}
               <p class="space-where">{space.address}</p>
               <p class="space-copy">{space.copy[lang]}</p>
               <dl class="space-meta">
@@ -91,7 +92,7 @@ const nums = ['01', '02', '03'];
                   <dt>{t.labelHost}</dt>
                   <dd>{host ? <a href={hostHref(lang, host)}>{host.firstName ?? host.name}</a> : space.manager ?? space.name}</dd>
                 </div>
-                {space.size && <div><dt>{t.labelSize}</dt><dd>{space.size}</dd></div>}
+                {space.size && <div><dt>{t.labelSize}</dt><dd>{typeof space.size === 'string' ? space.size : space.size[lang]}</dd></div>}
                 <div><dt>{t.labelPrice}</dt><dd>{space.price?.[lang] ?? t.priceOnRequest}</dd></div>
                 {space.included && <div><dt>{t.labelIncluded}</dt><dd>{space.included[lang]}</dd></div>}
                 {space.access && <div><dt>{t.labelAccess}</dt><dd>{space.access[lang]}</dd></div>}

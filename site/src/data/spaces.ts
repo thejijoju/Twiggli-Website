@@ -25,8 +25,9 @@ export type Space = {
    *  the card where the host has no reel; otherwise they sit in a row under
    *  it. */
   photos?: string[];
-  /** Floor area, as the space states it. */
-  size?: string;
+  /** Floor area, as the space states it — plain where it is only a number,
+   *  per language where it says more ("3 rooms"). */
+  size?: string | Record<Lang, string>;
   /** What the room suits, per language. */
   suits: Record<Lang, string>;
   /** One paragraph, per language. */
@@ -37,6 +38,9 @@ export type Space = {
   included?: Record<Lang, string>;
   /** Access and transport, where the space says. */
   access?: Record<Lang, string>;
+  /** A short label worn on the card, for what the space wants known at a
+   *  glance — that it is an LGBTQ+ safe space, say. */
+  badge?: Record<Lang, string>;
   /** A line under the card's details, for what the host wants said about
    *  the terms — a written agreement for a standing booking, say. */
   terms?: Record<Lang, string>;
@@ -94,11 +98,12 @@ export const spaces: Space[] = [
   {
     // Run by Alice, who does not teach with us herself — several of our
     // hosts teach here (Alessia, Rebeca, Cate, Maximiliana). Rate, size,
-    // inventory and access are as she gave them to us. Photos to follow.
+    // inventory, access and photos are as she gave them to us.
     manager: 'Alice',
     name: 'Kunstraum Heartspace',
     address: 'Danziger Straße 172, 10407 Berlin',
     district: 'Prenzlauer Berg',
+    photos: ['/img/spaces/heartspace-1.jpg', '/img/spaces/heartspace-2.jpg', '/img/spaces/heartspace-3.jpg', '/img/spaces/heartspace-4.jpg'],
     size: '35 m²',
     suits: {
       en: 'Workshops · courses · talks & screenings · private groups',
@@ -149,6 +154,92 @@ export const spaces: Space[] = [
       nl: 'Gelijkvloerse toegang · parkeren voor de deur · tram M10 vlak voor de deur',
       pl: 'Wejście z poziomu ulicy · parking przed lokalem · tramwaj M10 tuż przed drzwiami',
       tr: 'Sokak seviyesinden giriş · önünde otopark · M10 tramvay durağı hemen önünde',
+    },
+  },
+  {
+    // Ari's own painting atelier, let when Ari is not working in it. Rooms,
+    // rates, inventory and access as Ari gave them to us, photos from Ari's
+    // own summary (the one with Ari's full name on a sign is left out).
+    // Named for the place rather than the artist, so the booking comes
+    // through us.
+    manager: 'Ari',
+    name: 'Atelier Friedrichshagen',
+    address: 'Fürstenwalder Damm 424, 12587 Berlin',
+    district: 'Friedrichshagen',
+    photos: ['/img/spaces/friedrichshagen-1.jpg', '/img/spaces/friedrichshagen-2.jpg', '/img/spaces/friedrichshagen-3.jpg', '/img/spaces/friedrichshagen-4.jpg'],
+    badge: {
+      en: 'LGBTQ+ safe space',
+      de: 'LGBTQ+ Safe Space',
+      fr: 'Safe space LGBTQ+',
+      es: 'Espacio seguro LGBTQ+',
+      it: 'Spazio sicuro LGBTQ+',
+      nl: 'LGBTQ+ safe space',
+      pl: 'Bezpieczna przestrzeń LGBTQ+',
+      tr: 'LGBTQ+ güvenli alan',
+    },
+    size: {
+      en: '70 m² in 3 rooms', de: '70 m² in 3 Räumen', fr: '70 m² en 3 pièces', es: '70 m² en 3 salas',
+      it: '70 m² in 3 stanze', nl: '70 m² in 3 ruimtes', pl: '70 m² w 3 pomieszczeniach', tr: '3 odada 70 m²',
+    },
+    suits: {
+      en: 'Workshops · courses · painting days · small groups',
+      de: 'Workshops · Kurse · Maltage · kleine Gruppen',
+      fr: 'Ateliers · cours · journées de peinture · petits groupes',
+      es: 'Talleres · cursos · jornadas de pintura · grupos pequeños',
+      it: 'Workshop · corsi · giornate di pittura · piccoli gruppi',
+      nl: 'Workshops · cursussen · schilderdagen · kleine groepen',
+      pl: 'Warsztaty · kursy · dni malowania · małe grupy',
+      tr: 'Atölyeler · kurslar · resim günleri · küçük gruplar',
+    },
+    copy: {
+      en: 'An artist’s atelier in Friedrichshagen, on the quiet side of Köpenick near Bölschestraße and the Müggelsee. Three rooms, 70 m² in all: a 40 m² room with ten workplaces, and two smaller rooms of 15 m² each — daylight throughout, with daylight lamps for the dark months. It is an LGBTQ+ safe space, bookable on weekdays, weekends and holidays, and you can see it in person before you book.',
+      de: 'Ein Künstleratelier in Friedrichshagen, auf der ruhigen Seite von Köpenick nahe der Bölschestraße und dem Müggelsee. Drei Räume, zusammen 70 m²: ein 40-m²-Raum mit zehn Arbeitsplätzen und zwei kleinere Räume mit je 15 m² — überall Tageslicht, dazu Tageslichtlampen für die dunklen Monate. Ein LGBTQ+ Safe Space, buchbar an Wochentagen, Wochenenden und Feiertagen, und vor der Buchung gern auch zur Besichtigung vor Ort.',
+      fr: 'L’atelier d’un·e artiste à Friedrichshagen, côté calme de Köpenick, près de la Bölschestraße et du Müggelsee. Trois pièces, 70 m² au total : une salle de 40 m² avec dix postes de travail et deux plus petites de 15 m² chacune — lumière du jour partout, et des lampes lumière du jour pour les mois sombres. Un safe space LGBTQ+, réservable en semaine, le week-end et les jours fériés, et visitable sur place avant de réserver.',
+      es: 'El taller de une artista en Friedrichshagen, en la parte tranquila de Köpenick, cerca de la Bölschestraße y el Müggelsee. Tres salas, 70 m² en total: una de 40 m² con diez puestos de trabajo y dos más pequeñas de 15 m² cada una, con luz natural en todas y lámparas de luz día para los meses oscuros. Es un espacio seguro LGBTQ+, reservable entre semana, fines de semana y festivos, y se puede visitar antes de reservar.',
+      it: 'L’atelier di un’artista a Friedrichshagen, sul lato tranquillo di Köpenick, vicino alla Bölschestraße e al Müggelsee. Tre stanze, 70 m² in tutto: una da 40 m² con dieci postazioni e due più piccole da 15 m² ciascuna — luce naturale ovunque e lampade a luce diurna per i mesi bui. Uno spazio sicuro LGBTQ+, prenotabile nei giorni feriali, nei fine settimana e nei festivi, e visitabile di persona prima di prenotare.',
+      nl: 'Het atelier van een kunstenaar in Friedrichshagen, aan de rustige kant van Köpenick, vlak bij de Bölschestraße en de Müggelsee. Drie ruimtes, samen 70 m²: een ruimte van 40 m² met tien werkplekken en twee kleinere van elk 15 m² — overal daglicht, met daglichtlampen voor de donkere maanden. Een LGBTQ+ safe space, te boeken op doordeweekse dagen, in het weekend en op feestdagen, en je kunt het vooraf ter plekke bekijken.',
+      pl: 'Pracownia artystyczna we Friedrichshagen, po spokojnej stronie Köpenick, niedaleko Bölschestraße i jeziora Müggelsee. Trzy pomieszczenia, razem 70 m²: sala 40 m² z dziesięcioma stanowiskami i dwa mniejsze pokoje po 15 m² — wszędzie światło dzienne, a na ciemne miesiące lampy światła dziennego. To bezpieczna przestrzeń LGBTQ+, dostępna w dni powszednie, weekendy i święta; przed rezerwacją można ją obejrzeć na miejscu.',
+      tr: 'Friedrichshagen’de, Köpenick’in sakin tarafında, Bölschestraße ve Müggelsee’ye yakın bir sanatçı atölyesi. Toplam 70 m², üç oda: on çalışma yerli 40 m²’lik bir oda ve her biri 15 m² olan iki küçük oda — her yerde gün ışığı, karanlık aylar için gün ışığı lambaları. LGBTQ+ güvenli bir alan; hafta içi, hafta sonu ve tatil günlerinde kiralanabiliyor, rezervasyondan önce yerinde görülebiliyor.',
+    },
+    price: {
+      en: 'Large room (40 m², 10 workplaces) €20 per hour · each small room (15 m²) €10 per hour',
+      de: 'Großer Raum (40 m², 10 Arbeitsplätze) 20 € pro Stunde · kleiner Raum (15 m²) je 10 € pro Stunde',
+      fr: 'Grande salle (40 m², 10 postes) 20 € de l’heure · chaque petite salle (15 m²) 10 € de l’heure',
+      es: 'Sala grande (40 m², 10 puestos) 20 € por hora · cada sala pequeña (15 m²) 10 € por hora',
+      it: 'Stanza grande (40 m², 10 postazioni) 20 € l’ora · ogni stanza piccola (15 m²) 10 € l’ora',
+      nl: 'Grote ruimte (40 m², 10 werkplekken) € 20 per uur · elke kleine ruimte (15 m²) € 10 per uur',
+      pl: 'Duża sala (40 m², 10 stanowisk) 20 € za godzinę · każdy mały pokój (15 m²) 10 € za godzinę',
+      tr: 'Büyük oda (40 m², 10 çalışma yeri) saatlik 20 € · her küçük oda (15 m²) saatlik 10 €',
+    },
+    included: {
+      en: 'WC, kitchenette, Wi-Fi, daylight and daylight lamps',
+      de: 'WC, Küchenzeile, WLAN, Tageslicht und Tageslichtbeleuchtung',
+      fr: 'WC, kitchenette, Wi-Fi, lumière du jour et lampes lumière du jour',
+      es: 'Baño, cocina americana, Wi-Fi, luz natural y lámparas de luz día',
+      it: 'WC, angolo cottura, Wi-Fi, luce naturale e lampade a luce diurna',
+      nl: 'Toilet, kitchenette, wifi, daglicht en daglichtlampen',
+      pl: 'WC, aneks kuchenny, Wi-Fi, światło dzienne i lampy światła dziennego',
+      tr: 'WC, mini mutfak, internet, gün ışığı ve gün ışığı lambaları',
+    },
+    access: {
+      en: 'Free parking · S-Bahn Friedrichshagen 5 minutes’ walk (20 minutes on the S3 to Ostbahnhof)',
+      de: 'Kostenfreie Parkplätze · S-Bahn Friedrichshagen 5 Minuten zu Fuß (20 Minuten mit der S3 bis Ostbahnhof)',
+      fr: 'Parking gratuit · S-Bahn Friedrichshagen à 5 minutes à pied (20 minutes en S3 jusqu’à Ostbahnhof)',
+      es: 'Aparcamiento gratuito · S-Bahn Friedrichshagen a 5 minutos a pie (20 minutos en la S3 hasta Ostbahnhof)',
+      it: 'Parcheggio gratuito · S-Bahn Friedrichshagen a 5 minuti a piedi (20 minuti con la S3 fino a Ostbahnhof)',
+      nl: 'Gratis parkeren · S-Bahn Friedrichshagen op 5 minuten lopen (20 minuten met de S3 naar Ostbahnhof)',
+      pl: 'Bezpłatny parking · S-Bahn Friedrichshagen 5 minut pieszo (20 minut kolejką S3 do Ostbahnhof)',
+      tr: 'Ücretsiz otopark · S-Bahn Friedrichshagen’e 5 dakika yürüme (S3 ile Ostbahnhof’a 20 dakika)',
+    },
+    terms: {
+      en: 'Day and weekend rates on request, and discounts for recurring bookings. Happy to show you the space in person first.',
+      de: 'Tages- und Wochenendpauschalen auf Anfrage, bei wiederkehrenden Buchungen Rabatte und Pauschalen. Eine Besichtigung vor Ort ist gern möglich.',
+      fr: 'Forfaits à la journée et au week-end sur demande, et remises pour les réservations régulières. Visite sur place possible avant de réserver.',
+      es: 'Tarifas por día y fin de semana a consultar, y descuentos para reservas periódicas. Se puede visitar el espacio antes.',
+      it: 'Tariffe giornaliere e per il fine settimana su richiesta, e sconti per le prenotazioni ricorrenti. Visita sul posto possibile prima di prenotare.',
+      nl: 'Dag- en weekendtarieven op aanvraag, en korting bij terugkerende boekingen. Je kunt de ruimte eerst ter plekke komen bekijken.',
+      pl: 'Stawki dzienne i weekendowe na zapytanie, a przy stałych rezerwacjach rabaty. Przed rezerwacją można obejrzeć pracownię na miejscu.',
+      tr: 'Günlük ve hafta sonu fiyatları talep üzerine; düzenli kiralamalarda indirim mümkün. Önce mekânı yerinde görmek de mümkün.',
     },
   },
   {
