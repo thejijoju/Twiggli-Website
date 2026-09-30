@@ -1,0 +1,142 @@
+---
+/** One retreat, laid out to be read slowly: the photograph first, the facts
+ *  in a single line under it, then the story, the days, the practice, the
+ *  house and a request that goes through our own contact form. */
+import Base from '../layouts/Base.astro';
+import { retreatsCopy, type Retreat } from '../data/retreats.ts';
+import { href, LANG_META, type Lang } from '../lib/url.ts';
+import '../styles/retreats.css';
+
+interface Props { lang: Lang; retreat: Retreat }
+const { lang, retreat: r } = Astro.props;
+const t = retreatsCopy[lang];
+const locale = LANG_META[lang].locale;
+const when = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  .formatRange(new Date(`${r.start}T12:00:00Z`), new Date(`${r.end}T12:00:00Z`));
+const request = `${href(lang, '/contact/')}?retreat=${encodeURIComponent(r.enquiry[lang])}`;
+const pageUrl = new URL(href(lang, `/retreats/${r.slug}/`), Astro.site ?? Astro.url.origin).href;
+const origin = Astro.site ?? Astro.url.origin;
+
+/* An Event, so search engines can show the dates and the place. The
+   location stops at the town, as the page does. */
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: r.title[lang],
+  description: r.lede[lang],
+  startDate: `${r.start}T09:00:00+02:00`,
+  endDate: `${r.end}T13:00:00+02:00`,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  image: [new URL(r.hero, origin).href],
+  location: {
+    '@type': 'Place',
+    name: r.town,
+    address: { '@type': 'PostalAddress', addressLocality: r.town, addressCountry: 'DE' },
+  },
+  performer: { '@type': 'Person', name: r.teacher },
+  organizer: { '@type': 'Organization', name: 'Twiggli', url: new URL(href(lang, '/'), origin).href },
+  url: pageUrl,
+  inLanguage: r.language.toLowerCase(),
+};
+---
+
+<Base title={`${r.title[lang]} — ${r.town} | Twiggli`} description={r.lede[lang]} lang={lang} image={r.hero}>
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+  <div class="retreat-page">
+    <section class="rt-hero">
+      <img src={r.hero} alt={r.title[lang]} fetchpriority="high" decoding="async" />
+      <div class="rt-hero-text">
+        <span class="rt-eyebrow">{r.kicker[lang]}</span>
+        <h1>{r.title[lang]}</h1>
+        <span class="rt-hero-when">{when} · {r.town}</span>
+      </div>
+    </section>
+
+    <div class="rt-wrap">
+      <a class="rt-back" href={href(lang, '/retreats/')}>← {t.all}</a>
+
+      <dl class="rt-facts">
+        <div><dt>{t.labels.dates}</dt><dd>{when}</dd></div>
+        <div><dt>{t.labels.where}</dt><dd>{r.town}<small>{r.region[lang]}</small></dd></div>
+        <div><dt>{t.labels.teacher}</dt><dd>{r.teacher}</dd></div>
+        <div><dt>{t.labels.language}</dt><dd>{t.languages[r.language] ?? r.language}</dd></div>
+        <div><dt>{t.labels.contribution}</dt><dd>{r.contribution[lang]}</dd></div>
+      </dl>
+
+      <section class="rt-section rt-lede-grid">
+        <div>
+          <span class="rt-eyebrow">{r.kicker[lang]}</span>
+          <p class="rt-lede">{r.lede[lang]}</p>
+        </div>
+        <div class="rt-body">
+          {r.about[lang].map((p) => <p>{p}</p>)}
+        </div>
+      </section>
+    </div>
+
+    {r.wide && (
+      <figure class="rt-wide">
+        <img src={r.wide} alt={r.gallery[0]?.alt[lang] ?? ''} loading="lazy" decoding="async" />
+      </figure>
+    )}
+
+    <div class="rt-wrap">
+      <section class="rt-section">
+        <span class="rt-eyebrow">{t.labels.dates}</span>
+        <h2 class="rt-h2">{t.weekend}</h2>
+        <div class="rt-days">
+          {r.days.map((d) => (
+            <article class="rt-day">
+              <h3>{d.day[lang]}</h3>
+              <span class="rt-day-hours">{d.hours[lang]}</span>
+              <p>{d.what[lang]}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="rt-section">
+        <span class="rt-eyebrow">{r.teacher}</span>
+        <h2 class="rt-h2">{t.practice}</h2>
+        <ol class="rt-practice">
+          {r.practice[lang].map((item, i) => (
+            <li><span>{String(i + 1).padStart(2, '0')}</span>{item}</li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="rt-section">
+        <span class="rt-eyebrow">{r.town}</span>
+        <h2 class="rt-h2">{t.place}</h2>
+        <p class="rt-house">{r.house[lang]}</p>
+        <div class="rt-gallery">
+          {r.gallery.map((g) => (
+            <figure><img src={g.src} alt={g.alt[lang]} loading="lazy" decoding="async" /></figure>
+          ))}
+        </div>
+      </section>
+
+      <section class="rt-section">
+        <h2 class="rt-h2">{t.goodToKnow}</h2>
+        <div class="rt-know">
+          <div><h3>{t.bring}</h3><p>{r.bring[lang]}</p></div>
+          <div><h3>{t.provided}</h3><p>{r.provided[lang]}</p></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="rt-cta">
+      <span class="rt-eyebrow">{when} · {r.town}</span>
+      <h2>{t.ctaTitle}</h2>
+      <p>{t.ctaNote}</p>
+      <a class="rt-button" href={request}>{t.cta}</a>
+    </section>
+  </div>
+</Base>

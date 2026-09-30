@@ -2,6 +2,7 @@
  *  Edit here, not in the components. */
 
 import { href, withBase, LEGAL_LANGS, type Lang } from '../lib/url.ts';
+import { retreatsCopy } from './retreats.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, hubHref } from './seo.ts';
 import { ui } from './i18n.ts';
 
@@ -84,6 +85,7 @@ export function getSiteData(lang: Lang) {
        page now. */
     { label: t.nav.corporate, href: href(lang, '/corporatebookings/') },
     { label: t.nav.spaces, href: href(lang, '/studio-rental/') },
+    { label: retreatsCopy[lang].nav, href: href(lang, '/retreats/') },
     { label: t.nav.blog, href: href(docLang, '/blog/') },
     { label: t.nav.contact, href: href(lang, '/contact/') },
   ];

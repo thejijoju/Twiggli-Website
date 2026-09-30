@@ -117,6 +117,9 @@ const available = alternates.map((a) => a.lang);
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Source+Sans+Pro:wght@700&display=swap"
     />
+    {/* Anything a page needs in the head of its own — the retreats load a
+        display serif no other page pays for. */}
+    <slot name="head" />
     {/* Cookie-free, so the consent banner does not change. It counts the
         clicks that hand a visitor to a host and nothing about the visitor;
         see lib/track.ts. Absent until a website id is configured. */}

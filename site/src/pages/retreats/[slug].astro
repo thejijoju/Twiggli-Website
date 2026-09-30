@@ -1,0 +1,11 @@
+---
+import RetreatPage from '../../components/RetreatPage.astro';
+import { retreats } from '../../data/retreats.ts';
+
+export function getStaticPaths() {
+  return retreats.map((retreat) => ({ params: { slug: retreat.slug }, props: { retreat } }));
+}
+const { retreat } = Astro.props;
+---
+
+<RetreatPage lang="en" retreat={retreat} />

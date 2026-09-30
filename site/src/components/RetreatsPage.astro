@@ -1,0 +1,58 @@
+---
+/** The retreats overview: a quiet introduction, then each retreat as a
+ *  large feature — photograph on one side, the facts on the other. */
+import Base from '../layouts/Base.astro';
+import { retreats, retreatsCopy } from '../data/retreats.ts';
+import { href, LANG_META, type Lang } from '../lib/url.ts';
+import '../styles/retreats.css';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = retreatsCopy[lang];
+const locale = LANG_META[lang].locale;
+const range = (a: string, b: string) =>
+  new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .formatRange(new Date(`${a}T12:00:00Z`), new Date(`${b}T12:00:00Z`));
+// Only what has not finished yet, soonest first.
+const today = new Date().toISOString().slice(0, 10);
+const upcoming = retreats.filter((r) => r.end >= today).sort((a, b) => a.start.localeCompare(b.start));
+---
+
+<Base title={t.title} description={t.description} lang={lang} image={upcoming[0]?.hero}>
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap"
+    />
+  </Fragment>
+  <div class="retreat-page">
+    <div class="rt-wrap">
+      <section class="rt-intro">
+        <span class="rt-eyebrow">{t.kicker}</span>
+        <h1>{t.h1}</h1>
+        <p>{t.lede}</p>
+      </section>
+
+      {upcoming.map((r) => (
+        <a class="rt-feature" href={href(lang, `/retreats/${r.slug}/`)}>
+          <div class="rt-feature-media">
+            <img src={r.hero} alt={r.title[lang]} loading="eager" decoding="async" />
+            <span class="rt-date-chip">{range(r.start, r.end)}</span>
+          </div>
+          <div>
+            <span class="rt-eyebrow">{r.town} · {r.kicker[lang]}</span>
+            <h2>{r.title[lang]}</h2>
+            <p>{r.lede[lang]}</p>
+            <dl class="rt-feature-facts">
+              <div><dt>{t.labels.teacher}</dt><dd>{r.teacher}</dd></div>
+              <div><dt>{t.labels.contribution}</dt><dd>{r.contribution[lang]}</dd></div>
+            </dl>
+            <span class="rt-link">{t.view} <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      ))}
+
+      <p class="rt-soon">{t.soon}</p>
+    </div>
+  </div>
+</Base>

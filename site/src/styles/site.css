@@ -303,7 +303,8 @@ a:hover { color: var(--color-accent); }
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 16px;
+  /* 12px, not 16: with Retreats the row holds eight labels. */
+  gap: 12px;
   /* A point under the rest of the chrome. German's labels — "Firmen- &
      Gruppenbuchungen" among them — only fit the page's column at this
      size, and fitting is what keeps every label on one line. */
