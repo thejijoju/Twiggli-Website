@@ -1,28 +1,42 @@
 /** Studios our hosts rent out when they are not teaching in them.
  *
- *  Only what the host publishes is written down here. None of them lists
- *  a rate, a floor area or a cap for hire — those come back from the host
- *  when a request reaches them — so the cards say "on request" rather than
- *  carrying a number nobody has confirmed. Add a `price`, `capacity` or
- *  `size` to an entry as soon as a host gives one.
+ *  Only what the space publishes or tells us is written down here — a rate,
+ *  a floor area, what comes with the room. Where nobody has said, the card
+ *  says "on request" rather than carrying a number nobody has confirmed.
+ *
+ *  No contact details, ever: every card enquires through our own form, so
+ *  the booking comes through us.
  */
 
 import type { Lang } from '../lib/url.ts';
 
 export type Space = {
   /** The host who owns the room — their slug in content.ts, so the card can
-   *  show their reel and link to their page. */
-  slug: string;
+   *  show their reel and link to their page. Absent for a space run by
+   *  someone who does not teach with us themselves. */
+  slug?: string;
+  /** Who runs the room, by first name, where that is not a host of ours. */
+  manager?: string;
   /** What the space is called, where the host names it separately. */
   name: string;
   address: string;
   district: string;
+  /** Pictures of the room itself, under /public/img/spaces. The first leads
+   *  the card where the host has no reel; otherwise they sit in a row under
+   *  it. */
+  photos?: string[];
+  /** Floor area, as the space states it. */
+  size?: string;
   /** What the room suits, per language. */
   suits: Record<Lang, string>;
   /** One paragraph, per language. */
   copy: Record<Lang, string>;
-  /** Shown where the host has published a rate; absent means "on request". */
-  price?: string;
+  /** Shown where the space has given a rate; absent means "on request". */
+  price?: Record<Lang, string>;
+  /** What the rate includes, where the space lists it. */
+  included?: Record<Lang, string>;
+  /** Access and transport, where the space says. */
+  access?: Record<Lang, string>;
   /** A line under the card's details, for what the host wants said about
    *  the terms — a written agreement for a standing booking, say. */
   terms?: Record<Lang, string>;
@@ -32,8 +46,20 @@ export const spaces: Space[] = [
   {
     slug: 'celina',
     name: 'Gestaltwandel',
-    address: 'Koloniestrasse 111',
+    address: 'Koloniestraße 111, 13359 Berlin',
     district: 'Gesundbrunnen',
+    photos: ['/img/spaces/celina-1.jpg', '/img/spaces/celina-2.jpg', '/img/spaces/celina-3.jpg'],
+    // Her own rate, as she gave it to us.
+    price: {
+      en: '€15 per hour + VAT',
+      de: '15 € pro Stunde zzgl. MwSt.',
+      fr: '15 € de l’heure, hors TVA',
+      es: '15 € por hora + IVA',
+      it: '15 € l’ora + IVA',
+      nl: '€ 15 per uur excl. btw',
+      pl: '15 € za godzinę + VAT',
+      tr: 'Saatlik 15 € + KDV',
+    },
     suits: {
       en: 'Craft workshops · courses · team days · private groups',
       de: 'Kreativ-Workshops · Kurse · Teamtage · private Gruppen',
@@ -63,6 +89,66 @@ export const spaces: Space[] = [
       nl: 'Voor regelmatig of langduriger gebruik kan een schriftelijke gebruiksovereenkomst worden opgesteld, met data, toegang en voorwaarden.',
       pl: 'W przypadku regularnego lub dłuższego korzystania można zawrzeć pisemną umowę użytkowania, określającą terminy, dostęp i warunki.',
       tr: 'Düzenli ya da daha uzun süreli kullanım için tarihleri, erişimi ve koşulları belirleyen yazılı bir kullanım sözleşmesi düzenlenebilir.',
+    },
+  },
+  {
+    // Run by Alice, who does not teach with us herself — several of our
+    // hosts teach here (Alessia, Rebeca, Cate, Maximiliana). Rate, size,
+    // inventory and access are as she gave them to us. Photos to follow.
+    manager: 'Alice',
+    name: 'Kunstraum Heartspace',
+    address: 'Danziger Straße 172, 10407 Berlin',
+    district: 'Prenzlauer Berg',
+    size: '35 m²',
+    suits: {
+      en: 'Workshops · courses · talks & screenings · private groups',
+      de: 'Workshops · Kurse · Vorträge & Screenings · private Gruppen',
+      fr: 'Ateliers · cours · conférences & projections · groupes privés',
+      es: 'Talleres · cursos · charlas y proyecciones · grupos privados',
+      it: 'Workshop · corsi · talk e proiezioni · gruppi privati',
+      nl: 'Workshops · cursussen · lezingen & vertoningen · privégroepen',
+      pl: 'Warsztaty · kursy · wykłady i pokazy · grupy prywatne',
+      tr: 'Atölyeler · kurslar · konuşmalar ve gösterimler · özel gruplar',
+    },
+    copy: {
+      en: 'Alice’s art room on Danziger Straße in Prenzlauer Berg, where several of our hosts already teach — portrait drawing, anatomy for artists, cyanotype, bird sketching. 35 m² on the ground floor behind big shop windows, with long trestle tables, folding chairs for a full table and a projector for anything that needs a screen. Everything a workshop needs is already there, and in the price.',
+      de: 'Alices Kunstraum in der Danziger Straße in Prenzlauer Berg, in dem schon mehrere unserer Gastgeberinnen unterrichten — Porträtzeichnen, Anatomie für Künstler, Cyanotypie, Vogelskizzen. 35 m² im Erdgeschoss hinter großen Schaufenstern, mit langen Tischen auf Böcken, Klappstühlen für eine volle Runde und einem Beamer für alles, was eine Leinwand braucht. Was ein Workshop braucht, ist schon da — und im Preis enthalten.',
+      fr: 'La salle d’art d’Alice, Danziger Straße à Prenzlauer Berg, où plusieurs de nos hôtes enseignent déjà — portrait au crayon, anatomie pour artistes, cyanotype, croquis d’oiseaux. 35 m² au rez-de-chaussée derrière de grandes vitrines, avec de longues tables sur tréteaux, des chaises pliantes pour une tablée complète et un vidéoprojecteur pour tout ce qui demande un écran. Tout ce qu’il faut pour un atelier est déjà là, et compris dans le prix.',
+      es: 'La sala de arte de Alice en la Danziger Straße, en Prenzlauer Berg, donde ya enseñan varios de nuestros anfitriones — retrato a lápiz, anatomía para artistas, cianotipia, dibujo de aves. 35 m² a pie de calle tras grandes escaparates, con mesas largas sobre caballetes, sillas plegables para una mesa llena y un proyector para lo que necesite pantalla. Todo lo que pide un taller ya está ahí, e incluido en el precio.',
+      it: 'La sala d’arte di Alice in Danziger Straße, a Prenzlauer Berg, dove insegnano già diversi nostri host — ritratto a matita, anatomia per artisti, cianotipia, disegno di uccelli. 35 m² al piano terra dietro grandi vetrine, con lunghi tavoli su cavalletti, sedie pieghevoli per una tavolata piena e un proiettore per tutto ciò che ha bisogno di uno schermo. Tutto quello che serve a un workshop c’è già, ed è compreso nel prezzo.',
+      nl: 'De kunstruimte van Alice aan de Danziger Straße in Prenzlauer Berg, waar al meerdere van onze hosts lesgeven — portrettekenen, anatomie voor kunstenaars, cyanotypie, vogels schetsen. 35 m² op de begane grond achter grote etalageramen, met lange schragentafels, klapstoelen voor een volle tafel en een beamer voor alles wat een scherm nodig heeft. Alles wat een workshop nodig heeft is er al, en zit in de prijs.',
+      pl: 'Pracownia artystyczna Alice przy Danziger Straße w Prenzlauer Berg, w której uczy już kilkoro naszych gospodarzy — portretu ołówkiem, anatomii dla artystów, cyjanotypii, szkicowania ptaków. 35 m² na parterze za dużymi witrynami, z długimi stołami na kozłach, składanymi krzesłami na pełny stół i projektorem do wszystkiego, co potrzebuje ekranu. Wszystko, czego wymaga warsztat, już tu jest — i jest w cenie.',
+      tr: 'Alice’in Prenzlauer Berg’de Danziger Straße üzerindeki sanat odası; ev sahiplerimizin birçoğu zaten burada ders veriyor — kara kalem portre, sanatçılar için anatomi, siyanotipi, kuş eskizi. Büyük vitrinlerin ardında, zemin katta 35 m²; uzun sehpalı masalar, dolu bir masa için katlanır sandalyeler ve ekran gerektiren her şey için bir projeksiyon. Bir atölyenin ihtiyaç duyduğu her şey zaten burada ve fiyata dahil.',
+    },
+    price: {
+      en: '€35 per hour',
+      de: '35 € pro Stunde',
+      fr: '35 € de l’heure',
+      es: '35 € por hora',
+      it: '35 € l’ora',
+      nl: '€ 35 per uur',
+      pl: '35 € za godzinę',
+      tr: 'Saatlik 35 €',
+    },
+    included: {
+      en: 'Wi-Fi, tables, chairs, extension cables, projector, floor covering and dishes',
+      de: 'WLAN, Tische, Stühle, Verlängerungskabel, Beamer, Bodenabdeckung und Geschirr',
+      fr: 'Wi-Fi, tables, chaises, rallonges, vidéoprojecteur, protection de sol et vaisselle',
+      es: 'Wi-Fi, mesas, sillas, alargadores, proyector, protector de suelo y vajilla',
+      it: 'Wi-Fi, tavoli, sedie, prolunghe, proiettore, telo per il pavimento e stoviglie',
+      nl: 'Wifi, tafels, stoelen, verlengsnoeren, beamer, vloerafdekking en servies',
+      pl: 'Wi-Fi, stoły, krzesła, przedłużacze, projektor, osłona podłogi i naczynia',
+      tr: 'İnternet, masalar, sandalyeler, uzatma kabloları, projeksiyon, zemin örtüsü ve tabaklar',
+    },
+    access: {
+      en: 'Ground-level access · parking out front · M10 tram stop at the door',
+      de: 'Ebenerdiger Zugang · Parkplätze vor der Tür · Tram M10 direkt vor dem Haus',
+      fr: 'Accès de plain-pied · stationnement devant · tram M10 juste devant',
+      es: 'Acceso a pie de calle · aparcamiento delante · tranvía M10 justo enfrente',
+      it: 'Accesso al piano strada · parcheggio davanti · tram M10 proprio davanti',
+      nl: 'Gelijkvloerse toegang · parkeren voor de deur · tram M10 vlak voor de deur',
+      pl: 'Wejście z poziomu ulicy · parking przed lokalem · tramwaj M10 tuż przed drzwiami',
+      tr: 'Sokak seviyesinden giriş · önünde otopark · M10 tramvay durağı hemen önünde',
     },
   },
   {

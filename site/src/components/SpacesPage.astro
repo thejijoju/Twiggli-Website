@@ -16,8 +16,13 @@ const t = ui(lang).spaces;
 const hosts = getHosts(lang);
 
 const cards = spaces.map((space) => {
-  const host = hosts.find((h) => h.slug === space.slug);
-  return { space, host };
+  const host = space.slug ? hosts.find((h) => h.slug === space.slug) : undefined;
+  const photos = space.photos ?? [];
+  // A host's reel leads where there is one and the room's own photos sit in
+  // a row beneath; with no reel the first photo leads and the rest follow.
+  const lead = host?.video ? undefined : photos[0];
+  const strip = host?.video ? photos : photos.slice(1);
+  return { space, host, lead, strip };
 });
 const nums = ['01', '02', '03'];
 ---
@@ -37,8 +42,9 @@ const nums = ['01', '02', '03'];
 
     <section class="section">
       <div class="space-grid">
-        {cards.map(({ space, host }) => (
+        {cards.map(({ space, host, lead, strip }) => (
           <article class="space-card">
+            <div class="space-visuals">
             <div class="space-media">
               {/* Which part of town, on the picture rather than in the
                   details: it is the first thing anyone looking for a room
@@ -54,11 +60,26 @@ const nums = ['01', '02', '03'];
                   playsinline
                   preload="none"
                 ></video>
+              ) : lead ? (
+                <img src={lead} alt={`${space.name}, ${space.district}`} loading="lazy" decoding="async" />
               ) : host?.wide || host?.photo ? (
                 <img src={host.wide ?? host.photo} alt="" loading="lazy" decoding="async" />
               ) : (
                 <HostMonogram name={space.name} />
               )}
+            </div>
+            {/* The room itself, a tap from full size — for a space, the
+                question is what the room looks like before what happens
+                in it. */}
+            {strip.length > 0 && (
+              <div class="space-photos">
+                {strip.map((src) => (
+                  <a href={src} target="_blank" rel="noopener">
+                    <img src={src} alt={`${space.name}, ${space.district}`} loading="lazy" decoding="async" />
+                  </a>
+                ))}
+              </div>
+            )}
             </div>
             <div class="space-body">
               <h2 class="space-name">{space.name}</h2>
@@ -68,9 +89,12 @@ const nums = ['01', '02', '03'];
                 <div><dt>{t.labelSuits}</dt><dd>{space.suits[lang]}</dd></div>
                 <div>
                   <dt>{t.labelHost}</dt>
-                  <dd>{host ? <a href={hostHref(lang, host)}>{host.name}</a> : space.name}</dd>
+                  <dd>{host ? <a href={hostHref(lang, host)}>{host.firstName ?? host.name}</a> : space.manager ?? space.name}</dd>
                 </div>
-                <div><dt>{t.labelPrice}</dt><dd>{space.price ?? t.priceOnRequest}</dd></div>
+                {space.size && <div><dt>{t.labelSize}</dt><dd>{space.size}</dd></div>}
+                <div><dt>{t.labelPrice}</dt><dd>{space.price?.[lang] ?? t.priceOnRequest}</dd></div>
+                {space.included && <div><dt>{t.labelIncluded}</dt><dd>{space.included[lang]}</dd></div>}
+                {space.access && <div><dt>{t.labelAccess}</dt><dd>{space.access[lang]}</dd></div>}
               </dl>
               {space.terms && <p class="space-terms">{space.terms[lang]}</p>}
               {/* Lands on the contact form with the space already named, the

@@ -3636,6 +3636,21 @@ a:hover { color: var(--color-accent); }
   object-fit: cover;
   display: block;
 }
+/* The room's own photos, three small in a row under the lead picture. */
+.space-photos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.space-photos a { display: block; }
+.space-photos img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
 .space-name { font-size: 26px; margin: 0 0 4px; }
 .space-where {
   margin: 0 0 14px;
