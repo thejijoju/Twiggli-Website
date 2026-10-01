@@ -4,16 +4,20 @@ import { getHostPriceRanges } from '../data/sessions.ts';
 import { filterCopy } from '../data/content.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
-import { hostHref } from '../data/seo.ts';
+import { directoryCopy, occasionsFor } from '../data/occasions.ts';
 import HostMonogram from './HostMonogram.astro';
 
 /**
- * The full maker directory: one card per host, with the brochure photo strip
- * as a banner and the practical details a team lead needs before enquiring.
- * Hosts with a reel play it in place of the still.
+ * The group-bookings directory, laid out like a marketplace grid: a large
+ * square picture per host and three short lines under it — what you make
+ * (with the group size beside it), who and where, and the price. Hosts with
+ * a reel play it in place of the still. Everything else — the description,
+ * the practical details, the enquiry — opens in a quick view, so the grid
+ * stays calm and the reader stays on our page.
  *
- * Each card carries its facets as data attributes so HostFilters can match
- * on them without re-deriving anything client-side.
+ * Each card carries its facets, its occasions and its search text as data
+ * attributes, so HostFilters can match on them without re-deriving anything
+ * client-side.
  */
 interface Props {
   hosts: Host[];
@@ -23,8 +27,8 @@ const { hosts, lang = DEFAULT_LANG } = Astro.props;
 
 /* What a seat at this host's own public sessions costs, so the price filter
    has something real to match on and the card can say so. A private group
-   is quoted separately — hence "per person" on the row rather than a figure
-   presented as the price of the booking. */
+   is quoted separately — hence "per person" rather than a figure presented
+   as the price of the booking. */
 const priceRanges = getHostPriceRanges();
 /* A host who has quoted a price for private groups is quoting the thing this
    page is about, so that figure wins over the span of their public sessions. */
@@ -34,27 +38,38 @@ const rangeFor = (host: Host): [number, number] | undefined =>
     : [host.groupPrice, host.groupPrice];
 const priceCopy = filterCopy[lang];
 const money = (n: number) => `€${Math.round(n)}`;
-const priceText = (range: [number, number] | undefined) =>
+/** The figure alone, for the card's price line: "€65", "€85–€150", or the
+ *  word where there is no figure. */
+const priceFigure = (range: [number, number] | undefined) =>
   !range ? priceCopy.priceUnknown
-    // A host whose only public sessions are free: "€0 · per person" is a
+    // A host whose only public sessions are free: "€0 per person" is a
     // sentence about nothing. Say the word instead.
     : range[0] === 0 && range[1] === 0 ? priceCopy.priceFree
-    : range[0] === range[1] ? `${money(range[0])} · ${priceCopy.priceMeta}`
-    : `${money(range[0])}–${money(range[1])} · ${priceCopy.priceMeta}`;
+    : range[0] === range[1] ? money(range[0])
+    : `${money(range[0])}–${money(range[1])}`;
+const hasFigure = (range: [number, number] | undefined) => !!range && !(range[0] === 0 && range[1] === 0);
 
 const labels = ui(lang).directory;
+const d = directoryCopy[lang];
 
 /* The card goes by the host's first name alone, or by the workshop itself
    where no person is named: a surname or a studio name is a search away
    from booking around us. The enquiry carries the activity alongside the
    name, so a message about "Nicole" still says which Nicole. */
-const headingFor = (host: Host) => host.firstName ?? host.specialty;
 const enquiryFor = (host: Host) =>
   host.firstName ? `${host.firstName} (${host.specialty})` : host.specialty;
 /* For the same reason the card says where by district, not by venue or
    street — the host page keeps the full address. */
 const whereFor = (host: Host) =>
   !host.area ? host.place : host.onSite ? `${host.area} / ${labels.onsite}` : host.area;
+const districtFor = (host: Host) => host.area ?? host.place;
+const groupText = (host: Host) =>
+  host.groupRange[0] === host.groupRange[1] ? String(host.groupRange[1]) : `${host.groupRange[0]}–${host.groupRange[1]}`;
+/** Everything the search box should find a host by, in this language. */
+const searchText = (host: Host) => [
+  host.firstName, host.specialty, host.blurb, priceCopy.activities[host.activity],
+  host.area, host.place, host.languages, ...occasionsFor(host).map((o) => d.occasions[o]),
+].filter(Boolean).join(' ');
 ---
 
 <div class="maker-grid">
@@ -71,23 +86,20 @@ const whereFor = (host: Host) =>
       data-hours-max={host.hourRange[1]}
       data-price-min={rangeFor(host)?.[0]}
       data-price-max={rangeFor(host)?.[1]}
+      data-occasions={occasionsFor(host).join(' ')}
+      data-search={searchText(host)}
     >
-      {/* No play button: the reels announce themselves by playing as the page
-          scrolls past them. The tile itself takes the focus and the keyboard
-          in the button's place, so a reel is still reachable without a
-          pointer. */}
+      {/* The tile plays its reel as the page scrolls past; it also takes the
+          keyboard, so a reel is reachable without a pointer. */}
       <div
         class="maker-media"
         tabindex={host.video ? 0 : undefined}
         role={host.video ? 'button' : undefined}
-        aria-label={host.video ? `${headingFor(host)} — ${labels.play}` : undefined}
+        aria-label={host.video ? `${host.specialty} — ${labels.play}` : undefined}
       >
-        {/* The poster is the one thing a reel loads before its turn, and a
-            directory of thirty-six of them fetched two and a half megabytes
-            of stills the moment the page opened — on a phone that lands
-            while the reader is trying to scroll. Only the top few carry
-            theirs in the markup; the rest are attached as they come within
-            a screen of view (see the script). */}
+        {/* The poster is the one thing a reel loads before its turn; only the
+            first row carries theirs in the markup, the rest are attached as
+            they come within a screen of view (see the script). */}
         {host.video ? (
           <>
             {/* The still sits under the reel rather than riding on it as a
@@ -96,62 +108,71 @@ const whereFor = (host: Host) =>
                 first frame. */}
             <img
               class="maker-still"
-              src={i < 3 ? host.poster : undefined}
-              data-src={i < 3 ? undefined : host.poster}
+              src={i < 4 ? host.poster : undefined}
+              data-src={i < 4 ? undefined : host.poster}
               alt=""
               loading="lazy"
               decoding="async"
             />
-            <video
-              class="maker-video"
-              src={host.video}
-              muted
-              loop
-              playsinline
-              preload="none"
-            ></video>
+            <video class="maker-video" src={host.video} muted loop playsinline preload="none"></video>
+            {/* A shop's sign that a listing has video: a small play mark in
+                the corner. */}
+            <span class="maker-play" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" /></svg>
+            </span>
           </>
-        ) : host.wide ? (
-          <img src={host.wide} alt={host.specialty} loading="lazy" decoding="async" />
+        ) : host.photo || host.wide ? (
+          <img src={host.photo ?? host.wide} alt={host.specialty} loading="lazy" decoding="async" />
         ) : (
-          <HostMonogram name={headingFor(host)} />
+          <HostMonogram name={host.firstName ?? host.specialty} />
         )}
       </div>
 
-      <h2 class="maker-name"><a href={hostHref(lang, host)}>{headingFor(host)}</a></h2>
-      {host.firstName && <p class="maker-specialty">{host.specialty}</p>}
-      {/* Four lines, then the rest on request: the blurbs run long enough
-          that a page of them buries the details row a team lead is looking
-          for. The button appears only where there is something under the
-          fold — see the script. */}
-      <p class="maker-blurb" id={`blurb-${host.slug}`}>{host.blurb}</p>
-      <button
-        class="maker-more"
-        type="button"
-        hidden
-        aria-expanded="false"
-        aria-controls={`blurb-${host.slug}`}
-        data-more={labels.more}
-        data-less={labels.less}
-      >{labels.more}</button>
+      <div class="maker-line">
+        <h2 class="maker-title">{host.specialty}</h2>
+        <span class="maker-size" title={labels.group}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2" /><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5" /><circle cx="17" cy="9" r="2.4" /><path d="M16 14.2c2.3.1 4 1.6 4.5 4.3" /></svg>
+          {groupText(host)}
+        </span>
+      </div>
+      <p class="maker-sub">{[host.firstName, districtFor(host)].filter(Boolean).join(' · ')}</p>
+      <p class="maker-price">
+        <strong>{priceFigure(rangeFor(host))}</strong>
+        {hasFigure(rangeFor(host)) && <span>{priceCopy.priceMeta}</span>}
+      </p>
 
-      <dl class="maker-meta">
-        <div><dt>{labels.group}</dt><dd>{host.group}</dd></div>
-        <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
-        <div><dt>{labels.place}</dt><dd>{whereFor(host)}</dd></div>
-        <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
-        <div><dt>{labels.price}</dt><dd>{priceText(rangeFor(host))}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
-      </dl>
-
-      {/* Lands on the contact form with this host in the query string, so
-          the form can pre-fill the enquiry. */}
-      <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(enquiryFor(host))}`}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
-        {labels.request}
-      </a>
+      {/* What the quick view shows: in the page for search engines and for
+          the panel to copy, out of sight in the grid. */}
+      <div class="maker-detail" hidden>
+        <p class="qv-kicker">{priceCopy.activities[host.activity]} · {districtFor(host)}</p>
+        <h2 class="qv-title">{host.specialty}</h2>
+        {host.firstName && <p class="qv-who">{host.firstName}</p>}
+        <p class="qv-blurb">{host.blurb}</p>
+        <dl class="maker-meta">
+          <div><dt>{labels.group}</dt><dd>{host.group}</dd></div>
+          <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
+          <div><dt>{labels.place}</dt><dd>{whereFor(host)}</dd></div>
+          <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
+          <div><dt>{labels.price}</dt><dd>{priceFigure(rangeFor(host))}{hasFigure(rangeFor(host)) ? ` · ${priceCopy.priceMeta}` : ''}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
+        </dl>
+        {/* Lands on the contact form with this host in the query string, so
+            the form can pre-fill the enquiry. */}
+        <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(enquiryFor(host))}`}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
+          {labels.request}
+        </a>
+      </div>
     </article>
   ))}
 </div>
+
+<dialog class="quickview" aria-label={labels.request}>
+  <button type="button" class="qv-close" aria-label={d.close}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+  <div class="qv-media"></div>
+  <div class="qv-body"></div>
+</dialog>
 
 <script>
   import { startReelWalk } from '../lib/reelwalk.ts';
@@ -204,51 +225,52 @@ const whereFor = (host: Host) =>
     for (const img of waiting) posters.observe(img);
   }
 
-  // The blurb is clamped to four lines in CSS. A card only gets the toggle
-  // where the text actually runs past that — measured rather than guessed
-  // from a character count, since the same sentence wraps differently in
-  // eight languages and at every width. Measuring waits for the webfont:
-  // laid out in the fallback face, a blurb that fits can look as though it
-  // overflows, and the button would appear for nothing.
-  // The clamp itself waits for this class, so the four-line cut and the
-  // button that undoes it arrive together or not at all.
-  document.documentElement.classList.add('js-clamp');
-  const clamped = Array.from(document.querySelectorAll<HTMLElement>('.maker-blurb'));
-  const sync = () => {
-    for (const blurb of clamped) {
-      const card = blurb.closest('.maker');
-      const button = card?.querySelector<HTMLButtonElement>('.maker-more');
-      if (!button) continue;
-      // An open card stays open through a resize; only a closed one is
-      // measured, since an expanded blurb never overflows.
-      if (button.getAttribute('aria-expanded') === 'true') continue;
-      button.hidden = blurb.scrollHeight <= blurb.clientHeight + 1;
+  // Quick view: a card opens a panel with everything the grid leaves out —
+  // the description, the practical details, the enquiry — so the grid can
+  // stay as quiet as a shop's, three short lines under each picture.
+  const dialog = document.querySelector<HTMLDialogElement>('.quickview');
+  if (dialog) {
+    const media = dialog.querySelector<HTMLElement>('.qv-media');
+    const body = dialog.querySelector<HTMLElement>('.qv-body');
+    const open = (card: HTMLElement) => {
+      if (!media || !body) return;
+      const reel = card.querySelector<HTMLVideoElement>('.maker-video');
+      const still = card.querySelector<HTMLImageElement>('.maker-still, .maker-media img');
+      media.replaceChildren();
+      if (reel) {
+        const v = document.createElement('video');
+        v.src = reel.currentSrc || reel.src;
+        v.poster = still?.src || still?.dataset.src || '';
+        v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
+        media.append(v);
+        v.play().catch(() => {});
+      } else if (still) {
+        const img = document.createElement('img');
+        img.src = still.src; img.alt = still.alt;
+        media.append(img);
+      } else {
+        const mono = card.querySelector('.media-monogram');
+        if (mono) media.append(mono.cloneNode(true));
+      }
+      const detail = card.querySelector<HTMLElement>('.maker-detail');
+      body.innerHTML = detail?.innerHTML ?? '';
+      // The enquiry link is counted like the card's own was.
+      dialog.dataset.trackCard = 'directory';
+      dialog.dataset.trackHost = card.dataset.trackHost ?? '';
+      dialog.showModal();
+      dialog.querySelector<HTMLElement>('.qv-close')?.focus();
+    };
+    for (const card of document.querySelectorAll<HTMLElement>('.maker')) {
+      card.addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).closest('a')) return;
+        open(card);
+      });
     }
-  };
-  const ready = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
-  if (ready) ready.then(sync);
-  else sync();
-  sync();
-
-  // Width only. A phone fires resize every time its address bar slides away
-  // during a scroll, and re-measuring fifty-seven paragraphs against the
-  // layout on each of those is felt as the scroll stuttering — while the
-  // wrapping it would measure has not changed at all.
-  let resizeTimer = 0;
-  let lastWidth = window.innerWidth;
-  window.addEventListener('resize', () => {
-    if (window.innerWidth === lastWidth) return;
-    lastWidth = window.innerWidth;
-    clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(sync, 150);
-  });
-
-  for (const button of document.querySelectorAll<HTMLButtonElement>('.maker-more')) {
-    button.addEventListener('click', () => {
-      const open = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!open));
-      button.closest('.maker')?.classList.toggle('is-open', !open);
-      button.textContent = (open ? button.dataset.more : button.dataset.less) ?? '';
+    dialog.addEventListener('close', () => media?.replaceChildren());
+    dialog.querySelector('.qv-close')?.addEventListener('click', () => dialog.close());
+    // A click on the dimmed page around the panel closes it.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
     });
   }
 </script>

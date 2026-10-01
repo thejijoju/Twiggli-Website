@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import HostDirectory from './HostDirectory.astro';
 import HostFilters from './HostFilters.astro';
 import { getHosts } from '../data/content.ts';
+import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
@@ -11,24 +12,36 @@ const { lang } = Astro.props;
 const t = ui(lang);
 const c = t.corporate;
 const hosts = getHosts(lang);
+// The headline follows the season of the build; the site rebuilds daily.
+const season = seasonOf();
 ---
 
 <Base title={c.title} description={c.description} lang={lang} pageClass="page-flush">
+  {/* The headline's display serif, loaded here only — no other page pays
+      for it. */}
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&display=swap" />
+  </Fragment>
   <div class="container container-directory">
-    <section class="page-head">
-      <span class="kicker">{c.kicker}</span>
-      <h1 class="page-title">{c.h1}</h1>
-      <p class="page-lede">{c.lede}</p>
-      <div class="hero-actions">
-        <a href={href(lang, '/contact/')} class="btn btn-primary">{c.cta}</a>
-      </div>
+    {/* Laid out like a shop's collection page: search first, the season's
+        headline, occasion tags and filter pills, then the grid. */}
+    <section class="dir-top">
+      <HostFilters lang={lang} season={season} cta={c.cta} ctaHref={href(lang, '/contact/')} />
+      <HostDirectory hosts={hosts} lang={lang} />
     </section>
 
     <hr class="rule" />
 
-    <section class="section">
-      <HostFilters lang={lang} />
-      <HostDirectory hosts={hosts} lang={lang} />
+    {/* What the page used to open with, now after the grid: the plain
+        account of how a group booking works, for the reader who scrolled
+        past every host — and for search engines. */}
+    <section class="page-head dir-about">
+      <span class="kicker">{c.kicker}</span>
+      <h2 class="page-title">{c.h1}</h2>
+      <p class="page-lede">{c.lede}</p>
+      <div class="hero-actions">
+        <a href={href(lang, '/contact/')} class="btn btn-primary">{c.cta}</a>
+      </div>
     </section>
 
     <hr class="rule" />

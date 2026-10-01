@@ -1841,8 +1841,10 @@ a:hover { color: var(--color-accent); }
 }
 .maker-media {
   position: relative;
-  aspect-ratio: 531 / 163;
-  border-radius: 14px;
+  /* Square, like a shop's listing photo: the same frame whether the host
+     has a reel, a photo or neither, so a row lines up. */
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
   overflow: hidden;
   background: var(--color-surface);
 }
@@ -1865,27 +1867,14 @@ a:hover { color: var(--color-accent); }
 @media (prefers-reduced-motion: reduce) {
   .maker-video { transition-duration: 0.01ms; }
 }
-/* Reels are shot vertical, and the brochure-strip banner crops them to a
-   sliver, so a card with a reel goes square instead. 420px is the widest a
-   directory column gets, so the square never outgrows its card. */
-.maker:has(.maker-video) .maker-media {
-  aspect-ratio: 1 / 1;
-  max-width: 420px;
-  cursor: pointer;
-  background: var(--phone-frame);
-}
-/* The reel is positioned rather than in flow, and an absolutely positioned
-   child is laid out against the *padding* box — padding on the tile would
-   not move it. Insetting it by the bezel is the same result. */
+/* A tile with a reel is still a plain square picture — no phone frame —
+   with the reel filling it edge to edge over its still. */
+.maker:has(.maker-video) .maker-media { cursor: pointer; }
 .maker:has(.maker-video) .maker-video,
 .maker:has(.maker-video) .maker-still {
-  inset: var(--phone-bezel);
-  /* Spelled out for the same reason as the carousel's reels above: auto on
-     a replaced element means its intrinsic size, which drops the right and
-     bottom insets and lets the picture cover two sides of the frame. */
-  width: calc(100% - 2 * var(--phone-bezel));
-  height: calc(100% - 2 * var(--phone-bezel));
-  border-radius: calc(14px - var(--phone-bezel));
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 /* The play button is gone — the reels start themselves as the page scrolls
    past — so the tile carries the focus ring in its place. */
@@ -3061,11 +3050,11 @@ a:hover { color: var(--color-accent); }
      two columns and the same tile. */
   .page-flush .maker-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px 10px;
+    gap: 26px 12px;
   }
   .page-flush .maker-media,
   .page-flush .maker:has(.maker-video) .maker-media {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     max-width: none;
     border-radius: 10px;
     /* No phone frame here. Posters load as the page nears them, so until
@@ -3711,4 +3700,334 @@ a:hover { color: var(--color-accent); }
   .space-media { aspect-ratio: 16 / 10; }
   .space-meta > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .space-ask { width: 100%; justify-content: center; text-align: center; }
+}
+
+/* — group-bookings directory, shop-style — the page reads like a
+   marketplace collection: a wide search bar, the season's headline in a
+   display serif, occasion tags, filter pills, then a calm grid of square
+   pictures with three short lines under each. */
+.dir-top { padding-top: 28px; }
+.dir-search {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.dir-search input {
+  width: 100%;
+  height: 56px;
+  padding: 0 70px 0 28px;
+  border: 2px solid var(--color-text);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.dir-search input::placeholder { color: color-mix(in srgb, var(--color-text) 50%, transparent); }
+.dir-search input:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 22%, transparent); }
+.dir-search input::-webkit-search-cancel-button { cursor: pointer; }
+.dir-search-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  cursor: pointer;
+}
+.dir-search-btn:hover { background: var(--color-accent-700); }
+.dir-search-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+
+.dir-head { text-align: center; margin: 48px auto 24px; max-width: 760px; }
+.dir-title {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(36px, 4.6vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.dir-sub {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+/* Tags and pills share one look: a white rounded pill with a firm outline,
+   filled dark when chosen. */
+.dir-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 30px;
+}
+/* The label anchors its hidden radio; otherwise the radio is placed against
+   the page and, in the phone's sideways-scrolling row, widens the page. */
+.dir-tag { position: relative; }
+.dir-tag input,
+.dir-pop .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.dir-tag span,
+.dir-pill summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1.5px solid var(--color-text);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.dir-tag span:hover,
+.dir-pill summary:hover { background: color-mix(in srgb, var(--color-text) 6%, #fff); }
+.dir-tag input:checked + span,
+.dir-pill.is-on summary {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+.dir-tag input:focus-visible + span,
+.dir-pill summary:focus-visible { outline: 2px solid var(--color-accent-700); outline-offset: 3px; }
+
+.dir-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 26px;
+}
+.dir-pill { position: relative; }
+.dir-pill summary { list-style: none; padding: 9px 16px 9px 18px; }
+.dir-pill summary::-webkit-details-marker { display: none; }
+.dir-pill summary svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.dir-pill[open] summary svg { transform: rotate(180deg); }
+.dir-pop {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: max-content;
+  max-width: min(420px, calc(100vw - 2 * var(--gutter)));
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--color-bg);
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+.dir-clear {
+  border: 0;
+  background: none;
+  padding: 8px 6px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-accent-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.dir-clear[hidden] { display: none; }
+.dir-count {
+  margin: 0 0 0 auto;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.dir-cta {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.dir-cta:hover { background: color-mix(in srgb, var(--color-text) 82%, transparent); color: var(--color-bg); }
+
+/* The card: picture, then three lines — title with the group size beside
+   it, who and where, the price. The whole card opens the quick view. */
+.maker { cursor: pointer; }
+.maker-media { transition: box-shadow 0.2s ease; }
+.maker:hover .maker-media { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14); }
+.maker-play {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+.maker-play svg { width: 15px; height: 15px; fill: var(--color-text); margin-left: 2px; }
+.maker-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.maker-title {
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.maker-size {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.maker-size svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.maker-sub {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.maker-price { margin: 6px 0 0; font-size: 14px; color: color-mix(in srgb, var(--color-text) 58%, transparent); }
+.maker-price strong { font-size: 18px; font-weight: 700; color: var(--color-text); margin-right: 4px; }
+
+/* The quick view: the reel or photo on one side, the full description,
+   the details and the enquiry on the other; a sheet on a phone. */
+.quickview {
+  width: min(1000px, calc(100vw - 32px));
+  max-height: min(88vh, 760px);
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+.quickview[open] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.quickview::backdrop { background: rgba(20, 16, 12, 0.5); }
+.qv-media { position: relative; background: var(--color-surface); min-height: 100%; }
+.qv-media video,
+.qv-media img,
+.qv-media .media-monogram {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.qv-body { padding: 34px 34px 30px; overflow-y: auto; max-height: min(88vh, 760px); }
+.qv-kicker {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+}
+.qv-title {
+  margin: 8px 0 4px;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.1;
+}
+.qv-who { margin: 0 0 14px; font-size: 15px; color: color-mix(in srgb, var(--color-text) 60%, transparent); }
+.qv-blurb { font-size: 16px; line-height: 1.6; margin: 0 0 18px; }
+.qv-body .maker-request { display: inline-flex; margin-top: 4px; }
+.qv-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+.qv-close svg { width: 18px; height: 18px; fill: none; stroke: var(--color-text); stroke-width: 2.2; stroke-linecap: round; }
+.dir-about { text-align: left; }
+
+@media (max-width: 720px) {
+  .dir-top { padding-top: 14px; }
+  .dir-search input { height: 50px; font-size: 16px; padding-left: 20px; }
+  .dir-search-btn { width: 38px; height: 38px; }
+  .dir-head { margin: 30px auto 18px; }
+  .dir-sub { font-size: 15px; }
+  /* Tags and pills scroll sideways on a phone rather than stacking three
+     rows deep above the grid. */
+  .dir-tags, .dir-bar {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-left: calc(-1 * var(--gutter));
+    margin-right: calc(-1 * var(--gutter));
+    padding: 2px var(--gutter);
+  }
+  .dir-tags::-webkit-scrollbar, .dir-bar::-webkit-scrollbar { display: none; }
+  .dir-tag span, .dir-pill summary { white-space: nowrap; padding: 8px 15px; font-size: 14px; }
+  .dir-count { display: none; }
+  .dir-cta { flex: none; white-space: nowrap; padding: 8px 15px; font-size: 14px; }
+  /* A menu under a pill in a sideways-scrolling row would be clipped, so
+     on a phone it opens as a sheet along the bottom edge. */
+  .dir-pop {
+    position: fixed;
+    top: auto;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    max-width: none;
+  }
+  .maker-title { font-size: 14px; }
+  .maker-size { font-size: 12px; }
+  .maker-size svg { width: 14px; height: 14px; }
+  .maker-sub { font-size: 12.5px; }
+  .maker-price strong { font-size: 16px; }
+  .maker-price span { font-size: 12px; }
+  .quickview {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+  }
+  .quickview[open] { display: block; overflow-y: auto; }
+  .qv-media { min-height: 0; aspect-ratio: 1 / 1; }
+  .qv-body { max-height: none; padding: 24px 20px 40px; }
+  .qv-title { font-size: 26px; }
 }
