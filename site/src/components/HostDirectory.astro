@@ -115,11 +115,6 @@ const searchText = (host: Host) => [
               decoding="async"
             />
             <video class="maker-video" src={host.video} muted loop playsinline preload="none"></video>
-            {/* A shop's sign that a listing has video: a small play mark in
-                the corner. */}
-            <span class="maker-play" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" /></svg>
-            </span>
           </>
         ) : host.photo || host.wide ? (
           <img src={host.photo ?? host.wide} alt={host.specialty} loading="lazy" decoding="async" />
