@@ -4016,3 +4016,18 @@ a:hover { color: var(--color-accent); }
   .qv-body { max-height: none; padding: 24px 20px 40px; }
   .qv-title { font-size: 26px; }
 }
+
+/* — the calendar page — a cool grey-lilac ground with the day's workshops on
+   a white panel, so the videos sit on the brightest part of the page. */
+.page-today { background-color: #f0f2fb; background-image: none; }
+.page-today .daysessions { background: #fff; }
+@media (max-width: 720px) {
+  /* On a phone the panel runs edge to edge; the padding is the gutter, so
+     the tiles keep the width they had on the open page. */
+  .page-flush.page-today .daysessions {
+    background: #fff;
+    margin-left: calc(-1 * var(--gutter));
+    margin-right: calc(-1 * var(--gutter));
+    padding: 16px var(--gutter) 26px;
+  }
+}
