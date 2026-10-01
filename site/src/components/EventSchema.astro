@@ -8,7 +8,7 @@
  *  markup can never drift from the page. Sessions deep-link back to
  *  their card via the feed's #live-… anchors.
  */
-import { getSessions } from '../data/sessions.ts';
+import { capPerHostPerDay, getSessions } from '../data/sessions.ts';
 import { absolute, hostHref, sessionIso } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -21,7 +21,8 @@ interface Props {
 const { lang, pageUrl } = Astro.props;
 // Google caps how much markup it reads per page; the nearest sessions are
 // the ones a searcher can still act on anyway.
-const sessions = getSessions(lang).slice(0, 80);
+// The same sessions the calendar shows: two a day per host at most.
+const sessions = capPerHostPerDay(getSessions(lang)).slice(0, 80);
 
 const events = sessions.map((s) => ({
   '@type': 'Event',

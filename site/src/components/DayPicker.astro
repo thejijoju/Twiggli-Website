@@ -1,5 +1,5 @@
 ---
-import { getSessions, getOnRequest, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
+import { getSessions, getOnRequest, capPerHostPerDay, spreadByHost, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
 import { requestEmail } from '../data/site.ts';
@@ -14,7 +14,8 @@ import { ui } from '../data/i18n.ts';
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 
-const sessions = getSessions(lang);
+// Two a day per host at most, so one busy studio cannot fill the day.
+const sessions = capPerHostPerDay(getSessions(lang));
 const onRequest = getOnRequest(lang);
 const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 
@@ -232,6 +233,9 @@ const formatDeadline = (iso: string): string => {
   <div class="daysessions">
     {days.map((offset) => {
       const forDay = sessions.filter((s) => s.dayOffset === offset);
+      // The grid places tiles by this rather than by markup order, so a host's
+      // two sessions never sit next to each other; the list keeps time order.
+      const spread = spreadByHost(forDay);
       return (
         <div class="daygroup" data-day={offset} hidden={offset !== 0}>
           {forDay.length ? (
@@ -245,7 +249,7 @@ const formatDeadline = (iso: string): string => {
                   </h3>
                   <ul class="session-list">
                     {list.map((s) => (
-                      <li class="session" id={s.id} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                      <li class="session" id={s.id} style={`--spread:${spread.get(s)}`} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per

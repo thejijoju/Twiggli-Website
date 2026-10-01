@@ -367,6 +367,61 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
  *  from hosts' own schedules, and weekly-recurring classes expanded across
  *  the strip. Days with nothing real show the page's empty note; no
  *  invented filler. */
+/** At most `max` sessions from one host on any one day. A studio that runs
+ *  the same room five times an afternoon otherwise fills the day's listing on
+ *  its own. The ones kept are bookable before sold out, different workshops
+ *  before repeats, earliest first; the list keeps its order. A host's own
+ *  page still lists every date. */
+export function capPerHostPerDay<T extends Session>(list: T[], max = 2): T[] {
+  const groups = new Map<string, T[]>();
+  for (const s of list) {
+    const key = `${s.dayOffset}|${s.host.slug}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(s);
+  }
+  const keep = new Set<T>();
+  for (const group of groups.values()) {
+    // A stable sort, so equals stay earliest first.
+    const ranked = [...group].sort((a, b) => Number(!!a.soldOut) - Number(!!b.soldOut));
+    const titles = new Set<string>();
+    const fresh = ranked.filter((s) => !titles.has(s.title) && titles.add(s.title));
+    for (const s of [...fresh, ...ranked.filter((s) => !fresh.includes(s))].slice(0, max)) keep.add(s);
+  }
+  return list.filter((s) => keep.has(s));
+}
+
+/** The order to lay one day's sessions out in so that no host's two sit
+ *  side by side: time order, except that a session following one from the
+ *  same host gives way to the next one from someone else. Each pick also
+ *  looks ahead, so the day does not end on a pair with nothing left to put
+ *  between them. Returns each session's position. Where one host has most
+ *  of the day, they can't all be kept apart. */
+export function spreadByHost<T extends Session>(list: T[]): Map<T, number> {
+  const rest = [...list];
+  const order = new Map<T, number>();
+  let last: string | undefined;
+  // Whether `left` can still be laid out with no two of a host together,
+  // after a session from `after`: no host may hold more than every other
+  // place, and the one just placed one fewer than that.
+  const workable = (left: T[], after: string) => {
+    const counts = new Map<string, number>();
+    for (const s of left) counts.set(s.host.slug, (counts.get(s.host.slug) ?? 0) + 1);
+    for (const [host, n] of counts) {
+      if (n > (host === after ? Math.floor(left.length / 2) : Math.ceil(left.length / 2))) return false;
+    }
+    return true;
+  };
+  while (rest.length) {
+    const others = rest.map((s, i) => ({ s, i })).filter(({ s }) => s.host.slug !== last);
+    const ok = others.find(({ s, i }) => workable(rest.filter((_, j) => j !== i), s.host.slug));
+    const i = (ok ?? others[0])?.i ?? 0;
+    const [s] = rest.splice(i, 1);
+    order.set(s, order.size);
+    last = s.host.slug;
+  }
+  return order;
+}
+
 export function getSessions(lang: Lang): Session[] {
   const hosts = getHosts(lang);
   // Timeless sessions sort after timed ones within their day.

@@ -2887,6 +2887,10 @@ a:hover { color: var(--color-accent); }
   display: contents;
 }
 .daypicker[data-view='grid'] .daysessions .timegroup-head { display: none; }
+/* With the time headers gone the tiles can move: each takes the place the
+   build gave it (spreadByHost), so one host's two sessions are never side by
+   side. The markup stays in time order for the list view. */
+.daypicker[data-view='grid'] .daysessions .session { order: var(--spread, 0); }
 .daypicker[data-view='grid'] .daysessions .daypicker-empty { grid-column: 1 / -1; }
 .session-timechip { display: none; }
 .daypicker[data-view='grid'] .daysessions .session-thumb { position: relative; }
