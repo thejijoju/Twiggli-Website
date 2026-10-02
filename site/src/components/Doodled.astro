@@ -1,43 +1,50 @@
 ---
 /**
- * A few stars drawn around a headline in thin pen lines, as if someone had
- * doodled them in the margin: a curved four-point sparkle, a five-point star
- * done in one stroke without lifting the pen, a twinkle and a small ring.
- * Each line wobbles a little and none quite closes, which is what keeps
- * them from reading as icons.
+ * A few gold brush-stroke stars around a headline, as if painted in the
+ * margin: a burst with one long ray, a six-ray star and a small cross. Each
+ * ray is its own stroke (see lib/brush.ts) with a rough, dry edge, and they
+ * appear stroke by stroke, the way they would be painted.
  *
- * Wrap the heading: the wrapper is as wide as the text, so the stars follow
- * its last word whatever the language or length. The variant picks which
- * stars come and where they sit, so no two pages wear the same set.
+ * Wrap the heading: the stars are placed against where its words end (the
+ * script below), so they follow the last word whatever the language or
+ * length. The variant picks where they sit, so pages don't all match.
  */
+import { brushStars, brushId, type BrushStar } from '../lib/brush.ts';
+
 interface Props {
   variant?: 'a' | 'b' | 'c';
   class?: string;
 }
 const { variant = 'a', class: className } = Astro.props;
 
-const shapes = {
-  sparkle:
-    'M20.6 3.4C21.3 13.1 24.9 17.5 36.3 19.3C25.7 21.4 21.8 25.5 20.1 36.9C18.7 25.8 14.8 21.7 3.7 20.4C14.7 18.3 19.2 14 20.9 4.9',
-  star:
-    'M9.6 35.4Q14.4 19.5 20.3 4.3Q25.3 19.8 30.5 35.3Q17.3 25.9 4.1 15.9Q20.2 15.2 36.2 16.5Q22.4 26.9 7.9 36.8',
-  twinkle: 'M20.3 6.2Q20.9 20 19.6 33.9M8.2 12.6Q20.1 19.3 32.3 27.2M31.8 12.3Q20.6 20.6 8.4 27.8',
-  ring: 'M24.8 19.2C25.6 23.4 22 26.4 18.6 25.6C15.1 24.8 13.9 20.4 16.2 17.4C18.4 14.6 23.3 14.9 24.6 18.7',
-} as const;
-
-const sets: Record<NonNullable<Props['variant']>, (keyof typeof shapes)[]> = {
-  a: ['sparkle', 'star', 'ring'],
-  b: ['sparkle', 'twinkle', 'ring'],
-  c: ['star', 'sparkle', 'twinkle'],
+const sets: Record<NonNullable<Props['variant']>, BrushStar[]> = {
+  a: ['burst', 'twinkle', 'cross'],
+  b: ['burst', 'twinkle', 'cross'],
+  c: ['twinkle', 'burst', 'cross'],
 };
+const stars = sets[variant].map((shape) => ({ shape, id: brushId() }));
 ---
 
 <div class:list={['doodled', `doodled-${variant}`, className]}>
   <slot />
   <span class="doodles" aria-hidden="true">
-    {sets[variant].map((shape, i) => (
-      <svg class={`doodle doodle-${i + 1}`} viewBox="0 0 40 40" focusable="false">
-        <path d={shapes[shape]} pathLength="1" />
+    {stars.map(({ shape, id }, i) => (
+      <svg class={`doodle doodle-${i + 1} doodle-${shape}`} viewBox="0 0 100 100" focusable="false">
+        <defs>
+          {/* Roughens the edge into a dry-brush line. */}
+          <filter id={`${id}-f`} x="-15%" y="-15%" width="130%" height="130%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed={i + 4} result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <linearGradient id={`${id}-g`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#d4b04c" />
+            <stop offset="0.5" stop-color="#c39b33" />
+            <stop offset="1" stop-color="#ad8726" />
+          </linearGradient>
+        </defs>
+        <g filter={`url(#${id}-f)`} fill={`url(#${id}-g)`}>
+          {brushStars[shape].map((d, j) => <path d={d} style={`--stroke:${j}`} />)}
+        </g>
       </svg>
     ))}
   </span>
