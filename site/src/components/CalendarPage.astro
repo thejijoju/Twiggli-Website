@@ -5,6 +5,7 @@ import EventSchema from './EventSchema.astro';
 import { SITE } from '../data/seo.ts';
 import { ui } from '../data/i18n.ts';
 import { href, type Lang } from '../lib/url.ts';
+import Doodled from './Doodled.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -16,7 +17,9 @@ const t = ui(lang).calendarPage;
     <section class="page-head">
       {/* One heading: the place and the selected day together. The script
           rewrites it as the visitor moves along the day strip. */}
-      <h1 class="page-title" data-happening-title>{t.h1}</h1>
+      <Doodled variant="b">
+        <h1 class="page-title" data-happening-title>{t.h1}</h1>
+      </Doodled>
     </section>
 
     <section class="section section-flush">

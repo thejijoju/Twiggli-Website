@@ -2,6 +2,7 @@
 import { filterCopy } from '../data/content.ts';
 import { directoryCopy, seasonOccasion, type OccasionKey, type Season } from '../data/occasions.ts';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import Doodled from './Doodled.astro';
 
 /**
  * The head of the group-bookings directory, laid out like a marketplace
@@ -64,7 +65,9 @@ const pills = [
   </div>
 
   <header class="dir-head">
-    <h1 class="dir-title">{head.title}</h1>
+    <Doodled variant="c">
+      <h1 class="dir-title">{head.title}</h1>
+    </Doodled>
     <p class="dir-sub">{head.sub}</p>
   </header>
 

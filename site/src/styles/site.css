@@ -4020,3 +4020,91 @@ a:hover { color: var(--color-accent); }
   .qv-body { max-height: none; padding: 24px 20px 40px; }
   .qv-title { font-size: 26px; }
 }
+
+/* — doodled stars — a few pen-line stars around a headline (Doodled.astro).
+   Thin, in the brand violet at partial strength, so they read as a margin
+   sketch rather than as decoration competing with the words. They draw
+   themselves in once, one after the other, and the main one turns a
+   little, slowly, from then on. */
+.doodled { position: relative; width: fit-content; max-width: 100%; }
+.doodled-c { margin-inline: auto; }
+.doodles { position: absolute; inset: 0; pointer-events: none; }
+.doodle {
+  position: absolute;
+  overflow: visible;
+  color: var(--color-accent);
+  opacity: 0.62;
+}
+.doodle path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.doodle-3 { opacity: 0.5; }
+
+/* a — the home headline: a sparkle off its top corner, a small star below
+   it, a ring by the first line. */
+.doodled-a .doodle-1 { width: 38px; height: 38px; top: -30px; right: -46px; }
+.doodled-a .doodle-2 { width: 19px; height: 19px; top: 20px; right: -70px; transform: rotate(-12deg); }
+.doodled-a .doodle-3 { width: 12px; height: 12px; bottom: 6px; left: -24px; }
+/* b — a left-set page title: sparkle and twinkle after it, a ring before. */
+.doodled-b .doodle-1 { width: 32px; height: 32px; top: -22px; right: -42px; }
+.doodled-b .doodle-2 { width: 17px; height: 17px; top: 18px; right: -64px; transform: rotate(8deg); }
+.doodled-b .doodle-3 { width: 10px; height: 10px; top: -6px; left: -22px; }
+/* c — a centred title: one on each side. */
+.doodled-c .doodle-1 { width: 23px; height: 23px; top: -8px; left: -48px; transform: rotate(-10deg); }
+.doodled-c .doodle-2 { width: 32px; height: 32px; top: -24px; right: -46px; }
+.doodled-c .doodle-3 { width: 15px; height: 15px; bottom: -2px; right: -60px; }
+
+/* On a phone the heading fills the width, so the stars move up into the
+   air above it, kept inside the screen. */
+@media (max-width: 720px) {
+  .doodled .doodle-1 { width: 26px; height: 26px; top: -34px; right: 4px; left: auto; bottom: auto; transform: none; }
+  .doodled .doodle-2 { width: 13px; height: 13px; top: -14px; right: 36px; left: auto; bottom: auto; }
+  .doodled .doodle-3 { display: none; }
+}
+
+/* Once the script has found where the words end (a, b): the sparkle and
+   its small companion sit off the end of the first line, the ring after the
+   last word. --room is the distance to the screen's right edge, so they may
+   pass the heading's box but never leave the screen. */
+.doodled.is-measured:not(.doodled-c) .doodle-1 {
+  left: min(calc(var(--first-end) + 6px), calc(var(--room) - 40px)); right: auto; top: -30px;
+}
+.doodled.is-measured:not(.doodled-c) .doodle-2 {
+  left: min(calc(var(--first-end) + 38px), calc(var(--room) - 24px)); right: auto; top: 10px;
+}
+.doodled.is-measured:not(.doodled-c) .doodle-3 { display: none; }
+.doodled.is-measured.has-ring:not(.doodled-c) .doodle-3 {
+  display: block; width: 13px; height: 13px; right: auto; bottom: auto;
+  left: calc(var(--last-end) + 16px); top: calc(var(--last-mid) - 4px);
+}
+@media (max-width: 720px) {
+  /* Above the first line rather than beside it: a phone's lines run to the
+     edge. */
+  .doodled.is-measured:not(.doodled-c) .doodle-1 {
+    left: min(calc(var(--first-end) + 2px), calc(var(--room) - 36px)); top: -32px;
+  }
+  .doodled.is-measured:not(.doodled-c) .doodle-2 {
+    left: min(calc(var(--first-end) - 16px), calc(var(--room) - 56px)); top: -12px;
+  }
+  .doodled.is-measured.has-ring:not(.doodled-c) .doodle-3 { width: 10px; height: 10px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .doodle path { animation: doodle-draw 1.1s cubic-bezier(0.5, 0, 0.3, 1) both; }
+  .doodle-1 path { animation-delay: 0.35s; }
+  .doodle-2 path { animation-delay: 0.85s; }
+  .doodle-3 path { animation-delay: 1.25s; }
+  .doodle-1 { animation: doodle-turn 9s ease-in-out 1.6s infinite; }
+}
+@keyframes doodle-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes doodle-turn {
+  0%, 100% { rotate: 0deg; scale: 1; }
+  50% { rotate: 9deg; scale: 1.06; }
+}

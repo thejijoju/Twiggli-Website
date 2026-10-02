@@ -5,6 +5,7 @@ import { getSteps } from '../data/content.ts';
 import { ui } from '../data/i18n.ts';
 import { appUrl } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
+import Doodled from './Doodled.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -16,7 +17,9 @@ const steps = getSteps(lang);
   <div class="container">
     <section class="page-head">
       <span class="kicker">{t.kicker}</span>
-      <h1 class="page-title">{t.h1}</h1>
+      <Doodled variant="b">
+        <h1 class="page-title">{t.h1}</h1>
+      </Doodled>
       <p class="page-lede">{t.lede}</p>
     </section>
 

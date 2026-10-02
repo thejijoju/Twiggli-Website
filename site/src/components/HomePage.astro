@@ -13,6 +13,7 @@ import SiteSchema from './SiteSchema.astro';
 import { getHosts } from '../data/content.ts';
 import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
+import Doodled from './Doodled.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -24,10 +25,12 @@ const hosts = getHosts(lang);
   <div class="container">
     <section class="hero">
       <div class="hero-panel">
-        <h1 class="hero-title">
-          <span>{t.h1a}</span>
-          <span>{t.h1b}</span>
-        </h1>
+        <Doodled variant="a">
+          <h1 class="hero-title">
+            <span>{t.h1a}</span>
+            <span>{t.h1b}</span>
+          </h1>
+        </Doodled>
         <div class="hero-quote">
           <div class="hero-copy">
             <p><strong>{t.p1a}<span class="mark">{t.p1mark}</span>{t.p1b}</strong></p>
