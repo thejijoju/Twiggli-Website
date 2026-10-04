@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HostDirectory from './HostDirectory.astro';
 import HostFilters from './HostFilters.astro';
-import { getHosts } from '../data/content.ts';
+import { getHosts, sameHostAs } from '../data/content.ts';
 import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
@@ -11,7 +11,9 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = ui(lang);
 const c = t.corporate;
-const hosts = getHosts(lang);
+// One card per person: a host listed twice shows once, under the card
+// that carries the team events.
+const hosts = getHosts(lang).filter((h) => !sameHostAs[h.slug]);
 // The headline follows the season of the build; the site rebuilds daily.
 const season = seasonOf();
 ---

@@ -1486,6 +1486,16 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   tessia: { area: 'Prenzlauer Berg' }, tinkery: { area: 'Marzahn-Hellersdorf / Mitte' },
 };
 
+/** Hosts on the site twice over — a school and its teacher, say — mapped to
+ *  the card that stands for them on the group-bookings page, so a team
+ *  lead does not meet the same person twice. The other card keeps its
+ *  calendar dates and its own page. */
+export const sameHostAs: Record<string, string> = {
+  // Anybody Can Whittle is Nicole's school; her own card carries the team
+  // events, including the ones she brings to your venue.
+  whittle: 'nicole',
+};
+
 export const getHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
     const reel = reels[h.slug];
