@@ -7,8 +7,10 @@
  * screen starts open and remembers a close; a phone starts closed.
  *
  * One marker per neighbourhood with something on the day on show, for the
- * filters in force other than the neighbourhood itself: the price where
- * there is a single workshop, otherwise how many. A marker picks its
+ * filters in force other than the neighbourhood itself, labelled with a
+ * price as a rental map is: a single workshop's own, or "from" the
+ * cheapest where there are several. Only where none has a price does a
+ * marker fall back to how many. A marker picks its
  * neighbourhood through the filter bar's own district pills, so the list,
  * the pills and the map never disagree. Hovering a workshop lights its
  * marker.
@@ -86,18 +88,49 @@ export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: ()
       });
       map.touchZoomRotate.disableRotation();
       map.addControl(new ml.NavigationControl({ showCompass: false }), 'bottom-right');
+      map.on('zoomend', () => declutter());
       // The pane changes size with the layout, not only with the window.
       new ResizeObserver(() => map?.resize()).observe(canvas);
     })());
 
   const setState = (state: State, remember = true) => {
     root.dataset.map = state;
+    // The expand button's name, for when a narrow map shows only its arrow.
+    if (expandBtn) {
+      const name = (state === 'expanded' ? expandBtn.dataset.less : expandBtn.dataset.more) ?? '';
+      expandBtn.setAttribute('aria-label', name);
+      expandBtn.title = name;
+    }
     // A phone's map covers the page; the page under it should not scroll.
     document.documentElement.classList.toggle('map-locked', state !== 'closed' && !wide.matches);
     if (remember && wide.matches && state !== 'expanded') {
       try { localStorage.setItem(STORE, state); } catch { /* private mode */ }
     }
     if (state !== 'closed') load().then(update);
+  };
+
+  /** Price pills are wide, and the middle of the city is close-packed: where
+   *  two would overlap at the zoom in force, the later (more southerly) one
+   *  steps down below the other. Zoomed in far enough, every pill sits back
+   *  on its own neighbourhood. */
+  const declutter = () => {
+    if (!map) return;
+    const placed: { l: number; r: number; t: number; b: number }[] = [];
+    const order = [...markers.entries()].sort((a, b) => places[b[0]][1] - places[a[0]][1]);
+    for (const [name, m] of order) {
+      const at = map.project(places[name]);
+      const w = m.el.offsetWidth, h = m.el.offsetHeight;
+      const box = (dy: number) => ({ l: at.x - w / 2, r: at.x + w / 2, t: at.y - h / 2 + dy, b: at.y + h / 2 + dy });
+      let dy = 0;
+      for (let i = 0; i < 6; i++) {
+        const me = box(dy);
+        const hit = placed.find((p) => me.l < p.r + 3 && me.r > p.l - 3 && me.t < p.b + 3 && me.b > p.t - 3);
+        if (!hit) break;
+        dy = hit.b + 4 - (at.y - h / 2);
+      }
+      m.marker.setOffset([0, dy]);
+      placed.push(box(dy));
+    }
   };
 
   /** Fits the map round the day's markers, once per day shown. */
@@ -110,16 +143,21 @@ export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: ()
     framed = day;
     const bounds = new lib.LngLatBounds(points[0], points[0]);
     for (const p of points) bounds.extend(p);
-    map.fitBounds(bounds, { padding: { top: 90, bottom: 70, left: 70, right: 70 }, maxZoom: 12.6, duration: 500 });
+    map.fitBounds(bounds, { padding: { top: 76, bottom: 44, left: 36, right: 36 }, maxZoom: 12.6, duration: 500 });
   };
 
   const update = () => {
-    const counts = new Map<string, { n: number; price: string }>();
+    // Per neighbourhood: how many, and the cheapest price shown on a card
+    // ("€76–100" and "€119+" count by their first figure; a free one by 0).
+    const counts = new Map<string, { n: number; price: string; low: number }>();
     for (const li of hooks.sessions()) {
       const name = li.dataset.district || '';
-      const entry = counts.get(name) ?? { n: 0, price: '' };
+      const entry = counts.get(name) ?? { n: 0, price: '', low: Infinity };
       entry.n++;
-      if (entry.n === 1) entry.price = li.querySelector('.session-price')?.firstChild?.textContent?.trim() ?? '';
+      const text = li.querySelector('.session-price')?.firstChild?.textContent?.trim() ?? '';
+      const figure = text.match(/\d+(?:[.,]\d+)?/);
+      const value = figure ? Number(figure[0].replace(',', '.')) : text ? 0 : Infinity;
+      if (value < entry.low) Object.assign(entry, { low: value, price: text });
       counts.set(name, entry);
     }
     const district = hooks.district();
@@ -164,18 +202,25 @@ export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: ()
         m = { marker: new lib.Marker({ element: wrap, anchor: 'center' }).setLngLat(places[name]).addTo(map), el, wrap };
         markers.set(name, m);
       }
-      const single = entry.n === 1 && !!entry.price;
-      m.el.textContent = single ? entry.price : String(entry.n);
-      m.el.classList.toggle('is-price', single);
+      // "€76–100" or "€119+" already reads as a starting price; "from" goes
+      // in front of the figure alone.
+      const cheapest = entry.price.match(/^\D*\d+(?:[.,]\d+)?/)?.[0] ?? entry.price;
+      m.el.textContent = !entry.price
+        ? String(entry.n)
+        : entry.n === 1
+          ? entry.price
+          : (pane.dataset.from ?? '{p}').replace('{p}', cheapest);
+      m.el.classList.toggle('is-price', !!entry.price);
       m.el.classList.toggle('is-active', district === name);
       m.el.classList.toggle('is-hot', hot === name);
       // The lit and the chosen marker sit above their neighbours.
       m.wrap.style.zIndex = hot === name ? '3' : district === name ? '2' : '';
-      m.el.title = name;
+      m.el.title = `${name} · ${entry.n}`;
       m.el.setAttribute('aria-label', `${name}: ${entry.n}`);
       m.el.setAttribute('aria-pressed', String(district === name));
     }
     frame([...counts.keys()]);
+    declutter();
   };
 
   // A workshop under the pointer lights its neighbourhood on the map.
