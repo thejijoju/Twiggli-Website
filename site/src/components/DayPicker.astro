@@ -4,6 +4,8 @@ import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
 import { requestEmail } from '../data/site.ts';
 import HostMonogram from './HostMonogram.astro';
+import DayMap from './DayMap.astro';
+import { mapCopy } from '../data/mapCopy.ts';
 import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 
@@ -138,6 +140,7 @@ const formatDeadline = (iso: string): string => {
   class="daypicker"
   data-daypicker
   data-view="grid"
+  data-map="open"
   data-locale={LANG_META[lang].locale}
   data-client-copy={JSON.stringify(clientCopy[lang])}
   data-today={t.today}
@@ -222,6 +225,12 @@ const formatDeadline = (iso: string): string => {
 
   {/* Grid ↔ list. Grid is the default; the choice sticks per visitor. */}
   <div class="view-toggle" role="group" aria-label={`${t.viewGrid} / ${t.viewList}`}>
+    {/* The map opens beside the workshops (DayMap below); this brings it
+        back once closed, and is how a phone opens it. */}
+    <button class="view-btn map-btn" type="button" data-map-open aria-label={mapCopy[lang].map} title={mapCopy[lang].map}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
+      <span>{mapCopy[lang].map}</span>
+    </button>
     <button class="view-btn is-active" type="button" data-view-btn="grid" aria-label={t.viewGrid} title={t.viewGrid}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
     </button>
@@ -230,6 +239,8 @@ const formatDeadline = (iso: string): string => {
     </button>
   </div>
 
+  {/* The workshops and, beside them, the map. */}
+  <div class="dayresults">
   <div class="daysessions">
     {days.map((offset) => {
       const forDay = sessions.filter((s) => s.dayOffset === offset);
@@ -391,6 +402,8 @@ const formatDeadline = (iso: string): string => {
       );
     })}
   </div>
+  <DayMap lang={lang} />
+  </div>
 
   {/* Workshops without published dates sit under the day feed, whatever
       day is selected — the host schedules them around the inquiry. */}
@@ -487,6 +500,7 @@ const formatDeadline = (iso: string): string => {
 
 <script>
   import { startReelWalk } from '../lib/reelwalk.ts';
+  import { startDayMap } from '../lib/daymap.ts';
 
   // The build is static, so the calendar cannot know what "today" is. Every
   // chip's date is resolved here against the visitor's own clock, and the
@@ -591,6 +605,9 @@ const formatDeadline = (iso: string): string => {
     const pillClear = root.querySelector<HTMLButtonElement>('.pill-clear');
     const pillDone = root.querySelector<HTMLButtonElement>('.pill-done');
 
+    // Set once the map is running (below); the filters tell it what to show.
+    let dayMap: { update: () => void } | undefined;
+
     const applyFilters = () => {
       let shown = 0;
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
@@ -638,6 +655,7 @@ const formatDeadline = (iso: string): string => {
           : (pillDone.dataset.many ?? '').replace('0', String(shown));
         pillDone.textContent = (pillDone.dataset.show ?? '%s').replace('%s', label);
       }
+      dayMap?.update();
     };
 
     activityPills.forEach((pill) => {
@@ -695,6 +713,19 @@ const formatDeadline = (iso: string): string => {
         pillBtn.focus();
       });
     }
+
+    dayMap = startDayMap(root, {
+      // Every filter but the district: the map is where the district is chosen.
+      sessions: () => {
+        const day = groups.find((g) => !g.hidden);
+        return Array.from(day?.querySelectorAll<HTMLElement>('.session') ?? []).filter((li) =>
+          (activityFilter === 'all' || li.dataset.activity === activityFilter) &&
+          (!kidsOnly || li.dataset.kids === 'true'));
+      },
+      district: () => districtFilter,
+      pick: (name) => districtPills.find((p) => p.dataset.districtFilter === name)?.click(),
+      day: () => groups.find((g) => !g.hidden)?.dataset.day ?? '',
+    });
 
     // First paint: the bar and the count start out true.
     applyFilters();

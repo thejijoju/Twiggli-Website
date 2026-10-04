@@ -1,84 +1,50 @@
 ---
 /**
- * The calendar's map: Berlin's districts drawn flat, with a bubble on each
- * neighbourhood that has something on the chosen day, sized and numbered by
- * how many. Picking one filters the day to it, through the same district
- * pills the filter bar has (DayPicker's script drives all of this). Beside
- * the map, the same neighbourhoods as a ranked list, which is also how the
- * map is used without a pointer.
+ * The calendar's map pane, laid out like a rental site's: on a wide screen
+ * it stands beside the workshops and stays put while they scroll, and can
+ * be widened over them or closed; on a phone it opens over the page.
  *
- * It places neighbourhoods, never venues: an address on a map is a studio
- * found without us. Drawn here rather than embedded from a map service, so
- * nothing is fetched from a third party and no consent is needed for it.
+ * Streets, parks and water are OpenStreetMap, cut to Berlin and served from
+ * this site (public/map/, refreshed by the fetch-map workflow), drawn by
+ * MapLibre — no map service sees the visitor, so no consent is asked for.
+ * Markers sit on each neighbourhood's centre, never on a venue: the map
+ * says which Kiez, and the address comes with the booking.
+ *
+ * This is the markup and its words; lib/daymap.ts runs it, from
+ * DayPicker's script.
  */
-import { districts as shapes, mapSize, places } from '../data/berlinMap.ts';
+import { places } from '../data/places.ts';
+import { mapCopy } from '../data/mapCopy.ts';
 import type { Lang } from '../lib/url.ts';
 
-interface Props {
-  lang: Lang;
-  /** Every neighbourhood the calendar names, in the filter bar's order. */
-  districts: string[];
-  /** The filter bar's word for "all". */
-  all: string;
-}
-const { lang, districts, all } = Astro.props;
+interface Props { lang: Lang }
+const { lang } = Astro.props;
 
-const mapCopy: Record<Lang, { map: string; title: string; hint: string; none: string }> = {
-  en: { map: 'Map', title: 'Workshops by neighbourhood', hint: 'Pick a neighbourhood to see only what’s on there.', none: 'Nothing on this day with these filters.' },
-  de: { map: 'Karte', title: 'Workshops nach Kiez', hint: 'Wähl einen Kiez, um nur zu sehen, was dort los ist.', none: 'An diesem Tag ist mit diesen Filtern nichts los.' },
-  fr: { map: 'Carte', title: 'Ateliers par quartier', hint: 'Choisissez un quartier pour ne voir que ce qui s’y passe.', none: 'Rien ce jour-là avec ces filtres.' },
-  es: { map: 'Mapa', title: 'Talleres por barrio', hint: 'Elige un barrio para ver solo lo que hay allí.', none: 'No hay nada ese día con estos filtros.' },
-  it: { map: 'Mappa', title: 'Workshop per quartiere', hint: 'Scegli un quartiere per vedere solo cosa c’è lì.', none: 'Niente quel giorno con questi filtri.' },
-  nl: { map: 'Kaart', title: 'Workshops per wijk', hint: 'Kies een wijk om alleen te zien wat daar te doen is.', none: 'Niets op deze dag met deze filters.' },
-  pl: { map: 'Mapa', title: 'Warsztaty według dzielnic', hint: 'Wybierz dzielnicę, aby zobaczyć tylko to, co się tam dzieje.', none: 'Tego dnia nic z tymi filtrami.' },
-  tr: { map: 'Harita', title: 'Semtlere göre atölyeler', hint: 'Yalnızca orada olanları görmek için bir semt seç.', none: 'Bu filtrelerle o gün bir şey yok.' },
-};
 const c = mapCopy[lang];
-
-/* Which side of its bubble a name goes on. The middle of the city is
-   crowded, so the neighbours there face away from each other. */
-const side: Record<string, 'left' | 'right' | 'top' | 'bottom'> = {
-  Wedding: 'left', Moabit: 'left', Charlottenburg: 'left', Friedenau: 'left', Spandau: 'top',
-  Friedrichshain: 'top', Mitte: 'left', Gesundbrunnen: 'top', 'Berliner Wald': 'bottom',
-  Potsdam: 'bottom', Zehlendorf: 'bottom', Schöneberg: 'left', Kreuzberg: 'bottom',
-};
-const pinned = districts.filter((d) => places[d]);
 ---
 
-<section class="daymap" data-daymap aria-label={c.title}>
-  <div class="daymap-canvas">
-    <svg viewBox={`0 0 ${mapSize.width} ${mapSize.height}`} role="img" aria-label={c.title} data-daymap-svg>
-      <g class="daymap-land" aria-hidden="true">
-        {shapes.map((s) => <path d={s.d} />)}
-      </g>
-      <g class="daymap-pins">
-        {pinned.map((name) => (
-          <g
-            class="daymap-pin is-empty"
-            data-place={name}
-            data-side={side[name] ?? 'right'}
-            transform={`translate(${places[name][0]} ${places[name][1]})`}
-            aria-hidden="true"
-          >
-            <circle r="4" />
-            <text class="daymap-n" dy="0.36em"></text>
-            <text class="daymap-label">{name}</text>
-          </g>
-        ))}
-      </g>
-    </svg>
-  </div>
-  <div class="daymap-side">
-    <h2 class="daymap-title">{c.title}</h2>
-    <p class="daymap-hint">{c.hint}</p>
-    <ul class="daymap-list">
-      <li><button type="button" class="daymap-item is-active" data-place="all">{all}<span class="daymap-count"></span></button></li>
-      {districts.map((name) => (
-        <li data-item={name}>
-          <button type="button" class="daymap-item" data-place={name}>{name}<span class="daymap-count"></span></button>
-        </li>
-      ))}
-    </ul>
-    <p class="daymap-none" hidden>{c.none}</p>
-  </div>
-</section>
+<aside
+  class="daymap-pane"
+  data-daymap
+  data-places={JSON.stringify(places)}
+  data-show-one={c.showOne}
+  data-show-many={c.showMany}
+  aria-label={c.label}
+>
+  <div class="daymap-canvas" data-daymap-canvas></div>
+  <button type="button" class="daymap-ctl daymap-expand" data-map-expand>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
+    <span class="daymap-expand-more">{c.expand}</span>
+    <span class="daymap-expand-less">{c.collapse}</span>
+  </button>
+  <button type="button" class="daymap-ctl daymap-close" data-map-close>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+    <span>{c.close}</span>
+  </button>
+  {/* Online sessions have no place, so they get a chip of their own. */}
+  <button type="button" class="daymap-online" data-map-online hidden>
+    {c.online} <strong></strong>
+  </button>
+  {/* On a phone, the way back to the list once a Kiez is picked. */}
+  <button type="button" class="btn btn-primary daymap-show" data-map-show hidden></button>
+</aside>
