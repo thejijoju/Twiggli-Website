@@ -4,7 +4,8 @@
  * Three states, on the day picker as data-map: "open" — on a wide screen
  * the map stands beside the workshops, on a phone it covers the page;
  * "expanded" — on a wide screen it takes the whole width; "closed". A wide
- * screen starts open and remembers a close; a phone starts closed.
+ * screen always starts open — the map is the view, closing it is for this
+ * visit only; a phone starts closed, since there the map covers the list.
  *
  * One marker per neighbourhood with something on the day on show, for the
  * filters in force other than the neighbourhood itself, labelled with a
@@ -34,7 +35,6 @@ export interface DayMapHooks {
 
 type State = 'open' | 'expanded' | 'closed';
 const WIDE = '(min-width: 1100px)';
-const STORE = 'twiggli-map';
 
 export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: () => void } {
   const pane = root.querySelector<HTMLElement>('[data-daymap]');
@@ -93,7 +93,7 @@ export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: ()
       new ResizeObserver(() => map?.resize()).observe(canvas);
     })());
 
-  const setState = (state: State, remember = true) => {
+  const setState = (state: State) => {
     root.dataset.map = state;
     // The expand button's name, for when a narrow map shows only its arrow.
     if (expandBtn) {
@@ -103,9 +103,6 @@ export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: ()
     }
     // A phone's map covers the page; the page under it should not scroll.
     document.documentElement.classList.toggle('map-locked', state !== 'closed' && !wide.matches);
-    if (remember && wide.matches && state !== 'expanded') {
-      try { localStorage.setItem(STORE, state); } catch { /* private mode */ }
-    }
     if (state !== 'closed') load().then(update);
   };
 
@@ -246,30 +243,20 @@ export function startDayMap(root: HTMLElement, hooks: DayMapHooks): { update: ()
   expandBtn?.addEventListener('click', () => setState(root.dataset.map === 'expanded' ? 'open' : 'expanded'));
   onlineBtn?.addEventListener('click', () => hooks.pick(hooks.district() === 'Online' ? 'all' : 'Online'));
   showBtn?.addEventListener('click', () => {
-    setState('closed', false);
+    setState('closed');
     root.querySelector('.daysessions')?.scrollIntoView({ block: 'start' });
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !wide.matches && root.dataset.map !== 'closed') setState('closed', false);
+    if (event.key === 'Escape' && !wide.matches && root.dataset.map !== 'closed') setState('closed');
   });
   // Crossing the breakpoint: a phone never inherits a desktop's open map.
-  wide.addEventListener('change', () => {
-    if (!wide.matches) setState('closed', false);
-    else {
-      let saved = 'open';
-      try { saved = localStorage.getItem(STORE) || 'open'; } catch { /* private mode */ }
-      setState(saved === 'closed' ? 'closed' : 'open', false);
-    }
-  });
+  wide.addEventListener('change', () => setState(wide.matches ? 'open' : 'closed'));
 
-  let start: State = 'closed';
-  if (wide.matches) {
-    let saved = 'open';
-    try { saved = localStorage.getItem(STORE) || 'open'; } catch { /* private mode */ }
-    start = saved === 'closed' ? 'closed' : 'open';
-  }
+  // An earlier version remembered a close; forget it, so no one is left
+  // without the map.
+  try { localStorage.removeItem('twiggli-map'); } catch { /* private mode */ }
   root.dataset.mapLive = '';
-  setState(start, false);
+  setState(wide.matches ? 'open' : 'closed');
 
   return { update };
 }
