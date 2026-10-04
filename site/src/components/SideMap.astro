@@ -1,0 +1,39 @@
+---
+/**
+ * The map pane beside a list, laid out like a rental site's search: on a
+ * wide screen it stands beside the list and stays put while it scrolls,
+ * and can be widened over it or closed; on a phone it opens over the page.
+ * Used by the calendar (DayMap.astro) and the studio page (SpacesPage).
+ *
+ * Streets, parks and water are OpenStreetMap, cut to Berlin and served from
+ * this site (public/map/, refreshed by the fetch-map workflow), drawn by
+ * MapLibre — no map service sees the visitor, so no consent is asked for.
+ *
+ * This is the markup and its words; lib/sidemap.ts runs it. Anything else
+ * a page wants on the map goes in the slot; data-* attributes pass through
+ * to the pane for the page's own script.
+ */
+import { mapCopy } from '../data/mapCopy.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  [attr: `data-${string}`]: string | undefined;
+}
+const { lang, ...data } = Astro.props;
+const c = mapCopy[lang];
+---
+
+<aside class="daymap-pane" data-sidemap aria-label={c.label} {...data}>
+  <div class="daymap-canvas" data-sidemap-canvas></div>
+  <button type="button" class="daymap-ctl daymap-expand" data-map-expand data-more={c.expand} data-less={c.collapse} aria-label={c.expand} title={c.expand}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
+    <span class="daymap-expand-more">{c.expand}</span>
+    <span class="daymap-expand-less">{c.collapse}</span>
+  </button>
+  <button type="button" class="daymap-ctl daymap-close" data-map-close>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+    <span>{c.close}</span>
+  </button>
+  <slot />
+</aside>

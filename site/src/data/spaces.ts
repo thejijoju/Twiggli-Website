@@ -21,6 +21,10 @@ export type Space = {
   name: string;
   address: string;
   district: string;
+  /** Where the address is, as [longitude, latitude], for the studio map —
+   *  looked up from the address with the geocode workflow. The address is
+   *  on the card anyway, so the pin can sit on the door. */
+  at: [number, number];
   /** Pictures of the room itself, under /public/img/spaces. The first leads
    *  the card where the host has no reel; otherwise they sit in a row under
    *  it. */
@@ -52,6 +56,7 @@ export const spaces: Space[] = [
     name: 'Gestaltwandel',
     address: 'Koloniestraße 111, 13359 Berlin',
     district: 'Gesundbrunnen',
+    at: [13.38101, 52.56137],
     photos: ['/img/spaces/celina-1.jpg', '/img/spaces/celina-2.jpg', '/img/spaces/celina-3.jpg'],
     // Her own rate, as she gave it to us.
     price: {
@@ -103,6 +108,7 @@ export const spaces: Space[] = [
     name: 'Kunstraum Heartspace',
     address: 'Danziger Straße 172, 10407 Berlin',
     district: 'Prenzlauer Berg',
+    at: [13.44007, 52.53244],
     photos: ['/img/spaces/heartspace-1.jpg', '/img/spaces/heartspace-2.jpg', '/img/spaces/heartspace-3.jpg', '/img/spaces/heartspace-4.jpg'],
     size: '35 m²',
     suits: {
@@ -166,6 +172,7 @@ export const spaces: Space[] = [
     name: 'Atelier Friedrichshagen',
     address: 'Fürstenwalder Damm 424, 12587 Berlin',
     district: 'Friedrichshagen',
+    at: [13.61806, 52.45522],
     photos: ['/img/spaces/friedrichshagen-1.jpg', '/img/spaces/friedrichshagen-2.jpg', '/img/spaces/friedrichshagen-3.jpg', '/img/spaces/friedrichshagen-4.jpg'],
     badge: {
       en: 'LGBTQ+ safe space',
@@ -247,6 +254,7 @@ export const spaces: Space[] = [
     name: 'Coffee and Bananas',
     address: 'Greifenhagener Str. 19',
     district: 'Prenzlauer Berg',
+    at: [13.41634, 52.54854],
     suits: {
       en: 'Seminars · tastings · private breakfasts · small celebrations',
       de: 'Seminare · Tastings · private Frühstücke · kleine Feiern',
@@ -273,6 +281,7 @@ export const spaces: Space[] = [
     name: 'Ohma Studio',
     address: 'Boxhagener Str. 110',
     district: 'Friedrichshain',
+    at: [13.45705, 52.51322],
     suits: {
       en: 'Workshops · courses · co-working days · small groups',
       de: 'Workshops · Kurse · Co-Working-Tage · kleine Gruppen',

@@ -137,7 +137,7 @@ const formatDeadline = (iso: string): string => {
 ---
 
 <div
-  class="daypicker"
+  class="daypicker has-sidemap"
   data-daypicker
   data-view="grid"
   data-map="open"
@@ -240,8 +240,8 @@ const formatDeadline = (iso: string): string => {
   </div>
 
   {/* The workshops and, beside them, the map. */}
-  <div class="dayresults">
-  <div class="daysessions">
+  <div class="dayresults sidemap-results">
+  <div class="daysessions sidemap-list">
     {days.map((offset) => {
       const forDay = sessions.filter((s) => s.dayOffset === offset);
       // The grid places tiles by this rather than by markup order, so a host's

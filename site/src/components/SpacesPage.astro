@@ -4,11 +4,14 @@
  *  lands as a mail like every other request on the site. */
 import Base from '../layouts/Base.astro';
 import HostMonogram from './HostMonogram.astro';
+import SideMap from './SideMap.astro';
+import { mapCopy } from '../data/mapCopy.ts';
 import { getHosts } from '../data/content.ts';
 import { spaces } from '../data/spaces.ts';
 import { ui } from '../data/i18n.ts';
 import { hostHref } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
+import { slugify } from '../data/sessions.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -25,6 +28,24 @@ const cards = spaces.map((space) => {
   return { space, host, lead, strip };
 });
 const nums = ['01', '02', '03'];
+
+/* The map beside the cards, as on the calendar: a pin on each studio's
+   door (the address is on the card), labelled with its hourly rate — "from"
+   the cheapest room where a space lets more than one. */
+const m = mapCopy[lang];
+const idFor = (name: string) => slugify(name);
+const rateFor = (price?: Record<Lang, string>) => {
+  const figures = [...(price?.en ?? '').matchAll(/€\s?(\d+(?:[.,]\d+)?)/g)].map((x) => Number(x[1].replace(',', '.')));
+  if (!figures.length) return t.priceOnRequest;
+  const low = `€${Math.min(...figures)}/h`;
+  return figures.length > 1 ? m.from.replace('{p}', low) : low;
+};
+const marks = spaces.map((space) => ({
+  id: idFor(space.name),
+  at: space.at,
+  label: rateFor(space.price),
+  title: `${space.name} · ${space.district}`,
+}));
 ---
 
 <Base title={t.title} description={t.description} lang={lang}>
@@ -40,10 +61,18 @@ const nums = ['01', '02', '03'];
 
     <hr class="rule" />
 
-    <section class="section">
-      <div class="space-grid">
+    <section class="section has-sidemap" data-spacemap data-map="open">
+      {/* Brings the map back once closed, and is how a phone opens it. */}
+      <div class="sidemap-bar">
+        <button class="view-btn map-btn" type="button" data-map-open aria-label={m.map} title={m.map}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
+          <span>{m.map}</span>
+        </button>
+      </div>
+      <div class="sidemap-results">
+      <div class="space-grid sidemap-list">
         {cards.map(({ space, host, lead, strip }) => (
-          <article class="space-card">
+          <article class="space-card" id={`space-${idFor(space.name)}`} data-space={idFor(space.name)}>
             <div class="space-visuals">
             <div class="space-media">
               {/* Which part of town, on the picture rather than in the
@@ -107,6 +136,8 @@ const nums = ['01', '02', '03'];
           </article>
         ))}
       </div>
+      <SideMap lang={lang} data-spaces={JSON.stringify(marks)} />
+      </div>
       <p class="form-note space-note">{t.note}</p>
     </section>
 
@@ -136,3 +167,39 @@ const nums = ['01', '02', '03'];
     </section>
   </div>
 </Base>
+
+<script>
+  import { startSideMap, type Mark } from '../lib/sidemap.ts';
+
+  // Picking a pin brings its studio's card into view and marks it; a card
+  // under the pointer lights its pin.
+  const root = document.querySelector<HTMLElement>('[data-spacemap]');
+  const pane = root?.querySelector<HTMLElement>('[data-sidemap]');
+  if (root && pane) {
+    const marks: Mark[] = JSON.parse(pane.dataset.spaces || '[]');
+    let picked = '';
+    const draw = () => {
+      side?.setMarks(marks.map((mark) => ({ ...mark, active: mark.id === picked })));
+      side?.frame(marks.map((mark) => mark.at), 'all');
+    };
+    const side = startSideMap(root, {
+      onShow: draw,
+      onPick: (id) => {
+        picked = picked === id ? '' : id;
+        draw();
+        if (!picked) return;
+        // On a phone the map covers the list; it steps aside first.
+        if (!side?.isWide()) side?.setState('closed');
+        const card = document.getElementById(`space-${id}`);
+        card?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card?.classList.remove('is-picked');
+        void card?.offsetWidth;
+        card?.classList.add('is-picked');
+      },
+    });
+    for (const card of root.querySelectorAll<HTMLElement>('[data-space]')) {
+      card.addEventListener('mouseenter', () => side?.light(card.dataset.space ?? ''));
+      card.addEventListener('mouseleave', () => side?.light(''));
+    }
+  }
+</script>

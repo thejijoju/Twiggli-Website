@@ -1,51 +1,30 @@
 ---
 /**
- * The calendar's map pane, laid out like a rental site's: on a wide screen
- * it stands beside the workshops and stays put while they scroll, and can
- * be widened over them or closed; on a phone it opens over the page.
- *
- * Streets, parks and water are OpenStreetMap, cut to Berlin and served from
- * this site (public/map/, refreshed by the fetch-map workflow), drawn by
- * MapLibre — no map service sees the visitor, so no consent is asked for.
- * Markers sit on each neighbourhood's centre, never on a venue: the map
- * says which Kiez, and the address comes with the booking.
- *
- * This is the markup and its words; lib/daymap.ts runs it, from
- * DayPicker's script.
+ * The calendar's map pane (SideMap.astro), run by lib/daymap.ts from
+ * DayPicker's script. Markers sit on each neighbourhood's centre, never on
+ * a venue: the map says which Kiez, and the address comes with the booking.
  */
+import SideMap from './SideMap.astro';
 import { places } from '../data/places.ts';
 import { mapCopy } from '../data/mapCopy.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-
 const c = mapCopy[lang];
 ---
 
-<aside
-  class="daymap-pane"
-  data-daymap
+<SideMap
+  lang={lang}
   data-places={JSON.stringify(places)}
   data-show-one={c.showOne}
   data-show-many={c.showMany}
   data-from={c.from}
-  aria-label={c.label}
 >
-  <div class="daymap-canvas" data-daymap-canvas></div>
-  <button type="button" class="daymap-ctl daymap-expand" data-map-expand data-more={c.expand} data-less={c.collapse} aria-label={c.expand} title={c.expand}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
-    <span class="daymap-expand-more">{c.expand}</span>
-    <span class="daymap-expand-less">{c.collapse}</span>
-  </button>
-  <button type="button" class="daymap-ctl daymap-close" data-map-close>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
-    <span>{c.close}</span>
-  </button>
   {/* Online sessions have no place, so they get a chip of their own. */}
   <button type="button" class="daymap-online" data-map-online hidden>
     {c.online} <strong></strong>
   </button>
   {/* On a phone, the way back to the list once a Kiez is picked. */}
   <button type="button" class="btn btn-primary daymap-show" data-map-show hidden></button>
-</aside>
+</SideMap>

@@ -3344,7 +3344,9 @@ async function fromEventbrite(source) {
         date,
         ...(tm ? { time: `${tm[1].padStart(2, '0')}:${tm[2]}` } : {}),
         ...(/Ausverkauft|Sold\s*Out/i.test(block) ? { soldOut: true } : {}),
-        ...(pm ? { price: `\u20ac${Math.round(Number(pm[1].replace(/\./g, '')))}+` } : {}),
+        // Eventbrite says "From €119" where a series has more than one ticket
+        // type; the card shows the figure alone, as the host's own page does.
+        ...(pm ? { price: `\u20ac${Math.round(Number(pm[1].replace(/\./g, '')))}` } : {}),
         ...(byStreet ? { district: byStreet } : atHome && source.district ? { district: source.district } : {}),
         ...(img ? { image: img[1] } : {}),
         url,

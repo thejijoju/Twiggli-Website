@@ -4137,9 +4137,9 @@ a:hover { color: var(--color-accent); }
 .daymap-expand { left: 14px; }
 .daymap-close { right: 14px; }
 .daymap-expand-less { display: none; }
-.daypicker[data-map='expanded'] .daymap-expand-more { display: none; }
-.daypicker[data-map='expanded'] .daymap-expand-less { display: inline; }
-.daypicker[data-map='expanded'] .daymap-expand svg { transform: rotate(180deg); }
+.has-sidemap[data-map='expanded'] .daymap-expand-more { display: none; }
+.has-sidemap[data-map='expanded'] .daymap-expand-less { display: inline; }
+.has-sidemap[data-map='expanded'] .daymap-expand svg { transform: rotate(180deg); }
 .daymap-online {
   position: absolute;
   left: 14px;
@@ -4194,8 +4194,8 @@ a:hover { color: var(--color-accent); }
 @media (min-width: 1100px) {
   /* The open map takes the page wider than its column, as a search page
      does: most of the screen is map and pictures. */
-  .daypicker[data-map='open'] .dayresults,
-  .daypicker[data-map='expanded'] .dayresults {
+  .has-sidemap[data-map='open'] .sidemap-results,
+  .has-sidemap[data-map='expanded'] .sidemap-results {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     gap: 16px;
@@ -4206,10 +4206,10 @@ a:hover { color: var(--color-accent); }
      the panel's own margin narrows to give the cards the room. */
   .daypicker[data-map='open'] .daysessions { padding: 20px 16px 28px; }
   .daypicker[data-map='open'][data-view='grid'] .daysessions .daygroup { gap: 26px 14px; }
-  .daypicker[data-map='expanded'] .dayresults { grid-template-columns: minmax(0, 1fr); }
-  .daypicker[data-map='expanded'] .daysessions { display: none; }
-  .daypicker[data-map='open'] .daymap-pane,
-  .daypicker[data-map='expanded'] .daymap-pane {
+  .has-sidemap[data-map='expanded'] .sidemap-results { grid-template-columns: minmax(0, 1fr); }
+  .has-sidemap[data-map='expanded'] .sidemap-list { display: none; }
+  .has-sidemap[data-map='open'] .daymap-pane,
+  .has-sidemap[data-map='expanded'] .daymap-pane {
     display: block;
     /* Clear of the sticky nav above it. */
     position: sticky;
@@ -4222,8 +4222,8 @@ a:hover { color: var(--color-accent); }
   /* Beside the map the tiles go to half height (5:3), so two rows of
      cards fit on the screen next to it; without the map they keep 5:6. */
   .daypicker[data-map='open'][data-view='grid'] .daysessions .session-thumb { aspect-ratio: 5 / 3; }
-  .daypicker[data-map='open'] .map-btn,
-  .daypicker[data-map='expanded'] .map-btn { display: none; }
+  .has-sidemap[data-map='open'] .map-btn,
+  .has-sidemap[data-map='expanded'] .map-btn { display: none; }
 }
 /* Three across needs about 240px a card; short of that, two. */
 @media (min-width: 1100px) and (max-width: 1199px) {
@@ -4235,7 +4235,7 @@ a:hover { color: var(--color-accent); }
 /* A phone or a tablet: the map covers the page, once the script is there
    to close it again. */
 @media (max-width: 1099px) {
-  .daypicker[data-map-live][data-map='open'] .daymap-pane {
+  .has-sidemap[data-map-live][data-map='open'] .daymap-pane {
     display: block;
     position: fixed;
     inset: 0;
@@ -4250,4 +4250,19 @@ a:hover { color: var(--color-accent); }
 html.map-locked { overflow: hidden; }
 @media (max-width: 720px) {
   .page-flush .dayresults { margin-top: 22px; }
+}
+
+/* — the studio page's map (SpacesPage) — the calendar's side map beside
+   the studio cards. */
+.sidemap-bar { display: flex; justify-content: flex-end; margin: 0 0 16px; }
+.space-card { scroll-margin-top: calc(var(--header-h) + 16px); border-radius: 22px; }
+/* A picked pin's card glows once, so the eye finds it after the scroll. */
+.space-card.is-picked { animation: space-picked 1.6s ease-out; }
+@keyframes space-picked {
+  0%, 30% { box-shadow: 0 0 0 4px var(--color-accent-400), 0 0 0 14px color-mix(in srgb, var(--color-accent) 12%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (min-width: 1100px) {
+  [data-spacemap][data-map='open'] .sidemap-bar,
+  [data-spacemap][data-map='expanded'] .sidemap-bar { display: none; }
 }
