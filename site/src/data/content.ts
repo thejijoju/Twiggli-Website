@@ -237,6 +237,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   // PLACEHOLDER group ranges — the Heartspace artists publish no caps; the
   // room is small, so these are deliberately modest.
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
+  'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -446,6 +447,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotype on fabric', studio: 'Kunstraum Heartspace',
       blurb: 'A Berlin artist working across moving image, photography, writing and sound design, who teaches to help people reconnect with their curiosity. Her Saturday cyanotype session is a hands-on introduction to the process on fabric: botanicals, found objects and prepared imagery printed onto a cotton tote you take home, plus a care guide for it. No experience needed, all materials included — good for anyone drawn to analogue photography, printmaking or textiles, or just wanting to slow down and make something by hand.',
       group: 'Small groups', duration: '2 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
+    { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Perfume making', studio: 'Smell Lab Berlin',
+      blurb: 'Klara is an olfactory artist from Barcelona, trained in ArtScience at the Royal Academy of Art in The Hague, who has run her scent laboratory in Prenzlauer Berg since 2015. In her perfume workshop you work through 20 to 23 raw materials — essential oils and aroma molecules — learn their families and how they combine, then design a fragrance that is yours alone and take it home in a 10 ml bottle, with a dossier of everything covered. No experience needed; not suited to anyone very sensitive to fragrance. For teams she runs private sessions for 8 to 40 people in English, at her studio or at your venue.',
+      group: 'Small groups · teams 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -622,6 +626,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'cateduckwall', name: 'Cate Duckwall', specialty: 'Cyanotypie auf Stoff', studio: 'Kunstraum Heartspace',
       blurb: 'Eine Berliner Künstlerin, die zwischen bewegtem Bild, Fotografie, Text und Sounddesign arbeitet — und unterrichtet, um Menschen wieder mit ihrer Neugier zu verbinden. Ihre Samstags-Session ist ein praktischer Einstieg in die Cyanotypie auf Stoff: Pflanzen, gefundene Objekte und vorbereitete Motive werden auf einen Baumwollbeutel gedruckt, den du mitnimmst, samt Pflegeanleitung. Keine Vorkenntnisse nötig, Material inklusive — für alle, die analoge Fotografie, Druck oder Textiles mögen oder einfach mal wieder etwas mit den Händen machen wollen.',
       group: 'Kleine Gruppen', duration: '2 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Berlin', languages: 'EN' },
+    { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Parfum selber machen', studio: 'Smell Lab Berlin',
+      blurb: 'Klara ist Duftkünstlerin aus Barcelona, hat an der Königlichen Kunstakademie in Den Haag ArtScience studiert und betreibt seit 2015 ihr Duftlabor in Prenzlauer Berg. Im Parfum-Workshop arbeitest du mit 20 bis 23 Rohstoffen — ätherischen Ölen und Aromamolekülen —, lernst ihre Duftfamilien kennen und wie sie zusammenspielen, entwirfst dann einen Duft, den es nur einmal gibt, und nimmst ihn im 10-ml-Flakon mit nach Hause, dazu ein Dossier mit allem Gelernten. Keine Vorkenntnisse nötig; nicht geeignet für Menschen, die sehr empfindlich auf Düfte reagieren. Für Teams gibt es private Sessions für 8 bis 40 Personen auf Englisch, im Studio oder bei euch vor Ort.',
+      group: 'Kleine Gruppen · Teams 8–40', duration: '3 Std.', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -1442,7 +1449,7 @@ const firstNames: Record<string, string> = {
   pastamadre: 'Maria-Lucrezia & Frank', 'monk-garden': 'Martin', bumerang: 'Christian',
   'ceramic-kingdom': 'Madeline', daisuki: 'Naoko', whittle: 'Nicole',
   dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
-  redrum: 'Michael', cateduckwall: 'Cate', lama: 'Dani', blauhaus: 'Benedikt',
+  redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique', mijita: 'Mareen',
   tinkery: 'Astrid',
 };
@@ -1468,6 +1475,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   whittle: { area: 'Charlottenburg' }, dirt: { area: 'Kreuzberg' }, rose: { area: 'Wedding' },
   arcoiris: { area: 'Neukölln' }, redrum: { area: 'Kreuzberg' }, mampe: { area: 'Kreuzberg' },
   studio32: { area: 'Schöneberg / Kreuzberg' }, cateduckwall: { area: 'Prenzlauer Berg' },
+  'smell-lab': { area: 'Prenzlauer Berg' },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' }, mijita: { area: 'Wedding' },

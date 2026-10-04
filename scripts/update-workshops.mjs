@@ -349,6 +349,13 @@ const SOURCES = [
   { slug: 'bumerang', name: 'Berliner Bumerang — Workshops', mode: 'shopify',
     url: 'https://berliner-bumerang.de/products.json?limit=250',
     district: 'Lichtenberg' },
+  // Klara's Smell Lab in the Pappelallee: one perfume workshop, its dates
+  // a bare list on the page ("7 November 11 am"), booked through her shop.
+  { slug: 'smell-lab', name: 'Smell Lab — Blend your own perfume', mode: 'dated-time-list',
+    url: 'https://www.smell-lab.org/blend-your-own-perfume',
+    title: 'Blend your own Perfume', price: '€79', duration: '3 h',
+    district: 'Prenzlauer Berg',
+    bookUrl: 'https://www.klararavat.com/product-page/blend-your-ownperfume-berlin' },
   // Sarah's workshop pages list dates as table rows ("23.08.2026 …
   // 11 - 13 Uhr … Hier buchen"), each row linking its own PayPal checkout.
   { slug: 'sarah', name: 'Sarah Niklowitz — Sunday Morning Pages & Brunch', mode: 'dated-time-list',
@@ -1167,6 +1174,39 @@ function fromDatedTimeList(html, source) {
       url: link ? decodeEntities(link[0]) : (source.bookUrl ?? source.url),
     });
   });
+  if (out.length) return out;
+
+  // Third: English day and month with a 12-hour time and no year — "7
+  // November 11 am", "3 October 4 pm" (Smell Lab's list). The year is the
+  // one that puts the date ahead: a date more than a month gone is next
+  // year's, and the window filter drops the rest.
+  const MONTHS_EN = ['january', 'february', 'march', 'april', 'may', 'june',
+    'july', 'august', 'september', 'october', 'november', 'december'];
+  const now = new Date();
+  for (const m of text.matchAll(
+    /\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm)\b/gi,
+  )) {
+    const month = MONTHS_EN.indexOf(m[2].toLowerCase()) + 1;
+    const day = Number(m[1]);
+    if (day < 1 || day > 31) continue;
+    let year = now.getUTCFullYear();
+    if (Date.UTC(year, month - 1, day) < now.getTime() - 31 * 86400000) year++;
+    const hour = (Number(m[3]) % 12) + (m[5].toLowerCase() === 'pm' ? 12 : 0);
+    const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const time = `${String(hour).padStart(2, '0')}:${m[4] ?? '00'}`;
+    if (seen.has(`${date} ${time}`)) continue;
+    seen.add(`${date} ${time}`);
+    console.log(`[${source.slug}] dated-time-list (en): ${date} ${time}`);
+    out.push({
+      title: source.title,
+      ...(source.titleEn ? { titleEn: source.titleEn } : {}),
+      date,
+      time,
+      ...(source.duration ? { duration: source.duration } : {}),
+      ...(source.price ? { price: source.price } : {}),
+      url: source.bookUrl ?? source.url,
+    });
+  }
   return out;
 }
 
