@@ -2741,10 +2741,8 @@ a:hover { color: var(--color-accent); }
 .onrequest .session-thumb {
   width: 100%;
   height: auto;
-  /* Half the height it had (5:6): a wide strip, so a row of cards reads
-     as pictures with their titles rather than as a wall of video. Phones
-     keep their own taller tile (below). */
-  aspect-ratio: 5 / 3;
+  /* Taller than wide, per the tile above — a nod to a phone, not a copy. */
+  aspect-ratio: 5 / 6;
 }
 .onrequest .session-main { margin-top: 10px; }
 .onrequest .session-title {
@@ -2949,10 +2947,8 @@ a:hover { color: var(--color-accent); }
 .daypicker[data-view='grid'] .daysessions .session-thumb {
   width: 100%;
   height: auto;
-  /* Half the height it had (5:6): a wide strip, so a row of cards reads
-     as pictures with their titles rather than as a wall of video. Phones
-     keep their own taller tile (below). */
-  aspect-ratio: 5 / 3;
+  /* Taller than wide, per the tile above — a nod to a phone, not a copy. */
+  aspect-ratio: 5 / 6;
 }
 .daypicker[data-view='grid'] .daysessions .session-main { margin-top: 10px; }
 /* Long titles clamp to two lines and long host lines to one, so every
@@ -4223,6 +4219,9 @@ a:hover { color: var(--color-accent); }
     overflow: hidden;
   }
   .daypicker[data-map='open'][data-view='grid'] .daysessions .daygroup { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Beside the map the tiles go to half height (5:3), so two rows of
+     cards fit on the screen next to it; without the map they keep 5:6. */
+  .daypicker[data-map='open'][data-view='grid'] .daysessions .session-thumb { aspect-ratio: 5 / 3; }
   .daypicker[data-map='open'] .map-btn,
   .daypicker[data-map='expanded'] .map-btn { display: none; }
 }
