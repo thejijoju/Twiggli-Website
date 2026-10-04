@@ -1,0 +1,66 @@
+name: Fetch map tiles
+
+# On-demand: cuts Berlin (and Potsdam) out of the latest OpenStreetMap
+# basemap build from Protomaps and commits it as one file the site serves
+# itself, site/public/map/berlin.pmtiles. The calendar map reads its streets,
+# parks and water from that file, so no map service sees the site's visitors
+# and none needs their consent. Re-run now and then to pick up map updates.
+
+on:
+  workflow_dispatch:
+    inputs:
+      maxzoom:
+        description: 'Deepest zoom level to keep (13 = district streets, 14 = every street, 15 = buildings)'
+        required: false
+        default: '14'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-map
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Install pmtiles
+        run: |
+          url=$(curl -sS https://api.github.com/repos/protomaps/go-pmtiles/releases/latest \
+            | jq -r '.assets[] | select(.name | test("Linux_x86_64.tar.gz$")) | .browser_download_url')
+          echo "pmtiles from $url"
+          curl -sSL "$url" | tar -xz pmtiles
+          ./pmtiles version || true
+      - name: Extract Berlin
+        env:
+          MAXZOOM: ${{ inputs.maxzoom }}
+        run: |
+          key=$(curl -sS https://build-metadata.protomaps.dev/builds.json | jq -r 'sort_by(.key) | .[-1].key')
+          echo "build: $key"
+          mkdir -p site/public/map
+          ./pmtiles extract "https://build.protomaps.com/$key" site/public/map/berlin.pmtiles \
+            --bbox=13.0,52.32,13.8,52.70 --maxzoom="$MAXZOOM"
+          size=$(stat -c %s site/public/map/berlin.pmtiles)
+          echo "size=$size" >> "$GITHUB_ENV"
+          echo "build=$key" >> "$GITHUB_ENV"
+          echo "berlin.pmtiles: $((size / 1048576)) MB at maxzoom $MAXZOOM"
+          ./pmtiles show site/public/map/berlin.pmtiles | head -20
+      - name: Commit
+        run: |
+          if [ "$size" -gt 90000000 ]; then
+            echo "Too large for the repository ($size bytes); try a lower maxzoom." >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/public/map/berlin.pmtiles
+          git diff --cached --quiet && { echo "No change"; exit 0; }
+          git commit -m "Map tiles: Berlin from Protomaps build ${build} (maxzoom ${{ inputs.maxzoom }})" \
+            -m "Fetched by the fetch-map workflow. Map data © OpenStreetMap contributors."
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }}
