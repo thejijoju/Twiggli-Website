@@ -2741,8 +2741,10 @@ a:hover { color: var(--color-accent); }
 .onrequest .session-thumb {
   width: 100%;
   height: auto;
-  /* Taller than wide, per the tile above — a nod to a phone, not a copy. */
-  aspect-ratio: 5 / 6;
+  /* Half the height it had (5:6): a wide strip, so a row of cards reads
+     as pictures with their titles rather than as a wall of video. Phones
+     keep their own taller tile (below). */
+  aspect-ratio: 5 / 3;
 }
 .onrequest .session-main { margin-top: 10px; }
 .onrequest .session-title {
@@ -2947,8 +2949,10 @@ a:hover { color: var(--color-accent); }
 .daypicker[data-view='grid'] .daysessions .session-thumb {
   width: 100%;
   height: auto;
-  /* Taller than wide, per the tile above — a nod to a phone, not a copy. */
-  aspect-ratio: 5 / 6;
+  /* Half the height it had (5:6): a wide strip, so a row of cards reads
+     as pictures with their titles rather than as a wall of video. Phones
+     keep their own taller tile (below). */
+  aspect-ratio: 5 / 3;
 }
 .daypicker[data-view='grid'] .daysessions .session-main { margin-top: 10px; }
 /* Long titles clamp to two lines and long host lines to one, so every
