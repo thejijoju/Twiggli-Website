@@ -98,6 +98,13 @@ jobs:
             console.log('\n--- visible text (first 12000 chars) ---');
             console.log(strip(html).slice(0, 12000));
           }
+          // Wix sites load their galleries from JSON in the page; every
+          // photo is a media id there, which static.wixstatic.com serves.
+          const wix = [...new Set(html.match(/\b[0-9a-f]{6}_[0-9a-f]{32}~mv2(?:_d_\d+_\d+_s_\d+(?:_\d+)?)?\.(?:jpe?g|png|webp)/gi) ?? [])];
+          if (wix.length) {
+            console.log(`\n--- wix media (${wix.length}) ---`);
+            for (const id of wix) console.log(`https://static.wixstatic.com/media/${id}`);
+          }
           const marker = process.env.PROBE_MARKER;
           if (marker) {
             console.log(`\n--- raw HTML around "${marker}" ---`);
