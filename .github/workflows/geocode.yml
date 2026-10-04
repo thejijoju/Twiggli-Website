@@ -1,0 +1,33 @@
+name: Geocode addresses
+
+# On-demand: looks addresses up in OpenStreetMap (Nominatim) and prints
+# their coordinates to the log — for placing a new studio on the map
+# (site/src/data/spaces.ts). One address per line or separated by ";".
+
+on:
+  workflow_dispatch:
+    inputs:
+      addresses:
+        description: 'Addresses, one per line or separated by ";"'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  geocode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up
+        env:
+          ADDRESSES: ${{ inputs.addresses }}
+        run: |
+          printf '%s\n' "$ADDRESSES" | tr ';' '\n' | while IFS= read -r q; do
+            q="$(echo "$q" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+            [ -z "$q" ] && continue
+            r=$(curl -sS -G -A 'TwiggliSite/1.0 (https://www.twiggli.com)' \
+              --data-urlencode "q=$q" --data-urlencode format=json --data-urlencode limit=1 \
+              https://nominatim.openstreetmap.org/search)
+            echo "GEO | $q | $(echo "$r" | jq -r '.[0] | "\(.lon), \(.lat) | \(.display_name)"')"
+            sleep 1.2
+          done
