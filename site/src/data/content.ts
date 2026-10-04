@@ -850,8 +850,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   // so it is cropped above the logo and cut only from the stretches with no
   // caption on screen.
   studio32: { video: '/video/studio32.mp4', poster: '/video/studio32-poster.jpg' },
-  // Klara's own clip, cut to its last stretch and cropped above the
-  // captions it carried, so the room and the table are all that show.
+  // Cut together from Klara's two clips — the room in the Pappelallee, then
+  // two close-ups at the table — keeping only stretches without their
+  // captions, cropped square.
   'smell-lab': { video: '/video/smell-lab.mp4', poster: '/video/smell-lab-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
