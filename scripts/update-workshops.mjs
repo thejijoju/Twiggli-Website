@@ -349,6 +349,16 @@ const SOURCES = [
   { slug: 'bumerang', name: 'Berliner Bumerang — Workshops', mode: 'shopify',
     url: 'https://berliner-bumerang.de/products.json?limit=250',
     district: 'Lichtenberg' },
+  // Craftkai: Japanese craft workshops sold through a Shopify shop that
+  // also lists Japan. Workshops our own hosts teach through it go under
+  // their names, at their studios; the rest under Craftkai.
+  { slug: 'craftkai', name: 'Craftkai — Japanese craft workshops', mode: 'craftkai',
+    url: 'https://apvghk-wg.myshopify.com/products.json?limit=250',
+    district: 'Mitte',
+    routes: [
+      { match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' },
+      { match: "The Munio", slug: 'munio', district: 'Schöneberg' },
+    ] },
   // Klara's Smell Lab in the Pappelallee: one perfume workshop, its dates
   // a bare list on the page ("7 November 11 am"), booked through her shop.
   { slug: 'smell-lab', name: 'Smell Lab — Blend your own perfume', mode: 'dated-time-list',
@@ -2916,6 +2926,87 @@ function fromShopifyWhen(jsonText, source) {
   return out;
 }
 
+/** Craftkai's Shopify shop (a platform for Japanese craft workshops). Its
+ *  variants carry the date in several hands — "17 October 2026 - 11:00",
+ *  "17.Oktober 2026 - 11:00 Uhr", "11:00 Uhr - 25 October - Kintsugi
+ *  @MisoLab - Gleimstraße 10a", "… 17 October Manifesto - Walk-in only" —
+ *  so it reads any day-and-month with an optional year and time. Undated
+ *  options ("on request", a course) and the sessions in Japan are skipped.
+ *  A workshop one of our own hosts teaches through Craftkai is filed under
+ *  that host, at their studio (`routes`); the rest under Craftkai, placed
+ *  by the venue named (MisoLab → Prenzlauer Berg, else the craft day). */
+function fromCraftkai(jsonText, source) {
+  let data;
+  try {
+    data = JSON.parse(jsonText);
+  } catch {
+    console.log(`[${source.slug}] craftkai: response is not JSON`);
+    return [];
+  }
+  const MONTHS = {
+    january: 1, januar: 1, february: 2, februar: 2, march: 3, märz: 3, april: 4, may: 5, mai: 5,
+    june: 6, juni: 6, july: 7, juli: 7, august: 8, september: 9, october: 10, oktober: 10,
+    november: 11, december: 12, dezember: 12,
+  };
+  const monthRe = Object.keys(MONTHS).join('|');
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+  const now = new Date();
+  const out = [];
+  for (const product of data.products ?? []) {
+    const rawTitle = stripTags(String(product.title ?? ''));
+    const body = stripTags(String(product.body_html ?? ''));
+    const variants = (product.variants ?? []).map((v) => String(v.title));
+    const all = `${rawTitle} ${variants.join(' ')}`;
+    // Sessions in Japan; "Tokyo Yūzen" is a dyeing style, so a title naming
+    // a Berlin venue stays.
+    if (/Tokyo|Osaka|Yamanashi|Kyoto/i.test(rawTitle) && !/Berlin|Manifesto|MisoLab/i.test(all)) continue;
+    const route = (source.routes ?? []).find((r) => new RegExp(r.match, 'i').test(`${rawTitle} ${body}`));
+    const district = route?.district
+      ?? (/MisoLab|Gleimstra/i.test(all) ? 'Prenzlauer Berg' : source.district);
+    const title = rawTitle
+      .replace(/@\s*(?:Manifesto|MisoLab)(?:\s+Berlin)?/gi, '')
+      .replace(new RegExp(`\\b\\d{1,2}\\.?\\s*(?:${monthRe})\\b`, 'gi'), '')
+      .replace(/\s+-\s+Berlin\s*$/i, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+    // One sitting's length, where the copy says it plainly.
+    let hours;
+    const min = body.match(/(\d{2,3})\s*(?:min|minutes)\b/i);
+    const num = body.match(/\b(\d(?:[.,]5)?)\s*hours?\b/i);
+    const word = body.match(/\b(one|two|three|four|five)(\s+and\s+a\s+half)?\s+(?:focused\s+)?hours?\b/i);
+    if (!/sessions?\b.*\b(?:course|total)|\b\d+\s*-?\s*session/i.test(`${body} ${variants.join(' ')}`)) {
+      if (word) hours = words[word[1].toLowerCase()] + (word[2] ? 0.5 : 0);
+      else if (num) hours = Number(num[1].replace(',', '.'));
+      else if (min) hours = Number(min[1]) / 60;
+    }
+    for (const variant of product.variants ?? []) {
+      const vt = String(variant.title);
+      const dm = vt.match(new RegExp(`(\\d{1,2})\\.?\\s*(${monthRe})\\b(?:\\s+(20\\d{2}))?`, 'i'));
+      if (!dm) continue;
+      const month = MONTHS[dm[2].toLowerCase()];
+      const day = Number(dm[1]);
+      let year = dm[3] ? Number(dm[3]) : now.getUTCFullYear();
+      if (!dm[3] && Date.UTC(year, month - 1, day) < now.getTime() - 31 * 86400000) year++;
+      const tm = vt.match(/(\d{1,2}):(\d{2})/);
+      const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      out.push({
+        ...(route ? { slug: route.slug } : {}),
+        title,
+        date,
+        ...(tm ? { time: `${tm[1].padStart(2, '0')}:${tm[2]}` } : {}),
+        ...(hours && hours <= 6 ? { duration: `${Math.round(hours * 2) / 2} h` } : {}),
+        ...(variant.price != null ? { price: `€${Math.round(Number(variant.price))}` } : {}),
+        ...(variant.available === false ? { soldOut: true } : {}),
+        ...(/\bkids?\b/i.test(`${vt} ${rawTitle}`) ? { kids: true } : {}),
+        ...(district ? { district } : {}),
+        ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
+        url: `https://craftkai.com/workshop/${product.handle}`,
+      });
+    }
+  }
+  return out;
+}
+
 function fromShopify(jsonText, source) {
   let data;
   try {
@@ -4211,6 +4302,18 @@ async function scrapeSource(source) {
     return { workshops: inRange, recurring: [] };
   }
 
+  if (source.mode === 'craftkai') {
+    const found = fromCraftkai(html, source).filter((w) => w.date >= todayISO && w.date <= maxISO);
+    for (const w of found) {
+      console.log(`[${w.slug ?? source.slug}] craftkai: "${w.title}" ${w.date} ${w.time ?? 'no time'} ${w.price ?? ''} ${w.district ?? ''}${w.soldOut ? ' (sold out)' : ''}`);
+    }
+    console.log(`[${source.slug}] craftkai sessions kept: ${found.length}`);
+    return {
+      workshops: found.map((w) => ({ slug: source.slug, sourceUrl: source.url, ...w })),
+      recurring: [],
+    };
+  }
+
   if (source.mode === 'dated-time-list') {
     const found = fromDatedTimeList(html, source);
     const inRange = found
@@ -4624,6 +4727,8 @@ if (process.env.PARSE_TEST) {
         ? fromDatedTimeList
       : process.env.PARSE_TEST_MODE === 'titled-date-blocks'
         ? fromTitledDateBlocks
+      : process.env.PARSE_TEST_MODE === 'craftkai'
+        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'The Munio', slug: 'munio', district: 'Schöneberg' }] })
       : process.env.PARSE_TEST_MODE === 'shopify'
         ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json' })
       : process.env.PARSE_TEST_MODE === 'shopify-when'

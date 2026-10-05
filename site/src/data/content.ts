@@ -238,6 +238,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   // room is small, so these are deliberately modest.
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
+  craftkai:         { activity: 'craft',     groupRange: [1, 12], hourRange: [1, 2.5], groupPrice: [25, 109] },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -450,6 +451,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Perfume making', studio: 'Smell Lab Berlin',
       blurb: 'Klara is an olfactory artist from Barcelona, trained in ArtScience at the Royal Academy of Art in The Hague, who has run her scent laboratory in Prenzlauer Berg since 2015. In her perfume workshop you work through 20 to 23 raw materials — essential oils and aroma molecules — learn their families and how they combine, then design a fragrance that is yours alone and take it home in a 10 ml bottle, with a dossier of everything covered. No experience needed; not suited to anyone very sensitive to fragrance. For teams she runs private sessions for 8 to 40 people in English, at her studio or at your venue.',
       group: 'Small groups · teams 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+    { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanese craft workshops', studio: 'Craftkai',
+      blurb: 'A Berlin–Japan craft community that brings Japanese artisans and their traditions to Berlin: kintsugi, the gold-seamed repair of broken ceramics; contemporary Sōgetsu ikebana; gold leaf laid by hand on washi; chopsticks planed from fragrant hinoki; Tokyo Yūzen hand-dyeing; natural Kusaki-zome dyeing; mizuhiki cord knots; a hanko seal designed live with a seal maker in Japan; and miso packed into your own cedar barrel. Several sessions are taught by artisans visiting from Japan. Most run at MisoLab in Prenzlauer Berg or at Craftkai’s Berlin craft days.',
+      group: 'Small groups', duration: '1–2.5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -629,6 +633,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Parfum selber machen', studio: 'Smell Lab Berlin',
       blurb: 'Klara ist Duftkünstlerin aus Barcelona, hat an der Königlichen Kunstakademie in Den Haag ArtScience studiert und betreibt seit 2015 ihr Duftlabor in Prenzlauer Berg. Im Parfum-Workshop arbeitest du mit 20 bis 23 Rohstoffen — ätherischen Ölen und Aromamolekülen —, lernst ihre Duftfamilien kennen und wie sie zusammenspielen, entwirfst dann einen Duft, den es nur einmal gibt, und nimmst ihn im 10-ml-Flakon mit nach Hause, dazu ein Dossier mit allem Gelernten. Keine Vorkenntnisse nötig; nicht geeignet für Menschen, die sehr empfindlich auf Düfte reagieren. Für Teams gibt es private Sessions für 8 bis 40 Personen auf Englisch, im Studio oder bei euch vor Ort.',
       group: 'Kleine Gruppen · Teams 8–40', duration: '3 Std.', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+    { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanisches Kunsthandwerk', studio: 'Craftkai',
+      blurb: 'Eine Berlin-Japan-Handwerksgemeinschaft, die japanische Kunsthandwerker und ihre Traditionen nach Berlin bringt: Kintsugi, die Reparatur zerbrochener Keramik mit goldenen Nähten; zeitgenössisches Sōgetsu-Ikebana; Blattgold von Hand auf Washi; Essstäbchen aus duftendem Hinoki gehobelt; Tokyo-Yūzen-Färben von Hand; natürliches Kusaki-zome-Färben; Mizuhiki-Knoten; ein Hanko-Siegel, live mit einem Siegelmacher in Japan entworfen; und Miso, angesetzt im eigenen Zedernholzfass. Mehrere Kurse leiten Kunsthandwerker, die eigens aus Japan anreisen. Die meisten finden im MisoLab in Prenzlauer Berg oder an Craftkais Berliner Handwerkstagen statt.',
+      group: 'Kleine Gruppen', duration: '1–2,5 Std.', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -1480,6 +1487,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   arcoiris: { area: 'Neukölln' }, redrum: { area: 'Kreuzberg' }, mampe: { area: 'Kreuzberg' },
   studio32: { area: 'Schöneberg / Kreuzberg' }, cateduckwall: { area: 'Prenzlauer Berg' },
   'smell-lab': { area: 'Prenzlauer Berg' },
+  craftkai: { area: 'Prenzlauer Berg / Mitte' },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' }, mijita: { area: 'Wedding' },
