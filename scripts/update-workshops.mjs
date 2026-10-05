@@ -358,7 +358,17 @@ const SOURCES = [
     routes: [
       { match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' },
       { match: "The Munio", slug: 'munio', district: 'Schöneberg' },
+      // Yurika teaches hers at the Craftkai venue, so it keeps that district.
+      { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' },
     ] },
+  // Yurika Saito's tea-leaf dyeing at the Berlin Tea Festival (silent green,
+  // Wedding): one page per workshop, "Date: 7. Nov 2026 … Time: 11:30-13:00".
+  // €55 with the fabric provided, €45 bringing your own; the festival ticket
+  // is bought separately.
+  { slug: 'yurika', name: 'Yurika Saito — Tea leaf dyeing at the Berlin Tea Festival', mode: 'dated-time-list',
+    url: 'https://yurikasaito.de/tea-leaf-dyeing-workshop-at-btf',
+    title: 'Tea Leaf Dyeing — dye fabric with reused tea leaves', price: '€45–55', duration: '1.5 h',
+    district: 'Wedding' },
   // Klara's Smell Lab in the Pappelallee: one perfume workshop, its dates
   // a bare list on the page ("7 November 11 am"), booked through her shop.
   { slug: 'smell-lab', name: 'Smell Lab — Blend your own perfume', mode: 'dated-time-list',
@@ -1213,6 +1223,35 @@ function fromDatedTimeList(html, source) {
       date,
       time,
       ...(source.duration ? { duration: source.duration } : {}),
+      ...(source.price ? { price: source.price } : {}),
+      url: source.bookUrl ?? source.url,
+    });
+  }
+  if (out.length) return out;
+
+  // Fourth: a day, a month name (short or long), a year, then a 24-hour
+  // range — "Date: 7. Nov 2026 Saturday Time: 11:30-13:00" (Yurika's
+  // workshop pages), a weekday allowed either side of the year.
+  for (const m of text.matchAll(
+    /\b(\d{1,2})\.?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(?:[A-Za-z]+,?\s+)?(20\d{2})\b(?:\s+[A-Za-z]+)?\D{0,20}?(\d{1,2})[:.](\d{2})\s*[-–]\s*(\d{1,2})[:.](\d{2})/gi,
+  )) {
+    const month = MONTHS_EN.findIndex((name) => name.startsWith(m[2].toLowerCase())) + 1;
+    const day = Number(m[1]);
+    if (!month || day < 1 || day > 31) continue;
+    const date = `${m[3]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const time = `${m[4].padStart(2, '0')}:${m[5]}`;
+    if (seen.has(`${date} ${time}`)) continue;
+    seen.add(`${date} ${time}`);
+    const span = Number(m[6]) + Number(m[7]) / 60 - (Number(m[4]) + Number(m[5]) / 60);
+    console.log(`[${source.slug}] dated-time-list (en range): ${date} ${time} (${span} h)`);
+    out.push({
+      title: source.title,
+      ...(source.titleEn ? { titleEn: source.titleEn } : {}),
+      date,
+      time,
+      ...(span > 0 && span <= 12
+        ? { duration: `${Math.round(span * 2) / 2} h` }
+        : source.duration ? { duration: source.duration } : {}),
       ...(source.price ? { price: source.price } : {}),
       url: source.bookUrl ?? source.url,
     });
@@ -4728,7 +4767,7 @@ if (process.env.PARSE_TEST) {
       : process.env.PARSE_TEST_MODE === 'titled-date-blocks'
         ? fromTitledDateBlocks
       : process.env.PARSE_TEST_MODE === 'craftkai'
-        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'The Munio', slug: 'munio', district: 'Schöneberg' }] })
+        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'The Munio', slug: 'munio', district: 'Schöneberg' }, { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' }] })
       : process.env.PARSE_TEST_MODE === 'shopify'
         ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json' })
       : process.env.PARSE_TEST_MODE === 'shopify-when'

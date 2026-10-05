@@ -516,6 +516,12 @@
       "url": "https://empireofdirt.studio/products.json?limit=250",
       "status": "ok",
       "count": 9
+    },
+    {
+      "slug": "yurika",
+      "url": "https://yurikasaito.de/tea-leaf-dyeing-workshop-at-btf",
+      "status": "ok",
+      "count": 1
     }
   ],
   "recurring": [
@@ -3135,7 +3141,7 @@
       "url": "https://craftkai.com/workshop/kakejiku"
     },
     {
-      "slug": "craftkai",
+      "slug": "yurika",
       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
       "title": "Natural ＆ Onsen dyeing Kusaki-zome",
       "date": "2026-10-17",
@@ -3489,7 +3495,7 @@
       "url": "https://craftkai.com/workshop/create-your-own-hanko"
     },
     {
-      "slug": "craftkai",
+      "slug": "yurika",
       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
       "title": "Natural ＆ Onsen dyeing Kusaki-zome",
       "date": "2026-10-17",
@@ -3776,7 +3782,7 @@
       "url": "https://craftkai.com/workshop/create-your-own-hanko"
     },
     {
-      "slug": "craftkai",
+      "slug": "yurika",
       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
       "title": "Natural ＆ Onsen dyeing Kusaki-zome",
       "date": "2026-10-17",
@@ -7038,6 +7044,17 @@
       "url": "https://taniavarelastudio.com/keramikhandbuilding/",
       "district": "Charlottenburg",
       "image": "https://taniavarelastudio.com/wp-content/uploads/2025/10/set-desayuno-55e-fondo-1-1080x1350-1.jpg"
+    },
+    {
+      "slug": "yurika",
+      "sourceUrl": "https://yurikasaito.de/tea-leaf-dyeing-workshop-at-btf",
+      "title": "Tea Leaf Dyeing — dye fabric with reused tea leaves",
+      "date": "2026-11-07",
+      "time": "11:30",
+      "duration": "1.5 h",
+      "price": "€45–55",
+      "url": "https://yurikasaito.de/tea-leaf-dyeing-workshop-at-btf",
+      "district": "Wedding"
     },
     {
       "slug": "munio",

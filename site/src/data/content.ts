@@ -239,6 +239,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
   craftkai:         { activity: 'craft',     groupRange: [1, 12], hourRange: [1, 2.5], groupPrice: [25, 109] },
+  yurika:           { activity: 'craft',     groupRange: [1, 12], hourRange: [1.5, 2], groupPrice: [45, 72] },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -454,6 +455,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanese craft workshops', studio: 'Craftkai',
       blurb: 'A Berlin–Japan craft community that brings Japanese artisans and their traditions to Berlin: kintsugi, the gold-seamed repair of broken ceramics; contemporary Sōgetsu ikebana; gold leaf laid by hand on washi; chopsticks planed from fragrant hinoki; Tokyo Yūzen hand-dyeing; natural Kusaki-zome dyeing; mizuhiki cord knots; a hanko seal designed live with a seal maker in Japan; and miso packed into your own cedar barrel. Several sessions are taught by artisans visiting from Japan. Most run at MisoLab in Prenzlauer Berg or at Craftkai’s Berlin craft days.',
       group: 'Small groups', duration: '1–2.5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+    { slug: 'yurika', name: 'Yurika Saito', specialty: 'Natural dyeing with tea & plants', studio: 'Living Dyeing Project',
+      blurb: 'A Tokyo-born textile artist who has lived in Berlin since 2019, painting, embroidering and dyeing. Her Living Dyeing project colours fabric with what the city throws away: tea leaves already brewed in Berlin restaurants, onion skins, vegetable peel, coffee grounds. This is Kusaki-zome, the Japanese way of dyeing with plants, and with tea the tannin meets iron to give soft greys, warm browns and deep blue-blacks, never twice the same. Her workshops are slow and hands-on and made for beginners. You learn the technique and some shibori tie-dye, then dye a linen chabu tea mat or a cotton furoshiki to take home, or bring a piece of your own. A member of the Berlin Handcrafts Collective, she has taught natural dyeing across Germany.',
+      group: 'Small groups', duration: '1.5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -636,6 +640,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanisches Kunsthandwerk', studio: 'Craftkai',
       blurb: 'Eine Berlin-Japan-Handwerksgemeinschaft, die japanische Kunsthandwerker und ihre Traditionen nach Berlin bringt: Kintsugi, die Reparatur zerbrochener Keramik mit goldenen Nähten; zeitgenössisches Sōgetsu-Ikebana; Blattgold von Hand auf Washi; Essstäbchen aus duftendem Hinoki gehobelt; Tokyo-Yūzen-Färben von Hand; natürliches Kusaki-zome-Färben; Mizuhiki-Knoten; ein Hanko-Siegel, live mit einem Siegelmacher in Japan entworfen; und Miso, angesetzt im eigenen Zedernholzfass. Mehrere Kurse leiten Kunsthandwerker, die eigens aus Japan anreisen. Die meisten finden im MisoLab in Prenzlauer Berg oder an Craftkais Berliner Handwerkstagen statt.',
       group: 'Kleine Gruppen', duration: '1–2,5 Std.', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+    { slug: 'yurika', name: 'Yurika Saito', specialty: 'Naturfärben mit Tee & Pflanzen', studio: 'Living Dyeing Project',
+      blurb: 'Eine in Tokio geborene Textilkünstlerin, die seit 2019 in Berlin lebt und malt, stickt und färbt. Ihr Projekt Living Dyeing färbt Stoff mit dem, was die Stadt wegwirft: Teeblätter, die in Berliner Restaurants schon aufgegossen wurden, Zwiebelschalen, Gemüseschalen, Kaffeesatz. Das ist Kusaki-zome, Japans Färben mit Pflanzen, und beim Tee trifft die Gerbsäure auf Eisen und ergibt sanfte Grautöne, warme Brauntöne und tiefes Blauschwarz, nie zweimal gleich. Ihre Workshops sind langsam, praktisch und für Anfänger gemacht. Du lernst die Technik und etwas Shibori-Abbinden und färbst dann ein Chabu-Teedeckchen aus Leinen oder ein Furoshiki aus Baumwolle zum Mitnehmen, oder du bringst ein eigenes Stück mit. Als Mitglied des Berlin Handcrafts Collective hat sie in ganz Deutschland Naturfärbe-Workshops gegeben.',
+      group: 'Kleine Gruppen', duration: '1,5–2 Std.', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -861,6 +868,13 @@ const reels: Record<string, { video: string; poster: string }> = {
   // two close-ups at the table — keeping only stretches without their
   // captions, cropped square.
   'smell-lab': { video: '/video/smell-lab.mp4', poster: '/video/smell-lab-poster.jpg' },
+  // Yurika's own clip: tea-dyed linen squares laid out, then one held to
+  // the light. No captions on it, so only scaled.
+  yurika: { video: '/video/yurika.mp4', poster: '/video/yurika-poster.jpg' },
+  // Stills from Craftkai's own workshop pages (chopsticks, mizuhiki,
+  // kintsugi, miso, ikebana, Yūzen, weaving, gold leaf), a gentle push in on
+  // each, dissolved, ending back on the first so the loop has no seam.
+  craftkai: { video: '/video/craftkai.mp4', poster: '/video/craftkai-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
@@ -1462,7 +1476,7 @@ const firstNames: Record<string, string> = {
   dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique', mijita: 'Mareen',
-  tinkery: 'Astrid',
+  tinkery: 'Astrid', yurika: 'Yurika',
 };
 
 /** Districts for the group-bookings directory, keyed by slug — see `area`
@@ -1488,6 +1502,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   studio32: { area: 'Schöneberg / Kreuzberg' }, cateduckwall: { area: 'Prenzlauer Berg' },
   'smell-lab': { area: 'Prenzlauer Berg' },
   craftkai: { area: 'Prenzlauer Berg / Mitte' },
+  yurika: { area: 'Mitte / Wedding' },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' }, mijita: { area: 'Wedding' },
