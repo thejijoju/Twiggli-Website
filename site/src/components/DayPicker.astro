@@ -2,7 +2,6 @@
 import { getSessions, getOnRequest, capPerHostPerDay, spreadByHost, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
 import { filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
-import { requestEmail } from '../data/site.ts';
 import HostMonogram from './HostMonogram.astro';
 import DayMap from './DayMap.astro';
 import { mapCopy } from '../data/mapCopy.ts';
@@ -59,26 +58,31 @@ const t = ui(lang).calendar;
  *  two read the same. */
 const f = filterCopy[lang];
 
-/** Request-by-mail hosts: the button opens a prefilled email to Twiggli
- *  instead of a booking page. Built at render time — the daily rebuild
- *  keeps the session's real date in the subject. */
-const REQUEST_EMAIL = requestEmail;
+
+/** A session's date as YYYY-MM-DD. Built at render time — the daily
+ *  rebuild keeps it true. */
 const isoDate = (offset: number) =>
   new Date(berlinTodayMs() + offset * 86400000).toISOString().slice(0, 10);
-const requestHref = (s: Session): string => {
-  const when = `${isoDate(s.dayOffset)}${s.time ? ` ${s.time}` : ''}`;
-  const subject = t.mailBookSubject(s.title, when);
-  const body = t.mailBookBody(s.title, s.host.name, when, s.price);
-  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-};
 
-/** Inquiry mail for undated on-request workshops — no date in the
- *  subject, the visitor proposes one in the body. */
-const inquireHref = (o: OnRequestWorkshop): string => {
-  const subject = t.mailInquireSubject(o.title, o.host.name);
-  const body = t.mailInquireBody(o.title, o.host.name, o.price);
-  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-};
+/** What a Book, Request or Notify button hands the booking form
+ *  (BookingDialog.astro): the workshop, who runs it, when, the price, and
+ *  the host's own booking page — which only reaches our inbox. */
+const bookAttrs = (s: Session) => ({
+  'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
+  'data-book-title': s.title,
+  'data-book-host': s.host.name,
+  'data-book-date': isoDate(s.dayOffset),
+  'data-book-time': s.time,
+  'data-book-price': showPrice(s.price),
+  'data-book-link': s.bookUrl,
+});
+const inquireAttrs = (o: OnRequestWorkshop) => ({
+  'data-book': 'request',
+  'data-book-title': o.title,
+  'data-book-host': o.host.name,
+  'data-book-price': showPrice(o.price),
+  'data-book-link': o.bookUrl,
+});
 
 const dayLabel = (offset: number) =>
   offset === 0 ? t.today : offset === 1 ? t.tomorrow : null;
@@ -145,7 +149,6 @@ const formatDeadline = (iso: string): string => {
   data-client-copy={JSON.stringify(clientCopy[lang])}
   data-today={t.today}
   data-tomorrow={t.tomorrow}
-  data-request-email={REQUEST_EMAIL}
 >
   <span class="daystrip-month" data-month aria-hidden="true"></span>
   <div class="daystrip" role="tablist" aria-label={t.pick}>
@@ -324,7 +327,7 @@ const formatDeadline = (iso: string): string => {
                               <span class="lang-pill">{l}</span>
                             ))}
                           </span>
-                          <a class="session-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
+                          <a class="session-title" href={s.bookUrl} {...bookAttrs(s)}>{s.title}</a>
                           {/* The host's name leads to their own page — every
                               date they run, in one place — where the title
                               beside it leads to the booking. */}
@@ -353,16 +356,12 @@ const formatDeadline = (iso: string): string => {
                             <button
                               class="session-book session-notify"
                               type="button"
-                              data-notify
-                              data-notify-title={s.title}
-                              data-notify-host={s.host.name}
-                              data-notify-date={isoDate(s.dayOffset)}
-                              data-notify-time={s.time}
+                              {...bookAttrs(s)}
                             ><svg class="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>{t.notify}</button>
                           ) : s.request ? (
-                            <a class="session-book" href={requestHref(s)}>{t.request}</a>
+                            <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{t.request}</a>
                           ) : (
-                            <a class="session-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
+                            <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{t.book}</a>
                           )}
                           {/* People send workshops to friends — the native
                               share sheet where the browser has one, copied
@@ -376,7 +375,7 @@ const formatDeadline = (iso: string): string => {
                             data-share-host={s.host.name}
                             data-share-date={isoDate(s.dayOffset)}
                             data-share-time={s.time}
-                            data-share-url={s.bookUrl}
+                            data-share-id={s.id}
                             data-copied-label={t.copied}
                           >
                             <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
@@ -454,7 +453,7 @@ const formatDeadline = (iso: string): string => {
                   <span class="lang-pill">{l}</span>
                 ))}
               </span>
-              <a class="session-title" href={o.bookUrl} target="_blank" rel="noopener">{o.title}</a>
+              <a class="session-title" href={o.bookUrl} {...inquireAttrs(o)}>{o.title}</a>
               <span class="session-host">{o.host.name} · {o.district}</span>
               {o.usp && <span class="session-usp">{o.usp}</span>}
                           {/* Where the host closes sales before the day
@@ -469,7 +468,7 @@ const formatDeadline = (iso: string): string => {
                               {o.priceWas && <s class="session-price-was">{o.priceWas}</s>}
                             </span>
                           )}
-              <a class="session-book" href={o.request ? inquireHref(o) : o.bookUrl} target={o.request ? undefined : '_blank'} rel={o.request ? undefined : 'noopener'}>{t.inquire}</a>
+              <a class="session-book" href={o.bookUrl} {...inquireAttrs(o)}>{t.inquire}</a>
             </span>
           </li>
         ))}
@@ -477,25 +476,6 @@ const formatDeadline = (iso: string): string => {
     </section>
   )}
 
-  {/* One dialog serves every sold-out card: the visitor leaves the address
-      to notify, hits the bell, and the request opens in their mail app —
-      subject line stable per event so the weekly reopen report can point
-      straight at the matching inbox thread. */}
-  <dialog class="notify-dialog" data-notify-dialog>
-    <form method="dialog" class="notify-form" data-notify-form>
-      <h3 class="notify-title">{t.notifyTitle}</h3>
-      <p class="notify-event" data-notify-event></p>
-      <p class="notify-hint">{t.notifyHint}</p>
-      <label class="notify-label">
-        {t.notifyEmail}
-        <input class="notify-input" type="email" required placeholder="anna@mail.com" data-notify-input />
-      </label>
-      <div class="notify-actions">
-        <button class="notify-cancel" type="button" data-notify-cancel>{t.cancel}</button>
-        <button class="notify-send" type="submit"><svg class="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>{t.notifySend}</button>
-      </div>
-    </form>
-  </dialog>
 </div>
 
 <script>
@@ -744,7 +724,8 @@ const formatDeadline = (iso: string): string => {
           title: d.shareTitle || '', host: d.shareHost || '', when,
           time: d.shareTime ? fill(copy.shareTime, { time: d.shareTime }) : '',
         });
-        const url = d.shareUrl || location.href;
+        // Our own card, not the host's page: a friend books through us too.
+        const url = `${location.origin}${location.pathname}${d.shareId ? `#${d.shareId}` : ''}`;
         try {
           if (navigator.share) {
             await navigator.share({ title: d.shareTitle, text, url });
@@ -761,38 +742,6 @@ const formatDeadline = (iso: string): string => {
           /* share sheet dismissed */
         }
       });
-    });
-
-    // Notify-me on sold-out cards: the dialog collects the address to
-    // notify, then opens the visitor's mail app with the request. The
-    // subject is stable per event ("Notify me: <title> on <date>") so the
-    // weekly reopen report can quote the exact inbox search.
-    const notifyDialog = root.querySelector<HTMLDialogElement>('[data-notify-dialog]');
-    const notifyForm = root.querySelector<HTMLFormElement>('[data-notify-form]');
-    const notifyEvent = root.querySelector<HTMLElement>('[data-notify-event]');
-    const notifyInput = root.querySelector<HTMLInputElement>('[data-notify-input]');
-    let notifyContext: DOMStringMap | null = null;
-    root.querySelectorAll<HTMLButtonElement>('[data-notify]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        notifyContext = btn.dataset;
-        if (notifyEvent) {
-          notifyEvent.textContent = `${notifyContext.notifyTitle} · ${notifyContext.notifyHost} · ${notifyContext.notifyDate}${notifyContext.notifyTime ? ` ${notifyContext.notifyTime}` : ''}`;
-        }
-        notifyDialog?.showModal();
-        notifyInput?.focus();
-      });
-    });
-    root.querySelector('[data-notify-cancel]')?.addEventListener('click', () => notifyDialog?.close());
-    notifyForm?.addEventListener('submit', () => {
-      const d = notifyContext;
-      const address = notifyInput?.value.trim();
-      if (!d || !address) return;
-      const when = `${d.notifyDate}${d.notifyTime ? ` ${d.notifyTime}` : ''}`;
-      const subject = `Notify me: ${d.notifyTitle} on ${d.notifyDate}`;
-      const body = fill(copy.notifyBody, {
-        title: d.notifyTitle || '', host: d.notifyHost || '', when, address,
-      });
-      location.href = `mailto:${root.dataset.requestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
 
     // A notification email links straight to its card (#live-…): select

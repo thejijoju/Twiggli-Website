@@ -51,7 +51,8 @@ const events = sessions.map((s) => ({
           '@type': 'Offer',
           price: s.price.match(/\d+(?:[.,]\d+)?/)![0].replace(',', '.'),
           priceCurrency: 'EUR',
-          url: s.bookUrl,
+          // Our card for the date: bookings go through Twiggli.
+          url: `${pageUrl}#${s.id}`,
           availability: s.soldOut
             ? 'https://schema.org/SoldOut'
             : 'https://schema.org/InStock',

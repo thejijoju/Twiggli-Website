@@ -4266,3 +4266,82 @@ html.map-locked { overflow: hidden; }
   [data-spacemap][data-map='open'] .sidemap-bar,
   [data-spacemap][data-map='expanded'] .sidemap-bar { display: none; }
 }
+
+/* — the booking form (BookingDialog.astro) — opens on the page from any
+   Book, Request or Notify button, with the workshop already in it. */
+.book-dialog {
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+  overflow: auto;
+}
+.book-dialog::backdrop { background: rgba(20, 16, 12, 0.5); }
+.book-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+  cursor: pointer;
+}
+.book-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.book-form, .book-sent { padding: 28px 28px 26px; }
+.book-title {
+  margin: 0 44px 14px 0;
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 1.2;
+}
+.book-summary {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--color-accent-100);
+}
+.book-workshop { margin: 0; font-weight: 700; font-size: 16px; line-height: 1.35; }
+.book-when { margin: 4px 0 0; font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 72%, transparent); }
+.book-lede { margin: 0 0 18px; font-size: 15px; color: color-mix(in srgb, var(--color-text) 72%, transparent); }
+.book-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.book-field { display: grid; gap: 5px; font-size: 13.5px; font-weight: 700; }
+.book-field em { font-style: normal; font-weight: 400; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.book-field-wide { grid-column: 1 / -1; }
+.book-field input,
+.book-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1.5px solid color-mix(in srgb, var(--color-text) 20%, transparent);
+  border-radius: 12px;
+  background: #fff;
+  font: 400 16px/1.4 var(--font-body);
+  color: var(--color-text);
+}
+.book-field textarea { resize: vertical; min-height: 76px; }
+.book-field input:focus,
+.book-field textarea:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent); }
+.book-honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.book-error { margin: 14px 0 0; font-size: 14px; color: #b42318; }
+.book-send { width: 100%; justify-content: center; margin-top: 18px; }
+.book-send:disabled { opacity: 0.6; cursor: wait; }
+.book-sent .book-lede { margin-bottom: 20px; }
+@media (max-width: 560px) {
+  .book-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    margin: auto 0 0;
+    border-radius: 20px 20px 0 0;
+    max-height: 92dvh;
+  }
+  .book-form, .book-sent { padding: 24px 18px 22px; }
+}
+/* A full date's waiting-list label is a button now; it keeps its look. */
+button.date-full { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }

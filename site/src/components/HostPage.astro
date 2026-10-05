@@ -14,8 +14,6 @@ import {
   sessionsFor, workshopHref, workshopsFor,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
-import { requestEmail } from '../data/site.ts';
-import { ui } from '../data/i18n.ts';
 
 interface Props {
   lang: Lang;
@@ -42,11 +40,15 @@ const priceText = !priceRange
   : priceRange[0] === priceRange[1] ? `${money(priceRange[0])} · ${t.perPerson}`
   : `${money(priceRange[0])}–${money(priceRange[1])} · ${t.perPerson}`;
 
-const REQUEST_EMAIL = requestEmail;
-const inquireHref = (title: string): string => {
-  const subject = ui(lang).calendar.mailInquireSubject(title, host.name);
-  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}`;
-};
+/** An on-request workshop's Inquire hands the booking form its name, host,
+ *  price and the host's page (BookingDialog.astro). */
+const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => ({
+  'data-book': 'request',
+  'data-book-title': o.title,
+  'data-book-host': host.name,
+  'data-book-price': o.price,
+  'data-book-link': o.bookUrl,
+});
 ---
 
 <Base
@@ -161,12 +163,12 @@ const inquireHref = (title: string): string => {
               <li class="date-row" id={o.id}>
                 <span class="date-when"><span class="date-day">{t.onRequest}</span></span>
                 <span class="date-main">
-                  <a class="date-title" href={o.bookUrl} target="_blank" rel="noopener">{o.title}</a>
+                  <a class="date-title" href={o.bookUrl} {...inquireAttrs(o)}>{o.title}</a>
                   <span class="date-meta">{o.duration ?? host.duration} · {o.district}</span>
                 </span>
                 <span class="date-side">
                   {o.price && <span class="date-price">{o.price}</span>}
-                  <a class="date-book" href={o.request ? inquireHref(o.title) : o.bookUrl} target={o.request ? undefined : '_blank'} rel={o.request ? undefined : 'noopener'}>{t.inquire}</a>
+                  <a class="date-book" href={o.bookUrl} {...inquireAttrs(o)}>{t.inquire}</a>
                 </span>
               </li>
             ))}

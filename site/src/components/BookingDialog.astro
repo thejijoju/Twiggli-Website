@@ -1,0 +1,179 @@
+---
+/**
+ * The booking form every Book, Request and Notify button on the site opens
+ * — on the page, without sending anyone to the host's own site. The button
+ * carries the workshop: data-book ("book", "request" or "notify") and
+ * data-book-title, -host, -date (ISO), -time, -price and -link (the host's
+ * booking page, which only we see). The form adds who is coming and sends
+ * it all to our inbox as one email, so every booking goes through Twiggli.
+ *
+ * Sent through FormSubmit, a form-to-email service that needs no account
+ * (the site is static and cannot send mail itself). Its first message asks
+ * the inbox owner, once, to confirm the address. Should the service be
+ * unreachable, the visitor's own mail app opens with the same message.
+ */
+import { bookingCopy } from '../data/bookingCopy.ts';
+import { requestEmail } from '../data/site.ts';
+import { LANG_META, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = bookingCopy[lang];
+---
+
+<dialog
+  class="book-dialog"
+  data-book-dialog
+  data-inbox={requestEmail}
+  data-locale={LANG_META[lang].locale}
+  data-lang={lang}
+  data-copy={JSON.stringify(c)}
+>
+  <button type="button" class="book-close" data-book-close aria-label={c.close}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+  <form class="book-form" data-book-form novalidate>
+    <h2 class="book-title" data-book-heading>{c.book}</h2>
+    <div class="book-summary">
+      <p class="book-workshop" data-book-workshop></p>
+      <p class="book-when" data-book-when></p>
+    </div>
+    <p class="book-lede" data-book-lede>{c.lede}</p>
+    <div class="book-fields">
+      <label class="book-field book-field-wide">
+        <span>{c.name}</span>
+        <input name="name" type="text" autocomplete="name" required />
+      </label>
+      <label class="book-field book-field-wide">
+        <span>{c.email}</span>
+        <input name="email" type="email" autocomplete="email" required />
+      </label>
+      <label class="book-field">
+        <span>{c.phone} <em>({c.optional})</em></span>
+        <input name="phone" type="tel" autocomplete="tel" />
+      </label>
+      <label class="book-field">
+        <span>{c.people}</span>
+        <input name="people" type="number" min="1" max="200" value="1" inputmode="numeric" required />
+      </label>
+      <label class="book-field book-field-wide">
+        <span>{c.message} <em>({c.optional})</em></span>
+        <textarea name="message" rows="3" placeholder={c.messagePh}></textarea>
+      </label>
+      {/* Left empty by people; a bot that fills it is ignored. */}
+      <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    </div>
+    <p class="book-error" data-book-error hidden></p>
+    <button type="submit" class="btn btn-primary book-send" data-book-send>{c.send}</button>
+  </form>
+  <div class="book-sent" data-book-sent hidden>
+    <h2 class="book-title">{c.sentTitle}</h2>
+    <p class="book-lede">{c.sentBody}</p>
+    <button type="button" class="btn btn-primary" data-book-close>{c.close}</button>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-book-dialog]');
+  const form = dialog?.querySelector<HTMLFormElement>('[data-book-form]');
+  if (dialog && form) {
+    const copy = JSON.parse(dialog.dataset.copy || '{}');
+    const inbox = dialog.dataset.inbox ?? '';
+    const locale = dialog.dataset.locale || 'en-GB';
+    const heading = dialog.querySelector<HTMLElement>('[data-book-heading]');
+    const workshop = dialog.querySelector<HTMLElement>('[data-book-workshop]');
+    const when = dialog.querySelector<HTMLElement>('[data-book-when]');
+    const lede = dialog.querySelector<HTMLElement>('[data-book-lede]');
+    const error = dialog.querySelector<HTMLElement>('[data-book-error]');
+    const send = dialog.querySelector<HTMLButtonElement>('[data-book-send]');
+    const sent = dialog.querySelector<HTMLElement>('[data-book-sent]');
+    let picked: DOMStringMap = {};
+
+    const dateText = (iso?: string) => {
+      if (!iso) return '';
+      const d = new Date(`${iso}T12:00:00`);
+      return Number.isNaN(d.valueOf()) ? iso : d.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    };
+
+    const open = (el: HTMLElement) => {
+      picked = { ...el.dataset };
+      const kind = picked.book || 'book';
+      if (heading) heading.textContent = copy[kind] ?? copy.book;
+      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : copy.lede;
+      if (workshop) workshop.textContent = [picked.bookTitle, picked.bookHost].filter(Boolean).join(' · ');
+      if (when) {
+        when.textContent = [dateText(picked.bookDate), picked.bookTime, picked.bookPrice].filter(Boolean).join(' · ');
+        when.hidden = !when.textContent;
+      }
+      if (error) error.hidden = true;
+      form.hidden = false;
+      if (sent) sent.hidden = true;
+      if (send) { send.disabled = false; send.textContent = copy.send; }
+      dialog.showModal();
+      form.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+    };
+
+    // Any Book / Request / Notify button, wherever it is on the page.
+    document.addEventListener('click', (event) => {
+      const el = (event.target as HTMLElement).closest<HTMLElement>('[data-book]');
+      if (!el) return;
+      event.preventDefault();
+      open(el);
+    });
+    dialog.querySelectorAll('[data-book-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('_honey')) return;
+      const kind = picked.book || 'book';
+      const label = kind === 'notify' ? 'Waiting list' : kind === 'request' ? 'Request' : 'Booking';
+      const fields: Record<string, string> = {
+        Type: label,
+        Workshop: picked.bookTitle ?? '',
+        Host: picked.bookHost ?? '',
+        Date: picked.bookDate ? `${picked.bookDate} (${dateText(picked.bookDate)})` : 'no date — on request',
+        Time: picked.bookTime ?? '',
+        Price: picked.bookPrice ?? '',
+        People: String(data.get('people') ?? ''),
+        Name: String(data.get('name') ?? ''),
+        Email: String(data.get('email') ?? ''),
+        Phone: String(data.get('phone') ?? ''),
+        Message: String(data.get('message') ?? ''),
+        'Host booking page': picked.bookLink ?? '',
+        'Sent from': location.href,
+        Language: dialog.dataset.lang ?? '',
+      };
+      const subject = `${label}: ${fields.Workshop}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : ''} (${fields.People})`;
+      if (send) { send.disabled = true; send.textContent = copy.sending; }
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          // "email" (lower case) is the field FormSubmit replies to; the
+          // visitor's address goes in once, under that name.
+          body: JSON.stringify({
+            ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
+            email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        if (sent) sent.hidden = false;
+        form.reset();
+      } catch {
+        // The service is unreachable: say so, and hand the same message to
+        // the visitor's mail app so the request still reaches us.
+        if (error) {
+          error.textContent = copy.error.replace('{email}', inbox);
+          error.hidden = false;
+        }
+        if (send) { send.disabled = false; send.textContent = copy.send; }
+        const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
+        location.href = `mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+    });
+  }
+</script>

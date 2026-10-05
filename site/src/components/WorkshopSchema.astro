@@ -55,7 +55,8 @@ const events = sessions.slice(0, 30).map((s) => {
             '@type': 'Offer',
             price,
             priceCurrency: 'EUR',
-            url: s.bookUrl,
+            // Our page for the date: bookings go through Twiggli.
+            url: `${pageUrl}#${s.id}`,
             availability: s.soldOut
               ? 'https://schema.org/SoldOut'
               : 'https://schema.org/InStock',

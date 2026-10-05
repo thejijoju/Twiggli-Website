@@ -5,8 +5,7 @@
  *  from "when does this run". The calendar keeps its richer cards. */
 import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
-import { requestEmail } from '../data/site.ts';
-import { ui } from '../data/i18n.ts';
+import { berlinTodayMs } from '../data/sessions.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -22,14 +21,19 @@ interface Props {
 const { sessions, lang, withHost = false, linkTitlesTo = 'workshop' } = Astro.props;
 const t = pageCopy[lang];
 
-const REQUEST_EMAIL = requestEmail;
-const requestHref = (s: Session): string => {
-  const when = `${formatDay(s.dayOffset, lang)}${s.time ? ` ${s.time}` : ''}`;
-  const subject = ui(lang).calendar.mailBookSubject(s.title, when);
-  return `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}`;
-};
 const showPrice = (price?: string) =>
   price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price;
+/** What a row's Book (or, when full, waiting-list) button hands the booking
+ *  form on the page (BookingDialog.astro) — the booking goes through us. */
+const bookAttrs = (s: Session) => ({
+  'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
+  'data-book-title': s.title,
+  'data-book-host': s.host.name,
+  'data-book-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10),
+  'data-book-time': s.time,
+  'data-book-price': showPrice(s.price),
+  'data-book-link': s.bookUrl,
+});
 ---
 
 <ul class="dates">
@@ -43,7 +47,7 @@ const showPrice = (price?: string) =>
         {linkTitlesTo === 'workshop' ? (
           <a class="date-title" href={workshopHref(lang, s.host, s.workshopKey)}>{s.title}</a>
         ) : (
-          <a class="date-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
+          <a class="date-title" href={s.bookUrl} {...bookAttrs(s)}>{s.title}</a>
         )}
         <span class="date-meta">
           {withHost && <a class="date-host" href={hostHref(lang, s.host)}>{s.host.name}</a>}
@@ -54,11 +58,11 @@ const showPrice = (price?: string) =>
       <span class="date-side">
         {s.price && <span class="date-price">{showPrice(s.price)}</span>}
         {s.soldOut ? (
-          <span class="date-full">{s.waitingList ? t.waitingList : t.soldOut}</span>
+          <button type="button" class="date-full" {...bookAttrs(s)}>{s.waitingList ? t.waitingList : t.soldOut}</button>
         ) : s.request ? (
-          <a class="date-book" href={requestHref(s)}>{t.requestBooking}</a>
+          <a class="date-book" href={s.bookUrl} {...bookAttrs(s)}>{t.requestBooking}</a>
         ) : (
-          <a class="date-book" href={s.bookUrl} target="_blank" rel="noopener">{t.book}</a>
+          <a class="date-book" href={s.bookUrl} {...bookAttrs(s)}>{t.book}</a>
         )}
         {!s.soldOut && typeof s.spots === 'number' && (
           <span class="date-spots">{s.spots} {t.spots}</span>

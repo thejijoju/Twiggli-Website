@@ -3,6 +3,7 @@ import Nav from '../components/Nav.astro';
 import SocialBar from '../components/SocialBar.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+import BookingDialog from '../components/BookingDialog.astro';
 import { getSiteData } from '../data/site.ts';
 import { href, splitLang, DEFAULT_LANG, LANGS, LANG_META, type Lang } from '../lib/url.ts';
 import '../styles/modernist.css';
@@ -141,6 +142,8 @@ const available = alternates.map((a) => a.lang);
       <Footer lang={lang} />
     </div>
     <CookieBanner lang={lang} />
+    {/* Every Book / Request / Notify button opens this, on the page. */}
+    <BookingDialog lang={lang} />
     <script>
       // Every outbound click, labelled with the card it came from. Runs
       // whether or not the analytics script loaded — track() is a no-op
