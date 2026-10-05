@@ -151,6 +151,11 @@ const available = alternates.map((a) => a.lang);
       import { startOutboundTracking } from '../lib/track.ts';
       startOutboundTracking();
     </script>
+    <script>
+      // Cards already opened read fainter (lib/seen.ts).
+      import { startSeen } from '../lib/seen.ts';
+      startSeen();
+    </script>
 
     <script>
       // The header paints nothing at rest — the page shows through it. Once

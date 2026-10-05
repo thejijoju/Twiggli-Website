@@ -45,7 +45,7 @@ const calendarHref = href(lang, '/happening-today/');
 
     <div class="today-grid">
       {picks.map((s) => (
-        <a class="today-card" href={calendarHref}>
+        <a class="today-card" href={calendarHref} data-seen={`s:${s.id}`}>
           <span class="today-media">
             {s.host.video ? (
               <video

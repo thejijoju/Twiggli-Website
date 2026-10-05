@@ -68,7 +68,7 @@ const schema = {
             const n = next.get(h.slug);
             return (
               <li>
-                <a class="host-card" href={hostHref(lang, h)}>
+                <a class="host-card" href={hostHref(lang, h)} data-seen={`h:${h.slug}`}>
                   <span class="host-card-media">
                     {h.poster ? <img src={h.poster} alt="" loading="lazy" decoding="async" />
                       : h.photo ? <img src={h.photo} alt="" loading="lazy" decoding="async" />

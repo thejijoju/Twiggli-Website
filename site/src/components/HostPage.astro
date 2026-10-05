@@ -66,7 +66,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
       <span>{host.name}</span>
     </nav>
 
-    <section class="page-head host-head">
+    <section class="page-head host-head" data-seen-visit={`h:${host.slug}`}>
       <span class="kicker kicker-tight">{t.inBerlin} · {activity.short}</span>
       <h1 class="page-title">{hostH1(host, lang)}</h1>
       <p class="page-lede">{hostLede(host, sessions, lang)}</p>

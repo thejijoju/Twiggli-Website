@@ -12,7 +12,7 @@ export const bookingCopy: Record<Lang, {
   sentTitle: string; sentBody: string; error: string; close: string;
 }> = {
   en: {
-    book: 'Book this workshop', request: 'Request this workshop', notify: 'Join the waiting list',
+    book: 'Booking request', request: 'Booking request', notify: 'Join the waiting list',
     lede: 'Tell us who’s coming and we’ll confirm your place by email. Nothing to pay yet.',
     notifyLede: 'This date is full. Leave your details and we’ll let you know as soon as a place opens.',
     name: 'Your name', email: 'Email', phone: 'Phone', people: 'People', message: 'Message', messagePh: 'Anything we should know?',
@@ -21,7 +21,7 @@ export const bookingCopy: Record<Lang, {
     error: 'That didn’t go through. Please try again, or write to us at {email}.', close: 'Close',
   },
   de: {
-    book: 'Diesen Workshop buchen', request: 'Diesen Workshop anfragen', notify: 'Auf die Warteliste',
+    book: 'Buchungsanfrage', request: 'Buchungsanfrage', notify: 'Auf die Warteliste',
     lede: 'Sag uns, wer kommt — wir bestätigen deinen Platz per E-Mail. Du zahlst noch nichts.',
     notifyLede: 'Dieser Termin ist voll. Hinterlass deine Daten, und wir melden uns, sobald ein Platz frei wird.',
     name: 'Dein Name', email: 'E-Mail', phone: 'Telefon', people: 'Personen', message: 'Nachricht', messagePh: 'Sollen wir noch etwas wissen?',
@@ -30,7 +30,7 @@ export const bookingCopy: Record<Lang, {
     error: 'Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib uns an {email}.', close: 'Schließen',
   },
   fr: {
-    book: 'Réserver cet atelier', request: 'Demander cet atelier', notify: 'Liste d’attente',
+    book: 'Demande de réservation', request: 'Demande de réservation', notify: 'Liste d’attente',
     lede: 'Dites-nous qui vient : nous confirmons votre place par e-mail. Rien à payer pour l’instant.',
     notifyLede: 'Cette date est complète. Laissez vos coordonnées et nous vous prévenons dès qu’une place se libère.',
     name: 'Votre nom', email: 'E-mail', phone: 'Téléphone', people: 'Personnes', message: 'Message', messagePh: 'Quelque chose à nous dire ?',
@@ -39,7 +39,7 @@ export const bookingCopy: Record<Lang, {
     error: 'L’envoi a échoué. Réessayez, ou écrivez-nous à {email}.', close: 'Fermer',
   },
   es: {
-    book: 'Reservar este taller', request: 'Solicitar este taller', notify: 'Lista de espera',
+    book: 'Solicitud de reserva', request: 'Solicitud de reserva', notify: 'Lista de espera',
     lede: 'Dinos quién viene y te confirmamos la plaza por email. Todavía no pagas nada.',
     notifyLede: 'Esta fecha está completa. Déjanos tus datos y te avisamos en cuanto se libere una plaza.',
     name: 'Tu nombre', email: 'Email', phone: 'Teléfono', people: 'Personas', message: 'Mensaje', messagePh: '¿Algo que debamos saber?',
@@ -48,7 +48,7 @@ export const bookingCopy: Record<Lang, {
     error: 'No se ha podido enviar. Inténtalo de nuevo o escríbenos a {email}.', close: 'Cerrar',
   },
   it: {
-    book: 'Prenota questo workshop', request: 'Richiedi questo workshop', notify: 'Lista d’attesa',
+    book: 'Richiesta di prenotazione', request: 'Richiesta di prenotazione', notify: 'Lista d’attesa',
     lede: 'Dicci chi viene: ti confermiamo il posto via email. Per ora non paghi nulla.',
     notifyLede: 'Questa data è al completo. Lasciaci i tuoi dati e ti avvisiamo appena si libera un posto.',
     name: 'Il tuo nome', email: 'Email', phone: 'Telefono', people: 'Persone', message: 'Messaggio', messagePh: 'Qualcosa che dovremmo sapere?',
@@ -57,7 +57,7 @@ export const bookingCopy: Record<Lang, {
     error: 'Invio non riuscito. Riprova o scrivici a {email}.', close: 'Chiudi',
   },
   nl: {
-    book: 'Deze workshop boeken', request: 'Deze workshop aanvragen', notify: 'Op de wachtlijst',
+    book: 'Boekingsaanvraag', request: 'Boekingsaanvraag', notify: 'Op de wachtlijst',
     lede: 'Laat ons weten wie er komt, dan bevestigen we je plek per e-mail. Je betaalt nog niets.',
     notifyLede: 'Deze datum is vol. Laat je gegevens achter en we laten het weten zodra er een plek vrijkomt.',
     name: 'Je naam', email: 'E-mail', phone: 'Telefoon', people: 'Personen', message: 'Bericht', messagePh: 'Iets wat we moeten weten?',
@@ -66,7 +66,7 @@ export const bookingCopy: Record<Lang, {
     error: 'Dat is niet gelukt. Probeer het opnieuw of mail ons op {email}.', close: 'Sluiten',
   },
   pl: {
-    book: 'Zarezerwuj ten warsztat', request: 'Zapytaj o ten warsztat', notify: 'Lista oczekujących',
+    book: 'Prośba o rezerwację', request: 'Prośba o rezerwację', notify: 'Lista oczekujących',
     lede: 'Napisz, kto przyjdzie — potwierdzimy miejsce mailowo. Na razie nic nie płacisz.',
     notifyLede: 'Ten termin jest pełny. Zostaw dane, a damy znać, gdy zwolni się miejsce.',
     name: 'Imię i nazwisko', email: 'E-mail', phone: 'Telefon', people: 'Osoby', message: 'Wiadomość', messagePh: 'Coś, o czym powinniśmy wiedzieć?',
@@ -75,7 +75,7 @@ export const bookingCopy: Record<Lang, {
     error: 'Nie udało się wysłać. Spróbuj ponownie albo napisz do nas: {email}.', close: 'Zamknij',
   },
   tr: {
-    book: 'Bu atölyeye kaydol', request: 'Bu atölyeyi talep et', notify: 'Bekleme listesi',
+    book: 'Rezervasyon talebi', request: 'Rezervasyon talebi', notify: 'Bekleme listesi',
     lede: 'Kimlerin geleceğini yaz, yerini e-postayla onaylayalım. Şimdilik bir şey ödemiyorsun.',
     notifyLede: 'Bu tarih dolu. Bilgilerini bırak, yer açılınca haber verelim.',
     name: 'Adın', email: 'E-posta', phone: 'Telefon', people: 'Kişi', message: 'Mesaj', messagePh: 'Bilmemiz gereken bir şey var mı?',

@@ -77,6 +77,7 @@ const searchText = (host: Host) => [
     <article
       class="maker"
       id={host.slug}
+      data-seen={`h:${host.slug}`}
       data-track-card="directory"
       data-track-host={host.name}
       data-activity={host.activity}

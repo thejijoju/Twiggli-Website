@@ -41,6 +41,7 @@ const videoPlaceholder = ui(lang).hostGrid.placeholder;
     {carouselHosts.map((host) => (
       <div
         class="host-coverflow-card"
+        data-seen={`h:${host.slug}`}
         tabindex="0"
         role="button"
         data-has-video={host.video ? 'true' : undefined}

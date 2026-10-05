@@ -82,7 +82,7 @@ const schema = {
           const count = dateCounts.get(h.slug) ?? 0;
           return (
             <li>
-              <a class="host-card" href={hostHref(lang, h)}>
+              <a class="host-card" href={hostHref(lang, h)} data-seen={`h:${h.slug}`}>
                 <span class="host-card-media">
                   {h.poster ? (
                     <img src={h.poster} alt="" loading="lazy" decoding="async" />

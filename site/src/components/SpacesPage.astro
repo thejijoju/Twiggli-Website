@@ -72,7 +72,7 @@ const marks = spaces.map((space) => ({
       <div class="sidemap-results">
       <div class="space-grid sidemap-list">
         {cards.map(({ space, host, lead, strip }) => (
-          <article class="space-card" id={`space-${idFor(space.name)}`} data-space={idFor(space.name)}>
+          <article class="space-card" id={`space-${idFor(space.name)}`} data-seen={`sp:${idFor(space.name)}`} data-space={idFor(space.name)}>
             <div class="space-visuals">
             <div class="space-media">
               {/* Which part of town, on the picture rather than in the

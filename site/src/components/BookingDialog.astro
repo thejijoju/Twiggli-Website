@@ -129,7 +129,7 @@ const c = bookingCopy[lang];
       const data = new FormData(form);
       if (data.get('_honey')) return;
       const kind = picked.book || 'book';
-      const label = kind === 'notify' ? 'Waiting list' : kind === 'request' ? 'Request' : 'Booking';
+      const label = kind === 'notify' ? 'Waiting list' : 'Booking request';
       const fields: Record<string, string> = {
         Type: label,
         Workshop: picked.bookTitle ?? '',

@@ -2990,6 +2990,7 @@ a:hover { color: var(--color-accent); }
   width: 100%;
   justify-content: center;
   text-align: center;
+  padding-inline: 14px;
 }
 @media (max-width: 860px) {
   .daypicker[data-view='grid'] .daysessions .daygroup { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -3216,7 +3217,13 @@ a:hover { color: var(--color-accent); }
   color: var(--color-bg);
   font-weight: 700;
   font-size: 14px;
-  white-space: nowrap;
+  /* "Booking request" runs long in some languages ("Richiesta di
+     prenotazione"): on a narrow card it breaks onto two even lines rather
+     than running out of the pill. */
+  white-space: normal;
+  text-wrap: balance;
+  text-align: center;
+  line-height: 1.25;
   text-decoration: none;
 }
 .session-book:hover {
@@ -3407,7 +3414,10 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   font-size: 14px;
   text-decoration: none;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
+  text-align: center;
+  line-height: 1.25;
 }
 .date-book:hover { background: var(--color-accent-700); color: var(--color-bg); }
 .date-full {
@@ -4345,3 +4355,11 @@ html.map-locked { overflow: hidden; }
 }
 /* A full date's waiting-list label is a button now; it keeps its look. */
 button.date-full { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Cards already opened (lib/seen.ts) read at 80%, back to full under the
+   pointer or keyboard focus. A filter rather than opacity, so it stacks with the
+   carousel's own fading instead of replacing it. */
+[data-seen] { transition: filter 0.25s ease; }
+.is-seen { filter: opacity(0.8); }
+.is-seen:hover,
+.is-seen:has(:focus-visible) { filter: none; }
