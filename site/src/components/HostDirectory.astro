@@ -151,9 +151,19 @@ const searchText = (host: Host) => [
           <div><dt>{labels.languages}</dt><dd>{host.languages}</dd></div>
           <div><dt>{labels.price}</dt><dd>{priceFigure(rangeFor(host))}{hasFigure(rangeFor(host)) ? ` · ${priceCopy.priceMeta}` : ''}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
         </dl>
-        {/* Lands on the contact form with this host in the query string, so
-            the form can pre-fill the enquiry. */}
-        <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(enquiryFor(host))}`}>
+        {/* Opens the booking form (BookingDialog.astro) on the page, with
+            this host's activity, first name and group price filled in; no
+            date, since a group picks one with us. Without scripts the link
+            still lands on the contact form with the host pre-filled. */}
+        <a
+          class="maker-request"
+          href={`${href(lang, '/contact/')}?host=${encodeURIComponent(enquiryFor(host))}`}
+          data-book="group"
+          data-book-title={host.specialty}
+          data-book-host={host.firstName}
+          data-book-price={hasFigure(rangeFor(host)) ? `${priceFigure(rangeFor(host))} · ${priceCopy.priceMeta}` : undefined}
+          data-book-group={groupText(host)}
+        >
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {labels.request}
         </a>

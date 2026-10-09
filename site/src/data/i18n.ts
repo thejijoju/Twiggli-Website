@@ -43,7 +43,7 @@ const en = {
   },
   directory: {
     studio: 'Studio', group: 'Group', duration: 'Length', place: 'Where', languages: 'Languages',
-    price: 'Price', play: 'Play reel', request: 'Request event',
+    price: 'Price', play: 'Play reel', request: 'Booking request',
     more: 'See more', less: 'See less',
     onsite: 'on-site',
   },
@@ -206,7 +206,7 @@ const de: UiCopy = {
   },
   directory: {
     studio: 'Studio', group: 'Gruppe', duration: 'Dauer', place: 'Wo', languages: 'Sprachen',
-    price: 'Preis', play: 'Reel abspielen', request: 'Event anfragen',
+    price: 'Preis', play: 'Reel abspielen', request: 'Buchungsanfrage',
     more: 'Mehr anzeigen', less: 'Weniger anzeigen',
     onsite: 'vor Ort',
   },
@@ -367,7 +367,7 @@ const fr: UiCopy = {
   },
   directory: {
     studio: 'Atelier', group: 'Groupe', duration: 'Durée', place: 'Où', languages: 'Langues',
-    price: 'Prix', play: 'Lire la vidéo', request: 'Demander un événement',
+    price: 'Prix', play: 'Lire la vidéo', request: 'Demande de réservation',
     more: 'Voir plus', less: 'Voir moins',
     onsite: 'sur site',
   },
@@ -528,7 +528,7 @@ const es: UiCopy = {
   },
   directory: {
     studio: 'Estudio', group: 'Grupo', duration: 'Duración', place: 'Dónde', languages: 'Idiomas',
-    price: 'Precio', play: 'Ver vídeo', request: 'Solicitar evento',
+    price: 'Precio', play: 'Ver vídeo', request: 'Solicitud de reserva',
     more: 'Ver más', less: 'Ver menos',
     onsite: 'in situ',
   },
@@ -689,7 +689,7 @@ const it: UiCopy = {
   },
   directory: {
     studio: 'Studio', group: 'Gruppo', duration: 'Durata', place: 'Dove', languages: 'Lingue',
-    price: 'Prezzo', play: 'Guarda il video', request: 'Richiedi un evento',
+    price: 'Prezzo', play: 'Guarda il video', request: 'Richiesta di prenotazione',
     more: 'Mostra altro', less: 'Mostra meno',
     onsite: 'in sede',
   },
@@ -850,7 +850,7 @@ const nl: UiCopy = {
   },
   directory: {
     studio: 'Studio', group: 'Groep', duration: 'Duur', place: 'Waar', languages: 'Talen',
-    price: 'Prijs', play: 'Video afspelen', request: 'Evenement aanvragen',
+    price: 'Prijs', play: 'Video afspelen', request: 'Boekingsaanvraag',
     more: 'Meer tonen', less: 'Minder tonen',
     onsite: 'op locatie',
   },
@@ -1011,7 +1011,7 @@ const pl: UiCopy = {
   },
   directory: {
     studio: 'Pracownia', group: 'Grupa', duration: 'Czas trwania', place: 'Gdzie', languages: 'Języki',
-    price: 'Cena', play: 'Odtwórz wideo', request: 'Zapytaj o wydarzenie',
+    price: 'Cena', play: 'Odtwórz wideo', request: 'Prośba o rezerwację',
     more: 'Pokaż więcej', less: 'Pokaż mniej',
     onsite: 'u was na miejscu',
   },
@@ -1179,7 +1179,7 @@ const tr: UiCopy = {
   },
   directory: {
     studio: 'Stüdyo', group: 'Grup', duration: 'Süre', place: 'Nerede', languages: 'Diller',
-    price: 'Fiyat', play: 'Videoyu oynat', request: 'Etkinlik talep et',
+    price: 'Fiyat', play: 'Videoyu oynat', request: 'Rezervasyon talebi',
     more: 'Devamını göster', less: 'Daha az göster',
     onsite: 'yerinde',
   },

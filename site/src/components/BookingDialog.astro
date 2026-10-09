@@ -56,6 +56,12 @@ const c = bookingCopy[lang];
         <span>{c.people}</span>
         <input name="people" type="number" min="1" max="200" value="1" inputmode="numeric" required />
       </label>
+      {/* Only where nothing is booked for a date yet: a group, or a workshop
+          that runs on request. */}
+      <label class="book-field book-field-wide" data-book-when-field hidden>
+        <span>{c.when} <em>({c.optional})</em></span>
+        <input name="when" type="date" />
+      </label>
       <label class="book-field book-field-wide">
         <span>{c.message} <em>({c.optional})</em></span>
         <textarea name="message" rows="3" placeholder={c.messagePh}></textarea>
@@ -87,6 +93,8 @@ const c = bookingCopy[lang];
     const error = dialog.querySelector<HTMLElement>('[data-book-error]');
     const send = dialog.querySelector<HTMLButtonElement>('[data-book-send]');
     const sent = dialog.querySelector<HTMLElement>('[data-book-sent]');
+    const whenField = dialog.querySelector<HTMLElement>('[data-book-when-field]');
+    const people = form.querySelector<HTMLInputElement>('input[name="people"]');
     let picked: DOMStringMap = {};
 
     const dateText = (iso?: string) => {
@@ -99,7 +107,13 @@ const c = bookingCopy[lang];
       picked = { ...el.dataset };
       const kind = picked.book || 'book';
       if (heading) heading.textContent = copy[kind] ?? copy.book;
-      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : copy.lede;
+      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : copy.lede;
+      if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify';
+      // A group says how many; the host's range is the hint.
+      if (people) {
+        people.value = kind === 'group' ? '' : people.value || '1';
+        people.placeholder = picked.bookGroup ?? '';
+      }
       if (workshop) workshop.textContent = [picked.bookTitle, picked.bookHost].filter(Boolean).join(' · ');
       if (when) {
         when.textContent = [dateText(picked.bookDate), picked.bookTime, picked.bookPrice].filter(Boolean).join(' · ');
@@ -109,6 +123,9 @@ const c = bookingCopy[lang];
       form.hidden = false;
       if (sent) sent.hidden = true;
       if (send) { send.disabled = false; send.textContent = copy.send; }
+      // A button inside another panel (the group page's quick view) hands
+      // over to the form rather than stacking it on top.
+      document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => { if (d !== dialog) d.close(); });
       dialog.showModal();
       form.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
     };
@@ -129,14 +146,18 @@ const c = bookingCopy[lang];
       const data = new FormData(form);
       if (data.get('_honey')) return;
       const kind = picked.book || 'book';
-      const label = kind === 'notify' ? 'Waiting list' : 'Booking request';
+      const label = kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : 'Booking request';
+      const wish = String(data.get('when') ?? '');
       const fields: Record<string, string> = {
         Type: label,
         Workshop: picked.bookTitle ?? '',
         Host: picked.bookHost ?? '',
-        Date: picked.bookDate ? `${picked.bookDate} (${dateText(picked.bookDate)})` : 'no date — on request',
+        Date: picked.bookDate
+          ? `${picked.bookDate} (${dateText(picked.bookDate)})`
+          : wish ? `preferred: ${wish} (${dateText(wish)})` : 'no date yet',
         Time: picked.bookTime ?? '',
         Price: picked.bookPrice ?? '',
+        ...(picked.bookGroup ? { 'Group size (host)': picked.bookGroup } : {}),
         People: String(data.get('people') ?? ''),
         Name: String(data.get('name') ?? ''),
         Email: String(data.get('email') ?? ''),
@@ -146,7 +167,7 @@ const c = bookingCopy[lang];
         'Sent from': location.href,
         Language: dialog.dataset.lang ?? '',
       };
-      const subject = `${label}: ${fields.Workshop}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : ''} (${fields.People})`;
+      const subject = `${label}: ${fields.Workshop}${fields.Host ? ` · ${fields.Host}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''} (${fields.People})`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
