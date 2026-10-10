@@ -107,7 +107,7 @@ const c = bookingCopy[lang];
       picked = { ...el.dataset };
       const kind = picked.book || 'book';
       if (heading) heading.textContent = copy[kind] ?? copy.book;
-      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : copy.lede;
+      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : copy.lede;
       if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify';
       // A group says how many; the host's range is the hint.
       if (people) {
@@ -146,12 +146,14 @@ const c = bookingCopy[lang];
       const data = new FormData(form);
       if (data.get('_honey')) return;
       const kind = picked.book || 'book';
-      const label = kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : 'Booking request';
+      const label = kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : 'Booking request';
       const wish = String(data.get('when') ?? '');
       const fields: Record<string, string> = {
         Type: label,
-        Workshop: picked.bookTitle ?? '',
-        Host: picked.bookHost ?? '',
+        [kind === 'studio' ? 'Studio' : 'Workshop']: picked.bookTitle ?? '',
+        ...(picked.bookWhere ? { Address: picked.bookWhere } : {}),
+        [kind === 'studio' ? 'District' : 'Host']: picked.bookHost ?? '',
+        ...(picked.bookKeeper ? { 'Studio host': picked.bookKeeper } : {}),
         Date: picked.bookDate
           ? `${picked.bookDate} (${dateText(picked.bookDate)})`
           : wish ? `preferred: ${wish} (${dateText(wish)})` : 'no date yet',
@@ -167,7 +169,7 @@ const c = bookingCopy[lang];
         'Sent from': location.href,
         Language: dialog.dataset.lang ?? '',
       };
-      const subject = `${label}: ${fields.Workshop}${fields.Host ? ` · ${fields.Host}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''} (${fields.People})`;
+      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''} (${fields.People})`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {

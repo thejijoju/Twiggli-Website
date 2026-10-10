@@ -6,7 +6,7 @@ import type { Lang } from '../lib/url.ts';
  *  made through Twiggli, never by sending the visitor to the host's page. */
 export const bookingCopy: Record<Lang, {
   book: string; request: string; notify: string;
-  lede: string; notifyLede: string; groupLede: string; when: string;
+  lede: string; notifyLede: string; groupLede: string; studioLede: string; when: string;
   name: string; email: string; phone: string; people: string; message: string; messagePh: string;
   optional: string; send: string; sending: string;
   sentTitle: string; sentBody: string; error: string; close: string;
@@ -16,6 +16,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Tell us who’s coming and we’ll confirm your place by email. Nothing to pay yet.',
     notifyLede: 'This date is full. Leave your details and we’ll let you know as soon as a place opens.',
     groupLede: 'Tell us about your group and when suits you, and we’ll come back with dates and a quote. Nothing to pay yet.',
+    studioLede: 'Tell us when you’d like the space, for how long and what for, and we’ll check with the host and come back with terms. Nothing to pay yet.',
     when: 'Preferred date',
     name: 'Your name', email: 'Email', phone: 'Phone', people: 'People', message: 'Message', messagePh: 'Anything we should know?',
     optional: 'optional', send: 'Send request', sending: 'Sending…',
@@ -27,6 +28,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Sag uns, wer kommt — wir bestätigen deinen Platz per E-Mail. Du zahlst noch nichts.',
     notifyLede: 'Dieser Termin ist voll. Hinterlass deine Daten, und wir melden uns, sobald ein Platz frei wird.',
     groupLede: 'Erzähl uns von deiner Gruppe und wann es euch passt — wir melden uns mit Terminen und einem Angebot. Du zahlst noch nichts.',
+    studioLede: 'Sag uns, wann du den Raum brauchst, wie lange und wofür — wir klären es mit dem Host und melden uns mit den Konditionen. Du zahlst noch nichts.',
     when: 'Wunschtermin',
     name: 'Dein Name', email: 'E-Mail', phone: 'Telefon', people: 'Personen', message: 'Nachricht', messagePh: 'Sollen wir noch etwas wissen?',
     optional: 'optional', send: 'Anfrage senden', sending: 'Wird gesendet…',
@@ -38,6 +40,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Dites-nous qui vient : nous confirmons votre place par e-mail. Rien à payer pour l’instant.',
     notifyLede: 'Cette date est complète. Laissez vos coordonnées et nous vous prévenons dès qu’une place se libère.',
     groupLede: 'Parlez-nous de votre groupe et des dates qui vous conviennent : nous revenons vers vous avec des créneaux et un devis. Rien à payer pour l’instant.',
+    studioLede: 'Dites-nous quand vous souhaitez l’espace, pour combien de temps et pour quoi faire : nous voyons avec l’hôte et revenons vers vous avec les conditions. Rien à payer pour l’instant.',
     when: 'Date souhaitée',
     name: 'Votre nom', email: 'E-mail', phone: 'Téléphone', people: 'Personnes', message: 'Message', messagePh: 'Quelque chose à nous dire ?',
     optional: 'facultatif', send: 'Envoyer la demande', sending: 'Envoi…',
@@ -49,6 +52,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Dinos quién viene y te confirmamos la plaza por email. Todavía no pagas nada.',
     notifyLede: 'Esta fecha está completa. Déjanos tus datos y te avisamos en cuanto se libere una plaza.',
     groupLede: 'Cuéntanos sobre tu grupo y cuándo os viene bien, y te enviamos fechas y presupuesto. Todavía no pagas nada.',
+    studioLede: 'Cuéntanos cuándo quieres el espacio, cuánto tiempo y para qué, y lo vemos con el anfitrión y te enviamos las condiciones. Todavía no pagas nada.',
     when: 'Fecha preferida',
     name: 'Tu nombre', email: 'Email', phone: 'Teléfono', people: 'Personas', message: 'Mensaje', messagePh: '¿Algo que debamos saber?',
     optional: 'opcional', send: 'Enviar solicitud', sending: 'Enviando…',
@@ -60,6 +64,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Dicci chi viene: ti confermiamo il posto via email. Per ora non paghi nulla.',
     notifyLede: 'Questa data è al completo. Lasciaci i tuoi dati e ti avvisiamo appena si libera un posto.',
     groupLede: 'Raccontaci del tuo gruppo e di quando vi va bene: ti rispondiamo con date e un preventivo. Per ora non paghi nulla.',
+    studioLede: 'Dicci quando ti serve lo spazio, per quanto tempo e per cosa: sentiamo l’host e ti rispondiamo con le condizioni. Per ora non paghi nulla.',
     when: 'Data preferita',
     name: 'Il tuo nome', email: 'Email', phone: 'Telefono', people: 'Persone', message: 'Messaggio', messagePh: 'Qualcosa che dovremmo sapere?',
     optional: 'facoltativo', send: 'Invia richiesta', sending: 'Invio…',
@@ -71,6 +76,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Laat ons weten wie er komt, dan bevestigen we je plek per e-mail. Je betaalt nog niets.',
     notifyLede: 'Deze datum is vol. Laat je gegevens achter en we laten het weten zodra er een plek vrijkomt.',
     groupLede: 'Vertel ons over je groep en wanneer het jullie uitkomt, dan komen we terug met data en een offerte. Je betaalt nog niets.',
+    studioLede: 'Laat ons weten wanneer je de ruimte wilt, hoe lang en waarvoor, dan overleggen we met de host en komen we terug met de voorwaarden. Je betaalt nog niets.',
     when: 'Voorkeursdatum',
     name: 'Je naam', email: 'E-mail', phone: 'Telefoon', people: 'Personen', message: 'Bericht', messagePh: 'Iets wat we moeten weten?',
     optional: 'optioneel', send: 'Aanvraag versturen', sending: 'Versturen…',
@@ -82,6 +88,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Napisz, kto przyjdzie — potwierdzimy miejsce mailowo. Na razie nic nie płacisz.',
     notifyLede: 'Ten termin jest pełny. Zostaw dane, a damy znać, gdy zwolni się miejsce.',
     groupLede: 'Opowiedz nam o swojej grupie i o tym, kiedy wam pasuje — odpiszemy z terminami i wyceną. Na razie nic nie płacisz.',
+    studioLede: 'Napisz, kiedy potrzebujesz przestrzeni, na jak długo i do czego — ustalimy to z gospodarzem i odpiszemy z warunkami. Na razie nic nie płacisz.',
     when: 'Preferowany termin',
     name: 'Imię i nazwisko', email: 'E-mail', phone: 'Telefon', people: 'Osoby', message: 'Wiadomość', messagePh: 'Coś, o czym powinniśmy wiedzieć?',
     optional: 'opcjonalnie', send: 'Wyślij zapytanie', sending: 'Wysyłanie…',
@@ -93,6 +100,7 @@ export const bookingCopy: Record<Lang, {
     lede: 'Kimlerin geleceğini yaz, yerini e-postayla onaylayalım. Şimdilik bir şey ödemiyorsun.',
     notifyLede: 'Bu tarih dolu. Bilgilerini bırak, yer açılınca haber verelim.',
     groupLede: 'Grubundan ve size uyan zamandan bahset, tarih seçenekleri ve fiyat teklifiyle dönelim. Şimdilik bir şey ödemiyorsun.',
+    studioLede: 'Mekânı ne zaman, ne kadar süreyle ve ne için istediğini yaz; ev sahibiyle konuşup koşullarla dönelim. Şimdilik bir şey ödemiyorsun.',
     when: 'Tercih edilen tarih',
     name: 'Adın', email: 'E-posta', phone: 'Telefon', people: 'Kişi', message: 'Mesaj', messagePh: 'Bilmemiz gereken bir şey var mı?',
     optional: 'isteğe bağlı', send: 'Talebi gönder', sending: 'Gönderiliyor…',

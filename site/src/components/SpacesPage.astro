@@ -55,13 +55,15 @@ const marks = spaces.map((space) => ({
       <h1 class="page-title">{t.h1}</h1>
       <p class="page-lede">{t.lede}</p>
       <div class="hero-actions">
-        <a href={href(lang, '/contact/')} class="btn btn-primary">{t.cta}</a>
+        {/* Down to the studios: each card's own button sends the request,
+            with the space named. */}
+        <a href="#spaces" class="btn btn-primary">{t.cta}</a>
       </div>
     </section>
 
     <hr class="rule" />
 
-    <section class="section has-sidemap" data-spacemap data-map="open">
+    <section class="section has-sidemap" id="spaces" data-spacemap data-map="open">
       {/* Brings the map back once closed, and is how a phone opens it. */}
       <div class="sidemap-bar">
         <button class="view-btn map-btn" type="button" data-map-open aria-label={m.map} title={m.map}>
@@ -127,10 +129,21 @@ const marks = spaces.map((space) => ({
                 {space.access && <div><dt>{t.labelAccess}</dt><dd>{space.access[lang]}</dd></div>}
               </dl>
               {space.terms && <p class="space-terms">{space.terms[lang]}</p>}
-              {/* Lands on the contact form with the space already named, the
-                  same route the directory's "Request event" takes. */}
-              <a class="btn btn-primary space-ask" href={`${href(lang, '/contact/')}?space=${encodeURIComponent(space.name)}`}>
-                {t.askAbout} {space.name}
+              {/* Opens the booking form (BookingDialog.astro) on the page with
+                  this space, its district, address and rate filled in, as
+                  the group page's cards do. Without scripts the link still
+                  lands on the contact form with the space named. */}
+              <a
+                class="btn btn-primary space-ask"
+                href={`${href(lang, '/contact/')}?space=${encodeURIComponent(space.name)}`}
+                data-book="studio"
+                data-book-title={space.name}
+                data-book-host={space.district}
+                data-book-where={space.address}
+                data-book-keeper={host ? (host.firstName ?? host.name) : (space.manager ?? undefined)}
+                data-book-price={space.price?.[lang] ?? t.priceOnRequest}
+              >
+                {ui(lang).directory.request}
               </a>
             </div>
           </article>
@@ -160,7 +173,8 @@ const marks = spaces.map((space) => ({
         <span class="kicker kicker-tight">{t.moreKicker}</span>
         <p class="split-copy">{t.more}</p>
         <div class="split-actions">
-          <a href={href(lang, '/contact/')} class="btn btn-primary">{t.cta}</a>
+          {/* A space not listed here: the same form, the request named as such. */}
+          <a href={href(lang, '/contact/')} class="btn btn-primary" data-book="studio" data-book-title={t.moreKicker}>{t.cta}</a>
         </div>
       </div>
       <div></div>
