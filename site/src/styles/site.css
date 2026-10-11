@@ -12,12 +12,23 @@
 
 /* ── Typeface ──────────────────────────────────────────────────────────
    The design system ships Archivo (loaded by modernist.css). Moved to
-   Roboto instead — the provider link lives in Base.astro's
-   <head>; these two variables are the only place a font is named. */
+   Poppins instead — regular for running text, medium for values and
+   emphasis, semibold for headings (its bold reads heavy at display
+   sizes). The provider link lives in Base.astro's <head>; these variables
+   are the only place a font is named. Weights the Roboto design leaned
+   on (800, 900) are stepped down to 600 and 700, which is where Poppins
+   reads as the same emphasis.
+
+   Text in two inks, per request: a near-black slate for primary text and
+   a mid grey for everything secondary (labels, metadata, captions). The
+   grey is a fixed colour rather than a transparent mix of the text ink,
+   so it reads the same on every background. */
 :root {
-  --font-heading: "Roboto", system-ui, sans-serif;
-  --font-body: "Roboto", system-ui, sans-serif;
-  --font-heading-weight: 700;
+  --font-heading: "Poppins", system-ui, sans-serif;
+  --font-body: "Poppins", system-ui, sans-serif;
+  --font-heading-weight: 600;
+  --color-text: #24272e;
+  --color-text-muted: #575d64;
 
   /* ── Page gutter ────────────────────────────────────────────────────
      The single left/right inset for every full-width band: .container,
@@ -54,7 +65,13 @@
   --color-accent-400: #b2acfc;
   --color-accent-500: #9285fa;
   --color-accent-600: #775af1;
-  --color-accent-700: #5b42be;
+  /* The deeper of the two purples, rgb(84, 46, 188): every purple used as
+     text (links, prices, labels, the current page in the menu) is this
+     one; the brighter #6a3eec stays the fill. */
+  --color-accent-700: #542ebc;
+  --color-accent-deep: #542ebc;
+  /* Filled purple surfaces run from one purple into the other. */
+  --accent-gradient: linear-gradient(135deg, #6a3eec 0%, #542ebc 100%);
   --color-accent-800: #403088;
   --color-accent-900: #292352;
 
@@ -401,7 +418,7 @@ a:hover { color: var(--color-accent); }
   white-space: nowrap;
 }
 .lang-switch-menu a:hover { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
-.lang-switch-menu a.lang-active { font-weight: 800; color: var(--color-accent-700); }
+.lang-switch-menu a.lang-active { font-weight: 600; color: var(--color-accent-700); }
 
 /* The one solid black pill in the chrome — the primary app-download action. */
 .nav a.nav-cta {
@@ -425,7 +442,7 @@ a:hover { color: var(--color-accent); }
   align-items: center;
   gap: 14px;
 }
-.nav-social a { display: flex; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.nav-social a { display: flex; color: var(--color-text-muted); }
 .nav-social a:hover { color: var(--color-accent); }
 
 /* — hero — */
@@ -437,13 +454,13 @@ a:hover { color: var(--color-accent); }
   padding: 72px 0 64px;
 }
 /* The hero headline runs heavier and larger than the rest of the headings —
-   900 rather than the shared 700, so it is the one piece of type that reads
-   as the page's anchor. Roboto 900 is in the font link in Base.astro. */
+   heavier than the shared heading weight, so it is the one piece of type
+   that reads as the page's anchor. */
 /* Matched to the previous site's h1, from its computed styles: Source Sans
    Pro 700 at 62.752px, -0.62752px tracking (-0.01em) and 67.4709px leading
    (1.075). Expressed as ratios so they hold as the size scales down, and
    capped at the original 62.752px — the old site sized this fluidly too.
-   This is the one element not set in Roboto. */
+   This is the one element not set in Poppins. */
 .hero-title {
   /* Sits in the left column on the copy's own measure, so it never runs
      across the video grid beside it. */
@@ -646,7 +663,7 @@ a:hover { color: var(--color-accent); }
   border: 1.5px solid #dcdcdc;
   border-radius: 999px;
   font-size: 13.5px;
-  color: color-mix(in srgb, var(--color-text) 45%, transparent);
+  color: var(--color-text-muted);
 }
 .phone-search svg {
   width: 15px;
@@ -669,7 +686,7 @@ a:hover { color: var(--color-accent); }
   border: 1.5px solid #d6d6d6;
   border-radius: 999px;
   font-size: 10.5px;
-  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 /* The staggered feed: two independent stacks, per the app. The offset
@@ -766,7 +783,7 @@ a:hover { color: var(--color-accent); }
      smaller keeps every line single and all four cards the same. */
   font-size: 10px;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
   margin-top: 3px;
 }
 /* The titled cards carry a title, a heart and the date line, and stop
@@ -847,13 +864,13 @@ a:hover { color: var(--color-accent); }
   display: inline-flex;
   align-items: center;
   font-family: var(--font-heading);
-  font-weight: 900;
+  font-weight: 700;
   font-style: italic;
   font-size: clamp(20px, 1.9vw, 27px);
   line-height: 1;
   letter-spacing: 0.005em;
   text-transform: uppercase;
-  color: #131313;
+  color: var(--color-text);
   background: var(--color-bg);
   border: 4px solid #131313;
   padding: 13px 20px 14px;
@@ -879,7 +896,7 @@ a:hover { color: var(--color-accent); }
   line-height: 1.6;
   max-width: 56ch;
   margin: -8px 0 24px;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 
 .sr-only {
@@ -931,7 +948,7 @@ a:hover { color: var(--color-accent); }
   line-height: 1.6;
   margin: 0;
   max-width: 52ch;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 
 /* — text + media splits — */
@@ -955,7 +972,7 @@ a:hover { color: var(--color-accent); }
   line-height: 1.6;
   margin: 16px 0 0;
   max-width: 48ch;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 .split-actions { margin-top: 24px; }
 .media-4x3 { aspect-ratio: 4 / 3; }
@@ -977,7 +994,7 @@ a:hover { color: var(--color-accent); }
 .host-specialty {
   font-size: 14px;
   margin: 2px 0 0;
-  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  color: var(--color-text-muted);
 }
 
 /* — hosts coverflow — a row of five reels, all one size: nothing is
@@ -1045,7 +1062,7 @@ a:hover { color: var(--color-accent); }
   font-size: 18px;
   line-height: 1.6;
   max-width: 52ch;
-  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  color: var(--color-text-muted);
 }
 .today-grid {
   display: grid;
@@ -1123,7 +1140,7 @@ a:hover { color: var(--color-accent); }
   display: block;
   margin-top: 14px;
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 17px;
   line-height: 1.25;
   /* A fifth of the row is narrow enough that one long German compound
@@ -1140,7 +1157,7 @@ a:hover { color: var(--color-accent); }
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 52%, transparent);
+  color: var(--color-text-muted);
 }
 .today-actions { margin-top: 36px; }
 
@@ -1354,7 +1371,7 @@ a:hover { color: var(--color-accent); }
 .footer-wordmark {
   display: block;
   font-family: var(--font-heading);
-  font-weight: 900;
+  font-weight: 700;
   font-size: clamp(20px, 1.8vw, 26px);
   line-height: 1.1;
   letter-spacing: 0;
@@ -1472,7 +1489,7 @@ a:hover { color: var(--color-accent); }
   max-width: 74ch;
   font-size: 17.5px;
   line-height: 1.7;
-  color: color-mix(in srgb, var(--color-text) 85%, transparent);
+  color: var(--color-text-muted);
   padding-bottom: 64px;
 }
 .prose h2 {
@@ -1520,7 +1537,7 @@ a:hover { color: var(--color-accent); }
   margin-top: 10px;
   font-size: 14.5px;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  color: var(--color-text-muted);
 }
 @media (min-width: 900px) {
   /* Beside the text rather than interrupting it, once there is room. */
@@ -1544,7 +1561,7 @@ a:hover { color: var(--color-accent); }
   margin-top: 10px;
   font-size: 14.5px;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  color: var(--color-text-muted);
 }
 @media (min-width: 900px) {
   .post-figure { float: right; margin: 6px 0 24px 32px; max-width: 300px; }
@@ -1569,12 +1586,12 @@ a:hover { color: var(--color-accent); }
 .post-callout-label {
   display: inline-block;
   font-family: var(--font-heading);
-  font-weight: 900;
+  font-weight: 700;
   font-style: italic;
   font-size: 13px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #131313;
+  color: var(--color-text);
   margin: 0 0 10px;
 }
 
@@ -1595,7 +1612,7 @@ a:hover { color: var(--color-accent); }
 .legal-toc li { margin: 0 0 6px; break-inside: avoid; }
 .legal-meta {
   font-size: 15px;
-  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  color: var(--color-text-muted);
   margin: 20px 0 0;
 }
 
@@ -1635,7 +1652,7 @@ a:hover { color: var(--color-accent); }
   line-height: 1.6;
   margin: 20px 0 0;
   max-width: 56ch;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 
 /* — cookie banner — */
@@ -1664,7 +1681,7 @@ a:hover { color: var(--color-accent); }
   font-size: 15px;
   line-height: 1.5;
   max-width: 68ch;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 .cookie-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; flex: none; }
 /* Finger-sized, and no double-tap-to-zoom delay on the two buttons. */
@@ -1698,7 +1715,7 @@ a:hover { color: var(--color-accent); }
   padding: 0 0 64px;
 }
 .form-rows { display: flex; flex-direction: column; gap: 16px; max-width: 48ch; }
-.form-aside p { font-size: 17.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 78%, transparent); }
+.form-aside p { font-size: 17.5px; line-height: 1.6; color: var(--color-text-muted); }
 
 /* ── responsive ────────────────────────────────────────────────────────
    Not in the export — added so the layout holds below desktop. Each rule
@@ -1900,7 +1917,7 @@ a:hover { color: var(--color-accent); }
   font-size: 15px;
   line-height: 1.6;
   margin: 12px 0 0;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 /* Four lines on a directory of thirty-odd cards, so the details row and the
    enquiry button stay within reach; the rest is a click away. The card
@@ -1957,7 +1974,7 @@ a:hover { color: var(--color-accent); }
   font-size: 12px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+  color: var(--color-text-muted);
   padding-top: 2px;
 }
 .maker-meta dd { margin: 0; }
@@ -2055,7 +2072,7 @@ a:hover { color: var(--color-accent); }
   background: var(--color-accent);
   color: #fff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
 }
 .filterbtn-on[hidden] { display: none; }
 .filterdrop[open] .filterbtn {
@@ -2129,10 +2146,10 @@ a:hover { color: var(--color-accent); }
   width: 108px;
   padding: 0;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
 .filter-chips {
   display: flex;
@@ -2169,7 +2186,7 @@ a:hover { color: var(--color-accent); }
   margin: 0;
   font-size: 15px;
   font-weight: 700;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  color: var(--color-text-muted);
 }
 .filter-clear {
   padding: 0;
@@ -2184,7 +2201,7 @@ a:hover { color: var(--color-accent); }
 .filter-empty {
   margin: 0 0 40px;
   font-size: 17px;
-  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 720px) {
@@ -2230,7 +2247,7 @@ a:hover { color: var(--color-accent); }
   font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
 .post-cat {
   padding: 3px 10px;
@@ -2250,7 +2267,7 @@ a:hover { color: var(--color-accent); }
   font-size: 16px;
   line-height: 1.6;
   margin: 10px 0 0;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: var(--color-text-muted);
 }
 .post-card-more {
   display: inline-block;
@@ -2264,7 +2281,7 @@ a:hover { color: var(--color-accent); }
 .post { padding: 56px 0 72px; max-width: 74ch; }
 .post-title {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 600;
   font-size: clamp(32px, 3.6vw, 46px);
   line-height: 1.12;
   letter-spacing: -0.02em;
@@ -2274,7 +2291,7 @@ a:hover { color: var(--color-accent); }
   font-size: 20px;
   line-height: 1.55;
   margin: 16px 0 0;
-  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  color: var(--color-text-muted);
 }
 .post-body { margin-top: 36px; }
 .post-body h2 {
@@ -2288,7 +2305,7 @@ a:hover { color: var(--color-accent); }
   border-left: 4px solid var(--color-accent);
   font-size: 20px;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--color-text) 80%, transparent);
+  color: var(--color-text-muted);
 }
 .post-back { margin-top: 48px; font-weight: 700; }
 
@@ -2371,10 +2388,10 @@ a:hover { color: var(--color-accent); }
     display: block;
     margin: 0 0 10px;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text) 55%, transparent);
+    color: var(--color-text-muted);
   }
   /* Air between the two groups, on the second heading only. */
   html.js-pilldrop .pillgroup-head + .activity-pills + .pillgroup-head { margin-top: 20px; }
@@ -2485,7 +2502,7 @@ a:hover { color: var(--color-accent); }
   display: block;
   margin: 0 0 4px;
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 600;
   text-align: center;
   color: var(--color-text);
 }
@@ -2518,13 +2535,13 @@ a:hover { color: var(--color-accent); }
 }
 .daychip-dow {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
 }
 .daychip-num {
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
 .daychip:hover .daychip-dow { color: var(--color-accent); }
 /* Days before the selected one grey out — position reads at a glance. */
@@ -2536,7 +2553,7 @@ a:hover { color: var(--color-accent); }
    A transform rather than a bigger font: the chip keeps its measured width,
    so the strip does not shuffle sideways every time a day is picked. */
 .daychip[aria-selected='true'] { transform: scale(1.18); }
-.daychip[aria-selected='true'] .daychip-dow { font-weight: 900; }
+.daychip[aria-selected='true'] .daychip-dow { font-weight: 700; }
 
 /* The day feed reads as one block, like the "On request" panel below it —
    a light baby blue instead of that panel's lavender, so the two areas
@@ -2550,13 +2567,13 @@ a:hover { color: var(--color-accent); }
 .daypicker-empty {
   margin: 40px 0 0;
   font-size: 17px;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  color: var(--color-text-muted);
 }
 .timegroup { margin-top: 40px; }
 .daygroup > .timegroup:first-of-type { margin-top: 0; }
 .timegroup-head {
   font-family: var(--font-heading);
-  font-weight: 900;
+  font-weight: 700;
   font-size: 26px;
   letter-spacing: -0.01em;
   margin: 0 0 20px;
@@ -2671,7 +2688,7 @@ a:hover { color: var(--color-accent); }
   display: block;
   margin-top: 6px;
   font-size: 12.5px;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
 
 /* A reel tile plays on tap instead of linking out — see DayPicker. */
@@ -2707,7 +2724,7 @@ a:hover { color: var(--color-accent); }
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: color-mix(in srgb, var(--color-text) 52%, transparent);
+  color: var(--color-text-muted);
 }
 /* "On request" — undated inquiry-only workshops under the feed, on a
    whisper of the accent so the section reads as its own place. */
@@ -2720,7 +2737,7 @@ a:hover { color: var(--color-accent); }
 .onrequest-note {
   margin: -4px 0 24px;
   font-size: 14px;
-  color: #6e6a75;
+  color: var(--color-text-muted);
 }
 /* One line of four cards, laid out like the feed's grid view rather than
    as list rows — the four rotate daily (see getOnRequest), so the strip
@@ -2797,14 +2814,14 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 16px;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
   vertical-align: 1px;
 }
 .session-title {
   display: block;
   margin-top: 2px;
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 21px;
   line-height: 1.25;
   color: inherit;
@@ -2821,7 +2838,7 @@ a:hover { color: var(--color-accent); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: color-mix(in srgb, var(--color-text) 48%, transparent);
+  color: var(--color-text-muted);
 }
 /* Price and Book on one shared line, whatever else a card carries — the
    spots note sits on its own line below, so the action row never shifts. */
@@ -3166,7 +3183,7 @@ a:hover { color: var(--color-accent); }
   margin: 0 0 14px;
   font-size: 13.5px;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  color: var(--color-text-muted);
 }
 .notify-label { display: block; margin-bottom: 16px; font-size: 13px; font-weight: 700; }
 .notify-input {
@@ -3187,7 +3204,7 @@ a:hover { color: var(--color-accent); }
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  color: var(--color-text-muted);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -3233,7 +3250,7 @@ a:hover { color: var(--color-accent); }
 .session-spots {
   font-size: 13px;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
 /* The old price beside the new one, struck through and stepped back, so the
    pill still reads as one price with a note rather than as two. */
@@ -3301,7 +3318,7 @@ a:hover { color: var(--color-accent); }
   gap: 8px;
   padding-top: 28px;
   font-size: 14px;
-  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  color: var(--color-text-muted);
 }
 .crumbs a { color: inherit; text-decoration: none; }
 .crumbs a:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
@@ -3312,7 +3329,7 @@ a:hover { color: var(--color-accent); }
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
 .section-title {
   font-family: var(--font-heading);
@@ -3360,7 +3377,7 @@ a:hover { color: var(--color-accent); }
   margin: 0 0 8px;
   font-size: 17.5px;
   line-height: 1.65;
-  color: color-mix(in srgb, var(--color-text) 85%, transparent);
+  color: var(--color-text-muted);
 }
 .host-facts .maker-meta { font-size: 15px; margin: 20px 0 24px; }
 .host-facts .maker-request { align-self: flex-start; margin-top: 0; }
@@ -3382,7 +3399,7 @@ a:hover { color: var(--color-accent); }
 }
 .date-when { display: flex; flex-direction: column; gap: 2px; }
 .date-day { font-weight: 700; }
-.date-time { font-size: 14px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+.date-time { font-size: 14px; color: var(--color-text-muted); }
 .date-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .date-title {
   font-family: var(--font-heading);
@@ -3393,7 +3410,7 @@ a:hover { color: var(--color-accent); }
   text-decoration: none;
 }
 .date-title:hover { color: var(--color-accent-700); }
-.date-meta { font-size: 14px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+.date-meta { font-size: 14px; color: var(--color-text-muted); }
 .date-host { color: inherit; font-weight: 700; text-decoration: none; }
 .date-host:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
 .date-side {
@@ -3426,9 +3443,9 @@ a:hover { color: var(--color-accent); }
   border: 2px solid var(--color-divider);
   font-weight: 700;
   font-size: 14px;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
 }
-.date-spots { grid-column: 2; font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.date-spots { grid-column: 2; font-size: 13px; color: var(--color-text-muted); }
 .onrequest-block { margin-top: 8px; }
 
 /* Host cards, on the activity pages and under a host's own dates. */
@@ -3466,9 +3483,9 @@ a:hover { color: var(--color-accent); }
   line-height: 1.25;
 }
 .host-card:hover .host-card-name { color: var(--color-accent-700); }
-.host-card-spec { display: block; margin-top: 3px; font-size: 15px; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
+.host-card-spec { display: block; margin-top: 3px; font-size: 15px; color: var(--color-text-muted); }
 .host-card-next { display: block; margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-800); }
-.host-card-count { display: block; margin-top: 2px; font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.host-card-count { display: block; margin-top: 2px; font-size: 13px; color: var(--color-text-muted); }
 
 /* Activity cards on the hub. */
 .activity-cards {
@@ -3497,7 +3514,7 @@ a:hover { color: var(--color-accent); }
   font-size: 22px;
   line-height: 1.25;
 }
-.activity-card-desc { margin-top: 10px; font-size: 15.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 75%, transparent); }
+.activity-card-desc { margin-top: 10px; font-size: 15.5px; line-height: 1.55; color: var(--color-text-muted); }
 .activity-card-facts { margin-top: auto; padding-top: 16px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-accent-800); }
 
 /* Activity links: a two-column list of the activity pages, on the home
@@ -3525,7 +3542,7 @@ a:hover { color: var(--color-accent); }
   text-decoration: none;
 }
 .activity-links a:hover { color: var(--color-accent-700); }
-.activity-links-count { font-family: var(--font-body); font-weight: 400; font-size: 14px; white-space: nowrap; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.activity-links-count { font-family: var(--font-body); font-weight: 400; font-size: 14px; white-space: nowrap; color: var(--color-text-muted); }
 .activity-links-band { margin-top: 28px; }
 .activity-band-actions { margin-top: 32px; }
 
@@ -3542,8 +3559,8 @@ a:hover { color: var(--color-accent); }
 .host-index li { break-inside: avoid; padding: 6px 0; }
 .host-index a { font-weight: 700; color: inherit; text-decoration: none; }
 .host-index a:hover { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
-.host-index-spec { color: color-mix(in srgb, var(--color-text) 70%, transparent); }
-.host-index-next { font-size: 14px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.host-index-spec { color: var(--color-text-muted); }
+.host-index-next { font-size: 14px; color: var(--color-text-muted); }
 
 /* Host names on the calendar rows and the directory cards now lead to the
    host's own page; they keep their look, and underline when pointed at. */
@@ -3585,7 +3602,7 @@ a:hover { color: var(--color-accent); }
 
 /* Under the contact form's button: how the message travels, and the
    address in the open for anyone whose device has no mail app. */
-.form-note { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 65%, transparent); }
+.form-note { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--color-text-muted); }
 .form-note a { color: var(--color-accent-700); }
 .form-note-sent { font-weight: 700; color: var(--color-accent-800); }
 
@@ -3690,10 +3707,10 @@ a:hover { color: var(--color-accent); }
 .space-meta > div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; }
 .space-meta dt {
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  color: var(--color-text-muted);
   padding-top: 2px;
 }
 .space-meta dd { margin: 0; }
@@ -3704,7 +3721,7 @@ a:hover { color: var(--color-accent); }
   margin: -8px 0 20px;
   font-size: 14px;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  color: var(--color-text-muted);
 }
 .space-ask { display: inline-flex; }
 .space-note { margin-top: 28px; }
@@ -3740,7 +3757,7 @@ a:hover { color: var(--color-accent); }
   -webkit-appearance: none;
   appearance: none;
 }
-.dir-search input::placeholder { color: color-mix(in srgb, var(--color-text) 50%, transparent); }
+.dir-search input::placeholder { color: var(--color-text-muted); }
 .dir-search input:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 22%, transparent); }
 .dir-search input::-webkit-search-cancel-button { cursor: pointer; }
 .dir-search-btn {
@@ -3773,7 +3790,7 @@ a:hover { color: var(--color-accent); }
   margin: 12px 0 0;
   font-size: 17px;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+  color: var(--color-text-muted);
 }
 
 /* Tags and pills share one look: a white rounded pill with a firm outline,
@@ -3860,7 +3877,7 @@ a:hover { color: var(--color-accent); }
 .dir-count {
   margin: 0 0 0 auto;
   font-size: 14px;
-  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  color: var(--color-text-muted);
 }
 .dir-cta {
   padding: 10px 20px;
@@ -3908,12 +3925,12 @@ a:hover { color: var(--color-accent); }
 .maker-sub {
   margin: 2px 0 0;
   font-size: 14px;
-  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+  color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.maker-price { margin: 6px 0 0; font-size: 14px; color: color-mix(in srgb, var(--color-text) 58%, transparent); }
+.maker-price { margin: 6px 0 0; font-size: 14px; color: var(--color-text-muted); }
 .maker-price strong { font-size: 18px; font-weight: 700; color: var(--color-text); margin-right: 4px; }
 
 /* The quick view: the reel or photo on one side, the full description,
@@ -3958,7 +3975,7 @@ a:hover { color: var(--color-accent); }
   font-size: 32px;
   line-height: 1.1;
 }
-.qv-who { margin: 0 0 14px; font-size: 15px; color: color-mix(in srgb, var(--color-text) 60%, transparent); }
+.qv-who { margin: 0 0 14px; font-size: 15px; color: var(--color-text-muted); }
 .qv-blurb { font-size: 16px; line-height: 1.6; margin: 0 0 18px; }
 .qv-body .maker-request { display: inline-flex; margin-top: 4px; }
 .qv-close {
@@ -4319,11 +4336,11 @@ html.map-locked { overflow: hidden; }
   background: var(--color-accent-100);
 }
 .book-workshop { margin: 0; font-weight: 700; font-size: 16px; line-height: 1.35; }
-.book-when { margin: 4px 0 0; font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 72%, transparent); }
-.book-lede { margin: 0 0 18px; font-size: 15px; color: color-mix(in srgb, var(--color-text) 72%, transparent); }
+.book-when { margin: 4px 0 0; font-size: 14.5px; color: var(--color-text-muted); }
+.book-lede { margin: 0 0 18px; font-size: 15px; color: var(--color-text-muted); }
 .book-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
 .book-field { display: grid; gap: 5px; font-size: 13.5px; font-weight: 700; }
-.book-field em { font-style: normal; font-weight: 400; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.book-field em { font-style: normal; font-weight: 400; color: var(--color-text-muted); }
 .book-field-wide { grid-column: 1 / -1; }
 .book-field input,
 .book-field textarea {
@@ -4363,3 +4380,21 @@ button.date-full { border: 0; background: none; font: inherit; color: inherit; c
 .is-seen { filter: opacity(0.8); }
 .is-seen:hover,
 .is-seen:has(:focus-visible) { filter: none; }
+
+/* ── Two purples ────────────────────────────────────────────────────────
+   Filled purple surfaces (primary buttons, the chosen filter chips and
+   pills, the search button, counters) shade from the bright purple into
+   the deep one; hovering settles on the deep one, pressing goes a step
+   darker. Purple text uses the deep purple on its own (--color-accent-700
+   above). */
+.btn-primary,
+.chip:has(input:checked),
+.onpill,
+.dir-search-btn,
+.filterbtn-on,
+.seg-opt:has(input:checked) {
+  background: var(--accent-gradient);
+  border-color: transparent;
+}
+.btn-primary:hover { background: var(--color-accent-deep); }
+.btn-primary:active { background: var(--color-accent-800); }
