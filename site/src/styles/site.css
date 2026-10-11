@@ -4398,3 +4398,50 @@ button.date-full { border: 0; background: none; font: inherit; color: inherit; c
 }
 .btn-primary:hover { background: var(--color-accent-deep); }
 .btn-primary:active { background: var(--color-accent-800); }
+
+/* ── Poppins as drawn ───────────────────────────────────────────────────
+   Poppins is spaced generously by its designers; the tightened tracking
+   the Roboto headings used made it look cramped, so headings go back to
+   the face's own spacing. Secondary details (who hosts, where, the label
+   beside a value) are set the way the reference shows them: sentence
+   case, the grey ink, regular weight, no added tracking. The small
+   uppercase kickers above headings keep their style; they are a label
+   for a section, not running detail. */
+h1, h2, h3, h4,
+.prose h2,
+.page-title,
+.post-title,
+.timegroup-head,
+.section-title,
+.dir-title { letter-spacing: 0; }
+
+.session-host,
+.today-host,
+.maker-meta dt,
+.space-meta dt,
+.post-meta,
+.space-where {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+.maker-specialty,
+.page-facts,
+.host-card-next,
+.activity-card-facts {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+/* Label and value as in the reference: grey regular label, the value in
+   the dark ink at medium weight, both the same size so they share a line. */
+.maker-meta dd,
+.space-meta dd {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.maker-meta dt { padding-top: 0; }
