@@ -14,24 +14,6 @@
       "count": 4
     },
     {
-      "slug": "mijita",
-      "url": "https://studioblinkblink.com/workshops/",
-      "status": "ok",
-      "count": 11
-    },
-    {
-      "slug": "mijita",
-      "url": "https://r.jina.ai/https://www.mijita.de/service-page/schmuck-schmieden",
-      "status": "ok",
-      "count": 1
-    },
-    {
-      "slug": "mijita",
-      "url": "https://r.jina.ai/https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "status": "ok",
-      "count": 3
-    },
-    {
       "slug": "lomu",
       "url": "https://r.jina.ai/https://www.lomudesign.de/workshop/",
       "status": "ok",
@@ -859,19 +841,6 @@
     }
   ],
   "workshops": [
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Gestalte deinen Ring",
-      "date": "2026-10-05",
-      "time": "17:00",
-      "duration": "3 h",
-      "spots": 3,
-      "price": "€69",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
     {
       "slug": "drawingwalks",
       "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
@@ -2241,19 +2210,6 @@
       "price": "€32",
       "district": "Prenzlauer Berg",
       "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-10-12",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 2,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
     },
     {
       "slug": "ceramic-kingdom",
@@ -5728,19 +5684,6 @@
       "district": "Schöneberg"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-10-30",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 2,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
       "slug": "lama",
       "sourceUrl": "https://lamaleathergoods.com/make-a-leather-collar-leash-for-your-pet/",
       "title": "Make a leather collar + leash for your pet",
@@ -6282,19 +6225,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-11-02",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 5,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
     },
     {
       "slug": "ceramic-kingdom",
@@ -6969,19 +6899,6 @@
       "district": "Friedenau"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-11-07",
-      "time": "11:00",
-      "duration": "4 h",
-      "soldOut": true,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
       "slug": "loam",
       "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
       "title": "Introduction to Hand-Building Pottery",
@@ -7455,19 +7372,6 @@
       "district": "Lichtenberg",
       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-11-09",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 5,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
     },
     {
       "slug": "ceramic-kingdom",
@@ -8563,19 +8467,6 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "title": "Gestalte deinen Ring",
-      "titleEn": "Shape your own ring in wax",
-      "date": "2026-11-16",
-      "time": "17:00",
-      "duration": "3 h",
-      "price": "€69",
-      "url": "https://www.mijita.de/service-page/gestalte-deinen-ring",
-      "district": "Wedding",
-      "image": "https://static.wixstatic.com/media/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg/v1/fit/w_1776,h_1184,al_c,q_90/3c80c2_fadbb5d783da482d9cb59f60e61e80e7~mv2.jpeg"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Wheel Throwing | Evening Course (WEEK 47)",
@@ -9374,19 +9265,6 @@
       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Gestalte deinen Ring",
-      "date": "2026-11-23",
-      "time": "17:00",
-      "duration": "3 h",
-      "spots": 6,
-      "price": "€69",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Intro to Handbuilding + 2 hour glazing session (Week 48)",
@@ -9981,19 +9859,6 @@
       "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-11-30",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 5,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Intro to Handbuilding + 2 hour glazing session (Week 48)",
@@ -10400,19 +10265,6 @@
       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-12-07",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 5,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
       "slug": "ceramic-kingdom",
       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
       "title": "Intro to Handbuilding + 2 hour glazing session (Week 50)",
@@ -10715,19 +10567,6 @@
       "district": "Gesundbrunnen"
     },
     {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Gestalte deinen Ring",
-      "date": "2026-12-13",
-      "time": "11:00",
-      "duration": "3 h",
-      "spots": 4,
-      "price": "€69",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
-    },
-    {
       "slug": "sabine",
       "sourceUrl": "https://mobile-dunkelkammer.gokonfetti.com/de-de/",
       "title": "Schwarz-Weiß-Abzüge in Berlin selbst erstellen",
@@ -10814,19 +10653,6 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0880/6072/3529/files/IMG_6961.jpg?v=1745264596",
       "url": "https://empireofdirt.studio/products/taster-class-wheel-throwing"
-    },
-    {
-      "slug": "mijita",
-      "sourceUrl": "https://studioblinkblink.com/workshops/",
-      "title": "Schmuck schmieden",
-      "date": "2026-12-14",
-      "time": "17:00",
-      "duration": "4 h",
-      "spots": 5,
-      "price": "€98",
-      "url": "https://studioblinkblink.com/workshops/",
-      "district": "Wedding",
-      "image": "https://studioblinkblink.com/wp-content/uploads/2024/09/Bildschirmfoto-2024-09-25-um-19.33.18-701x1024.png"
     },
     {
       "slug": "ceramic-kingdom",

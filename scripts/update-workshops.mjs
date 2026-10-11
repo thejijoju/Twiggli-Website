@@ -60,42 +60,6 @@ const SOURCES = [
     url: 'https://r.jina.ai/https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/',
     bookUrl: 'https://www.thetinkery.at/deutsch/kunstkurse-auf-deutsch/' },
 
-  // Studio Blinkblink, the studio Mareen teaches in, publishes her dates as
-  // a public Google Calendar embedded on its workshops page — and it is far
-  // fuller than her own booking pages: thirteen sittings against six, with
-  // the places left written into each event's title. It goes before those
-  // pages so that where both carry a sitting, this one wins the dedupe and
-  // the card keeps its "2 places left" or "sold out".
-  //
-  // The studio's own events are left out. The Bastel Brunch and the Lange
-  // Nacht der Manufakturen are Studio Blinkblink's, not Mareen's, and
-  // filing them under her would put her name on somebody else's evening.
-  { slug: 'mijita', name: 'Studio Blinkblink — Kalender', mode: 'gcal-embed',
-    url: 'https://studioblinkblink.com/workshops/',
-    district: 'Wedding',
-    excludeTitle: 'Lange Nacht|Bastel[- ]?Brunch|Vermietung|Gutschein' },
-
-  // Mijita — Mareen Ledebur's jewellery label, teaching at Studio Blinkblink
-  // in Wedding. Her site is Wix with the Bookings app, so /book-online draws
-  // its dates client-side and a plain fetch returns a widget and no
-  // schedule; each service page goes through the r.jina.ai relay, which
-  // renders it and hands back the "Bevorstehende Sessions" list. One source
-  // per service, since that list carries neither title nor price. The
-  // retreat is not here: it runs out at Landpraxis Altfriedland rather than
-  // in Berlin, and its page showed last year's dates.
-  { slug: 'mijita', name: 'Mijita — Schmuck schmieden (watched via relay)', mode: 'wix-sessions',
-    url: 'https://r.jina.ai/https://www.mijita.de/service-page/schmuck-schmieden',
-    bookUrl: 'https://www.mijita.de/service-page/schmuck-schmieden',
-    district: 'Wedding',
-    title: 'Schmuck schmieden', titleEn: 'Forge your own jewellery',
-    price: '\u20ac98' },
-  { slug: 'mijita', name: 'Mijita — Gestalte deinen Ring (watched via relay)', mode: 'wix-sessions',
-    url: 'https://r.jina.ai/https://www.mijita.de/service-page/gestalte-deinen-ring',
-    bookUrl: 'https://www.mijita.de/service-page/gestalte-deinen-ring',
-    district: 'Wedding',
-    title: 'Gestalte deinen Ring', titleEn: 'Shape your own ring in wax',
-    price: '\u20ac69' },
-
   // lomu design — Monique Wiesner's label. Cloudflare turns away both the
   // runner and a headless browser on her Jimdo site, so the watcher reads
   // the workshop index through the r.jina.ai text relay, the same route the
@@ -1998,7 +1962,7 @@ async function fromWixServiceList(html, source) {
  *      *   Sonntag, 27. Sept.
  *          *   11:00
  *      4 Stunden
- *      Mareen Ledebur
+ *      <host name>
  *      * * *
  *
  *  One service per source, since the list carries neither the title nor the
@@ -2507,7 +2471,7 @@ function fromIcs(icsText, pageUrl, source) {
       }
       summary = summary.slice(0, range.index).trim();
     }
-    /* Studio Blinkblink keeps availability in the summary itself — "(noch 2
+    /* Some studios keep availability in the summary itself — "(noch 2
        freie Plätze)", "(ausgebucht)". That belongs in the card's own fields,
        not in its title: the badge is what a reader looks for, and leaving it
        in the title would also stop this event matching the same session read
