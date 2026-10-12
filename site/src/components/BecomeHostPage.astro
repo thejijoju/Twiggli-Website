@@ -9,73 +9,38 @@ import Base from '../layouts/Base.astro';
 import { hostApplyCopy } from '../data/hostApply.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { requestEmail } from '../data/site.ts';
-import { withBase, type Lang } from '../lib/url.ts';
+import type { Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = hostApplyCopy[lang];
 const b = bookingCopy[lang];
-const nums = ['01', '02', '03'];
-// One clip per way of working: a class at the wheel, a group round a table,
-// a studio at work.
-const wayMedia = ['ceramic-kingdom', 'haki', 'loom-lab'].map((name) => ({
-  video: withBase(`/video/${name}.mp4`),
-  poster: withBase(`/video/${name}-poster.jpg`),
-}));
 const formCopy = { sending: b.sending, send: t.send, error: b.error };
 ---
 
 <Base title={t.title} description={t.description} lang={lang}>
+  {/* A soft wash of the logo's colours on white, as Luma tints an event. */}
+  <div class="host-page">
+  <div class="host-wash" aria-hidden="true"></div>
   <div class="container">
-    <section class="page-head">
-      <span class="kicker">{t.kicker}</span>
-      <h1 class="page-title">{t.h1}</h1>
-      <p class="page-lede">{t.lede}</p>
-      <div class="hero-actions">
-        <a href="#apply" class="btn btn-primary">{t.cta}</a>
-      </div>
-    </section>
-
-    <section class="section section-flush">
-      <span class="kicker kicker-tight">{t.waysKicker}</span>
-      <div class="host-ways">
-        {t.ways.map((way, i) => (
-          <article class="host-way">
-            <div class="host-way-media">
-              <video src={wayMedia[i].video} poster={wayMedia[i].poster} muted loop playsinline autoplay preload="none" aria-hidden="true"></video>
-            </div>
-            <h2 class="host-way-title">{way.title}</h2>
-            <p class="host-way-copy">{way.copy}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <section class="section">
-      <span class="kicker kicker-tight">{t.stepsKicker}</span>
-      {t.steps.map((step, i) => (
-        <div class="step">
-          <p class="step-num">{nums[i]}</p>
-          <h3 class="step-title">{step.title}</h3>
-          <p class="step-copy">{step.copy}</p>
-        </div>
-      ))}
-    </section>
-
-    <section class="section host-apply" id="apply">
+    <section class="host-apply">
       <div class="host-apply-intro">
-        <span class="kicker kicker-tight">{t.formKicker}</span>
-        <h2 class="split-title">{t.formTitle}</h2>
-        <p class="split-copy">{t.formLede}</p>
+        <span class="kicker">{t.kicker}</span>
+        <h1 class="page-title">{t.h1}</h1>
+        <p class="page-lede">{t.lede}</p>
+        <ol class="host-ways">
+          {t.ways.map((way) => (
+            <li>
+              <h2 class="host-way-title">{way.title}</h2>
+              <p class="host-way-copy">{way.copy}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-      <div class="host-apply-card">
-        {/* The same blurred wash as the booking form, from a host's own clip. */}
-        <div class="book-ambient" aria-hidden="true">
-          <video src={wayMedia[1].video} poster={wayMedia[1].poster} muted loop playsinline autoplay preload="none"></video>
-        </div>
+      <div class="host-apply-card" id="apply">
         <form class="book-form host-apply-form" data-host-apply data-inbox={requestEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+          <h2 class="book-title">{t.formTitle}</h2>
+          <p class="book-lede">{t.formLede}</p>
           <div class="book-fields">
             <label class="book-field book-field-wide">
               <span>{b.name}</span>
@@ -127,6 +92,7 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
         </div>
       </div>
     </section>
+  </div>
   </div>
 </Base>
 
