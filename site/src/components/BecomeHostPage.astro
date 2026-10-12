@@ -1,13 +1,28 @@
 ---
+/**
+ * Become a host: who we are looking for, the three ways a maker works with
+ * us, and the application form. No account and no log-in — the form is the
+ * booking form's sibling (same fields, same look, same FormSubmit route)
+ * and lands in our inbox as one email.
+ */
 import Base from '../layouts/Base.astro';
-import ImageSlot from './ImageSlot.astro';
-import { ui } from '../data/i18n.ts';
-import { href, type Lang } from '../lib/url.ts';
+import { hostApplyCopy } from '../data/hostApply.ts';
+import { bookingCopy } from '../data/bookingCopy.ts';
+import { requestEmail } from '../data/site.ts';
+import { withBase, type Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const t = ui(lang).becomeHost;
+const t = hostApplyCopy[lang];
+const b = bookingCopy[lang];
 const nums = ['01', '02', '03'];
+// One clip per way of working: a class at the wheel, a group round a table,
+// a studio at work.
+const wayMedia = ['ceramic-kingdom', 'haki', 'loom-lab'].map((name) => ({
+  video: withBase(`/video/${name}.mp4`),
+  poster: withBase(`/video/${name}-poster.jpg`),
+}));
+const formCopy = { sending: b.sending, send: t.send, error: b.error };
 ---
 
 <Base title={t.title} description={t.description} lang={lang}>
@@ -17,36 +32,157 @@ const nums = ['01', '02', '03'];
       <h1 class="page-title">{t.h1}</h1>
       <p class="page-lede">{t.lede}</p>
       <div class="hero-actions">
-        <a href={href(lang, '/contact/')} class="btn btn-primary">{t.cta}</a>
+        <a href="#apply" class="btn btn-primary">{t.cta}</a>
+      </div>
+    </section>
+
+    <section class="section section-flush">
+      <span class="kicker kicker-tight">{t.waysKicker}</span>
+      <div class="host-ways">
+        {t.ways.map((way, i) => (
+          <article class="host-way">
+            <div class="host-way-media">
+              <video src={wayMedia[i].video} poster={wayMedia[i].poster} muted loop playsinline autoplay preload="none" aria-hidden="true"></video>
+            </div>
+            <h2 class="host-way-title">{way.title}</h2>
+            <p class="host-way-copy">{way.copy}</p>
+          </article>
+        ))}
       </div>
     </section>
 
     <hr class="rule" />
 
     <section class="section">
-      {t.points.map((point, i) => (
+      <span class="kicker kicker-tight">{t.stepsKicker}</span>
+      {t.steps.map((step, i) => (
         <div class="step">
           <p class="step-num">{nums[i]}</p>
-          <h3 class="step-title">{point.title}</h3>
-          <p class="step-copy">{point.copy}</p>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-copy">{step.copy}</p>
         </div>
       ))}
     </section>
 
-    <hr class="rule" />
-
-    <section class="split split-media-first">
-      <div class="media-4x3 grayscale">
-        <ImageSlot shape="rect" placeholder="Drop a host/workshop photo" alt="" />
+    <section class="section host-apply" id="apply">
+      <div class="host-apply-intro">
+        <span class="kicker kicker-tight">{t.formKicker}</span>
+        <h2 class="split-title">{t.formTitle}</h2>
+        <p class="split-copy">{t.formLede}</p>
       </div>
-      <div>
-        <span class="kicker kicker-tight">{t.whoKicker}</span>
-        <h2 class="split-title">{t.whoTitle}</h2>
-        <p class="split-copy">{t.whoCopy}</p>
-        <div class="split-actions">
-          <a href={href(lang, '/corporatebookings/')} class="btn btn-primary">{t.seeHosts}</a>
+      <div class="host-apply-card">
+        {/* The same blurred wash as the booking form, from a host's own clip. */}
+        <div class="book-ambient" aria-hidden="true">
+          <video src={wayMedia[1].video} poster={wayMedia[1].poster} muted loop playsinline autoplay preload="none"></video>
+        </div>
+        <form class="book-form host-apply-form" data-host-apply data-inbox={requestEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+          <div class="book-fields">
+            <label class="book-field book-field-wide">
+              <span>{b.name}</span>
+              <input name="name" type="text" autocomplete="name" required />
+            </label>
+            <label class="book-field">
+              <span>{b.email}</span>
+              <input name="email" type="email" autocomplete="email" required />
+            </label>
+            <label class="book-field">
+              <span>{b.phone} <em>({b.optional})</em></span>
+              <input name="phone" type="tel" autocomplete="tel" />
+            </label>
+            <label class="book-field book-field-wide">
+              <span>{t.craft}</span>
+              <input name="craft" type="text" placeholder={t.craftPh} required />
+            </label>
+            <label class="book-field">
+              <span>{t.where}</span>
+              <input name="where" type="text" placeholder={t.wherePh} />
+            </label>
+            <label class="book-field">
+              <span>{t.links} <em>({b.optional})</em></span>
+              <input name="links" type="text" placeholder={t.linksPh} />
+            </label>
+            <fieldset class="book-field book-field-wide host-apply-ways">
+              <legend>{t.interest}</legend>
+              <div class="host-apply-chips">
+                {t.ways.map((way) => (
+                  <label class="host-apply-chip">
+                    <input type="checkbox" name="interest" value={way.short} />
+                    <span>{way.short}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <label class="book-field book-field-wide">
+              <span>{b.message} <em>({b.optional})</em></span>
+              <textarea name="message" rows="4" placeholder={t.messagePh}></textarea>
+            </label>
+            <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          </div>
+          <p class="book-error" data-apply-error hidden></p>
+          <button type="submit" class="btn btn-primary book-send" data-apply-send>{t.send}</button>
+        </form>
+        <div class="book-sent host-apply-sent" data-apply-sent hidden>
+          <h2 class="book-title">{t.sentTitle}</h2>
+          <p class="book-lede">{t.sentBody}</p>
         </div>
       </div>
     </section>
   </div>
 </Base>
+
+<script>
+  // Same route as the booking form (BookingDialog.astro): FormSubmit mails
+  // it to our inbox; if that is unreachable, the visitor's mail app opens
+  // with the same message.
+  const form = document.querySelector<HTMLFormElement>('[data-host-apply]');
+  if (form) {
+    const copy = JSON.parse(form.dataset.copy || '{}');
+    const inbox = form.dataset.inbox ?? '';
+    const send = form.querySelector<HTMLButtonElement>('[data-apply-send]');
+    const error = form.querySelector<HTMLElement>('[data-apply-error]');
+    const sent = document.querySelector<HTMLElement>('[data-apply-sent]');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('_honey')) return;
+      const fields: Record<string, string> = {
+        Type: 'Host application',
+        Name: String(data.get('name') ?? ''),
+        Email: String(data.get('email') ?? ''),
+        Phone: String(data.get('phone') ?? ''),
+        Teaches: String(data.get('craft') ?? ''),
+        Where: String(data.get('where') ?? ''),
+        'Website / Instagram': String(data.get('links') ?? ''),
+        'Interested in': data.getAll('interest').map(String).join(', '),
+        Message: String(data.get('message') ?? ''),
+        'Sent from': location.href,
+        Language: document.documentElement.lang,
+      };
+      const subject = `Host application: ${fields.Teaches} — ${fields.Name}`;
+      if (send) { send.disabled = true; send.textContent = copy.sending; }
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
+            email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        if (sent) sent.hidden = false;
+        form.reset();
+      } catch {
+        if (error) {
+          error.textContent = String(copy.error).replace('{email}', inbox);
+          error.hidden = false;
+        }
+        if (send) { send.disabled = false; send.textContent = copy.send; }
+        const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
+        location.href = `mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+    });
+  }
+</script>

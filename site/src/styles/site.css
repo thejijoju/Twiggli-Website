@@ -4643,3 +4643,74 @@ h1, h2, h3, h4,
 }
 .host-insta:hover { color: var(--color-accent-700); }
 .host-insta svg { width: 22px; height: 22px; }
+
+/* — Become a host (BecomeHostPage.astro) — the three ways of working as
+   video cards, then the application form, which wears the booking form's
+   look (book-* classes) inside a card with the same blurred wash. */
+.host-ways {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 18px;
+}
+.host-way-media {
+  aspect-ratio: 4 / 5;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-accent-100);
+}
+.host-way-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.host-way-title {
+  margin: 18px 0 8px;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 21px;
+  line-height: 1.3;
+}
+.host-way-copy { margin: 0; font-size: 16px; line-height: 1.6; color: var(--color-text-muted); }
+.host-apply {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  align-items: start;
+}
+.host-apply-intro { position: sticky; top: calc(var(--header-h) + 32px); }
+.host-apply-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--color-bg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14);
+}
+.host-apply-form, .host-apply-sent { position: relative; z-index: 1; }
+.host-apply-ways { margin: 0; padding: 0; border: 0; min-width: 0; }
+.host-apply-ways legend { padding: 0; margin-bottom: 7px; }
+.host-apply-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.host-apply-chip { position: relative; cursor: pointer; }
+.host-apply-chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.host-apply-chip span {
+  display: inline-block;
+  padding: 9px 14px;
+  border: 1.5px solid color-mix(in srgb, var(--color-text) 20%, transparent);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 400;
+  font-size: 14.5px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.host-apply-chip input:checked + span {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, #fff);
+  color: var(--color-accent-700);
+  font-weight: 700;
+}
+.host-apply-chip input:focus-visible + span { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent); }
+@media (max-width: 860px) {
+  .host-ways { grid-template-columns: 1fr; gap: 36px; }
+  .host-way-media { aspect-ratio: 4 / 3; }
+  .host-apply { grid-template-columns: 1fr; gap: 24px; }
+  .host-apply-intro { position: static; }
+}
+@media (max-width: 560px) {
+  .host-apply-form .book-field { grid-column: 1 / -1; }
+}

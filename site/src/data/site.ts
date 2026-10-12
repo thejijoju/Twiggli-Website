@@ -86,14 +86,15 @@ export function getSiteData(lang: Lang) {
     { label: t.nav.corporate, href: href(lang, '/corporatebookings/') },
     { label: t.nav.spaces, href: href(lang, '/studio-rental/') },
     { label: retreatsCopy[lang].nav, href: href(lang, '/retreats/') },
-    { label: t.nav.blog, href: href(docLang, '/blog/') },
-    { label: t.nav.contact, href: href(lang, '/contact/') },
+    { label: t.home.becomeHost, href: href(lang, '/host/') },
   ];
 
   const secondaryLinks: NavLink[] = [
     { label: t.footer.howItWorks, href: href(lang, '/how-it-works/') },
     { label: t.footer.hosts, href: href(lang, '/corporatebookings/') },
-    { label: t.footer.host, href: href(lang, '/host/') },
+    /* Out of the header, still a click away here. */
+    { label: t.nav.contact, href: href(lang, '/contact/') },
+    { label: t.nav.blog, href: href(docLang, '/blog/') },
   ];
 
   const workshopLinks: NavLink[] = ACTIVITY_ORDER.map((activity) => ({
