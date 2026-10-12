@@ -14,10 +14,14 @@ export interface AvailabilityNote {
   /** How many are confirmed for it — from the host, or bookings the host
    *  has confirmed. Never a mere request. Shown from three upward. */
   going?: number;
+  /** Places left, where the host told us and the feed has no count. */
+  spots?: number;
 }
 export const availabilityNotes: Record<string, AvailabilityNote> = {
   // Deborah, 12 Oct: nine of the places taken, two more fit.
   'druckrausch|2026-11-04|18:30': { almostFull: true, going: 9 },
+  // Qian, 12 Oct.
+  'qian|2026-10-18|13:00': { spots: 3 },
 };
 
 /** Below this, "who's going" is left off: one or two reads as empty. */

@@ -12,6 +12,8 @@ import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
 import { availabilityNotes } from './availability.ts';
+import { hostDates } from './hostDates.ts';
+import { partnerCodes, type PartnerCode } from './partners.ts';
 
 
 export type Session = {
@@ -71,6 +73,10 @@ export type Session = {
   /** How many are confirmed for it (availability.ts); the card shows a row
    *  of faces and the number from GOING_MIN upward. */
   going?: number;
+  /** A host we have a discount code with, on a date bookable on their own
+   *  site (partners.ts): the card links there and shows the code instead
+   *  of opening the request form. */
+  partner?: PartnerCode;
   /** The one thing that sells this workshop, in two or three words — see
    *  workshopUsps in content.ts. Absent for most. */
   usp?: string;
@@ -302,7 +308,20 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   const bySlug = new Map(hosts.map((h) => [h.slug, h]));
   const sessions: Session[] = [];
   const usp = (slug: string, title: string) => getWorkshopUsp(slug, title, lang);
-  const workshops = (liveData.workshops ?? []) as LiveWorkshop[];
+  const feed = (liveData.workshops ?? []) as LiveWorkshop[];
+  // Dates hosts sent us themselves; the feed's own entry wins on a clash.
+  const inFeed = new Set(feed.map((w) => `${w.slug}|${w.date}|${w.time}`));
+  const offSite = new Set<LiveWorkshop>();
+  const workshops = [
+    ...feed,
+    ...hostDates
+      .filter((d) => !inFeed.has(`${d.slug}|${d.date}|${d.time}`))
+      .map((d) => {
+        const w = { ...d, sourceUrl: d.url } as LiveWorkshop;
+        if (!d.onHostSite) offSite.add(w);
+        return w;
+      }),
+  ];
   const ordinals = dateOrdinals(workshops);
 
   for (const w of workshops) {
@@ -327,7 +346,9 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.salesEnd ? { salesEnd: w.salesEnd } : {}),
       ...(w.price ? { price: w.price } : {}),
       ...(w.priceWas ? { priceWas: w.priceWas } : {}),
-      ...(typeof w.spots === 'number' ? { spots: w.spots } : {}),
+      ...(typeof w.spots === 'number' ? { spots: w.spots }
+        : typeof availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.spots === 'number' ? { spots: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].spots }
+        : {}),
       ...(w.image ? { image: w.image } : {}),
       ...(w.request ? { request: true } : {}),
       ...(w.kids ? { kids: true } : {}),
@@ -335,6 +356,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.waitingList ? { waitingList: true } : {}),
       ...(!w.soldOut && availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.almostFull ? { almostFull: true } : {}),
       ...(availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going } : {}),
+      ...(partnerCodes[w.slug] && !offSite.has(w) && !w.request ? { partner: partnerCodes[w.slug] } : {}),
       ...(usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
   }

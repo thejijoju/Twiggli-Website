@@ -7,6 +7,7 @@ import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
 import { almostFullLabel, spotsText } from '../data/availability.ts';
+import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -26,15 +27,18 @@ const showPrice = (price?: string) =>
   price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price;
 /** What a row's Book (or, when full, waiting-list) button hands the booking
  *  form on the page (BookingDialog.astro) — the booking goes through us. */
-const bookAttrs = (s: Session) => ({
-  'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
-  'data-book-title': s.title,
-  'data-book-host': s.host.name,
-  'data-book-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10),
-  'data-book-time': s.time,
-  'data-book-price': showPrice(s.price),
-  'data-book-link': s.bookUrl,
-});
+const bookAttrs = (s: Session) => (s.partner && !s.soldOut
+  // A partner host's own site, with our code copied on the way (partners.ts).
+  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener' }
+  : {
+    'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
+    'data-book-title': s.title,
+    'data-book-host': s.host.name,
+    'data-book-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10),
+    'data-book-time': s.time,
+    'data-book-price': showPrice(s.price),
+    'data-book-link': s.bookUrl,
+  });
 ---
 
 <ul class="dates">
@@ -55,6 +59,7 @@ const bookAttrs = (s: Session) => ({
           {withHost && ' · '}
           {s.duration ?? s.host.duration} · {s.district} · {s.languages ?? s.host.languages}
         </span>
+        {s.partner && <span class="date-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
       </span>
       <span class="date-side">
         {s.price && <span class="date-price">{showPrice(s.price)}</span>}
@@ -63,7 +68,7 @@ const bookAttrs = (s: Session) => ({
         ) : s.request ? (
           <a class="date-book" href={s.bookUrl} {...bookAttrs(s)}>{t.requestBooking}</a>
         ) : (
-          <a class="date-book" href={s.bookUrl} {...bookAttrs(s)}>{t.book}</a>
+          <a class="date-book" href={s.bookUrl} {...bookAttrs(s)}>{s.partner ? partnerBook[lang](s.partner.percent) : t.book}</a>
         )}
         {!s.soldOut && typeof s.spots === 'number' && (
           <span class="date-spots">{spotsText(s.spots, lang, t.spots)}</span>

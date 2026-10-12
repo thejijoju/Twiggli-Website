@@ -9,6 +9,7 @@ import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { almostFullLabel, spotsText } from '../data/availability.ts';
 import Going from './Going.astro';
+import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
 
 /** The schedule feed, styled after the app's search screen: the borderless
  *  day strip right at the top, one row of activity pills under it (the only
@@ -69,15 +70,18 @@ const isoDate = (offset: number) =>
 /** What a Book, Request or Notify button hands the booking form
  *  (BookingDialog.astro): the workshop, who runs it, when, the price, and
  *  the host's own booking page — which only reaches our inbox. */
-const bookAttrs = (s: Session) => ({
-  'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
-  'data-book-title': s.title,
-  'data-book-host': s.host.name,
-  'data-book-date': isoDate(s.dayOffset),
-  'data-book-time': s.time,
-  'data-book-price': showPrice(s.price),
-  'data-book-link': s.bookUrl,
-});
+const bookAttrs = (s: Session) => (s.partner && !s.soldOut
+  // A partner host's own site, with our code copied on the way (partners.ts).
+  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener' }
+  : {
+    'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
+    'data-book-title': s.title,
+    'data-book-host': s.host.name,
+    'data-book-date': isoDate(s.dayOffset),
+    'data-book-time': s.time,
+    'data-book-price': showPrice(s.price),
+    'data-book-link': s.bookUrl,
+  });
 const inquireAttrs = (o: OnRequestWorkshop) => ({
   'data-book': 'request',
   'data-book-title': o.title,
@@ -336,6 +340,7 @@ const formatDeadline = (iso: string): string => {
                               beside it leads to the booking. */}
                           <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.name}</a> · {s.district}</span>
                           <Going n={s.going} lang={lang} />
+                          {s.partner && <span class="session-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
                           {/* The one thing that decides this workshop for
                               somebody — under the picture rather than on it,
                               where the time chip and the spots badge already
@@ -365,7 +370,7 @@ const formatDeadline = (iso: string): string => {
                           ) : s.request ? (
                             <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{t.request}</a>
                           ) : (
-                            <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{t.book}</a>
+                            <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{s.partner ? partnerBook[lang](s.partner.percent) : t.book}</a>
                           )}
                           {/* People send workshops to friends — the native
                               share sheet where the browser has one, copied

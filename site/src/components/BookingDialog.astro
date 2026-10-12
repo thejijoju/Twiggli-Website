@@ -80,6 +80,21 @@ const c = bookingCopy[lang];
 </dialog>
 
 <script>
+  // A partner host's own booking page (partners.ts): the link opens as
+  // usual, and our discount code goes to the clipboard on the way, with a
+  // word saying so, so it is ready to paste at their checkout.
+  document.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLElement>('[data-partner-code]');
+    if (!link) return;
+    navigator.clipboard?.writeText(link.dataset.partnerCode ?? '').catch(() => {});
+    const toast = document.createElement('div');
+    toast.className = 'code-toast';
+    toast.setAttribute('role', 'status');
+    toast.textContent = `${link.dataset.partnerCopied ?? ''}: ${link.dataset.partnerCode ?? ''}`;
+    document.body.append(toast);
+    setTimeout(() => toast.remove(), 3500);
+  });
+
   const dialog = document.querySelector<HTMLDialogElement>('[data-book-dialog]');
   const form = dialog?.querySelector<HTMLFormElement>('[data-book-form]');
   if (dialog && form) {
