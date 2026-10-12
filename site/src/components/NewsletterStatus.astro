@@ -1,0 +1,68 @@
+---
+/**
+ * Where Brevo sends people after they act on our emails: "confirmed" is the
+ * double opt-in redirect (they tapped the link in the confirmation email),
+ * "unsubscribed" the page after leaving the list. Set both URLs in the
+ * Brevo form's settings. Kept out of the sitemap and search.
+ */
+import Base from '../layouts/Base.astro';
+import { href } from '../lib/url.ts';
+
+interface Props { lang: 'en' | 'de'; kind: 'confirmed' | 'unsubscribed' }
+const { lang, kind } = Astro.props;
+
+const copy = {
+  en: {
+    confirmed: {
+      title: 'You’re in!',
+      body: 'Your email is confirmed. Every Thursday you’ll get the best workshops in Berlin for the days ahead, each with a short video.',
+      cta: 'See this week’s workshops', ctaHref: '/happening-today/',
+      more: 'Or browse all workshops', moreHref: '/workshops/',
+    },
+    unsubscribed: {
+      title: 'You’re unsubscribed',
+      body: 'You won’t get our weekly email any more. Changed your mind? You can sign up again anytime.',
+      cta: 'Sign up again', ctaHref: '/#newsletter',
+      more: 'Back to Twiggli', moreHref: '/',
+    },
+  },
+  de: {
+    confirmed: {
+      title: 'Du bist dabei!',
+      body: 'Deine E-Mail-Adresse ist bestätigt. Ab jetzt bekommst du jeden Donnerstag die schönsten Workshops in Berlin für die kommenden Tage, jeder mit kurzem Video.',
+      cta: 'Workshops dieser Woche ansehen', ctaHref: '/happening-today/',
+      more: 'Oder alle Workshops entdecken', moreHref: '/workshops/',
+    },
+    unsubscribed: {
+      title: 'Du bist abgemeldet',
+      body: 'Du bekommst unseren wöchentlichen Newsletter nicht mehr. Doch anders überlegt? Du kannst dich jederzeit wieder anmelden.',
+      cta: 'Wieder anmelden', ctaHref: '/#newsletter',
+      more: 'Zurück zu Twiggli', moreHref: '/',
+    },
+  },
+}[lang][kind];
+const link = (path: string) => {
+  const [p, hash] = path.split('#');
+  return href(lang, p) + (hash ? `#${hash}` : '');
+};
+---
+
+<Base title={`${copy.title} · Twiggli`} description={copy.body} lang={lang}>
+  <meta name="robots" content="noindex" slot="head" />
+  <div class="container">
+    <section class="newsletter newsletter-status">
+      <div class="newsletter-inner">
+        <h1 class="newsletter-title">{copy.title}</h1>
+        <svg class="newsletter-squiggle" viewBox="0 0 220 14" aria-hidden="true">
+          <defs><linearGradient id="nl-ink-s" x1="0" x2="1"><stop offset="0" stop-color="#ff8a5c" /><stop offset=".5" stop-color="#e64ab4" /><stop offset="1" stop-color="#6a3eec" /></linearGradient></defs>
+          <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke="url(#nl-ink-s)" stroke-width="3.5" stroke-linecap="round" />
+        </svg>
+        <p class="newsletter-lede">{copy.body}</p>
+        <div class="newsletter-status-actions">
+          <a class="btn btn-primary" href={link(copy.ctaHref)}>{copy.cta}</a>
+          <a class="newsletter-status-more" href={link(copy.moreHref)}>{copy.more}</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>

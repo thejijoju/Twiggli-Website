@@ -17,6 +17,13 @@ export const appUrl = 'https://app.twiggli.com/';
  *  from their own mail app — there is no server to post a form to. */
 export const requestEmail = 'jirel.kuenen@gmail.com';
 
+/** The Brevo subscription form (Contacts → Forms → Share → the form's own
+ *  URL, …sibforms.com/serve/…) with double opt-in switched on. While it is
+ *  empty, newsletter signups come to requestEmail through FormSubmit; once
+ *  set, they go to Brevo, which sends the confirmation email and handles
+ *  unsubscribes. */
+export const brevoFormUrl = '';
+
 /** Shown on the legal pages, which exist in English and German only.
  *  Update when the documents change. */
 const legalUpdatedText: Record<Lang, string> = {

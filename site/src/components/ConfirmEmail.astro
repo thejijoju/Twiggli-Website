@@ -1,0 +1,99 @@
+---
+/**
+ * The double opt-in confirmation email, in our look, for Brevo's
+ * "Double opt-in confirmation" template (Templates → that template → paste
+ * this page's HTML, or import it from its URL). Brevo swaps
+ * {{ doubleoptin }} for each person's own confirmation link. Mail-safe
+ * HTML: tables and inline styles only. Not a page of the site.
+ */
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+
+const SITE = 'https://www.twiggli.com';
+// Brevo's tag for the confirmation link.
+const CONFIRM = '{{ doubleoptin }}';
+const copy = {
+  en: {
+    subject: 'Please confirm your email',
+    preheader: 'One tap and “This week in Berlin” lands in your inbox every Thursday.',
+    title: 'One tap and you’re in',
+    body: 'Confirm your email address to get “This week in Berlin”: every Thursday, the best workshops for the days ahead, each with a short video.',
+    button: 'Yes, sign me up',
+    ignore: 'Didn’t sign up? Just ignore this email and you won’t hear from us.',
+    imprint: 'Impressum',
+  },
+  de: {
+    subject: 'Bitte bestätige deine E-Mail-Adresse',
+    preheader: 'Ein Klick, und „Diese Woche in Berlin“ kommt jeden Donnerstag zu dir.',
+    title: 'Ein Klick und du bist dabei',
+    body: 'Bestätige deine E-Mail-Adresse, um „Diese Woche in Berlin“ zu bekommen: jeden Donnerstag die schönsten Workshops für die kommenden Tage, jeder mit kurzem Video.',
+    button: 'Ja, ich bin dabei',
+    ignore: 'Nicht angemeldet? Dann ignoriere diese E-Mail einfach, du hörst nichts mehr von uns.',
+    imprint: 'Impressum',
+  },
+}[lang];
+const font = "'Poppins', Helvetica, Arial, sans-serif";
+// The signup box's polaroid row, as one still per craft.
+const pics = ['qian', 'galleria-lucia-dipdye', 'jem-sushi'];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{copy.subject}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+  </head>
+  <body style={`margin:0;padding:0;background:#f7f4fb;font-family:${font};color:#24272E;`}>
+    <div style="display:none;max-height:0;overflow:hidden;">{copy.preheader}</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f4fb;">
+      <tr>
+        <td align="center" style="padding:28px 12px;">
+          <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#fffaf5;border-radius:24px;">
+            <tr>
+              <td align="center" style="padding:36px 28px 8px;">
+                <img src={`${SITE}/img/logo.png`} width="44" height="44" alt="Twiggli" style="display:block;border:0;border-radius:10px;" />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:18px 20px 0;">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    {pics.map((name) => (
+                      <td style="padding:0 6px;">
+                        <img src={`${SITE}/img/mail/${name}.jpg`} width="128" alt="" style="display:block;width:128px;height:auto;border:0;border-radius:12px;" />
+                      </td>
+                    ))}
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:24px 36px 0;">
+                <h1 style={`margin:0;font-family:'Caveat',${font};font-weight:600;font-size:42px;line-height:1.1;color:#24272E;`}>{copy.title}</h1>
+                <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:#575D64;">{copy.body}</p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:26px 36px 8px;">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="border-radius:999px;background:#6a3eec;">
+                      <a href={CONFIRM} style={`display:inline-block;padding:14px 30px;font-family:${font};font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:999px;`}>{copy.button}</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:16px 36px 36px;font-size:13px;line-height:1.6;color:#575D64;">{copy.ignore}</td>
+            </tr>
+          </table>
+          <p style="margin:16px 0 0;font-size:12px;color:#575D64;"><a href={`${SITE}/impressum/`} style="color:#575D64;">{copy.imprint}</a></p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -2,7 +2,7 @@
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
-import { requestEmail, getSiteData } from '../data/site.ts';
+import { requestEmail, brevoFormUrl, getSiteData } from '../data/site.ts';
 import { withBase } from '../lib/url.ts';
 
 interface Props {
@@ -20,25 +20,25 @@ const PICS = ['qian', 'ceramic-kingdom', 'galleria-lucia-dipdye', 'jem-sushi', '
 // How each one is kept, in turn — so the three a phone shows are one of each.
 const KINDS = ['card', 'taped', 'stamp'] as const;
 
-/* Signups go through FormSubmit to our inbox, the same route as the
-   booking form (BookingDialog.astro), one email per address with the
-   language and page it came from. The list is collected there until a
-   mailing provider takes over the sending. */
+/* Signups go to Brevo (brevoFormUrl), which sends the double opt-in
+   confirmation and handles unsubscribes; the box then asks the visitor to
+   check their inbox. Until that form is set they come to our inbox through
+   FormSubmit, the booking form's route, with the language and page. */
 ---
 
 {compact ? (
   <div class="newsletter-compact">
     <p class="newsletter-compact-title">{copy.heading}</p>
-    <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-lang={lang} novalidate>
+    <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-brevo={brevoFormUrl || undefined} data-lang={lang} novalidate>
       <label for={id} class="sr-only">{copy.label}</label>
       <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
       <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
     </form>
-    <p class="newsletter-note" data-newsletter-thanks hidden>{copy.thanks}</p>
+    <p class="newsletter-note" data-newsletter-thanks hidden>{brevoFormUrl ? copy.checkInbox : copy.thanks}</p>
     <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
   </div>
 ) : (
-  <section class="newsletter">
+  <section class="newsletter" id="newsletter">
     {/* Real workshop photos lying flat on the box, each kept a little
         differently: a plain rounded card, one taped down at two corners,
         one as a postage stamp. */}
@@ -63,12 +63,12 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
         <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke="url(#nl-ink)" stroke-width="3.5" stroke-linecap="round" />
       </svg>
       <p class="newsletter-lede">{copy.lede}</p>
-      <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-lang={lang} novalidate>
+      <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-brevo={brevoFormUrl || undefined} data-lang={lang} novalidate>
         <label for={id} class="sr-only">{copy.label}</label>
         <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
         <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
       </form>
-      <p class="newsletter-note" data-newsletter-thanks hidden>{copy.thanks}</p>
+      <p class="newsletter-note" data-newsletter-thanks hidden>{brevoFormUrl ? copy.checkInbox : copy.thanks}</p>
       <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
       <p class="newsletter-consent">{copy.consent}{' '}<a href={privacy.href}>{privacy.label}</a></p>
     </div>
@@ -88,6 +88,22 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
       if (error) error.hidden = true;
       if (button) { button.disabled = true; button.textContent = button.dataset.sending ?? ''; }
       try {
+        const brevo = form.dataset.brevo;
+        if (brevo) {
+          // Brevo's own form fields. Should the browser refuse to let us read
+          // Brevo's reply (it is another site), the post goes again without
+          // reading it — Brevo still receives it and sends the confirmation.
+          const body = new FormData();
+          body.set('EMAIL', email);
+          body.set('LANGUAGE', form.dataset.lang ?? '');
+          body.set('email_address_check', '');
+          body.set('locale', form.dataset.lang ?? 'en');
+          body.set('html_type', 'simple');
+          await fetch(brevo, { method: 'POST', body }).catch(() => fetch(brevo, { method: 'POST', body, mode: 'no-cors' }));
+          form.hidden = true;
+          if (thanks) thanks.hidden = false;
+          return;
+        }
         const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },

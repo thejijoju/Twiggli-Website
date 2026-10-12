@@ -4857,3 +4857,8 @@ h1, h2, h3, h4,
 }
 .host-apply-card .book-field input,
 .host-apply-card .book-field textarea { border-color: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+/* The pages Brevo sends people to after confirming or unsubscribing
+   (NewsletterStatus.astro): the signup box's look, without the photos. */
+.newsletter-status { margin: 48px 0 88px; padding: 72px 24px; }
+.newsletter-status-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 28px; }
+.newsletter-status-more { font-weight: 700; color: var(--color-accent-700); text-underline-offset: 4px; }
