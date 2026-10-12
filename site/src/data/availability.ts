@@ -46,3 +46,18 @@ export const almostFullLabel: Record<Lang, string> = {
   pl: 'Prawie pełne',
   tr: 'Neredeyse dolu',
 };
+
+/** "1 spot left", not "1 spots left": the singular, where the language
+ *  has one. Everything else keeps the page's own plural wording. */
+const oneSpot: Record<Lang, string> = {
+  en: 'spot left',
+  de: 'Platz frei',
+  fr: 'place restante',
+  es: 'plaza libre',
+  it: 'posto libero',
+  nl: 'plek vrij',
+  pl: 'wolne miejsce',
+  tr: 'yer kaldı',
+};
+export const spotsText = (n: number, lang: Lang, many: string): string =>
+  n === 1 ? `1 ${oneSpot[lang]}` : `${n} ${many}`;

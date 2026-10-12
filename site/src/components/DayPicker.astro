@@ -7,7 +7,7 @@ import DayMap from './DayMap.astro';
 import { mapCopy } from '../data/mapCopy.ts';
 import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
-import { almostFullLabel } from '../data/availability.ts';
+import { almostFullLabel, spotsText } from '../data/availability.ts';
 import Going from './Going.astro';
 
 /** The schedule feed, styled after the app's search screen: the borderless
@@ -290,7 +290,7 @@ const formatDeadline = (iso: string): string => {
                           {s.soldOut ? (
                             <span class="session-availbadge session-soldout">{fullLabel(s)}</span>
                           ) : (
-                            typeof s.spots === 'number' ? <span class="session-availbadge">{s.spots} {t.spots}</span>
+                            typeof s.spots === 'number' ? <span class="session-availbadge">{spotsText(s.spots, lang, t.spots)}</span>
                             : s.almostFull && <span class="session-availbadge session-almostfull">{almostFullLabel[lang]}</span>
                           )}
                           {s.host.video ? (
@@ -388,7 +388,7 @@ const formatDeadline = (iso: string): string => {
                           {s.soldOut ? (
                             <span class="session-spots session-soldout">{fullLabel(s)}</span>
                           ) : (
-                            typeof s.spots === 'number' ? <span class="session-spots">{s.spots} {t.spots}</span>
+                            typeof s.spots === 'number' ? <span class="session-spots">{spotsText(s.spots, lang, t.spots)}</span>
                             : s.almostFull && <span class="session-spots session-almostfull">{almostFullLabel[lang]}</span>
                           )}
                         </span>
