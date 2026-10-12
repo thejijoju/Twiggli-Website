@@ -165,7 +165,9 @@ export type ActivityKey =
  *  studio and 50–100 mobile, so she is [1, 100] and shows up whether a team
  *  is looking for something small or something company-wide. */
 const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' | 'groupPrice'>> = {
-  qian:         { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [2, 2], groupPrice: 65 },
+  // Qian, 12 Oct: from 4 people; up to 8 in her studio, 14 at a partner
+  // venue, 25 at most.
+  qian:         { activity: 'ceramics',    groupRange: [4, 25],   hourRange: [2, 2], groupPrice: 65 },
   rebeca:       { activity: 'art',         groupRange: [4, 24],   hourRange: [1, 3], groupPrice: 65 },
   nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
@@ -276,9 +278,9 @@ export type HostCopy = Omit<
    back to the English entry, so a new host never breaks a language. */
 const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
   en: [
-    { slug: 'qian', name: 'Qian', specialty: 'Pottery & hand-building', studio: 'Clay Garden Pottery Studio',
-      blurb: 'Hands-on hand-building and pottery — calming, creative and beginner-friendly. Teams learn the basics while shaping their own ceramic pieces to take home.',
-      group: 'Up to 8', duration: '2 h', place: 'Clay Garden Studio / your office', languages: 'EN' },
+    { slug: 'qian', name: 'Qian', specialty: 'Tea & pottery, jewellery and painting', studio: 'Clay Garden Pottery Studio',
+      blurb: 'Team events from Qian’s pottery studio in Prenzlauer Berg, two hours each: tea and pottery, making your own ceramic jewellery, or painting pottery. Calm, creative and made for beginners, and everyone takes their own pieces home. From four people: up to 8 in her studio, 14 at a partner venue, and up to 25 in all.',
+      group: '4–25 · studio up to 8 · partner venue up to 14', duration: '2 h', place: 'Clay Garden Studio / partner venue / your office', languages: 'EN' },
     { slug: 'rebeca', name: 'Rebeca', specialty: 'Linocut & portrait painting', studio: 'Arte Gorda',
       blurb: 'Two hands-on formats: bold linocut printmaking, or a portrait-painting session where teammates paint each other and take the canvas home. Playful and made to bring the team closer. She also teaches anatomy for artists at Kunstraum Heartspace — a twelve-part head-to-toe course co-taught with Alice Bischof, plus her own specials on the bodies standard anatomy classes leave out: where fat gathers and folds, and how skin ages.',
       group: '4–24', duration: '2–3 h', place: 'Prenzlauer Berg / mobile', languages: 'EN · DE · PT · ES' },
@@ -481,9 +483,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Up to 12', duration: '3.5–7.5 h', place: 'VHS Marzahn-Hellersdorf / Grimms Garten, Mitte', languages: 'DE · EN' },
   ],
   de: [
-    { slug: 'qian', name: 'Qian', specialty: 'Töpfern & Aufbaukeramik', studio: 'Clay Garden Pottery Studio',
-      blurb: 'Töpfern zum Anfassen — ruhig, kreativ und ideal für Anfänger. Teams lernen die Grundlagen und formen ihre eigenen Keramikstücke zum Mitnehmen.',
-      group: 'Bis 8', duration: '2 Std.', place: 'Clay Garden Studio / euer Büro', languages: 'EN' },
+    { slug: 'qian', name: 'Qian', specialty: 'Tee & Töpfern, Schmuck und Malen', studio: 'Clay Garden Pottery Studio',
+      blurb: 'Teamevents aus Qians Keramikstudio in Prenzlauer Berg, jeweils zwei Stunden: Tee und Töpfern, eigenen Keramikschmuck gestalten oder Keramik bemalen. Ruhig, kreativ und für Anfänger gemacht, und alle nehmen ihre eigenen Stücke mit nach Hause. Ab vier Personen: bis 8 im Studio, 14 in einer Partner-Location und bis 25 insgesamt.',
+      group: '4–25 · Studio bis 8 · Partner-Location bis 14', duration: '2 Std.', place: 'Clay Garden Studio / Partner-Location / euer Büro', languages: 'EN' },
     { slug: 'rebeca', name: 'Rebeca', specialty: 'Linoldruck & Porträtmalerei', studio: 'Arte Gorda',
       blurb: 'Zwei Formate zum Mitmachen: ausdrucksstarker Linoldruck oder eine Porträtmalerei-Session, in der sich das Team gegenseitig malt und die Leinwand mitnimmt. Außerdem unterrichtet sie Anatomie für Zeichnende im Kunstraum Heartspace — einen zwölfteiligen Kurs von Kopf bis Fuß zusammen mit Alice Bischof, dazu ihre eigenen Specials über die Körper, die in üblichen Anatomiekursen fehlen: wo sich Fett sammelt und faltet, und wie Haut altert.',
       group: '4–24', duration: '2–3 Std.', place: 'Prenzlauer Berg / mobil', languages: 'EN · DE · PT · ES' },

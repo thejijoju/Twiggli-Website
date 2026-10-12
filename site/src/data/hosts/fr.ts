@@ -4,9 +4,9 @@
 import type { HostCopy } from '../content.ts';
 
 export const hosts: HostCopy[] = [
-  { slug: 'qian', name: 'Qian', specialty: 'Poterie & modelage', studio: 'Clay Garden Pottery Studio',
-    blurb: 'Poterie et modelage à la main — apaisant, créatif et accessible aux débutants. Les équipes apprennent les bases tout en façonnant leurs propres pièces en céramique à rapporter chez elles.',
-    group: 'Jusqu’à 8', duration: '2 h', place: 'Clay Garden Studio / vos bureaux', languages: 'EN' },
+  { slug: 'qian', name: 'Qian', specialty: 'Thé & poterie, bijoux et peinture', studio: 'Clay Garden Pottery Studio',
+    blurb: 'Des événements d’équipe depuis l’atelier de poterie de Qian à Prenzlauer Berg, deux heures chacun : thé et poterie, création de bijoux en céramique ou peinture sur céramique. Calme, créatif et pensé pour les débutants, et chacun repart avec ses propres pièces. À partir de quatre personnes : jusqu’à 8 dans son atelier, 14 dans un lieu partenaire et jusqu’à 25 en tout.',
+    group: '4–25 · atelier jusqu’à 8 · lieu partenaire jusqu’à 14', duration: '2 h', place: 'Clay Garden Studio / lieu partenaire / vos bureaux', languages: 'EN' },
   { slug: 'rebeca', name: 'Rebeca', specialty: 'Linogravure & portrait peint', studio: 'Arte Gorda',
     blurb: 'Deux formats pratiques : la linogravure aux tracés affirmés, ou une séance de portrait où les collègues se peignent les uns les autres et repartent avec la toile. Ludique et conçu pour rapprocher l’équipe. Elle enseigne aussi l’anatomie pour artistes au Kunstraum Heartspace — un cours en douze parties, de la tête aux pieds, donné avec Alice Bischof, ainsi que ses propres modules sur les corps que les cours d’anatomie classiques laissent de côté : là où la graisse s’accumule et se plie, et comment la peau vieillit.',
     group: '4–24', duration: '2–3 h', place: 'Prenzlauer Berg / itinérant', languages: 'EN · DE · PT · ES' },

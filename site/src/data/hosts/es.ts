@@ -4,9 +4,9 @@
 import type { HostCopy } from '../content.ts';
 
 export const hosts: HostCopy[] = [
-  { slug: 'qian', name: 'Qian', specialty: 'Cerámica & modelado a mano', studio: 'Clay Garden Pottery Studio',
-    blurb: 'Modelado a mano y cerámica práctica: relajante, creativo y apto para principiantes. Los equipos aprenden lo básico mientras dan forma a sus propias piezas de cerámica para llevarse a casa.',
-    group: 'Hasta 8', duration: '2 h', place: 'Clay Garden Studio / tu oficina', languages: 'EN' },
+  { slug: 'qian', name: 'Qian', specialty: 'Té y cerámica, joyería y pintura', studio: 'Clay Garden Pottery Studio',
+    blurb: 'Eventos de equipo desde el taller de cerámica de Qian en Prenzlauer Berg, de dos horas cada uno: té y cerámica, crear tus propias joyas de cerámica o pintar cerámica. Tranquilo, creativo y pensado para principiantes, y cada persona se lleva sus piezas. Desde cuatro personas: hasta 8 en su taller, 14 en un espacio asociado y hasta 25 en total.',
+    group: '4–25 · taller hasta 8 · espacio asociado hasta 14', duration: '2 h', place: 'Clay Garden Studio / espacio asociado / tu oficina', languages: 'EN' },
   { slug: 'rebeca', name: 'Rebeca', specialty: 'Linograbado & retrato pictórico', studio: 'Arte Gorda',
     blurb: 'Dos formatos prácticos: grabado en linóleo de trazo audaz, o una sesión de retrato en la que los compañeros de equipo se pintan unos a otros y se llevan el lienzo a casa. Lúdico y pensado para unir más al equipo. También enseña anatomía para artistas en Kunstraum Heartspace: un curso de doce partes de la cabeza a los pies impartido junto a Alice Bischof, además de sus propios monográficos sobre los cuerpos que las clases de anatomía convencionales dejan fuera: dónde se acumula y se pliega la grasa, y cómo envejece la piel.',
     group: '4–24', duration: '2–3 h', place: 'Prenzlauer Berg / itinerante', languages: 'EN · DE · PT · ES' },

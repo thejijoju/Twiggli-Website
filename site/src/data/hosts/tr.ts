@@ -4,9 +4,9 @@
 import type { HostCopy } from '../content.ts';
 
 export const hosts: HostCopy[] = [
-  { slug: 'qian', name: 'Qian', specialty: 'Seramik & elle şekillendirme', studio: 'Clay Garden Pottery Studio',
-    blurb: 'Uygulamalı elle şekillendirme ve seramik — dinlendirici, yaratıcı ve yeni başlayanlara uygun. Ekipler temel teknikleri öğrenirken eve götürecekleri kendi seramik parçalarını şekillendirir.',
-    group: 'En fazla 8 kişi', duration: '2 sa', place: 'Clay Garden Studio / senin ofisin', languages: 'EN' },
+  { slug: 'qian', name: 'Qian', specialty: 'Çay ve seramik, takı ve boyama', studio: 'Clay Garden Pottery Studio',
+    blurb: 'Qian’ın Prenzlauer Berg’deki seramik atölyesinden ekip etkinlikleri, her biri iki saat: çay ve seramik, kendi seramik takını yapmak ya da seramik boyamak. Sakin, yaratıcı ve yeni başlayanlar için; herkes kendi parçalarını eve götürüyor. Dört kişiden başlayarak: atölyesinde 8, partner mekânda 14 ve toplamda 25 kişiye kadar.',
+    group: '4–25 · atölye 8’e kadar · partner mekân 14’e kadar', duration: '2 sa', place: 'Clay Garden Studio / partner mekân / senin ofisin', languages: 'EN' },
   { slug: 'rebeca', name: 'Rebeca', specialty: 'Linol baskı & portre resmi', studio: 'Arte Gorda',
     blurb: 'İki uygulamalı format: cesur linol baskı ya da ekip arkadaşlarının birbirini resmedip tuvali eve götürdüğü bir portre resmi seansı. Eğlenceli ve ekibi birbirine yaklaştırmak için tasarlanmış. Ayrıca Kunstraum Heartspace’te sanatçılar için anatomi dersi veriyor — Alice Bischof ile birlikte yürüttüğü, tepeden tırnağa on iki bölümlük bir kurs ve standart anatomi derslerinin dışarıda bıraktığı bedenler üzerine kendi özel dersleri: yağın nerede toplanıp kıvrım yaptığı ve cildin nasıl yaşlandığı.',
     group: '4–24', duration: '2–3 sa', place: 'Prenzlauer Berg / gezici', languages: 'EN · DE · PT · ES' },

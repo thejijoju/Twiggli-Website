@@ -4,9 +4,9 @@
 import type { HostCopy } from '../content.ts';
 
 export const hosts: HostCopy[] = [
-  { slug: 'qian', name: 'Qian', specialty: 'Keramiek & handvormen', studio: 'Clay Garden Pottery Studio',
-    blurb: 'Hands-on handvormen en keramiek — rustgevend, creatief en geschikt voor beginners. Teams leren de basis terwijl ze hun eigen keramische stukken vormen om mee naar huis te nemen.',
-    group: 'Tot 8', duration: '2 u', place: 'Clay Garden Studio / je kantoor', languages: 'EN' },
+  { slug: 'qian', name: 'Qian', specialty: 'Thee & keramiek, sieraden en schilderen', studio: 'Clay Garden Pottery Studio',
+    blurb: 'Teamuitjes vanuit Qians keramiekstudio in Prenzlauer Berg, telkens twee uur: thee en keramiek, je eigen keramieken sieraden maken of keramiek beschilderen. Rustig, creatief en gemaakt voor beginners, en iedereen neemt zijn eigen stukken mee naar huis. Vanaf vier personen: tot 8 in haar studio, 14 op een partnerlocatie en tot 25 in totaal.',
+    group: '4–25 · studio tot 8 · partnerlocatie tot 14', duration: '2 u', place: 'Clay Garden Studio / partnerlocatie / je kantoor', languages: 'EN' },
   { slug: 'rebeca', name: 'Rebeca', specialty: 'Linosnede & portretschilderen', studio: 'Arte Gorda',
     blurb: 'Twee hands-on formats: krachtige linosnede-druktechniek, of een portretschildersessie waarin collega\'s elkaar schilderen en het doek mee naar huis nemen. Speels en gemaakt om het team dichter bij elkaar te brengen. Ze geeft ook anatomie voor kunstenaars bij Kunstraum Heartspace — een twaalfdelige cursus van top tot teen die ze samen met Alice Bischof geeft, plus haar eigen specials over de lichamen die standaard anatomielessen overslaan: waar vet zich ophoopt en plooit, en hoe huid veroudert.',
     group: '4–24', duration: '2–3 u', place: 'Prenzlauer Berg / mobiel', languages: 'EN · DE · PT · ES' },

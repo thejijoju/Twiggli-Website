@@ -4,9 +4,9 @@
 import type { HostCopy } from '../content.ts';
 
 export const hosts: HostCopy[] = [
-  { slug: 'qian', name: 'Qian', specialty: 'Ceramica & modellazione a mano', studio: 'Clay Garden Pottery Studio',
-    blurb: 'Modellazione a mano e ceramica pratica — rilassante, creativa e adatta ai principianti. I team imparano le basi mentre danno forma ai propri pezzi in ceramica da portare a casa.',
-    group: 'Fino a 8', duration: '2 h', place: 'Clay Garden Studio / il tuo ufficio', languages: 'EN' },
+  { slug: 'qian', name: 'Qian', specialty: 'Tè e ceramica, gioielli e pittura', studio: 'Clay Garden Pottery Studio',
+    blurb: 'Eventi di team dallo studio di ceramica di Qian a Prenzlauer Berg, di due ore ciascuno: tè e ceramica, creare i propri gioielli in ceramica o dipingere la ceramica. Rilassante, creativo e pensato per principianti, e ognuno porta a casa i propri pezzi. Da quattro persone: fino a 8 nel suo studio, 14 in una location partner e fino a 25 in tutto.',
+    group: '4–25 · studio fino a 8 · location partner fino a 14', duration: '2 h', place: 'Clay Garden Studio / location partner / il tuo ufficio', languages: 'EN' },
   { slug: 'rebeca', name: 'Rebeca', specialty: 'Linoleografia & ritratto pittorico', studio: 'Arte Gorda',
     blurb: 'Due formati pratici: la stampa in linoleografia dai tratti decisi, oppure una sessione di ritratto in cui i colleghi si dipingono a vicenda e si portano a casa la tela. Giocoso e pensato per avvicinare il team. Insegna anche anatomia per artisti al Kunstraum Heartspace — un corso in dodici parti dalla testa ai piedi tenuto insieme ad Alice Bischof, più i suoi speciali sui corpi che le lezioni di anatomia standard trascurano: dove il grasso si accumula e forma pieghe, e come invecchia la pelle.',
     group: '4–24', duration: '2–3 h', place: 'Prenzlauer Berg / itinerante', languages: 'EN · DE · PT · ES' },

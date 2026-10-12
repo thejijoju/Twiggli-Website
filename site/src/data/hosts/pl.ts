@@ -4,9 +4,9 @@
 import type { HostCopy } from '../content.ts';
 
 export const hosts: HostCopy[] = [
-  { slug: 'qian', name: 'Qian', specialty: 'Ceramika & lepienie ręczne', studio: 'Clay Garden Pottery Studio',
-    blurb: 'Praktyczne lepienie ręczne i ceramika — wyciszające, twórcze i przyjazne dla początkujących. Zespoły poznają podstawy, kształtując własne ceramiczne przedmioty, które zabiorą do domu.',
-    group: 'Do 8 osób', duration: '2 godz.', place: 'Clay Garden Studio / twoje biuro', languages: 'EN' },
+  { slug: 'qian', name: 'Qian', specialty: 'Herbata i ceramika, biżuteria i malowanie', studio: 'Clay Garden Pottery Studio',
+    blurb: 'Wydarzenia firmowe z pracowni ceramiki Qian w Prenzlauer Berg, każde po dwie godziny: herbata i ceramika, własna biżuteria z ceramiki albo malowanie ceramiki. Spokojnie, twórczo i dla początkujących, a każdy zabiera swoje prace do domu. Od czterech osób: do 8 w jej pracowni, 14 w miejscu partnerskim i łącznie do 25.',
+    group: '4–25 · pracownia do 8 · miejsce partnerskie do 14', duration: '2 godz.', place: 'Clay Garden Studio / miejsce partnerskie / twoje biuro', languages: 'EN' },
   { slug: 'rebeca', name: 'Rebeca', specialty: 'Linoryt & malowanie portretów', studio: 'Arte Gorda',
     blurb: 'Dwa praktyczne formaty: wyrazisty linoryt albo sesja malowania portretów, podczas której członkowie zespołu malują siebie nawzajem i zabierają płótno do domu. Zabawa, która ma zbliżyć zespół. Rebeca uczy też anatomii dla artystów w Kunstraum Heartspace — dwunastoczęściowy kurs od stóp do głów, prowadzony wspólnie z Alice Bischof, oraz jej własne zajęcia specjalne o ciałach, które standardowe lekcje anatomii pomijają: gdzie gromadzi się i fałduje tłuszcz i jak starzeje się skóra.',
     group: '4–24', duration: '2–3 godz.', place: 'Prenzlauer Berg / mobilnie', languages: 'EN · DE · PT · ES' },
