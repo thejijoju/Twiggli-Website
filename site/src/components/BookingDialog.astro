@@ -32,6 +32,10 @@ const c = bookingCopy[lang];
   <button type="button" class="book-close" data-book-close aria-label={c.close}>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
   </button>
+  {/* The clicked card's own footage, blurred into a wash of its colours
+      behind the form (filled in on open). */}
+  <div class="book-ambient" data-book-ambient aria-hidden="true"></div>
+  <div class="book-scroll">
   <form class="book-form" data-book-form novalidate>
     <h2 class="book-title" data-book-heading>{c.book}</h2>
     <div class="book-summary">
@@ -77,6 +81,7 @@ const c = bookingCopy[lang];
     <p class="book-lede">{c.sentBody}</p>
     <button type="button" class="btn btn-primary" data-book-close>{c.close}</button>
   </div>
+  </div>
 </dialog>
 
 <script>
@@ -111,6 +116,51 @@ const c = bookingCopy[lang];
     const whenField = dialog.querySelector<HTMLElement>('[data-book-when-field]');
     const people = form.querySelector<HTMLInputElement>('input[name="people"]');
     let picked: DOMStringMap = {};
+    const ambient = dialog.querySelector<HTMLElement>('[data-book-ambient]');
+
+    // The footage of the card the button sits in: the nearest ancestor that
+    // holds exactly one video (two means we have left the card, as on a
+    // list of sessions), else that card's photo.
+    const cardMedia = (el: HTMLElement) => {
+      for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+        const videos = node.querySelectorAll<HTMLVideoElement>('video');
+        if (videos.length > 1) return null;
+        if (videos.length === 1) {
+          const v = videos[0];
+          const still = v.poster || node.querySelector<HTMLImageElement>('img.session-still')?.currentSrc || '';
+          return { video: v.currentSrc || v.getAttribute('src') || '', still, at: v.currentTime };
+        }
+        const img = node.querySelector<HTMLImageElement>('img');
+        if (img && node.matches('article, li, .card, [data-host]')) return { video: '', still: img.currentSrc || img.src, at: 0 };
+      }
+      return null;
+    };
+    const calm = () =>
+      matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    const setAmbient = (el: HTMLElement) => {
+      if (!ambient) return;
+      ambient.replaceChildren();
+      const media = cardMedia(el);
+      dialog.classList.toggle('has-ambient', !!(media?.video || media?.still));
+      if (!media) return;
+      if (media.video && !calm()) {
+        const v = document.createElement('video');
+        Object.assign(v, { muted: true, loop: true, playsInline: true, autoplay: true, src: media.video });
+        if (media.still) v.poster = media.still;
+        // Carry on from where the card's clip was, so it reads as the same film.
+        v.addEventListener('loadedmetadata', () => { if (media.at) v.currentTime = media.at; }, { once: true });
+        ambient.append(v);
+        v.play().catch(() => {});
+      } else if (media.still) {
+        const img = document.createElement('img');
+        img.src = media.still;
+        img.alt = '';
+        ambient.append(img);
+      }
+    };
+    // Closed: drop the clip so it stops downloading and playing.
+    dialog.addEventListener('close', () => ambient?.replaceChildren());
 
     const dateText = (iso?: string) => {
       if (!iso) return '';
@@ -140,6 +190,7 @@ const c = bookingCopy[lang];
       if (send) { send.disabled = false; send.textContent = copy.send; }
       // A button inside another panel (the group page's quick view) hands
       // over to the form rather than stacking it on top.
+      setAmbient(el);
       document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => { if (d !== dialog) d.close(); });
       dialog.showModal();
       form.querySelector<HTMLInputElement>('input[name="name"]')?.focus();

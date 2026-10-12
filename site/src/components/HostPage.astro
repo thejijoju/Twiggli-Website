@@ -32,13 +32,13 @@ const onRequest = onRequestFor(host.slug, lang);
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 
-// The dated workshops' prices where there are any; otherwise the price the
-// host gave for groups, as the group page shows it — "on request" only
-// where neither exists.
-const priceRange = getHostPriceRanges().get(host.slug)
-  ?? (host.groupPrice == null ? undefined
+// The price the host gave for groups, as the group page shows it; otherwise
+// the spread of their dated workshops (which can include a multi-session
+// course, so it comes second) — "on request" only where neither exists.
+const priceRange = (host.groupPrice == null ? undefined
     : Array.isArray(host.groupPrice) ? host.groupPrice
-    : [host.groupPrice, host.groupPrice] as [number, number]);
+    : [host.groupPrice, host.groupPrice] as [number, number])
+  ?? getHostPriceRanges().get(host.slug);
 const money = (n: number) => `€${Math.round(n)}`;
 const priceText = !priceRange
   ? t.priceUnknown
