@@ -153,15 +153,13 @@ const SOURCES = [
     url: 'https://lamaleathergoods.com/leather-sandal-workshop/',
     title: 'Leather Sandal Workshop', price: '€240', duration: '8.5 h',
     district: 'Kreuzberg', languages: 'EN · FR · ES' },
-  // Each page carries one Acuity class widget, so title and fallback price
-  // come from config; dates arrive via the headless render of the widget.
-  { slug: 'qian', name: 'Qian — Clay Garden pottery classes', mode: 'dates-de',
-    url: 'https://www.claygarden.studio/pottery-classes',
-    title: 'Handbuilding Class with Clay Garden Studio', price: '€65',
-    district: 'Prenzlauer Berg' },
-  { slug: 'qian', name: 'Qian — Clay Garden special workshops', mode: 'dates-de',
-    url: 'https://www.claygarden.studio/special-workshops',
-    title: 'Tea & Pottery Workshop', price: '€85', weekdays: [0], district: 'Prenzlauer Berg' },
+  // Clay Garden's Squarespace pages embed one Acuity class widget each; read
+  // the account directly instead, which gives every class with its real
+  // dates and free spots. (Reading the rendered widget text took the
+  // calendar grid's day numbers for dates.) Private bookings stay off.
+  { slug: 'qian', name: 'Clay Garden Studio (Qian) — classes (Acuity)', mode: 'acuity',
+    scheduleHash: 'd340338d', url: 'https://www.claygarden.studio/pottery-classes',
+    excludeTitle: 'Private|Member|Gift|Gutschein|Open Studio', district: 'Prenzlauer Berg' },
   // Weekly-recurring German schedule ("Dienstags I 18 - 20 Uhr I …"); the
   // parser emits `recurring` entries the site expands into dated sessions.
   { slug: 'nina', name: 'Nina Kranz — Kurse', url: 'https://www.ninakranzart.com/privat-freizeit', mode: 'recurring-de' },
@@ -1747,8 +1745,8 @@ async function fromAcuity(source) {
   console.log(
     `[${source.slug}] acuity appointment types: ${types.map((t) => `${t?.name} [${t?.id}] €${t?.price} ${t?.duration}min`).join('; ')}`,
   );
-
-  return acuityTimesForTypes(source, hash, types);
+  const ex = source.excludeTitle ? new RegExp(source.excludeTitle, 'i') : null;
+  return acuityTimesForTypes(source, hash, ex ? types.filter((t) => !ex.test(String(t?.name ?? ''))) : types);
 }
 
 /** Query Acuity's public availability endpoint for each appointment type
@@ -3697,10 +3695,6 @@ function fromGermanDates(html, source) {
     const day = m[1] ?? m[4];
     const month = MONTHS[(m[2] ?? m[3]).toLowerCase()];
     const date = `${m[5]}-${month}-${day.padStart(2, '0')}`;
-    // A booking calendar writes out every day of the month it shows, and the
-    // single "13:00" slot sits next to all of them. When the host only runs
-    // on certain weekdays, a date on any other day is the calendar grid.
-    if (source.weekdays && !source.weekdays.includes(new Date(`${date}T12:00:00Z`).getUTCDay())) continue;
     const beforeCtx = text.slice(Math.max(0, m.index - 80), m.index);
     const afterCtx = text.slice(m.index + m[0].length, m.index + m[0].length + 160);
     const around = `${beforeCtx} § ${afterCtx}`;

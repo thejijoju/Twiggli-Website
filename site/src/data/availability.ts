@@ -21,7 +21,7 @@ export const availabilityNotes: Record<string, AvailabilityNote> = {
   // Deborah, 12 Oct: nine of the places taken, two more fit.
   'druckrausch|2026-11-04|18:30': { almostFull: true, going: 9 },
   // Qian, 12 Oct: 3 places left of about 8, so 5 going.
-  'qian|2026-10-18|13:00': { spots: 3, going: 5 },
+  'qian|2026-10-18|13:00': { going: 5 },
 };
 
 /** Below this, "who's going" is left off: one or two reads as empty. */

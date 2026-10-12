@@ -94,14 +94,8 @@
     {
       "slug": "qian",
       "url": "https://www.claygarden.studio/pottery-classes",
-      "status": "failed: no upcoming events parsed",
-      "count": 0
-    },
-    {
-      "slug": "qian",
-      "url": "https://www.claygarden.studio/special-workshops",
-      "status": "failed: no upcoming events parsed",
-      "count": 3
+      "status": "ok",
+      "count": 10
     },
     {
       "slug": "nina",
@@ -2626,13 +2620,116 @@
     },
     {
       "slug": "qian",
-      "sourceUrl": "https://www.claygarden.studio/special-workshops",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Make Your Own Jewellery Workshop",
+      "date": "2026-10-16",
+      "time": "18:00",
+      "spots": 1,
+      "duration": "1.5 h",
+      "price": "€45",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410863/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
       "title": "Tea & Pottery Workshop",
       "date": "2026-10-18",
       "time": "13:00",
-      "url": "https://www.claygarden.studio/special-workshops",
-      "district": "Prenzlauer Berg",
-      "price": "€85"
+      "spots": 3,
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410052/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Try The Wheel- Taster",
+      "date": "2026-10-21",
+      "time": "19:00",
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410415/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Try The Wheel- Taster",
+      "date": "2026-10-24",
+      "time": "14:00",
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410415/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Try The Wheel- Taster",
+      "date": "2026-10-31",
+      "time": "14:00",
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410415/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Try The Wheel- Taster",
+      "date": "2026-11-04",
+      "time": "19:00",
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410415/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Try The Wheel- Taster",
+      "date": "2026-11-07",
+      "time": "14:00",
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410415/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Tea & Pottery Workshop",
+      "date": "2026-11-08",
+      "time": "13:00",
+      "spots": 6,
+      "duration": "2 h",
+      "price": "€85",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410052/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Handbuilding Class",
+      "date": "2026-11-27",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€65",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410282/calendar/11221316",
+      "district": "Prenzlauer Berg"
+    },
+    {
+      "slug": "qian",
+      "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+      "title": "Wheel Throwing — Beginner Course (4 Sessions)",
+      "date": "2026-12-07",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€250",
+      "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410642/calendar/11221316",
+      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",

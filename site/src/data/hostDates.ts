@@ -22,17 +22,5 @@ export interface HostDate {
 }
 
 export const hostDates: HostDate[] = [
-  // Qian, 12 Oct: her Try the Wheel tasters and the last-Friday handbuilding
-  // class, booked through the class widget on her pottery-classes page,
-  // which the feed's scrape of that page does not reach.
-  { slug: 'qian', title: 'Try the Wheel', date: '2026-10-24', time: '13:00', duration: '2 h',
-    price: '€85', spots: 2, district: 'Prenzlauer Berg', url: 'https://www.claygarden.studio/pottery-classes', onHostSite: true },
-  { slug: 'qian', title: 'Try the Wheel', date: '2026-10-31', time: '13:00', duration: '2 h',
-    price: '€85', spots: 2, district: 'Prenzlauer Berg', url: 'https://www.claygarden.studio/pottery-classes', onHostSite: true },
-  // Her booking widget's second Tea & Pottery date, which the feed's
-  // reading of the drawn calendar missed.
-  { slug: 'qian', title: 'Tea & Pottery Workshop', date: '2026-11-08', time: '13:00', duration: '2 h',
-    price: '€85', district: 'Prenzlauer Berg', url: 'https://www.claygarden.studio/special-workshops', onHostSite: true },
-  { slug: 'qian', title: 'Handbuilding Workshop', date: '2026-11-27', time: '18:00', duration: '2 h',
-    price: '€65', spots: 5, district: 'Prenzlauer Berg', url: 'https://www.claygarden.studio/pottery-classes', onHostSite: true },
+  // Qian's dates now come straight from her Acuity account in the feed.
 ];
