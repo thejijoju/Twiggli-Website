@@ -217,6 +217,8 @@ export function getHostPriceRanges(): Map<string, [number, number]> {
     ...((liveData as { workshops?: { slug: string; price?: string }[] }).workshops ?? []),
     ...((liveData as { recurring?: { slug: string; price?: string }[] }).recurring ?? []),
     ...((liveData as { onRequest?: { slug: string; price?: string }[] }).onRequest ?? []),
+    // Dates hosts sent us themselves (hostDates.ts) are priced dates too.
+    ...hostDates,
   ];
   for (const w of priced) {
     if (!w.price) continue;

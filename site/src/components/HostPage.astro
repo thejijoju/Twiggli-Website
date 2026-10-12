@@ -32,7 +32,13 @@ const onRequest = onRequestFor(host.slug, lang);
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 
-const priceRange = getHostPriceRanges().get(host.slug);
+// The dated workshops' prices where there are any; otherwise the price the
+// host gave for groups, as the group page shows it — "on request" only
+// where neither exists.
+const priceRange = getHostPriceRanges().get(host.slug)
+  ?? (host.groupPrice == null ? undefined
+    : Array.isArray(host.groupPrice) ? host.groupPrice
+    : [host.groupPrice, host.groupPrice] as [number, number]);
 const money = (n: number) => `€${Math.round(n)}`;
 const priceText = !priceRange
   ? t.priceUnknown
@@ -110,7 +116,17 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <div><dt>{t.languages}</dt><dd>{host.languages}</dd></div>
           <div><dt>{t.price}</dt><dd>{priceText}</dd></div>
         </dl>
-        <a class="maker-request" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`}>
+        {/* Opens our booking form on the page as a group request, this host
+            and their price filled in; without scripts, the contact form. */}
+        <a
+          class="maker-request"
+          href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`}
+          data-book="group"
+          data-book-title={host.specialty}
+          data-book-host={host.name}
+          data-book-price={priceRange ? priceText : undefined}
+          data-book-group={host.groupRange[0] === host.groupRange[1] ? String(host.groupRange[1]) : `${host.groupRange[0]}–${host.groupRange[1]}`}
+        >
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {t.request}
         </a>
