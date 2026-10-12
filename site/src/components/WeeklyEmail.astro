@@ -1,0 +1,187 @@
+---
+/**
+ * "This week in Berlin" — the weekly newsletter, as one self-contained,
+ * mail-safe HTML document (tables, inline styles, absolute links). It is
+ * rebuilt from the live calendar on every deploy, and the weekly-newsletter
+ * workflow hands the built file to Brevo as the campaign body. Not a page
+ * for the site itself: no layout, kept out of the sitemap and search.
+ *
+ * What goes in: the coming seven days from tomorrow, one date per host so
+ * the week reads as variety rather than one studio's timetable, sold-out
+ * dates left out, those with footage first, at most eight.
+ */
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { getSessions, berlinTodayMs, type Session } from '../data/sessions.ts';
+import { workshopHref } from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+
+const SITE = 'https://www.twiggli.com';
+const DAY = 86_400_000;
+const MAX = 8;
+// Brevo swaps this tag for each reader's own unsubscribe link.
+const UNSUBSCRIBE = '{{ unsubscribe }}';
+
+const copy = {
+  en: {
+    subject: 'This week in Berlin',
+    preheader: 'This week’s workshops in Berlin, each with a short video.',
+    title: 'This week in Berlin',
+    intro: (n: number) => `A handful of workshops worth an evening or a weekend afternoon, picked from ${n} dates in our calendar. Tap one to watch its video and send a booking request.`,
+    cta: 'Watch & book',
+    left: (n: number) => (n === 1 ? '1 spot left' : `${n} spots left`),
+    almostFull: 'Almost full',
+    more: 'See the whole calendar',
+    groups: 'Planning something for a team or a birthday? We arrange private workshops too.',
+    groupsLink: 'Group bookings',
+    why: 'You’re getting this because you signed up at twiggli.com.',
+    unsubscribe: 'Unsubscribe',
+    imprint: 'Impressum',
+  },
+  de: {
+    subject: 'Diese Woche in Berlin',
+    preheader: 'Die Workshops dieser Woche in Berlin, jeder mit kurzem Video.',
+    title: 'Diese Woche in Berlin',
+    intro: (n: number) => `Eine Handvoll Workshops für einen Abend oder einen Nachmittag am Wochenende, ausgewählt aus ${n} Terminen in unserem Kalender. Tipp einen an, schau das Video und schick eine Buchungsanfrage.`,
+    cta: 'Video & buchen',
+    left: (n: number) => (n === 1 ? 'Noch 1 Platz' : `Noch ${n} Plätze`),
+    almostFull: 'Fast ausgebucht',
+    more: 'Den ganzen Kalender ansehen',
+    groups: 'Etwas für dein Team oder einen Geburtstag geplant? Wir organisieren auch private Workshops.',
+    groupsLink: 'Gruppenbuchungen',
+    why: 'Du bekommst diese E-Mail, weil du dich auf twiggli.com angemeldet hast.',
+    unsubscribe: 'Abmelden',
+    imprint: 'Impressum',
+  },
+}[lang];
+
+const locale = lang === 'de' ? 'de-DE' : 'en-GB';
+const today = berlinTodayMs();
+const dateOf = (s: Session) =>
+  new Date(today + s.dayOffset * DAY).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+// Desk and open-studio slots are rentals, not something to come and learn.
+const NOT_A_WORKSHOP = /hot ?desk|open studio|coworking/i;
+const week = getSessions(lang).filter(
+  (s) => s.dayOffset >= 1 && s.dayOffset <= 7 && !s.soldOut && s.time && !NOT_A_WORKSHOP.test(s.title),
+);
+// Round the week day by day, one new host per day per round, so the
+// selection spans the week instead of filling up on its first evening.
+const byDay = new Map<number, Session[]>();
+for (const sess of week) {
+  const list = byDay.get(sess.dayOffset) ?? [];
+  list.push(sess);
+  byDay.set(sess.dayOffset, list);
+}
+for (const list of byDay.values()) list.sort((a, b) => Number(!a.host.poster) - Number(!b.host.poster));
+const seen = new Set<string>();
+const picks: Session[] = [];
+for (let round = 0; picks.length < MAX && round < 10; round++) {
+  for (const list of byDay.values()) {
+    const next = list.find((sess) => !seen.has(sess.host.slug));
+    if (!next || picks.length >= MAX) continue;
+    seen.add(next.host.slug);
+    picks.push(next);
+  }
+}
+picks.sort((a, b) => a.dayOffset - b.dayOffset || (a.time ?? '').localeCompare(b.time ?? ''));
+const rows = Array.from({ length: Math.ceil(picks.length / 2) }, (_, i) => picks.slice(i * 2, i * 2 + 2));
+
+// The 4:3 crop scripts/mail-crops.sh cut from the reel's poster, where it
+// exists; otherwise the host's photo. Mail clients do not crop for us.
+const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
+const imageFor = (s: Session): string | undefined => {
+  const name = s.host.poster?.match(/\/video\/(.+)-poster\.jpg$/)?.[1];
+  if (name && existsSync(`${publicDir}img/mail/${name}.jpg`)) return `${SITE}/img/mail/${name}.jpg`;
+  const photo = s.image ?? s.host.photo;
+  return photo ? (photo.startsWith('http') ? photo : SITE + photo) : undefined;
+};
+const track = (url: string) => `${url}${url.includes('?') ? '&' : '?'}utm_source=newsletter&utm_medium=email&utm_campaign=this-week`;
+// Scarcity only where it is true and close: "almost full", or five or fewer.
+const statusOf = (s: Session): string =>
+  s.almostFull ? copy.almostFull : typeof s.spots === 'number' && s.spots > 0 && s.spots <= 5 ? copy.left(s.spots) : '';
+const link = (s: Session) => track(SITE + workshopHref(lang, s.host, s.workshopKey));
+
+const font = "'Poppins', Helvetica, Arial, sans-serif";
+const ink = '#24272E';
+const muted = '#575D64';
+const violet = '#6a3eec';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{copy.subject}</title>
+    <style is:inline>@media (max-width: 520px) { .card { display: block !important; width: 100% !important; } }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+  </head>
+  <body style={`margin:0;padding:0;background:#f7f4fb;font-family:${font};color:${ink};`}>
+    <div style="display:none;max-height:0;overflow:hidden;">{copy.preheader}</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f4fb;">
+      <tr>
+        <td align="center" style="padding:28px 12px;">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#ffffff;border-radius:24px;">
+            <tr>
+              <td align="center" style="padding:36px 32px 8px;background:linear-gradient(160deg,#fff3ec 0%,#ffffff 45%,#f5efff 100%);border-radius:24px 24px 0 0;">
+                <a href={track(SITE + href(lang, '/'))}><img src={`${SITE}/img/logo.png`} width="44" height="44" alt="Twiggli" style="display:block;border:0;border-radius:10px;" /></a>
+                <h1 style={`margin:18px 0 0;font-family:'Caveat',${font};font-weight:600;font-size:44px;line-height:1.1;color:${ink};`}>{copy.title}</h1>
+                <p style={`margin:12px auto 0;max-width:460px;font-size:15px;line-height:1.6;color:${muted};`}>{copy.intro(week.length)}</p>
+              </td>
+            </tr>
+            {rows.map((pair) => (
+              <tr>
+                <td style="padding:12px 20px 4px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      {pair.map((s) => {
+                        const img = imageFor(s);
+                        const status = statusOf(s);
+                        return (
+                          <td class="card" width="50%" valign="top" style="width:50%;padding:8px 12px 16px;">
+                            {img && <a href={link(s)}><img src={img} width="256" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:14px;" /></a>}
+                            <p style={`margin:12px 0 0;font-size:12px;font-weight:700;letter-spacing:.02em;color:${violet};`}>
+                              {[dateOf(s), s.time, s.price].filter(Boolean).join(' · ')}
+                            </p>
+                            {status && <p style="margin:2px 0 0;font-size:12px;font-weight:700;color:#c2410c;">{status}</p>}
+                            <p style="margin:4px 0 0;font-size:16px;font-weight:700;line-height:1.3;"><a href={link(s)} style={`color:${ink};text-decoration:none;`}>{s.title}</a></p>
+                            <p style={`margin:3px 0 0;font-size:13px;color:${muted};`}>{s.host.name}{s.district ? ` · ${s.district}` : ''}</p>
+                            <p style="margin:8px 0 0;font-size:13px;font-weight:700;"><a href={link(s)} style={`color:${violet};text-decoration:none;`}>{copy.cta} →</a></p>
+                          </td>
+                        );
+                      })}
+                      {pair.length === 1 && <td class="card" width="50%" style="width:50%;"></td>}
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <td align="center" style="padding:28px 32px 8px;">
+                <a href={track(SITE + href(lang, '/happening-today/'))} style={`font-size:15px;font-weight:700;color:${violet};`}>{copy.more}</a>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style={`padding:8px 40px 32px;font-size:14px;line-height:1.6;color:${muted};`}>
+                {copy.groups} <a href={track(SITE + href(lang, '/corporatebookings/'))} style={`color:${ink};font-weight:700;`}>{copy.groupsLink}</a>
+              </td>
+            </tr>
+          </table>
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;">
+            <tr>
+              <td align="center" style={`padding:20px 24px;font-size:12px;line-height:1.6;color:${muted};`}>
+                {copy.why}<br />
+                <a href={UNSUBSCRIBE} style={`color:${muted};`}>{copy.unsubscribe}</a> · <a href={`${SITE}/impressum/`} style={`color:${muted};`}>{copy.imprint}</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

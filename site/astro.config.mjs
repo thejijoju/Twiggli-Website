@@ -15,7 +15,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) =>
-        !/paymentcanceled|stripe-connect|corporate\/$|hosts\/$/.test(page),
+        !/paymentcanceled|stripe-connect|newsletter\/|corporate\/$|hosts\/$/.test(page),
       // The pages built from the workshop feed change with every daily
       // rebuild — a date passes, a new one lands — so they say so; the
       // legal pages and the rest carry no lastmod rather than a false one.

@@ -1,0 +1,52 @@
+name: Weekly newsletter
+
+# "This week in Berlin": every Thursday morning the site is built fresh
+# from the calendar and the email page (WeeklyEmail.astro) goes out through
+# Brevo, one campaign per language list (scripts/send-newsletter.mjs).
+# Run it by hand with a test address to get a test copy instead.
+#
+# Needs: secret BREVO_API_KEY; variables BREVO_SENDER_EMAIL, BREVO_LIST_EN,
+# BREVO_LIST_DE. Until the key is set, a run sends nothing and says so.
+
+on:
+  schedule:
+    - cron: '0 7 * * 4' # Thursday 07:00 UTC — 9:00 in Berlin in summer, 8:00 in winter
+  workflow_dispatch:
+    inputs:
+      test_email:
+        description: 'Send a test copy to this address only (leave empty to mail the lists)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-newsletter
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/new-session-c5222r
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Email-sized stills for any new reels
+        run: bash scripts/mail-crops.sh
+      - name: Build the site (the email is one of its pages)
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+      - name: Send through Brevo
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ vars.BREVO_SENDER_EMAIL }}
+          BREVO_LIST_EN: ${{ vars.BREVO_LIST_EN }}
+          BREVO_LIST_DE: ${{ vars.BREVO_LIST_DE }}
+          TEST_EMAIL: ${{ inputs.test_email }}
+        run: node scripts/send-newsletter.mjs
