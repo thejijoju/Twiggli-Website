@@ -1,35 +1,86 @@
 ---
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
+import { bookingCopy } from '../data/bookingCopy.ts';
+import { requestEmail } from '../data/site.ts';
 
 interface Props {
   lang?: Lang;
+  /** The footer's one-line version: no kicker or lede, light on dark. */
+  compact?: boolean;
 }
-const { lang = DEFAULT_LANG } = Astro.props;
+const { lang = DEFAULT_LANG, compact = false } = Astro.props;
 
 const copy = ui(lang).newsletter;
+const id = compact ? 'newsletter-email-footer' : 'newsletter-email';
 
-/* PLACEHOLDER — the form posts nowhere yet. Wire `action` to a real
-   newsletter provider (Mailchimp, Brevo, a serverless function) before
-   launch, same as the contact form on contact.astro. */
+/* Signups go through FormSubmit to our inbox, the same route as the
+   booking form (BookingDialog.astro), one email per address with the
+   language and page it came from. The list is collected there until a
+   mailing provider takes over the sending. */
 ---
 
-<section class="section newsletter">
-  <span class="kicker kicker-tight">{copy.kicker}</span>
-  <h2 class="split-title">{copy.heading}</h2>
-  <p class="split-copy">{copy.lede}</p>
-  <form class="newsletter-form" method="post" action="#">
-    <div class="field newsletter-field">
-      <label for="newsletter-email" class="sr-only">{copy.label}</label>
-      <input
-        class="input"
-        type="email"
-        id="newsletter-email"
-        name="email"
-        placeholder={copy.placeholder}
-        required
-      />
-    </div>
-    <button type="submit" class="btn btn-primary">{copy.button}</button>
-  </form>
-</section>
+{compact ? (
+  <div class="newsletter-compact">
+    <p class="newsletter-compact-title">{copy.heading}</p>
+    <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-lang={lang} novalidate>
+      <label for={id} class="sr-only">{copy.label}</label>
+      <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
+      <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+    </form>
+    <p class="newsletter-note" data-newsletter-thanks hidden>{copy.thanks}</p>
+    <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
+  </div>
+) : (
+  <section class="section newsletter">
+    <span class="kicker kicker-tight">{copy.kicker}</span>
+    <h2 class="split-title">{copy.heading}</h2>
+    <p class="split-copy">{copy.lede}</p>
+    <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-lang={lang} novalidate>
+      <div class="field newsletter-field">
+        <label for={id} class="sr-only">{copy.label}</label>
+        <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
+      </div>
+      <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+    </form>
+    <p class="newsletter-note" data-newsletter-thanks hidden>{copy.thanks}</p>
+    <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    const box = form.parentElement;
+    const thanks = box?.querySelector<HTMLElement>('[data-newsletter-thanks]');
+    const error = box?.querySelector<HTMLElement>('[data-newsletter-error]');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const email = String(new FormData(form).get('email') ?? '').trim();
+      if (error) error.hidden = true;
+      if (button) { button.disabled = true; button.textContent = button.dataset.sending ?? ''; }
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            Type: 'Newsletter signup',
+            email,
+            Language: form.dataset.lang ?? '',
+            'Signed up on': location.href,
+            _subject: `Newsletter signup: ${email}`,
+            _template: 'table',
+            _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        if (thanks) thanks.hidden = false;
+      } catch {
+        if (error) error.hidden = false;
+        if (button) { button.disabled = false; button.textContent = button.dataset.label ?? ''; }
+      }
+    });
+  });
+</script>

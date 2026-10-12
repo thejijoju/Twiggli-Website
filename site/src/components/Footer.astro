@@ -1,5 +1,6 @@
 ---
 import StoreButtons from './StoreButtons.astro';
+import Newsletter from './Newsletter.astro';
 import { getSiteData } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import { href, type Lang } from '../lib/url.ts';
@@ -24,6 +25,7 @@ const cta = { title: t.appCta };
       <div class="footer-identity">
         <a href={href(lang, '/')} class="footer-wordmark">{brand.name}</a>
         <p class="footer-tagline">{brand.tagline}</p>
+        <Newsletter lang={lang} compact />
       </div>
       <div class="footer-app">
         <p class="footer-app-title">{cta.title}</p>

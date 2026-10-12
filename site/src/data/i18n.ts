@@ -35,6 +35,7 @@ const en = {
     kicker: 'Newsletter', heading: 'Stay in the loop',
     lede: 'New workshops, new hosts, and Berlin picks worth knowing about — straight to your inbox. No spam, unsubscribe anytime.',
     label: 'Email address', placeholder: 'you@email.com', button: 'Subscribe',
+    thanks: 'You’re on the list! Our next email is on its way soon.', error: 'That didn’t go through. Please try again.',
   },
   teaser: {
     kicker: 'Happening today',
@@ -183,6 +184,7 @@ const de: UiCopy = {
     kicker: 'Newsletter', heading: 'Bleib auf dem Laufenden',
     lede: 'Neue Workshops, neue Gastgeber und Berlin-Tipps, die sich lohnen — direkt in dein Postfach. Kein Spam, jederzeit abbestellbar.',
     label: 'E-Mail-Adresse', placeholder: 'du@email.com', button: 'Abonnieren',
+    thanks: 'Du bist dabei! Unsere nächste E-Mail kommt bald.', error: 'Das hat nicht geklappt. Bitte versuch es noch einmal.',
   },
   teaser: {
     kicker: 'Heute los',
@@ -329,6 +331,7 @@ const fr: UiCopy = {
     kicker: 'Newsletter', heading: 'Restez informé',
     lede: 'Nouveaux ateliers, nouveaux hôtes et bonnes adresses berlinoises — directement dans votre boîte mail. Pas de spam, désinscription à tout moment.',
     label: 'Adresse e-mail', placeholder: 'vous@email.com', button: 'S’abonner',
+    thanks: 'C’est fait ! Notre prochain e-mail arrive bientôt.', error: 'L’envoi a échoué. Merci de réessayer.',
   },
   teaser: {
     kicker: "Aujourd'hui",
@@ -475,6 +478,7 @@ const es: UiCopy = {
     kicker: 'Newsletter', heading: 'Mantente al día',
     lede: 'Nuevos talleres, nuevos anfitriones y planes en Berlín que merecen la pena — directo a tu correo. Sin spam, date de baja cuando quieras.',
     label: 'Correo electrónico', placeholder: 'tu@email.com', button: 'Suscribirme',
+    thanks: '¡Ya estás dentro! Pronto te llega nuestro próximo email.', error: 'No se ha podido enviar. Inténtalo de nuevo.',
   },
   teaser: {
     kicker: 'Hoy en Berlín',
@@ -621,6 +625,7 @@ const it: UiCopy = {
     kicker: 'Newsletter', heading: 'Resta aggiornato',
     lede: 'Nuovi workshop, nuovi host e indirizzi berlinesi che valgono la pena — direttamente nella tua casella. Niente spam, disiscrizione quando vuoi.',
     label: 'Indirizzo e-mail', placeholder: 'tu@email.com', button: 'Iscriviti',
+    thanks: 'Fatto! La nostra prossima email arriva presto.', error: 'Non è andata a buon fine. Riprova.',
   },
   teaser: {
     kicker: 'Oggi a Berlino',
@@ -767,6 +772,7 @@ const nl: UiCopy = {
     kicker: 'Nieuwsbrief', heading: 'Blijf op de hoogte',
     lede: 'Nieuwe workshops, nieuwe hosts en Berlijnse tips die de moeite waard zijn — rechtstreeks in je inbox. Geen spam, altijd uit te schrijven.',
     label: 'E-mailadres', placeholder: 'jij@email.com', button: 'Inschrijven',
+    thanks: 'Je staat op de lijst! Onze volgende mail komt eraan.', error: 'Dat is niet gelukt. Probeer het opnieuw.',
   },
   teaser: {
     kicker: 'Vandaag',
@@ -913,6 +919,7 @@ const pl: UiCopy = {
     kicker: 'Newsletter', heading: 'Bądź na bieżąco',
     lede: 'Nowe warsztaty, nowi prowadzący i berlińskie polecajki, o których warto wiedzieć — prosto na Twoją skrzynkę. Bez spamu, rezygnacja w każdej chwili.',
     label: 'Adres e-mail', placeholder: 'ty@email.com', button: 'Zapisz się',
+    thanks: 'Gotowe! Nasz kolejny e-mail już wkrótce.', error: 'Nie udało się. Spróbuj ponownie.',
   },
   teaser: {
     kicker: 'Dziś w Berlinie',
@@ -1066,6 +1073,7 @@ const tr: UiCopy = {
     kicker: 'Bülten', heading: 'Haberdar olun',
     lede: 'Yeni atölyeler, yeni eğitmenler ve Berlin’den kaçırılmayacak öneriler — doğrudan gelen kutunuza. Spam yok, istediğiniz zaman ayrılın.',
     label: 'E-posta adresi', placeholder: 'siz@email.com', button: 'Abone ol',
+    thanks: 'Listedesiniz! Bir sonraki e-postamız yakında geliyor.', error: 'Gönderilemedi. Lütfen tekrar deneyin.',
   },
   teaser: {
     kicker: 'Bugün Berlin’de',
