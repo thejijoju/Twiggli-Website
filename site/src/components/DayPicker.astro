@@ -8,6 +8,7 @@ import { mapCopy } from '../data/mapCopy.ts';
 import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { almostFullLabel } from '../data/availability.ts';
+import Going from './Going.astro';
 
 /** The schedule feed, styled after the app's search screen: the borderless
  *  day strip right at the top, one row of activity pills under it (the only
@@ -334,6 +335,7 @@ const formatDeadline = (iso: string): string => {
                               date they run, in one place — where the title
                               beside it leads to the booking. */}
                           <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.name}</a> · {s.district}</span>
+                          <Going n={s.going} lang={lang} />
                           {/* The one thing that decides this workshop for
                               somebody — under the picture rather than on it,
                               where the time chip and the spots badge already

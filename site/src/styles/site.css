@@ -4452,3 +4452,43 @@ h1, h2, h3, h4,
 .session-availbadge.session-almostfull,
 .session-spots.session-almostfull,
 .date-almostfull { color: #b45309; }
+
+/* "Who's going" (Going.astro): a short stack of soft faces, overlapping,
+   then the count. */
+.going { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.going-faces { display: inline-flex; }
+.going-face {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: inline-grid;
+  place-items: center;
+  color: var(--color-text);
+  position: relative;
+}
+.going-face + .going-face { margin-left: -9px; }
+.going-face svg { width: 16px; height: 16px; opacity: 0.75; }
+.going-face-1 { background: linear-gradient(140deg, #c7b8ff, #6a3eec); z-index: 4; }
+.going-face-2 { background: linear-gradient(140deg, #ffd2b8, #ff8a65); z-index: 3; }
+.going-face-3 { background: linear-gradient(140deg, #b8f0e0, #3fbf9a); z-index: 2; }
+.going-face-4 { background: linear-gradient(140deg, #ffe9a8, #f4b740); z-index: 1; }
+.going-more { background: #ece9f6; color: var(--color-accent-700); font-size: 11px; font-weight: 600; }
+.going-text { font-size: 13.5px; font-weight: 500; color: var(--color-text); }
+
+/* List view on a phone: three columns left the title a sliver once the
+   button said "Booking request", so price, button and share move onto a
+   line of their own under the title, beside the picture. */
+@media (max-width: 720px) {
+  .daypicker[data-view='list'] .daygroup .session {
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+  }
+  .daypicker[data-view='list'] .daygroup .session-thumb { grid-row: span 2; }
+  .daypicker[data-view='list'] .daygroup .session-side {
+    grid-column: 2;
+    justify-items: start;
+    justify-content: start;
+    margin-top: 6px;
+  }
+}

@@ -68,6 +68,9 @@ export type Session = {
   /** Close to full, where the host has told us so (availability.ts) —
    *  the card says "Almost full" in place of a count of places. */
   almostFull?: boolean;
+  /** How many are confirmed for it (availability.ts); the card shows a row
+   *  of faces and the number from GOING_MIN upward. */
+  going?: number;
   /** The one thing that sells this workshop, in two or three words — see
    *  workshopUsps in content.ts. Absent for most. */
   usp?: string;
@@ -330,7 +333,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut ? { soldOut: true } : {}),
       ...(w.waitingList ? { waitingList: true } : {}),
-      ...(!w.soldOut && availabilityNotes[`${w.slug}|${w.date}|${w.time}`] === 'almostFull' ? { almostFull: true } : {}),
+      ...(!w.soldOut && availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.almostFull ? { almostFull: true } : {}),
+      ...(availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going } : {}),
       ...(usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
   }

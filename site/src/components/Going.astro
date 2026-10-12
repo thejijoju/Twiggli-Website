@@ -1,0 +1,34 @@
+---
+/**
+ * "Who's going" under a calendar card's host line: up to four faces, a
+ * "+N" for the rest, and the count — only for a number we know is
+ * confirmed (availability.ts) and from GOING_MIN upward. The faces stand
+ * for nobody in particular: we have neither photos nor anyone's consent to
+ * show them, so no names and no pictures, just the count made friendly.
+ */
+import { GOING_MIN, goingLabel } from '../data/availability.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props { n?: number; lang: Lang }
+const { n, lang } = Astro.props;
+const SHOWN = 4;
+const faces = Math.min(n ?? 0, SHOWN);
+---
+
+{n && n >= GOING_MIN && (
+  <span class="going">
+    <span class="going-faces" aria-hidden="true">
+      {Array.from({ length: faces }, (_, i) => (
+        <span class={`going-face going-face-${i + 1}`}>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <circle cx="5.3" cy="6.2" r=".6" fill="currentColor" />
+            <circle cx="10.7" cy="6.2" r=".6" fill="currentColor" />
+            <path d="M5 9.6q3 2.4 6 0" />
+          </svg>
+        </span>
+      ))}
+      {n > SHOWN && <span class="going-face going-more">+{n - SHOWN}</span>}
+    </span>
+    <span class="going-text">{goingLabel[lang](n)}</span>
+  </span>
+)}
