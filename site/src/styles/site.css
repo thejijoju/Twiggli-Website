@@ -4590,3 +4590,27 @@ h1, h2, h3, h4,
   .daypicker[data-view='list'] .promo-media { width: 96px; }
   .daypicker[data-view='list'] .promo-blurb { display: none; }
 }
+
+/* A description shown as three lines fading out; a tap opens it in full
+   (lib/fadetext.ts). Only with scripts on (.fade-text gets its height cap
+   from the script's own class), so nobody is left with half a text. */
+.fade-text { position: relative; }
+.fade-text[data-fade-ready]:not(.is-short):not(.is-open) {
+  max-height: calc(1.6em * 3);
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+}
+.fade-text[data-fade] > p { line-height: 1.6; margin: 0; }
+.fade-text.is-open { cursor: pointer; }
+.fade-text:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; border-radius: 4px; }
+/* The host's Instagram, small and grey under the text. */
+.host-insta {
+  display: inline-flex;
+  margin: 14px 0 4px;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease;
+}
+.host-insta:hover { color: var(--color-accent-700); }
+.host-insta svg { width: 22px; height: 22px; }

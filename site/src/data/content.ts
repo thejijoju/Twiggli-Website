@@ -147,6 +147,8 @@ export type Host = {
    *  studio or gives a street address; `onSite` marks a host who also comes
    *  to the team, which the card adds in the reader's language. */
   area?: string;
+  /** The host's Instagram handle, where they want it shown (instagrams). */
+  instagram?: string;
   onSite?: boolean;
 };
 
@@ -1472,6 +1474,12 @@ const firstNames: Record<string, string> = {
  *  on Host. Only hosts whose `place` names a venue or a street are here; the
  *  rest already say no more than a district. Taken from the districts the
  *  schedule scraper files each host under. `onSite` hosts also travel. */
+/** Instagram handles shown as a small icon under a host's description —
+ *  only where the host has asked for it. */
+const instagrams: Record<string, string> = {
+  qian: 'claygarden.berlin',
+};
+
 const areas: Record<string, { area: string; onSite?: boolean }> = {
   qian: { area: 'Prenzlauer Berg', onSite: true }, celina: { area: 'Gesundbrunnen' },
   evelyn: { area: 'Friedrichshain', onSite: true }, violaine: { area: 'Neukölln' },
@@ -1526,6 +1534,7 @@ export const getHosts = (lang: Lang): Host[] =>
       ...facets[h.slug],
       ...(firstNames[h.slug] ? { firstName: firstNames[h.slug] } : {}),
       ...(areas[h.slug] ?? {}),
+      ...(instagrams[h.slug] ? { instagram: instagrams[h.slug] } : {}),
       id: i + 1,
       ...(photo ? { photo } : {}),
       ...(wide ? { wide } : {}),

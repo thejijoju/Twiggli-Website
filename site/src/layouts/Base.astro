@@ -152,6 +152,11 @@ const available = alternates.map((a) => a.lang);
       startOutboundTracking();
     </script>
     <script>
+      // Descriptions that fade out and open on a tap (lib/fadetext.ts).
+      import { startFadeText } from '../lib/fadetext.ts';
+      startFadeText();
+    </script>
+    <script>
       // Cards already opened read fainter (lib/seen.ts).
       import { startSeen } from '../lib/seen.ts';
       startSeen();

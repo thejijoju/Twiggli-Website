@@ -143,7 +143,12 @@ const searchText = (host: Host) => [
         <p class="qv-kicker">{priceCopy.activities[host.activity]} · {districtFor(host)}</p>
         <h2 class="qv-title">{host.specialty}</h2>
         {host.firstName && <p class="qv-who">{host.firstName}</p>}
-        <p class="qv-blurb">{host.blurb}</p>
+        <div class="fade-text" data-fade><p class="qv-blurb">{host.blurb}</p></div>
+        {host.instagram && (
+          <a class="host-insta" href={`https://www.instagram.com/${host.instagram}/`} target="_blank" rel="noopener" aria-label={`Instagram @${host.instagram}`} title={`@${host.instagram}`}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" /></svg>
+          </a>
+        )}
         <dl class="maker-meta">
           <div><dt>{labels.group}</dt><dd>{host.group}</dd></div>
           <div><dt>{labels.duration}</dt><dd>{host.duration}</dd></div>
