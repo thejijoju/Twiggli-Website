@@ -2631,7 +2631,8 @@
       "date": "2026-10-18",
       "time": "13:00",
       "url": "https://www.claygarden.studio/special-workshops",
-      "district": "Prenzlauer Berg"
+      "district": "Prenzlauer Berg",
+      "price": "€85"
     },
     {
       "slug": "galleria-lucia",
@@ -2731,15 +2732,6 @@
       "district": "Prenzlauer Berg"
     },
     {
-      "slug": "qian",
-      "sourceUrl": "https://www.claygarden.studio/special-workshops",
-      "title": "Tea & Pottery Workshop",
-      "date": "2026-10-19",
-      "time": "13:00",
-      "url": "https://www.claygarden.studio/special-workshops",
-      "district": "Prenzlauer Berg"
-    },
-    {
       "slug": "drawingwalks",
       "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
       "title": "Draw Berlin: Prenzlauer Berg",
@@ -2778,15 +2770,6 @@
       "district": "Blankenburg",
       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg",
       "kids": true
-    },
-    {
-      "slug": "qian",
-      "sourceUrl": "https://www.claygarden.studio/special-workshops",
-      "title": "Tea & Pottery Workshop",
-      "date": "2026-10-20",
-      "time": "13:00",
-      "url": "https://www.claygarden.studio/special-workshops",
-      "district": "Prenzlauer Berg"
     },
     {
       "slug": "galleria-lucia",

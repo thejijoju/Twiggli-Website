@@ -161,7 +161,7 @@ const SOURCES = [
     district: 'Prenzlauer Berg' },
   { slug: 'qian', name: 'Qian — Clay Garden special workshops', mode: 'dates-de',
     url: 'https://www.claygarden.studio/special-workshops',
-    title: 'Tea & Pottery Workshop', district: 'Prenzlauer Berg' },
+    title: 'Tea & Pottery Workshop', price: '€85', weekdays: [0], district: 'Prenzlauer Berg' },
   // Weekly-recurring German schedule ("Dienstags I 18 - 20 Uhr I …"); the
   // parser emits `recurring` entries the site expands into dated sessions.
   { slug: 'nina', name: 'Nina Kranz — Kurse', url: 'https://www.ninakranzart.com/privat-freizeit', mode: 'recurring-de' },
@@ -3697,6 +3697,10 @@ function fromGermanDates(html, source) {
     const day = m[1] ?? m[4];
     const month = MONTHS[(m[2] ?? m[3]).toLowerCase()];
     const date = `${m[5]}-${month}-${day.padStart(2, '0')}`;
+    // A booking calendar writes out every day of the month it shows, and the
+    // single "13:00" slot sits next to all of them. When the host only runs
+    // on certain weekdays, a date on any other day is the calendar grid.
+    if (source.weekdays && !source.weekdays.includes(new Date(`${date}T12:00:00Z`).getUTCDay())) continue;
     const beforeCtx = text.slice(Math.max(0, m.index - 80), m.index);
     const afterCtx = text.slice(m.index + m[0].length, m.index + m[0].length + 160);
     const around = `${beforeCtx} § ${afterCtx}`;
