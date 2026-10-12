@@ -122,8 +122,8 @@ const c = bookingCopy[lang];
       picked = { ...el.dataset };
       const kind = picked.book || 'book';
       if (heading) heading.textContent = copy[kind] ?? copy.book;
-      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : copy.lede;
-      if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify';
+      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : copy.lede;
+      if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat';
       // A group says how many; the host's range is the hint.
       if (people) {
         people.value = kind === 'group' ? '' : people.value || '1';
@@ -161,7 +161,7 @@ const c = bookingCopy[lang];
       const data = new FormData(form);
       if (data.get('_honey')) return;
       const kind = picked.book || 'book';
-      const label = kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : 'Booking request';
+      const label = kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : 'Booking request';
       const wish = String(data.get('when') ?? '');
       const fields: Record<string, string> = {
         Type: label,

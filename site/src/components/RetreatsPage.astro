@@ -37,7 +37,7 @@ const upcoming = retreats.filter((r) => r.end >= today).sort((a, b) => a.start.l
         <a class="rt-feature" href={href(lang, `/retreats/${r.slug}/`)}>
           <div class="rt-feature-media">
             <img src={r.hero} alt={r.title[lang]} loading="eager" decoding="async" />
-            <span class="rt-date-chip">{range(r.start, r.end)}</span>
+            <span class="rt-date-chip">{r.whenLabel?.[lang] ?? range(r.start, r.end)}</span>
           </div>
           <div>
             <span class="rt-eyebrow">{r.town} · {r.kicker[lang]}</span>

@@ -1,7 +1,8 @@
 ---
-/** One retreat, laid out to be read slowly: the photograph first, the facts
- *  in a single line under it, then the story, the days, the practice, the
- *  house and a request that goes through our own contact form. */
+/** One retreat, laid out to be read slowly: the photograph first (or
+ *  several, cross-fading), the facts in a single line under it, then the
+ *  story, the days, the practice, the house and "Request information",
+ *  which opens our booking form on the page (BookingDialog.astro). */
 import Base from '../layouts/Base.astro';
 import { retreatsCopy, type Retreat } from '../data/retreats.ts';
 import { href, LANG_META, type Lang } from '../lib/url.ts';
@@ -11,9 +12,13 @@ interface Props { lang: Lang; retreat: Retreat }
 const { lang, retreat: r } = Astro.props;
 const t = retreatsCopy[lang];
 const locale = LANG_META[lang].locale;
-const when = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
-  .formatRange(new Date(`${r.start}T12:00:00Z`), new Date(`${r.end}T12:00:00Z`));
+const when = r.whenLabel?.[lang]
+  ?? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .formatRange(new Date(`${r.start}T12:00:00Z`), new Date(`${r.end}T12:00:00Z`));
+// Without scripts the button still reaches the contact form, retreat named.
 const request = `${href(lang, '/contact/')}?retreat=${encodeURIComponent(r.enquiry[lang])}`;
+const title = (k: 'weekend' | 'practice' | 'place' | 'bring' | 'provided') => r.titles?.[k]?.[lang] ?? t[k];
+const slides = r.slides?.length ? r.slides : [r.hero];
 const pageUrl = new URL(href(lang, `/retreats/${r.slug}/`), Astro.site ?? Astro.url.origin).href;
 const origin = Astro.site ?? Astro.url.origin;
 
@@ -32,7 +37,7 @@ const schema = {
   location: {
     '@type': 'Place',
     name: r.town,
-    address: { '@type': 'PostalAddress', addressLocality: r.town, addressCountry: 'DE' },
+    address: { '@type': 'PostalAddress', addressLocality: r.town, addressCountry: r.country ?? 'DE' },
   },
   performer: { '@type': 'Person', name: r.teacher },
   organizer: { '@type': 'Organization', name: 'Twiggli', url: new URL(href(lang, '/'), origin).href },
@@ -47,11 +52,15 @@ const schema = {
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap"
     />
-    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    {/* Only with fixed days: an event listing needs real dates. */}
+    {!r.whenLabel && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
   </Fragment>
   <div class="retreat-page">
-    <section class="rt-hero">
-      <img src={r.hero} alt={r.title[lang]} fetchpriority="high" decoding="async" />
+    <section class="rt-hero" data-rt-slides={slides.length > 1 ? '' : undefined}>
+      {slides.map((src, i) => (
+        <img class={`rt-slide${i === 0 ? ' is-on' : ''}`} src={src} alt={i === 0 ? r.title[lang] : ''}
+          fetchpriority={i === 0 ? 'high' : undefined} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+      ))}
       <div class="rt-hero-text">
         <span class="rt-eyebrow">{r.kicker[lang]}</span>
         <h1>{r.title[lang]}</h1>
@@ -90,7 +99,7 @@ const schema = {
     <div class="rt-wrap">
       <section class="rt-section">
         <span class="rt-eyebrow">{t.labels.dates}</span>
-        <h2 class="rt-h2">{t.weekend}</h2>
+        <h2 class="rt-h2">{title('weekend')}</h2>
         <div class="rt-days">
           {r.days.map((d) => (
             <article class="rt-day">
@@ -104,7 +113,7 @@ const schema = {
 
       <section class="rt-section">
         <span class="rt-eyebrow">{r.teacher}</span>
-        <h2 class="rt-h2">{t.practice}</h2>
+        <h2 class="rt-h2">{title('practice')}</h2>
         <ol class="rt-practice">
           {r.practice[lang].map((item, i) => (
             <li><span>{String(i + 1).padStart(2, '0')}</span>{item}</li>
@@ -114,7 +123,7 @@ const schema = {
 
       <section class="rt-section">
         <span class="rt-eyebrow">{r.town}</span>
-        <h2 class="rt-h2">{t.place}</h2>
+        <h2 class="rt-h2">{title('place')}</h2>
         <p class="rt-house">{r.house[lang]}</p>
         <div class="rt-gallery">
           {r.gallery.map((g) => (
@@ -126,8 +135,8 @@ const schema = {
       <section class="rt-section">
         <h2 class="rt-h2">{t.goodToKnow}</h2>
         <div class="rt-know">
-          <div><h3>{t.bring}</h3><p>{r.bring[lang]}</p></div>
-          <div><h3>{t.provided}</h3><p>{r.provided[lang]}</p></div>
+          <div><h3>{title('bring')}</h3><p>{r.bring[lang]}</p></div>
+          <div><h3>{title('provided')}</h3><p>{r.provided[lang]}</p></div>
         </div>
       </section>
     </div>
@@ -136,7 +145,24 @@ const schema = {
       <span class="rt-eyebrow">{when} · {r.town}</span>
       <h2>{t.ctaTitle}</h2>
       <p>{t.ctaNote}</p>
-      <a class="rt-button" href={request}>{t.cta}</a>
+      <a class="rt-button" href={request} data-book="retreat" data-book-title={r.title[lang]}
+        data-book-host={r.teacher} data-book-time={when} data-book-price={r.contribution[lang]}>{t.cta}</a>
     </section>
   </div>
 </Base>
+
+<script>
+  // The opening photographs take turns, one every six seconds, each
+  // fading in over the last while it drifts a little closer. Left on the
+  // first for anyone who prefers less motion.
+  const hero = document.querySelector<HTMLElement>('[data-rt-slides]');
+  if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const slides = Array.from(hero.querySelectorAll<HTMLImageElement>('.rt-slide'));
+    let on = 0;
+    setInterval(() => {
+      slides[on].classList.remove('is-on');
+      on = (on + 1) % slides.length;
+      slides[on].classList.add('is-on');
+    }, 6000);
+  }
+</script>

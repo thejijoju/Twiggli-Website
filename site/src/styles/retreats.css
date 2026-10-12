@@ -404,3 +404,18 @@
   .rt-day { padding: 28px 24px 30px; }
   .rt-practice li { grid-template-columns: 48px minmax(0, 1fr); }
 }
+
+/* Several opening photographs (Retreat.slides): stacked, one shown at a
+   time, each fading in over two seconds while it drifts slowly closer. */
+.rt-hero .rt-slide {
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 2s ease, transform 8s ease-out;
+}
+.rt-hero .rt-slide.is-on {
+  opacity: 1;
+  transform: scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-hero .rt-slide { transition: none; transform: none; }
+}
