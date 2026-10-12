@@ -3,6 +3,7 @@ import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { requestEmail, getSiteData } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
 
 interface Props {
   lang?: Lang;
@@ -14,6 +15,8 @@ const { lang = DEFAULT_LANG, compact = false } = Astro.props;
 const copy = ui(lang).newsletter;
 const id = compact ? 'newsletter-email-footer' : 'newsletter-email';
 const privacy = getSiteData(lang).legalLinks[1];
+// Stills from scripts/mail-crops.sh, one per craft, in caption order.
+const PICS = ['qian', 'ceramic-kingdom', 'galleria-lucia-dipdye', 'jem-sushi', 'techno', 'karen-rose-duftkerzen'];
 
 /* Signups go through FormSubmit to our inbox, the same route as the
    booking form (BookingDialog.astro), one email per address with the
@@ -34,9 +37,15 @@ const privacy = getSiteData(lang).legalLinks[1];
   </div>
 ) : (
   <section class="newsletter">
-    {/* Slow pools of the logo's colours on white — the frosted header's
-        feel, held still for anyone who prefers less motion. */}
-    <div class="newsletter-wash" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    {/* A row of polaroids from real workshops, captioned by hand. */}
+    <div class="newsletter-pics" aria-hidden="true">
+      {PICS.map((name, i) => (
+        <figure class="newsletter-pic">
+          <img src={withBase(`/img/mail/${name}.jpg`)} alt="" loading="lazy" decoding="async" width="560" height="420" />
+          <figcaption>{copy.pics[i]}</figcaption>
+        </figure>
+      ))}
+    </div>
     <div class="newsletter-inner">
       <h2 class="newsletter-title">{copy.heading}</h2>
       <svg class="newsletter-squiggle" viewBox="0 0 220 14" aria-hidden="true">

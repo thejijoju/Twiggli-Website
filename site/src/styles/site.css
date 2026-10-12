@@ -911,31 +911,47 @@ a:hover { color: var(--color-accent); }
   border: 0;
 }
 
-/* — newsletter — the home page's signup: centred on a soft, slowly moving
-   wash of the logo's colours, with a handwritten question as the headline
-   (Caveat) and a squiggle of the logo gradient under it. */
+/* — newsletter — the home page's signup: a cream box with a row of
+   polaroids from real workshops, each captioned by hand, over a
+   handwritten question (Caveat) and a squiggle of the logo gradient. */
 .newsletter {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
   margin: 24px 0 72px;
-  padding: 72px 24px 64px;
+  padding: 48px 24px 56px;
   border-radius: 32px;
-  background: #fff;
+  background: #fffaf5;
   text-align: center;
 }
-.newsletter-wash { position: absolute; inset: -25%; z-index: -1; filter: blur(48px); pointer-events: none; }
-.newsletter-wash i { position: absolute; width: 40%; height: 46%; border-radius: 50%; animation: nl-drift 24s ease-in-out infinite alternate; }
-.newsletter-wash i:nth-child(1) { left: 4%; top: 6%; background: rgba(255, 138, 92, 0.30); }
-.newsletter-wash i:nth-child(2) { right: 4%; top: 4%; background: rgba(230, 74, 180, 0.18); animation-duration: 29s; animation-delay: -7s; }
-.newsletter-wash i:nth-child(3) { right: 6%; bottom: 4%; background: rgba(124, 77, 255, 0.16); animation-duration: 33s; animation-delay: -13s; }
-.newsletter-wash i:nth-child(4) { left: 6%; bottom: 4%; background: rgba(255, 214, 64, 0.32); animation-duration: 27s; animation-delay: -4s; }
-@keyframes nl-drift {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(10%, 7%) scale(1.1); }
-  100% { transform: translate(-8%, 10%) scale(0.95); }
+.newsletter-pics { display: flex; justify-content: center; gap: 14px; margin: 0 0 36px; }
+.newsletter-pic {
+  flex: none;
+  width: 132px;
+  margin: 0;
+  padding: 7px 7px 0;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 26px rgba(36, 39, 46, 0.13);
 }
-@media (prefers-reduced-motion: reduce) { .newsletter-wash i { animation: none; } }
+.newsletter-pic:nth-child(odd) { transform: translateY(10px) rotate(-3deg); }
+.newsletter-pic:nth-child(even) { transform: rotate(2.5deg); }
+.newsletter-pic:nth-child(3) { transform: translateY(4px) rotate(-1deg); }
+.newsletter-pic img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 3px; }
+.newsletter-pic figcaption {
+  padding: 5px 2px 7px;
+  font: 600 18px/1.1 'Caveat', cursive;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 760px) {
+  .newsletter-pic:nth-child(n + 5) { display: none; }
+}
+@media (max-width: 520px) {
+  .newsletter-pics { gap: 10px; margin-bottom: 28px; }
+  .newsletter-pic { width: 30%; padding: 5px 5px 0; }
+  .newsletter-pic:nth-child(n + 4) { display: none; }
+  .newsletter-pic figcaption { font-size: 15px; padding: 4px 1px 5px; }
+}
 .newsletter-inner { max-width: 560px; margin: 0 auto; }
 .newsletter-title {
   margin: 0;
