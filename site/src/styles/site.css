@@ -4528,3 +4528,65 @@ h1, h2, h3, h4,
   8%, 85% { opacity: 1; transform: translate(-50%, 0); }
   100% { opacity: 0; }
 }
+
+/* A studio's membership tile in the calendar (memberships.ts): the deep
+   purple marks it as an offer rather than a dated workshop. A card in the
+   grid, a row in the list. */
+.promo { list-style: none; }
+.promo[hidden] { display: none; }
+.promo-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #292352 0%, var(--color-accent-deep) 100%);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.promo-card:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(41, 35, 82, 0.28); }
+.promo-media { position: relative; display: block; aspect-ratio: 5 / 3; overflow: hidden; }
+/* Out of flow, so a portrait picture fills the frame instead of setting it. */
+.promo-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-kicker {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-accent-deep);
+  font-size: 12px;
+  font-weight: 600;
+}
+.promo-body { display: flex; flex-direction: column; gap: 6px; flex: 1; padding: 14px 16px 16px; }
+.promo-title { font-size: 19px; font-weight: 600; line-height: 1.25; }
+.promo-host { font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+.promo-blurb { font-size: 14px; line-height: 1.5; color: rgba(255, 255, 255, 0.9); }
+.promo-foot { margin-top: auto; padding-top: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.promo-price { font-size: 16px; font-weight: 600; white-space: nowrap; }
+.promo-price small { font-size: 13px; font-weight: 400; opacity: 0.75; }
+.promo-cta {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* Grid: first in its time group. */
+.daypicker[data-view='grid'] .daysessions .promo { order: -1; }
+/* List: picture on the left like the rows around it. */
+.daypicker[data-view='list'] .promo-card { flex-direction: row; align-items: stretch; }
+.daypicker[data-view='list'] .promo-media { flex: none; width: 172px; aspect-ratio: auto; }
+@media (max-width: 720px) {
+  .daypicker[data-view='list'] .promo-media { width: 96px; }
+  .daypicker[data-view='list'] .promo-blurb { display: none; }
+}

@@ -9,6 +9,7 @@ import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { almostFullLabel, spotsText } from '../data/availability.ts';
 import Going from './Going.astro';
+import { membershipCopy, membershipPromos } from '../data/memberships.ts';
 import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
 
 /** The schedule feed, styled after the app's search screen: the borderless
@@ -137,6 +138,18 @@ const showPrice = (price?: string) =>
   price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price;
 /** Full with a waiting list is a different answer to "can I come?" than full
  *  full, so it gets its own word. */
+/* A studio's membership tile (memberships.ts) goes before the host's
+   first card of the day, once per day. */
+const promoted = new Set<string>();
+const promosIn = (offset: number, list: Session[]): Session[] =>
+  list.filter((s) => {
+    const key = `${offset}|${s.host.slug}`;
+    if (!membershipPromos[s.host.slug] || promoted.has(key)) return false;
+    promoted.add(key);
+    return true;
+  });
+const mc = membershipCopy[lang];
+
 const fullLabel = (s: { waitingList?: boolean }) => (s.waitingList ? t.waitingList : t.soldOut);
 const formatDeadline = (iso: string): string => {
   const d = new Date(iso);
@@ -268,8 +281,32 @@ const formatDeadline = (iso: string): string => {
                       : time || t.timeTba}
                   </h3>
                   <ul class="session-list">
+                    {promosIn(offset, list).map((s) => {
+                      const m = membershipPromos[s.host.slug];
+                      const price = `${mc.from(m.from)} ${m.per === 'hour' ? mc.hour : mc.month}`;
+                      return (
+                        <li class="promo" data-promo-host={s.host.slug} data-seen={`m:${s.host.slug}`}>
+                          <button type="button" class="promo-card" data-book="membership"
+                            data-book-title={`${mc.formTitle} · ${m.studio}`} data-book-host={s.host.name} data-book-price={price}>
+                            <span class="promo-media">
+                              <img src={s.host.poster ?? m.image} alt="" loading="lazy" decoding="async" />
+                              <span class="promo-kicker">{mc.kicker}</span>
+                            </span>
+                            <span class="promo-body">
+                              <span class="promo-title">{mc.title}</span>
+                              <span class="promo-host">{m.studio} · {districtOf(s)}</span>
+                              <span class="promo-blurb">{mc.blurb}</span>
+                              <span class="promo-foot">
+                                <span class="promo-price">{mc.from(m.from)} <small>{m.per === 'hour' ? mc.hour : mc.month}</small></span>
+                                <span class="promo-cta">{mc.cta}</span>
+                              </span>
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
                     {list.map((s) => (
-                      <li class="session" id={s.id} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
@@ -608,6 +645,10 @@ const formatDeadline = (iso: string): string => {
         /* Only the day on show counts — every other day is in the page too,
            and counting those would promise workshops that are not there. */
         if (!li.hidden && li.closest('[data-day]:not([hidden])')) shown++;
+      });
+      // A membership tile goes with its host's cards: shown while one is.
+      root.querySelectorAll<HTMLElement>('.promo').forEach((promo) => {
+        promo.hidden = !promo.parentElement?.querySelector(`.session[data-host="${promo.dataset.promoHost}"]:not([hidden])`);
       });
       root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
         group.hidden = !group.querySelector('.session:not([hidden])');
