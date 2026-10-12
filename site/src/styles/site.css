@@ -911,9 +911,10 @@ a:hover { color: var(--color-accent); }
   border: 0;
 }
 
-/* — newsletter — the home page's signup: a cream box with a row of
-   polaroids from real workshops, each captioned by hand, over a
-   handwritten question (Caveat) and a squiggle of the logo gradient. */
+/* — newsletter — the home page's signup: a cream box with a row of real
+   workshop photos lying flat on it — rounded cards, and here and there one
+   on torn paper taped down at its top-left and bottom-right corners — over
+   a handwritten question (Caveat) and a squiggle of the logo gradient. */
 .newsletter {
   margin: 24px 0 72px;
   padding: 48px 24px 56px;
@@ -921,36 +922,75 @@ a:hover { color: var(--color-accent); }
   background: #fffaf5;
   text-align: center;
 }
-.newsletter-pics { display: flex; justify-content: center; gap: 14px; margin: 0 0 36px; }
-.newsletter-pic {
-  flex: none;
-  width: 132px;
-  margin: 0;
-  padding: 7px 7px 0;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 10px 26px rgba(36, 39, 46, 0.13);
+.newsletter-pics { display: flex; justify-content: center; align-items: center; gap: 18px; margin: 0 0 38px; }
+.newsletter-pic { position: relative; flex: none; width: 124px; margin: 0; }
+.newsletter-pic:nth-child(odd) { transform: rotate(-2.5deg); }
+.newsletter-pic:nth-child(even) { transform: rotate(2deg); }
+.newsletter-pic:nth-child(3n) { transform: rotate(-1deg); }
+.newsletter-pic > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 16px;
+  /* Lying on the box, not hovering over it. */
+  box-shadow: 0 1px 2px rgba(36, 39, 46, 0.12), 0 2px 6px rgba(36, 39, 46, 0.06);
 }
-.newsletter-pic:nth-child(odd) { transform: translateY(10px) rotate(-3deg); }
-.newsletter-pic:nth-child(even) { transform: rotate(2.5deg); }
-.newsletter-pic:nth-child(3) { transform: translateY(4px) rotate(-1deg); }
-.newsletter-pic img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 3px; }
-.newsletter-pic figcaption {
-  padding: 5px 2px 7px;
+.newsletter-pic.is-card > img { aspect-ratio: 3 / 4; }
+/* Paper for the taped one and the stamp: rounded, flat, a hairline shadow. */
+.newsletter-paper {
+  padding: 7px 7px 0;
+  background: #fffdf8;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(36, 39, 46, 0.12), 0 2px 6px rgba(36, 39, 46, 0.05);
+}
+.newsletter-paper img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 9px; }
+.newsletter-paper figcaption {
+  padding: 5px 2px 8px;
   font: 600 18px/1.1 'Caveat', cursive;
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* The stamp: the same rounded paper, its edge perforated. */
+.newsletter-pic.is-stamp .newsletter-paper {
+  padding: 9px 9px 2px;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle 4px at 6px 6px, #0000 95%, #000) -6px -6px / 12px 12px round;
+  mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle 4px at 6px 6px, #0000 95%, #000) -6px -6px / 12px 12px round;
+}
+.newsletter-pic.is-stamp { filter: drop-shadow(0 1px 1.5px rgba(36, 39, 46, 0.2)); }
+/* Washi tape across the top-left and bottom-right corners, pressing the
+   paper down onto the box. */
+.newsletter-tape {
+  position: absolute;
+  width: 56px;
+  height: 18px;
+  opacity: 0.88;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0 5px, transparent 5px 10px),
+    var(--tape, #ffb38e);
+  clip-path: polygon(4% 0, 96% 6%, 100% 50%, 95% 100%, 3% 94%, 0 48%);
+}
+.newsletter-tape.is-tl { top: -2px; left: -18px; transform: rotate(-42deg); }
+.newsletter-tape.is-br { bottom: -2px; right: -18px; transform: rotate(-42deg); }
+.newsletter-pic:nth-child(5) .newsletter-tape { --tape: #f4a3d6; }
 @media (max-width: 760px) {
   .newsletter-pic:nth-child(n + 5) { display: none; }
 }
 @media (max-width: 520px) {
-  .newsletter-pics { gap: 10px; margin-bottom: 28px; }
-  .newsletter-pic { width: 30%; padding: 5px 5px 0; }
+  .newsletter-pics { gap: 14px; margin-bottom: 28px; }
+  .newsletter-pic { width: 28%; }
   .newsletter-pic:nth-child(n + 4) { display: none; }
-  .newsletter-pic figcaption { font-size: 15px; padding: 4px 1px 5px; }
+  .newsletter-paper figcaption { font-size: 15px; padding: 4px 1px 6px; }
+  .newsletter-tape { width: 42px; height: 14px; }
+  .newsletter-pic.is-stamp .newsletter-paper { padding: 8px 8px 1px; }
+  .newsletter-tape.is-tl { left: -14px; }
+  .newsletter-tape.is-br { right: -14px; }
 }
 .newsletter-inner { max-width: 560px; margin: 0 auto; }
 .newsletter-title {

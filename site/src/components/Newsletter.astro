@@ -17,6 +17,8 @@ const id = compact ? 'newsletter-email-footer' : 'newsletter-email';
 const privacy = getSiteData(lang).legalLinks[1];
 // Stills from scripts/mail-crops.sh, one per craft, in caption order.
 const PICS = ['qian', 'ceramic-kingdom', 'galleria-lucia-dipdye', 'jem-sushi', 'techno', 'karen-rose-duftkerzen'];
+// How each one is kept, in turn — so the three a phone shows are one of each.
+const KINDS = ['card', 'taped', 'stamp'] as const;
 
 /* Signups go through FormSubmit to our inbox, the same route as the
    booking form (BookingDialog.astro), one email per address with the
@@ -37,14 +39,22 @@ const PICS = ['qian', 'ceramic-kingdom', 'galleria-lucia-dipdye', 'jem-sushi', '
   </div>
 ) : (
   <section class="newsletter">
-    {/* A row of polaroids from real workshops, captioned by hand. */}
+    {/* Real workshop photos lying flat on the box, each kept a little
+        differently: a plain rounded card, one taped down at two corners,
+        one as a postage stamp. */}
     <div class="newsletter-pics" aria-hidden="true">
-      {PICS.map((name, i) => (
-        <figure class="newsletter-pic">
-          <img src={withBase(`/img/mail/${name}.jpg`)} alt="" loading="lazy" decoding="async" width="560" height="420" />
-          <figcaption>{copy.pics[i]}</figcaption>
-        </figure>
-      ))}
+      {PICS.map((name, i) => {
+        const kind = KINDS[i % KINDS.length];
+        const img = <img src={withBase(`/img/mail/${name}.jpg`)} alt="" loading="lazy" decoding="async" width="560" height="420" />;
+        return kind === 'card' ? (
+          <figure class="newsletter-pic is-card">{img}</figure>
+        ) : (
+          <figure class={`newsletter-pic is-${kind}`}>
+            <div class="newsletter-paper">{img}<figcaption>{copy.pics[i]}</figcaption></div>
+            {kind === 'taped' && <><span class="newsletter-tape is-tl"></span><span class="newsletter-tape is-br"></span></>}
+          </figure>
+        );
+      })}
     </div>
     <div class="newsletter-inner">
       <h2 class="newsletter-title">{copy.heading}</h2>
