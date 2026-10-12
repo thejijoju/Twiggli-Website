@@ -11,6 +11,8 @@
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
+import { availabilityNotes } from './availability.ts';
+
 
 export type Session = {
   id: string;
@@ -63,6 +65,9 @@ export type Session = {
    *  "Waiting list" rather than "Sold out", because those are different
    *  answers to "can I come?". Only meaningful alongside soldOut. */
   waitingList?: boolean;
+  /** Close to full, where the host has told us so (availability.ts) —
+   *  the card says "Almost full" in place of a count of places. */
+  almostFull?: boolean;
   /** The one thing that sells this workshop, in two or three words — see
    *  workshopUsps in content.ts. Absent for most. */
   usp?: string;
@@ -325,6 +330,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut ? { soldOut: true } : {}),
       ...(w.waitingList ? { waitingList: true } : {}),
+      ...(!w.soldOut && availabilityNotes[`${w.slug}|${w.date}|${w.time}`] === 'almostFull' ? { almostFull: true } : {}),
       ...(usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
   }

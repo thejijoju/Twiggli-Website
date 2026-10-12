@@ -4445,3 +4445,10 @@ h1, h2, h3, h4,
   color: var(--color-text);
 }
 .maker-meta dt { padding-top: 0; }
+
+/* "Almost full", where a host has told us (availability.ts): the chip the
+   spots count wears, in the amber the sales-end line uses, so it reads as
+   a nudge rather than a warning. */
+.session-availbadge.session-almostfull,
+.session-spots.session-almostfull,
+.date-almostfull { color: #b45309; }

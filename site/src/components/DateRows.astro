@@ -6,6 +6,7 @@
 import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
+import { almostFullLabel } from '../data/availability.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -66,6 +67,9 @@ const bookAttrs = (s: Session) => ({
         )}
         {!s.soldOut && typeof s.spots === 'number' && (
           <span class="date-spots">{s.spots} {t.spots}</span>
+        )}
+        {!s.soldOut && typeof s.spots !== 'number' && s.almostFull && (
+          <span class="date-spots date-almostfull">{almostFullLabel[lang]}</span>
         )}
       </span>
     </li>
