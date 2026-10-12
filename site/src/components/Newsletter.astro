@@ -2,7 +2,7 @@
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
-import { requestEmail } from '../data/site.ts';
+import { requestEmail, getSiteData } from '../data/site.ts';
 
 interface Props {
   lang?: Lang;
@@ -13,6 +13,7 @@ const { lang = DEFAULT_LANG, compact = false } = Astro.props;
 
 const copy = ui(lang).newsletter;
 const id = compact ? 'newsletter-email-footer' : 'newsletter-email';
+const privacy = getSiteData(lang).legalLinks[1];
 
 /* Signups go through FormSubmit to our inbox, the same route as the
    booking form (BookingDialog.astro), one email per address with the
@@ -32,19 +33,26 @@ const id = compact ? 'newsletter-email-footer' : 'newsletter-email';
     <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
   </div>
 ) : (
-  <section class="section newsletter">
-    <span class="kicker kicker-tight">{copy.kicker}</span>
-    <h2 class="split-title">{copy.heading}</h2>
-    <p class="split-copy">{copy.lede}</p>
-    <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-lang={lang} novalidate>
-      <div class="field newsletter-field">
+  <section class="newsletter">
+    {/* Slow pools of the logo's colours on white — the frosted header's
+        feel, held still for anyone who prefers less motion. */}
+    <div class="newsletter-wash" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="newsletter-inner">
+      <h2 class="newsletter-title">{copy.heading}</h2>
+      <svg class="newsletter-squiggle" viewBox="0 0 220 14" aria-hidden="true">
+        <defs><linearGradient id="nl-ink" x1="0" x2="1"><stop offset="0" stop-color="#ff8a5c" /><stop offset=".5" stop-color="#e64ab4" /><stop offset="1" stop-color="#6a3eec" /></linearGradient></defs>
+        <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke="url(#nl-ink)" stroke-width="3.5" stroke-linecap="round" />
+      </svg>
+      <p class="newsletter-lede">{copy.lede}</p>
+      <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-lang={lang} novalidate>
         <label for={id} class="sr-only">{copy.label}</label>
         <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
-      </div>
-      <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
-    </form>
-    <p class="newsletter-note" data-newsletter-thanks hidden>{copy.thanks}</p>
-    <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
+        <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+      </form>
+      <p class="newsletter-note" data-newsletter-thanks hidden>{copy.thanks}</p>
+      <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
+      <p class="newsletter-consent">{copy.consent}{' '}<a href={privacy.href}>{privacy.label}</a></p>
+    </div>
   </section>
 )}
 

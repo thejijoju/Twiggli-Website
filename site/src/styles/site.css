@@ -911,22 +911,67 @@ a:hover { color: var(--color-accent); }
   border: 0;
 }
 
-/* — newsletter — */
+/* — newsletter — the home page's signup: centred on a soft, slowly moving
+   wash of the logo's colours, with a handwritten question as the headline
+   (Caveat) and a squiggle of the logo gradient under it. */
+.newsletter {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  margin: 24px 0 72px;
+  padding: 72px 24px 64px;
+  border-radius: 32px;
+  background: #fff;
+  text-align: center;
+}
+.newsletter-wash { position: absolute; inset: -25%; z-index: -1; filter: blur(48px); pointer-events: none; }
+.newsletter-wash i { position: absolute; width: 40%; height: 46%; border-radius: 50%; animation: nl-drift 24s ease-in-out infinite alternate; }
+.newsletter-wash i:nth-child(1) { left: 4%; top: 6%; background: rgba(255, 138, 92, 0.30); }
+.newsletter-wash i:nth-child(2) { right: 4%; top: 4%; background: rgba(230, 74, 180, 0.18); animation-duration: 29s; animation-delay: -7s; }
+.newsletter-wash i:nth-child(3) { right: 6%; bottom: 4%; background: rgba(124, 77, 255, 0.16); animation-duration: 33s; animation-delay: -13s; }
+.newsletter-wash i:nth-child(4) { left: 6%; bottom: 4%; background: rgba(255, 214, 64, 0.32); animation-duration: 27s; animation-delay: -4s; }
+@keyframes nl-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(10%, 7%) scale(1.1); }
+  100% { transform: translate(-8%, 10%) scale(0.95); }
+}
+@media (prefers-reduced-motion: reduce) { .newsletter-wash i { animation: none; } }
+.newsletter-inner { max-width: 560px; margin: 0 auto; }
+.newsletter-title {
+  margin: 0;
+  font-family: 'Caveat', 'Poppins', cursive;
+  font-weight: 600;
+  font-size: clamp(42px, 6vw, 64px);
+  line-height: 1.05;
+  letter-spacing: 0;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+.newsletter-squiggle { display: block; width: min(220px, 60%); height: 14px; margin: 6px auto 0; }
+.newsletter-lede { margin: 18px auto 0; max-width: 46ch; font-size: 17px; line-height: 1.6; color: var(--color-text-muted); }
 .newsletter-form {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 24px;
-  max-width: 480px;
+  gap: 10px;
+  margin: 28px auto 0;
+  max-width: 460px;
 }
-.newsletter-field { flex: 1; min-width: 200px; }
+.newsletter .newsletter-form .input { flex: 1; min-width: 0; }
+.newsletter .newsletter-form .btn { flex: none; }
 .newsletter .input {
-  padding: 12px 18px;
+  padding: 13px 20px;
   border-radius: 999px;
-  border: 1.5px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
-  background: #fff;
+  border: 1.5px solid color-mix(in srgb, var(--color-accent) 18%, transparent);
+  background: rgba(255, 255, 255, 0.9);
+  font: 400 16px/1.3 var(--font-body);
 }
 .newsletter .input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.newsletter-consent { margin: 14px 0 0; font-size: 13.5px; color: var(--color-text-muted); }
+.newsletter-consent a { color: inherit; text-underline-offset: 3px; }
+@media (max-width: 520px) {
+  .newsletter { padding: 56px 18px 48px; border-radius: 24px; }
+  .newsletter-form { flex-direction: column; }
+  .newsletter .newsletter-form .btn { justify-content: center; }
+}
 .newsletter-note { margin: 16px 0 0; font-weight: 700; color: var(--color-accent-700); }
 .newsletter-error { color: #b42318; font-weight: 400; }
 /* The footer's one-line signup, light on the black band. */

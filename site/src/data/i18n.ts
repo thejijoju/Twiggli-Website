@@ -32,9 +32,10 @@ const en = {
     necessary: 'Necessary only', acceptAll: 'Accept all',
   },
   newsletter: {
-    kicker: 'Newsletter', heading: 'Stay in the loop',
-    lede: 'New workshops, new hosts, and Berlin picks worth knowing about — straight to your inbox. No spam, unsubscribe anytime.',
+    kicker: 'Newsletter', heading: 'What will you make this week?',
+    lede: 'Once a week, the best workshops in Berlin for the days ahead, each with a short video. Come with friends or on your own.',
     label: 'Email address', placeholder: 'you@email.com', button: 'Subscribe',
+    consent: 'Once a week, no spam, unsubscribe anytime.',
     thanks: 'You’re on the list! Our next email is on its way soon.', error: 'That didn’t go through. Please try again.',
   },
   teaser: {
@@ -181,9 +182,10 @@ const de: UiCopy = {
     necessary: 'Nur Notwendige', acceptAll: 'Alle akzeptieren',
   },
   newsletter: {
-    kicker: 'Newsletter', heading: 'Bleib auf dem Laufenden',
-    lede: 'Neue Workshops, neue Gastgeber und Berlin-Tipps, die sich lohnen — direkt in dein Postfach. Kein Spam, jederzeit abbestellbar.',
+    kicker: 'Newsletter', heading: 'Was machst du diese Woche?',
+    lede: 'Einmal pro Woche die schönsten Workshops in Berlin für die kommenden Tage, jeder mit kurzem Video. Mit Freunden oder allein.',
     label: 'E-Mail-Adresse', placeholder: 'du@email.com', button: 'Abonnieren',
+    consent: 'Einmal pro Woche, kein Spam, jederzeit abbestellbar.',
     thanks: 'Du bist dabei! Unsere nächste E-Mail kommt bald.', error: 'Das hat nicht geklappt. Bitte versuch es noch einmal.',
   },
   teaser: {
@@ -328,9 +330,10 @@ const fr: UiCopy = {
     necessary: 'Nécessaires seulement', acceptAll: 'Tout accepter',
   },
   newsletter: {
-    kicker: 'Newsletter', heading: 'Restez informé',
-    lede: 'Nouveaux ateliers, nouveaux hôtes et bonnes adresses berlinoises — directement dans votre boîte mail. Pas de spam, désinscription à tout moment.',
+    kicker: 'Newsletter', heading: 'Que ferez-vous cette semaine ?',
+    lede: 'Une fois par semaine, les plus beaux ateliers de Berlin pour les jours à venir, chacun avec une courte vidéo. Entre amis ou en solo.',
     label: 'Adresse e-mail', placeholder: 'vous@email.com', button: 'S’abonner',
+    consent: 'Une fois par semaine, sans spam, désinscription à tout moment.',
     thanks: 'C’est fait ! Notre prochain e-mail arrive bientôt.', error: 'L’envoi a échoué. Merci de réessayer.',
   },
   teaser: {
@@ -475,9 +478,10 @@ const es: UiCopy = {
     necessary: 'Solo necesarias', acceptAll: 'Aceptar todas',
   },
   newsletter: {
-    kicker: 'Newsletter', heading: 'Mantente al día',
-    lede: 'Nuevos talleres, nuevos anfitriones y planes en Berlín que merecen la pena — directo a tu correo. Sin spam, date de baja cuando quieras.',
+    kicker: 'Newsletter', heading: '¿Qué vas a crear esta semana?',
+    lede: 'Una vez por semana, los mejores talleres de Berlín para los próximos días, cada uno con un vídeo corto. Con amigos o por tu cuenta.',
     label: 'Correo electrónico', placeholder: 'tu@email.com', button: 'Suscribirme',
+    consent: 'Una vez por semana, sin spam, date de baja cuando quieras.',
     thanks: '¡Ya estás dentro! Pronto te llega nuestro próximo email.', error: 'No se ha podido enviar. Inténtalo de nuevo.',
   },
   teaser: {
@@ -622,9 +626,10 @@ const it: UiCopy = {
     necessary: 'Solo necessari', acceptAll: 'Accetta tutti',
   },
   newsletter: {
-    kicker: 'Newsletter', heading: 'Resta aggiornato',
-    lede: 'Nuovi workshop, nuovi host e indirizzi berlinesi che valgono la pena — direttamente nella tua casella. Niente spam, disiscrizione quando vuoi.',
+    kicker: 'Newsletter', heading: 'Cosa crei questa settimana?',
+    lede: 'Una volta a settimana, i workshop più belli di Berlino per i prossimi giorni, ognuno con un breve video. Con gli amici o da soli.',
     label: 'Indirizzo e-mail', placeholder: 'tu@email.com', button: 'Iscriviti',
+    consent: 'Una volta a settimana, niente spam, disiscrizione quando vuoi.',
     thanks: 'Fatto! La nostra prossima email arriva presto.', error: 'Non è andata a buon fine. Riprova.',
   },
   teaser: {
@@ -769,9 +774,10 @@ const nl: UiCopy = {
     necessary: 'Alleen noodzakelijke', acceptAll: 'Alles accepteren',
   },
   newsletter: {
-    kicker: 'Nieuwsbrief', heading: 'Blijf op de hoogte',
-    lede: 'Nieuwe workshops, nieuwe hosts en Berlijnse tips die de moeite waard zijn — rechtstreeks in je inbox. Geen spam, altijd uit te schrijven.',
+    kicker: 'Nieuwsbrief', heading: 'Wat maak jij deze week?',
+    lede: 'Eén keer per week de mooiste workshops in Berlijn voor de komende dagen, elk met een korte video. Met vrienden of in je eentje.',
     label: 'E-mailadres', placeholder: 'jij@email.com', button: 'Inschrijven',
+    consent: 'Eén keer per week, geen spam, altijd af te melden.',
     thanks: 'Je staat op de lijst! Onze volgende mail komt eraan.', error: 'Dat is niet gelukt. Probeer het opnieuw.',
   },
   teaser: {
@@ -916,9 +922,10 @@ const pl: UiCopy = {
     necessary: 'Tylko niezbędne', acceptAll: 'Akceptuj wszystkie',
   },
   newsletter: {
-    kicker: 'Newsletter', heading: 'Bądź na bieżąco',
-    lede: 'Nowe warsztaty, nowi prowadzący i berlińskie polecajki, o których warto wiedzieć — prosto na Twoją skrzynkę. Bez spamu, rezygnacja w każdej chwili.',
+    kicker: 'Newsletter', heading: 'Co stworzysz w tym tygodniu?',
+    lede: 'Raz w tygodniu najlepsze warsztaty w Berlinie na najbliższe dni, każdy z krótkim filmem. Z przyjaciółmi albo solo.',
     label: 'Adres e-mail', placeholder: 'ty@email.com', button: 'Zapisz się',
+    consent: 'Raz w tygodniu, bez spamu, rezygnacja w każdej chwili.',
     thanks: 'Gotowe! Nasz kolejny e-mail już wkrótce.', error: 'Nie udało się. Spróbuj ponownie.',
   },
   teaser: {
@@ -1070,9 +1077,10 @@ const tr: UiCopy = {
     necessary: 'Yalnızca gerekli', acceptAll: 'Tümünü kabul et',
   },
   newsletter: {
-    kicker: 'Bülten', heading: 'Haberdar olun',
-    lede: 'Yeni atölyeler, yeni eğitmenler ve Berlin’den kaçırılmayacak öneriler — doğrudan gelen kutunuza. Spam yok, istediğiniz zaman ayrılın.',
+    kicker: 'Bülten', heading: 'Bu hafta ne yapacaksın?',
+    lede: 'Haftada bir, önümüzdeki günler için Berlin’in en güzel atölyeleri, her biri kısa bir videoyla. Arkadaşlarınla ya da tek başına.',
     label: 'E-posta adresi', placeholder: 'siz@email.com', button: 'Abone ol',
+    consent: 'Haftada bir, spam yok, istediğin zaman ayrıl.',
     thanks: 'Listedesiniz! Bir sonraki e-postamız yakında geliyor.', error: 'Gönderilemedi. Lütfen tekrar deneyin.',
   },
   teaser: {
