@@ -2136,20 +2136,24 @@ a:hover { color: var(--color-accent); }
 /* A host page's two buttons side by side: request, and follow. */
 .host-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .host-actions .maker-request { margin-top: 0; }
-/* Follow: the email field with its button inside, as one pill. */
-.host-follow { margin-top: 18px; max-width: 440px; }
-.host-follow-prompt { display: block; margin: 0 0 8px; font-size: 15px; font-weight: 600; color: var(--color-text); }
+/* Follow: the email field with its round button inside, as one pill —
+   type your email, tap Follow. */
+.host-follow { margin-top: 22px; max-width: 460px; }
+.host-follow-prompt { display: block; margin: 0 0 10px; font-size: 15px; font-weight: 600; color: var(--color-text); }
 .host-follow-field {
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px 5px 5px 18px; border-radius: 999px; background: #fff;
-  border: 1.5px solid color-mix(in srgb, #6a3eec 22%, transparent);
+  display: flex; align-items: center; gap: 8px;
+  height: 56px; padding: 6px 6px 6px 22px; border-radius: 999px;
+  background: #fff;
+  border: 2px solid rgba(124, 77, 255, 0.28);
+  box-shadow: 0 6px 20px rgba(84, 46, 188, 0.08);
 }
-.host-follow-field:focus-within { border-color: #6a3eec; box-shadow: 0 0 0 3px rgba(106, 62, 236, 0.15); }
-.host-follow-field input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--color-text); padding: 6px 0; }
+.host-follow-field:focus-within { border-color: #6a3eec; box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.14); }
+.host-follow-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--color-text); padding: 0; }
+.host-follow-field input::placeholder { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
 .host-follow-field button {
-  flex: none; border: 0; border-radius: 999px; padding: 10px 20px; cursor: pointer;
+  flex: none; height: 100%; border: 0; border-radius: 999px; padding: 0 26px; cursor: pointer;
   background: linear-gradient(135deg, #6a3eec, rgb(84, 46, 188)); color: #fff;
-  font-family: inherit; font-weight: 700; font-size: 14px;
+  font-family: inherit; font-weight: 700; font-size: 15px;
 }
 .host-follow-field button:hover { filter: brightness(1.08); }
 .host-follow-field button:disabled { opacity: 0.7; cursor: wait; }
@@ -4455,8 +4459,8 @@ html.map-locked { overflow: hidden; }
 
 /* — the booking form (BookingDialog.astro) — opens on the page from any
    Book, Request or Notify button, with the workshop already in it. */
-/* The pop-ups' palette, the LinkedIn Christmas banner's: cream with a
-   soft wash of peach, yellow, pink and violet — no grey. */
+/* Inside the pop-ups, the LinkedIn Christmas banner's palette: cream with
+   a soft wash of peach, yellow, pink and violet — no grey. */
 :root {
   --wash-peach: rgba(255, 138, 92, 0.24);
   --wash-yellow: rgba(255, 214, 64, 0.22);
@@ -4468,12 +4472,6 @@ html.map-locked { overflow: hidden; }
     radial-gradient(55% 50% at 100% 0%, var(--wash-pink), transparent 70%),
     radial-gradient(60% 55% at 90% 100%, var(--wash-violet), transparent 70%),
     #fffaf5;
-  --wash-backdrop:
-    radial-gradient(55% 55% at 10% 10%, rgba(255, 138, 92, 0.32), transparent 70%),
-    radial-gradient(50% 50% at 50% 0%, rgba(255, 214, 64, 0.28), transparent 70%),
-    radial-gradient(55% 55% at 95% 15%, rgba(230, 74, 180, 0.24), transparent 70%),
-    radial-gradient(60% 60% at 85% 95%, rgba(124, 77, 255, 0.24), transparent 70%),
-    rgba(255, 250, 245, 0.55);
 }
 .book-dialog {
   width: min(520px, calc(100vw - 32px));
@@ -4487,39 +4485,16 @@ html.map-locked { overflow: hidden; }
   overflow: hidden;
 }
 .book-dialog[open] { display: flex; flex-direction: column; }
-/* The form scrolls inside, so the blurred footage behind it stays put. */
+/* The form scrolls inside; the colour wash behind it stays put. */
 .book-scroll { position: relative; z-index: 1; min-height: 0; overflow: auto; }
 .book-close { z-index: 2; }
-.book-dialog::backdrop,
-.notify-dialog::backdrop,
-.quickview::backdrop {
-  background: var(--wash-backdrop);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+.book-dialog::backdrop {
+  background: rgba(20, 16, 12, 0.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
-/* The clicked card's video (or photo), blurred to a slow wash of its
-   colours, the way the frosted header tints with what scrolls under it. A
-   veil of the page colour on top keeps the form as legible as before. */
-.book-ambient { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.book-ambient > video,
-.book-ambient > img {
-  position: absolute;
-  inset: -15%;
-  width: 130%;
-  height: 130%;
-  object-fit: cover;
-  filter: blur(42px) saturate(1.5);
-}
-.book-ambient:not(:empty)::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  /* The banner's wash over the footage: its colours warm through, no grey. */
-  background: var(--wash);
-  opacity: 0.8;
-}
-.has-ambient .book-summary { background: rgba(255, 255, 255, 0.62); }
-.has-ambient .book-close { background: rgba(255, 255, 255, 0.62); }
+.notify-dialog::backdrop { background: rgb(0 0 0 / 0.4); }
+.quickview::backdrop { background: rgba(20, 16, 12, 0.5); }
 .book-close {
   position: absolute;
   top: 14px;
