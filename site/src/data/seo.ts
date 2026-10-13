@@ -15,7 +15,7 @@
  *  English: "Töpferkurs Berlin" is the search, "Keramik-Workshops" is the
  *  category, and the title carries both. */
 
-import { filterCopy, getHosts, inActivity, type ActivityKey, type Host } from './content.ts';
+import { filterCopy, getHosts, hasMedia, inActivity, type ActivityKey, type Host } from './content.ts';
 import { berlinTodayMs, getOnRequestAll, getSessions, slugify, type OnRequestWorkshop, type Session } from './sessions.ts';
 import { href, LANG_META, type Lang } from '../lib/url.ts';
 
@@ -742,7 +742,7 @@ export const onRequestFor = (slug: string, lang: Lang): OnRequestWorkshop[] =>
   getOnRequestAll(lang).filter((o) => o.host.slug === slug);
 
 export const hostsIn = (activity: ActivityKey, lang: Lang): Host[] =>
-  getHosts(lang).filter((h) => inActivity(h, activity));
+  getHosts(lang).filter((h) => inActivity(h, activity) && hasMedia(h));
 
 /** The next session per host, in calendar order — what a card leads with. */
 export const nextSessionByHost = (lang: Lang): Map<string, Session> => {

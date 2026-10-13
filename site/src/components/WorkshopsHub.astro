@@ -3,7 +3,7 @@
  *  A crawler landing here reaches all of them in one hop, which is the
  *  point of it; a visitor gets the same thing as a menu. */
 import Base from '../layouts/Base.astro';
-import { getHosts, inActivity } from '../data/content.ts';
+import { getHosts, hasMedia, inActivity } from '../data/content.ts';
 import { getSessions } from '../data/sessions.ts';
 import {
   ACTIVITY_ORDER, OCCASIONS, absolute, activityCopy, activityHref, districtHref, districtsFor,
@@ -30,7 +30,7 @@ const perActivity = ACTIVITY_ORDER.map((a) => ({
   dates: sessions.filter((s) => inActivity(s.host, a)).length,
 }));
 const hosts = getHosts(lang)
-  .slice()
+  .filter(hasMedia)
   .sort((a, b) => a.name.localeCompare(b.name, lang));
 
 const schema = {

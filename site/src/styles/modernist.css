@@ -8,6 +8,9 @@
   --color-accent: #ec3013;
   --color-accent-2: #e15b47;
   --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+  /* Section and list separators: barely there, a quarter thinner than the
+     old 2px / 1px rules. */
+  --color-line: color-mix(in srgb, #201e1d 7%, transparent);
 
   /* Tonal ramps — generated in OKLCH on one shared lightness scale, so the
      same step of any role matches the others in visual value. */
@@ -106,8 +109,8 @@ figcaption {
 
 /* — rules — */
 .hr {
-  height: 2px; border: 0; margin: var(--space-4) 0;
-  background: var(--color-divider);
+  height: 1.5px; border: 0; margin: var(--space-4) 0;
+  background: var(--color-line);
 }
 
 /* — buttons — */
@@ -210,7 +213,7 @@ textarea.input { min-height: 90px; resize: vertical; }
 .nav {
   display: flex; align-items: center; gap: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  border-bottom: 2px solid var(--color-divider);
+  border-bottom: 1.5px solid var(--color-line);
 }
 .nav-brand {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
@@ -225,11 +228,11 @@ textarea.input { min-height: 90px; resize: vertical; }
 .table th {
   text-align: left; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
   color: color-mix(in srgb, var(--color-text) 60%, transparent);
-  padding: var(--space-2); border-bottom: 2px solid var(--color-divider);
+  padding: var(--space-2); border-bottom: 1.5px solid var(--color-line);
 }
 .table td {
   padding: var(--space-2);
-  border-bottom: 1px solid var(--color-divider);
+  border-bottom: 0.75px solid var(--color-line);
 }
 .table tbody tr:hover { background: color-mix(in srgb, var(--color-text) 4%, transparent); }
 

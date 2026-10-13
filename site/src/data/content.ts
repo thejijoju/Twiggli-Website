@@ -162,6 +162,10 @@ export type ActivityKey =
 
 /** Every activity a host is listed under: their own first, then `alsoIn`. */
 export const activitiesOf = (h: Pick<Host, 'activity' | 'alsoIn'>): ActivityKey[] => [h.activity, ...(h.alsoIn ?? [])];
+/** Whether we have a reel or a photo to show for a host. Lists of hosts
+ *  leave out those without one — a monogram card sells nobody — though
+ *  their own page and their dates stay. */
+export const hasMedia = (h: Pick<Host, 'video' | 'photo' | 'wide'>): boolean => Boolean(h.video || h.photo || h.wide);
 /** Whether a host belongs in an activity's section or filter. */
 export const inActivity = (h: Pick<Host, 'activity' | 'alsoIn'>, a: ActivityKey): boolean =>
   h.activity === a || (h.alsoIn?.includes(a) ?? false);

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import HostDirectory from './HostDirectory.astro';
 import HostFilters from './HostFilters.astro';
 import Newsletter from './Newsletter.astro';
-import { getHosts, sameHostAs } from '../data/content.ts';
+import { getHosts, hasMedia, sameHostAs } from '../data/content.ts';
 import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
@@ -16,7 +16,7 @@ const c = t.corporate;
 // One card per person: a host listed twice shows once, under the card
 // that carries the team events.
 // Only hosts we can show: a card with nothing but a monogram sells nobody.
-const hosts = getHosts(lang).filter((h) => !sameHostAs[h.slug] && (h.video || h.photo || h.wide));
+const hosts = getHosts(lang).filter((h) => !sameHostAs[h.slug] && hasMedia(h));
 // The headline follows the season of the build; the site rebuilds daily.
 const season = seasonOf();
 // In the Christmas season the page points to the Christmas-party page,
