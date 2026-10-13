@@ -148,23 +148,23 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {t.request}
         </a>
-        {/* Follow: an email when this host adds dates (data/follow.ts). */}
-        <button type="button" class="host-follow" data-follow={host.slug} data-follow-name={host.name}
-                data-following={f.following} aria-expanded="false" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-          <span>{f.follow}</span>
-        </button>
         </div>
-        <form class="host-follow-form" data-follow-form data-inbox={requestEmail} data-sending={f.sending} data-send={f.send} hidden novalidate>
-          <p class="host-follow-prompt">{f.prompt(host.name)}</p>
-          <div class="host-follow-row">
-            <label class="sr-only" for="follow-email">Email</label>
-            <input id="follow-email" class="input" type="email" name="email" autocomplete="email" placeholder={f.placeholder} required />
-            <button type="submit" class="host-follow-send">{f.send}</button>
-          </div>
-          <p class="host-follow-note">{f.note}</p>
-          <p class="host-follow-note host-follow-error" data-follow-error hidden>{f.error}</p>
-        </form>
+        {/* Follow: an email when this host adds dates (data/follow.ts). The
+            field is the button's first step; a remembered email is filled in. */}
+        <div class="host-follow" data-follow={host.slug} data-follow-name={host.name} hidden>
+          <form class="host-follow-form" data-follow-form data-inbox={requestEmail} data-sending={f.sending} data-send={f.send} novalidate>
+            <label class="host-follow-prompt" for="follow-email">{f.prompt(host.name)}</label>
+            <div class="host-follow-field">
+              <input id="follow-email" type="email" name="email" autocomplete="email" placeholder={f.placeholder} required />
+              <button type="submit">{f.send}</button>
+            </div>
+            <p class="host-follow-note" data-follow-error hidden>{f.error}</p>
+          </form>
+          <p class="host-follow-done" data-follow-done hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            {f.done(host.name)}
+          </p>
+        </div>
       </div>
     </section>
 
@@ -276,74 +276,57 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
 </Base>
 
 <script>
-  // Follow (data/follow.ts): the first time asks for an email, after that
-  // one tap. Follows reach our inbox as "Follow host"; this device keeps
-  // which hosts it follows. Storage may be blocked — then it just asks.
+  // Follow (data/follow.ts): an email field with the button inside it. A
+  // follow reaches our inbox as "Follow host"; this device keeps the email
+  // (filled in next time) and the hosts it follows. Storage may be blocked —
+  // then it just asks again.
   const KEY = 'twiggli-follow';
   type Saved = { email?: string; hosts?: string[] };
   const load = (): Saved => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
   const save = (v: Saved) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch { /* private mode */ } };
 
-  const button = document.querySelector<HTMLButtonElement>('[data-follow]');
-  const form = document.querySelector<HTMLFormElement>('[data-follow-form]');
-  if (button && form) {
-    const slug = button.dataset.follow ?? '';
-    const label = button.querySelector('span');
-    const done = () => {
-      button.classList.add('is-following');
-      button.setAttribute('aria-pressed', 'true');
-      button.disabled = true;
-      if (label) label.textContent = button.dataset.following ?? '';
-      const icon = button.querySelector('svg path');
-      icon?.setAttribute('d', 'M5 12.5l4.5 4.5L19 7.5');
-      form.hidden = true;
-    };
-    button.hidden = false;
-    if (load().hosts?.includes(slug)) done();
-
-    const send = async (email: string) => {
-      const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          Type: 'Follow host',
-          Host: button.dataset.followName ?? slug,
-          email,
-          Language: document.documentElement.lang || 'en',
-          Page: location.href,
-          _subject: `Follow: ${button.dataset.followName ?? slug} — ${email}`,
-          _template: 'table',
-          _captcha: 'false',
-        }),
-      });
-      if (!res.ok) throw new Error(String(res.status));
-      const saved = load();
-      save({ email, hosts: [...new Set([...(saved.hosts ?? []), slug])] });
-      import('../lib/track.ts').then(({ track }) => track('follow', { host: slug })).catch(() => {});
-      done();
-    };
-
-    button.addEventListener('click', async () => {
-      const email = load().email;
-      if (email) {
-        button.disabled = true;
-        try { await send(email); } catch { button.disabled = false; form.hidden = false; }
-        return;
-      }
-      form.hidden = !form.hidden;
-      button.setAttribute('aria-expanded', String(!form.hidden));
-      if (!form.hidden) form.querySelector<HTMLInputElement>('input')?.focus();
-    });
+  const box = document.querySelector<HTMLElement>('[data-follow]');
+  const form = box?.querySelector<HTMLFormElement>('[data-follow-form]');
+  if (box && form) {
+    const slug = box.dataset.follow ?? '';
+    const name = box.dataset.followName ?? slug;
+    const input = form.querySelector<HTMLInputElement>('input[name="email"]');
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const error = form.querySelector<HTMLElement>('[data-follow-error]');
+    const doneNote = box.querySelector<HTMLElement>('[data-follow-done]');
+    const done = () => { form.hidden = true; if (doneNote) doneNote.hidden = false; };
+    box.hidden = false;
+    const saved = load();
+    if (saved.hosts?.includes(slug)) done();
+    else if (saved.email && input) input.value = saved.email;
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
-      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-      const error = form.querySelector<HTMLElement>('[data-follow-error]');
-      const email = String(new FormData(form).get('email') ?? '').trim();
+      const email = (input?.value ?? '').trim();
       if (submit) { submit.disabled = true; submit.textContent = form.dataset.sending ?? ''; }
       if (error) error.hidden = true;
-      try { await send(email); } catch {
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            Type: 'Follow host',
+            Host: name,
+            email,
+            Language: document.documentElement.lang || 'en',
+            Page: location.href,
+            _subject: `Follow: ${name} — ${email}`,
+            _template: 'table',
+            _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        const before = load();
+        save({ email, hosts: [...new Set([...(before.hosts ?? []), slug])] });
+        import('../lib/track.ts').then(({ track }) => track('follow', { host: slug })).catch(() => {});
+        done();
+      } catch {
         if (error) error.hidden = false;
         if (submit) { submit.disabled = false; submit.textContent = form.dataset.send ?? ''; }
       }
