@@ -1,6 +1,6 @@
 ---
 import { getSessions, getOnRequest, capPerHostPerDay, spreadByHost, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
-import { filterCopy, type ActivityKey } from '../data/content.ts';
+import { activitiesOf, filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
 import DayMap from './DayMap.astro';
@@ -26,7 +26,7 @@ const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 
 // Only activities that actually have sessions get a pill — no dead filters.
 const ACTIVITY_ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'];
-const present = new Set(sessions.map((s) => s.host.activity));
+const present = new Set(sessions.flatMap((s) => activitiesOf(s.host)));
 const activities = ACTIVITY_ORDER.filter((a) => present.has(a));
 const activityLabels = filterCopy[lang].activities;
 
@@ -306,7 +306,7 @@ const formatDeadline = (iso: string): string => {
                       );
                     })}
                     {list.map((s) => (
-                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={s.host.activity} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
@@ -459,7 +459,7 @@ const formatDeadline = (iso: string): string => {
       <p class="onrequest-note">{t.onRequestNote}</p>
       <ul class="session-list">
         {onRequest.map((o) => (
-          <li class="session" id={o.id} data-seen={`s:${o.id}`} data-activity={o.host.activity}
+          <li class="session" id={o.id} data-seen={`s:${o.id}`} data-activity={activitiesOf(o.host).join(' ')}
             data-track-card="on-request" data-track-host={o.host.name} data-track-title={o.title}>
             {/* Same tile as a dated card: the host's reel where footage
                 exists, otherwise the stock photo. */}
@@ -638,7 +638,7 @@ const formatDeadline = (iso: string): string => {
     const applyFilters = () => {
       let shown = 0;
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
-        const matchesActivity = activityFilter === 'all' || li.dataset.activity === activityFilter;
+        const matchesActivity = activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter);
         const matchesDistrict = districtFilter === 'all' || li.dataset.district === districtFilter;
         const matchesKids = !kidsOnly || li.dataset.kids === 'true';
         li.hidden = !(matchesActivity && matchesDistrict && matchesKids);
@@ -750,7 +750,7 @@ const formatDeadline = (iso: string): string => {
       sessions: () => {
         const day = groups.find((g) => !g.hidden);
         return Array.from(day?.querySelectorAll<HTMLElement>('.session') ?? []).filter((li) =>
-          (activityFilter === 'all' || li.dataset.activity === activityFilter) &&
+          (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
           (!kidsOnly || li.dataset.kids === 'true'));
       },
       district: () => districtFilter,

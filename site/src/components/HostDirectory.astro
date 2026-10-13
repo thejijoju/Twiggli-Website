@@ -1,7 +1,7 @@
 ---
 import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
-import { filterCopy } from '../data/content.ts';
+import { activitiesOf, filterCopy } from '../data/content.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { directoryCopy, occasionsFor } from '../data/occasions.ts';
@@ -80,7 +80,7 @@ const searchText = (host: Host) => [
       data-seen={`h:${host.slug}`}
       data-track-card="directory"
       data-track-host={host.name}
-      data-activity={host.activity}
+      data-activity={activitiesOf(host).join(' ')}
       data-group-min={host.groupRange[0]}
       data-group-max={host.groupRange[1]}
       data-hours-min={host.hourRange[0]}

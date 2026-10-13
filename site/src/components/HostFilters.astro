@@ -154,7 +154,7 @@ const pills = [
         const ok =
           words.every((w) => text.includes(w)) &&
           (!occasion || (card.dataset.occasions ?? '').split(' ').includes(occasion)) &&
-          (!activity || card.dataset.activity === activity) &&
+          (!activity || (card.dataset.activity ?? '').split(' ').includes(activity)) &&
           (!group || overlaps([num(card, 'groupMin'), num(card, 'groupMax')], GROUPS[group])) &&
           (!hours || overlaps([num(card, 'hoursMin'), num(card, 'hoursMax')], HOURS[hours])) &&
           (!price ||

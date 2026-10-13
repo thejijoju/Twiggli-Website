@@ -6,7 +6,7 @@
 import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
-import type { ActivityKey } from '../data/content.ts';
+import { inActivity, type ActivityKey } from '../data/content.ts';
 import { capPerHostPerDay, getSessions } from '../data/sessions.ts';
 import {
   ACTIVITY_ORDER, absolute, activityCopy, activityHref, formatWhen, hostHref, hostsIn, hubHref,
@@ -28,7 +28,7 @@ const hosts = hostsIn(activity, lang)
   .map((h, i) => ({ h, i, n: next.get(h.slug) }))
   .sort((a, b) => (a.n?.dayOffset ?? 1e6) - (b.n?.dayOffset ?? 1e6) || a.i - b.i)
   .map(({ h }) => h);
-const upcoming = getSessions(lang).filter((s) => s.host.activity === activity);
+const upcoming = getSessions(lang).filter((s) => inActivity(s.host, activity));
 // The list shows two a day per host at most; the count above it is every date.
 const shown = capPerHostPerDay(upcoming).slice(0, 24);
 const dateCounts = new Map(hosts.map((h) => [h.slug, sessionsFor(h.slug, lang).length]));

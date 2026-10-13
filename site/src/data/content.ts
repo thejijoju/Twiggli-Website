@@ -126,6 +126,11 @@ export type Host = {
   /** Machine-readable versions of `specialty`, `group` and `duration`, for
    *  the directory filters. See `facets` below for why they are separate. */
   activity: ActivityKey;
+  /** Further activities the host also teaches. Their pages and URLs stay
+   *  under `activity`; these only list them in the other activities'
+   *  sections and filters too (Evelyn: fabric printing under art &
+   *  printmaking, watercolour and vision boards under wellbeing). */
+  alsoIn?: ActivityKey[];
   /** Smallest and largest group the host will take, across all their
    *  formats. `[1, 100]` for someone doing intimate studio sessions and
    *  large mobile ones alike. */
@@ -155,6 +160,12 @@ export type Host = {
 export type ActivityKey =
   | 'ceramics' | 'art' | 'craft' | 'food' | 'photography' | 'wellbeing' | 'music';
 
+/** Every activity a host is listed under: their own first, then `alsoIn`. */
+export const activitiesOf = (h: Pick<Host, 'activity' | 'alsoIn'>): ActivityKey[] => [h.activity, ...(h.alsoIn ?? [])];
+/** Whether a host belongs in an activity's section or filter. */
+export const inActivity = (h: Pick<Host, 'activity' | 'alsoIn'>, a: ActivityKey): boolean =>
+  h.activity === a || (h.alsoIn?.includes(a) ?? false);
+
 /** The filterable facts about each host, keyed by slug.
  *
  *  These live apart from `hostsCopy` because they are language-neutral: the
@@ -166,7 +177,7 @@ export type ActivityKey =
  *  Ranges are the union across a host's formats — Celina runs up to 20 in the
  *  studio and 50–100 mobile, so she is [1, 100] and shows up whether a team
  *  is looking for something small or something company-wide. */
-const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' | 'groupPrice'>> = {
+const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | 'hourRange' | 'groupPrice'>> = {
   // Qian, 12 Oct: from 4 people; up to 8 in her studio, 14 at a partner
   // venue, 25 at most.
   qian:         { activity: 'ceramics',    groupRange: [4, 25],   hourRange: [2, 2], groupPrice: 65 },
@@ -174,8 +185,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
   // Evelyn, 13 Oct: up to 10 in the studio, 4–50 on-site; 1.5–3 h;
-  // from €20 per person.
-  evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [1.5, 3], groupPrice: 20 },
+  // from €20 per person. Also listed under printmaking (fabric printing)
+  // and wellbeing (watercolour, vision boards).
+  evelyn:       { activity: 'craft', alsoIn: ['art', 'wellbeing'], groupRange: [1, 50], hourRange: [1.5, 3], groupPrice: 20 },
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
   helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
   haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
@@ -295,7 +307,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       blurb: 'Switch off and get making — expert-guided craft in a calm studio, with nine formats to pick from: bookbinding, silk painting, envelope folding, stained glass soldering (Tiffany technique), mosaic making, tin ornaments, concrete tile making, straw stars and stamp carving. No experience needed; every format also runs as a private group session on a date of your choice.',
       group: 'Up to 20 studio · 50–100 mobile', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
-      blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
+      blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, watercolour, vision board making and glass painting.',
       group: '≤10 studio · 4–50 on-site', duration: '1.5–3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE · RO · HU', priceNote: 'starting price' },
     { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Urban sketching walks', studio: 'Drawing Walks',
       blurb: 'A city tour and a drawing workshop at once. Ditte walks a neighbourhood with you, tells its stories, and sets quick, playful sketching exercises along the way — drawing as a way of seeing, which makes you look closer and catch the details you would otherwise pass without noticing. A sketchbook and a handful of materials come with you; you dress for the weather and turn up at the meeting point. Whether you have not drawn since childhood or your sketchbook never leaves your bag, you are welcome.',
@@ -500,7 +512,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       blurb: 'Abschalten und gestalten — angeleitetes Handwerk im ruhigen Studio, mit neun Formaten zur Wahl: Buchbinden, Seidenmalerei, Briefumschläge falten, Tiffany-Glaslöten, Mosaik, Blechornamente, Betonfliesen, Strohsterne und Stempelschnitzen. Ohne Vorkenntnisse; jedes Format auch als private Gruppensession an einem Wunschtermin.',
       group: 'Bis 20 Studio · 50–100 mobil', duration: '2–4 Std.', place: 'Koloniestraße 111, Berlin', languages: 'DE · EN' },
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
-      blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
+      blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Aquarell, Vision Boards gestalten und Glasmalerei.',
       group: '≤10 Studio · 4–50 vor Ort', duration: '1,5–3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE · RO · HU', priceNote: 'Einstiegspreis' },
     { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Zeichenspaziergänge', studio: 'Drawing Walks',
       blurb: 'Stadtspaziergang und Zeichenworkshop in einem. Ditte geht mit euch durch ein Viertel, erzählt seine Geschichten und gibt unterwegs kurze, verspielte Zeichenübungen — Zeichnen als Art des Sehens, die dich genauer hinschauen lässt und Details entdecken, an denen du sonst vorbeigehst. Skizzenbuch und Material sind dabei; du ziehst dich wettergerecht an und kommst zum Treffpunkt. Ob du seit der Kindheit nicht gezeichnet hast oder dein Skizzenbuch immer dabei ist — du bist willkommen.',

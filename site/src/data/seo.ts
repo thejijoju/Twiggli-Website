@@ -15,7 +15,7 @@
  *  English: "Töpferkurs Berlin" is the search, "Keramik-Workshops" is the
  *  category, and the title carries both. */
 
-import { filterCopy, getHosts, type ActivityKey, type Host } from './content.ts';
+import { filterCopy, getHosts, inActivity, type ActivityKey, type Host } from './content.ts';
 import { berlinTodayMs, getOnRequestAll, getSessions, slugify, type OnRequestWorkshop, type Session } from './sessions.ts';
 import { href, LANG_META, type Lang } from '../lib/url.ts';
 
@@ -742,7 +742,7 @@ export const onRequestFor = (slug: string, lang: Lang): OnRequestWorkshop[] =>
   getOnRequestAll(lang).filter((o) => o.host.slug === slug);
 
 export const hostsIn = (activity: ActivityKey, lang: Lang): Host[] =>
-  getHosts(lang).filter((h) => h.activity === activity);
+  getHosts(lang).filter((h) => inActivity(h, activity));
 
 /** The next session per host, in calendar order — what a card leads with. */
 export const nextSessionByHost = (lang: Lang): Map<string, Session> => {
@@ -1039,7 +1039,7 @@ export const districtHref = (lang: Lang, slug: string): string => href(lang, `/w
 
 export const districtCopy = (d: District, lang: Lang) => {
   const p = seoPhrases[lang];
-  const acts = ACTIVITY_ORDER.filter((a) => d.hosts.some((h) => h.activity === a));
+  const acts = ACTIVITY_ORDER.filter((a) => d.hosts.some((h) => inActivity(h, a)));
   const shorts = acts.map((a) => activityCopy[lang][a].short);
   const list = shorts.length > 1 ? `${shorts.slice(0, -1).join(', ')} ${p.and} ${shorts[shorts.length - 1]}` : shorts[0] ?? '';
   const t = pageCopy[lang];

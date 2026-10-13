@@ -6,6 +6,7 @@ import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
 import { ACTIVITY_ORDER, absolute, districtCopy, districtHref, districtsFor, formatWhen, hostHref, hubExtraCopy, hubHref, nextSessionByHost, pageCopy } from '../data/seo.ts';
+import { inActivity } from '../data/content.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
@@ -20,7 +21,7 @@ const x = hubExtraCopy[lang];
 const copy = districtCopy(d, lang);
 const next = nextSessionByHost(lang);
 const sections = ACTIVITY_ORDER
-  .map((a) => ({ a, hosts: d.hosts.filter((h) => h.activity === a) }))
+  .map((a) => ({ a, hosts: d.hosts.filter((h) => inActivity(h, a)) }))
   .filter((s) => s.hosts.length);
 const shown = d.sessions.slice(0, 30);
 const others = districtsFor(lang).filter((o) => o.slug !== slug);

@@ -2,7 +2,7 @@
 /** The homepage's way into the activity pages: one link per activity,
  *  worded as the page it leads to is titled, so the words a visitor clicks
  *  are the words a searcher types. */
-import { getHosts } from '../data/content.ts';
+import { activitiesOf, getHosts } from '../data/content.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, hubCopy, hubHref, pageCopy } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
@@ -13,7 +13,7 @@ interface Props {
 const { lang } = Astro.props;
 const hosts = getHosts(lang);
 const counts = new Map<string, number>();
-for (const h of hosts) counts.set(h.activity, (counts.get(h.activity) ?? 0) + 1);
+for (const h of hosts) for (const a of activitiesOf(h)) counts.set(a, (counts.get(a) ?? 0) + 1);
 const all = ui(lang).home.activitiesAll;
 ---
 
