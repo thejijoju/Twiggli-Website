@@ -21,7 +21,9 @@ const money = (n: number) => (lang === 'de' ? `${n} €` : `€${n}`);
 const cards = christmasPicks.map((pick, i) => {
   const host = hosts.find((h) => h.slug === pick.slug);
   const gp = host?.groupPrice;
-  const price = gp == null ? undefined : Array.isArray(gp) ? `${money(gp[0])}–${money(gp[1])}` : money(gp);
+  // A starting price (Evelyn, Jem) reads "from €20", not a flat €20.
+  const from = host?.priceNote === (lang === 'de' ? 'Einstiegspreis' : 'starting price');
+  const price = gp == null ? undefined : Array.isArray(gp) ? `${money(gp[0])}–${money(gp[1])}` : `${from ? t.from : ''}${money(gp)}`;
   return {
     ...t.picks[i],
     key: pick.slug,

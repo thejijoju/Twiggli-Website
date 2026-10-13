@@ -18,7 +18,7 @@ export interface ChristmasCopy {
   pickedTitle: string; pickedSub: string;
   picks: { title: string; tag: string }[];
   people: (min: number, max: number) => string; hours: (min: number, max: number) => string;
-  perPerson: (price: string) => string; onRequest: string; ask: string; moreHosts: string;
+  perPerson: (price: string) => string; from: string; onRequest: string; ask: string; moreHosts: string;
   howTitle: string; steps: { title: string; copy: string }[];
   formTitle: string; formLede: string; bullets: string[];
   company: string; name: string; email: string; emailPh: string; phone: string; optional: string;
@@ -54,7 +54,7 @@ export const christmasCopy: Record<'en' | 'de', ChristmasCopy> = {
     ],
     people: (min, max) => (min <= 1 ? `up to ${max}` : fmtRange(min, max, 'people')),
     hours: (min, max) => fmtRange(min, max, 'h'),
-    perPerson: (price) => `${price} pp`, onRequest: 'price on request',
+    perPerson: (price) => `${price} pp`, from: 'from ', onRequest: 'price on request',
     ask: 'Ask for this one', moreHosts: 'See all hosts for groups',
     howTitle: 'How it works',
     steps: [
@@ -95,7 +95,7 @@ export const christmasCopy: Record<'en' | 'de', ChristmasCopy> = {
     ],
     people: (min, max) => (min <= 1 ? `bis ${max} Pers.` : fmtRange(min, max, 'Pers.')),
     hours: (min, max) => fmtRange(min, max, 'Std.', 'de-DE'),
-    perPerson: (price) => `${price} p. P.`, onRequest: 'Preis auf Anfrage',
+    perPerson: (price) => `${price} p. P.`, from: 'ab ', onRequest: 'Preis auf Anfrage',
     ask: 'Diesen anfragen', moreHosts: 'Alle Gastgeber für Gruppen ansehen',
     howTitle: 'So funktioniert’s',
     steps: [

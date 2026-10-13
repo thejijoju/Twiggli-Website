@@ -18,7 +18,7 @@ export const hosts: HostCopy[] = [
     group: 'Jusqu’à 20 en atelier · 50–100 en itinérance', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
   { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Impression textile & loisirs créatifs', studio: 'Tuka Creative Club',
     blurb: 'Un espace bienveillant où les adultes redeviennent des enfants — des loisirs créatifs en pleine conscience, accessibles aux débutants : impression et peinture sur tote bag, point de croix, breloques en kumihimo, aquarelle, vision board et peinture sur verre.',
-    group: '≤12 en atelier · 40–50 sur site', duration: '3 h', place: 'Ohma Studio / sur site', languages: 'EN · DE' },
+    group: '≤10 en atelier · 4–50 sur site', duration: '1,5–3 h', place: 'Ohma Studio / sur site', languages: 'EN · DE · RO · HU', priceNote: 'tarif de départ' },
   { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Balades de croquis urbain', studio: 'Drawing Walks',
     blurb: 'Une visite de la ville et un atelier de dessin à la fois. Ditte parcourt un quartier avec vous, en raconte les histoires et propose en chemin des exercices de croquis rapides et ludiques — dessiner comme une manière de voir, qui vous fait regarder de plus près et saisir les détails devant lesquels vous passeriez sans les remarquer. Un carnet de croquis et quelques fournitures vous accompagnent ; vous vous habillez selon la météo et vous présentez au point de rendez-vous. Que vous n’ayez pas dessiné depuis l’enfance ou que votre carnet ne quitte jamais votre sac, vous êtes les bienvenus.',
     group: 'Jusqu’à 15', duration: '2,75 h', place: 'Points de rendez-vous dans tout Berlin', languages: 'EN' },

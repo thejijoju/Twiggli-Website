@@ -173,7 +173,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'groupRange' | 'hourRange' 
   rebeca:       { activity: 'art',         groupRange: [4, 24],   hourRange: [1, 3], groupPrice: 65 },
   nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
-  evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [3, 3], groupPrice: 59 },
+  // Evelyn, 13 Oct: up to 10 in the studio, 4–50 on-site; 1.5–3 h;
+  // from €20 per person.
+  evelyn:       { activity: 'craft',       groupRange: [1, 50],   hourRange: [1.5, 3], groupPrice: 20 },
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
   helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
   haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
@@ -294,7 +296,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Up to 20 studio · 50–100 mobile', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, kumihimo charms, watercolour, vision boarding and glass painting.',
-      group: '≤12 studio · 40–50 on-site', duration: '3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE' },
+      group: '≤10 studio · 4–50 on-site', duration: '1.5–3 h', place: 'Ohma Studio / on-site', languages: 'EN · DE · RO · HU', priceNote: 'starting price' },
     { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Urban sketching walks', studio: 'Drawing Walks',
       blurb: 'A city tour and a drawing workshop at once. Ditte walks a neighbourhood with you, tells its stories, and sets quick, playful sketching exercises along the way — drawing as a way of seeing, which makes you look closer and catch the details you would otherwise pass without noticing. A sketchbook and a handful of materials come with you; you dress for the weather and turn up at the meeting point. Whether you have not drawn since childhood or your sketchbook never leaves your bag, you are welcome.',
       group: 'Up to 15', duration: '2.75 h', place: 'Meeting points across Berlin', languages: 'EN' },
@@ -499,7 +501,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Bis 20 Studio · 50–100 mobil', duration: '2–4 Std.', place: 'Koloniestraße 111, Berlin', languages: 'DE · EN' },
     { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Kumihimo-Anhänger, Aquarell, Vision Boarding und Glasmalerei.',
-      group: '≤12 Studio · 40–50 vor Ort', duration: '3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE' },
+      group: '≤10 Studio · 4–50 vor Ort', duration: '1,5–3 Std.', place: 'Ohma Studio / vor Ort', languages: 'EN · DE · RO · HU', priceNote: 'Einstiegspreis' },
     { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Zeichenspaziergänge', studio: 'Drawing Walks',
       blurb: 'Stadtspaziergang und Zeichenworkshop in einem. Ditte geht mit euch durch ein Viertel, erzählt seine Geschichten und gibt unterwegs kurze, verspielte Zeichenübungen — Zeichnen als Art des Sehens, die dich genauer hinschauen lässt und Details entdecken, an denen du sonst vorbeigehst. Skizzenbuch und Material sind dabei; du ziehst dich wettergerecht an und kommst zum Treffpunkt. Ob du seit der Kindheit nicht gezeichnet hast oder dein Skizzenbuch immer dabei ist — du bist willkommen.',
       group: 'Bis 15', duration: '2,75 Std.', place: 'Treffpunkte in ganz Berlin', languages: 'EN' },

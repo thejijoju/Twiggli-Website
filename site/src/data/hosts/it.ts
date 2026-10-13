@@ -18,7 +18,7 @@ export const hosts: HostCopy[] = [
     group: 'Fino a 20 in studio · 50–100 itinerante', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
   { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Stampa su tessuto & artigianato misto', studio: 'Tuka Creative Club',
     blurb: 'Uno spazio sicuro in cui gli adulti possono tornare bambini — artigianato consapevole e adatto ai principianti: stampa e pittura su tote bag, punto croce, ciondoli kumihimo, acquerello, vision board e pittura su vetro.',
-    group: '≤12 in studio · 40–50 in sede', duration: '3 h', place: 'Ohma Studio / in sede', languages: 'EN · DE' },
+    group: '≤10 in studio · 4–50 in sede', duration: '1,5–3 h', place: 'Ohma Studio / in sede', languages: 'EN · DE · RO · HU', priceNote: 'prezzo di partenza' },
   { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Passeggiate di urban sketching', studio: 'Drawing Walks',
     blurb: 'Un tour della città e un workshop di disegno allo stesso tempo. Ditte percorre un quartiere con te, ne racconta le storie e propone lungo il cammino esercizi di schizzo rapidi e giocosi — disegnare come modo di vedere, che ti fa guardare più da vicino e cogliere i dettagli davanti ai quali passeresti senza accorgertene. Un taccuino e una manciata di materiali vengono con te; tu ti vesti in base al tempo e ti presenti al punto d’incontro. Che tu non disegni dall’infanzia o che il tuo taccuino non esca mai dalla borsa, sei il benvenuto.',
     group: 'Fino a 15', duration: '2.75 h', place: 'Punti d’incontro in tutta Berlino', languages: 'EN' },

@@ -18,7 +18,7 @@ export const hosts: HostCopy[] = [
     group: 'Tot 20 studio · 50–100 mobiel', duration: '2–4 u', place: 'Koloniestrasse 111, Berlijn', languages: 'DE · EN' },
   { slug: 'evelyn', name: 'Evelyn Cseh', specialty: 'Textieldruk & gemengd handwerk', studio: 'Tuka Creative Club',
     blurb: 'Een veilige plek waar volwassenen weer even kind mogen zijn — mindful, beginnersvriendelijk handwerk: totebags bedrukken en beschilderen, kruissteek, kumihimo-bedels, aquarel, visionboards maken en glasschilderen.',
-    group: '≤12 studio · 40–50 op locatie', duration: '3 u', place: 'Ohma Studio / op locatie', languages: 'EN · DE' },
+    group: '≤10 studio · 4–50 op locatie', duration: '1,5–3 u', place: 'Ohma Studio / op locatie', languages: 'EN · DE · RO · HU', priceNote: 'vanafprijs' },
   { slug: 'drawingwalks', name: 'Ditte Østergaard', specialty: 'Urban sketching-wandelingen', studio: 'Drawing Walks',
     blurb: 'Een stadswandeling en een tekenworkshop in één. Ditte loopt met je door een buurt, vertelt de verhalen ervan en geeft onderweg korte, speelse schetsopdrachten — tekenen als manier van kijken, waardoor je beter kijkt en de details opmerkt die je anders ongemerkt voorbij zou lopen. Een schetsboek en wat materiaal krijg je mee; jij kleedt je naar het weer en komt naar het ontmoetingspunt. Of je nu sinds je kindertijd niet meer hebt getekend of je schetsboek nooit uit je tas komt: je bent welkom.',
     group: 'Tot 15', duration: '2,75 u', place: 'Ontmoetingspunten door heel Berlijn', languages: 'EN' },
