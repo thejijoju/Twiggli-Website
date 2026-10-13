@@ -29,7 +29,10 @@ const showPrice = (price?: string) =>
  *  form on the page (BookingDialog.astro) — the booking goes through us. */
 const bookAttrs = (s: Session) => (s.partner && !s.soldOut
   // A partner host's own site, with our code copied on the way (partners.ts).
-  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener' }
+  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener',
+      // For the "partner-booking" event (lib/track.ts).
+      'data-partner-host': s.host.slug, 'data-partner-title': s.title, 'data-partner-time': s.time,
+      'data-partner-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10) }
   : {
     'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
     'data-book-title': s.title,

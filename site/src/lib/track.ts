@@ -63,6 +63,29 @@ function cardOf(link: Element): Props {
 }
 
 export function startOutboundTracking() {
+  // A partner host's booking page (partners.ts) is where we earn a
+  // commission without seeing the booking, so each click there is its own
+  // event, whichever page it came from: whose session, which one, and the
+  // code it carried. Bookings themselves are reconciled from the code.
+  document.addEventListener(
+    'click',
+    (event) => {
+      const link = (event.target as Element | null)?.closest?.<HTMLElement>('a[data-partner-code]');
+      if (!link) return;
+      const d = link.dataset;
+      track('partner-booking', {
+        host: d.partnerHost ?? '',
+        title: d.partnerTitle ?? '',
+        date: d.partnerDate ?? '',
+        time: d.partnerTime ?? '',
+        code: d.partnerCode ?? '',
+        page: location.pathname,
+        lang: document.documentElement.lang || 'en',
+      });
+    },
+    { capture: true },
+  );
+
   document.addEventListener(
     'click',
     (event) => {

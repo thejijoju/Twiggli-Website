@@ -73,7 +73,10 @@ const isoDate = (offset: number) =>
  *  the host's own booking page — which only reaches our inbox. */
 const bookAttrs = (s: Session) => (s.partner && !s.soldOut
   // A partner host's own site, with our code copied on the way (partners.ts).
-  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener' }
+  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener',
+      // For the "partner-booking" event (lib/track.ts).
+      'data-partner-host': s.host.slug, 'data-partner-title': s.title, 'data-partner-time': s.time,
+      'data-partner-date': isoDate(s.dayOffset) }
   : {
     'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
     'data-book-title': s.title,
