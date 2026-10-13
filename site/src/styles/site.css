@@ -2138,11 +2138,11 @@ a:hover { color: var(--color-accent); }
 .host-actions .maker-request { margin-top: 0; }
 /* Follow: the email field with its round button inside, as one pill —
    type your email, tap Follow. */
-.host-follow { margin-top: 22px; max-width: 460px; }
+.host-follow { margin-top: 36px; max-width: 340px; }
 .host-follow-prompt { display: block; margin: 0 0 10px; font-size: 15px; font-weight: 600; color: var(--color-text); }
 .host-follow-field {
   display: flex; align-items: center; gap: 8px;
-  height: 56px; padding: 6px 6px 6px 22px; border-radius: 999px;
+  height: 52px; padding: 0 0 0 20px; border-radius: 999px;
   background: #fff;
   border: 2px solid rgba(124, 77, 255, 0.28);
   box-shadow: 0 6px 20px rgba(84, 46, 188, 0.08);
@@ -2151,7 +2151,9 @@ a:hover { color: var(--color-accent); }
 .host-follow-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--color-text); padding: 0; }
 .host-follow-field input::placeholder { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
 .host-follow-field button {
-  flex: none; height: 100%; border: 0; border-radius: 999px; padding: 0 26px; cursor: pointer;
+  /* Flush with the field's outline: top, right and bottom. */
+  flex: none; align-self: stretch; height: auto; margin: -2px -2px -2px 0;
+  border: 0; border-radius: 999px; padding: 0 24px; cursor: pointer;
   background: linear-gradient(135deg, #6a3eec, rgb(84, 46, 188)); color: #fff;
   font-family: inherit; font-weight: 700; font-size: 15px;
 }
