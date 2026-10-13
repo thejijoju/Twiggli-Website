@@ -20,7 +20,7 @@ so bigger groups are not a problem.
 ## Then something with light
 
 Cyanotype printing turns sunlight into deep Prussian-blue prints, and it works
-even on a flat winter day — it just takes longer. **Sabine Alex** brings a mobile
+even on a flat winter day — it just takes longer. **Sabine** brings a mobile
 darkroom, so this one can happen in your own space.
 
 ## And something you can drink

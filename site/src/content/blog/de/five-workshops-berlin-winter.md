@@ -20,7 +20,7 @@ Gruppen sind also kein Problem.
 ## Dann etwas mit Licht
 
 Cyanotypie verwandelt Sonnenlicht in tiefblaue Drucke, und das klappt auch an
-einem grauen Wintertag — es dauert nur länger. **Sabine Alex** bringt eine mobile
+einem grauen Wintertag — es dauert nur länger. **Sabine** bringt eine mobile
 Dunkelkammer mit, das geht also auch bei euch.
 
 ## Und etwas zum Trinken
