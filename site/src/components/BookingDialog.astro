@@ -98,7 +98,38 @@ const c = bookingCopy[lang];
     toast.textContent = `${link.dataset.partnerCopied ?? ''}: ${link.dataset.partnerCode ?? ''}`;
     document.body.append(toast);
     setTimeout(() => toast.remove(), 3500);
+
+    // And a line in our inbox, since the booking itself happens on the
+    // host's site: which session, from which page — nothing about the
+    // visitor. Once per session per page view, however often it is clicked.
+    const d = link.dataset;
+    const key = `${d.partnerHost}|${d.partnerDate}|${d.partnerTime}|${d.partnerTitle}`;
+    if (partnerSent.has(key)) return;
+    partnerSent.add(key);
+    const inbox = document.querySelector<HTMLElement>('[data-book-dialog]')?.dataset.inbox;
+    if (!inbox) return;
+    const host = d.partnerHost ?? '';
+    const name = host.charAt(0).toUpperCase() + host.slice(1);
+    fetch(`https://formsubmit.co/ajax/${inbox}`, {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        Type: 'Partner booking click',
+        Host: name,
+        Workshop: d.partnerTitle ?? '',
+        Date: d.partnerDate ?? '',
+        Time: d.partnerTime ?? '',
+        Code: d.partnerCode ?? '',
+        'Clicked on': location.href,
+        Language: document.documentElement.lang || 'en',
+        _subject: `Booking click: ${name} — ${d.partnerTitle ?? ''}, ${d.partnerDate ?? ''} ${d.partnerTime ?? ''}`.trim(),
+        _template: 'table',
+        _captcha: 'false',
+      }),
+    }).catch(() => {});
   });
+  const partnerSent = new Set<string>();
 
   const dialog = document.querySelector<HTMLDialogElement>('[data-book-dialog]');
   const form = dialog?.querySelector<HTMLFormElement>('[data-book-form]');
