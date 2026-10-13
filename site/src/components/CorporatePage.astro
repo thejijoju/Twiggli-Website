@@ -6,6 +6,7 @@ import { getHosts, sameHostAs } from '../data/content.ts';
 import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
+import { christmasCopy } from '../data/christmasParty.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -16,6 +17,10 @@ const c = t.corporate;
 const hosts = getHosts(lang).filter((h) => !sameHostAs[h.slug]);
 // The headline follows the season of the build; the site rebuilds daily.
 const season = seasonOf();
+// In the Christmas season the page points to the Christmas-party page,
+// which exists in English and German.
+const xmas = season === 'christmas' ? christmasCopy[lang === 'de' ? 'de' : 'en'] : undefined;
+const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
 ---
 
 <Base title={c.title} description={c.description} lang={lang} pageClass="page-flush">
@@ -27,6 +32,12 @@ const season = seasonOf();
   <div class="container container-directory">
     {/* Laid out like a shop's collection page: search first, the season's
         headline, occasion tags and filter pills, then the grid. */}
+    {xmas && (
+      <div class="xmas-banner">
+        <p><span>{xmas.kicker}</span>{xmas.banner}</p>
+        <a class="btn btn-primary" href={xmasHref}>{xmas.bannerCta}</a>
+      </div>
+    )}
     <section class="dir-top">
       <HostFilters lang={lang} season={season} cta={c.cta} ctaHref={href(lang, '/contact/')} />
       <HostDirectory hosts={hosts} lang={lang} />

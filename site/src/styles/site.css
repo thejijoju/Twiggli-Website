@@ -4862,3 +4862,76 @@ h1, h2, h3, h4,
 .newsletter-status { margin: 48px 0 88px; padding: 72px 24px; }
 .newsletter-status-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 28px; }
 .newsletter-status-more { font-weight: 700; color: var(--color-accent-700); text-underline-offset: 4px; }
+
+/* — Christmas parties for teams (ChristmasPartyPage.astro) — the
+   newsletter box's handwriting and taped photos, workshop cards from real
+   hosts, and the quote form in the booking form's look on a cream panel. */
+.xmas-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: center; padding: 56px 0 24px; }
+.xmas-kicker { display: inline-block; padding: 6px 14px; border-radius: 999px; background: #fff1e6; color: #b4532a; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.xmas-title { margin: 16px 0 0; font-family: var(--font-heading); font-weight: 700; font-size: clamp(36px, 4.6vw, 54px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
+.xmas-hand { display: inline-block; font-family: 'Caveat', cursive; font-weight: 600; font-size: 1.22em; line-height: 1; letter-spacing: 0; color: var(--color-accent); }
+.xmas-lede { margin: 18px 0 0; max-width: 36em; font-size: 18px; line-height: 1.6; color: var(--color-text-muted); }
+.xmas-facts { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; list-style: none; }
+.xmas-facts li { padding: 7px 14px; border-radius: 999px; background: #fffaf5; border: 1px solid #f1e6da; font-size: 14px; font-weight: 500; }
+.xmas-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 28px; }
+.xmas-link { font-weight: 700; color: var(--color-accent-700); text-decoration: none; }
+.xmas-collage { position: relative; height: 420px; }
+.xmas-collage > img { position: absolute; display: block; object-fit: cover; border-radius: 18px; box-shadow: 0 1px 2px rgba(36, 39, 46, 0.12), 0 2px 6px rgba(36, 39, 46, 0.06); }
+.xmas-c1 { left: 0; top: 24px; width: 54%; height: 300px; transform: rotate(-3deg); }
+.xmas-c2 { position: absolute; left: 46%; top: 0; width: 44%; margin: 0; transform: rotate(3deg); }
+.xmas-c2 .newsletter-paper figcaption { text-align: center; }
+.xmas-c3 { left: 52%; top: 262px; width: 42%; height: 150px; transform: rotate(-2deg); }
+.xmas-note { position: absolute; left: 4%; bottom: 0; width: 230px; margin: 0; padding: 14px 18px; border-radius: 16px; background: #fff; box-shadow: 0 10px 30px rgba(84, 46, 188, 0.14); font-size: 14px; line-height: 1.5; color: var(--color-text-muted); }
+.xmas-note b { display: block; font-size: 15px; color: var(--color-text); }
+.xmas-section { padding: 48px 0 0; }
+.xmas-h2 { margin: 0; font-family: var(--font-heading); font-weight: 700; font-size: clamp(26px, 3vw, 34px); line-height: 1.2; }
+.xmas-sub { margin: 8px 0 0; color: var(--color-text-muted); }
+.xmas-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 26px; }
+.xmas-card { overflow: hidden; border-radius: 20px; background: #fff; border: 1px solid #efe9f5; }
+.xmas-card > img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.xmas-card-body { padding: 16px 18px 18px; }
+.xmas-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #b4532a; }
+.xmas-card h3 { margin: 4px 0 2px; font-size: 19px; line-height: 1.3; }
+.xmas-host { margin: 0; font-size: 14px; color: var(--color-text-muted); }
+.xmas-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.xmas-meta li { padding: 4px 10px; border-radius: 999px; background: #f6f2ff; color: var(--color-accent-700); font-weight: 500; }
+.xmas-ask { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; color: var(--color-accent); text-decoration: none; }
+.xmas-more { margin: 22px 0 0; font-weight: 700; }
+.xmas-more a { color: var(--color-accent-700); text-underline-offset: 4px; }
+.xmas-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 24px 0 0; padding: 0; list-style: none; }
+.xmas-steps li { padding: 22px; border-radius: 20px; background: #fffaf5; }
+.xmas-num { font-family: 'Caveat', cursive; font-weight: 600; font-size: 40px; line-height: 1; color: var(--color-accent); }
+.xmas-steps b { display: block; margin-top: 6px; font-size: 17px; }
+.xmas-steps p { margin: 6px 0 0; font-size: 15px; color: var(--color-text-muted); }
+.xmas-quote { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 48px; margin: 56px 0 72px; padding: 44px; border-radius: 32px; background: #fffaf5; }
+.xmas-quote-title { margin: 0; font-family: 'Caveat', cursive; font-weight: 600; font-size: clamp(40px, 4.5vw, 52px); line-height: 1.05; }
+.xmas-bullets { margin: 18px 0 0; padding-left: 20px; color: var(--color-text-muted); line-height: 1.8; }
+.xmas-form-card { border-radius: 22px; background: #fff; box-shadow: 0 1px 3px rgba(36, 39, 46, 0.08); }
+.xmas-form select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1.5px solid color-mix(in srgb, var(--color-accent) 18%, transparent);
+  border-radius: 12px;
+  background: #fff;
+  font: 400 16px/1.4 var(--font-body);
+  color: var(--color-text);
+}
+.xmas-form .book-field input { border-color: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+/* The season's link on the group-bookings page. */
+.xmas-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin: 20px 0 0; padding: 14px 20px; border-radius: 18px; background: #fffaf5; border: 1px solid #f1e6da; }
+.xmas-banner p { margin: 0; font-weight: 500; }
+.xmas-banner p span { font-family: 'Caveat', cursive; font-weight: 600; font-size: 24px; color: var(--color-accent); margin-right: 6px; }
+@media (max-width: 900px) {
+  .xmas-hero { grid-template-columns: 1fr; padding-top: 32px; }
+  .xmas-collage { height: 360px; max-width: 520px; }
+  .xmas-grid, .xmas-steps { grid-template-columns: 1fr 1fr; }
+  .xmas-quote { grid-template-columns: 1fr; padding: 28px 18px; gap: 24px; }
+}
+@media (max-width: 560px) {
+  .xmas-collage { height: 300px; }
+  .xmas-c1 { height: 220px; }
+  .xmas-c3 { top: 200px; height: 110px; }
+  .xmas-note { display: none; }
+  .xmas-grid, .xmas-steps { grid-template-columns: 1fr; }
+  .xmas-form .book-field { grid-column: 1 / -1; }
+}
