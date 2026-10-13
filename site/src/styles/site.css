@@ -1783,6 +1783,15 @@ a:hover { color: var(--color-accent); }
   max-width: 56ch;
   color: var(--color-text-muted);
 }
+/* A host's intro reads at body size: it is information, not a slogan. */
+.host-head .page-lede { font-size: 16px; line-height: 1.65; max-width: 70ch; }
+/* The host's own words (hostAbout.ts) and logo. */
+.host-logo { display: block; width: 72px; height: 72px; object-fit: contain; border-radius: 14px; margin: 0 0 16px; }
+.host-about { font-size: 16px; line-height: 1.65; color: var(--color-text-muted); margin: 0 0 8px; }
+.host-about p { margin: 0 0 12px; }
+.host-about-title { color: var(--color-text); font-weight: 600; margin-bottom: 6px !important; }
+.host-about ul { margin: 0 0 12px; padding-left: 20px; }
+.host-about li { margin: 2px 0; }
 
 /* — cookie banner — */
 .cookie-consent-set .cookie-banner { display: none; }
@@ -3504,7 +3513,7 @@ a:hover { color: var(--color-accent); }
 }
 .host-blurb {
   margin: 0 0 8px;
-  font-size: 17.5px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--color-text-muted);
 }

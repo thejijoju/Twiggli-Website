@@ -8,7 +8,7 @@ import HostMonogram from './HostMonogram.astro';
 import { getHosts } from '../data/content.ts';
 import {
   absolute, activityCopy, activityHref, clip, formatWhen, hostHref, hostImage, hubExtraCopy, hubHref,
-  pageCopy, sessionIso, workshopHref, workshopLede, workshopTitle, workshopsFor,
+  pageCopy, sessionIso, spellDuration, spellLanguages, workshopHref, workshopLede, workshopTitle, workshopsFor,
 } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -89,7 +89,7 @@ const schema = {
       <span>{w.title}</span>
     </nav>
 
-    <section class="page-head">
+    <section class="page-head host-head">
       <span class="kicker kicker-tight">{host.name} · {activity.short}</span>
       <h1 class="page-title">{w.title}</h1>
       <p class="page-lede">{lede}</p>
@@ -112,9 +112,9 @@ const schema = {
         <p class="host-blurb">{host.blurb}</p>
         <dl class="maker-meta">
           {host.studio && <div><dt>{t.studio}</dt><dd>{host.studio}</dd></div>}
-          <div><dt>{t.duration}</dt><dd>{next.duration ?? host.duration}</dd></div>
+          <div><dt>{t.duration}</dt><dd>{spellDuration(next.duration ?? host.duration, lang)}</dd></div>
           <div><dt>{t.place}</dt><dd>{host.place}</dd></div>
-          <div><dt>{t.languages}</dt><dd>{next.languages ?? host.languages}</dd></div>
+          <div><dt>{t.languages}</dt><dd>{spellLanguages(next.languages ?? host.languages, lang)}</dd></div>
           {next.price && <div><dt>{t.price}</dt><dd>{next.price} · {t.perPerson}</dd></div>}
         </dl>
         <p class="section-more"><a href={hostHref(lang, host)}>{x.backToHost} {host.name} →</a></p>

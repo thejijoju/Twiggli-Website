@@ -932,7 +932,41 @@ export const hostLede = (host: Host, sessions: Session[], lang: Lang): string =>
   const when = next
     ? p.hostWhen(sessions.length, formatWhen(next, lang), next.price ? `, ${next.price}` : '')
     : p.onRequest;
-  return `${open}, ${where}. ${when} ${host.group} · ${host.duration} · ${host.languages}.`;
+  const t = pageCopy[lang];
+  const c = lang === 'fr' ? ' : ' : ': ';
+  return `${open}, ${where}. ${when} ${t.group}${c}${hostGroupText(host, lang)}. ${t.duration}${c}${hostDurationText(host, lang)}. ${t.languages}${c}${hostLanguagesText(host, lang)}.`;
+};
+
+/* The host page spells out what the cards abbreviate: an intro is read,
+   not scanned. "≤10 studio · 4–50 on-site" → "up to 10 studio, 4–50
+   on-site"; "1.5–3 h" → "1.5–3 hours"; "EN · DE" → "English and German". */
+const upTo: Record<Lang, string> = { en: 'up to', de: 'bis', fr: 'jusqu’à', es: 'hasta', it: 'fino a', nl: 'tot', pl: 'do', tr: 'en fazla' };
+const hourUnits: Record<Lang, [RegExp, string, string]> = {
+  en: [/(\d)\s*h\b/g, 'hours', 'hour'],
+  de: [/(\d)\s*Std\./g, 'Stunden', 'Stunde'],
+  fr: [/(\d)\s*h\b/g, 'heures', 'heure'],
+  es: [/(\d)\s*h\b/g, 'horas', 'hora'],
+  it: [/(\d)\s*h\b/g, 'ore', 'ora'],
+  nl: [/(\d)\s*u\b/g, 'uur', 'uur'],
+  pl: [/(\d)\s*godz\./g, 'godziny', 'godzina'],
+  tr: [/(\d)\s*sa\b/g, 'saat', 'saat'],
+};
+const spell = (text: string): string => text.replace(/\s*·\s*/g, ', ');
+export const hostGroupText = (host: Host, lang: Lang): string =>
+  spell(host.group.replace(/≤\s*/g, `${upTo[lang]} `));
+export const hostDurationText = (host: Host, lang: Lang): string => spellDuration(host.duration, lang);
+export const spellDuration = (duration: string, lang: Lang): string => {
+  const [unit, many, one] = hourUnits[lang];
+  return spell(duration.replace(unit, (_m, d: string, offset: number, all: string) =>
+    `${d} ${d === '1' && !/[\d.,–-]/.test(all[offset - 1] ?? '') ? one : many}`));
+};
+export const hostLanguagesText = (host: Host, lang: Lang): string => spellLanguages(host.languages, lang);
+export const spellLanguages = (codes: string, lang: Lang): string => {
+  const names = new Intl.DisplayNames([lang], { type: 'language' });
+  const list = codes.split(/\s*·\s*/).filter(Boolean).map((code) => {
+    try { return names.of(code.toLowerCase()) ?? code; } catch { return code; }
+  });
+  return list.length > 1 ? `${list.slice(0, -1).join(', ')} ${seoPhrases[lang].and} ${list[list.length - 1]}` : list[0] ?? '';
 };
 
 /** Meta description: the lede's opening, cut to fit a result snippet. */
@@ -987,7 +1021,9 @@ export const workshopLede = (w: Workshop, lang: Lang): string => {
   const p = seoPhrases[lang];
   const next = w.sessions[0];
   const price = next.price ? `, ${next.price}` : '';
-  const facts = `${next.duration ?? w.host.duration} · ${next.languages ?? w.host.languages}`;
+  const t = pageCopy[lang];
+  const c = lang === 'fr' ? ' : ' : ': ';
+  const facts = `${t.duration}${c}${spellDuration(next.duration ?? w.host.duration, lang)}. ${t.languages}${c}${spellLanguages(next.languages ?? w.host.languages, lang)}`;
   const open = p.workshopOpen(w.title, w.host.specialty, w.host.name, next.district, namesFormat(w.host.specialty));
   return `${open}. ${p.workshopWhen(w.sessions.length, formatWhen(next, lang), price)} ${facts}.`;
 };

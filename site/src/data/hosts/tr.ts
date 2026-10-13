@@ -18,7 +18,7 @@ export const hosts: HostCopy[] = [
     group: 'Stüdyoda en fazla 20 · gezici 50–100', duration: '2–4 sa', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Tekstil baskı & karma el işi', studio: 'Tuka Creative Club',
     blurb: 'Yetişkinlerin yeniden çocuk olabildiği güvenli bir alan — farkındalık odaklı, yeni başlayanlara uygun el işi: bez çanta baskısı ve boyama, kanaviçe, suluboya, vizyon panosu hazırlama ve cam boyama.',
-    group: 'Stüdyoda ≤10 · yerinde 4–50', duration: '1,5–3 sa', place: 'Ohma Studio / yerinde', languages: 'EN · DE · RO · HU', priceNote: 'başlangıç fiyatı' },
+    group: 'Stüdyoda en fazla 10 · yerinde 4–50', duration: '1,5–3 sa', place: 'Ohma Studio, Friedrichshain / yerinde', languages: 'EN · DE · RO · HU', priceNote: 'başlangıç fiyatı' },
   { slug: 'drawingwalks', name: 'Ditte', specialty: 'Kentsel eskiz yürüyüşleri', studio: 'Drawing Walks',
     blurb: 'Aynı anda hem şehir turu hem çizim atölyesi. Ditte seninle bir mahalleyi adımlıyor, hikâyelerini anlatıyor ve yol boyunca hızlı, eğlenceli eskiz egzersizleri veriyor — bir görme biçimi olarak çizim; bu da daha yakından bakmanı ve aksi halde fark etmeden geçeceğin ayrıntıları yakalamanı sağlıyor. Bir eskiz defteri ve birkaç malzeme sana veriliyor; sen havaya göre giyinip buluşma noktasına geliyorsun. İster çocukluğundan beri hiç çizmemiş ol, ister eskiz defterin çantandan hiç çıkmasın, kapılar sana açık.',
     group: 'En fazla 15 kişi', duration: '2,75 sa', place: 'Berlin genelinde buluşma noktaları', languages: 'EN' },

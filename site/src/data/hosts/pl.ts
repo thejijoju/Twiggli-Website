@@ -18,7 +18,7 @@ export const hosts: HostCopy[] = [
     group: 'Do 20 w pracowni · 50–100 mobilnie', duration: '2–4 godz.', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Druk na tekstyliach & rękodzieło mieszane', studio: 'Tuka Creative Club',
     blurb: 'Bezpieczna przestrzeń, w której dorośli mogą znów być dziećmi — uważne, przyjazne dla początkujących rękodzieło: nadruki i malowanie na torbach, haft krzyżykowy, akwarela, tworzenie tablic marzeń i malowanie na szkle.',
-    group: '≤10 w pracowni · 4–50 na miejscu', duration: '1,5–3 godz.', place: 'Ohma Studio / u was na miejscu', languages: 'EN · DE · RO · HU', priceNote: 'cena wyjściowa' },
+    group: 'Do 10 osób w pracowni · 4–50 na miejscu', duration: '1,5–3 godz.', place: 'Ohma Studio, Friedrichshain / u was na miejscu', languages: 'EN · DE · RO · HU', priceNote: 'cena wyjściowa' },
   { slug: 'drawingwalks', name: 'Ditte', specialty: 'Spacery ze szkicownikiem po mieście', studio: 'Drawing Walks',
     blurb: 'Wycieczka po mieście i warsztaty rysunku w jednym. Ditte przechadza się z tobą po dzielnicy, opowiada jej historie i po drodze zadaje szybkie, zabawne ćwiczenia szkicowe — rysowanie jako sposób patrzenia, dzięki któremu przyglądasz się uważniej i wyłapujesz szczegóły, które inaczej umknęłyby ci niezauważone. Szkicownik i garść materiałów dostajesz na miejscu; ty ubierasz się stosownie do pogody i przychodzisz na miejsce zbiórki. Niezależnie od tego, czy twoje ostatnie rysunki pochodzą z dzieciństwa, czy twój szkicownik nigdy nie opuszcza torby — zapraszamy.',
     group: 'Do 15 osób', duration: '2,75 godz.', place: 'Miejsca zbiórki w całym Berlinie', languages: 'EN' },

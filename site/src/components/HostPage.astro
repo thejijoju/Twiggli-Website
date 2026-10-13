@@ -7,10 +7,11 @@ import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
 import { getHosts } from '../data/content.ts';
+import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import {
-  activityCopy, activityHref, formatWhen, hostDescription, hostH1, hostHref, hostImage,
-  hostLede, hostTitle, hostsIn, hubExtraCopy, hubHref, nextSessionByHost, onRequestFor, pageCopy,
+  activityCopy, activityHref, formatWhen, hostDescription, hostDurationText, hostGroupText, hostH1, hostHref, hostImage,
+  hostLanguagesText, hostLede, hostTitle, hostsIn, hubExtraCopy, hubHref, nextSessionByHost, onRequestFor, pageCopy,
   sessionsFor, workshopHref, workshopsFor,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
@@ -31,6 +32,9 @@ const workshops = workshopsFor(host.slug, lang);
 const onRequest = onRequestFor(host.slug, lang);
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
+// The host's own words and logo, where they sent us some (hostAbout.ts).
+const about = hostAbout[host.slug]?.[lang];
+const logo = hostLogos[host.slug];
 
 // The price the host gave for groups, as the group page shows it; otherwise
 // the spread of their dated workshops (which can include a multi-session
@@ -101,8 +105,18 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
         )}
       </div>
       <div class="host-facts">
-        {/* Three lines, fading out; a tap opens the rest (lib/fadetext.ts). */}
-        <div class="fade-text" data-fade><p class="host-blurb">{host.blurb}</p></div>
+        {logo && <img class="host-logo" src={logo} alt={host.studio ?? host.name} width="72" height="72" loading="lazy" decoding="async" />}
+        {about ? (
+          <div class="host-about">
+            {about.paras.map((para) => <p>{para}</p>)}
+            <p class="host-about-title">{about.listTitle}</p>
+            <ul>{about.list.map((item) => <li>{item}</li>)}</ul>
+            <p>{about.closing}</p>
+          </div>
+        ) : (
+          /* Three lines, fading out; a tap opens the rest (lib/fadetext.ts). */
+          <div class="fade-text" data-fade><p class="host-blurb">{host.blurb}</p></div>
+        )}
         {host.instagram && (
           <a class="host-insta" href={`https://www.instagram.com/${host.instagram}/`} target="_blank" rel="noopener" aria-label={`Instagram @${host.instagram}`} title={`@${host.instagram}`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" /></svg>
@@ -110,10 +124,10 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
         )}
         <dl class="maker-meta">
           {host.studio && <div><dt>{t.studio}</dt><dd>{host.studio}</dd></div>}
-          <div><dt>{t.group}</dt><dd>{host.group}</dd></div>
-          <div><dt>{t.duration}</dt><dd>{host.duration}</dd></div>
+          <div><dt>{t.group}</dt><dd>{hostGroupText(host, lang)}</dd></div>
+          <div><dt>{t.duration}</dt><dd>{hostDurationText(host, lang)}</dd></div>
           <div><dt>{t.place}</dt><dd>{host.place}</dd></div>
-          <div><dt>{t.languages}</dt><dd>{host.languages}</dd></div>
+          <div><dt>{t.languages}</dt><dd>{hostLanguagesText(host, lang)}</dd></div>
           <div><dt>{t.price}</dt><dd>{priceText}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
         </dl>
         {/* Opens our booking form on the page as a group request, this host
