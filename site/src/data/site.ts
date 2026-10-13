@@ -24,6 +24,11 @@ export const requestEmail = 'jirel.kuenen@gmail.com';
  *  unsubscribes. */
 export const brevoFormUrl = '';
 
+/** The same for the corporate page's box: a second Brevo form on its own
+ *  list (companies and groups), kept apart from the weekly email's lists.
+ *  Empty: those signups come to requestEmail as "Team newsletter signup". */
+export const brevoTeamsFormUrl = '';
+
 /** Shown on the legal pages, which exist in English and German only.
  *  Update when the documents change. */
 const legalUpdatedText: Record<Lang, string> = {

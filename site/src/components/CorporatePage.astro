@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HostDirectory from './HostDirectory.astro';
 import HostFilters from './HostFilters.astro';
+import Newsletter from './Newsletter.astro';
 import { getHosts, sameHostAs } from '../data/content.ts';
 import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
@@ -57,7 +58,8 @@ const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
       </div>
     </section>
 
-    <hr class="rule" />
+    {/* News for companies and groups, on its own list. */}
+    <Newsletter lang={lang} audience="teams" />
 
     <section class="split split-text-first">
       <div>

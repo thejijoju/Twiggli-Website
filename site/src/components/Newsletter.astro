@@ -2,21 +2,29 @@
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
-import { requestEmail, brevoFormUrl, getSiteData } from '../data/site.ts';
+import { requestEmail, brevoFormUrl, brevoTeamsFormUrl, getSiteData } from '../data/site.ts';
 import { withBase } from '../lib/url.ts';
 
 interface Props {
   lang?: Lang;
   /** The footer's one-line version: no kicker or lede, light on dark. */
   compact?: boolean;
+  /** 'teams': the corporate page's box, for companies and groups — its own
+   *  copy and photos, and its own Brevo list so they don't get the weekly. */
+  audience?: 'everyone' | 'teams';
 }
-const { lang = DEFAULT_LANG, compact = false } = Astro.props;
+const { lang = DEFAULT_LANG, compact = false, audience = 'everyone' } = Astro.props;
 
-const copy = ui(lang).newsletter;
-const id = compact ? 'newsletter-email-footer' : 'newsletter-email';
+const teams = audience === 'teams';
+const base = ui(lang).newsletter;
+const copy = teams ? { ...base, ...base.teams } : base;
+const brevo = teams ? brevoTeamsFormUrl : brevoFormUrl;
+const id = compact ? 'newsletter-email-footer' : teams ? 'newsletter-email-teams' : 'newsletter-email';
 const privacy = getSiteData(lang).legalLinks[1];
 // Stills from scripts/mail-crops.sh, one per craft, in caption order.
-const PICS = ['qian', 'ceramic-kingdom', 'galleria-lucia-dipdye', 'jem-sushi', 'techno', 'karen-rose-duftkerzen'];
+const PICS = teams
+  ? ['mampe', 'jem-sushi', 'galleria-lucia-dipdye', 'qian', 'evelyn', 'angelo']
+  : ['qian', 'ceramic-kingdom', 'galleria-lucia-dipdye', 'jem-sushi', 'techno', 'karen-rose-duftkerzen'];
 // How each one is kept, in turn — so the three a phone shows are one of each.
 const KINDS = ['card', 'taped', 'stamp'] as const;
 
@@ -38,7 +46,7 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
     <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
   </div>
 ) : (
-  <section class="newsletter" id="newsletter">
+  <section class="newsletter" id={teams ? 'team-newsletter' : 'newsletter'}>
     {/* Real workshop photos lying flat on the box, each kept a little
         differently: a plain rounded card, one taped down at two corners,
         one as a postage stamp. */}
@@ -59,16 +67,16 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
     <div class="newsletter-inner">
       <h2 class="newsletter-title">{copy.heading}</h2>
       <svg class="newsletter-squiggle" viewBox="0 0 220 14" aria-hidden="true">
-        <defs><linearGradient id="nl-ink" x1="0" x2="1"><stop offset="0" stop-color="#ff8a5c" /><stop offset=".5" stop-color="#e64ab4" /><stop offset="1" stop-color="#6a3eec" /></linearGradient></defs>
-        <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke="url(#nl-ink)" stroke-width="3.5" stroke-linecap="round" />
+        <defs><linearGradient id={`nl-ink-${audience}`} x1="0" x2="1"><stop offset="0" stop-color="#ff8a5c" /><stop offset=".5" stop-color="#e64ab4" /><stop offset="1" stop-color="#6a3eec" /></linearGradient></defs>
+        <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke={`url(#nl-ink-${audience})`} stroke-width="3.5" stroke-linecap="round" />
       </svg>
       <p class="newsletter-lede">{copy.lede}</p>
-      <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-brevo={brevoFormUrl || undefined} data-lang={lang} novalidate>
+      <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-brevo={brevo || undefined} data-lang={lang} data-audience={audience} novalidate>
         <label for={id} class="sr-only">{copy.label}</label>
         <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
         <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
       </form>
-      <p class="newsletter-note" data-newsletter-thanks hidden>{brevoFormUrl ? copy.checkInbox : copy.thanks}</p>
+      <p class="newsletter-note" data-newsletter-thanks hidden>{brevo ? copy.checkInbox : copy.thanks}</p>
       <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
       <p class="newsletter-consent">{copy.consent}{' '}<a href={privacy.href}>{privacy.label}</a></p>
     </div>
@@ -104,15 +112,16 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
           if (thanks) thanks.hidden = false;
           return;
         }
+        const teams = form.dataset.audience === 'teams';
         const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
-            Type: 'Newsletter signup',
+            Type: teams ? 'Team newsletter signup' : 'Newsletter signup',
             email,
             Language: form.dataset.lang ?? '',
             'Signed up on': location.href,
-            _subject: `Newsletter signup: ${email}`,
+            _subject: `${teams ? 'Team newsletter' : 'Newsletter'} signup: ${email}`,
             _template: 'table',
             _captcha: 'false',
           }),

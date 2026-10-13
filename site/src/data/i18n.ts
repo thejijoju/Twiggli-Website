@@ -39,6 +39,13 @@ const en = {
     pics: ['tea & clay', 'pottery wheel', 'candles', 'sushi', 'painting', 'scents'],
     consent: 'Once a week, no spam, unsubscribe anytime.',
     thanks: 'You’re on the list! Our next email is on its way soon.', error: 'That didn’t go through. Please try again.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Your next team event, made by hand',
+      lede: 'For companies and groups: new workshops for teams, seasonal ideas from Christmas parties to summer offsites, and dates our hosts still have free. Only when there’s something worth sharing.',
+      consent: 'No spam, unsubscribe anytime.',
+      pics: ['tastings', 'sushi night', 'candle dipping', 'tea & clay', 'embroidery', 'coffee roasting'],
+    },
   },
   teaser: {
     kicker: 'Happening today',
@@ -191,6 +198,13 @@ const de: UiCopy = {
     pics: ['Tee & Ton', 'Töpferscheibe', 'Kerzen', 'Sushi', 'Malen', 'Düfte'],
     consent: 'Einmal pro Woche, kein Spam, jederzeit abbestellbar.',
     thanks: 'Du bist dabei! Unsere nächste E-Mail kommt bald.', error: 'Das hat nicht geklappt. Bitte versuch es noch einmal.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Euer nächstes Teamevent, selbst gemacht',
+      lede: 'Für Firmen und Gruppen: neue Workshops für Teams, Ideen für jede Saison von der Weihnachtsfeier bis zum Sommer-Offsite und Termine, die bei unseren Gastgebern noch frei sind. Nur wenn es wirklich etwas Neues gibt.',
+      consent: 'Kein Spam, jederzeit abbestellbar.',
+      pics: ['Tastings', 'Sushi-Abend', 'Kerzen färben', 'Tee & Ton', 'Sticken', 'Kaffee rösten'],
+    },
   },
   teaser: {
     kicker: 'Heute los',
@@ -341,6 +355,13 @@ const fr: UiCopy = {
     pics: ['thé & argile', 'tour de potier', 'bougies', 'sushi', 'peinture', 'parfums'],
     consent: 'Une fois par semaine, sans spam, désinscription à tout moment.',
     thanks: 'C’est fait ! Notre prochain e-mail arrive bientôt.', error: 'L’envoi a échoué. Merci de réessayer.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Votre prochain événement d’équipe, fait main',
+      lede: 'Pour les entreprises et les groupes : nouveaux ateliers pour équipes, idées de saison, de la fête de Noël au séminaire d’été, et les dates encore libres chez nos hôtes. Seulement quand il y a du nouveau.',
+      consent: 'Pas de spam, désinscription à tout moment.',
+      pics: ['dégustations', 'soirée sushi', 'bougies', 'thé & argile', 'broderie', 'torréfaction'],
+    },
   },
   teaser: {
     kicker: "Aujourd'hui",
@@ -491,6 +512,13 @@ const es: UiCopy = {
     pics: ['té y barro', 'torno', 'velas', 'sushi', 'pintura', 'aromas'],
     consent: 'Una vez por semana, sin spam, date de baja cuando quieras.',
     thanks: '¡Ya estás dentro! Pronto te llega nuestro próximo email.', error: 'No se ha podido enviar. Inténtalo de nuevo.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Vuestro próximo evento de equipo, hecho a mano',
+      lede: 'Para empresas y grupos: nuevos talleres para equipos, ideas para cada temporada, de la cena de Navidad al offsite de verano, y fechas que nuestros anfitriones aún tienen libres. Solo cuando hay algo que contar.',
+      consent: 'Sin spam, date de baja cuando quieras.',
+      pics: ['catas', 'noche de sushi', 'velas', 'té y barro', 'bordado', 'tostar café'],
+    },
   },
   teaser: {
     kicker: 'Hoy en Berlín',
@@ -641,6 +669,13 @@ const it: UiCopy = {
     pics: ['tè e argilla', 'tornio', 'candele', 'sushi', 'pittura', 'profumi'],
     consent: 'Una volta a settimana, niente spam, disiscrizione quando vuoi.',
     thanks: 'Fatto! La nostra prossima email arriva presto.', error: 'Non è andata a buon fine. Riprova.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Il vostro prossimo evento di team, fatto a mano',
+      lede: 'Per aziende e gruppi: nuovi workshop per team, idee per ogni stagione, dalla festa di Natale all’offsite estivo, e le date ancora libere dei nostri host. Solo quando c’è qualcosa da raccontare.',
+      consent: 'Niente spam, disiscrizione in qualsiasi momento.',
+      pics: ['degustazioni', 'serata sushi', 'candele', 'tè e argilla', 'ricamo', 'tostatura caffè'],
+    },
   },
   teaser: {
     kicker: 'Oggi a Berlino',
@@ -791,6 +826,13 @@ const nl: UiCopy = {
     pics: ['thee & klei', 'draaischijf', 'kaarsen', 'sushi', 'schilderen', 'geuren'],
     consent: 'Eén keer per week, geen spam, altijd af te melden.',
     thanks: 'Je staat op de lijst! Onze volgende mail komt eraan.', error: 'Dat is niet gelukt. Probeer het opnieuw.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Jullie volgende teamuitje, met de hand gemaakt',
+      lede: 'Voor bedrijven en groepen: nieuwe workshops voor teams, ideeën voor elk seizoen, van kerstborrel tot zomeroffsite, en data die onze hosts nog vrij hebben. Alleen als er iets te vertellen is.',
+      consent: 'Geen spam, altijd af te melden.',
+      pics: ['proeverijen', 'sushiavond', 'kaarsen', 'thee & klei', 'borduren', 'koffie branden'],
+    },
   },
   teaser: {
     kicker: 'Vandaag',
@@ -941,6 +983,13 @@ const pl: UiCopy = {
     pics: ['herbata i glina', 'koło garncarskie', 'świece', 'sushi', 'malowanie', 'zapachy'],
     consent: 'Raz w tygodniu, bez spamu, rezygnacja w każdej chwili.',
     thanks: 'Gotowe! Nasz kolejny e-mail już wkrótce.', error: 'Nie udało się. Spróbuj ponownie.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Wasz następny event firmowy, zrobiony ręcznie',
+      lede: 'Dla firm i grup: nowe warsztaty dla zespołów, pomysły na każdy sezon, od wigilii firmowej po letni wyjazd, i terminy, które nasi gospodarze mają jeszcze wolne. Tylko wtedy, gdy jest coś nowego.',
+      consent: 'Bez spamu, wypisz się w każdej chwili.',
+      pics: ['degustacje', 'wieczór sushi', 'świece', 'herbata i glina', 'haft', 'palenie kawy'],
+    },
   },
   teaser: {
     kicker: 'Dziś w Berlinie',
@@ -1098,6 +1147,13 @@ const tr: UiCopy = {
     pics: ['çay & kil', 'çömlek çarkı', 'mumlar', 'suşi', 'resim', 'kokular'],
     consent: 'Haftada bir, spam yok, istediğin zaman ayrıl.',
     thanks: 'Listedesiniz! Bir sonraki e-postamız yakında geliyor.', error: 'Gönderilemedi. Lütfen tekrar deneyin.',
+    // The corporate page's box: news for companies and groups.
+    teams: {
+      heading: 'Bir sonraki ekip etkinliğiniz, el yapımı',
+      lede: 'Şirketler ve gruplar için: ekiplere yeni atölyeler, yılbaşı partisinden yaz offsite’ına her mevsime fikirler ve ev sahiplerimizin hâlâ boş olan tarihleri. Sadece anlatacak bir şey olduğunda.',
+      consent: 'Spam yok, istediğin zaman abonelikten çık.',
+      pics: ['tadımlar', 'suşi gecesi', 'mumlar', 'çay & kil', 'nakış', 'kahve kavurma'],
+    },
   },
   teaser: {
     kicker: 'Bugün Berlin’de',
