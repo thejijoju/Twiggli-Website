@@ -85,6 +85,8 @@ const c = bookingCopy[lang];
 </dialog>
 
 <script>
+  import { track } from '../lib/track.ts';
+
   // A partner host's own booking page (partners.ts): the link opens as
   // usual, and our discount code goes to the clipboard on the way, with a
   // word saying so, so it is ready to paste at their checkout.
@@ -280,6 +282,7 @@ const c = bookingCopy[lang];
           }),
         });
         if (!res.ok) throw new Error(String(res.status));
+        track('request-sent', { kind, host: picked.bookHost ?? '', title: picked.bookTitle ?? '', lang: dialog.dataset.lang ?? '' });
         form.hidden = true;
         if (sent) sent.hidden = false;
         form.reset();

@@ -39,6 +39,8 @@ export function track(name: string, props: Props = {}) {
 function actionOf(link: Element): string {
   if (link.classList.contains('session-book')) return 'book';
   if (link.classList.contains('session-title')) return 'title';
+  if (link.classList.contains('date-book')) return 'book';
+  if (link.classList.contains('date-title')) return 'title';
   if (link.classList.contains('maker-request')) return 'request';
   if (link.closest('.session-thumb')) return 'tile';
   if (link.closest('.maker-media')) return 'tile';
@@ -92,6 +94,24 @@ export function startOutboundTracking() {
       const link = (event.target as Element | null)?.closest?.('a[href]');
       if (!link) return;
       const href = link.getAttribute('href') ?? '';
+
+      // A Book / Request link opens our request form (BookingDialog) and
+      // the visitor stays here; its href is only the fallback without
+      // scripts. Counted as the form opening, never as a click away.
+      const form = (link as HTMLElement).dataset.book;
+      if (form) {
+        const d = (link as HTMLElement).dataset;
+        track('request-form', {
+          kind: form,
+          action: actionOf(link),
+          ...cardOf(link),
+          host: d.bookHost ?? '',
+          title: d.bookTitle ?? '',
+          ...(d.bookDate ? { date: d.bookDate } : {}),
+          lang: document.documentElement.lang || 'en',
+        });
+        return;
+      }
 
       // A request-by-mail is a conversion too — several hosts take bookings
       // no other way — so it counts alongside a click to a booking page.

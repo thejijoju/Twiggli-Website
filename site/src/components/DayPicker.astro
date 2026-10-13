@@ -316,14 +316,14 @@ const formatDeadline = (iso: string): string => {
                             the app — then prefers the workshop's own scraped
                             picture over the host's stock tile. Thumbnail
                             and title both lead where the Book button does:
-                            the host's own site for real sessions. */}
+                            the request form (or a partner's own page). */}
                         {/* A reel tile carries no link: tapping it plays the
                             clip, and the title beside it already goes to the
                             host. A still keeps the link, as there is nothing
                             else for a tap to do. */}
                         <a
                           class="session-thumb"
-                          {...(s.host.video ? {} : { href: s.bookUrl, target: '_blank', rel: 'noopener' })}
+                          {...(s.host.video ? {} : { href: s.bookUrl, ...bookAttrs(s) })}
                           tabindex="-1"
                           aria-hidden="true"
                         >
@@ -468,7 +468,7 @@ const formatDeadline = (iso: string): string => {
                 exists, otherwise the stock photo. */}
             <a
               class="session-thumb"
-              {...(o.host.video ? {} : { href: o.bookUrl, target: '_blank', rel: 'noopener' })}
+              {...(o.host.video ? {} : { href: o.bookUrl, ...inquireAttrs(o) })}
               tabindex="-1"
               aria-hidden="true"
             >
