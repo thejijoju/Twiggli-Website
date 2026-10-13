@@ -114,7 +114,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <div><dt>{t.duration}</dt><dd>{host.duration}</dd></div>
           <div><dt>{t.place}</dt><dd>{host.place}</dd></div>
           <div><dt>{t.languages}</dt><dd>{host.languages}</dd></div>
-          <div><dt>{t.price}</dt><dd>{priceText}</dd></div>
+          <div><dt>{t.price}</dt><dd>{priceText}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
         </dl>
         {/* Opens our booking form on the page as a group request, this host
             and their price filled in; without scripts, the contact form. */}
