@@ -15,7 +15,8 @@ const t = ui(lang);
 const c = t.corporate;
 // One card per person: a host listed twice shows once, under the card
 // that carries the team events.
-const hosts = getHosts(lang).filter((h) => !sameHostAs[h.slug]);
+// Only hosts we can show: a card with nothing but a monogram sells nobody.
+const hosts = getHosts(lang).filter((h) => !sameHostAs[h.slug] && (h.video || h.photo || h.wide));
 // The headline follows the season of the build; the site rebuilds daily.
 const season = seasonOf();
 // In the Christmas season the page points to the Christmas-party page,
