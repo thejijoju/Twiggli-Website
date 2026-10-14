@@ -11,6 +11,8 @@ import {
   occasionHref, occasionSessions, pageCopy,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
+import { hubShelvesCopy, HUB_PICK } from '../data/hubShelves.ts';
+import { formatDay } from '../data/seo.ts';
 
 interface Props {
   lang: Lang;
@@ -32,6 +34,27 @@ const perActivity = ACTIVITY_ORDER.map((a) => ({
 const hosts = getHosts(lang)
   .filter(hasMedia)
   .sort((a, b) => a.name.localeCompare(b.name, lang));
+const h = hubShelvesCopy[lang];
+
+/* The featured host: the one named in HUB_PICK, else whoever with a reel
+   has the most dates in the coming week. */
+const weekCount = (slug: string) => sessions.filter((s) => s.host.slug === slug && s.dayOffset < 7).length;
+const pick = hosts.find((x) => x.slug === HUB_PICK && x.video)
+  ?? hosts.filter((x) => x.video).sort((a, b) => weekCount(b.slug) - weekCount(a.slug))[0];
+/* Its next three dates, one per day: two workshops on the same Saturday
+   read as a duplicate on a chip. */
+const pickDates = pick
+  ? [...new Map(sessions.filter((s) => s.host.slug === pick.slug).map((s) => [s.dayOffset, s] as const)).values()].slice(0, 3)
+  : [];
+
+/* One row of reels per activity, soonest date first; hosts with no public
+   date close the row. */
+const SHELF_MAX = 10;
+const shelves = perActivity.map((a) => {
+  const list = hostsIn(a.key, lang).sort((x, y) =>
+    (next.get(x.slug)?.dayOffset ?? 999) - (next.get(y.slug)?.dayOffset ?? 999));
+  return { ...a, list, shown: list.slice(0, SHELF_MAX) };
+}).filter((a) => a.list.length);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -48,29 +71,80 @@ const schema = {
 
 <Base title={copy.title} description={copy.description} lang={lang}>
   <div class="container">
-    <section class="page-head">
-      <span class="kicker">{copy.kicker}</span>
-      <h1 class="page-title">{copy.h1}</h1>
-      <p class="page-lede">{copy.lede}</p>
-      <p class="page-facts">{t.hosts(hosts.length)} · {t.dates(sessions.length)}</p>
+    <section class="hub-top">
+      <div class="hub-intro">
+        <span class="kicker">{copy.kicker}</span>
+        <h1 class="hub-title">{copy.h1},<span class="hub-hand"> {h.hand}</span></h1>
+        <p class="page-lede">{copy.lede}</p>
+        <p class="page-facts">{t.hosts(hosts.length)} · {t.dates(sessions.length)}</p>
+      </div>
+      {pick && (
+        <a class="hub-pick" href={hostHref(lang, pick)}>
+          <span class="hub-pick-media">
+            <img src={pick.poster} alt="" decoding="async" />
+            <video class="hub-pick-video" src={pick.video} poster={pick.poster} muted loop playsinline preload="metadata" data-autoplay></video>
+          </span>
+          <span class="hub-pick-body">
+            <span class="hub-pick-kicker">{h.pick}</span>
+            <span class="hub-pick-title">{pick.specialty}</span>
+            <span class="hub-pick-host">{pick.name}</span>
+            {pickDates.length > 0 && (
+              <span class="hub-pick-dates">
+                {pickDates.map((s) => <span>{formatWhen(s, lang)}</span>)}
+              </span>
+            )}
+            <span class="btn btn-primary hub-pick-cta">{h.seeDates}</span>
+          </span>
+        </a>
+      )}
     </section>
 
-    <hr class="rule" />
+    <nav class="hub-chips" aria-label={h.jump}>
+      {shelves.map((a) => {
+        const face = a.list.find((x) => x.poster || x.photo);
+        return (
+          <a href={`#${a.key}`} class="hub-chip">
+            {face && <img src={face.poster ?? face.photo} alt="" loading="lazy" decoding="async" />}
+            {a.copy.short}
+          </a>
+        );
+      })}
+    </nav>
 
-    <section class="section">
-      <ul class="activity-cards">
-        {perActivity.map((a) => (
-          <li>
-            <a class="activity-card" href={activityHref(lang, a.key)}>
-              <span class="activity-card-title">{a.copy.h1}</span>
-              <span class="activity-card-desc">{a.copy.lede}</span>
-              <span class="activity-card-facts">{t.hosts(a.hosts)} · {t.dates(a.dates)}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-      <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
-    </section>
+    {shelves.map((a) => (
+      <section class="hub-shelf" id={a.key}>
+        <div class="hub-shelf-head">
+          <h2 class="hub-shelf-title"><a href={activityHref(lang, a.key)}>{a.copy.short}</a></h2>
+          <span class="hub-shelf-facts">{t.dates(a.dates)}</span>
+          <a class="hub-shelf-all" href={activityHref(lang, a.key)}>{h.seeAll(a.list.length)} →</a>
+        </div>
+        <ul class="hub-row">
+          {a.shown.map((host) => {
+            const n = next.get(host.slug);
+            const still = host.poster ?? host.photo ?? host.wide;
+            return (
+              <li class="hub-card">
+                <a href={hostHref(lang, host)}>
+                  <span class="hub-card-media">
+                    {still && <img src={still} alt="" loading="lazy" decoding="async" />}
+                    {host.video && <video class="hub-card-video" src={host.video} muted loop playsinline preload="none"></video>}
+                    <span class="hub-card-date">{n ? formatDay(n.dayOffset, lang) : h.onRequest}</span>
+                  </span>
+                  <span class="hub-card-name">{host.name}</span>
+                  <span class="hub-card-spec">{host.specialty}</span>
+                </a>
+              </li>
+            );
+          })}
+          {a.list.length > SHELF_MAX && (
+            <li class="hub-card hub-card-more">
+              <a href={activityHref(lang, a.key)}><span>{h.seeAll(a.list.length)} →</span></a>
+            </li>
+          )}
+        </ul>
+      </section>
+    ))}
+    <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
 
     <hr class="rule" />
 
@@ -114,3 +188,29 @@ const schema = {
   </div>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 </Base>
+
+<script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // The rows play one reel at a time, walking along whatever is on screen
+  // (lib/reelwalk.ts, as on the calendar and the directory).
+  const reels = Array.from(document.querySelectorAll<HTMLElement>('.hub-card'))
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.hub-card-media'),
+      video: card.querySelector<HTMLVideoElement>('.hub-card-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+  startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.6, startAt: 0, step: 1, holdMs: 3000 });
+
+  // The pick plays whenever it is on screen, unless the reader asked for
+  // less motion.
+  const pick = document.querySelector<HTMLVideoElement>('.hub-pick-video[data-autoplay]');
+  if (pick && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    pick.addEventListener('playing', () => pick.parentElement?.classList.add('is-live'));
+    new IntersectionObserver(([e]) => {
+      if (e?.isIntersecting) pick.play().catch(() => {});
+      else pick.pause();
+    }, { threshold: 0.3 }).observe(pick);
+  }
+</script>
