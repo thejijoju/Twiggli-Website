@@ -2,8 +2,8 @@
 /** An occasion's page — the weekend, evenings after work, classes for
  *  children — as a day-by-day list of the real sessions that fit it. */
 import Base from '../layouts/Base.astro';
-import HostDayCards from './HostDayCards.astro';
-import { OCCASIONS, absolute, byDay, formatDay, hubExtraCopy, hubHref, occasionCopy, occasionHref, occasionSessions, pageCopy, type Occasion } from '../data/seo.ts';
+import DayList from './DayList.astro';
+import { OCCASIONS, absolute, byDay, hubExtraCopy, hubHref, occasionCopy, occasionHref, occasionSessions, pageCopy, type Occasion } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
@@ -18,6 +18,7 @@ const sessions = occasionSessions(occasion, lang);
 const hosts = new Set(sessions.map((s) => s.host.slug)).size;
 // Enough days to fill a page; the calendar has the rest.
 const days = byDay(sessions).slice(0, 14);
+const daySessions = days.flatMap((d) => d[1]);
 const pageUrl = absolute(occasionHref(lang, occasion));
 const schema = {
   '@context': 'https://schema.org',
@@ -47,12 +48,9 @@ const schema = {
     <hr class="rule" />
 
     <section class="section" id="dates">
-      {days.length ? days.map(([offset, list]) => (
-        <div class="dates-day">
-          <h2 class="dates-day-head">{formatDay(offset, lang)}</h2>
-          <HostDayCards sessions={list} lang={lang} />
-        </div>
-      )) : (
+      {days.length ? (
+        <DayList sessions={daySessions} lang={lang} />
+      ) : (
         <p class="section-lede">{copy.empty}</p>
       )}
       <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>

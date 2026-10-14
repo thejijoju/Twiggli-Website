@@ -203,7 +203,7 @@ const SOURCES = [
     district: 'Prenzlauer Berg' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia — workshops', mode: 'shopify',
     url: 'https://www.gallerialucia.com/collections/workshops/products.json?limit=250',
-    district: 'Lichtenberg' },
+    district: 'Prenzlauer Berg' },
   // Each baking date on the page carries its own eventfrog.de ticket link,
   // and Eventfrog serves a .ics per event with the exact start/end — fully
   // automatic, new dates appear on their own. €55 is the organizer-set

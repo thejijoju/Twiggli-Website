@@ -93,7 +93,7 @@ export const hosts: HostCopy[] = [
     group: '4–12', duration: '2–3 sa', place: 'Berlin', languages: 'DE' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Kokulu mum atölyeleri', studio: 'Galleria Lucia Atelier',
     blurb: 'Tarihi bir Berlin sanatçı binasındaki gerçek bir mum atölyesinde kendi kokulu mumunu tasarla — kavanoz rengini, premium koku yağlarını, mum renklerini ve kristalleri seç, kendi etiketinle bitir. %100 soya mumu, vegan ve sürdürülebilir, içecekler dahil.',
-    group: 'En fazla 10 kişi', duration: '1,5–2 sa', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+    group: 'En fazla 10 kişi', duration: '1,5–2 sa', place: 'Oderberger Str. 20, Berlin', languages: 'EN' },
   { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Arıcılık & ballı hamur işi', studio: 'Imkerei am Pflanzgarten',
     blurb: 'Berlin-Kaulsdorf’taki profesyonel bir Bioland arılığından arıcılığı öğren: 20’ye kadar gerçek arı kolonisiyle uygulamalı başlangıç kursları, bir teori dersi ve ballı zencefilli kurabiye atölyeleri — geleneksel Lebkuchen’i balla pişir ve yaptıklarını eve götür.',
     group: '≤ 17', duration: '3–4 sa', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },

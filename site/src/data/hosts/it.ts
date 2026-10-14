@@ -93,7 +93,7 @@ export const hosts: HostCopy[] = [
     group: '4–12', duration: '2–3 h', place: 'Berlino', languages: 'DE' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Workshop di candele profumate', studio: 'Galleria Lucia Atelier',
     blurb: 'Progetta la tua candela profumata in un vero atelier di candele all’interno di uno storico edificio di artisti berlinese — scegli il colore del barattolo, oli profumati premium, colori della cera e cristalli, e concludi con la tua etichetta personale. 100% cera di soia, vegana e sostenibile, bevande incluse.',
-    group: 'Fino a 10', duration: '1.5–2 h', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+    group: 'Fino a 10', duration: '1.5–2 h', place: 'Oderberger Str. 20, Berlin', languages: 'EN' },
   { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Apicoltura & dolci al miele', studio: 'Imkerei am Pflanzgarten',
     blurb: 'Impara l’apicoltura da un apiario professionale Bioland a Berlin-Kaulsdorf: corsi pratici per principianti con fino a 20 vere colonie di api, una lezione teorica, e workshop di pan di zenzero al miele — prepara i tradizionali Lebkuchen con il miele e porta a casa le tue creazioni.',
     group: '≤ 17', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },

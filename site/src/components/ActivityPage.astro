@@ -4,7 +4,7 @@
  *  across all of them with times and Book links, then the other
  *  activities. The head terms people search live in the title and H1. */
 import Base from '../layouts/Base.astro';
-import DateRows from './DateRows.astro';
+import DayList from './DayList.astro';
 import HostMonogram from './HostMonogram.astro';
 import { inActivity, type ActivityKey } from '../data/content.ts';
 import { capPerHostPerDay, getSessions } from '../data/sessions.ts';
@@ -110,7 +110,7 @@ const schema = {
         <hr class="rule" />
         <section class="section" id="dates">
           <h2 class="section-title">{t.nextDates} — {copy.short}</h2>
-          <DateRows sessions={shown} lang={lang} withHost />
+          <DayList sessions={shown} lang={lang} />
           <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
         </section>
       </>

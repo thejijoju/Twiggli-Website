@@ -400,7 +400,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     // has landed — see `reels` below.
     { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Scented candle workshops', studio: 'Galleria Lucia Atelier',
       blurb: 'Design your own scented candle in a real working candle atelier inside a historic Berlin artist building — pick your jar colour, premium fragrance oils, wax colours and crystals, and finish with your own label. 100% soy wax, vegan and sustainable, drinks included.',
-      group: 'Up to 10', duration: '1.5–2 h', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+      group: 'Up to 10', duration: '1.5–2 h', place: 'Oderberger Str. 20, Berlin', languages: 'EN' },
     // Copy from imkerei-kohfink.de; photos and reel to follow.
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Beekeeping & honey baking', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Learn beekeeping from a professional Bioland apiary in Berlin-Kaulsdorf: hands-on beginners’ courses with up to 20 real bee colonies, a theory lecture, and honey gingerbread baking workshops — bake traditional Lebkuchen with honey and take your creations home.',
@@ -601,7 +601,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: '4–12', duration: '2–3 Std.', place: 'Berlin', languages: 'DE' },
     { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Duftkerzen-Workshops', studio: 'Galleria Lucia Atelier',
       blurb: 'Gestalte deine eigene Duftkerze in einem echten Kerzen-Atelier in einem historischen Berliner Künstlerhaus — Glasfarbe, Premium-Duftöle, Wachsfarben und Kristalle, dazu dein eigenes Etikett. 100 % Sojawachs, vegan und nachhaltig, Getränke inklusive. Workshops auf Englisch.',
-      group: 'Bis 10', duration: '1,5–2 Std.', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+      group: 'Bis 10', duration: '1,5–2 Std.', place: 'Oderberger Str. 20, Berlin', languages: 'EN' },
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
       group: '≤ 17', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
@@ -1516,7 +1516,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   celia: { area: 'Friedrichshain' }, olivia: { area: 'Friedrichshain' },
   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
   maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },
-  faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Lichtenberg' },
+  faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Prenzlauer Berg' },
   kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg' },
   'beat-etage': { area: 'Treptow' }, bumerang: { area: 'Lichtenberg' },
   'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau' },

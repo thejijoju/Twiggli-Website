@@ -93,7 +93,7 @@ export const hosts: HostCopy[] = [
     group: '4–12', duration: '2–3 h', place: 'Berlín', languages: 'DE' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Talleres de velas aromáticas', studio: 'Galleria Lucia Atelier',
     blurb: 'Diseña tu propia vela aromática en un auténtico taller de velas en activo dentro de un histórico edificio de artistas de Berlín: elige el color del tarro, aceites aromáticos premium, colores de cera y cristales, y remátala con tu propia etiqueta. 100 % cera de soja, vegana y sostenible, bebidas incluidas.',
-    group: 'Hasta 10', duration: '1,5–2 h', place: 'Herzbergstr. 55, Berlín', languages: 'EN' },
+    group: 'Hasta 10', duration: '1,5–2 h', place: 'Oderberger Str. 20, Berlín', languages: 'EN' },
   { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Apicultura & repostería con miel', studio: 'Imkerei am Pflanzgarten',
     blurb: 'Aprende apicultura con un colmenar profesional Bioland en Berlin-Kaulsdorf: cursos prácticos para principiantes con hasta 20 colonias de abejas reales, una clase teórica y talleres de repostería de pan de especias con miel: hornea Lebkuchen tradicionales con miel y llévate tus creaciones a casa.',
     group: '≤ 17', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlín', languages: 'DE' },

@@ -93,7 +93,7 @@ export const hosts: HostCopy[] = [
     group: '4–12', duration: '2–3 h', place: 'Berlin', languages: 'DE' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Ateliers de bougies parfumées', studio: 'Galleria Lucia Atelier',
     blurb: 'Créez votre propre bougie parfumée dans un véritable atelier de bougies en activité, au sein d’un bâtiment d’artistes historique de Berlin — choisissez la couleur de votre pot, des huiles parfumées haut de gamme, les couleurs de cire et des cristaux, et terminez par votre propre étiquette. 100 % cire de soja, végan et durable, boissons comprises.',
-    group: 'Jusqu’à 10', duration: '1,5–2 h', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+    group: 'Jusqu’à 10', duration: '1,5–2 h', place: 'Oderberger Str. 20, Berlin', languages: 'EN' },
   { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Apiculture & pâtisserie au miel', studio: 'Imkerei am Pflanzgarten',
     blurb: 'Apprenez l’apiculture auprès d’un rucher professionnel Bioland à Berlin-Kaulsdorf : des cours pratiques pour débutants avec jusqu’à 20 véritables colonies d’abeilles, un cours théorique, et des ateliers de pain d’épices au miel — confectionnez des Lebkuchen traditionnels au miel et rapportez vos créations chez vous.',
     group: '≤ 17', duration: '3–4 h', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },

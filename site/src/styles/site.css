@@ -5710,3 +5710,82 @@ h1, h2, h3, h4,
   .hd-time { font-size: 11.5px; padding: 2px 8px; }
   .hd-more { font-size: 12.5px; }
 }
+
+/* — date lists in the Luma style (DayList.astro) — the day on the left of a
+   dashed line, one white card per host per day with the reel as a square
+   beside the text; on a phone the day sits above its cards. */
+.dl-days { list-style: none; margin: 0; padding: 0; }
+.dl-day {
+  position: relative;
+  display: grid;
+  grid-template-columns: 130px minmax(0, 660px);
+  gap: 0 40px;
+  padding-bottom: 32px;
+}
+.dl-day::before {
+  content: '';
+  position: absolute;
+  left: 150px; top: 10px; bottom: 0;
+  border-left: 2px dashed color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+.dl-day::after {
+  content: '';
+  position: absolute;
+  left: 145px; top: 6px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-accent) 30%, #d9d4e4);
+}
+.dl-label { margin: 0; display: flex; flex-direction: column; font-size: 17px; font-weight: 700; line-height: 1.3; }
+.dl-weekday { color: var(--color-text-muted); font-weight: 400; font-size: 15px; }
+.dl-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.dl-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 22px;
+  align-items: center;
+  padding: 14px 14px 14px 20px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(36, 39, 46, 0.04);
+  transition: box-shadow 0.2s ease;
+}
+.dl-card:hover { box-shadow: 0 6px 20px rgba(36, 39, 46, 0.08); }
+.dl-text { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.dl-time { font-size: 14px; font-weight: 500; color: var(--color-text-muted); }
+.dl-title { margin-top: 2px; font: 600 18px/1.3 var(--font-heading); color: var(--color-text); text-decoration: none; }
+.dl-title:hover { color: var(--color-accent-700); }
+.dl-by { display: inline-flex; align-items: center; gap: 7px; margin-top: 6px; font-size: 14px; color: var(--color-text-muted); text-decoration: none; }
+.dl-by:hover { color: var(--color-text); }
+.dl-by img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+.dl-where { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 14px; color: var(--color-text-muted); }
+.dl-where svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; flex: none; }
+.dl-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.dl-tags:empty { display: none; }
+.dl-tag { padding: 2px 8px; border-radius: 6px; background: #efeaff; color: var(--color-accent-deep); font-size: 13px; font-weight: 600; }
+.dl-tag.is-few { background: #fff3e0; color: #b45309; }
+.dl-tag.is-full { background: #fde8e8; color: #c0392b; }
+.dl-more { margin-top: 9px; font-size: 13px; font-weight: 600; color: var(--color-accent-deep); text-decoration: none; }
+.dl-more:hover { text-decoration: underline; }
+.dl-media {
+  position: relative;
+  display: block;
+  width: 168px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-surface) center / cover no-repeat;
+}
+.dl-media img, .dl-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.dl-video { opacity: 0; transition: opacity 0.4s ease; }
+.dl-media.is-live .dl-video { opacity: 1; }
+@media (max-width: 720px) {
+  .dl-day { grid-template-columns: minmax(0, 1fr); padding-bottom: 24px; }
+  .dl-day::before, .dl-day::after { display: none; }
+  .dl-label { flex-direction: row; align-items: baseline; gap: 6px; margin-bottom: 10px; }
+  .dl-card { grid-template-columns: minmax(0, 1fr) 120px; gap: 12px; padding: 12px; }
+  .dl-title { font-size: 16px; }
+  .dl-by, .dl-where { font-size: 13px; }
+  .dl-media { width: 120px; }
+}

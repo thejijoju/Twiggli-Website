@@ -93,7 +93,7 @@ export const hosts: HostCopy[] = [
     group: '4–12', duration: '2–3 godz.', place: 'Berlin', languages: 'DE' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Warsztaty świec zapachowych', studio: 'Galleria Lucia Atelier',
     blurb: 'Zaprojektuj własną świecę zapachową w prawdziwym, działającym atelier świec w zabytkowym berlińskim budynku artystów — wybierz kolor słoika, olejki zapachowe premium, kolory wosku i kryształy, a na koniec dodaj własną etykietę. 100% wosk sojowy, wegański i zrównoważony, napoje w cenie.',
-    group: 'Do 10 osób', duration: '1,5–2 godz.', place: 'Herzbergstr. 55, Berlin', languages: 'EN' },
+    group: 'Do 10 osób', duration: '1,5–2 godz.', place: 'Oderberger Str. 20, Berlin', languages: 'EN' },
   { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Pszczelarstwo & pieczenie z miodem', studio: 'Imkerei am Pflanzgarten',
     blurb: 'Ucz się pszczelarstwa w profesjonalnej pasiece Bioland w Berlinie-Kaulsdorf: praktyczne kursy dla początkujących przy nawet 20 prawdziwych rodzinach pszczelich, wykład teoretyczny oraz warsztaty pieczenia miodowych pierników — upiecz tradycyjne Lebkuchen z miodem i zabierz swoje wypieki do domu.',
     group: '≤ 17', duration: '3–4 godz.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },

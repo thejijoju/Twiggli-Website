@@ -1,0 +1,100 @@
+---
+/** Dates from several hosts, the way Luma lists events: the days down a
+ *  dashed line on the left, and for each host on each day one white card —
+ *  start time, title, "By" the host, the district, the price and any
+ *  availability as small tags — with the host's reel as a square beside the
+ *  text. A host running many classes that day is still one card: the next
+ *  open one leads, and a line under it counts the rest. Used by the
+ *  occasion, activity and district pages. */
+import type { Session } from '../data/sessions.ts';
+import { berlinTodayMs } from '../data/sessions.ts';
+import { byDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
+import { dayListCopy } from '../data/hubShelves.ts';
+import { almostFullLabel } from '../data/availability.ts';
+import { lqipStyle } from '../lib/lqip.ts';
+import { LANG_META, type Lang } from '../lib/url.ts';
+
+interface Props { sessions: Session[]; lang: Lang }
+const { sessions, lang } = Astro.props;
+const t = pageCopy[lang];
+const c = dayListCopy[lang];
+const locale = LANG_META[lang].locale;
+const base = berlinTodayMs();
+const dayDate = (offset: number) =>
+  offset === 0 ? t.today : offset === 1 ? t.tomorrow
+    : new Date(base + offset * 86400000).toLocaleDateString(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const weekday = (offset: number) =>
+  new Date(base + offset * 86400000).toLocaleDateString(locale, { weekday: 'long', timeZone: 'UTC' });
+
+const thumbOf = (poster?: string) => poster?.replace(/\/video\/([^/]+)-poster\.jpg$/, '/video/thumbs/$1.jpg');
+const free = (price?: string) => (price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price);
+
+/* Per day, one card per host: the next open class leads (or the first, if
+   all are full); the rest are counted. Cards keep the order of their lead. */
+const days = byDay(sessions).map(([offset, list]) => {
+  const byHost = new Map<string, Session[]>();
+  for (const s of list) byHost.set(s.host.slug, [...(byHost.get(s.host.slug) ?? []), s]);
+  const cards = [...byHost.values()].map((hs) => {
+    const lead = hs.find((s) => !s.soldOut && s.time) ?? hs.find((s) => !s.soldOut) ?? hs[0];
+    const sameTimes = hs.filter((s) => s !== lead && s.workshopKey === lead.workshopKey).length;
+    const others = new Set(hs.filter((s) => s.workshopKey !== lead.workshopKey).map((s) => s.workshopKey)).size;
+    const few = !!lead.almostFull || (typeof lead.spots === 'number' && lead.spots > 0 && lead.spots <= 3);
+    return { lead, sameTimes, others, few, allFull: hs.every((s) => s.soldOut) };
+  }).sort((a, b) => (a.lead.time || '~').localeCompare(b.lead.time || '~'));
+  return { offset, cards };
+});
+---
+
+<ol class="dl-days">
+  {days.map(({ offset, cards }) => (
+    <li class="dl-day">
+      <h3 class="dl-label"><span class="dl-date">{dayDate(offset)}</span> <span class="dl-weekday">{weekday(offset)}</span></h3>
+      <ul class="dl-cards">
+        {cards.map(({ lead: s, sameTimes, others, few, allFull }) => (
+          <li class="dl-card">
+            <div class="dl-text">
+              <span class="dl-time">{s.time ?? t.timeTba}</span>
+              <a class="dl-title" href={workshopHref(lang, s.host, s.workshopKey)}>{s.title}</a>
+              <a class="dl-by" href={hostHref(lang, s.host)}>
+                {thumbOf(s.host.poster) && <img src={thumbOf(s.host.poster)} alt="" loading="lazy" decoding="async" />}
+                {c.by} {s.host.name}
+              </a>
+              <span class="dl-where">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" /><circle cx="12" cy="9.5" r="2.5" /></svg>
+                {s.district}
+              </span>
+              <span class="dl-tags">
+                {free(s.price) && <span class="dl-tag">{free(s.price)}</span>}
+                {allFull ? <span class="dl-tag is-full">{t.soldOut}</span>
+                  : few && <span class="dl-tag is-few">{almostFullLabel[lang]}</span>}
+              </span>
+              {(sameTimes > 0 || others > 0) && (
+                <a class="dl-more" href={hostHref(lang, s.host)}>
+                  {[sameTimes > 0 ? c.moreTimes(sameTimes) : '', others > 0 ? c.moreWorkshops(others) : ''].filter(Boolean).join(' · ')}
+                </a>
+              )}
+            </div>
+            <a class="dl-media" href={workshopHref(lang, s.host, s.workshopKey)} tabindex="-1" aria-hidden="true" style={lqipStyle(s.host.poster)}>
+              {(s.host.poster ?? s.host.photo) && <img src={s.host.poster ?? s.host.photo} alt="" loading="lazy" decoding="async" />}
+              {s.host.video && <video class="dl-video" src={s.host.video} muted loop playsinline preload="none"></video>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </li>
+  ))}
+</ol>
+
+<script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // One reel at a time, walking down the cards on screen.
+  const reels = Array.from(document.querySelectorAll<HTMLElement>('.dl-card'))
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.dl-media'),
+      video: card.querySelector<HTMLVideoElement>('.dl-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+  if (reels.length) startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.6, startAt: 0, step: 1, holdMs: 3000 });
+</script>

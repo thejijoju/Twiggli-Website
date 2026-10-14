@@ -93,7 +93,7 @@ export const hosts: HostCopy[] = [
     group: '4–12', duration: '2–3 u', place: 'Berlijn', languages: 'DE' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia', specialty: 'Geurkaarsworkshops', studio: 'Galleria Lucia Atelier',
     blurb: 'Ontwerp je eigen geurkaars in een echt werkend kaarsenatelier in een historisch Berlijns kunstenaarspand — kies de kleur van je pot, premium geuroliën, waskleuren en kristallen, en werk af met je eigen etiket. 100% sojawas, veganistisch en duurzaam, drankjes inbegrepen.',
-    group: 'Tot 10', duration: '1,5–2 u', place: 'Herzbergstr. 55, Berlijn', languages: 'EN' },
+    group: 'Tot 10', duration: '1,5–2 u', place: 'Oderberger Str. 20, Berlijn', languages: 'EN' },
   { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Bijenhouden & bakken met honing', studio: 'Imkerei am Pflanzgarten',
     blurb: 'Leer bijenhouden bij een professionele Bioland-imkerij in Berlijn-Kaulsdorf: praktische beginnerscursussen met tot 20 echte bijenvolken, een theorielezing, en bakworkshops honingpeperkoek — bak traditionele Lebkuchen met honing en neem je creaties mee naar huis.',
     group: '≤ 17', duration: '3–4 u', place: 'Karlsburger Weg 38, Berlijn', languages: 'DE' },

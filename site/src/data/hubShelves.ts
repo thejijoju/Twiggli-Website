@@ -39,3 +39,16 @@ export const hostDayCopy: Record<Lang, { classes: (n: number) => string; more: (
   pl: { classes: (n) => `Zajęcia: ${n}`, more: (n) => `+ ${n} więcej` },
   tr: { classes: (n) => `${n} atölye`, more: (n) => `+ ${n} atölye daha` },
 };
+
+/** The date lists in the Luma style (DayList.astro): "By" before the host,
+ *  and the line that folds a host's other classes that day into one card. */
+export const dayListCopy: Record<Lang, { by: string; moreTimes: (n: number) => string; moreWorkshops: (n: number) => string }> = {
+  en: { by: 'By', moreTimes: (n) => `+ ${n} more ${n === 1 ? 'time' : 'times'} today`, moreWorkshops: (n) => `+ ${n} more ${n === 1 ? 'workshop' : 'workshops'} today` },
+  de: { by: 'Von', moreTimes: (n) => `+ ${n} ${n === 1 ? 'weiterer Termin' : 'weitere Termine'} heute`, moreWorkshops: (n) => `+ ${n} ${n === 1 ? 'weiterer Workshop' : 'weitere Workshops'} heute` },
+  fr: { by: 'Par', moreTimes: (n) => `+ ${n} ${n === 1 ? 'autre horaire' : 'autres horaires'} ce jour`, moreWorkshops: (n) => `+ ${n} ${n === 1 ? 'autre atelier' : 'autres ateliers'} ce jour` },
+  es: { by: 'Con', moreTimes: (n) => `+ ${n} ${n === 1 ? 'horario más' : 'horarios más'} ese día`, moreWorkshops: (n) => `+ ${n} ${n === 1 ? 'taller más' : 'talleres más'} ese día` },
+  it: { by: 'Con', moreTimes: (n) => `+ ${n} ${n === 1 ? 'altro orario' : 'altri orari'} quel giorno`, moreWorkshops: (n) => `+ ${n} ${n === 1 ? 'altro workshop' : 'altri workshop'} quel giorno` },
+  nl: { by: 'Door', moreTimes: (n) => `+ ${n} ${n === 1 ? 'ander tijdstip' : 'andere tijden'} die dag`, moreWorkshops: (n) => `+ ${n} ${n === 1 ? 'andere workshop' : 'andere workshops'} die dag` },
+  pl: { by: 'Prowadzi', moreTimes: (n) => `+ ${n} więcej terminów tego dnia`, moreWorkshops: (n) => `+ ${n} więcej warsztatów tego dnia` },
+  tr: { by: 'Eğitmen:', moreTimes: (n) => `+ o gün ${n} saat daha`, moreWorkshops: (n) => `+ o gün ${n} atölye daha` },
+};

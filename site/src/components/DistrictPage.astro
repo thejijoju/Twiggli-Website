@@ -3,7 +3,7 @@
  *  sections by activity so "Töpferkurs Neukölln" has a heading to land
  *  on, and the next dates in the district with times and Book links. */
 import Base from '../layouts/Base.astro';
-import DateRows from './DateRows.astro';
+import DayList from './DayList.astro';
 import HostMonogram from './HostMonogram.astro';
 import { ACTIVITY_ORDER, absolute, districtCopy, districtHref, districtsFor, formatWhen, hostHref, hubExtraCopy, hubHref, nextSessionByHost, pageCopy } from '../data/seo.ts';
 import { hasMedia, inActivity } from '../data/content.ts';
@@ -91,7 +91,7 @@ const schema = {
         <hr class="rule" />
         <section class="section" id="dates">
           <h2 class="section-title">{t.nextDates} — {d.name}</h2>
-          <DateRows sessions={shown} lang={lang} withHost />
+          <DayList sessions={shown} lang={lang} />
           <p class="section-more"><a href={href(lang, '/happening-today/')}>{t.calendar} →</a></p>
         </section>
       </>
