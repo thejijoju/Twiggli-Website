@@ -5068,7 +5068,13 @@ h1, h2, h3, h4,
     background: color-mix(in srgb, var(--color-bg) 94%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     backdrop-filter: blur(14px) saturate(1.4);
-    border-top: 1px solid var(--color-line);
+    border-top: 1px solid rgba(255, 255, 255, 0.7);
+    /* Rounded top corners and a soft lift off the page: a sheet the page
+       slides under, not a strip painted on it. */
+    border-radius: 20px 20px 0 0;
+    box-shadow:
+      0 -1px 0 rgba(36, 39, 46, 0.06),
+      0 -6px 18px rgba(36, 39, 46, 0.07);
   }
   /* Typing into a field: the keyboard lifts a fixed bar into the way. */
   body:has(input:focus, textarea:focus, select:focus) .tabbar { display: none; }
@@ -5199,6 +5205,8 @@ h1, h2, h3, h4,
   background: var(--color-surface);
 }
 .hub-pick-media { aspect-ratio: 9 / 14; border-radius: 18px; }
+/* The poster's own blur sits behind it until it arrives (lib/lqip.ts). */
+.hub-pick-media, .hub-card-media { background-size: cover; background-position: center; }
 .hub-pick-media img, .hub-pick-video, .hub-card-media img, .hub-card-video {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -5330,6 +5338,27 @@ h1, h2, h3, h4,
 .find-media img, .find-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .find-video { opacity: 0; transition: opacity 0.4s ease; }
 .find-media.is-live .find-video { opacity: 1; }
+/* Behind the picture, its own 12px blur (lib/lqip.ts): a slow phone sees
+   it come into focus instead of a grey disc. */
+.find-media { background-size: cover; background-position: center; }
+.find-scroller { position: relative; }
+.find-track {
+  display: none;
+  position: relative;
+  width: 44px;
+  height: 3px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+  overflow: hidden;
+}
+.find-thumb {
+  position: absolute; top: 0; bottom: 0;
+  width: calc(var(--seen, 0.5) * 100%);
+  left: calc(var(--at, 0) * (1 - var(--seen, 0.5)) * 100%);
+  border-radius: inherit;
+  background: var(--color-accent);
+}
 .find-name { margin-top: 12px; font-weight: 700; font-size: 15.5px; line-height: 1.25; }
 .find-count { margin-top: 2px; font-size: 13px; color: var(--color-text-muted); }
 
@@ -5392,11 +5421,16 @@ h1, h2, h3, h4,
   .find-bubble { flex: none; width: 96px; scroll-snap-align: start; }
   .find-name { font-size: 13px; margin-top: 8px; }
   .find-count { font-size: 12px; }
-  .find-quick {
-    flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none;
-    margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter);
+  /* All five at a glance: they wrap rather than scroll. */
+  .find-quick { gap: 8px; margin-top: 20px; }
+  .find-quick a { padding: 7px 13px; font-size: 13.5px; gap: 5px; }
+  /* The swipe hint: the right edge fades while there is more row, and a
+     short track under it shows how far along the reader is. */
+  .find-scroller.can-scroll:not(.at-end) .find-bubbles {
+    -webkit-mask-image: linear-gradient(90deg, #000 78%, transparent);
+    mask-image: linear-gradient(90deg, #000 78%, transparent);
   }
-  .find-quick::-webkit-scrollbar { display: none; }
+  .find-scroller.can-scroll .find-track { display: block; }
   .find-solo { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 20px; }
   .find-solo-faces img { width: 44px; height: 44px; }
   .find-solo-faces img + img { margin-left: -14px; }

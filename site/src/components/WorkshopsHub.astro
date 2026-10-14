@@ -13,6 +13,7 @@ import {
 import { href, type Lang } from '../lib/url.ts';
 import { hubShelvesCopy, HUB_PICK } from '../data/hubShelves.ts';
 import { formatDay } from '../data/seo.ts';
+import { lqipStyle } from '../lib/lqip.ts';
 
 interface Props {
   lang: Lang;
@@ -80,7 +81,7 @@ const schema = {
       </div>
       {pick && (
         <a class="hub-pick" href={hostHref(lang, pick)}>
-          <span class="hub-pick-media">
+          <span class="hub-pick-media" style={lqipStyle(pick.poster)}>
             <img src={pick.poster} alt="" decoding="async" />
             <video class="hub-pick-video" src={pick.video} poster={pick.poster} muted loop playsinline preload="metadata" data-autoplay></video>
           </span>
@@ -125,7 +126,7 @@ const schema = {
             return (
               <li class="hub-card">
                 <a href={hostHref(lang, host)}>
-                  <span class="hub-card-media">
+                  <span class="hub-card-media" style={lqipStyle(host.poster)}>
                     {still && <img src={still} alt="" loading="lazy" decoding="async" />}
                     {host.video && <video class="hub-card-video" src={host.video} muted loop playsinline preload="none"></video>}
                     <span class="hub-card-date">{n ? formatDay(n.dayOffset, lang) : h.onRequest}</span>

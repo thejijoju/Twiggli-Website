@@ -9,6 +9,7 @@ import { ACTIVITY_ORDER, activityCopy, activityHref, hubCopy, hubHref, occasionC
 import { homeFindCopy } from '../data/homeFind.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
+import { lqipStyle } from '../lib/lqip.ts';
 
 interface Props {
   lang: Lang;
@@ -46,13 +47,14 @@ const faces = ['craftkai', 'smell-lab', 'pausify'];
       <a href={hubHref(lang)} class="btn btn-primary find-all">{all}</a>
     </div>
 
+    <div class="find-scroller" data-find-scroller>
     <ul class="find-bubbles">
       {ACTIVITY_ORDER.map((a) => (
         <li class="find-bubble">
           <a href={activityHref(lang, a)} aria-label={activityCopy[lang][a].h1}>
             <span class="find-ring">
-              <span class="find-media">
-                <img src={withBase(`/video/${reelFor[a]}-poster.jpg`)} alt="" loading="lazy" decoding="async" />
+              <span class="find-media" style={lqipStyle(`/video/${reelFor[a]}-poster.jpg`)}>
+                <img src={withBase(`/video/thumbs/${reelFor[a]}.jpg`)} alt="" decoding="async" />
                 <video class="find-video" src={withBase(`/video/${reelFor[a]}.mp4`)} muted loop playsinline preload="none"></video>
               </span>
             </span>
@@ -62,6 +64,8 @@ const faces = ['craftkai', 'smell-lab', 'pausify'];
         </li>
       ))}
     </ul>
+    <span class="find-track" aria-hidden="true"><span class="find-thumb"></span></span>
+    </div>
 
     <ul class="find-quick">
       {quick.map((q) => (
@@ -95,4 +99,22 @@ const faces = ['craftkai', 'smell-lab', 'pausify'];
     }))
     .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
   startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.6, startAt: 0, step: 1, holdMs: 2800 });
+
+  // On a phone the bubbles swipe sideways. A short track under them shows
+  // where in the row the reader is, and the right edge fades while there is
+  // more to see — enough to say "swipe", without arrows.
+  const scroller = document.querySelector<HTMLElement>('[data-find-scroller]');
+  const row = scroller?.querySelector<HTMLElement>('.find-bubbles');
+  if (scroller && row) {
+    const update = () => {
+      const max = row.scrollWidth - row.clientWidth;
+      scroller.classList.toggle('can-scroll', max > 4);
+      scroller.classList.toggle('at-end', row.scrollLeft >= max - 4);
+      scroller.style.setProperty('--seen', String(max > 0 ? row.clientWidth / row.scrollWidth : 1));
+      scroller.style.setProperty('--at', String(max > 0 ? row.scrollLeft / max : 0));
+    };
+    row.addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
 </script>
