@@ -5629,11 +5629,16 @@ h1, h2, h3, h4,
 
 /* Date rows with a small square of the host's reel at their head (on the
    occasion, activity and district pages), playing one at a time. */
-.date-row.has-thumb { grid-template-columns: 64px 150px minmax(0, 1fr) auto; }
+/* On a wide screen the square sits between the date and the title, beside
+   what it shows; on a phone it heads the row (below). */
+.date-row.has-thumb { grid-template-columns: 150px 128px minmax(0, 1fr) auto; }
+.date-row.has-thumb .date-thumb { order: 1; }
+.date-row.has-thumb .date-main { order: 2; }
+.date-row.has-thumb .date-side { order: 3; }
 .date-thumb {
   position: relative;
   display: block;
-  width: 64px;
+  width: 128px;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 10px;
@@ -5644,6 +5649,6 @@ h1, h2, h3, h4,
 .date-thumb.is-live .date-thumb-video { opacity: 1; }
 @media (max-width: 640px) {
   .date-row.has-thumb { grid-template-columns: 72px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; align-items: start; }
-  .date-row.has-thumb .date-thumb { width: 72px; grid-row: 1 / span 3; }
+  .date-row.has-thumb .date-thumb { width: 72px; grid-row: 1 / span 3; order: 0; }
   .date-row.has-thumb > :not(.date-thumb) { grid-column: 2; }
 }
