@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import SocialIcon from './SocialIcon.astro';
-import { getSiteData, requestEmail } from '../data/site.ts';
+import { contactEmail, getSiteData } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -11,7 +11,7 @@ const t = ui(lang).contact;
 const { socialLinks } = getSiteData(lang);
 
 /* The site is static, so on submit the fields are composed into an email
-   to requestEmail and handed to the visitor's mail app, the same way the
+   to contactEmail and handed to the visitor's mail app, the same way the
    calendar's "Request to book" works; the address is printed under the
    form as well, for anyone whose device has no mail app wired up. The
    wording of the mail travels with the form as data attributes, so the
@@ -41,7 +41,7 @@ const mailCopy = {
           method="post"
           action="#"
           data-request-form
-          data-request-email={requestEmail}
+          data-request-email={contactEmail}
           data-mail-copy={JSON.stringify(mailCopy)}
           data-prefill={t.prefill('{host}')}
           data-prefill-space={t.prefillSpace('{host}')}
@@ -69,11 +69,11 @@ const mailCopy = {
             <button type="submit" class="btn btn-primary">{t.send}</button>
             <p class="form-note">
               {t.note}
-              <a href={`mailto:${requestEmail}`}>{requestEmail}</a>.
+              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
             </p>
             <p class="form-note form-note-sent" data-request-sent hidden>
               {t.sent}
-              <a href={`mailto:${requestEmail}`}>{requestEmail}</a>.
+              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
             </p>
           </div>
         </form>

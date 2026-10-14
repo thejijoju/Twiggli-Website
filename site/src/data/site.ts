@@ -17,6 +17,11 @@ export const appUrl = 'https://app.twiggli.com/';
  *  from their own mail app — there is no server to post a form to. */
 export const requestEmail = 'jirel.kuenen@gmail.com';
 
+/** The address visitors see and write to: on the contact page and in every
+ *  form's "write to us at" fallback. requestEmail above only receives the
+ *  forms through FormSubmit and is never shown. */
+export const contactEmail = 'hello@twiggli.com';
+
 /** The Brevo subscription form (Contacts → Forms → Share → the form's own
  *  URL, …sibforms.com/serve/…) with double opt-in switched on. While it is
  *  empty, newsletter signups come to requestEmail through FormSubmit; once

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import HostDirectory from './HostDirectory.astro';
 import HostFilters from './HostFilters.astro';
 import Newsletter from './Newsletter.astro';
+import { bookingCopy } from '../data/bookingCopy.ts';
 import { getHosts, hasMedia, sameHostAs } from '../data/content.ts';
 import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
@@ -41,7 +42,7 @@ const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
       </div>
     )}
     <section class="dir-top">
-      <HostFilters lang={lang} season={season} cta={c.cta} ctaHref={href(lang, '/contact/')} />
+      <HostFilters lang={lang} season={season} cta={c.cta} ctaHref={href(lang, '/contact/')} ctaTitle={bookingCopy[lang].anyHost} />
       <HostDirectory hosts={hosts} lang={lang} />
     </section>
 
@@ -55,7 +56,7 @@ const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
       <h2 class="page-title">{c.h1}</h2>
       <p class="page-lede">{c.lede}</p>
       <div class="hero-actions">
-        <a href={href(lang, '/contact/')} class="btn btn-primary">{c.cta}</a>
+        <a href={href(lang, '/contact/')} class="btn btn-primary" data-book="group" data-book-title={bookingCopy[lang].anyHost}>{c.cta}</a>
       </div>
     </section>
 

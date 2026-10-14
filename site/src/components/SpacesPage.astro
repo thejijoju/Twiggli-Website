@@ -56,9 +56,9 @@ const marks = spaces.map((space) => ({
       <h1 class="page-title">{t.h1}</h1>
       <p class="page-lede">{t.lede}</p>
       <div class="hero-actions">
-        {/* Down to the studios: each card's own button sends the request,
-            with the space named. */}
-        <a href="#spaces" class="btn btn-primary">{t.cta}</a>
+        {/* Opens the studio request form for any space; each card's own
+            button sends one for that space. */}
+        <a href={href(lang, '/contact/')} class="btn btn-primary" data-book="studio" data-book-title={bookingCopy[lang].anySpace}>{t.cta}</a>
       </div>
     </section>
 

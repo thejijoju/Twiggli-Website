@@ -25,8 +25,11 @@ interface Props {
   /** The general enquiry, for a group that has not picked a host yet. */
   cta: string;
   ctaHref: string;
+  /** When set, the button opens the group request form on the page
+   *  (BookingDialog.astro) with this as its subject. */
+  ctaTitle?: string;
 }
-const { lang = DEFAULT_LANG, season, cta, ctaHref } = Astro.props;
+const { lang = DEFAULT_LANG, season, cta, ctaHref, ctaTitle } = Astro.props;
 const t = filterCopy[lang];
 const d = directoryCopy[lang];
 const head = d.seasons[season];
@@ -106,7 +109,7 @@ const pills = [
     ))}
     <button type="reset" class="dir-clear" hidden>{t.clear}</button>
     <p class="dir-count" role="status" aria-live="polite" data-one={t.count(1)} data-many={t.count(0)}></p>
-    <a class="dir-cta" href={ctaHref}>{cta}</a>
+    <a class="dir-cta" href={ctaHref} data-book={ctaTitle ? 'group' : undefined} data-book-title={ctaTitle}>{cta}</a>
   </div>
 </form>
 

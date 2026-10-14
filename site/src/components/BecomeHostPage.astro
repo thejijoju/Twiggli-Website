@@ -8,7 +8,7 @@
 import Base from '../layouts/Base.astro';
 import { hostApplyCopy } from '../data/hostApply.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
-import { requestEmail } from '../data/site.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
@@ -38,7 +38,7 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
         </ol>
       </div>
       <div class="host-apply-card" id="apply">
-        <form class="book-form host-apply-form" data-host-apply data-inbox={requestEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+        <form class="book-form host-apply-form" data-host-apply data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
           <h2 class="book-title">{t.formTitle}</h2>
           <p class="book-lede">{t.formLede}</p>
           <div class="book-fields">
@@ -142,12 +142,12 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
         form.reset();
       } catch {
         if (error) {
-          error.textContent = String(copy.error).replace('{email}', inbox);
+          error.textContent = String(copy.error).replace('{email}', form.dataset.contact ?? '');
           error.hidden = false;
         }
         if (send) { send.disabled = false; send.textContent = copy.send; }
         const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
-        location.href = `mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       }
     });
   }

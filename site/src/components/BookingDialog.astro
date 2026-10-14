@@ -13,7 +13,7 @@
  * unreachable, the visitor's own mail app opens with the same message.
  */
 import { bookingCopy } from '../data/bookingCopy.ts';
-import { requestEmail } from '../data/site.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
 import { LANG_META, type Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
@@ -25,6 +25,7 @@ const c = bookingCopy[lang];
   class="book-dialog"
   data-book-dialog
   data-inbox={requestEmail}
+  data-contact={contactEmail}
   data-locale={LANG_META[lang].locale}
   data-lang={lang}
   data-copy={JSON.stringify(c)}
@@ -304,12 +305,12 @@ const c = bookingCopy[lang];
         // The service is unreachable: say so, and hand the same message to
         // the visitor's mail app so the request still reaches us.
         if (error) {
-          error.textContent = copy.error.replace('{email}', inbox);
+          error.textContent = copy.error.replace('{email}', dialog.dataset.contact ?? '');
           error.hidden = false;
         }
         if (send) { send.disabled = false; send.textContent = copy.send; }
         const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
-        location.href = `mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        location.href = `mailto:${dialog.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       }
     });
   }

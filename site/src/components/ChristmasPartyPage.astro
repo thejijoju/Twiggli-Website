@@ -9,7 +9,7 @@
 import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { christmasCopy, christmasPicks } from '../data/christmasParty.ts';
-import { requestEmail } from '../data/site.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
 import { href, withBase } from '../lib/url.ts';
 
 interface Props { lang: 'en' | 'de' }
@@ -102,7 +102,7 @@ const formCopy = { sending: t.sending, send: t.send, error: t.error };
         <ul class="xmas-bullets">{t.bullets.map((b) => <li>{b}</li>)}</ul>
       </div>
       <div class="xmas-form-card">
-        <form class="book-form xmas-form" data-xmas-form data-inbox={requestEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+        <form class="book-form xmas-form" data-xmas-form data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
           <div class="book-fields">
             <label class="book-field"><span>{t.company}</span><input name="company" type="text" autocomplete="organization" required /></label>
             <label class="book-field"><span>{t.name}</span><input name="name" type="text" autocomplete="name" required /></label>
@@ -195,10 +195,10 @@ const formCopy = { sending: t.sending, send: t.send, error: t.error };
         form.hidden = true;
         if (sent) sent.hidden = false;
       } catch {
-        if (error) { error.textContent = String(copy.error).replace('{email}', inbox); error.hidden = false; }
+        if (error) { error.textContent = String(copy.error).replace('{email}', form.dataset.contact ?? ''); error.hidden = false; }
         if (send) { send.disabled = false; send.textContent = copy.send; }
         const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
-        location.href = `mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       }
     });
   }
