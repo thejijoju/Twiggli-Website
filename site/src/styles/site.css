@@ -5503,3 +5503,120 @@ h1, h2, h3, h4,
   .tt-price strong { font-size: 16px; }
   .tt-tab { padding: 6px 12px; font-size: 13px; }
 }
+
+/* — group directory filters on a phone — one Filters button heading the
+   occasion row, a line under it naming what is set, and the four pills
+   (.dir-bar) as a sheet from the bottom edge with every group open. On a
+   wider screen the extras are hidden and the row reads as before. */
+.dir-row { display: contents; }
+.dir-fbtn, .dir-cta-row, .dir-summary, .dir-shade, .dir-sheet-head, .dir-show, .dir-pill-head { display: none; }
+@media (max-width: 720px) {
+  .dir-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 calc(-1 * var(--gutter)) 8px;
+    padding: 2px var(--gutter);
+  }
+  .dir-row::-webkit-scrollbar { display: none; }
+  .dir-row .dir-tags {
+    flex: none;
+    gap: 7px;
+    margin: 0;
+    padding: 0 0 0 8px;
+    overflow: visible;
+    border-left: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  }
+  .dir-tag span { padding: 6px 12px; font-size: 13px; border-color: color-mix(in srgb, var(--color-text) 22%, transparent); }
+  .dir-tag input:checked + span { border-color: var(--color-text); }
+  .dir-fbtn {
+    flex: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 11px;
+    border: 1.5px solid var(--color-text);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--color-text);
+    font: 700 13px var(--font-body);
+    cursor: pointer;
+  }
+  .dir-fbtn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dir-fbtn-n {
+    display: grid; place-items: center;
+    width: 19px; height: 19px;
+    border-radius: 999px;
+    background: var(--color-accent);
+    color: #fff;
+    font: 700 11px var(--font-body);
+    font-style: normal;
+  }
+  .dir-fbtn-n[hidden] { display: none; }
+  .dir-cta-row { display: inline-block; flex: none; white-space: nowrap; padding: 6px 13px; font-size: 13px; }
+  .dir-summary:not([hidden]) {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    margin: 0 0 14px;
+    font-size: 12.5px;
+    color: var(--color-text-muted);
+  }
+  .dir-summary-clear {
+    border: 0; background: none; padding: 0;
+    font: 600 12.5px var(--font-body);
+    color: var(--color-accent-700);
+    text-decoration: underline; text-underline-offset: 2px;
+    cursor: pointer;
+  }
+
+  /* The sheet. */
+  .dir-shade:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 49; background: rgba(36, 39, 46, 0.35); }
+  html.sheet-lock { overflow: hidden; }
+  .dir-filters .dir-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 50;
+    display: block;
+    max-height: 85vh;
+    overflow-y: auto;
+    margin: 0;
+    padding: 8px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0;
+    background: var(--color-bg);
+    box-shadow: 0 -12px 50px rgba(0, 0, 0, 0.22);
+    transform: translateY(105%);
+    visibility: hidden;
+    transition: transform 0.28s ease, visibility 0s linear 0.28s;
+  }
+  .dir-filters .dir-bar.is-open { transform: none; visibility: visible; transition: transform 0.28s ease; }
+  .dir-sheet-head { display: flex; justify-content: space-between; align-items: center; position: relative; padding-top: 16px; }
+  .dir-sheet-head strong { font-size: 18px; }
+  .dir-sheet-grab { position: absolute; top: 0; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: var(--color-divider); }
+  .dir-sheet-clear {
+    border: 0; background: none; padding: 4px 0;
+    font: 600 13px var(--font-body);
+    color: var(--color-accent-700);
+    text-decoration: underline; text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .dir-bar .dir-pill { display: block; margin-top: 16px; }
+  .dir-bar .dir-pill summary,
+  .dir-bar .dir-pill.is-on summary {
+    padding: 0; border: 0; background: none; color: var(--color-text-muted);
+    font-size: 13px; font-weight: 700;
+    pointer-events: none;
+  }
+  .dir-bar .dir-pill summary svg, .dir-bar .dir-pill-label { display: none; }
+  .dir-bar .dir-pill-head { display: inline; }
+  .dir-filters .dir-bar .dir-pop {
+    position: static;
+    display: flex; flex-wrap: wrap; gap: 7px;
+    width: auto; max-width: none;
+    padding: 8px 0 0;
+    border: 0; border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .dir-bar .dir-pop .chip { padding: 6px 13px; font-size: 13.5px; border-width: 1.5px; }
+  .dir-bar .dir-clear, .dir-bar .dir-count, .dir-bar .dir-cta { display: none; }
+  .dir-show { display: flex; justify-content: center; width: 100%; margin-top: 22px; min-height: 48px; align-items: center; }
+}

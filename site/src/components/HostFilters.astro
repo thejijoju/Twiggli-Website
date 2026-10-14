@@ -77,19 +77,39 @@ const pills = [
   {/* Tags rather than a menu: there are five, and they are the words a team
       lead arrives with. Radios, so picking one drops the last; picking the
       chosen one again lets it go (see the script). */}
-  <div class="dir-tags" role="radiogroup" aria-label={d.occasionsLabel}>
-    {occasionIds.map((id) => (
-      <label class="dir-tag">
-        <input type="radio" name="occasion" value={id} />
-        <span>{d.occasions[id]}</span>
-      </label>
-    ))}
+  {/* On a phone the four pills move into a sheet (the .dir-bar below,
+      restyled), opened by one Filters button at the head of the occasion
+      row; a line under the row says what is set. On a wider screen the
+      button and the line are hidden and the row reads as before. */}
+  <div class="dir-row">
+    <button type="button" class="dir-fbtn" data-fbtn aria-haspopup="dialog" aria-expanded="false">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M6 10h8M8.5 15h3" /></svg>
+      {t.filters}
+      <i class="dir-fbtn-n" hidden></i>
+    </button>
+    <div class="dir-tags" role="radiogroup" aria-label={d.occasionsLabel}>
+      {occasionIds.map((id) => (
+        <label class="dir-tag">
+          <input type="radio" name="occasion" value={id} />
+          <span>{d.occasions[id]}</span>
+        </label>
+      ))}
+    </div>
+    <a class="dir-cta dir-cta-row" href={ctaHref} data-book={ctaTitle ? 'group' : undefined} data-book-title={ctaTitle}>{cta}</a>
   </div>
+  <p class="dir-summary" hidden><span class="dir-summary-text"></span><button type="reset" class="dir-summary-clear">{t.clear}</button></p>
 
-  <div class="dir-bar">
+  <div class="dir-shade" data-shade hidden></div>
+  <div class="dir-bar" data-sheet>
+    <div class="dir-sheet-head">
+      <span class="dir-sheet-grab" aria-hidden="true"></span>
+      <strong>{t.filters}</strong>
+      <button type="reset" class="dir-sheet-clear">{t.clear}</button>
+    </div>
     {pills.map((pill) => (
       <details class="dir-pill" data-pill={pill.name}>
         <summary>
+          <span class="dir-pill-head">{pill.label}</span>
           <span class="dir-pill-label" data-base={pill.label}>{pill.label}</span>
           <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" /></svg>
         </summary>
@@ -110,6 +130,7 @@ const pills = [
     <button type="reset" class="dir-clear" hidden>{t.clear}</button>
     <p class="dir-count" role="status" aria-live="polite" data-one={t.count(1)} data-many={t.count(0)}></p>
     <a class="dir-cta" href={ctaHref} data-book={ctaTitle ? 'group' : undefined} data-book-title={ctaTitle}>{cta}</a>
+    <button type="button" class="btn btn-primary dir-show" data-show data-one={t.show(t.count(1))} data-many={t.show(t.count(0))}>{t.show(t.count(0))}</button>
   </div>
 </form>
 
@@ -132,6 +153,32 @@ const pills = [
   const clear = document.querySelector<HTMLButtonElement>('.dir-clear');
   const pills = Array.from(document.querySelectorAll<HTMLDetailsElement>('.dir-pill'));
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.maker'));
+  const fbtn = document.querySelector<HTMLButtonElement>('[data-fbtn]');
+  const fbtnN = document.querySelector<HTMLElement>('.dir-fbtn-n');
+  const summary = document.querySelector<HTMLElement>('.dir-summary');
+  const summaryText = document.querySelector<HTMLElement>('.dir-summary-text');
+  const sheet = document.querySelector<HTMLElement>('[data-sheet]');
+  const shade = document.querySelector<HTMLElement>('[data-shade]');
+  const show = document.querySelector<HTMLButtonElement>('[data-show]');
+  /* The phone's sheet: every pill open at once, as headed groups. */
+  const phone = matchMedia('(max-width: 720px)');
+  const sheetOpen = () => !!sheet?.classList.contains('is-open');
+  const setSheet = (open: boolean) => {
+    if (!sheet || !shade) return;
+    sheet.classList.toggle('is-open', open);
+    shade.hidden = !open;
+    fbtn?.setAttribute('aria-expanded', String(open));
+    document.documentElement.classList.toggle('sheet-lock', open);
+    for (const pill of pills) pill.open = open;
+    if (!open) fbtn?.focus({ preventScroll: true });
+  };
+  fbtn?.addEventListener('click', () => setSheet(true));
+  shade?.addEventListener('click', () => setSheet(false));
+  show?.addEventListener('click', () => {
+    setSheet(false);
+    document.querySelector('.maker-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  phone.addEventListener('change', () => { if (!phone.matches && sheetOpen()) setSheet(false); });
 
   /* Lower case and without accents, so "kochen" finds "Kochkurs" and
      "celia" finds "Cèlia". */
@@ -184,14 +231,28 @@ const pills = [
       }
       const any = words.length || occasion || activity || group || hours || price;
       if (clear) clear.hidden = !any;
+      // The phone's Filters button counts what is set in the sheet, and the
+      // line under the row names it.
+      const chosen = pills
+        .map((pill) => pill.querySelector<HTMLInputElement>('input:checked'))
+        .filter((on): on is HTMLInputElement => !!on?.value)
+        .map((on) => on.nextElementSibling?.textContent ?? '');
+      if (fbtnN) { fbtnN.hidden = !chosen.length; fbtnN.textContent = String(chosen.length); }
+      if (summary && summaryText) { summary.hidden = !chosen.length; summaryText.textContent = chosen.join(' · '); }
+      if (show) {
+        show.textContent = shown === 1
+          ? (show.dataset.one ?? '')
+          : (show.dataset.many ?? '').replace('0', String(shown));
+      }
       /* Hiding cards reflows the grid, so tiles change rows; the reels pick
          their players by row, and this tells them to look again. */
       document.dispatchEvent(new CustomEvent('twiggli:filtered'));
     };
 
     form.addEventListener('change', (event) => {
-      // A choice in a pill's menu closes that menu.
-      (event.target as HTMLElement).closest('details')?.removeAttribute('open');
+      // A choice in a pill's menu closes that menu — not in the phone's
+      // sheet, where every group stays open until Show.
+      if (!sheetOpen()) (event.target as HTMLElement).closest('details')?.removeAttribute('open');
       apply();
     });
     form.addEventListener('input', apply);
@@ -202,7 +263,10 @@ const pills = [
       document.querySelector('.maker-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     /* 'reset' fires before the inputs revert, so read them on the next tick. */
-    form.addEventListener('reset', () => setTimeout(apply, 0));
+    form.addEventListener('reset', () => setTimeout(() => {
+      apply();
+      if (sheetOpen()) for (const pill of pills) pill.open = true;
+    }, 0));
 
     // A radio cannot be unticked by clicking it, but a tag should let go
     // when its own chip is clicked again.
@@ -225,14 +289,17 @@ const pills = [
     // One menu at a time, and a click elsewhere or Escape closes it.
     for (const pill of pills) {
       pill.addEventListener('toggle', () => {
+        if (sheetOpen()) { if (!pill.open) pill.open = true; return; }
         if (pill.open) for (const other of pills) if (other !== pill) other.open = false;
       });
     }
     document.addEventListener('click', (event) => {
+      if (sheetOpen()) return;
       for (const pill of pills) if (pill.open && !pill.contains(event.target as Node)) pill.open = false;
     });
     document.addEventListener('keydown', (event) => {
       if ((event as KeyboardEvent).key !== 'Escape') return;
+      if (sheetOpen()) { setSheet(false); return; }
       const open = pills.find((p) => p.open);
       if (!open) return;
       open.open = false;
