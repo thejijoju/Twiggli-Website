@@ -3447,32 +3447,6 @@ a:hover { color: var(--color-accent); }
   .timegroup-head { font-size: 22px; }
 }
 
-/* A host's own pictures of the work, under their reel. Two up, or one on a
-   phone: these are photographs of walls and benches rather than tiles in a
-   grid, and shrinking them to thumbnails wastes what they show. */
-.host-gallery {
-  list-style: none;
-  margin: 28px 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-.host-gallery li { margin: 0; }
-.host-gallery img {
-  display: block;
-  width: 100%;
-  /* One shape for all of them, whatever the camera was held like, so the
-     row does not stagger. */
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 14px;
-  background: var(--color-surface);
-}
-@media (max-width: 720px) {
-  .host-gallery { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .host-gallery img { border-radius: 10px; }
-}
 
 /* ── Workshop pages: /workshops/, one per activity, one per host ─────────
    The search-facing pages. Plain, text-first layouts: a breadcrumb, the
@@ -3524,6 +3498,24 @@ a:hover { color: var(--color-accent); }
   gap: 48px;
   align-items: start;
 }
+/* A host's quiet facts (hostTags.ts): grey text in a light outline. */
+.host-tags { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.host-tags li { margin: 0; padding: 3px 10px; border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent); border-radius: 999px; font-size: 12.5px; line-height: 1.4; color: var(--color-text-muted); }
+.maker-sub + .host-tags { margin: 6px 0 2px; }
+/* The reel and, under it, the host's photos as a slideshow. */
+.host-col { display: grid; gap: 14px; min-width: 0; }
+.host-slides { position: relative; }
+.host-slides-track {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  border-radius: 18px; background: var(--color-surface);
+}
+.host-slides-track::-webkit-scrollbar { display: none; }
+.host-slides-track li { flex: 0 0 100%; scroll-snap-align: start; margin: 0; }
+.host-slides-track img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.host-slides-dots { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+.host-slides-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(106, 62, 236, 0.22); cursor: pointer; transition: width 0.2s, background 0.2s; }
+.host-slides-dots button[aria-current='true'] { width: 22px; background: #6a3eec; }
 .host-media {
   position: relative;
   aspect-ratio: 1;
@@ -3738,6 +3730,7 @@ a:hover { color: var(--color-accent); }
 @media (max-width: 900px) {
   .host-body { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .host-media { max-width: 420px; }
+  .host-slides { max-width: 420px; }
   .activity-links { grid-template-columns: minmax(0, 1fr); }
   .host-index { columns: 1; }
 }

@@ -9,6 +9,7 @@ import WorkshopSchema from './WorkshopSchema.astro';
 import { getHosts } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { followCopy } from '../data/follow.ts';
+import { tagsFor } from '../data/hostTags.ts';
 import { requestEmail } from '../data/site.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import {
@@ -38,6 +39,7 @@ const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 const about = hostAbout[host.slug]?.[lang];
 const logo = hostLogos[host.slug];
 const f = followCopy[lang];
+const tags = tagsFor(host.slug, lang);
 
 // The price the host gave for groups, as the group page shows it; otherwise
 // the spread of their dated workshops (which can include a multi-session
@@ -88,6 +90,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
     <hr class="rule" />
 
     <section class="section host-body">
+      <div class="host-col">
       <div class="host-media">
         {host.video ? (
           <video
@@ -107,7 +110,28 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <HostMonogram name={host.name} />
         )}
       </div>
+      {/* More of the work, where the host has sent pictures of it: a
+          slideshow under the reel, swiped or stepped through with the dots,
+          turning by itself every few seconds unless motion is reduced. */}
+      {host.gallery && host.gallery.length > 0 && (
+        <div class="host-slides" data-slides>
+          <ul class="host-slides-track" data-slides-track>
+            {host.gallery.map((src, i) => (
+              <li><img src={src} alt={`${host.name} — ${host.specialty} (${i + 1}/${host.gallery!.length})`} loading="lazy" decoding="async" /></li>
+            ))}
+          </ul>
+          {host.gallery.length > 1 && (
+            <div class="host-slides-dots">
+              {host.gallery.map((_, i) => (
+                <button type="button" data-slide={i} aria-label={`${i + 1} / ${host.gallery!.length}`} aria-current={i === 0 ? 'true' : undefined}></button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      </div>
       <div class="host-facts">
+        {tags.length > 0 && <ul class="host-tags">{tags.map((t) => <li>{t}</li>)}</ul>}
         {logo && <img class="host-logo" src={logo} alt={host.studio ?? host.name} width="72" height="72" loading="lazy" decoding="async" />}
         {about ? (
           <div class="host-about">
@@ -168,19 +192,6 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
       </div>
     </section>
 
-    {/* More of the work, where the host has sent pictures of it. The reel
-        above shows one session; these show what the sessions produce. */}
-    {host.gallery && host.gallery.length > 0 && (
-      <section class="section section-flush">
-        <ul class="host-gallery">
-          {host.gallery.map((src) => (
-            <li>
-              <img src={src} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
 
     <hr class="rule" />
 
@@ -332,4 +343,27 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
       }
     });
   }
+</script>
+
+<script>
+  // The photo slideshow under the reel: the dots follow the swipe, a dot
+  // jumps to its photo, and it turns every 4 s until someone touches it.
+  document.querySelectorAll<HTMLElement>('[data-slides]').forEach((box) => {
+    const track = box.querySelector<HTMLElement>('[data-slides-track]');
+    const dots = Array.from(box.querySelectorAll<HTMLButtonElement>('[data-slide]'));
+    if (!track || dots.length < 2) return;
+    const go = (i: number) => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
+    const current = () => Math.round(track.scrollLeft / Math.max(track.clientWidth, 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => { stop(); go(i); }));
+    track.addEventListener('scroll', () => {
+      const n = current();
+      dots.forEach((d, i) => (i === n ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+    }, { passive: true });
+    let timer: number | undefined;
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; };
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      timer = window.setInterval(() => go((current() + 1) % dots.length), 4000);
+      ['pointerdown', 'wheel', 'touchstart'].forEach((e) => track.addEventListener(e, stop, { passive: true }));
+    }
+  });
 </script>

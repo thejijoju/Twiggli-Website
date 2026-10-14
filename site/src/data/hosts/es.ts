@@ -15,7 +15,7 @@ export const hosts: HostCopy[] = [
     group: '1–5 en el estudio · 6–14 in situ', duration: '2,5–5 h', place: 'Charlottenburg / in situ', languages: 'DE · EN', priceNote: 'material incluido' },
   { slug: 'celina', name: 'Celina', specialty: 'Encuadernación, mosaico & sellos', studio: 'Gestaltwandel',
     blurb: 'Desconecta y ponte a crear: artesanía guiada por expertos en un estudio tranquilo, con nueve formatos para elegir: encuadernación, pintura sobre seda, plegado de sobres, soldadura de vidrieras (técnica Tiffany), mosaico, adornos de hojalata, baldosas de hormigón, estrellas de paja y talla de sellos. No hace falta experiencia; cada formato también se ofrece como sesión privada de grupo en la fecha que elijas.',
-    group: 'Hasta 20 en el estudio · 50–100 itinerante', duration: '2–4 h', place: 'Koloniestrasse 111, Berlín', languages: 'DE · EN' },
+    group: 'Hasta 20 en el estudio · 50–100 itinerante', duration: '2–4 h', place: 'Koloniestrasse 111, Berlín', languages: 'DE · EN', priceNote: 'precio inicial, descuento de grupo desde 20 personas' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Estampación textil & artesanía variada', studio: 'Tuka Creative Club',
     blurb: 'Un espacio seguro donde los adultos pueden volver a ser niños: artesanía consciente y apta para principiantes: estampación y pintura de bolsas de tela, punto de cruz, acuarela, creación de vision boards y pintura sobre vidrio.',
     group: 'Hasta 10 en el estudio · 4–50 in situ', duration: '1,5–3 h', place: 'Ohma Studio, Friedrichshain / in situ', languages: 'EN · DE · RO · HU', priceNote: 'precio inicial' },

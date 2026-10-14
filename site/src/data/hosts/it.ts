@@ -15,7 +15,7 @@ export const hosts: HostCopy[] = [
     group: '1–5 in studio · 6–14 in sede', duration: '2.5–5 h', place: 'Charlottenburg / in sede', languages: 'DE · EN', priceNote: 'materiale incluso' },
   { slug: 'celina', name: 'Celina', specialty: 'Legatoria, mosaico & timbri', studio: 'Gestaltwandel',
     blurb: 'Stacca la spina e mettiti a creare — artigianato guidato da esperti in uno studio tranquillo, con nove formati tra cui scegliere: legatoria, pittura su seta, piegatura di buste, saldatura di vetrate (tecnica Tiffany), realizzazione di mosaici, decorazioni in latta, piastrelle in cemento, stelle di paglia e intaglio di timbri. Nessuna esperienza necessaria; ogni formato è disponibile anche come sessione privata di gruppo in una data a tua scelta.',
-    group: 'Fino a 20 in studio · 50–100 itinerante', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
+    group: 'Fino a 20 in studio · 50–100 itinerante', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN', priceNote: 'prezzo di partenza, sconto gruppi da 20 persone' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Stampa su tessuto & artigianato misto', studio: 'Tuka Creative Club',
     blurb: 'Uno spazio sicuro in cui gli adulti possono tornare bambini — artigianato consapevole e adatto ai principianti: stampa e pittura su tote bag, punto croce, acquerello, creazione di vision board e pittura su vetro.',
     group: 'Fino a 10 in studio · 4–50 in sede', duration: '1,5–3 h', place: 'Ohma Studio, Friedrichshain / in sede', languages: 'EN · DE · RO · HU', priceNote: 'prezzo di partenza' },

@@ -15,7 +15,7 @@ export const hosts: HostCopy[] = [
     group: '1–5 stüdyoda · 6–14 yerinde', duration: '2,5–5 sa', place: 'Charlottenburg / yerinde', languages: 'DE · EN', priceNote: 'malzeme dahil' },
   { slug: 'celina', name: 'Celina', specialty: 'Ciltleme, mozaik & damga', studio: 'Gestaltwandel',
     blurb: 'Kafanı boşalt ve üretmeye başla — sakin bir stüdyoda uzman eşliğinde zanaat, seçebileceğin dokuz formatla: ciltleme, ipek boyama, zarf katlama, vitray lehimleme (Tiffany tekniği), mozaik yapımı, teneke süsler, beton karo yapımı, saman yıldızlar ve damga oyma. Deneyim gerekmez; her format ayrıca senin seçeceğin bir tarihte özel grup seansı olarak da düzenlenir.',
-    group: 'Stüdyoda en fazla 20 · gezici 50–100', duration: '2–4 sa', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
+    group: 'Stüdyoda en fazla 20 · gezici 50–100', duration: '2–4 sa', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN', priceNote: 'başlangıç fiyatı, 20 kişiden itibaren grup indirimi' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Tekstil baskı & karma el işi', studio: 'Tuka Creative Club',
     blurb: 'Yetişkinlerin yeniden çocuk olabildiği güvenli bir alan — farkındalık odaklı, yeni başlayanlara uygun el işi: bez çanta baskısı ve boyama, kanaviçe, suluboya, vizyon panosu hazırlama ve cam boyama.',
     group: 'Stüdyoda en fazla 10 · yerinde 4–50', duration: '1,5–3 sa', place: 'Ohma Studio, Friedrichshain / yerinde', languages: 'EN · DE · RO · HU', priceNote: 'başlangıç fiyatı' },

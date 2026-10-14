@@ -15,7 +15,7 @@ export const hosts: HostCopy[] = [
     group: '1–5 w pracowni · 6–14 na miejscu', duration: '2,5–5 godz.', place: 'Charlottenburg / u was na miejscu', languages: 'DE · EN', priceNote: 'materiały w cenie' },
   { slug: 'celina', name: 'Celina', specialty: 'Introligatorstwo, mozaika & stemple', studio: 'Gestaltwandel',
     blurb: 'Odłącz się i zacznij tworzyć — rękodzieło pod okiem eksperta w spokojnej pracowni, z dziewięcioma formatami do wyboru: introligatorstwo, malowanie na jedwabiu, składanie kopert, lutowanie witraży (technika Tiffany), układanie mozaiki, ozdoby z blachy, wyrób płytek betonowych, gwiazdki ze słomy i rzeźbienie stempli. Doświadczenie nie jest potrzebne; każdy format można też zamówić jako prywatne zajęcia grupowe w wybranym przez ciebie terminie.',
-    group: 'Do 20 w pracowni · 50–100 mobilnie', duration: '2–4 godz.', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
+    group: 'Do 20 w pracowni · 50–100 mobilnie', duration: '2–4 godz.', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN', priceNote: 'cena wyjściowa, rabat grupowy od 20 osób' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Druk na tekstyliach & rękodzieło mieszane', studio: 'Tuka Creative Club',
     blurb: 'Bezpieczna przestrzeń, w której dorośli mogą znów być dziećmi — uważne, przyjazne dla początkujących rękodzieło: nadruki i malowanie na torbach, haft krzyżykowy, akwarela, tworzenie tablic marzeń i malowanie na szkle.',
     group: 'Do 10 osób w pracowni · 4–50 na miejscu', duration: '1,5–3 godz.', place: 'Ohma Studio, Friedrichshain / u was na miejscu', languages: 'EN · DE · RO · HU', priceNote: 'cena wyjściowa' },

@@ -2,6 +2,7 @@
 import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import { activitiesOf, filterCopy } from '../data/content.ts';
+import { tagsFor } from '../data/hostTags.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { directoryCopy, occasionsFor } from '../data/occasions.ts';
@@ -132,6 +133,7 @@ const searchText = (host: Host) => [
         </span>
       </div>
       <p class="maker-sub">{[host.firstName, districtFor(host)].filter(Boolean).join(' · ')}</p>
+      {tagsFor(host.slug, lang).length > 0 && <ul class="host-tags">{tagsFor(host.slug, lang).map((t) => <li>{t}</li>)}</ul>}
       <p class="maker-price">
         <strong>{priceFigure(rangeFor(host))}</strong>
         {hasFigure(rangeFor(host)) && <span>{priceCopy.priceMeta}</span>}

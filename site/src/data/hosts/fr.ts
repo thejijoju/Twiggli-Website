@@ -15,7 +15,7 @@ export const hosts: HostCopy[] = [
     group: '1–5 en atelier · 6–14 sur site', duration: '2,5–5 h', place: 'Charlottenburg / sur site', languages: 'DE · EN', priceNote: 'matériel inclus' },
   { slug: 'celina', name: 'Celina', specialty: 'Reliure, mosaïque & tampons', studio: 'Gestaltwandel',
     blurb: 'Déconnectez et mettez-vous à l’ouvrage — un artisanat guidé par une experte dans un atelier paisible, avec neuf formats au choix : reliure, peinture sur soie, pliage d’enveloppes, vitrail soudé (technique Tiffany), mosaïque, ornements en étain, carreaux en béton, étoiles en paille et gravure de tampons. Aucune expérience requise ; chaque format se propose aussi en séance privée de groupe à la date de votre choix.',
-    group: 'Jusqu’à 20 en atelier · 50–100 en itinérance', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
+    group: 'Jusqu’à 20 en atelier · 50–100 en itinérance', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN', priceNote: 'tarif de départ, remise de groupe dès 20 personnes' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Impression textile & loisirs créatifs', studio: 'Tuka Creative Club',
     blurb: 'Un espace bienveillant où les adultes redeviennent des enfants — des loisirs créatifs en pleine conscience, accessibles aux débutants : impression et peinture sur tote bag, point de croix, aquarelle, création de vision board et peinture sur verre.',
     group: 'Jusqu’à 10 en atelier · 4–50 sur site', duration: '1,5–3 h', place: 'Ohma Studio, Friedrichshain / sur site', languages: 'EN · DE · RO · HU', priceNote: 'tarif de départ' },

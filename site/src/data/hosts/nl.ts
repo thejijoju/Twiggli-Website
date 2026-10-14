@@ -15,7 +15,7 @@ export const hosts: HostCopy[] = [
     group: '1–5 studio · 6–14 op locatie', duration: '2,5–5 u', place: 'Charlottenburg / op locatie', languages: 'DE · EN', priceNote: 'materiaal inbegrepen' },
   { slug: 'celina', name: 'Celina', specialty: 'Boekbinden, mozaïek & stempels', studio: 'Gestaltwandel',
     blurb: 'Schakel uit en ga aan de slag — ambacht onder deskundige begeleiding in een rustige studio, met negen formats om uit te kiezen: boekbinden, zijdeschilderen, enveloppen vouwen, glas-in-lood solderen (Tiffany-techniek), mozaïek maken, blikken ornamenten, betontegels maken, strosterren en stempels snijden. Geen ervaring nodig; elk format is ook te boeken als besloten groepssessie op een datum naar keuze.',
-    group: 'Tot 20 studio · 50–100 mobiel', duration: '2–4 u', place: 'Koloniestrasse 111, Berlijn', languages: 'DE · EN' },
+    group: 'Tot 20 studio · 50–100 mobiel', duration: '2–4 u', place: 'Koloniestrasse 111, Berlijn', languages: 'DE · EN', priceNote: 'vanafprijs, groepskorting vanaf 20 personen' },
   { slug: 'evelyn', name: 'Evelyn', specialty: 'Textieldruk & gemengd handwerk', studio: 'Tuka Creative Club',
     blurb: 'Een veilige plek waar volwassenen weer even kind mogen zijn — mindful, beginnersvriendelijk handwerk: totebags bedrukken en beschilderen, kruissteek, aquarel, visionboards maken en glasschilderen.',
     group: 'Tot 10 in de studio · 4–50 op locatie', duration: '1,5–3 u', place: 'Ohma Studio, Friedrichshain / op locatie', languages: 'EN · DE · RO · HU', priceNote: 'vanafprijs' },

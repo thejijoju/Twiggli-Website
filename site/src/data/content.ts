@@ -187,7 +187,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   qian:         { activity: 'ceramics',    groupRange: [4, 25],   hourRange: [2, 2], groupPrice: 65 },
   rebeca:       { activity: 'art',         groupRange: [4, 24],   hourRange: [1, 3], groupPrice: 65 },
   nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
-  celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4] },
+  // Celina, 14 Oct quote: mosaic for groups 70 pp (3 h, glass) or 89 pp
+  // (4 h, ceramic); 5% off from 20 people, 10% from 50.
+  celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4], groupPrice: 70 },
   // Evelyn, 13 Oct: up to 10 in the studio, 4–50 on-site; 1.5–3 h;
   // from €20 per person. Also listed under printmaking (fabric printing)
   // and wellbeing (watercolour, vision boards).
@@ -311,7 +313,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Up to 12 studio · 6–14 on-site', duration: '2.5–5 h', place: 'Spielhagenstraße 13, Charlottenburg / on-site', languages: 'DE · EN', priceNote: 'material included' },
     { slug: 'celina', name: 'Celina', specialty: 'Bookbinding, mosaic & stamps', studio: 'Gestaltwandel',
       blurb: 'Switch off and get making — expert-guided craft in a calm studio, with nine formats to pick from: bookbinding, silk painting, envelope folding, stained glass soldering (Tiffany technique), mosaic making, tin ornaments, concrete tile making, straw stars and stamp carving. No experience needed; every format also runs as a private group session on a date of your choice.',
-      group: 'Up to 20 studio · 50–100 mobile', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN' },
+      group: 'Up to 20 studio · 50–100 mobile', duration: '2–4 h', place: 'Koloniestrasse 111, Berlin', languages: 'DE · EN', priceNote: 'starting price, group discounts from 20 people' },
     { slug: 'evelyn', name: 'Evelyn', specialty: 'Textile printing & mixed craft', studio: 'Tuka Creative Club',
       blurb: 'A safe space where adults can be kids again — mindful, beginner-friendly craft: tote printing and painting, cross-stitch, watercolour, vision board making and glass painting.',
       group: 'Up to 10 in the studio · 4–50 on-site', duration: '1.5–3 h', place: 'Ohma Studio, Friedrichshain / on-site', languages: 'EN · DE · RO · HU', priceNote: 'starting price' },
@@ -516,7 +518,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: 'Bis 12 im Studio · 6–14 vor Ort', duration: '2,5–5 Std.', place: 'Spielhagenstraße 13, Charlottenburg / vor Ort', languages: 'DE · EN', priceNote: 'inkl. Material' },
     { slug: 'celina', name: 'Celina', specialty: 'Buchbinden, Mosaik & Stempel', studio: 'Gestaltwandel',
       blurb: 'Abschalten und gestalten — angeleitetes Handwerk im ruhigen Studio, mit neun Formaten zur Wahl: Buchbinden, Seidenmalerei, Briefumschläge falten, Tiffany-Glaslöten, Mosaik, Blechornamente, Betonfliesen, Strohsterne und Stempelschnitzen. Ohne Vorkenntnisse; jedes Format auch als private Gruppensession an einem Wunschtermin.',
-      group: 'Bis 20 Studio · 50–100 mobil', duration: '2–4 Std.', place: 'Koloniestraße 111, Berlin', languages: 'DE · EN' },
+      group: 'Bis 20 Studio · 50–100 mobil', duration: '2–4 Std.', place: 'Koloniestraße 111, Berlin', languages: 'DE · EN', priceNote: 'Einstiegspreis, Gruppenrabatt ab 20 Personen' },
     { slug: 'evelyn', name: 'Evelyn', specialty: 'Textildruck & Mixed Craft', studio: 'Tuka Creative Club',
       blurb: 'Ein Raum, in dem Erwachsene wieder Kind sein dürfen: Taschendruck, Kreuzstich, Aquarell, Vision Boards gestalten und Glasmalerei.',
       group: 'Bis 10 im Studio · 4–50 vor Ort', duration: '1,5–3 Std.', place: 'Ohma Studio, Friedrichshain / vor Ort', languages: 'EN · DE · RO · HU', priceNote: 'Einstiegspreis' },
