@@ -1,143 +1,143 @@
 ---
-import { getSessions, berlinTodayMs } from '../data/sessions.ts';
+import { getSessions, berlinTodayMs, type Session } from '../data/sessions.ts';
+import { filterCopy } from '../data/content.ts';
+import { occasionCopy } from '../data/seo.ts';
 import { href, DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
+import { lqipStyle } from '../lib/lqip.ts';
 import HostMonogram from './HostMonogram.astro';
 
-/** The homepage's taste of the live calendar: the next few real sessions —
- *  one card per host, reels playing — with the full calendar one tap away.
- *  Labels bake in at build time; the deploy workflow rebuilds daily, so
- *  "Today" stays true. */
+/** The homepage's taste of the live calendar, in the same cards as the
+ *  team directory: a square reel, the class and its start time, the host
+ *  and district, the price. Three tabs — today, tomorrow, the coming
+ *  weekend — four classes each, one per host. The reels play one at a
+ *  time as on the directory (lib/reelwalk.ts). Labels bake in at build
+ *  time; the deploy workflow rebuilds daily, so "Today" stays true. */
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 
 const t = ui(lang).teaser;
+const perPerson = filterCopy[lang].priceMeta;
 const locale = LANG_META[lang].locale;
-
-// The next sessions, one per host, five hosts at most — variety sells the
-// calendar better than five cards from the same maker.
-const picks: ReturnType<typeof getSessions> = [];
-const seenHosts = new Set<string>();
-for (const s of getSessions(lang)) {
-  if (seenHosts.has(s.host.slug)) continue;
-  seenHosts.add(s.host.slug);
-  picks.push(s);
-  if (picks.length === 5) break;
-}
-
 const base = berlinTodayMs();
-const dayLabel = (offset: number) =>
-  offset === 0
-    ? t.today
-    : offset === 1
-      ? t.tomorrow
-      : new Date(base + offset * 86400000).toLocaleDateString(locale, {
-          weekday: 'short', day: 'numeric', month: 'short',
-        });
+const weekday = (s: Session) => new Date(base + s.dayOffset * 86400000).getUTCDay();
+const dayShort = (offset: number) =>
+  new Date(base + offset * 86400000).toLocaleDateString(locale, { weekday: 'short', timeZone: 'UTC' });
+
+/* Studio rentals ride along in some hosts' feeds; they are not classes. */
+const notAClass = /hot ?desk|cowork/i;
+const sessions = getSessions(lang).filter((s) => !notAClass.test(s.title));
+
+/* Four per tab, one per host — variety sells the calendar better than four
+   dates from the same maker. */
+const pick = (list: Session[]) => {
+  const out: Session[] = [];
+  const seen = new Set<string>();
+  for (const s of list) {
+    if (seen.has(s.host.slug)) continue;
+    seen.add(s.host.slug);
+    out.push(s);
+    if (out.length === 4) break;
+  }
+  return out;
+};
+const tabs = [
+  { key: 'today', label: t.today, list: pick(sessions.filter((s) => s.dayOffset === 0)), withDay: false },
+  { key: 'tomorrow', label: t.tomorrow, list: pick(sessions.filter((s) => s.dayOffset === 1)), withDay: false },
+  {
+    key: 'weekend',
+    label: occasionCopy[lang].weekend.short,
+    list: pick(sessions.filter((s) => s.dayOffset < 8 && (weekday(s) === 0 || weekday(s) === 6))),
+    withDay: true,
+  },
+].filter((tab) => tab.list.length);
+const first = tabs[0]?.key;
 
 const calendarHref = href(lang, '/happening-today/');
+const when = (s: Session, withDay: boolean) =>
+  [withDay ? dayShort(s.dayOffset) : '', s.time ?? ''].filter(Boolean).join(' · ');
 ---
 
+{tabs.length > 0 && (
 <section class="section today-band band-seam" id="happening-today">
   <div class="container">
-    <span class="kicker">{t.kicker}</span>
-    <p class="today-lede">{t.copy}</p>
-
-    <div class="today-grid">
-      {picks.map((s) => (
-        <a class="today-card" href={calendarHref} data-seen={`s:${s.id}`}>
-          <span class="today-media">
-            {s.host.video ? (
-              <video
-                class="today-video"
-                src={s.host.video}
-                poster={s.host.poster}
-                muted
-                loop
-                playsinline
-                preload="none"
-                aria-hidden="true"
-              ></video>
-            ) : s.host.photo ? (
-              <img src={s.host.photo} alt="" loading="lazy" decoding="async" />
-            ) : (
-              <HostMonogram name={s.host.name} />
-            )}
-            <span class="today-when">{s.time ? `${dayLabel(s.dayOffset)} · ${s.time}` : dayLabel(s.dayOffset)}</span>
-            {s.price && <span class="today-price">{s.price}</span>}
-          </span>
-          <span class="today-title">{s.title}</span>
-          <span class="today-host">{s.host.name} · {s.district}</span>
-          {/* The workshop's selling line, where it has one — same badge the
-              calendar cards wear, so the two surfaces agree. */}
-          {s.usp && <span class="session-usp">{s.usp}</span>}
-        </a>
-      ))}
+    <div class="tt-head">
+      <div>
+        <span class="tt-kicker">{t.kicker}</span>
+        <p class="today-lede">{t.copy}</p>
+      </div>
+      {tabs.length > 1 && (
+        <div class="tt-tabs" role="tablist">
+          {tabs.map((tab) => (
+            <button type="button" role="tab" class="tt-tab" data-tt-tab={tab.key} aria-selected={tab.key === first ? 'true' : 'false'}>{tab.label}</button>
+          ))}
+        </div>
+      )}
     </div>
+
+    {tabs.map((tab) => (
+      <ul class="tt-grid" data-tt-panel={tab.key} hidden={tab.key !== first}>
+        {tab.list.map((s) => (
+          <li>
+            <a class="tt-card" href={calendarHref} data-seen={`s:${s.id}`}>
+              <span class="tt-media" style={lqipStyle(s.host.poster)}>
+                {s.host.video ? (
+                  <>
+                    <img class="tt-still" src={s.host.poster} alt="" loading="lazy" decoding="async" />
+                    <video class="tt-video" src={s.host.video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                  </>
+                ) : s.host.photo ? (
+                  <img class="tt-still" src={s.host.photo} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  <HostMonogram name={s.host.name} />
+                )}
+              </span>
+              <span class="tt-line">
+                <span class="tt-title">{s.title}</span>
+                {when(s, tab.withDay) && (
+                  <span class="tt-time">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></svg>
+                    {when(s, tab.withDay)}
+                  </span>
+                )}
+              </span>
+              <span class="tt-sub">{s.host.name} · {s.district}</span>
+              {s.price && <span class="tt-price"><strong>{s.price}</strong> {perPerson}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ))}
 
     <div class="today-actions">
       <a href={calendarHref} class="btn btn-primary">{t.cta}</a>
     </div>
   </div>
 </section>
+)}
 
 <script>
-  // The teaser's reels wait for the pointer: hovering a card plays its clip
-  // straight away, leaving stops it — same manners as the schedule feed, so
-  // only the card being looked at ever loads. Touch has no hover, so there
-  // exactly one plays: whichever is most in view. Scrolling hands the turn
-  // down the stack — the card leaving stops as the next one takes over,
-  // rather than every card on screen running at once.
-  const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('.today-video'));
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const hoverable = window.matchMedia('(hover: hover)').matches;
-  if (videos.length && !hoverable && !still) {
-    const seen = new Map<HTMLVideoElement, number>();
-    let current: HTMLVideoElement | null = null;
-    const pick = () => {
-      // The most visible, as long as a fair part of it is on screen; ties
-      // (two cards wholly in view on a tall phone) go to the upper one,
-      // which is the one being read.
-      let best: HTMLVideoElement | null = null;
-      let bestRatio = 0.35;
-      for (const video of videos) {
-        const ratio = seen.get(video) ?? 0;
-        if (ratio > bestRatio + 0.01) { best = video; bestRatio = ratio; }
-      }
-      if (best === current) return;
-      current?.pause();
-      current = best;
-      current?.play().catch(() => {});
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          seen.set(entry.target as HTMLVideoElement, entry.isIntersecting ? entry.intersectionRatio : 0);
-        }
-        pick();
-      },
-      // Fine steps, so the ratios stay current while a card slides through
-      // rather than updating only as it crosses a single line.
-      { threshold: Array.from({ length: 21 }, (_, i) => i / 20) },
-    );
-    videos.forEach((video) => observer.observe(video));
-  } else if (videos.length) {
-    // Nothing would stop a clip the pointer never left — scrolling past
-    // with the cursor parked on a card, say.
-    const offscreen = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) (entry.target as HTMLVideoElement).pause();
-        }
-      },
-      { threshold: 0.1 },
-    );
-    for (const video of videos) {
-      offscreen.observe(video);
-      const card = video.closest('.today-card');
-      if (!card) continue;
-      card.addEventListener('mouseenter', () => video.play().catch(() => {}));
-      card.addEventListener('mouseleave', () => video.pause());
-    }
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // The reels play one at a time, walking along whatever is on screen, as
+  // on the team directory.
+  const reels = Array.from(document.querySelectorAll<HTMLElement>('.tt-card'))
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.tt-media'),
+      video: card.querySelector<HTMLVideoElement>('.tt-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+  const walk = startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.5, startAt: 0, step: 1, holdMs: 3000 });
+
+  // The tabs swap which four are shown; the walk then picks up the new ones.
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tt-tab]'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-tt-panel]'));
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => {
+      for (const t of tabs) t.setAttribute('aria-selected', String(t === tab));
+      for (const p of panels) p.hidden = p.dataset.ttPanel !== tab.dataset.ttTab;
+      walk.resync();
+    });
   }
 </script>

@@ -5431,3 +5431,75 @@ h1, h2, h3, h4,
 @media (max-width: 560px) {
   .find-all { display: none; }
 }
+
+/* — home: happening today — the team directory's card (square reel, title
+   and a figure on one line, host and district, price), four to a row, two
+   on a phone, under Today / Tomorrow / Weekend tabs. */
+.tt-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.tt-head .today-lede { margin-bottom: 0; }
+.tt-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 600 13px/1.2 var(--font-heading);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #b4532a;
+}
+.tt-kicker::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #2fbf71;
+  box-shadow: 0 0 0 4px rgba(47, 191, 113, 0.2);
+}
+.tt-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; box-shadow: 0 1px 6px rgba(36, 39, 46, 0.08); }
+.tt-tab {
+  border: 0; border-radius: 999px;
+  padding: 7px 14px;
+  background: none;
+  font: 600 14px var(--font-body);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tt-tab[aria-selected='true'] { background: var(--color-text); color: #fff; }
+.tt-grid {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px 24px;
+}
+.tt-grid[hidden] { display: none; }
+.tt-card { display: block; color: inherit; text-decoration: none; }
+.tt-card:hover { color: inherit; }
+.tt-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--color-surface) center / cover no-repeat;
+  transition: box-shadow 0.2s ease;
+}
+.tt-card:hover .tt-media { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14); }
+.tt-still, .tt-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.tt-video { opacity: 0; transition: opacity 0.4s ease; }
+.tt-media.is-live .tt-video { opacity: 1; }
+.tt-line { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 10px; }
+.tt-title { min-width: 0; font-size: 16px; font-weight: 500; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tt-time { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; }
+.tt-time svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; align-self: center; }
+.tt-sub { display: block; margin-top: 2px; font-size: 14px; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tt-price { display: block; margin-top: 6px; font-size: 14px; color: var(--color-text-muted); }
+.tt-price strong { font-size: 18px; font-weight: 700; color: var(--color-text); margin-right: 2px; }
+@media (max-width: 900px) {
+  .tt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 12px; margin-top: 20px; }
+  .tt-media { border-radius: 10px; }
+  .tt-title { font-size: 14px; }
+  .tt-time { font-size: 12px; }
+  .tt-time svg { width: 13px; height: 13px; }
+  .tt-sub { font-size: 12.5px; }
+  .tt-price { font-size: 12.5px; }
+  .tt-price strong { font-size: 16px; }
+  .tt-tab { padding: 6px 12px; font-size: 13px; }
+}
