@@ -1,0 +1,85 @@
+---
+/** The phone's navigation: a tab bar along the bottom edge, in thumb reach,
+ *  in place of the header's sideways-scrolling row of links. Four pages get
+ *  a tab; the rest sit in a sheet the More tab slides up. The sheet is a
+ *  native popover, so it opens, closes on a tap outside or Escape, and
+ *  traps nothing, without a script. Hidden above 720px, where the header
+ *  shows every link. */
+import { getSiteData, appUrl } from '../data/site.ts';
+import { ui } from '../data/i18n.ts';
+import { retreatsCopy } from '../data/retreats.ts';
+import { tabsCopy } from '../data/tabs.ts';
+import { hubHref } from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui(lang);
+const c = tabsCopy[lang];
+const { secondaryLinks } = getSiteData(lang);
+
+const trim = (p: string) => p.replace(/\/+$/, '') || '/';
+const path = trim(Astro.url.pathname);
+const home = href(lang, '/');
+const workshops = hubHref(lang);
+const calendar = href(lang, '/happening-today/');
+const teams = href(lang, '/corporatebookings/');
+
+const more = [
+  { label: t.nav.spaces, href: href(lang, '/studio-rental/') },
+  { label: retreatsCopy[lang].nav, href: href(lang, '/retreats/') },
+  { label: t.home.becomeHost, href: href(lang, '/host/') },
+  ...secondaryLinks.filter((l) => trim(l.href) !== trim(teams)),
+];
+
+const under = (base: string) => path === trim(base) || path.startsWith(trim(base) + '/');
+const current =
+  path === trim(home) ? 'home'
+  : under(workshops) ? 'workshops'
+  : under(calendar) ? 'calendar'
+  : under(teams) ? 'teams'
+  : more.some((l) => under(l.href)) ? 'more'
+  : '';
+
+const icons: Record<string, string> = {
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
+  workshops: '<path d="M12 21a9 9 0 1 1 9-9c0 1.7-1.3 3-3 3h-2.2a1.8 1.8 0 0 0-1.3 3.1c.4.4.6.9.6 1.4A1.5 1.5 0 0 1 12 21Z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15.5" cy="8" r="1.2"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  teams: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.6c2.6.2 4.5 2.1 4.5 4.9"/>',
+  more: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+};
+const tabs = [
+  { key: 'home', label: c.home, href: home },
+  { key: 'workshops', label: c.workshops, href: workshops },
+  { key: 'calendar', label: c.calendar, href: calendar },
+  { key: 'teams', label: c.teams, href: teams },
+];
+---
+
+<nav class="tabbar" aria-label="Tabs">
+  {tabs.map((tab) => (
+    <a href={tab.href} class="tabbar-item" aria-current={current === tab.key ? 'page' : undefined}>
+      <span class="tabbar-icon"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[tab.key]} /></span>
+      <span class="tabbar-label">{tab.label}</span>
+    </a>
+  ))}
+  <button type="button" class="tabbar-item" popovertarget="tabbar-more" aria-current={current === 'more' ? 'page' : undefined}>
+    <span class="tabbar-icon"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons.more} /></span>
+    <span class="tabbar-label">{c.more}</span>
+  </button>
+</nav>
+
+<div id="tabbar-more" class="tabsheet" popover>
+  <div class="tabsheet-head">
+    <span class="tabsheet-grab" aria-hidden="true"></span>
+    <button type="button" class="tabsheet-close" popovertarget="tabbar-more" popovertargetaction="hide" aria-label={c.close}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+    </button>
+  </div>
+  <ul class="tabsheet-links">
+    {more.map((l) => (
+      <li><a href={l.href} aria-current={under(l.href) ? 'page' : undefined}>{l.label}<span aria-hidden="true">→</span></a></li>
+    ))}
+  </ul>
+  <a href={appUrl} class="btn btn-primary tabsheet-cta" target="_blank" rel="noopener">{t.nav.cta}</a>
+</div>

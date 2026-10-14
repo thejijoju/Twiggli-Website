@@ -1923,19 +1923,10 @@ a:hover { color: var(--color-accent); }
     gap: 12px;
   }
   .site-header .nav-logo { width: 46px; height: 46px; }
-  /* The page links are the part that cannot fit, so they are the part that
-     swipes: one row, scrolled sideways, clipped to the space left over by
-     the switcher, the CTA and the mark beside them. */
-  .site-header .nav-links {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 14px;
-    font-size: 14px;
-    /* The row scrolls; nothing in it may push the bar wider than the screen. */
-    min-width: 0;
-  }
-  .site-header .nav-links::-webkit-scrollbar { display: none; }
+  /* The page links move to the tab bar along the bottom edge (see
+     MobileTabs.astro); the bar up here keeps the mark, the language and
+     the CTA. */
+  .site-header .nav-links { display: none; }
   .site-header .nav-end {
     flex-wrap: nowrap;
     gap: 10px;
@@ -1943,12 +1934,6 @@ a:hover { color: var(--color-accent); }
   }
   .site-header .nav a.nav-cta { padding: 8px 14px; font-size: 13px; flex: none; }
   .site-header .nav-brand-block { flex: none; }
-  /* Below a phone's width the CTA keeps its arrow and drops its words — a
-     hundred pixels of label leaves the links nothing to swipe through. */
-  @media (max-width: 560px) {
-    .site-header .nav-cta-label { display: none; }
-    .site-header .nav a.nav-cta { padding: 9px; border-radius: 999px; }
-  }
   /* The links row scrolls sideways and clips what overflows it, so the
      menu leaves the row: pinned under the bar, at the right edge. */
   .site-header .lang-switch { position: static; }
@@ -5062,4 +5047,117 @@ h1, h2, h3, h4,
   .home-split-tape { width: 44px; height: 14px; }
   .home-split-tape.is-tl { left: -14px; }
   .home-split-tape.is-br { right: -14px; }
+}
+
+/* — tab bar — the phone's navigation (MobileTabs.astro): four pages and a
+   More tab along the bottom edge, in thumb reach, over the home indicator.
+   The current page's icon sits in a soft violet pill. More slides up a
+   sheet with the other pages. Hidden above 720px. */
+.tabbar, .tabsheet { display: none; }
+@media (max-width: 720px) {
+  :root { --tabbar-h: 64px; }
+  body { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px)); }
+  .tabbar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 25;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+    padding: 6px 4px env(safe-area-inset-bottom, 0px);
+    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    border-top: 1px solid var(--color-line);
+  }
+  /* Typing into a field: the keyboard lifts a fixed bar into the way. */
+  body:has(input:focus, textarea:focus, select:focus) .tabbar { display: none; }
+  .tabbar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    min-width: 0;
+    padding: 2px 0 0;
+    border: 0;
+    background: none;
+    font: 600 11px/1.2 var(--font-body);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tabbar-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 30px;
+    border-radius: 999px;
+    transition: background-color 0.2s;
+  }
+  .tabbar-icon svg {
+    width: 22px; height: 22px;
+    fill: none; stroke: currentColor; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .tabbar-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tabbar-item[aria-current='page'] { color: var(--color-accent-deep); }
+  .tabbar-item[aria-current='page'] .tabbar-icon { background: color-mix(in srgb, var(--color-accent) 14%, transparent); }
+  .tabbar-item:active .tabbar-icon { background: color-mix(in srgb, var(--color-accent) 22%, transparent); }
+
+  /* The More sheet: a native popover, dressed as a sheet on the bottom edge. */
+  .tabsheet:popover-open { display: block; }
+  .tabsheet {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: 85vh;
+    margin: 0;
+    overflow-y: auto;
+    padding: 6px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    border: 0;
+    border-radius: 22px 22px 0 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    box-shadow: 0 -12px 50px rgba(0, 0, 0, 0.22);
+    transform: translateY(0);
+    transition: transform 0.25s ease, display 0.25s allow-discrete, overlay 0.25s allow-discrete;
+  }
+  @starting-style { .tabsheet:popover-open { transform: translateY(100%); } }
+  .tabsheet::backdrop { background: rgba(36, 39, 46, 0.35); }
+  .tabsheet-head { position: relative; height: 34px; }
+  .tabsheet-grab {
+    position: absolute; left: 50%; top: 6px;
+    width: 40px; height: 4px; margin-left: -20px;
+    border-radius: 999px;
+    background: var(--color-divider);
+  }
+  .tabsheet-close {
+    position: absolute; right: -8px; top: 0;
+    display: grid; place-items: center;
+    width: 40px; height: 40px;
+    border: 0; border-radius: 999px;
+    background: none; color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .tabsheet-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .tabsheet-links { list-style: none; margin: 0; padding: 0; }
+  .tabsheet-links li + li { border-top: 1px solid var(--color-line); }
+  .tabsheet-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 52px;
+    font-size: 17px; font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .tabsheet-links a span { color: var(--color-text-muted); }
+  .tabsheet-links a[aria-current='page'] { color: var(--color-accent-deep); font-weight: 700; }
+  .tabsheet-cta { display: flex; justify-content: center; width: 100%; margin-top: 16px; min-height: 48px; align-items: center; }
+
+  /* Things that float on the bottom edge sit above the bar, not under it. */
+  .cookie-banner { bottom: calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom, 0px)); }
+  .code-toast { bottom: calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom, 0px)); }
 }
