@@ -2910,8 +2910,8 @@ a:hover { color: var(--color-accent); }
 .onrequest .session-thumb {
   width: 100%;
   height: auto;
-  /* Taller than wide, per the tile above — a nod to a phone, not a copy. */
-  aspect-ratio: 5 / 6;
+  /* Square, the same tile as the team directory's. */
+  aspect-ratio: 1 / 1;
 }
 .onrequest .session-main { margin-top: 10px; }
 .onrequest .session-title {
@@ -3116,8 +3116,8 @@ a:hover { color: var(--color-accent); }
 .daypicker[data-view='grid'] .daysessions .session-thumb {
   width: 100%;
   height: auto;
-  /* Taller than wide, per the tile above — a nod to a phone, not a copy. */
-  aspect-ratio: 5 / 6;
+  /* Square, the same tile as the team directory's. */
+  aspect-ratio: 1 / 1;
 }
 .daypicker[data-view='grid'] .daysessions .session-main { margin-top: 10px; }
 /* Long titles clamp to two lines and long host lines to one, so every
@@ -3208,10 +3208,13 @@ a:hover { color: var(--color-accent); }
     margin-top: -37px;
     margin-bottom: 0;
   }
+  /* Square, like the team directory's tiles on a phone, in the same two
+     columns with the same gaps — the two grids of video read as one. */
   .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     border-radius: 10px;
   }
+  .page-flush .daypicker[data-view='grid'] .daysessions .daygroup { gap: 26px 12px; }
   /* The picture, a stand-in monogram and the tile itself all take the same
      corner, or the photo's square edge shows past the tile's rounded one. */
   .page-flush .daypicker[data-view='grid'] .daysessions .session-thumb img,
