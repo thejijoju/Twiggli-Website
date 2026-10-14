@@ -9,6 +9,7 @@ import { berlinTodayMs } from '../data/sessions.ts';
 import { almostFullLabel, spotsText } from '../data/availability.ts';
 import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
 import type { Lang } from '../lib/url.ts';
+import { lqipStyle } from '../lib/lqip.ts';
 
 interface Props {
   sessions: Session[];
@@ -19,8 +20,15 @@ interface Props {
   /** Where a row's title leads: the class's own page — every date of it,
    *  in one place — or, on that page itself, straight to the booking. */
   linkTitlesTo?: 'workshop' | 'booking';
+  /** A small square of the host's reel at the head of each row, where rows
+   *  come from several hosts; on by default wherever the host is named. */
+  withThumb?: boolean;
 }
-const { sessions, lang, withHost = false, linkTitlesTo = 'workshop' } = Astro.props;
+const { sessions, lang, withHost = false, linkTitlesTo = 'workshop', withThumb = withHost } = Astro.props;
+/* The 240px square cut of a reel's poster (scripts/poster-thumbs.mjs);
+   a host with only a photo shows that. */
+const thumbFor = (s: Session) =>
+  s.host.poster ? s.host.poster.replace(/\/video\/([^/]+)-poster\.jpg$/, '/video/thumbs/$1.jpg') : s.host.photo;
 const t = pageCopy[lang];
 
 const showPrice = (price?: string) =>
@@ -46,7 +54,13 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
 
 <ul class="dates">
   {sessions.map((s) => (
-    <li class="date-row" id={s.id}>
+    <li class:list={['date-row', { 'has-thumb': withThumb }]} id={s.id}>
+      {withThumb && (
+        <a class="date-thumb" href={workshopHref(lang, s.host, s.workshopKey)} tabindex="-1" aria-hidden="true" style={lqipStyle(s.host.poster)}>
+          {thumbFor(s) && <img src={thumbFor(s)} alt="" loading="lazy" decoding="async" />}
+          {s.host.video && <video class="date-thumb-video" src={s.host.video} muted loop playsinline preload="none"></video>}
+        </a>
+      )}
       <span class="date-when">
         <span class="date-day">{formatDay(s.dayOffset, lang)}</span>
         <span class="date-time">{s.time ?? t.timeTba}</span>
@@ -83,3 +97,18 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
     </li>
   ))}
 </ul>
+
+<script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // The little squares play one at a time, walking down the rows on screen
+  // (lib/reelwalk.ts, as on the calendar).
+  const reels = Array.from(document.querySelectorAll<HTMLElement>('.date-row.has-thumb'))
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.date-thumb'),
+      video: card.querySelector<HTMLVideoElement>('.date-thumb-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+  if (reels.length) startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.6, startAt: 0, step: 1, holdMs: 3000 });
+</script>

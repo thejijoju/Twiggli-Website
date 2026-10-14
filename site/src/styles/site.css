@@ -5626,3 +5626,24 @@ h1, h2, h3, h4,
 /* Under the people field of a group request: the smallest group a request may name. */
 .book-hint { display: block; margin-top: 4px; font-size: 12.5px; color: var(--color-text-muted); }
 .book-hint[hidden] { display: none; }
+
+/* Date rows with a small square of the host's reel at their head (on the
+   occasion, activity and district pages), playing one at a time. */
+.date-row.has-thumb { grid-template-columns: 64px 150px minmax(0, 1fr) auto; }
+.date-thumb {
+  position: relative;
+  display: block;
+  width: 64px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-surface) center / cover no-repeat;
+}
+.date-thumb img, .date-thumb-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.date-thumb-video { opacity: 0; transition: opacity 0.4s ease; }
+.date-thumb.is-live .date-thumb-video { opacity: 1; }
+@media (max-width: 640px) {
+  .date-row.has-thumb { grid-template-columns: 72px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; align-items: start; }
+  .date-row.has-thumb .date-thumb { width: 72px; grid-row: 1 / span 3; }
+  .date-row.has-thumb > :not(.date-thumb) { grid-column: 2; }
+}
