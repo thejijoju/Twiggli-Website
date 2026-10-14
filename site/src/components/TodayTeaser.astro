@@ -24,9 +24,8 @@ const weekday = (s: Session) => new Date(base + s.dayOffset * 86400000).getUTCDa
 const dayShort = (offset: number) =>
   new Date(base + offset * 86400000).toLocaleDateString(locale, { weekday: 'short', timeZone: 'UTC' });
 
-/* Studio rentals ride along in some hosts' feeds; they are not classes. */
-const notAClass = /hot ?desk|cowork/i;
-const sessions = getSessions(lang).filter((s) => !notAClass.test(s.title));
+// Classes only: an open studio day is for people who already know the craft.
+const sessions = getSessions(lang).filter((s) => !s.openStudio);
 
 /* Four per tab, one per host — variety sells the calendar better than four
    dates from the same maker. */

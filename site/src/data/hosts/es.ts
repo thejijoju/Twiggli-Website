@@ -54,7 +54,7 @@ export const hosts: HostCopy[] = [
     group: '10–150', duration: 'Media jornada – varios días', place: 'Tu oficina / un local, en toda Alemania', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Torno & modelado cerámico',
     blurb: 'Dos formatos de cerámica: torno, para aprender lo básico del torno de alfarero; o modelado a mano para grupos más grandes, desde el pellizcado hasta la construcción con planchas. Cada persona se queda con una o dos piezas.',
-    group: 'Hasta 15 en el estudio · 4–30 in situ', duration: '1,5–3 h', place: 'Nuestro estudio en Kreuzberg / tu espacio', languages: 'EN' },
+    group: '5–15 en el estudio · 5–30 in situ', duration: '1,5–3 h', place: 'Nuestro estudio en Kreuzberg / tu espacio', languages: 'EN', priceNote: 'precio inicial' },
   { slug: 'jem', name: 'Jem', specialty: 'Elaboración de sushi & kimchi', studio: 'Fischtal Foodlab',
     blurb: 'Talleres gastronómicos prácticos, divertidos, interactivos y deliciosos. Sesiones de sushi y kimchi aptas para principiantes: pica, sala y fermenta tu propio kimchi, o enrolla tres tipos de maki y termina con una comida compartida.',
     group: '≤40 kimchi · ≤20 sushi', duration: '3–4 h', place: 'Fischtal Foodlab / tu oficina', languages: 'EN · DE', priceNote: 'precio inicial' },

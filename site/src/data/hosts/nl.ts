@@ -54,7 +54,7 @@ export const hosts: HostCopy[] = [
     group: '10–150', duration: 'Halve dag – meerdaags', place: 'Je kantoor / een locatie, in heel Duitsland', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Draaien & handvormen',
     blurb: 'Twee keramiekformats: draaien, waarbij je de basis van de draaischijf leert; of handvormen voor grotere groepen, van knijptechniek tot plaatopbouw. Iedereen houdt een of twee stukken.',
-    group: 'Tot 15 in de studio · 4–30 op locatie', duration: '1,5–3 u', place: 'Onze studio in Kreuzberg / jouw ruimte', languages: 'EN' },
+    group: '5–15 in de studio · 5–30 op locatie', duration: '1,5–3 u', place: 'Onze studio in Kreuzberg / jouw ruimte', languages: 'EN', priceNote: 'vanafprijs' },
   { slug: 'jem', name: 'Jem', specialty: 'Sushi & kimchi maken', studio: 'Fischtal Foodlab',
     blurb: 'Hands-on foodworkshops die leuk, interactief en heerlijk zijn. Beginnersvriendelijke sushi- en kimchisessies: snijd, zout en fermenteer je eigen kimchi, of rol drie soorten maki en sluit af met een gezamenlijke maaltijd.',
     group: '≤40 kimchi · ≤20 sushi', duration: '3–4 u', place: 'Fischtal Foodlab / je kantoor', languages: 'EN · DE', priceNote: 'vanafprijs' },

@@ -80,6 +80,8 @@ export type Session = {
   /** The one thing that sells this workshop, in two or three words — see
    *  workshopUsps in content.ts. Absent for most. */
   usp?: string;
+  /** A day at a host's own stations rather than a class (see OPEN_STUDIO). */
+  openStudio?: boolean;
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -211,6 +213,17 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
  *  group is quoted separately, which is why the directory labels them as
  *  such rather than presenting them as the price of a booking.
  */
+/** Tuft Tuft's "Hot desk" in their booking feed is a day at a tufting
+ *  station for people who already tuft — no teacher. It shows as "Open
+ *  studio", tagged for the experienced, and stays out of the home page's
+ *  classes and out of the host's price range. */
+const OPEN_STUDIO = /\bhot ?desk\b/i;
+export const isOpenStudio = (w: { title?: string }): boolean => OPEN_STUDIO.test(w.title ?? '');
+const EXPERIENCED: Record<Lang, string> = {
+  en: 'Experienced', de: 'Für Erfahrene', fr: 'Confirmés', es: 'Con experiencia',
+  it: 'Esperti', nl: 'Ervaren', pl: 'Dla zaawansowanych', tr: 'Deneyimliler',
+};
+
 export function getHostPriceRanges(): Map<string, [number, number]> {
   const out = new Map<string, [number, number]>();
   const priced = [
@@ -221,7 +234,7 @@ export function getHostPriceRanges(): Map<string, [number, number]> {
     ...hostDates,
   ];
   for (const w of priced) {
-    if (!w.price) continue;
+    if (!w.price || isOpenStudio(w as { title?: string })) continue;
     // "€66", "€40–100", "€168+" — every number in the string is a real
     // price for this session, so the ends of the span are its ends.
     const found = [...w.price.matchAll(/\d+(?:[.,]\d+)?/g)].map((m) => Number(m[0].replace(',', '.')));
@@ -310,7 +323,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   const bySlug = new Map(hosts.map((h) => [h.slug, h]));
   const sessions: Session[] = [];
   const usp = (slug: string, title: string) => getWorkshopUsp(slug, title, lang);
-  const feed = (liveData.workshops ?? []) as LiveWorkshop[];
+  const feed = ((liveData.workshops ?? []) as LiveWorkshop[])
+    .map((w) => (isOpenStudio(w) ? { ...w, title: 'Open studio', openStudio: true } : w));
   // Dates hosts sent us themselves; the feed's own entry wins on a clash.
   const inFeed = new Set(feed.map((w) => `${w.slug}|${w.date}|${w.time}`));
   const offSite = new Set<LiveWorkshop>();
@@ -359,7 +373,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(!w.soldOut && availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.almostFull ? { almostFull: true } : {}),
       ...(availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going } : {}),
       ...(partnerCodes[w.slug] && !offSite.has(w) && !w.request ? { partner: partnerCodes[w.slug] } : {}),
-      ...(usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
+      ...((w as { openStudio?: boolean }).openStudio ? { usp: EXPERIENCED[lang], openStudio: true }
+        : usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
   }
 

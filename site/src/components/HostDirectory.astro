@@ -3,6 +3,7 @@ import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import { activitiesOf, filterCopy } from '../data/content.ts';
 import { tagsFor } from '../data/hostTags.ts';
+import { upTo } from '../data/seo.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { directoryCopy, occasionsFor } from '../data/occasions.ts';
@@ -64,8 +65,13 @@ const enquiryFor = (host: Host) =>
 const whereFor = (host: Host) =>
   !host.area ? host.place : host.onSite ? `${host.area} / ${labels.onsite}` : host.area;
 const districtFor = (host: Host) => host.area ?? host.place;
+/* A minimum of 1 comes from a host's public classes, where one person can
+   book a seat; it is not the smallest group they take privately, so the
+   card gives only the ceiling: "up to 14", not "1–14". */
 const groupText = (host: Host) =>
-  host.groupRange[0] === host.groupRange[1] ? String(host.groupRange[1]) : `${host.groupRange[0]}–${host.groupRange[1]}`;
+  host.groupRange[0] <= 1 ? `${upTo[lang]} ${host.groupRange[1]}`
+    : host.groupRange[0] === host.groupRange[1] ? String(host.groupRange[1])
+    : `${host.groupRange[0]}–${host.groupRange[1]}`;
 /** Everything the search box should find a host by, in this language. */
 const searchText = (host: Host) => [
   host.firstName, host.specialty, host.blurb, priceCopy.activities[host.activity],

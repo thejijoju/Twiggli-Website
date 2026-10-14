@@ -940,7 +940,7 @@ export const hostLede = (host: Host, sessions: Session[], lang: Lang): string =>
 /* The host page spells out what the cards abbreviate: an intro is read,
    not scanned. "≤10 studio · 4–50 on-site" → "up to 10 studio, 4–50
    on-site"; "1.5–3 h" → "1.5–3 hours"; "EN · DE" → "English and German". */
-const upTo: Record<Lang, string> = { en: 'up to', de: 'bis', fr: 'jusqu’à', es: 'hasta', it: 'fino a', nl: 'tot', pl: 'do', tr: 'en fazla' };
+export const upTo: Record<Lang, string> = { en: 'up to', de: 'bis', fr: 'jusqu’à', es: 'hasta', it: 'fino a', nl: 'tot', pl: 'do', tr: 'en fazla' };
 const hourUnits: Record<Lang, [RegExp, string, string]> = {
   en: [/(\d)\s*h\b/g, 'hours', 'hour'],
   de: [/(\d)\s*Std\./g, 'Stunden', 'Stunde'],

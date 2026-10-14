@@ -54,7 +54,7 @@ export const hosts: HostCopy[] = [
     group: '10–150', duration: 'Yarım gün – birkaç gün', place: 'Senin ofisin / bir mekân, Almanya genelinde', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Çömlekçi çarkı & elle şekillendirme',
     blurb: 'İki seramik formatı: çömlekçi çarkının temellerini öğrendiğin çarkta çekme ya da daha büyük gruplar için çimdiklemeden plaka yapımına elle şekillendirme. Herkes bir ya da iki parça alıkoyuyor.',
-    group: 'Stüdyoda en fazla 15 · yerinde 4–30', duration: '1,5–3 sa', place: 'Kreuzberg’deki stüdyomuz / senin mekânın', languages: 'EN' },
+    group: 'Stüdyoda 5–15 · yerinde 5–30', duration: '1,5–3 sa', place: 'Kreuzberg’deki stüdyomuz / senin mekânın', languages: 'EN', priceNote: 'başlangıç fiyatı' },
   { slug: 'jem', name: 'Jem', specialty: 'Suşi & kimchi yapımı', studio: 'Fischtal Foodlab',
     blurb: 'Eğlenceli, etkileşimli ve lezzetli uygulamalı yemek atölyeleri. Yeni başlayanlara uygun suşi ve kimchi seansları: kendi kimchi’ni doğra, tuzla ve fermente et ya da üç çeşit maki sar ve ortak bir yemekle bitir.',
     group: '≤40 kimchi · ≤20 suşi', duration: '3–4 sa', place: 'Fischtal Foodlab / senin ofisin', languages: 'EN · DE', priceNote: 'başlangıç fiyatı' },
