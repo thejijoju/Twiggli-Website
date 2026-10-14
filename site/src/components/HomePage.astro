@@ -2,7 +2,6 @@
 /** The home page, in any language: the copy comes from i18n.ts and the
  *  page under src/pages/ is a one-line wrapper that names the language. */
 import Base from '../layouts/Base.astro';
-import ImageSlot from './ImageSlot.astro';
 import PhoneMockup from './PhoneMockup.astro';
 import HostGrid from './HostGrid.astro';
 import StoreButtons from './StoreButtons.astro';
@@ -12,7 +11,7 @@ import ActivityLinks from './ActivityLinks.astro';
 import SiteSchema from './SiteSchema.astro';
 import { getHosts } from '../data/content.ts';
 import { ui } from '../data/i18n.ts';
-import { href, withBase, type Lang } from '../lib/url.ts';
+import { href, type Lang } from '../lib/url.ts';
 import Doodled from './Doodled.astro';
 
 interface Props { lang: Lang }
@@ -63,46 +62,6 @@ const hosts = getHosts(lang);
   <ActivityLinks lang={lang} />
 
   <div class="container">
-
-    <section class="split split-media-first" id="host">
-      <div class="media-4x3 grayscale">
-        <ImageSlot
-          src={withBase('/img/hero/hiking.jpg')}
-          shape="rect"
-          placeholder="Drop a host/workshop photo"
-          alt=""
-        />
-      </div>
-      <div>
-        <span class="kicker kicker-tight">{t.hostEarnKicker}</span>
-        <h2 class="split-title">{t.hostEarnTitle}</h2>
-        <p class="split-copy">{t.hostEarnCopy}</p>
-        <div class="split-actions">
-          <a href={href(lang, '/host/')} class="btn btn-primary">{t.becomeHost}</a>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <section class="split split-text-first" id="corporate">
-      <div>
-        <span class="kicker kicker-tight">{t.corpKicker}</span>
-        <h2 class="split-title">{t.corpTitle}</h2>
-        <p class="split-copy">{t.corpCopy}</p>
-        <div class="split-actions">
-          <a href={href(lang, '/corporatebookings/')} class="btn btn-primary">{t.corpCta}</a>
-        </div>
-      </div>
-      <div class="media-4x3 grayscale">
-        <ImageSlot
-          src={withBase('/img/hero/cooking.jpg')}
-          shape="rect"
-          placeholder="Drop a corporate event photo"
-          alt=""
-        />
-      </div>
-    </section>
 
     <Newsletter lang={lang} />
   </div>
