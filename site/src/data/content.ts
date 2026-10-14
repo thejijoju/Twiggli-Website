@@ -233,7 +233,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
   pastamadre:   { activity: 'food',        groupRange: [1, 12],   hourRange: [3, 5] },
-  munio:        { activity: 'craft',       groupRange: [1, 10],   hourRange: [1, 2] },
+  munio:        { activity: 'craft',       groupRange: [1, 15],   hourRange: [1, 2] },
   // Walks run from 10 people; no published cap ("kleine Gruppen").
   'monk-garden': { activity: 'food',       groupRange: [10, 20],  hourRange: [2.5, 3] },
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.

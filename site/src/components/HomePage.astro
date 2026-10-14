@@ -8,6 +8,7 @@ import StoreButtons from './StoreButtons.astro';
 import Newsletter from './Newsletter.astro';
 import TodayTeaser from './TodayTeaser.astro';
 import ActivityLinks from './ActivityLinks.astro';
+import HomeSplits from './HomeSplits.astro';
 import SiteSchema from './SiteSchema.astro';
 import { getHosts } from '../data/content.ts';
 import { ui } from '../data/i18n.ts';
@@ -62,6 +63,7 @@ const hosts = getHosts(lang);
   <ActivityLinks lang={lang} />
 
   <div class="container">
+    <HomeSplits lang={lang} />
 
     <Newsletter lang={lang} />
   </div>

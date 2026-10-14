@@ -1,0 +1,60 @@
+---
+/** Two rows on the home page, one for teams and one for makers: text on one
+ *  side, a small collage of workshop photos on the other (a big rounded card,
+ *  one taped down, one stamp), the sides swapped on the second row. */
+import { homeSplits } from '../data/homeSplits.ts';
+import { bookingCopy } from '../data/bookingCopy.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { teams, makers } = homeSplits[lang];
+const img = (name: string) => withBase(`/img/mail/${name}.jpg`);
+---
+
+<section class="home-splits" aria-label={`${teams.kicker} · ${makers.kicker}`}>
+  <div class="home-split">
+    <div class="home-split-text">
+      <span class="home-split-kicker">{teams.kicker}</span>
+      <h2 class="home-split-title">{teams.title} <span class="home-split-hand">{teams.hand}</span></h2>
+      <p class="home-split-copy">{teams.copy}</p>
+      <ul class="home-split-ticks">{teams.ticks.map((t) => <li>{t}</li>)}</ul>
+      <div class="home-split-actions">
+        <a href={href(lang, '/corporatebookings/')} class="btn btn-primary" data-book="group" data-book-title={bookingCopy[lang].anyHost}>{teams.cta}</a>
+        <a href={href(lang, '/corporatebookings/')} class="home-split-link">{teams.more} →</a>
+      </div>
+    </div>
+    <div class="home-split-collage" aria-hidden="true">
+      <img class="home-split-card" src={img('craftkai')} alt="" loading="lazy" />
+      <figure class="home-split-pic is-taped is-top">
+        <div class="home-split-paper"><img src={img('jem-kimchi')} alt="" loading="lazy" /><figcaption>{teams.pics[0]}</figcaption></div>
+        <span class="home-split-tape is-tl"></span><span class="home-split-tape is-br"></span>
+      </figure>
+      <figure class="home-split-pic is-stamp is-bottom">
+        <div class="home-split-paper"><img src={img('smell-lab')} alt="" loading="lazy" /><figcaption>{teams.pics[1]}</figcaption></div>
+      </figure>
+    </div>
+  </div>
+
+  <div class="home-split is-flipped">
+    <div class="home-split-text">
+      <span class="home-split-kicker">{makers.kicker}</span>
+      <h2 class="home-split-title">{makers.title} <span class="home-split-hand">{makers.hand}</span></h2>
+      <p class="home-split-copy">{makers.copy}</p>
+      <ul class="home-split-ticks">{makers.ticks.map((t) => <li>{t}</li>)}</ul>
+      <div class="home-split-actions">
+        <a href={href(lang, '/host/')} class="btn home-split-ink">{makers.cta}</a>
+      </div>
+    </div>
+    <div class="home-split-collage" aria-hidden="true">
+      <img class="home-split-card" src={img('schmiede')} alt="" loading="lazy" />
+      <figure class="home-split-pic is-stamp is-top">
+        <div class="home-split-paper"><img src={img('tufttuft')} alt="" loading="lazy" /><figcaption>{makers.pics[0]}</figcaption></div>
+      </figure>
+      <figure class="home-split-pic is-taped is-bottom">
+        <div class="home-split-paper"><img src={img('ceramic-kingdom')} alt="" loading="lazy" /><figcaption>{makers.pics[1]}</figcaption></div>
+        <span class="home-split-tape is-tl"></span><span class="home-split-tape is-br"></span>
+      </figure>
+    </div>
+  </div>
+</section>
