@@ -57,6 +57,7 @@ const c = bookingCopy[lang];
       <label class="book-field">
         <span>{c.people}</span>
         <input name="people" type="number" min="1" max="200" value="1" inputmode="numeric" required />
+        <small class="book-hint" data-book-min-hint hidden></small>
       </label>
       {/* Only where nothing is booked for a date yet: a group, or a workshop
           that runs on request. */}
@@ -178,6 +179,7 @@ const c = bookingCopy[lang];
     const sent = dialog.querySelector<HTMLElement>('[data-book-sent]');
     const whenField = dialog.querySelector<HTMLElement>('[data-book-when-field]');
     const people = form.querySelector<HTMLInputElement>('input[name="people"]');
+    const minHint = dialog.querySelector<HTMLElement>('[data-book-min-hint]');
     const studioBox = dialog.querySelector<HTMLElement>('[data-book-studio]');
     const groupPlace = dialog.querySelector<HTMLElement>('[data-book-group-place]');
     const venueField = dialog.querySelector<HTMLElement>('[data-book-venue]');
@@ -214,9 +216,14 @@ const c = bookingCopy[lang];
       if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : copy.message;
       if (message) message.placeholder = studio ? copy.studioNotesPh : copy.messagePh;
       // A group says how many; the host's range is the hint.
+      // A group request names at least the host's own minimum, or four where
+      // they have not told us one (GROUP_MIN in content.ts).
       if (people) {
-        people.value = kind === 'group' ? '' : people.value || '1';
-        people.placeholder = picked.bookGroup ?? '';
+        const min = group ? Math.max(1, Number(picked.bookMin) || 4) : 1;
+        people.min = String(min);
+        people.value = group ? '' : people.value || '1';
+        people.placeholder = picked.bookGroup ?? (group ? `${min}+` : '');
+        if (minHint) { minHint.hidden = !group; minHint.textContent = group ? String(copy.minPeople ?? '').replace('{n}', String(min)) : ''; }
       }
       if (workshop) workshop.textContent = [picked.bookTitle, picked.bookHost].filter(Boolean).join(' · ');
       if (when) {

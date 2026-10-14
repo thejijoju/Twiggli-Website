@@ -6,7 +6,7 @@ import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
-import { getHosts } from '../data/content.ts';
+import { getHosts, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { followCopy } from '../data/follow.ts';
 import { tagsFor } from '../data/hostTags.ts';
@@ -168,6 +168,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           data-book-host={host.name}
           data-book-price={priceRange ? priceText : undefined}
           data-book-group={host.groupRange[0] <= 1 ? `≤ ${host.groupRange[1]}` : host.groupRange[0] === host.groupRange[1] ? String(host.groupRange[1]) : `${host.groupRange[0]}–${host.groupRange[1]}`}
+          data-book-min={requestMin(host)}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {t.request}

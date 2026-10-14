@@ -5623,3 +5623,6 @@ h1, h2, h3, h4,
   .dir-bar .dir-clear, .dir-bar .dir-count, .dir-bar .dir-cta { display: none; }
   .dir-show { display: flex; justify-content: center; width: 100%; margin-top: 22px; min-height: 48px; align-items: center; }
 }
+/* Under the people field of a group request: the smallest group a request may name. */
+.book-hint { display: block; margin-top: 4px; font-size: 12.5px; color: var(--color-text-muted); }
+.book-hint[hidden] { display: none; }

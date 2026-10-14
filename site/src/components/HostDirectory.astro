@@ -1,7 +1,7 @@
 ---
 import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
-import { activitiesOf, filterCopy } from '../data/content.ts';
+import { activitiesOf, filterCopy, requestMin } from '../data/content.ts';
 import { tagsFor } from '../data/hostTags.ts';
 import { upTo } from '../data/seo.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
@@ -176,6 +176,7 @@ const searchText = (host: Host) => [
           data-book-host={host.firstName}
           data-book-price={hasFigure(rangeFor(host)) ? `${priceFigure(rangeFor(host))} · ${priceCopy.priceMeta}` : undefined}
           data-book-group={groupText(host)}
+          data-book-min={requestMin(host)}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {labels.request}

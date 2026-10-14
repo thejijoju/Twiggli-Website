@@ -166,6 +166,11 @@ export const activitiesOf = (h: Pick<Host, 'activity' | 'alsoIn'>): ActivityKey[
  *  leave out those without one — a monogram card sells nobody — though
  *  their own page and their dates stay. */
 export const hasMedia = (h: Pick<Host, 'video' | 'photo' | 'wide'>): boolean => Boolean(h.video || h.photo || h.wide);
+/** The fewest people a group request may name for a host: their own
+ *  minimum where they have told us one, otherwise four. A minimum of 1 is
+ *  only a public class's single seat, not a group a host has agreed to. */
+export const GROUP_MIN = 4;
+export const requestMin = (h: Pick<Host, 'groupRange'>): number => (h.groupRange[0] > 1 ? h.groupRange[0] : GROUP_MIN);
 /** Whether a host belongs in an activity's section or filter. */
 export const inActivity = (h: Pick<Host, 'activity' | 'alsoIn'>, a: ActivityKey): boolean =>
   h.activity === a || (h.alsoIn?.includes(a) ?? false);
@@ -247,7 +252,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // PLACEHOLDER group range — the shop publishes no cap per class.
   // Private sessions, 13 Oct: €80 pp for 3 h, 3–5 people, plus €10 a
   // piece for trimming and glazing — shown as a starting price.
-  dirt:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [1.25, 4], groupPrice: 80 },
+  dirt:             { activity: 'ceramics',  groupRange: [3, 5],  hourRange: [1.25, 4], groupPrice: 80 },
   rose:             { activity: 'craft',     groupRange: [3, 4],  hourRange: [4, 4] },
   techno:           { activity: 'art',       groupRange: [1, 6],  hourRange: [3, 3] },
   // PLACEHOLDER group range — the event page publishes no cap.
