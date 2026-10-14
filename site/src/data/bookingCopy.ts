@@ -11,6 +11,7 @@ export const bookingCopy: Record<Lang, {
   optional: string; send: string; sending: string;
   sentTitle: string; sentBody: string; error: string; close: string;
   studio: string; studioAsk: string; start: string; hours: string; often: string; once: string; regular: string; studioNotes: string; studioNotesPh: string;
+  where: string; atHost: string; atVenue: string; venue: string; venuePh: string;
 }> = {
   en: {
     book: 'Booking request', request: 'Booking request', notify: 'Join the waiting list', retreat: 'Request information',
@@ -26,6 +27,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Thank you!', sentBody: 'We have your request and will be in touch by email shortly.',
     error: 'That didn’t go through. Please try again, or write to us at {email}.', close: 'Close',
     studio: 'Studio request', studioAsk: 'Request this space', start: 'Start time', hours: 'Hours', often: 'How often', once: 'One time', regular: 'Regularly', studioNotes: 'Special notes', studioNotesPh: 'What you’ll do there, materials, setup, anything special',
+    where: 'Where should it take place?', atHost: 'At the host’s studio', atVenue: 'At our own venue', venue: 'Your venue', venuePh: 'Address or area, e.g. our office in Mitte',
   },
   de: {
     book: 'Buchungsanfrage', request: 'Buchungsanfrage', notify: 'Auf die Warteliste', retreat: 'Informationen anfragen',
@@ -41,6 +43,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Danke!', sentBody: 'Deine Anfrage ist bei uns. Wir melden uns in Kürze per E-Mail.',
     error: 'Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib uns an {email}.', close: 'Schließen',
     studio: 'Raumanfrage', studioAsk: 'Diesen Raum anfragen', start: 'Beginn', hours: 'Stunden', often: 'Wie oft', once: 'Einmalig', regular: 'Regelmäßig', studioNotes: 'Besondere Hinweise', studioNotesPh: 'Was du vorhast, Materialien, Aufbau, besondere Wünsche',
+    where: 'Wo soll es stattfinden?', atHost: 'Im Studio des Gastgebers', atVenue: 'Bei uns vor Ort', venue: 'Eure Location', venuePh: 'Adresse oder Gegend, z. B. unser Büro in Mitte',
   },
   fr: {
     book: 'Demande de réservation', request: 'Demande de réservation', notify: 'Liste d’attente', retreat: 'Demander des informations',
@@ -56,6 +59,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Merci !', sentBody: 'Nous avons bien reçu votre demande et revenons vers vous très vite par e-mail.',
     error: 'L’envoi a échoué. Réessayez, ou écrivez-nous à {email}.', close: 'Fermer',
     studio: 'Demande d’espace', studioAsk: 'Demander cet espace', start: 'Heure de début', hours: 'Heures', often: 'Fréquence', once: 'Une fois', regular: 'Régulièrement', studioNotes: 'Remarques particulières', studioNotesPh: 'Ce que vous ferez, matériel, installation, demandes particulières',
+    where: 'Où doit-il avoir lieu ?', atHost: 'À l’atelier de l’hôte', atVenue: 'Dans nos propres locaux', venue: 'Votre lieu', venuePh: 'Adresse ou quartier, p. ex. nos bureaux à Mitte',
   },
   es: {
     book: 'Solicitud de reserva', request: 'Solicitud de reserva', notify: 'Lista de espera', retreat: 'Solicitar información',
@@ -71,6 +75,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: '¡Gracias!', sentBody: 'Hemos recibido tu solicitud y te escribiremos pronto.',
     error: 'No se ha podido enviar. Inténtalo de nuevo o escríbenos a {email}.', close: 'Cerrar',
     studio: 'Solicitud de espacio', studioAsk: 'Solicitar este espacio', start: 'Hora de inicio', hours: 'Horas', often: 'Frecuencia', once: 'Una vez', regular: 'Con regularidad', studioNotes: 'Notas especiales', studioNotesPh: 'Qué harás, materiales, montaje, cualquier necesidad especial',
+    where: '¿Dónde debe tener lugar?', atHost: 'En el estudio del anfitrión', atVenue: 'En nuestro propio espacio', venue: 'Vuestro espacio', venuePh: 'Dirección o zona, p. ej. nuestra oficina en Mitte',
   },
   it: {
     book: 'Richiesta di prenotazione', request: 'Richiesta di prenotazione', notify: 'Lista d’attesa', retreat: 'Richiedi informazioni',
@@ -86,6 +91,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Grazie!', sentBody: 'Abbiamo ricevuto la tua richiesta e ti scriviamo a breve.',
     error: 'Invio non riuscito. Riprova o scrivici a {email}.', close: 'Chiudi',
     studio: 'Richiesta spazio', studioAsk: 'Richiedi questo spazio', start: 'Ora di inizio', hours: 'Ore', often: 'Quanto spesso', once: 'Una volta', regular: 'Regolarmente', studioNotes: 'Note particolari', studioNotesPh: 'Cosa farai, materiali, allestimento, esigenze particolari',
+    where: 'Dove deve svolgersi?', atHost: 'Nello studio dell’host', atVenue: 'Nella nostra sede', venue: 'La vostra sede', venuePh: 'Indirizzo o zona, ad es. il nostro ufficio a Mitte',
   },
   nl: {
     book: 'Boekingsaanvraag', request: 'Boekingsaanvraag', notify: 'Op de wachtlijst', retreat: 'Informatie aanvragen',
@@ -101,6 +107,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Dank je!', sentBody: 'We hebben je aanvraag en mailen je snel terug.',
     error: 'Dat is niet gelukt. Probeer het opnieuw of mail ons op {email}.', close: 'Sluiten',
     studio: 'Ruimteaanvraag', studioAsk: 'Deze ruimte aanvragen', start: 'Begintijd', hours: 'Uren', often: 'Hoe vaak', once: 'Eenmalig', regular: 'Regelmatig', studioNotes: 'Bijzonderheden', studioNotesPh: 'Wat je gaat doen, materialen, opstelling, bijzondere wensen',
+    where: 'Waar moet het plaatsvinden?', atHost: 'In de studio van de host', atVenue: 'Op onze eigen locatie', venue: 'Jullie locatie', venuePh: 'Adres of buurt, bijv. ons kantoor in Mitte',
   },
   pl: {
     book: 'Prośba o rezerwację', request: 'Prośba o rezerwację', notify: 'Lista oczekujących', retreat: 'Poproś o informacje',
@@ -116,6 +123,7 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Dziękujemy!', sentBody: 'Mamy Twoje zapytanie i wkrótce odpiszemy mailowo.',
     error: 'Nie udało się wysłać. Spróbuj ponownie albo napisz do nas: {email}.', close: 'Zamknij',
     studio: 'Zapytanie o salę', studioAsk: 'Zapytaj o tę salę', start: 'Godzina rozpoczęcia', hours: 'Godziny', often: 'Jak często', once: 'Jednorazowo', regular: 'Regularnie', studioNotes: 'Uwagi', studioNotesPh: 'Co planujesz, materiały, ustawienie, szczególne potrzeby',
+    where: 'Gdzie ma się odbyć?', atHost: 'W pracowni gospodarza', atVenue: 'U nas, w naszym miejscu', venue: 'Wasze miejsce', venuePh: 'Adres lub okolica, np. nasze biuro w Mitte',
   },
   tr: {
     book: 'Rezervasyon talebi', request: 'Rezervasyon talebi', notify: 'Bekleme listesi', retreat: 'Bilgi iste',
@@ -131,5 +139,6 @@ export const bookingCopy: Record<Lang, {
     sentTitle: 'Teşekkürler!', sentBody: 'Talebini aldık, kısa süre içinde e-postayla dönüş yapacağız.',
     error: 'Gönderilemedi. Tekrar dene ya da bize {email} adresinden yaz.', close: 'Kapat',
     studio: 'Mekân talebi', studioAsk: 'Bu mekânı talep et', start: 'Başlangıç saati', hours: 'Saat', often: 'Ne sıklıkla', once: 'Bir kez', regular: 'Düzenli olarak', studioNotes: 'Özel notlar', studioNotesPh: 'Ne yapacağın, malzemeler, düzen, özel istekler',
+    where: 'Nerede olsun?', atHost: 'Ev sahibinin stüdyosunda', atVenue: 'Kendi mekânımızda', venue: 'Mekânınız', venuePh: 'Adres ya da semt, ör. Mitte’deki ofisimiz',
   },
 };
