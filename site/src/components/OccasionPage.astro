@@ -2,7 +2,7 @@
 /** An occasion's page — the weekend, evenings after work, classes for
  *  children — as a day-by-day list of the real sessions that fit it. */
 import Base from '../layouts/Base.astro';
-import DateRows from './DateRows.astro';
+import HostDayCards from './HostDayCards.astro';
 import { OCCASIONS, absolute, byDay, formatDay, hubExtraCopy, hubHref, occasionCopy, occasionHref, occasionSessions, pageCopy, type Occasion } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 
@@ -50,7 +50,7 @@ const schema = {
       {days.length ? days.map(([offset, list]) => (
         <div class="dates-day">
           <h2 class="dates-day-head">{formatDay(offset, lang)}</h2>
-          <DateRows sessions={list} lang={lang} withHost />
+          <HostDayCards sessions={list} lang={lang} />
         </div>
       )) : (
         <p class="section-lede">{copy.empty}</p>

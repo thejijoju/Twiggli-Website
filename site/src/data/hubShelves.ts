@@ -26,3 +26,16 @@ export const hubShelvesCopy: Record<Lang, HubShelvesCopy> = {
  *  unset, the page picks whoever with a reel has the most dates in the
  *  coming week, so the pick changes by itself with every build. */
 export const HUB_PICK: string | undefined = undefined;
+
+/** The occasion pages' day cards (HostDayCards.astro): one card per host
+ *  per day, saying how many classes they run that day. */
+export const hostDayCopy: Record<Lang, { classes: (n: number) => string; more: (n: number) => string }> = {
+  en: { classes: (n) => (n === 1 ? '1 class' : `${n} classes`), more: (n) => `+ ${n} more ${n === 1 ? 'workshop' : 'workshops'}` },
+  de: { classes: (n) => (n === 1 ? '1 Kurs' : `${n} Kurse`), more: (n) => `+ ${n} ${n === 1 ? 'weiterer Workshop' : 'weitere Workshops'}` },
+  fr: { classes: (n) => (n === 1 ? '1 atelier' : `${n} ateliers`), more: (n) => `+ ${n} ${n === 1 ? 'autre atelier' : 'autres ateliers'}` },
+  es: { classes: (n) => (n === 1 ? '1 taller' : `${n} talleres`), more: (n) => `+ ${n} ${n === 1 ? 'taller más' : 'talleres más'}` },
+  it: { classes: (n) => (n === 1 ? '1 corso' : `${n} corsi`), more: (n) => `+ ${n} ${n === 1 ? 'altro workshop' : 'altri workshop'}` },
+  nl: { classes: (n) => (n === 1 ? '1 workshop' : `${n} workshops`), more: (n) => `+ ${n} ${n === 1 ? 'andere workshop' : 'andere workshops'}` },
+  pl: { classes: (n) => `Zajęcia: ${n}`, more: (n) => `+ ${n} więcej` },
+  tr: { classes: (n) => `${n} atölye`, more: (n) => `+ ${n} atölye daha` },
+};

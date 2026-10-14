@@ -1,0 +1,99 @@
+---
+/** One day of an occasion page as a grid of host cards, like the team
+ *  directory: a square reel, the host and district, then their first two
+ *  workshops of the day with each start time as a button that books it,
+ *  and a link to the host for the rest. A host running twenty classes on a
+ *  Saturday is one card rather than twenty rows of the same reel. */
+import type { Session } from '../data/sessions.ts';
+import { berlinTodayMs } from '../data/sessions.ts';
+import { hostHref, pageCopy, workshopHref } from '../data/seo.ts';
+import { hostDayCopy } from '../data/hubShelves.ts';
+import { partnerCopied } from '../data/partners.ts';
+import { lqipStyle } from '../lib/lqip.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props { sessions: Session[]; lang: Lang }
+const { sessions, lang } = Astro.props;
+const t = pageCopy[lang];
+const c = hostDayCopy[lang];
+const SHOWN = 2;
+const TIMES = 4;
+
+/* Within a host, each workshop once, with all its times. */
+const hosts = new Map<string, Map<string, Session[]>>();
+/* Hosts keep the order of their first class that day. */
+for (const s of sessions) {
+  const byTitle = hosts.get(s.host.slug) ?? new Map<string, Session[]>();
+  hosts.set(s.host.slug, byTitle);
+  byTitle.set(s.workshopKey, [...(byTitle.get(s.workshopKey) ?? []), s]);
+}
+const cards = [...hosts.values()].map((byTitle) => {
+  // The busiest first: a workshop with nine times that day says more on
+  // the card than one with a single slot.
+  // Open times only, unless every time is gone — then the struck-through
+  // ones say it ran and filled.
+  const open = (list: Session[]) => list.filter((x) => !x.soldOut);
+  const workshops = [...byTitle.values()]
+    .map((list) => (open(list).length ? open(list) : list))
+    .sort((a, b) => open(b).length - open(a).length || b.length - a.length);
+  const count = [...byTitle.values()].reduce((n, w) => n + w.length, 0);
+  return { host: workshops[0][0].host, workshops, count };
+});
+
+const showPrice = (price?: string) => (price && /^€\s*0([.,]0+)?$/.test(price.trim()) ? t.free : price);
+/** What a time button hands the booking form — the same as a date row's
+ *  Book button (DateRows.astro). */
+const bookAttrs = (s: Session) => (s.partner && !s.soldOut
+  ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener',
+      'data-partner-host': s.host.slug, 'data-partner-title': s.title, 'data-partner-time': s.time,
+      'data-partner-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10) }
+  : {
+    'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
+    'data-book-title': s.title,
+    'data-book-host': s.host.name,
+    'data-book-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10),
+    'data-book-time': s.time,
+    'data-book-price': showPrice(s.price),
+    'data-book-link': s.bookUrl,
+  });
+---
+
+<ul class="hd-grid">
+  {cards.map(({ host, workshops, count }) => (
+    <li class="hd-card">
+      <a class="hd-media" href={hostHref(lang, host)} tabindex="-1" aria-hidden="true" style={lqipStyle(host.poster)}>
+        {(host.poster ?? host.photo) && <img src={host.poster ?? host.photo} alt="" loading="lazy" decoding="async" />}
+        {host.video && <video class="hd-video" src={host.video} muted loop playsinline preload="none"></video>}
+        <span class="hd-count">{c.classes(count)}</span>
+      </a>
+      <p class="hd-host"><a href={hostHref(lang, host)}>{host.name}</a> · {workshops[0][0].district}</p>
+      {workshops.slice(0, SHOWN).map((list) => (
+        <div class="hd-ws">
+          <a class="hd-title" href={workshopHref(lang, host, list[0].workshopKey)}>{list[0].title}</a>
+          {showPrice(list[0].price) && <span class="hd-price">{showPrice(list[0].price)}</span>}
+          <div class="hd-times">
+            {list.slice(0, TIMES).map((s) => (
+              <a class:list={['hd-time', { 'is-full': s.soldOut }]} href={s.bookUrl} {...bookAttrs(s)} title={s.soldOut ? t.soldOut : undefined}>{s.time ?? t.timeTba}</a>
+            ))}
+            {list.length > TIMES && <a class="hd-time is-more" href={hostHref(lang, host)}>+{list.length - TIMES}</a>}
+          </div>
+        </div>
+      ))}
+      {workshops.length > SHOWN && <a class="hd-more" href={hostHref(lang, host)}>{c.more(workshops.length - SHOWN)}</a>}
+    </li>
+  ))}
+</ul>
+
+<script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // One reel at a time, walking along the cards on screen.
+  const reels = Array.from(document.querySelectorAll<HTMLElement>('.hd-card'))
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.hd-media'),
+      video: card.querySelector<HTMLVideoElement>('.hd-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+  if (reels.length) startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.5, startAt: 0, step: 1, holdMs: 3000, byRow: true });
+</script>
