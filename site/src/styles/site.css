@@ -4538,6 +4538,16 @@ html.map-locked { overflow: hidden; }
 .book-field textarea { resize: vertical; min-height: 76px; }
 .book-field input:focus,
 .book-field textarea:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent); }
+.book-studio { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.book-studio[hidden] { display: none; }
+.book-often { border: 0; padding: 0; margin: 0; }
+.book-often legend { padding: 0; margin-bottom: 5px; font-size: 13.5px; font-weight: 700; }
+.book-often-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.book-often-chips label { cursor: pointer; }
+.book-often-chips input { position: absolute; opacity: 0; pointer-events: none; }
+.book-often-chips span { display: inline-block; padding: 8px 14px; border-radius: 999px; border: 1.5px solid rgba(124, 77, 255, 0.2); background: #fff; font-size: 14px; font-weight: 500; }
+.book-often-chips input:checked + span { background: linear-gradient(135deg, #6a3eec, rgb(84, 46, 188)); border-color: transparent; color: #fff; }
+.book-often-chips input:focus-visible + span { outline: 2px solid #6a3eec; outline-offset: 2px; }
 .book-honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .book-error { margin: 14px 0 0; font-size: 14px; color: #b42318; }
 .book-send { width: 100%; justify-content: center; margin-top: 18px; }

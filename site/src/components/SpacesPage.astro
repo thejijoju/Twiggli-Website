@@ -1,4 +1,5 @@
 ---
+import { bookingCopy } from '../data/bookingCopy.ts';
 /** Studios our hosts rent out when they are not teaching in them — one
  *  card per space, the host's own reel playing on it, and an enquiry that
  *  lands as a mail like every other request on the site. */
@@ -143,7 +144,7 @@ const marks = spaces.map((space) => ({
                 data-book-keeper={host ? (host.firstName ?? host.name) : (space.manager ?? undefined)}
                 data-book-price={space.price?.[lang] ?? t.priceOnRequest}
               >
-                {ui(lang).directory.request}
+                {bookingCopy[lang].studioAsk}
               </a>
             </div>
           </article>

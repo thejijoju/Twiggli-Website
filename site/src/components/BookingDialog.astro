@@ -63,9 +63,27 @@ const c = bookingCopy[lang];
         <span>{c.when} <em>({c.optional})</em></span>
         <input name="when" type="date" />
       </label>
+      {/* A studio request: when it starts, for how long, once or regularly. */}
+      <div class="book-studio" data-book-studio hidden>
+        <label class="book-field">
+          <span>{c.start}</span>
+          <input name="start" type="time" step="900" />
+        </label>
+        <label class="book-field">
+          <span>{c.hours}</span>
+          <input name="hours" type="number" min="0.5" max="24" step="0.5" inputmode="decimal" placeholder="4" />
+        </label>
+        <fieldset class="book-field book-field-wide book-often">
+          <legend>{c.often}</legend>
+          <div class="book-often-chips">
+            <label><input type="radio" name="often" value="once" checked /><span>{c.once}</span></label>
+            <label><input type="radio" name="often" value="regular" /><span>{c.regular}</span></label>
+          </div>
+        </fieldset>
+      </div>
       <label class="book-field book-field-wide">
-        <span>{c.message} <em>({c.optional})</em></span>
-        <textarea name="message" rows="3" placeholder={c.messagePh}></textarea>
+        <span><span data-book-message-label>{c.message}</span> <em>({c.optional})</em></span>
+        <textarea name="message" rows="3" placeholder={c.messagePh} data-book-message></textarea>
       </label>
       {/* Left empty by people; a bot that fills it is ignored. */}
       <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
@@ -145,6 +163,9 @@ const c = bookingCopy[lang];
     const sent = dialog.querySelector<HTMLElement>('[data-book-sent]');
     const whenField = dialog.querySelector<HTMLElement>('[data-book-when-field]');
     const people = form.querySelector<HTMLInputElement>('input[name="people"]');
+    const studioBox = dialog.querySelector<HTMLElement>('[data-book-studio]');
+    const messageLabel = dialog.querySelector<HTMLElement>('[data-book-message-label]');
+    const message = dialog.querySelector<HTMLTextAreaElement>('[data-book-message]');
     let picked: DOMStringMap = {};
 
     const dateText = (iso?: string) => {
@@ -159,6 +180,12 @@ const c = bookingCopy[lang];
       if (heading) heading.textContent = copy[kind] ?? copy.book;
       if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : copy.lede;
       if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat';
+      // A studio request asks when it starts, how long and how often, and
+      // its message box is for special notes.
+      const studio = kind === 'studio';
+      if (studioBox) studioBox.hidden = !studio;
+      if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : copy.message;
+      if (message) message.placeholder = studio ? copy.studioNotesPh : copy.messagePh;
       // A group says how many; the host's range is the hint.
       if (people) {
         people.value = kind === 'group' ? '' : people.value || '1';
@@ -210,16 +237,22 @@ const c = bookingCopy[lang];
         Time: picked.bookTime ?? '',
         Price: picked.bookPrice ?? '',
         ...(picked.bookGroup ? { 'Group size (host)': picked.bookGroup } : {}),
+        ...(kind === 'studio' ? {
+          'Start time': String(data.get('start') ?? ''),
+          Hours: String(data.get('hours') ?? ''),
+          'How often': data.get('often') === 'regular' ? 'Regularly' : 'One time',
+        } : {}),
         People: String(data.get('people') ?? ''),
         Name: String(data.get('name') ?? ''),
         Email: String(data.get('email') ?? ''),
         Phone: String(data.get('phone') ?? ''),
-        Message: String(data.get('message') ?? ''),
+        [kind === 'studio' ? 'Special notes' : 'Message']: String(data.get('message') ?? ''),
         'Host booking page': picked.bookLink ?? '',
         'Sent from': location.href,
         Language: dialog.dataset.lang ?? '',
       };
-      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''} (${fields.People})`;
+      const studioWhen = kind === 'studio' ? [fields['Start time'], fields.Hours && `${fields.Hours} h`, fields['How often'] === 'Regularly' ? 'regularly' : ''].filter(Boolean).join(', ') : '';
+      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''}${studioWhen ? ` ${studioWhen}` : ''} (${fields.People})`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
