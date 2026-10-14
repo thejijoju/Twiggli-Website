@@ -54,7 +54,7 @@ export const hosts: HostCopy[] = [
     group: '10–150', duration: 'Pół dnia – kilka dni', place: 'Twoje biuro / sala, w całych Niemczech', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Toczenie na kole & lepienie ręczne',
     blurb: 'Dwa formaty ceramiczne: toczenie na kole, czyli nauka podstaw koła garncarskiego, albo lepienie ręczne dla większych grup, od szczypania po budowanie z płatów. Każdy zatrzymuje jedną lub dwie prace.',
-    group: 'Do 8 osób · 4–15', duration: '1,5–3 godz.', place: 'Nasza pracownia w Kreuzbergu / twoja przestrzeń', languages: 'EN' },
+    group: 'Do 15 osób w pracowni · 4–30 na miejscu', duration: '1,5–3 godz.', place: 'Nasza pracownia w Kreuzbergu / twoja przestrzeń', languages: 'EN' },
   { slug: 'jem', name: 'Jem', specialty: 'Robienie sushi & kimchi', studio: 'Fischtal Foodlab',
     blurb: 'Praktyczne warsztaty kulinarne — zabawne, interaktywne i pyszne. Przyjazne dla początkujących zajęcia z sushi i kimchi: posiekaj, posól i sfermentuj własne kimchi albo zwiń trzy rodzaje maki i zakończ wspólnym posiłkiem.',
     group: '≤40 kimchi · ≤20 sushi', duration: '3–4 godz.', place: 'Fischtal Foodlab / twoje biuro', languages: 'EN · DE', priceNote: 'cena wyjściowa' },

@@ -173,7 +173,7 @@ export const inActivity = (h: Pick<Host, 'activity' | 'alsoIn'>, a: ActivityKey)
 /** The filterable facts about each host, keyed by slug.
  *
  *  These live apart from `hostsCopy` because they are language-neutral: the
- *  prose in `group` ('Up to 8 · 4–15', 'Bis 8 · 4–15') is written for a human
+ *  prose in `group` ('Up to 15 in the studio · 4–30 on-site') is written for a human
  *  reading a card, and parsing a range back out of it would mean parsing two
  *  languages' worth of prose. The numbers below are the same in both, and the
  *  prose stays free to say whatever reads best.
@@ -195,7 +195,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // and wellbeing (watercolour, vision boards).
   evelyn:       { activity: 'craft', alsoIn: ['art', 'wellbeing'], groupRange: [1, 50], hourRange: [1.5, 3], groupPrice: 20 },
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
-  helka:        { activity: 'ceramics',    groupRange: [1, 15],   hourRange: [1.5, 3] },
+  helka:        { activity: 'ceramics',    groupRange: [1, 30],   hourRange: [1.5, 3] },
   haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
   alessia:      { activity: 'art',         groupRange: [1, 8],    hourRange: [4, 4] },
   // PLACEHOLDER group range — Acuity carries no class size for these.
@@ -352,7 +352,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: '10–150', duration: 'Half day – multi-day', place: 'Your office / a venue, Germany-wide', languages: 'DE' },
     { slug: 'helka', name: 'Helka', specialty: 'Wheel throwing & handbuilding',
       blurb: 'Two ceramic formats: wheel throwing, learning the basics of the potter\u2019s wheel; or handbuilding for bigger groups, from pinching to slab building. Everyone keeps one or two pieces.',
-      group: 'Up to 8 · 4–15', duration: '1.5–3 h', place: 'Our studio in Kreuzberg / your space', languages: 'EN' },
+      group: 'Up to 15 in the studio · 4–30 on-site', duration: '1.5–3 h', place: 'Our studio in Kreuzberg / your space', languages: 'EN' },
     { slug: 'jem', name: 'Jem', specialty: 'Sushi & kimchi making', studio: 'Fischtal Foodlab',
       blurb: 'Hands-on food workshops that are fun, interactive and delicious. Beginner-friendly sushi and kimchi sessions: chop, salt and ferment your own kimchi, or roll three types of maki and finish with a shared meal.',
       group: '≤40 kimchi · ≤20 sushi', duration: '3–4 h', place: 'Fischtal Foodlab / your office', languages: 'EN · DE', priceNote: 'starting price' },
@@ -557,7 +557,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: '10–150', duration: 'Halbtags – mehrtägig', place: 'Euer Büro / eine Location, deutschlandweit', languages: 'DE' },
     { slug: 'helka', name: 'Helka', specialty: 'Drehscheibe & Aufbaukeramik',
       blurb: 'Zwei Keramik-Formate: Arbeiten an der Töpferscheibe oder Aufbaukeramik für größere Gruppen. Jede und jeder behält ein bis zwei Stücke.',
-      group: 'Bis 8 · 4–15', duration: '1,5–3 Std.', place: 'Unser Studio in Kreuzberg / euer Raum', languages: 'EN' },
+      group: 'Bis 15 im Studio · 4–30 vor Ort', duration: '1,5–3 Std.', place: 'Unser Studio in Kreuzberg / euer Raum', languages: 'EN' },
     { slug: 'jem', name: 'Jem', specialty: 'Sushi & Kimchi', studio: 'Fischtal Foodlab',
       blurb: 'Koch-Workshops zum Mitmachen: Sushi und Kimchi für Einsteiger. Eigenes Kimchi einlegen oder drei Maki-Sorten rollen — zum Abschluss wird gemeinsam gegessen.',
       group: '≤40 Kimchi · ≤20 Sushi', duration: '3–4 Std.', place: 'Fischtal Foodlab / euer Büro', languages: 'EN · DE', priceNote: 'Einstiegspreis' },
