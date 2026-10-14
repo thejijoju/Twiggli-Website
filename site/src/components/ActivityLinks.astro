@@ -28,9 +28,12 @@ const reelFor: Record<string, string> = {
   photography: 'anne', wellbeing: 'sarah', music: 'beat-etage',
 };
 const quick = [
+  /* Every public class takes a single booking, so going alone leads to
+     what's on, the same as the card below. */
+  { label: c.solo, href: href(lang, '/happening-today/'), tint: '#ffe9a8', icon: '🙋' },
   { label: c.today, href: href(lang, '/happening-today/'), tint: '#e6ddff', icon: '⚡' },
   { label: occ.weekend.short, href: occasionHref(lang, 'weekend'), tint: '#ffe1d3', icon: '🎉' },
-  { label: occ.evenings.short, href: occasionHref(lang, 'evenings'), tint: '#fff0bf', icon: '🌙' },
+  { label: occ.evenings.short, href: occasionHref(lang, 'evenings'), tint: '#dbe8ff', icon: '🌙' },
   { label: occ.kids.short, href: occasionHref(lang, 'kids'), tint: '#ffd9ee', icon: '🧸' },
   { label: c.team, href: href(lang, '/corporatebookings/'), tint: '#d9f3ea', icon: '🙌' },
 ];
@@ -64,7 +67,7 @@ const faces = ['craftkai', 'smell-lab', 'pausify'];
         </li>
       ))}
     </ul>
-    <span class="find-track" aria-hidden="true"><span class="find-thumb"></span></span>
+    <span class="find-dots" aria-hidden="true"></span>
     </div>
 
     <ul class="find-quick">
@@ -100,18 +103,21 @@ const faces = ['craftkai', 'smell-lab', 'pausify'];
     .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
   startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.6, startAt: 0, step: 1, holdMs: 2800 });
 
-  // On a phone the bubbles swipe sideways. A short track under them shows
-  // where in the row the reader is, and the right edge fades while there is
-  // more to see — enough to say "swipe", without arrows.
+  // On a phone the bubbles swipe sideways. Dots under them, one per
+  // screenful, show where in the row the reader is, and the right edge fades
+  // while there is more to see — enough to say "swipe", without arrows.
   const scroller = document.querySelector<HTMLElement>('[data-find-scroller]');
   const row = scroller?.querySelector<HTMLElement>('.find-bubbles');
-  if (scroller && row) {
+  const dots = scroller?.querySelector<HTMLElement>('.find-dots');
+  if (scroller && row && dots) {
     const update = () => {
       const max = row.scrollWidth - row.clientWidth;
-      scroller.classList.toggle('can-scroll', max > 4);
+      const pages = max > 4 ? Math.ceil(row.scrollWidth / row.clientWidth) : 0;
+      if (dots.childElementCount !== pages) dots.replaceChildren(...Array.from({ length: pages }, () => document.createElement('i')));
+      const at = pages ? Math.round((row.scrollLeft / max) * (pages - 1)) : 0;
+      Array.from(dots.children).forEach((d, i) => d.classList.toggle('is-on', i === at));
+      scroller.classList.toggle('can-scroll', pages > 0);
       scroller.classList.toggle('at-end', row.scrollLeft >= max - 4);
-      scroller.style.setProperty('--seen', String(max > 0 ? row.clientWidth / row.scrollWidth : 1));
-      scroller.style.setProperty('--at', String(max > 0 ? row.scrollLeft / max : 0));
     };
     row.addEventListener('scroll', update, { passive: true });
     addEventListener('resize', update);

@@ -5342,23 +5342,14 @@ h1, h2, h3, h4,
    it come into focus instead of a grey disc. */
 .find-media { background-size: cover; background-position: center; }
 .find-scroller { position: relative; }
-.find-track {
-  display: none;
-  position: relative;
-  width: 44px;
-  height: 3px;
-  margin: 14px auto 0;
+.find-dots { display: none; justify-content: center; gap: 6px; margin-top: 14px; }
+.find-dots i {
+  width: 6px; height: 6px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-text) 12%, transparent);
-  overflow: hidden;
+  background: color-mix(in srgb, var(--color-text) 18%, transparent);
+  transition: width 0.25s ease, background-color 0.25s ease;
 }
-.find-thumb {
-  position: absolute; top: 0; bottom: 0;
-  width: calc(var(--seen, 0.5) * 100%);
-  left: calc(var(--at, 0) * (1 - var(--seen, 0.5)) * 100%);
-  border-radius: inherit;
-  background: var(--color-accent);
-}
+.find-dots i.is-on { width: 16px; background: var(--color-accent); }
 .find-name { margin-top: 12px; font-weight: 700; font-size: 15.5px; line-height: 1.25; }
 .find-count { margin-top: 2px; font-size: 13px; color: var(--color-text-muted); }
 
@@ -5430,7 +5421,7 @@ h1, h2, h3, h4,
     -webkit-mask-image: linear-gradient(90deg, #000 78%, transparent);
     mask-image: linear-gradient(90deg, #000 78%, transparent);
   }
-  .find-scroller.can-scroll .find-track { display: block; }
+  .find-scroller.can-scroll .find-dots { display: flex; }
   .find-solo { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 20px; }
   .find-solo-faces img { width: 44px; height: 44px; }
   .find-solo-faces img + img { margin-left: -14px; }
