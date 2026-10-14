@@ -5288,3 +5288,121 @@ h1, h2, h3, h4,
   .hub-card { width: 148px; }
   .hub-shelf-facts { display: none; }
 }
+
+/* — home: find a workshop — round reels in a ring of the logo's colours,
+   one per activity, playing one at a time; quick links by time and company
+   in soft tints; and a card for anyone coming on their own. On a phone the
+   bubbles and the quick links swipe sideways. */
+.find-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.find-kicker { font: 600 13px/1.2 var(--font-heading); letter-spacing: 0.14em; text-transform: uppercase; color: #b4532a; }
+.find-title { margin: 8px 0 0; font: 700 clamp(28px, 3.2vw, 40px)/1.12 var(--font-heading); letter-spacing: -0.02em; }
+.find-hand { font: 700 1.3em/1 'Caveat', cursive; letter-spacing: 0; color: var(--color-accent); }
+.find-bubbles {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+}
+.find-bubble > a { display: flex; flex-direction: column; align-items: center; text-align: center; color: inherit; text-decoration: none; }
+.find-ring {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+  aspect-ratio: 1;
+  padding: 4px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #ff8a5c, #e64ab4, #7c4dff, #ffd640, #ff8a5c);
+  transition: transform 0.2s ease;
+}
+.find-bubble > a:hover .find-ring { transform: scale(1.04); }
+.find-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 4px solid var(--color-bg);
+  background: var(--color-surface);
+}
+.find-media img, .find-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.find-video { opacity: 0; transition: opacity 0.4s ease; }
+.find-media.is-live .find-video { opacity: 1; }
+.find-name { margin-top: 12px; font-weight: 700; font-size: 15.5px; line-height: 1.25; }
+.find-count { margin-top: 2px; font-size: 13px; color: var(--color-text-muted); }
+
+.find-quick { list-style: none; margin: 28px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.find-quick a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 17px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--color-text);
+  font-weight: 600; font-size: 14.5px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+.find-quick a:hover { transform: translateY(-2px); color: var(--color-text); }
+
+.find-solo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  margin-top: 32px;
+  padding: 22px 28px;
+  border-radius: 24px;
+  background:
+    radial-gradient(60% 120% at 0% 0%, rgba(255, 138, 92, 0.16), transparent 70%),
+    radial-gradient(60% 120% at 100% 100%, rgba(124, 77, 255, 0.14), transparent 70%),
+    #fffaf5;
+  color: inherit;
+  text-decoration: none;
+}
+.find-solo:hover { color: inherit; }
+.find-solo-faces { display: flex; }
+.find-solo-faces img {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fffaf5;
+}
+.find-solo-faces img + img { margin-left: -16px; }
+.find-solo-text { display: flex; flex-direction: column; gap: 4px; }
+.find-solo-text strong { font: 700 19px/1.25 var(--font-heading); }
+.find-solo-text span { color: var(--color-text-muted); font-size: 15px; line-height: 1.55; }
+.find-solo-cta { font-weight: 700; color: var(--color-accent-deep); white-space: nowrap; }
+.find-solo:hover .find-solo-cta { text-decoration: underline; }
+
+@media (max-width: 900px) {
+  .find-bubbles {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 0 var(--gutter) 4px;
+    gap: 14px;
+  }
+  .find-bubbles::-webkit-scrollbar { display: none; }
+  .find-bubble { flex: none; width: 96px; scroll-snap-align: start; }
+  .find-name { font-size: 13px; margin-top: 8px; }
+  .find-count { font-size: 12px; }
+  .find-quick {
+    flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter);
+  }
+  .find-quick::-webkit-scrollbar { display: none; }
+  .find-solo { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 20px; }
+  .find-solo-faces img { width: 44px; height: 44px; }
+  .find-solo-faces img + img { margin-left: -14px; }
+  .find-solo-text strong { font-size: 17px; }
+  .find-solo-text span { font-size: 14px; }
+}
+@media (max-width: 560px) {
+  .find-all { display: none; }
+}

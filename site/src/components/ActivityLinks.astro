@@ -1,10 +1,13 @@
 ---
-/** The homepage's way into the activity pages: one link per activity,
- *  worded as the page it leads to is titled, so the words a visitor clicks
- *  are the words a searcher types. */
+/** The homepage's way into the activity pages: a row of round reels, one
+ *  per activity, with its host count; quick links by time and company; and
+ *  a word for anyone thinking of coming on their own. Each bubble links to
+ *  the activity page and carries that page's title as its label for
+ *  readers who cannot see the reel. */
 import { activitiesOf, getHosts } from '../data/content.ts';
-import { ACTIVITY_ORDER, activityCopy, activityHref, hubCopy, hubHref, pageCopy } from '../data/seo.ts';
-import type { Lang } from '../lib/url.ts';
+import { ACTIVITY_ORDER, activityCopy, activityHref, hubCopy, hubHref, occasionCopy, occasionHref, pageCopy } from '../data/seo.ts';
+import { homeFindCopy } from '../data/homeFind.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 
 interface Props {
@@ -15,23 +18,81 @@ const hosts = getHosts(lang);
 const counts = new Map<string, number>();
 for (const h of hosts) for (const a of activitiesOf(h)) counts.set(a, (counts.get(a) ?? 0) + 1);
 const all = ui(lang).home.activitiesAll;
+const c = homeFindCopy[lang];
+const occ = occasionCopy[lang];
+
+/* The reel each bubble plays: a clip that shows the activity at a glance. */
+const reelFor: Record<string, string> = {
+  ceramics: 'ceramic-kingdom', art: 'rebeca', craft: 'tufttuft', food: 'jem-sushi',
+  photography: 'anne', wellbeing: 'sarah', music: 'beat-etage',
+};
+const quick = [
+  { label: c.today, href: href(lang, '/happening-today/'), tint: '#e6ddff', icon: '⚡' },
+  { label: occ.weekend.short, href: occasionHref(lang, 'weekend'), tint: '#ffe1d3', icon: '🎉' },
+  { label: occ.evenings.short, href: occasionHref(lang, 'evenings'), tint: '#fff0bf', icon: '🌙' },
+  { label: occ.kids.short, href: occasionHref(lang, 'kids'), tint: '#ffd9ee', icon: '🧸' },
+  { label: c.team, href: href(lang, '/corporatebookings/'), tint: '#d9f3ea', icon: '🙌' },
+];
+const faces = ['craftkai', 'smell-lab', 'pausify'];
 ---
 
 <section class="section activity-band band-seam" id="workshops">
   <div class="container">
-    <span class="kicker">{hubCopy[lang].kicker}</span>
-    <ul class="activity-links activity-links-band">
+    <div class="find-head">
+      <div>
+        <span class="find-kicker">{hubCopy[lang].kicker}</span>
+        <h2 class="find-title">{c.title} <span class="find-hand">{c.hand}</span></h2>
+      </div>
+      <a href={hubHref(lang)} class="btn btn-primary find-all">{all}</a>
+    </div>
+
+    <ul class="find-bubbles">
       {ACTIVITY_ORDER.map((a) => (
-        <li>
-          <a href={activityHref(lang, a)}>
-            {activityCopy[lang][a].h1}
-            <span class="activity-links-count">{pageCopy[lang].hosts(counts.get(a) ?? 0)}</span>
+        <li class="find-bubble">
+          <a href={activityHref(lang, a)} aria-label={activityCopy[lang][a].h1}>
+            <span class="find-ring">
+              <span class="find-media">
+                <img src={withBase(`/video/${reelFor[a]}-poster.jpg`)} alt="" loading="lazy" decoding="async" />
+                <video class="find-video" src={withBase(`/video/${reelFor[a]}.mp4`)} muted loop playsinline preload="none"></video>
+              </span>
+            </span>
+            <span class="find-name">{activityCopy[lang][a].short}</span>
+            <span class="find-count">{pageCopy[lang].hosts(counts.get(a) ?? 0)}</span>
           </a>
         </li>
       ))}
     </ul>
-    <div class="activity-band-actions">
-      <a href={hubHref(lang)} class="btn btn-primary">{all}</a>
-    </div>
+
+    <ul class="find-quick">
+      {quick.map((q) => (
+        <li><a href={q.href} style={`--tint:${q.tint}`}><span aria-hidden="true">{q.icon}</span> {q.label}</a></li>
+      ))}
+    </ul>
+
+    <a class="find-solo" href={href(lang, '/happening-today/')}>
+      <span class="find-solo-faces" aria-hidden="true">
+        {faces.map((f) => <img src={withBase(`/img/mail/${f}.jpg`)} alt="" loading="lazy" decoding="async" />)}
+      </span>
+      <span class="find-solo-text">
+        <strong>{c.soloTitle}</strong>
+        <span>{c.soloCopy}</span>
+      </span>
+      <span class="find-solo-cta">{c.soloCta} →</span>
+    </a>
   </div>
 </section>
+
+<script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // The bubbles play one reel at a time, walking along the row
+  // (lib/reelwalk.ts, as on the calendar and the directory).
+  const reels = Array.from(document.querySelectorAll<HTMLElement>('.find-bubble'))
+    .map((card) => ({
+      card,
+      tile: card.querySelector<HTMLElement>('.find-media'),
+      video: card.querySelector<HTMLVideoElement>('.find-video'),
+    }))
+    .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+  startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.6, startAt: 0, step: 1, holdMs: 2800 });
+</script>
