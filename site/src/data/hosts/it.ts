@@ -102,7 +102,7 @@ export const hosts: HostCopy[] = [
     group: 'Piccoli gruppi', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
   { slug: 'munio', name: 'The Munio', specialty: 'Candele & profumi artigianali', studio: 'The Munio Studio',
     blurb: 'Lo studio berlinese di una produttrice di candele lettone sulla Akazienstraße. Cola la tua candela naturale in cera di soia con fiori secchi, componi roll-on di oli profumati dalla loro libreria di fragranze, oppure realizza wax melt profumati — sessioni brevi e rilassate in negozio, quasi tutti i giorni della settimana.',
-    group: 'Fino a 20', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
+    group: 'Fino a 20 in studio · 20–100 in sede', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'prezzo di partenza' },
   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussioni & tamburi', studio: 'Percussionstudio Beat-Etage',
     blurb: 'Uno studio di percussioni in una vecchia fabbrica di Treptow. Immergiti nei ritmi dell’Africa occidentale su djembe e dundun nei workshop mensili del fine settimana, oppure prova cajón e handpan — due ore di percussioni pratiche, strumenti forniti, nessuna esperienza necessaria.',
     group: 'Piccoli gruppi', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },

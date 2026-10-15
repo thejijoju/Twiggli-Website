@@ -102,7 +102,7 @@ export const hosts: HostCopy[] = [
     group: 'Kleine groepen', duration: '3–5 u', place: 'Groninger Str. 48, Berlijn', languages: 'DE · EN' },
   { slug: 'munio', name: 'The Munio', specialty: 'Kaarsen & geuren maken', studio: 'The Munio Studio',
     blurb: 'De Berlijnse studio van een Letse kaarsenmaker aan de Akazienstraße. Giet je eigen natuurlijke sojawaskaars met gedroogde bloemen, meng geurolie-roll-ons uit hun geurbibliotheek, of maak geurende waxmelts — korte, ontspannen sessies in de winkel, op de meeste dagen van de week.',
-    group: 'Tot 20', duration: '1–2 u', place: 'Akazienstr. 30, Berlijn', languages: 'DE · EN' },
+    group: 'Tot 20 in de studio · 20–100 op locatie', duration: '1–2 u', place: 'Akazienstr. 30, Berlijn', languages: 'EN · DE', priceNote: 'vanafprijs' },
   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussie & drummen', studio: 'Percussionstudio Beat-Etage',
     blurb: 'Een percussiestudio in een oude fabriekshal in Treptow. Duik in West-Afrikaanse ritmes op djembés en dunduns tijdens de maandelijkse weekendworkshops, of probeer cajon en handpan — twee uur hands-on drummen, instrumenten aanwezig, geen ervaring nodig.',
     group: 'Kleine groepen', duration: '2 u', place: 'Bouchéstr. 12, Berlijn', languages: 'DE' },

@@ -238,7 +238,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
   pastamadre:   { activity: 'food',        groupRange: [1, 12],   hourRange: [3, 5] },
-  munio:        { activity: 'craft',       groupRange: [1, 20],   hourRange: [1, 2] },
+  // Laura, 15.10.26: 1–20 in the studio, 20–100 at the client's; from 40 pp.
+  munio:        { activity: 'craft',       groupRange: [1, 100],  hourRange: [1, 2], groupPrice: 40 },
   // Walks run from 10 people; no published cap ("kleine Gruppen").
   'monk-garden': { activity: 'food',       groupRange: [10, 20],  hourRange: [2.5, 3] },
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
@@ -412,7 +413,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     // Copy from themunio.de; photos to follow.
     { slug: 'munio', name: 'The Munio', specialty: 'Candle & fragrance making', studio: 'The Munio Studio',
       blurb: 'A Latvian candle-maker’s Berlin studio on Akazienstraße. Pour your own natural soy-wax candle with dried flowers, blend fragrance-oil roll-ons from their scent library, or make scented wax melts — short, relaxed sessions in the store, most days of the week.',
-      group: 'Up to 20', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
+      group: 'Up to 20 in the studio · 20–100 on-site', duration: '1–2 h', place: 'Akazienstr. 30, Berlin / on-site', languages: 'EN · DE', priceNote: 'starting price' },
     // Copy from beat-etage.de; photos to follow.
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
@@ -607,7 +608,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
       group: '≤ 17', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
     { slug: 'munio', name: 'The Munio', specialty: 'Kerzen & Duft-Workshops', studio: 'The Munio Studio',
       blurb: 'Das Berliner Studio einer lettischen Kerzenmanufaktur in der Akazienstraße. Gieße deine eigene Sojawachskerze mit Trockenblumen, mische Duftöl-Roll-ons aus ihrer Duftbibliothek oder stelle Duftwachs her — kurze, entspannte Sessions im Store, fast jeden Tag.',
-      group: 'Bis 20', duration: '1–2 Std.', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
+      group: 'Bis 20 im Studio · 20–100 vor Ort', duration: '1–2 Std.', place: 'Akazienstr. 30, Berlin / vor Ort', languages: 'EN · DE', priceNote: 'Einstiegspreis' },
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, Sauerteig & Fermentation', studio: 'Pastamadre',
       blurb: 'Hausgemachte italienische Pasta, Sauerteigbrot und -pizza und Gemüsefermentation mit Maria-Lucrezia und Frank in ihrer Küche im Wedding — die meisten Workshops enden am Esstisch. Solidarisches Preismodell: voller Rose-Preis oder reduzierter Tulpe-Preis, wenn das Budget knapp ist. Zutaten bio, regional und größtenteils von der SUPERCOOP-Genossenschaft.',
       group: 'Kleine Gruppen', duration: '3–5 Std.', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
@@ -1517,7 +1518,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
   maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },
   faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Prenzlauer Berg' },
-  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg' },
+  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg', onSite: true },
   'beat-etage': { area: 'Treptow' }, bumerang: { area: 'Lichtenberg' },
   'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau' },
   schmiede: { area: 'Blankenburg' }, daisuki: { area: 'Charlottenburg' },

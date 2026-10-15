@@ -102,7 +102,7 @@ export const hosts: HostCopy[] = [
     group: 'Küçük gruplar', duration: '3–5 sa', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
   { slug: 'munio', name: 'The Munio', specialty: 'Mum & koku yapımı', studio: 'The Munio Studio',
     blurb: 'Letonyalı bir mum yapımcısının Akazienstraße’deki Berlin stüdyosu. Kuru çiçeklerle kendi doğal soya mumunu dök, koku kütüphanelerinden roll-on koku yağları harmanla ya da kokulu mum eriyikleri yap — mağazada haftanın çoğu günü kısa, rahat seanslar.',
-    group: 'En fazla 20 kişi', duration: '1–2 sa', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
+    group: 'Stüdyoda en fazla 20 · yerinde 20–100', duration: '1–2 sa', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'başlangıç fiyatı' },
   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Perküsyon & davul', studio: 'Percussionstudio Beat-Etage',
     blurb: 'Treptow’da eski bir fabrika salonunda bir perküsyon stüdyosu. Aylık hafta sonu atölyelerinde djembe ve dundunlarla Batı Afrika ritimlerine dal ya da cajon ve handpan dene — iki saat uygulamalı davul, enstrümanlar sağlanıyor, deneyim gerekmiyor.',
     group: 'Küçük gruplar', duration: '2 sa', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },

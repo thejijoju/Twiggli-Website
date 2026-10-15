@@ -102,7 +102,7 @@ export const hosts: HostCopy[] = [
     group: 'Grupos pequeños', duration: '3–5 h', place: 'Groninger Str. 48, Berlín', languages: 'DE · EN' },
   { slug: 'munio', name: 'The Munio', specialty: 'Elaboración de velas & fragancias', studio: 'The Munio Studio',
     blurb: 'El estudio berlinés de una fabricante de velas letona en la Akazienstraße. Vierte tu propia vela natural de cera de soja con flores secas, mezcla roll-ons de aceites aromáticos de su biblioteca de aromas o haz wax melts perfumados: sesiones cortas y relajadas en la tienda, casi todos los días de la semana.',
-    group: 'Hasta 20', duration: '1–2 h', place: 'Akazienstr. 30, Berlín', languages: 'DE · EN' },
+    group: 'Hasta 20 en el estudio · 20–100 in situ', duration: '1–2 h', place: 'Akazienstr. 30, Berlín', languages: 'EN · DE', priceNote: 'precio inicial' },
   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percusión & tambores', studio: 'Percussionstudio Beat-Etage',
     blurb: 'Un estudio de percusión en una antigua nave industrial de Treptow. Sumérgete en los ritmos de África Occidental con djembés y dunduns en los talleres mensuales de fin de semana, o prueba el cajón y el handpan: dos horas de percusión práctica, instrumentos incluidos, sin necesidad de experiencia.',
     group: 'Grupos pequeños', duration: '2 h', place: 'Bouchéstr. 12, Berlín', languages: 'DE' },

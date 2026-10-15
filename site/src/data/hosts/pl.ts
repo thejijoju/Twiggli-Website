@@ -102,7 +102,7 @@ export const hosts: HostCopy[] = [
     group: 'Małe grupy', duration: '3–5 godz.', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
   { slug: 'munio', name: 'The Munio', specialty: 'Wyrób świec & zapachów', studio: 'The Munio Studio',
     blurb: 'Berlińskie studio łotewskiej manufaktury świec przy Akazienstraße. Odlej własną naturalną świecę z wosku sojowego z suszonymi kwiatami, skomponuj zapachowe roll-ony z olejków z ich biblioteki zapachów albo zrób woski zapachowe do kominka — krótkie, luźne sesje w sklepie, przez większość dni tygodnia.',
-    group: 'Do 20 osób', duration: '1–2 godz.', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
+    group: 'Do 20 osób w pracowni · 20–100 na miejscu', duration: '1–2 godz.', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'cena wyjściowa' },
   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Perkusja & bębny', studio: 'Percussionstudio Beat-Etage',
     blurb: 'Studio perkusyjne w starej hali fabrycznej w Treptow. Zanurz się w zachodnioafrykańskich rytmach na djembe i dundunach podczas comiesięcznych warsztatów weekendowych albo spróbuj cajonu i handpana — dwie godziny praktycznego bębnienia, instrumenty zapewnione, doświadczenie nie jest potrzebne.',
     group: 'Małe grupy', duration: '2 godz.', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },

@@ -102,7 +102,7 @@ export const hosts: HostCopy[] = [
     group: 'Petits groupes', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
   { slug: 'munio', name: 'The Munio', specialty: 'Fabrication de bougies & de parfums', studio: 'The Munio Studio',
     blurb: 'Le studio berlinois d’une fabricante de bougies lettone, sur l’Akazienstraße. Coulez votre propre bougie naturelle en cire de soja avec des fleurs séchées, composez des roll-ons d’huiles parfumées à partir de leur bibliothèque de senteurs, ou fabriquez des fondants parfumés — des séances courtes et détendues en boutique, presque tous les jours de la semaine.',
-    group: 'Jusqu’à 20', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'DE · EN' },
+    group: 'Jusqu’à 20 en atelier · 20–100 sur site', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'tarif de départ' },
   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussions & tambours', studio: 'Percussionstudio Beat-Etage',
     blurb: 'Un studio de percussions dans une ancienne halle d’usine de Treptow. Plongez dans les rythmes ouest-africains sur djembés et dunduns lors des ateliers mensuels du week-end, ou essayez le cajón et le handpan — deux heures de percussions pratiques, instruments fournis, aucune expérience requise.',
     group: 'Petits groupes', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
