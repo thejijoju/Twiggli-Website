@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import SocialIcon from './SocialIcon.astro';
-import { contactEmail, getSiteData } from '../data/site.ts';
+import { contactEmail, getSiteData, requestEmail } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -10,12 +10,22 @@ const { lang } = Astro.props;
 const t = ui(lang).contact;
 const { socialLinks } = getSiteData(lang);
 
-/* The site is static, so on submit the fields are composed into an email
-   to contactEmail and handed to the visitor's mail app, the same way the
-   calendar's "Request to book" works; the address is printed under the
-   form as well, for anyone whose device has no mail app wired up. The
-   wording of the mail travels with the form as data attributes, so the
-   script below is the same in every language. */
+/* The message goes straight to our inbox through FormSubmit, like the
+   booking form (BookingDialog.astro); only if that service cannot be
+   reached is it handed to the visitor's mail app instead. The wording of
+   the mail travels with the form as data attributes, so the script below
+   is the same in every language. */
+const formCopy: Record<Lang, { note: string; sent: string; sending: string; error: string }> = {
+  en: { note: 'We reply by email, usually within a day.', sent: 'Thank you! Your message is on its way, and we’ll reply by email soon.', sending: 'Sending…', error: 'That didn’t go through, so we’ve opened it in your mail app instead.' },
+  de: { note: 'Wir antworten per E-Mail, meist innerhalb eines Tages.', sent: 'Danke! Deine Nachricht ist unterwegs, wir melden uns bald per E-Mail.', sending: 'Wird gesendet…', error: 'Das hat nicht geklappt, deshalb haben wir sie in deinem Mailprogramm geöffnet.' },
+  fr: { note: 'Nous répondons par e-mail, en général sous 24 heures.', sent: 'Merci ! Votre message est parti, nous vous répondrons bientôt par e-mail.', sending: 'Envoi…', error: 'L’envoi a échoué, nous l’avons donc ouvert dans votre messagerie.' },
+  es: { note: 'Respondemos por e-mail, normalmente en un día.', sent: '¡Gracias! Tu mensaje está en camino y te responderemos pronto por e-mail.', sending: 'Enviando…', error: 'No se ha podido enviar, así que lo hemos abierto en tu app de correo.' },
+  it: { note: 'Rispondiamo via e-mail, di solito entro un giorno.', sent: 'Grazie! Il tuo messaggio è partito, ti risponderemo presto via e-mail.', sending: 'Invio…', error: 'Non è andato a buon fine, quindi l’abbiamo aperto nella tua app di posta.' },
+  nl: { note: 'We antwoorden per e-mail, meestal binnen een dag.', sent: 'Bedankt! Je bericht is onderweg, we mailen je snel terug.', sending: 'Versturen…', error: 'Dat is niet gelukt, dus we hebben het in je mailapp geopend.' },
+  pl: { note: 'Odpowiadamy mailowo, zwykle w ciągu doby.', sent: 'Dziękujemy! Wiadomość została wysłana, wkrótce odpiszemy mailowo.', sending: 'Wysyłanie…', error: 'Nie udało się wysłać, więc otworzyliśmy ją w twojej aplikacji pocztowej.' },
+  tr: { note: 'E-postayla, genellikle bir gün içinde yanıt veriyoruz.', sent: 'Teşekkürler! Mesajın yola çıktı, yakında e-postayla yanıt vereceğiz.', sending: 'Gönderiliyor…', error: 'Gönderilemedi, bu yüzden e-posta uygulamanda açtık.' },
+};
+const f = formCopy[lang];
 const mailCopy = {
   corporateTopic: t.topics[1],
   subjectCorporate: t.subjectCorporate,
@@ -42,6 +52,9 @@ const mailCopy = {
           action="#"
           data-request-form
           data-request-email={contactEmail}
+          data-inbox={requestEmail}
+          data-sending={f.sending}
+          data-error={f.error}
           data-mail-copy={JSON.stringify(mailCopy)}
           data-prefill={t.prefill('{host}')}
           data-prefill-space={t.prefillSpace('{host}')}
@@ -67,14 +80,9 @@ const mailCopy = {
           </div>
           <div>
             <button type="submit" class="btn btn-primary">{t.send}</button>
-            <p class="form-note">
-              {t.note}
-              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
-            </p>
-            <p class="form-note form-note-sent" data-request-sent hidden>
-              {t.sent}
-              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
-            </p>
+            <p class="form-note" data-request-note>{f.note}</p>
+            <p class="form-note form-note-sent" data-request-sent hidden>{f.sent}</p>
+            <p class="form-note" data-request-error hidden>{f.error}</p>
           </div>
         </form>
 
@@ -134,9 +142,32 @@ const mailCopy = {
           .filter((line, i) => line !== '' || i === 4).join('\n');
         const mailto = `mailto:${form.dataset.requestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         form.dataset.mailto = mailto;
-        const sent = form.querySelector('[data-request-sent]');
-        if (sent) sent.hidden = false;
-        location.href = mailto;
+        const button = form.querySelector('button[type="submit"]');
+        const label = button ? button.textContent : '';
+        if (button) { button.disabled = true; button.textContent = form.dataset.sending || label; }
+        const show = (sel) => { const el = form.querySelector(sel); if (el) el.hidden = false; };
+        fetch('https://formsubmit.co/ajax/' + form.dataset.inbox, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            Name: v('name'), email: v('email'), Topic: topic, ...(host ? { Host: host } : {}),
+            Message: v('message'), 'Sent from': location.href, _subject: subject, _template: 'table', _captcha: 'false',
+          }),
+        }).then((res) => {
+          if (!res.ok) throw new Error(String(res.status));
+          form.querySelectorAll('.field').forEach((el) => { el.hidden = true; });
+          if (button) button.hidden = true;
+          const note = form.querySelector('[data-request-note]');
+          if (note) note.hidden = true;
+          show('[data-request-sent]');
+          if (window.umami) window.umami.track('request-sent', { kind: 'contact', host: host || '' });
+        }).catch(() => {
+          // The service is unreachable: hand the same message to the
+          // visitor's mail app, so it still reaches us.
+          if (button) { button.disabled = false; button.textContent = label; }
+          show('[data-request-error]');
+          location.href = mailto;
+        });
       });
     })();
   </script>
