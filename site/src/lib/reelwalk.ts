@@ -87,6 +87,29 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
   const eligible = (reel: Reel) =>
     onScreen.has(reel) && !stopped.has(reel) && !marked(reel).hidden;
 
+  /* Where in its clip a turn opens. Always from the top meant a reader saw
+     the same three seconds of every reel — and on a date list, where one
+     host's reel stands on a card for each day, the same three seconds a
+     dozen times over. So each tile starts somewhere else in the clip, and
+     each later turn of that tile moves on again: steps of the golden ratio,
+     which never repeat and never bunch up. The very first turn of the first
+     tile still opens the clip, the moment the host chose to lead with. */
+  const turns = new Map<Reel, number>();
+  const cue = (reel: Reel) => {
+    const { video } = reel;
+    const turn = turns.get(reel) ?? 0;
+    turns.set(reel, turn + 1);
+    // Room for a whole turn after the start, and a little to spare.
+    const span = video.duration - turnMs / 1000 - 0.5;
+    if (!Number.isFinite(span) || span < 1) return;
+    const at = (reels.indexOf(reel) * 0.618034 + turn * 0.381966) % 1;
+    try {
+      video.currentTime = at * span;
+    } catch {
+      /* not seekable yet — this turn plays from the top */
+    }
+  };
+
   const play = (reel: Reel) => {
     const { video } = reel;
     if (playingClass) marked(reel).classList.add(playingClass);
@@ -95,6 +118,8 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
     // buffer is refused often enough to need a second attempt once there are
     // frames to show.
     video.preload = 'auto';
+    if (video.readyState >= 1) cue(reel);
+    else video.addEventListener('loadedmetadata', () => cue(reel), { once: true });
     const attempt = () => video.play().catch(() => {});
     attempt();
     if (video.readyState < 3) {
