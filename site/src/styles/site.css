@@ -5268,12 +5268,17 @@ h1, h2, h3, h4,
 .hub-card { flex: none; width: 196px; scroll-snap-align: start; }
 .hub-card > a { display: block; color: inherit; text-decoration: none; }
 .hub-card-media { aspect-ratio: 9 / 13; border-radius: 18px; }
+/* A fifth less height on a wide screen, where 9:13 tiles ran tall. */
+@media (min-width: 721px) { .hub-card-media { aspect-ratio: 9 / 10.4; } }
 .hub-card > a:hover .hub-card-media { box-shadow: 0 0 0 3px var(--color-accent); }
 .hub-card-date {
   position: absolute; left: 10px; bottom: 10px; z-index: 1;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #fff;
+  /* See-through, so the reel shows behind the date. */
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   font-size: 12px; font-weight: 600;
   white-space: nowrap;
 }
