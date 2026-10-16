@@ -13,12 +13,16 @@
  * unreachable, the visitor's own mail app opens with the same message.
  */
 import { bookingCopy } from '../data/bookingCopy.ts';
+import { bigEventsCopy } from '../data/bigEvents.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import { LANG_META, type Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = bookingCopy[lang];
+// A big event with several hosts, or something not listed at all
+// (bigEvents.ts): the same form, with the hosts to pick from.
+const e = bigEventsCopy[lang].dialog;
 ---
 
 <dialog
@@ -28,7 +32,7 @@ const c = bookingCopy[lang];
   data-contact={contactEmail}
   data-locale={LANG_META[lang].locale}
   data-lang={lang}
-  data-copy={JSON.stringify(c)}
+  data-copy={JSON.stringify({ ...c, ...e })}
 >
   <button type="button" class="book-close" data-book-close aria-label={c.close}>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -79,6 +83,15 @@ const c = bookingCopy[lang];
           <input name="venue" type="text" autocomplete="street-address" placeholder={c.venuePh} />
         </label>
       </div>
+      {/* An event with several hosts, or a special request: the hosts on
+          the page to pick from, as many as wanted or none. The button
+          hands the list over (data-book-hosts), so the form carries no
+          host list of its own on pages that never ask for one. */}
+      <fieldset class="book-field book-field-wide book-often book-hosts" data-book-hosts-box hidden>
+        <legend>{e.hostsLabel} <em>({c.optional})</em></legend>
+        <small class="book-hint">{e.hostsHint}</small>
+        <div class="book-often-chips book-hosts-chips" data-book-hosts-list></div>
+      </fieldset>
       {/* A studio request: when it starts, for how long, once or regularly. */}
       <div class="book-studio" data-book-studio hidden>
         <label class="book-field">
@@ -187,6 +200,8 @@ const c = bookingCopy[lang];
     placeInputs.forEach((r) => r.addEventListener('change', () => {
       if (venueField) venueField.hidden = !(r.checked && r.value === 'venue');
     }));
+    const hostsBox = dialog.querySelector<HTMLElement>('[data-book-hosts-box]');
+    const hostsList = dialog.querySelector<HTMLElement>('[data-book-hosts-list]');
     const messageLabel = dialog.querySelector<HTMLElement>('[data-book-message-label]');
     const message = dialog.querySelector<HTMLTextAreaElement>('[data-book-message]');
     let picked: DOMStringMap = {};
@@ -201,7 +216,10 @@ const c = bookingCopy[lang];
       picked = { ...el.dataset };
       const kind = picked.book || 'book';
       if (heading) heading.textContent = copy[kind] ?? copy.book;
-      if (lede) lede.textContent = kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : copy.lede;
+      // An event with several hosts and a special request are group
+      // requests too: who, how many, when and where, plus the hosts.
+      const event = kind === 'event' || kind === 'special';
+      if (lede) lede.textContent = kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : copy.lede;
       if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat';
       // A studio request asks when it starts, how long and how often, and
       // its message box is for special notes.
@@ -210,19 +228,36 @@ const c = bookingCopy[lang];
       // A group chooses where; the choice is required, and their own venue
       // asks where that is.
       const group = kind === 'group';
-      if (groupPlace) groupPlace.hidden = !group;
+      if (groupPlace) groupPlace.hidden = !group && !event;
       placeInputs.forEach((r) => { r.required = group; r.checked = false; });
       if (venueField) venueField.hidden = true;
-      if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : copy.message;
-      if (message) message.placeholder = studio ? copy.studioNotesPh : copy.messagePh;
+      if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : event ? copy.idea : copy.message;
+      if (message) message.placeholder = studio ? copy.studioNotesPh : event ? copy.ideaPh : copy.messagePh;
+      // The hosts to choose from, as the button lists them.
+      let names: string[] = [];
+      try { names = event ? JSON.parse(picked.bookHosts || '[]') : []; } catch { names = []; }
+      if (hostsBox) hostsBox.hidden = !names.length;
+      if (hostsList) {
+        hostsList.replaceChildren(...names.map((name) => {
+          const label = document.createElement('label');
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.name = 'hosts';
+          input.value = name;
+          const span = document.createElement('span');
+          span.textContent = name;
+          label.append(input, span);
+          return label;
+        }));
+      }
       // A group says how many; the host's range is the hint.
       // A group request names at least the host's own minimum, or four where
       // they have not told us one (GROUP_MIN in content.ts).
       if (people) {
         const min = group ? Math.max(1, Number(picked.bookMin) || 4) : 1;
         people.min = String(min);
-        people.value = group ? '' : people.value || '1';
-        people.placeholder = picked.bookGroup ?? (group ? `${min}+` : '');
+        people.value = group || event ? '' : people.value || '1';
+        people.placeholder = picked.bookGroup ?? (group ? `${min}+` : event ? '60' : '');
         if (minHint) { minHint.hidden = !group; minHint.textContent = group ? String(copy.minPeople ?? '').replace('{n}', String(min)) : ''; }
       }
       if (workshop) workshop.textContent = [picked.bookTitle, picked.bookHost].filter(Boolean).join(' · ');
@@ -257,7 +292,7 @@ const c = bookingCopy[lang];
       const data = new FormData(form);
       if (data.get('_honey')) return;
       const kind = picked.book || 'book';
-      const label = kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : 'Booking request';
+      const label = kind === 'event' ? 'Multi-host event request' : kind === 'special' ? 'Special request' : kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : 'Booking request';
       const wish = String(data.get('when') ?? '');
       const fields: Record<string, string> = {
         Type: label,
@@ -276,8 +311,11 @@ const c = bookingCopy[lang];
           Hours: String(data.get('hours') ?? ''),
           'How often': data.get('often') === 'regular' ? 'Regularly' : 'One time',
         } : {}),
-        ...(kind === 'group' ? {
-          Where: data.get('place') === 'venue' ? 'At their own venue' : 'At the host’s studio',
+        ...(kind === 'event' || kind === 'special' ? {
+          'Hosts wanted': data.getAll('hosts').map(String).join(', ') || 'none picked: suggest a line-up',
+        } : {}),
+        ...(kind === 'group' || kind === 'event' || kind === 'special' ? {
+          Where: data.get('place') === 'venue' ? 'At their own venue' : data.get('place') === 'host' ? 'At the host’s studio' : 'not said yet',
           ...(data.get('place') === 'venue' && data.get('venue') ? { Venue: String(data.get('venue')) } : {}),
         } : {}),
         People: String(data.get('people') ?? ''),
@@ -290,7 +328,7 @@ const c = bookingCopy[lang];
         Language: dialog.dataset.lang ?? '',
       };
       const studioWhen = kind === 'studio' ? [fields['Start time'], fields.Hours && `${fields.Hours} h`, fields['How often'] === 'Regularly' ? 'regularly' : ''].filter(Boolean).join(', ') : '';
-      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''}${studioWhen ? ` ${studioWhen}` : ''}${fields.Where ? `, ${fields.Where === 'At their own venue' ? 'at their venue' : 'at the studio'}` : ''} (${fields.People})`;
+      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''}${studioWhen ? ` ${studioWhen}` : ''}${fields.Where && fields.Where !== 'not said yet' ? `, ${fields.Where === 'At their own venue' ? 'at their venue' : 'at the studio'}` : ''} (${fields.People})`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {

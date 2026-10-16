@@ -32,6 +32,10 @@ export type Space = {
   /** Floor area, as the space states it — plain where it is only a number,
    *  per language where it says more ("3 rooms"). */
   size?: string | Record<Lang, string>;
+  /** How many people the room holds, as the space tells us. It leads the
+   *  card and feeds the group-size filter: whether a group fits is the
+   *  first thing anyone renting a room asks. Absent means "on request". */
+  capacity?: number;
   /** What the room suits, per language. */
   suits: Record<Lang, string>;
   /** One paragraph, per language. */
@@ -57,6 +61,8 @@ export const spaces: Space[] = [
     address: 'Koloniestraße 111, 13359 Berlin',
     district: 'Gesundbrunnen',
     at: [13.38101, 52.56137],
+    // "Up to twenty people seated", as she put it.
+    capacity: 20,
     photos: ['/img/spaces/celina-1.jpg', '/img/spaces/celina-2.jpg', '/img/spaces/celina-3.jpg'],
     // Her own rate, as she gave it to us.
     price: {
@@ -173,6 +179,8 @@ export const spaces: Space[] = [
     address: 'Fürstenwalder Damm 424, 12587 Berlin',
     district: 'Friedrichshagen',
     at: [13.61806, 52.45522],
+    // The large room's ten workplaces, as Ari listed them.
+    capacity: 10,
     photos: ['/img/spaces/friedrichshagen-1.jpg', '/img/spaces/friedrichshagen-2.jpg', '/img/spaces/friedrichshagen-3.jpg', '/img/spaces/friedrichshagen-4.jpg'],
     badge: {
       en: 'LGBTQ+ safe space',

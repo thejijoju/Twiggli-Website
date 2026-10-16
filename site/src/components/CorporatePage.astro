@@ -9,6 +9,7 @@ import { seasonOf } from '../data/occasions.ts';
 import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 import { christmasCopy } from '../data/christmasParty.ts';
+import { bigEventsCopy } from '../data/bigEvents.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -24,6 +25,10 @@ const season = seasonOf();
 // which exists in English and German.
 const xmas = season === 'christmas' ? christmasCopy[lang === 'de' ? 'de' : 'en'] : undefined;
 const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
+// A big event with several hosts, and a request for anything not listed:
+// both open the booking form with every host on the page to pick from.
+const big = bigEventsCopy[lang];
+const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${h.specialty}`));
 ---
 
 <Base title={c.title} description={c.description} lang={lang} pageClass="page-flush">
@@ -43,7 +48,35 @@ const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
     )}
     <section class="dir-top">
       <HostFilters lang={lang} season={season} cta={c.cta} ctaHref={href(lang, '/contact/')} ctaTitle={bookingCopy[lang].anyHost} />
+      {/* Before the grid, so nobody scrolls fifty hosts to learn it: one
+          host is not the limit, and neither is the list. */}
+      <div class="big-strip">
+        <p><strong>{big.title}.</strong> {big.points[0]}</p>
+        <div class="big-strip-actions">
+          <a class="btn btn-primary" href={href(lang, '/contact/')} data-book="event" data-book-title={big.title} data-book-hosts={pickable}>{big.cta}</a>
+          <a class="btn btn-secondary" href={href(lang, '/contact/')} data-book="special" data-book-title={big.specialKicker} data-book-hosts={pickable}>{big.specialCta}</a>
+        </div>
+      </div>
       <HostDirectory hosts={hosts} lang={lang} />
+    </section>
+
+    {/* Several hosts in one evening, for the big events a single studio
+        cannot take, and the open request for whatever is not listed. */}
+    <section class="big-events" id="big-events">
+      <div class="big-events-main">
+        <span class="kicker">{big.kicker}</span>
+        <h2 class="split-title">{big.title}</h2>
+        <p class="split-copy">{big.copy}</p>
+        <ul class="big-points">
+          {big.points.map((point) => <li>{point}</li>)}
+        </ul>
+        <a class="btn btn-primary" href={href(lang, '/contact/')} data-book="event" data-book-title={big.title} data-book-hosts={pickable}>{big.cta}</a>
+      </div>
+      <div class="big-special">
+        <h3>{big.specialKicker}</h3>
+        <p>{big.specialCopy}</p>
+        <a class="btn btn-secondary" href={href(lang, '/contact/')} data-book="special" data-book-title={big.specialKicker} data-book-hosts={pickable}>{big.specialCta}</a>
+      </div>
     </section>
 
     <hr class="rule" />

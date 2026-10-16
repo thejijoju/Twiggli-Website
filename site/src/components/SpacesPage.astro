@@ -9,6 +9,7 @@ import SideMap from './SideMap.astro';
 import { mapCopy } from '../data/mapCopy.ts';
 import { getHosts } from '../data/content.ts';
 import { spaces } from '../data/spaces.ts';
+import { spaceSizeCopy, spaceSizeSteps } from '../data/spaceSize.ts';
 import { ui } from '../data/i18n.ts';
 import { hostHref } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
@@ -18,6 +19,8 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = ui(lang).spaces;
 const hosts = getHosts(lang);
+const z = spaceSizeCopy[lang];
+const sizeText = (n?: number) => (n ? z.upTo.replace('{n}', String(n)) : z.onRequest);
 
 const cards = spaces.map((space) => {
   const host = space.slug ? hosts.find((h) => h.slug === space.slug) : undefined;
@@ -74,14 +77,32 @@ const marks = spaces.map((space) => ({
       </div>
       <div class="sidemap-results">
       <div class="space-grid sidemap-list">
+        {/* How many people: the question every room request starts with.
+            Rooms with too few places step aside; rooms that have not told us
+            stay, marked "on request". */}
+        <fieldset class="space-size-filter" data-size-filter>
+          <legend>{z.filterLabel}</legend>
+          <div class="space-size-chips">
+            <label class="chip"><input type="radio" name="space-size" value="0" checked /><span>{z.any}</span></label>
+            {spaceSizeSteps.map((n) => (
+              <label class="chip"><input type="radio" name="space-size" value={n} /><span>{z.from.replace('{n}', String(n))}</span></label>
+            ))}
+          </div>
+          <p class="space-size-note" data-size-note hidden>{z.unknownNote}</p>
+        </fieldset>
+        <p class="filter-empty space-size-none" data-size-none hidden>{z.none}</p>
         {cards.map(({ space, host, lead, strip }) => (
-          <article class="space-card" id={`space-${idFor(space.name)}`} data-seen={`sp:${idFor(space.name)}`} data-space={idFor(space.name)}>
+          <article class="space-card" id={`space-${idFor(space.name)}`} data-seen={`sp:${idFor(space.name)}`} data-space={idFor(space.name)} data-capacity={space.capacity ?? ''}>
             <div class="space-visuals">
             <div class="space-media">
               {/* Which part of town, on the picture rather than in the
                   details: it is the first thing anyone looking for a room
                   checks, and it reads before the copy does. */}
               <span class="space-district">{space.district}</span>
+              <span class:list={['space-cap', { 'is-open': !space.capacity }]}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15.8 14.2c2.3.1 4 1.7 4.7 4.8"/></svg>
+                {sizeText(space.capacity)}
+              </span>
               {host?.video ? (
                 <video
                   class="space-video"
@@ -115,10 +136,12 @@ const marks = spaces.map((space) => ({
             </div>
             <div class="space-body">
               <h2 class="space-name">{space.name}</h2>
+              <p class:list={['space-size', { 'is-open': !space.capacity }]}>{sizeText(space.capacity)}</p>
               {space.badge && <p class="space-badge">{space.badge[lang]}</p>}
               <p class="space-where">{space.address}</p>
               <p class="space-copy">{space.copy[lang]}</p>
               <dl class="space-meta">
+                <div><dt>{z.label}</dt><dd>{sizeText(space.capacity)}</dd></div>
                 <div><dt>{t.labelSuits}</dt><dd>{space.suits[lang]}</dd></div>
                 <div>
                   <dt>{t.labelHost}</dt>
@@ -143,6 +166,7 @@ const marks = spaces.map((space) => ({
                 data-book-where={space.address}
                 data-book-keeper={host ? (host.firstName ?? host.name) : (space.manager ?? undefined)}
                 data-book-price={space.price?.[lang] ?? t.priceOnRequest}
+                data-book-group={sizeText(space.capacity)}
               >
                 {bookingCopy[lang].studioAsk}
               </a>
@@ -193,10 +217,40 @@ const marks = spaces.map((space) => ({
   if (root && pane) {
     const marks: Mark[] = JSON.parse(pane.dataset.spaces || '[]');
     let picked = '';
-    const draw = () => {
-      side?.setMarks(marks.map((mark) => ({ ...mark, active: mark.id === picked })));
-      side?.frame(marks.map((mark) => mark.at), 'all');
+    // The group size asked for: rooms that hold fewer step aside, on the
+    // list and on the map; rooms with no stated size stay.
+    let need = 0;
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-space]'));
+    const fits = (card: HTMLElement) => {
+      const cap = Number(card.dataset.capacity || 0);
+      return !need || !cap || cap >= need;
     };
+    const shown = () => new Set(cards.filter(fits).map((card) => card.dataset.space ?? ''));
+    const draw = () => {
+      const ids = shown();
+      const on = marks.filter((mark) => ids.has(mark.id));
+      side?.setMarks(on.map((mark) => ({ ...mark, active: mark.id === picked })));
+      side?.frame((on.length ? on : marks).map((mark) => mark.at), 'all');
+    };
+    const note = root.querySelector<HTMLElement>('[data-size-note]');
+    const none = root.querySelector<HTMLElement>('[data-size-none]');
+    root.querySelector('[data-size-filter]')?.addEventListener('change', (event) => {
+      need = Number((event.target as HTMLInputElement).value) || 0;
+      let count = 0;
+      let open = 0;
+      for (const card of cards) {
+        const ok = fits(card);
+        card.hidden = !ok;
+        if (ok) count += 1;
+        if (ok && !card.dataset.capacity) open += 1;
+      }
+      // Say why a room with no size is still there, and what to do when
+      // nothing is.
+      if (note) note.hidden = !need || !open;
+      if (none) none.hidden = count > 0;
+      if (picked && !shown().has(picked)) picked = '';
+      draw();
+    });
     const side = startSideMap(root, {
       onShow: draw,
       onPick: (id) => {
