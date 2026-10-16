@@ -275,6 +275,10 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
   craftkai:         { activity: 'craft',     groupRange: [1, 12], hourRange: [1, 2.5], groupPrice: [25, 109] },
   yurika:           { activity: 'craft',     groupRange: [1, 12], hourRange: [1.5, 2], groupPrice: [45, 72] },
+  // Her team formats, 16.10.26: M from 7 (2 h), S from 10 (1.5 h), XS from
+  // 15 (1 h); up to 20 in the studio, up to 150 on-site. Net prices per
+  // person for companies: XS 35, S 55, M 75.
+  petitejungle:     { activity: 'craft',     groupRange: [7, 150], hourRange: [1, 2], groupPrice: [35, 75] },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -495,6 +499,10 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'yurika', name: 'Yurika', specialty: 'Natural dyeing with tea & plants', studio: 'Living Dyeing Project',
       blurb: 'A Tokyo-born textile artist who has lived in Berlin since 2019, painting, embroidering and dyeing. Her Living Dyeing project colours fabric with what the city throws away: tea leaves already brewed in Berlin restaurants, onion skins, vegetable peel, coffee grounds. This is Kusaki-zome, the Japanese way of dyeing with plants, and with tea the tannin meets iron to give soft greys, warm browns and deep blue-blacks, never twice the same. Her workshops are slow and hands-on and made for beginners. You learn the technique and some shibori tie-dye, then dye a linen chabu tea mat or a cotton furoshiki to take home, or bring a piece of your own. A member of the Berlin Handcrafts Collective, she has taught natural dyeing across Germany.',
       group: 'Small groups', duration: '1.5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+    // Copy from petitejungle.de and our call with Aurélie (16.10.26).
+    { slug: 'petitejungle', name: 'Petite Jungle', specialty: 'Terrarium workshops', studio: 'Petite Jungle',
+      blurb: 'Aurélie has been building gardens under glass as Petite Jungle since 2019 and teaches it in her studio in Mitte. First you learn how a closed terrarium works (it needs watering only a few times a year), then you layer the soil, set the moss and the tropical plants you pick yourself, and take your jar home. Three sizes for teams: M, a 5-litre jar with 4–5 plants, in two hours; S, a 1.5-litre Weck jar with 2–3 plants, in 90 minutes; and XS, a mini terrarium in an hour, which works for events of up to 150 people. Public evenings run on Wednesdays, in German or English.',
+      group: '7–20 in the studio · up to 150 on-site', duration: '1–2 h', place: 'Ruppiner Str. 4, Berlin / on-site', languages: 'DE · EN · FR', priceNote: 'plus VAT' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -680,6 +688,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'yurika', name: 'Yurika', specialty: 'Naturfärben mit Tee & Pflanzen', studio: 'Living Dyeing Project',
       blurb: 'Eine in Tokio geborene Textilkünstlerin, die seit 2019 in Berlin lebt und malt, stickt und färbt. Ihr Projekt Living Dyeing färbt Stoff mit dem, was die Stadt wegwirft: Teeblätter, die in Berliner Restaurants schon aufgegossen wurden, Zwiebelschalen, Gemüseschalen, Kaffeesatz. Das ist Kusaki-zome, Japans Färben mit Pflanzen, und beim Tee trifft die Gerbsäure auf Eisen und ergibt sanfte Grautöne, warme Brauntöne und tiefes Blauschwarz, nie zweimal gleich. Ihre Workshops sind langsam, praktisch und für Anfänger gemacht. Du lernst die Technik und etwas Shibori-Abbinden und färbst dann ein Chabu-Teedeckchen aus Leinen oder ein Furoshiki aus Baumwolle zum Mitnehmen, oder du bringst ein eigenes Stück mit. Als Mitglied des Berlin Handcrafts Collective hat sie in ganz Deutschland Naturfärbe-Workshops gegeben.',
       group: 'Kleine Gruppen', duration: '1,5–2 Std.', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+    { slug: 'petitejungle', name: 'Petite Jungle', specialty: 'Terrarium-Workshops', studio: 'Petite Jungle',
+      blurb: 'Aurélie baut seit 2019 als Petite Jungle Gärten unter Glas und zeigt es in ihrem Studio in Mitte. Zuerst erfährst du, wie ein geschlossenes Terrarium funktioniert (gegossen wird nur ein paar Mal im Jahr), dann schichtest du Erde, setzt Moos und die tropischen Pflanzen, die du selbst aussuchst, und nimmst dein Glas mit nach Hause. Drei Größen für Teams: M, ein 5-Liter-Glas mit 4–5 Pflanzen, in zwei Stunden; S, ein 1,5-Liter-Weckglas mit 2–3 Pflanzen, in 90 Minuten; und XS, ein Mini-Terrarium in einer Stunde, das auch für Events mit bis zu 150 Personen funktioniert. Offene Abende gibt es mittwochs, auf Deutsch oder Englisch.',
+      group: '7–20 im Studio · bis 150 vor Ort', duration: '1–2 Std.', place: 'Ruppiner Str. 4, Berlin / vor Ort', languages: 'DE · EN · FR', priceNote: 'zzgl. MwSt.' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -799,6 +810,12 @@ const reels: Record<string, { video: string; poster: string }> = {
      shop, the introductions, the scent testing — is left off; the making is
      what a card has room to say. No caption anywhere in it. Audio stripped. */
   munio: { video: '/video/munio.mp4', poster: '/video/munio-poster.jpg' },
+  /* Aurélie's own clip, 16.10.26: the trays of soil and gravel, the jars
+     being layered round the table, the moss and plants going in, and the
+     finished 5-litre jar held up. Its opening caption ("terrarium workshop,
+     petite jungle, berlin") and its closing card ("book today",
+     petitejungle.de) are cut off. Audio stripped. */
+  petitejungle: { video: '/video/petitejungle.mp4', poster: '/video/petitejungle-poster.jpg' },
   /* Two of their own clips joined. The instruments first, from the walk
      through the empty studio — the balafons with the shakers laid beside
      them, then the wall of drums — dissolving into the end of the second
@@ -1505,6 +1522,7 @@ const firstNames: Record<string, string> = {
   'ceramic-kingdom': 'Madeline', daisuki: 'Naoko', whittle: 'Nicole',
   dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
   aria: 'Aria',
+  petitejungle: 'Aurélie',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
   tinkery: 'Astrid', yurika: 'Yurika',
@@ -1541,6 +1559,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   craftkai: { area: 'Prenzlauer Berg / Mitte' },
   yurika: { area: 'Mitte / Wedding' },
   aria: { area: 'Friedrichshagen', onSite: true },
+  petitejungle: { area: 'Mitte', onSite: true },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },

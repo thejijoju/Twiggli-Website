@@ -272,6 +272,14 @@ const SOURCES = [
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
     imagePage: 'https://www.mobile-dunkelkammer.com/workshops/',
     district: 'Lichtenberg' },
+  // Petite Jungle sells one Shopify product per workshop evening, dated in
+  // its description. The shop also sells jars, kits and vouchers, so only
+  // the "Workshops" product type is read. The DIY-kit photos are The
+  // Makery's (Aurélie, 16.10.26), and no workshop product uses them.
+  { slug: 'petitejungle', name: 'Petite Jungle — Terrarium-Workshops (Shopify)', mode: 'shopify',
+    url: 'https://www.petitejungle.de/products.json?limit=250',
+    productType: 'Workshops', bodyNumericDate: true,
+    district: 'Mitte' },
   // Aria Hart's courses sell only on Konfetti; her partner page lists them
   // with their event ids in the URL tails. Read for dates only: bookings
   // come through our form (requestBooking), and the hard rule below strips
@@ -3029,6 +3037,9 @@ function fromShopify(jsonText, source) {
   }
   const out = [];
   for (const product of data.products ?? []) {
+    // A shop selling more than workshops (Petite Jungle: jars, kits,
+    // vouchers, past company quotes) is narrowed to its workshop type.
+    if (source.productType && product.product_type !== source.productType) continue;
     const body = stripTags(String(product.body_html ?? ''));
     const dur = body.match(/Duration:\s*([\d.,]+)(?:\s*(?:-|\u2013|to)\s*([\d.,]+))?\s*hours?/i);
     // Some shops (Mampe) put the length in the product title instead:
@@ -3173,6 +3184,41 @@ function fromShopify(jsonText, source) {
         });
         kept++;
         console.log(`[${source.slug}] shopify body-date: "${product.title}" ${date} ${time ?? ''}`);
+      }
+    }
+    // One product per date, the date in numbers in the description (Petite
+    // Jungle): "Datum: Mittwoch 16.12.2026, 18.00 Uhr - 20.00 Uhr" or "Time:
+    // Wednesday 09.12.26, 18.00 - 20.00". The title repeats the date and
+    // flags the English evenings ("… - 09.12.26 - ENG"); the date goes and
+    // the flag becomes words. Where the product sells two sizes, the card
+    // shows their price span. Opt-in, so no other shop's reading changes.
+    if (!kept && source.bodyNumericDate) {
+      const nd = body.match(/(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4}),?\s*(\d{1,2})[.:](\d{2})(?:\s*Uhr)?\s*[-\u2013]\s*(\d{1,2})[.:](\d{2})/);
+      const open = (product.variants ?? []).filter((v) => v.available !== false);
+      if (nd && open.length) {
+        const year = nd[3].length === 2 ? `20${nd[3]}` : nd[3];
+        const date = `${year}-${nd[2].padStart(2, '0')}-${nd[1].padStart(2, '0')}`;
+        const span = Number(nd[6]) + Number(nd[7]) / 60 - (Number(nd[4]) + Number(nd[5]) / 60);
+        const prices = open.map((v) => Math.round(Number(v.price))).filter((n) => n > 0);
+        const lo = Math.min(...prices);
+        const hi = Math.max(...prices);
+        const english = /\s[-\u2013]\s*ENG\b/i.test(productTitle);
+        const title = productTitle
+          .replace(/\s*[-\u2013]\s*ENG\b/i, '')
+          .replace(/\s*[-\u2013]\s*\d{1,2}\.\d{1,2}\.\d{2,4}\s*$/, '')
+          .trim();
+        out.push({
+          title: english ? `${title} (Englisch)` : title,
+          titleEn: english ? `${title} (in English)` : title,
+          date,
+          time: `${nd[4].padStart(2, '0')}:${nd[5]}`,
+          ...(span > 0 && span <= 12 ? { duration: `${Math.round(span * 2) / 2} h` } : {}),
+          ...(prices.length ? { price: lo === hi ? `\u20ac${lo}` : `\u20ac${lo}\u2013${hi}` } : {}),
+          ...(source.district ? { district: source.district } : {}),
+          ...(product.images?.[0]?.src ? { image: product.images[0].src } : {}),
+          url: productUrl,
+        });
+        kept++;
       }
     }
     console.log(`[${source.slug}] shopify product "${product.title}": ${(product.variants ?? []).length} variants, ${kept} available dated sessions`);
@@ -4742,7 +4788,7 @@ if (process.env.PARSE_TEST) {
       : process.env.PARSE_TEST_MODE === 'craftkai'
         ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'The Munio', slug: 'munio', district: 'Schöneberg' }, { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' }] })
       : process.env.PARSE_TEST_MODE === 'shopify'
-        ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json' })
+        ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json', productType: process.env.PARSE_TEST_TYPE, bodyNumericDate: !!process.env.PARSE_TEST_NUMERIC })
       : process.env.PARSE_TEST_MODE === 'shopify-when'
         ? (h, src) => fromShopifyWhen(h, { ...src, url: 'https://shop.example/products.json', productType: 'classe' })
       : process.env.PARSE_TEST_MODE === 'json-ld'
