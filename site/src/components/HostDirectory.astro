@@ -6,6 +6,7 @@ import { tagsFor } from '../data/hostTags.ts';
 import { upTo } from '../data/seo.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
+import { mapCopy } from '../data/mapCopy.ts';
 import { directoryCopy, occasionsFor } from '../data/occasions.ts';
 import HostMonogram from './HostMonogram.astro';
 import PhotoFade from './PhotoFade.astro';
@@ -51,6 +52,14 @@ const priceFigure = (range: [number, number] | undefined) =>
     : range[0] === range[1] ? money(range[0])
     : `${money(range[0])}–${money(range[1])}`;
 const hasFigure = (range: [number, number] | undefined) => !!range && !(range[0] === 0 && range[1] === 0);
+/** The card's own line: where a host's price spans formats, only where it
+ *  starts ("From €35"); the quick view, a tap away, gives the whole span. */
+const fromWord = mapCopy[lang].from;
+const priceStart = (range: [number, number] | undefined) => {
+  if (!range || range[0] === range[1] || !hasFigure(range)) return priceFigure(range);
+  const text = fromWord.replace('{p}', money(range[0]));
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
 
 const labels = ui(lang).directory;
 const d = directoryCopy[lang];
@@ -144,7 +153,7 @@ const searchText = (host: Host) => [
       <p class="maker-sub">{[host.firstName, districtFor(host)].filter(Boolean).join(' · ')}</p>
       {tagsFor(host.slug, lang).length > 0 && <ul class="host-tags">{tagsFor(host.slug, lang).map((t) => <li>{t}</li>)}</ul>}
       <p class="maker-price">
-        <strong>{priceFigure(rangeFor(host))}</strong>
+        <strong>{priceStart(rangeFor(host))}</strong>
         {hasFigure(rangeFor(host)) && <span>{priceCopy.priceMeta}</span>}
       </p>
 
