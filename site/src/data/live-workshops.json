@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T11:47:10.219Z",
+  "updated": "2026-10-16T11:55:38.891Z",
   "sources": [
     {
       "slug": "landsinn",
@@ -198,6 +198,12 @@
       "url": "https://www.mobile-dunkelkammer.com/workshops/termine/",
       "status": "ok",
       "count": 6
+    },
+    {
+      "slug": "petitejungle",
+      "url": "https://www.petitejungle.de/products.json?limit=250",
+      "status": "ok",
+      "count": 4
     },
     {
       "slug": "aria",
@@ -4821,6 +4827,19 @@
       "url": "https://www.tickettailor.com/events/turnedartist/2348239"
     },
     {
+      "slug": "petitejungle",
+      "sourceUrl": "https://www.petitejungle.de/products.json?limit=250",
+      "title": "Terrarium Workshop Size M",
+      "titleEn": "Terrarium Workshop Size M",
+      "date": "2026-11-04",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€85",
+      "district": "Mitte",
+      "image": "https://cdn.shopify.com/s/files/1/0385/1091/9811/products/jungle-sept9_11_b47cc7a2-46dd-440b-b2df-e1723a20eb9f.jpg?v=1769516839",
+      "url": "https://www.petitejungle.de/products/terrarium-workshop-size-m-04-11-2026"
+    },
+    {
       "slug": "galleria-lucia",
       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
       "title": "Dip-Dye & Design - Taper Candle Workshop in Berlin",
@@ -7323,6 +7342,19 @@
       "district": "Prenzlauer Berg",
       "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_519,q_100,w_519,x_1,y_41/c_scale,h_250,q_85,w_250/v1/production/userfiles/t21pozdmmye93bslnli3.jpg?_a=BAAHWXDQ",
       "url": "https://www.tickettailor.com/events/turnedartist/2348241"
+    },
+    {
+      "slug": "petitejungle",
+      "sourceUrl": "https://www.petitejungle.de/products.json?limit=250",
+      "title": "Terrarium Workshop Size M",
+      "titleEn": "Terrarium Workshop Size M",
+      "date": "2026-11-18",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€85",
+      "district": "Mitte",
+      "image": "https://cdn.shopify.com/s/files/1/0385/1091/9811/products/jungle-sept9_033-2-detail_880bff80-bac0-487c-a81c-d841a2c7c032.jpg?v=1769517204",
+      "url": "https://www.petitejungle.de/products/terrarium-workshop-size-m-18-11-2026"
     },
     {
       "slug": "galleria-lucia",
@@ -9983,6 +10015,19 @@
       "url": "https://www.tickettailor.com/events/turnedartist/2348244"
     },
     {
+      "slug": "petitejungle",
+      "sourceUrl": "https://www.petitejungle.de/products.json?limit=250",
+      "title": "Terrarium Workshop Size M&S (Englisch)",
+      "titleEn": "Terrarium Workshop Size M&S (in English)",
+      "date": "2026-12-09",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€65–85",
+      "district": "Mitte",
+      "image": "https://cdn.shopify.com/s/files/1/0385/1091/9811/products/jungle-sept9_05-detail_33e30b34-5552-4a83-85e7-2daa011963b7.jpg?v=1769517204",
+      "url": "https://www.petitejungle.de/products/terrarium-workshop-size-m-s-09-12-26-eng"
+    },
+    {
       "slug": "druckrausch",
       "sourceUrl": "https://www.druckrausch.com/termine",
       "title": "Basis-Siebdruck-Kurs -Fotografie-",
@@ -10501,6 +10546,19 @@
       "district": "Kreuzberg",
       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+    },
+    {
+      "slug": "petitejungle",
+      "sourceUrl": "https://www.petitejungle.de/products.json?limit=250",
+      "title": "Terrarium Workshop Size M",
+      "titleEn": "Terrarium Workshop Size M",
+      "date": "2026-12-16",
+      "time": "18:00",
+      "duration": "2 h",
+      "price": "€85",
+      "district": "Mitte",
+      "image": "https://cdn.shopify.com/s/files/1/0385/1091/9811/products/jungle-sept9_11_b47cc7a2-46dd-440b-b2df-e1723a20eb9f.jpg?v=1769516839",
+      "url": "https://www.petitejungle.de/products/terrarium-workshop-size-m-16-12-2026"
     },
     {
       "slug": "tufttuft",
