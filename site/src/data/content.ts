@@ -257,7 +257,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   rose:             { activity: 'craft',     groupRange: [3, 4],  hourRange: [4, 4] },
   techno:           { activity: 'art',       groupRange: [1, 6],  hourRange: [3, 3] },
   // The large room's ten workplaces at her atelier; courses run 2–2.5 h.
-  aria:             { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2.5] },
+  // Her Konfetti ticket prices (€49–59) until she quotes a group price.
+  aria:             { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2.5], groupPrice: [49, 59] },
   // PLACEHOLDER group range — the event page publishes no cap.
   arcoiris:         { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 2.5] },
   redrum:           { activity: 'food',      groupRange: [2, 8],  hourRange: [2, 2] },
