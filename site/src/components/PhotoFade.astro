@@ -1,0 +1,47 @@
+---
+/** Stands in for a host's reel while it is still to come: their own photos
+ *  stacked in the reel's frame, each fading into the next every few seconds.
+ *  The first is shown without scripting; with reduced motion it stays put. */
+interface Props {
+  photos: string[];
+  alt: string;
+  /** Load the first picture eagerly, where the frame opens the page. */
+  eager?: boolean;
+}
+const { photos, alt, eager = false } = Astro.props;
+---
+
+<div class="photo-fade" data-photo-fade>
+  {photos.map((src, i) => (
+    <img
+      class:list={[{ 'is-on': i === 0 }]}
+      src={src}
+      alt={i === 0 ? alt : ''}
+      loading={eager && i === 0 ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  ))}
+</div>
+
+<script>
+  // One timer for every slideshow on the page; each turns only while it is
+  // on screen, so a long list of cards costs nothing out of view.
+  const boxes = Array.from(document.querySelectorAll<HTMLElement>('[data-photo-fade]'));
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (boxes.length && !still) {
+    const visible = new Set<HTMLElement>();
+    const watch = new IntersectionObserver((entries) => {
+      for (const e of entries) (e.isIntersecting ? visible.add(e.target as HTMLElement) : visible.delete(e.target as HTMLElement));
+    });
+    boxes.forEach((box) => watch.observe(box));
+    setInterval(() => {
+      for (const box of visible) {
+        const pics = Array.from(box.querySelectorAll('img'));
+        if (pics.length < 2) continue;
+        const at = pics.findIndex((p) => p.classList.contains('is-on'));
+        pics[at]?.classList.remove('is-on');
+        pics[(at + 1) % pics.length].classList.add('is-on');
+      }
+    }, 3500);
+  }
+</script>

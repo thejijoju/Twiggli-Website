@@ -5,6 +5,7 @@
 import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
+import PhotoFade from './PhotoFade.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
 import { getHosts, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
@@ -104,6 +105,8 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
             preload="metadata"
             aria-label={`${host.name} — ${host.specialty}`}
           ></video>
+        ) : host.gallery && host.gallery.length > 1 ? (
+          <PhotoFade photos={host.gallery} alt={`${host.name} — ${host.specialty}`} eager />
         ) : host.photo ? (
           <img src={host.photo} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
         ) : (

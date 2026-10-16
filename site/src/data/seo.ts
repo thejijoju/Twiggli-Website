@@ -805,7 +805,7 @@ const seoPhrases: Record<Lang, SeoPhrases> = {
   en: {
     hostTitle: (spec, name, named) => (named ? `${spec} in Berlin — ${name} | Twiggli` : `${spec} workshop in Berlin — ${name} | Twiggli`),
     hostH1: (spec, name) => `${spec} with ${name}`,
-    hostOpen: (spec, name, named) => (named ? `${spec} in Berlin with ${name}` : `Book a ${lowerFirst(spec)} workshop in Berlin with ${name}`),
+    hostOpen: (spec, name, named) => (named ? `${spec} in Berlin with ${name}` : `Book ${/^[aeiou]/i.test(spec) ? 'an' : 'a'} ${lowerFirst(spec)} workshop in Berlin with ${name}`),
     hostWhen: (n, when, price) => `${n === 1 ? 'Next date' : `${n} upcoming dates, the next`}: ${when}${price}.`,
     onRequest: 'Dates on request.',
     workshopTitle: (title, spec, name) => `${title} — ${spec} with ${name}, Berlin | Twiggli`,

@@ -256,6 +256,8 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   dirt:             { activity: 'ceramics',  groupRange: [3, 5],  hourRange: [1.25, 4], groupPrice: 80 },
   rose:             { activity: 'craft',     groupRange: [3, 4],  hourRange: [4, 4] },
   techno:           { activity: 'art',       groupRange: [1, 6],  hourRange: [3, 3] },
+  // The large room's ten workplaces at her atelier; courses run 2–2.5 h.
+  aria:             { activity: 'art',       groupRange: [1, 10], hourRange: [2, 2.5] },
   // PLACEHOLDER group range — the event page publishes no cap.
   arcoiris:         { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 2.5] },
   redrum:           { activity: 'food',      groupRange: [2, 8],  hourRange: [2, 2] },
@@ -458,6 +460,11 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'techno', name: 'Techno Painting', specialty: 'Techno painting sessions', studio: 'Techno Painting Studio',
       blurb: 'Berlin artist Dina’s original Techno Painting workshop, running since 2018 and rated one of the top five Airbnb experiences in Berlin. Techno music meets intuitive, therapeutic acrylic painting in her Mitte studio: you pick a palette, work in layers, slip into flow state — one break with drinks — and leave with your own 70 × 50 cm canvas. All materials provided, no experience needed, sessions every day of the week.',
       group: 'Up to 6', duration: '3 h', place: 'Studio in Berlin-Mitte', languages: 'EN' },
+    // Copy from ariahart.de and her Konfetti partner page; the specialty in
+    // her own words (16.10.26). Studio photos until her reel arrives.
+    { slug: 'aria', name: 'Aria Hart', specialty: 'Acrylic art, body painting, tattoo & nude painting', studio: 'Atelier Aria Hart',
+      blurb: 'The atelier of Berlin painter and sculptor Aria Hart in Friedrichshagen, an LGBTQ+ safe space with daylight in every room. Beginners start with abstract painting, intuitive painting over a drink or acrylic pouring; there is a painting class for children, and for anyone who wants to go further, body painting, tattoo and nude painting. Around two hours on a 30 × 40 cm canvas that you take home, all materials included. Aria has taught painting for years, ArtNight among others, and on request comes to you for a birthday or a garden party.',
+      group: 'Up to 10 in the atelier', duration: '2–2.5 h', place: 'Fürstenwalder Damm 424, Berlin', languages: 'DE · EN', priceNote: 'materials included' },
     // Copy from her event page; photos to follow.
     { slug: 'arcoiris', name: 'Barbara', specialty: 'Upcycled embroidery workshops', studio: 'ArcoIris Embroidery',
       blurb: 'Barbara’s embroidery sessions at That Pink Café in Neukölln. Stitch a bold vulva flower while learning versatile stitches, clean thread work and secure knots — on fabrics that are entirely upcycled: scraps, secondhand finds and rescued textiles from Berlin’s Zu-Verschenken boxes. Beginner-friendly and open to everyone; you head home with a finished hoop and a stitch guide to keep going.',
@@ -645,6 +652,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'techno', name: 'Techno Painting', specialty: 'Techno-Painting-Sessions', studio: 'Techno Painting Studio',
       blurb: 'Der originale Techno-Painting-Workshop der Berliner Künstlerin Dina — seit 2018 eine der fünf bestbewerteten Airbnb-Experiences Berlins. Technomusik trifft intuitives, therapeutisches Acrylmalen in ihrem Studio in Mitte: Palette wählen, in Schichten arbeiten, in den Flow kommen — eine Pause mit Getränken — und am Ende nimmst du deine eigene 70 × 50 cm Leinwand mit. Material inklusive, keine Vorkenntnisse nötig, Sessions an jedem Tag der Woche.',
       group: 'Bis 6', duration: '3 Std.', place: 'Studio in Berlin-Mitte', languages: 'EN' },
+    { slug: 'aria', name: 'Aria Hart', specialty: 'Acrylic Art, Bodypainting, Tattoo & Aktmalerei', studio: 'Atelier Aria Hart',
+      blurb: 'Das Atelier der Berliner Malerin und Bildhauerin Aria Hart in Friedrichshagen, ein LGBTQ+ Safe Space mit Tageslicht in jedem Raum. Für den Einstieg gibt es abstrakte Malerei, intuitives Malen bei einem Drink oder Acrylic Pouring, dazu einen Malkurs für Kinder, und für alle, die tiefer einsteigen wollen, Bodypainting, Tattoo und Aktmalerei. Rund zwei Stunden auf einer 30 × 40 cm großen Leinwand, die du mit nach Hause nimmst, alle Materialien inklusive. Aria unterrichtet seit Jahren Malkurse, unter anderem bei ArtNight, und kommt auf Anfrage auch zu dir, etwa zum Geburtstag oder Gartenfest.',
+      group: 'Bis 10 im Atelier', duration: '2–2,5 Std.', place: 'Fürstenwalder Damm 424, Berlin', languages: 'DE · EN', priceNote: 'Material inklusive' },
     { slug: 'arcoiris', name: 'Barbara', specialty: 'Upcycling-Stickworkshops', studio: 'ArcoIris Embroidery',
       blurb: 'Barbaras Stick-Sessions im That Pink Café in Neukölln. Stick eine kraftvolle Vulva-Blume und lerne dabei vielseitige Stiche, sauberes Fädentrennen und sichere Knoten — auf Stoffen, die komplett upgecycelt sind: Reste, Secondhand-Funde und gerettete Textilien aus Berliner Zu-Verschenken-Kisten. Anfängerfreundlich und offen für alle; am Ende nimmst du deinen fertigen Stickrahmen und eine Stichanleitung mit nach Hause.',
       group: 'Kleine Gruppen', duration: '2,5 Std.', place: 'That Pink Café, Schwarzastraße 9, Berlin', languages: 'EN' },
@@ -1493,6 +1503,7 @@ const firstNames: Record<string, string> = {
   pastamadre: 'Maria-Lucrezia & Frank', 'monk-garden': 'Martin', bumerang: 'Christian',
   'ceramic-kingdom': 'Madeline', daisuki: 'Naoko', whittle: 'Nicole',
   dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
+  aria: 'Aria',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
   tinkery: 'Astrid', yurika: 'Yurika',
@@ -1528,6 +1539,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   'smell-lab': { area: 'Prenzlauer Berg' },
   craftkai: { area: 'Prenzlauer Berg / Mitte' },
   yurika: { area: 'Mitte / Wedding' },
+  aria: { area: 'Friedrichshagen', onSite: true },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },

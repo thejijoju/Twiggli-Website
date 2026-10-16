@@ -8,6 +8,7 @@ import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 import { ui } from '../data/i18n.ts';
 import { directoryCopy, occasionsFor } from '../data/occasions.ts';
 import HostMonogram from './HostMonogram.astro';
+import PhotoFade from './PhotoFade.astro';
 
 /**
  * The group-bookings directory, laid out like a marketplace grid: a large
@@ -124,6 +125,8 @@ const searchText = (host: Host) => [
             />
             <video class="maker-video" src={host.video} muted loop playsinline preload="none"></video>
           </>
+        ) : host.gallery && host.gallery.length > 1 ? (
+          <PhotoFade photos={host.gallery} alt={host.specialty} />
         ) : host.photo || host.wide ? (
           <img src={host.photo ?? host.wide} alt={host.specialty} loading="lazy" decoding="async" />
         ) : (

@@ -5907,3 +5907,17 @@ h1, h2, h3, h4,
   .big-events { grid-template-columns: minmax(0, 1fr); }
   .big-strip { padding: 14px 16px; }
 }
+
+/* A host's photos fading one into the next, in the frame their reel will
+   fill (PhotoFade.astro). */
+.photo-fade { position: relative; width: 100%; height: 100%; }
+.photo-fade img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.photo-fade img.is-on { opacity: 1; }

@@ -272,6 +272,17 @@ const SOURCES = [
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
     imagePage: 'https://www.mobile-dunkelkammer.com/workshops/',
     district: 'Lichtenberg' },
+  // Aria Hart's courses sell only on Konfetti; her partner page lists them
+  // with their event ids in the URL tails. Read for dates only: bookings
+  // come through our form (requestBooking), and the hard rule below strips
+  // any Konfetti link or picture, so cards fall back to her own photos.
+  // The ids are her four courses as of 16.10.26 — the partner page also
+  // links other partners' events, so the pattern names hers alone.
+  { slug: 'aria', name: 'Atelier Aria Hart — Kurse (Konfetti)', mode: 'konfetti',
+    url: 'https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/',
+    pagePattern: '/de-de/e/[a-z0-9-]*-(wj8qjk|xy4e66|wevg8k|xy47mv)/?$', idFromUrl: true,
+    requestBooking: true, infoUrl: 'https://www.ariahart.de/',
+    district: 'Friedrichshagen' },
   // Schmiede im Hof (Schmiedekurse Berlin): the Jimdo site prints the
   // whole schedule as German prose blocks with live seat counts; booking
   // runs by mail, so cards take requests and link the Kurstermine page.
