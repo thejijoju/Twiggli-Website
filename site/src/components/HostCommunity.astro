@@ -1,0 +1,35 @@
+---
+/** The host community card: a row of small round photos, one per craft,
+ *  beside a line on what hosts get from each other. On the home page it
+ *  leads to the host page; on the host page, to the form above it. */
+import { hostCommunityCopy } from '../data/hostCommunity.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  /** Where the button goes: the host page, or the form on it. */
+  to: 'host' | 'apply';
+}
+const { lang, to } = Astro.props;
+const c = hostCommunityCopy[lang];
+const pics = ['tufttuft', 'haki', 'jem-kimchi', 'druckrausch', 'smell-lab', 'schmiede', 'loom-lab'];
+const link = to === 'apply' ? '#apply' : href(lang, '/host/');
+---
+
+<a class="find-solo host-circle" href={link}>
+  <span class="host-circle-dots">
+    {pics.map((p, i) => (
+      <span class="host-circle-dot">
+        <img src={withBase(`/img/mail/${p}.jpg`)} alt="" loading="lazy" decoding="async" />
+        <small>{c.crafts[i]}</small>
+      </span>
+    ))}
+    <span class="host-circle-dot host-circle-more" aria-hidden="true"><b>30+</b></span>
+  </span>
+  <span class="find-solo-text">
+    <span class="host-circle-kicker">{c.kicker}</span>
+    <strong>{c.title}</strong>
+    <span>{c.copy}</span>
+  </span>
+  <span class="find-solo-cta">{to === 'apply' ? c.join : c.become} →</span>
+</a>

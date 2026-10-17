@@ -5458,6 +5458,30 @@ h1, h2, h3, h4,
 .find-solo-cta { font-weight: 700; color: var(--color-accent-deep); white-space: nowrap; }
 .find-solo:hover .find-solo-cta { text-decoration: underline; }
 
+/* — host community: the "come on your own" card again, for makers, with a
+   row of small round craft photos above the words. */
+.host-circle { grid-template-columns: minmax(0, 1fr) auto; row-gap: 18px; margin: 32px 0 48px; }
+.host-circle-dots { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 14px 12px; }
+.host-circle-dot { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 64px; }
+.host-circle-dot img,
+.host-circle-more b {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(40, 20, 60, 0.12);
+}
+.host-circle-dot small { font-size: 11.5px; line-height: 1.2; color: var(--color-text-muted); text-align: center; }
+.host-circle-more b {
+  display: grid; place-items: center;
+  background: var(--color-accent-deep); color: #fff;
+  font: 700 15px/1 var(--font-heading);
+}
+.host-circle-kicker {
+  font-size: 12px !important; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-accent-deep) !important;
+}
+
 @media (max-width: 900px) {
   .find-bubbles {
     display: flex;
@@ -5488,6 +5512,11 @@ h1, h2, h3, h4,
   .find-solo-faces img + img { margin-left: -14px; }
   .find-solo-text strong { font-size: 17px; }
   .find-solo-text span { font-size: 14px; }
+  .host-circle { grid-template-columns: minmax(0, 1fr); }
+  .host-circle-dots { gap: 12px 2px; }
+  .host-circle-dot { width: 64px; }
+  .host-circle-dot small { font-size: 10.5px; }
+  .host-circle-dot img, .host-circle-more b { width: 48px; height: 48px; }
 }
 @media (max-width: 560px) {
   .find-all { display: none; }

@@ -10,6 +10,7 @@ import { hostApplyCopy } from '../data/hostApply.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
+import HostCommunity from './HostCommunity.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -92,6 +93,7 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
         </div>
       </div>
     </section>
+    <HostCommunity lang={lang} to="apply" />
   </div>
   </div>
 </Base>
