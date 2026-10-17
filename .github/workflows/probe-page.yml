@@ -16,13 +16,25 @@ on:
         required: false
         type: string
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   probe:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
+      # "scrape:konfetti,subcultours,makery" as the url lists the Berlin hosts
+      # on those platforms instead (scripts/scrape-hosts.mjs).
+      - if: startsWith(inputs.url, 'scrape:')
+        uses: actions/checkout@v4
+      - name: List Berlin hosts on other platforms
+        if: startsWith(inputs.url, 'scrape:')
+        run: node scripts/scrape-hosts.mjs
+        env:
+          SCRAPE_URL: ${{ inputs.url }}
       - name: Fetch and describe
+        if: ${{ !startsWith(inputs.url, 'scrape:') }}
         run: |
           node - <<'EOF'
           // One run can describe several pages — reading a host who splits

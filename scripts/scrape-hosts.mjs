@@ -1,10 +1,11 @@
 // Lists the Berlin hosts on other workshop platforms (Konfetti, Subcultours,
 // The Makery), one tab-separated line per host prefixed "LEAD", so outreach
 // can see who teaches what and where. Read-only: it fetches public pages and
-// prints; nothing is written or sent. Run from .github/workflows/scrape-hosts.yml.
+// prints; nothing is written or sent. Run from .github/workflows/probe-page.yml
+// with the url "scrape:konfetti,subcultours,makery" (any subset).
 
 const UA = 'Mozilla/5.0 (compatible; TwiggliScheduleBot/1.0; +https://www.twiggli.com)';
-const only = (process.env.SCRAPE_ONLY || 'konfetti,subcultours,makery').split(',');
+const only = (process.env.SCRAPE_URL || 'scrape:konfetti,subcultours,makery').replace(/^scrape:/, '').split(',').map((s) => s.trim());
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function get(url, tries = 3) {
