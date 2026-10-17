@@ -1,0 +1,30 @@
+name: List Berlin hosts on other platforms
+
+# On-demand helper for outreach: prints the Berlin hosts listed on Konfetti,
+# Subcultours and The Makery (scripts/scrape-hosts.mjs) to the log, one
+# "LEAD" line each. Read-only; touches nothing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'Platforms, comma-separated (konfetti, subcultours, makery)'
+        required: false
+        type: string
+        default: 'konfetti,subcultours,makery'
+
+permissions:
+  contents: read
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/scrape-hosts.mjs
+        env:
+          SCRAPE_ONLY: ${{ inputs.only }}
