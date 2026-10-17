@@ -1,7 +1,7 @@
 ---
 /** The host community card: a cluster of small round photos, one per craft,
- *  overlapping like the faces on a "who's in" sign,
- *  beside a line on what hosts get from each other. On the home page it
+ *  overlapping like the faces on a "who's in" sign, then a plus and an
+ *  empty circle for the reader, beside a line on what hosts get from each other. On the home page it
  *  leads to the host page; on the host page, to the form above it. */
 import { hostCommunityCopy } from '../data/hostCommunity.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
@@ -13,7 +13,7 @@ interface Props {
 }
 const { lang, to } = Astro.props;
 const c = hostCommunityCopy[lang];
-const pics = ['tufttuft', 'haki', 'jem-kimchi', 'druckrausch', 'smell-lab', 'schmiede', 'loom-lab'];
+const pics = ['ceramic-kingdom', 'galleria-lucia-dipdye', 'daisuki', 'sabine', 'schmiede', 'jem', 'techno'];
 const link = to === 'apply' ? '#apply' : href(lang, '/host/');
 ---
 
@@ -22,7 +22,11 @@ const link = to === 'apply' ? '#apply' : href(lang, '/host/');
     {pics.map((p, i) => (
       <img src={withBase(`/img/mail/${p}.jpg`)} alt="" title={c.crafts[i]} loading="lazy" decoding="async" />
     ))}
-    <b class="host-circle-more" aria-hidden="true">30+</b>
+    {/* A hand-drawn plus, then an empty circle waiting for the reader. */}
+    <svg class="host-circle-plus" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M21 5c-.8 9-1.4 19-.6 30M5 19.5c10-1.2 20-1.4 30.5-.2" />
+    </svg>
+    <b class="host-circle-you" aria-hidden="true">{c.you}</b>
   </span>
   <span class="find-solo-text">
     <span class="host-circle-kicker">{c.kicker}</span>
