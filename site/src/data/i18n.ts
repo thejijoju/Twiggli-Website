@@ -116,7 +116,7 @@ const en = {
   },
   corporate: {
     title: 'Team-building & group workshops in Berlin — corporate bookings | Twiggli',
-    description: 'Private workshops for teams, birthdays, bachelorette parties and groups of friends, run by independent Berlin makers — ceramics, printmaking, food, photography and more.',
+    description: 'Team events, Christmas parties and large company events in Berlin for 6 to 1,000 people: hands-on workshops with independent makers, from pottery and candles to cooking. One host or many, one invoice.',
     kicker: 'Corporate & group bookings', h1: 'Private workshops for teams and groups',
     lede: 'Book a private workshop on a date of your choice — for your company, a birthday, a bachelorette party or just your friends. Run by our vetted hosts at their studio, your office or a venue nearby; we handle the logistics for groups of any size.',
     cta: 'Request a group booking',
@@ -275,7 +275,7 @@ const de: UiCopy = {
   },
   corporate: {
     title: 'Teambuilding & Gruppen-Workshops in Berlin — Firmenbuchungen | Twiggli',
-    description: 'Private Workshops für Teams, Geburtstage, JGAs und Freundesgruppen, geleitet von unabhängigen Berliner Makern — Keramik, Druck, Food, Fotografie und mehr.',
+    description: 'Teamevents, Weihnachtsfeiern und große Firmenevents in Berlin für 6 bis 1.000 Personen: Mitmach-Workshops mit Berliner Makern, von Töpfern und Kerzen bis Kochen. Ein Host oder viele, eine Rechnung.',
     kicker: 'Firmen- & Gruppenbuchungen', h1: 'Private Workshops für Teams und Gruppen',
     lede: 'Buche einen privaten Workshop an einem Termin deiner Wahl — für die Firma, einen Geburtstag, einen JGA oder einfach deine Freundesgruppe. Geleitet von unseren geprüften Gastgebern im Studio, in eurem Büro oder an einem Ort in deiner Nähe; wir kümmern uns um die Logistik, egal wie groß die Gruppe ist.',
     cta: 'Gruppenbuchung anfragen',
@@ -432,7 +432,7 @@ const fr: UiCopy = {
   },
   corporate: {
     title: 'Team-building & ateliers de groupe à Berlin — réservations entreprises | Twiggli',
-    description: 'Ateliers privés pour équipes, anniversaires, enterrements de vie de jeune fille et groupes d’amis, animés par des artisans berlinois indépendants — céramique, gravure, cuisine, photo et plus.',
+    description: 'Événements d’équipe, fêtes de Noël et grands événements d’entreprise à Berlin pour 6 à 1 000 personnes : ateliers pratiques avec des artisans berlinois, de la poterie aux bougies et à la cuisine. Une facture.',
     kicker: 'Entreprises & groupes', h1: 'Ateliers privés pour équipes et groupes',
     lede: 'Réservez un atelier privé à la date de votre choix — pour votre entreprise, un anniversaire, un EVJF ou simplement entre amis. Animé par nos hôtes vérifiés dans leur atelier, vos bureaux ou un lieu proche ; nous gérons la logistique, quelle que soit la taille du groupe.',
     cta: 'Demander une réservation de groupe',
@@ -589,7 +589,7 @@ const es: UiCopy = {
   },
   corporate: {
     title: 'Team building y talleres para grupos en Berlín — reservas para empresas | Twiggli',
-    description: 'Talleres privados para equipos, cumpleaños, despedidas de soltera y grupos de amigos, con artesanos berlineses independientes — cerámica, grabado, cocina, fotografía y más.',
+    description: 'Eventos de equipo, cenas de Navidad y grandes eventos de empresa en Berlín para 6 a 1.000 personas: talleres prácticos con artesanos berlineses, de cerámica y velas a cocina. Una sola factura.',
     kicker: 'Empresas y grupos', h1: 'Talleres privados para equipos y grupos',
     lede: 'Reserva un taller privado en la fecha que elijas — para tu empresa, un cumpleaños, una despedida o simplemente con amigos. Con nuestros anfitriones verificados en su estudio, tu oficina o un espacio cercano; nos ocupamos de la logística para grupos de cualquier tamaño.',
     cta: 'Solicitar reserva de grupo',
@@ -746,7 +746,7 @@ const it: UiCopy = {
   },
   corporate: {
     title: 'Team building e workshop di gruppo a Berlino — prenotazioni aziendali | Twiggli',
-    description: 'Workshop privati per team, compleanni, addii al nubilato e gruppi di amici, con artigiani berlinesi indipendenti — ceramica, stampa, cucina, fotografia e altro.',
+    description: 'Eventi di team, feste di Natale e grandi eventi aziendali a Berlino per 6–1.000 persone: workshop pratici con artigiani berlinesi, dalla ceramica alle candele alla cucina. Una sola fattura.',
     kicker: 'Aziende e gruppi', h1: 'Workshop privati per team e gruppi',
     lede: 'Prenota un workshop privato nella data che preferisci — per la tua azienda, un compleanno, un addio al nubilato o semplicemente con gli amici. Con i nostri host verificati nel loro studio, nel vostro ufficio o in una sede vicina; ci occupiamo noi della logistica, per gruppi di ogni dimensione.',
     cta: 'Richiedi una prenotazione di gruppo',
@@ -903,7 +903,7 @@ const nl: UiCopy = {
   },
   corporate: {
     title: 'Teambuilding & groepsworkshops in Berlijn — zakelijke boekingen | Twiggli',
-    description: 'Privéworkshops voor teams, verjaardagen, vrijgezellenfeesten en vriendengroepen, gegeven door onafhankelijke Berlijnse makers — keramiek, drukwerk, eten, fotografie en meer.',
+    description: 'Teamevents, kerstborrels en grote bedrijfsevents in Berlijn voor 6 tot 1.000 mensen: praktische workshops met Berlijnse makers, van keramiek en kaarsen tot koken. Eén factuur.',
     kicker: 'Zakelijk & groepen', h1: 'Privéworkshops voor teams en groepen',
     lede: 'Boek een privéworkshop op een datum naar keuze — voor je bedrijf, een verjaardag, een vrijgezellenfeest of gewoon met vrienden. Gegeven door onze gescreende hosts in hun studio, op jullie kantoor of op een locatie in de buurt; wij regelen de logistiek, voor groepen van elke grootte.',
     cta: 'Groepsboeking aanvragen',
@@ -1067,7 +1067,7 @@ const pl: UiCopy = {
   },
   corporate: {
     title: 'Teambuilding i warsztaty grupowe w Berlinie — rezerwacje firmowe | Twiggli',
-    description: 'Prywatne warsztaty dla zespołów, na urodziny, wieczory panieńskie i dla grup znajomych, prowadzone przez niezależnych berlińskich twórców — ceramika, druk, jedzenie, fotografia i więcej.',
+    description: 'Eventy zespołowe, wigilie firmowe i duże eventy firmowe w Berlinie dla 6–1000 osób: praktyczne warsztaty z berlińskimi twórcami, od ceramiki i świec po gotowanie. Jedna faktura.',
     kicker: 'Firmy i grupy', h1: 'Prywatne warsztaty dla zespołów i grup',
     lede: 'Zarezerwuj prywatne warsztaty w wybranym terminie — dla firmy, na urodziny, wieczór panieński albo po prostu ze znajomymi. Prowadzone przez naszych sprawdzonych prowadzących w ich pracowni, w Waszym biurze lub w pobliskim miejscu; zajmiemy się logistyką dla grup każdej wielkości.',
     cta: 'Zapytaj o rezerwację grupową',
@@ -1224,7 +1224,7 @@ const tr: UiCopy = {
   },
   corporate: {
     title: 'Berlin’de takım oluşturma & grup atölyeleri — kurumsal rezervasyon | Twiggli',
-    description: 'Ekipler, doğum günleri, bekârlığa veda partileri ve arkadaş grupları için özel atölyeler; bağımsız Berlinli ustalarla — seramik, baskı, yemek, fotoğraf ve daha fazlası.',
+    description: 'Berlin’de 6 ile 1.000 kişi arası ekip etkinlikleri, yılbaşı partileri ve büyük şirket etkinlikleri: Berlinli ustalarla uygulamalı atölyeler, seramikten muma ve yemeğe. Tek fatura.',
     kicker: 'Kurumsal & grup', h1: 'Ekipler ve gruplar için özel atölyeler',
     lede: 'Seçtiğiniz tarihte özel bir atölye ayırtın — şirketiniz, bir doğum günü, bir bekârlığa veda ya da sadece arkadaşlarınız için. Onaylı eğitmenlerimizle kendi stüdyolarında, ofisinizde ya da yakın bir mekânda; her büyüklükteki grup için lojistiği biz üstleniriz.',
     cta: 'Grup rezervasyonu talep et',

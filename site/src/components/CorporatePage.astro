@@ -70,6 +70,10 @@ const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${
         <ul class="big-points">
           {big.points.map((point) => <li>{point}</li>)}
         </ul>
+        <p class="big-occasions-label">{big.occasionsLabel}</p>
+        <ul class="big-occasions">
+          {big.occasions.map((o) => <li>{o}</li>)}
+        </ul>
         <a class="btn btn-primary" href={href(lang, '/contact/')} data-book="event" data-book-title={big.title} data-book-hosts={pickable}>{big.cta}</a>
       </div>
       <div class="big-special">
@@ -78,6 +82,22 @@ const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${
         <a class="btn btn-secondary" href={href(lang, '/contact/')} data-book="special" data-book-title={big.specialKicker} data-book-hosts={pickable}>{big.specialCta}</a>
       </div>
     </section>
+
+    {/* The two questions a company planning something big asks first,
+        answered in the open and handed to search engines as an FAQ. */}
+    <section class="big-faq">
+      {big.faq.map((item) => (
+        <details>
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </section>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: big.faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
+    })} />
 
     <hr class="rule" />
 

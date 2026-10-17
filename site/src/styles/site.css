@@ -5921,3 +5921,10 @@ h1, h2, h3, h4,
   transition: opacity 1.2s ease;
 }
 .photo-fade img.is-on { opacity: 1; }
+.big-occasions-label { margin: 0 0 8px; font-weight: 700; font-size: 15px; }
+.big-occasions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; }
+.big-occasions li { padding: 6px 14px; border-radius: 999px; font-size: 14px; background: color-mix(in srgb, var(--color-accent) 9%, var(--color-bg)); color: var(--color-accent-800); }
+.big-faq { margin: -16px 0 48px; display: grid; gap: 10px; max-width: 820px; }
+.big-faq details { border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); border-radius: 14px; padding: 14px 18px; }
+.big-faq summary { cursor: pointer; font-weight: 700; }
+.big-faq p { margin: 10px 0 0; color: var(--color-text-muted); }
