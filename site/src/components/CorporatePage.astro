@@ -51,7 +51,7 @@ const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${
       {/* Before the grid, so nobody scrolls fifty hosts to learn it: one
           host is not the limit, and neither is the list. */}
       <div class="big-strip">
-        <p><strong>{big.title}.</strong> {big.points[0]}</p>
+        <p><strong>{big.title}.</strong> {big.points[1]}</p>
         <div class="big-strip-actions">
           <a class="btn btn-primary" href={href(lang, '/contact/')} data-book="event" data-book-title={big.title} data-book-hosts={pickable}>{big.cta}</a>
           <a class="btn btn-secondary" href={href(lang, '/contact/')} data-book="special" data-book-title={big.specialKicker} data-book-hosts={pickable}>{big.specialCta}</a>

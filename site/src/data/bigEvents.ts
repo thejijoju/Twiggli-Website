@@ -34,10 +34,10 @@ export type BigEventsCopy = {
 export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   en: {
     kicker: 'Big events',
-    title: 'Several hosts, one event',
-    copy: 'Planning for 40, 80 or 100+ people? We bring several of our hosts together for one evening: candles at one table, terrariums at the next, screen printing in the corner. Your guests choose or rotate, and you have one contact, one quote and one invoice.',
+    title: 'Up to 1,000 people: many hosts, one event',
+    copy: 'Planning for 100, 500 or even 1,000 people? We bring together as many of our hosts as you need, from very different crafts: candles at one table, terrariums at the next, pottery, screen printing, cooking and more around the room. Your guests choose or rotate between stations, and you have one contact, one quote and one invoice.',
     points: [
-      'From 30 to 150+ people, in a studio, at your office or at an event venue',
+      'From 30 up to 1,000 people, at your venue, your office or across several studios',
       'Pick any hosts from this page, or let us put the line-up together',
       'One quote within 24 hours, one invoice for everything',
     ],
@@ -58,10 +58,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   de: {
     kicker: 'Große Events',
-    title: 'Mehrere Hosts, ein Event',
-    copy: 'Ihr plant für 40, 80 oder über 100 Personen? Wir bringen mehrere unserer Hosts an einem Abend zusammen: Kerzen an einem Tisch, Terrarien am nächsten, Siebdruck in der Ecke. Eure Gäste wählen oder wechseln durch, und ihr habt eine Ansprechperson, ein Angebot und eine Rechnung.',
+    title: 'Bis zu 1.000 Personen: viele Hosts, ein Event',
+    copy: 'Ihr plant für 100, 500 oder sogar 1.000 Personen? Wir bringen so viele unserer Hosts zusammen, wie ihr braucht, aus ganz unterschiedlichen Handwerken: Kerzen an einem Tisch, Terrarien am nächsten, dazu Töpfern, Siebdruck, Kochen und mehr im ganzen Raum. Eure Gäste wählen oder wechseln zwischen den Stationen, und ihr habt eine Ansprechperson, ein Angebot und eine Rechnung.',
     points: [
-      'Von 30 bis über 150 Personen, im Studio, bei euch im Büro oder in einer Eventlocation',
+      'Von 30 bis zu 1.000 Personen, in eurer Location, im Büro oder verteilt auf mehrere Studios',
       'Wählt beliebige Hosts von dieser Seite, oder wir stellen das Programm zusammen',
       'Ein Angebot innerhalb von 24 Stunden, eine Rechnung für alles',
     ],
@@ -82,10 +82,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   fr: {
     kicker: 'Grands événements',
-    title: 'Plusieurs hôtes, un seul événement',
-    copy: 'Vous prévoyez 40, 80 ou plus de 100 personnes ? Nous réunissons plusieurs de nos hôtes pour une même soirée : des bougies à une table, des terrariums à la suivante, de la sérigraphie dans un coin. Vos invités choisissent ou tournent, et vous n’avez qu’un contact, un devis et une facture.',
+    title: 'Jusqu’à 1 000 personnes : plusieurs hôtes, un seul événement',
+    copy: 'Vous prévoyez 100, 500 ou même 1 000 personnes ? Nous réunissons autant de nos hôtes qu’il le faut, dans des artisanats très différents : des bougies à une table, des terrariums à la suivante, de la poterie, de la sérigraphie, de la cuisine et plus encore dans toute la salle. Vos invités choisissent ou passent d’un atelier à l’autre, et vous n’avez qu’un contact, un devis et une facture.',
     points: [
-      'De 30 à plus de 150 personnes, en atelier, dans vos bureaux ou dans un lieu événementiel',
+      'De 30 à 1 000 personnes, dans votre lieu, vos bureaux ou réparties entre plusieurs ateliers',
       'Choisissez les hôtes de cette page, ou laissez-nous composer le programme',
       'Un devis sous 24 heures, une seule facture pour tout',
     ],
@@ -106,10 +106,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   es: {
     kicker: 'Grandes eventos',
-    title: 'Varios anfitriones, un evento',
-    copy: '¿Planeáis algo para 40, 80 o más de 100 personas? Reunimos a varios de nuestros anfitriones en una misma velada: velas en una mesa, terrarios en la siguiente, serigrafía en un rincón. Los invitados eligen o van rotando, y vosotros tenéis un solo contacto, un presupuesto y una factura.',
+    title: 'Hasta 1.000 personas: muchos anfitriones, un evento',
+    copy: '¿Planeáis algo para 100, 500 o incluso 1.000 personas? Reunimos a tantos anfitriones como necesitéis, de oficios muy distintos: velas en una mesa, terrarios en la siguiente, cerámica, serigrafía, cocina y más por toda la sala. Los invitados eligen o van rotando entre estaciones, y vosotros tenéis un solo contacto, un presupuesto y una factura.',
     points: [
-      'De 30 a más de 150 personas, en un estudio, en vuestra oficina o en un espacio de eventos',
+      'De 30 hasta 1.000 personas, en vuestro espacio, vuestra oficina o repartidos en varios estudios',
       'Elegid a cualquier anfitrión de esta página, o dejad que armemos el programa',
       'Un presupuesto en 24 horas, una sola factura para todo',
     ],
@@ -130,10 +130,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   it: {
     kicker: 'Grandi eventi',
-    title: 'Più host, un solo evento',
-    copy: 'Organizzate per 40, 80 o più di 100 persone? Riuniamo diversi nostri host in un’unica serata: candele a un tavolo, terrari a quello accanto, serigrafia in un angolo. Gli ospiti scelgono o ruotano, e voi avete un solo contatto, un preventivo e una fattura.',
+    title: 'Fino a 1.000 persone: tanti host, un solo evento',
+    copy: 'Organizzate per 100, 500 o addirittura 1.000 persone? Riuniamo tutti gli host che servono, da mestieri molto diversi: candele a un tavolo, terrari a quello accanto, ceramica, serigrafia, cucina e altro in tutta la sala. Gli ospiti scelgono o ruotano tra le postazioni, e voi avete un solo contatto, un preventivo e una fattura.',
     points: [
-      'Da 30 a oltre 150 persone, in uno studio, nel vostro ufficio o in una location per eventi',
+      'Da 30 fino a 1.000 persone, nella vostra location, in ufficio o in più studi',
       'Scegliete qualsiasi host di questa pagina, oppure il programma lo componiamo noi',
       'Un preventivo entro 24 ore, una sola fattura per tutto',
     ],
@@ -154,10 +154,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   nl: {
     kicker: 'Grote events',
-    title: 'Meerdere hosts, één event',
-    copy: 'Plannen jullie iets voor 40, 80 of meer dan 100 mensen? Wij brengen meerdere hosts samen op één avond: kaarsen aan de ene tafel, terrariums aan de volgende, zeefdruk in de hoek. Jullie gasten kiezen of rouleren, en jullie hebben één contactpersoon, één offerte en één factuur.',
+    title: 'Tot 1.000 mensen: veel hosts, één event',
+    copy: 'Plannen jullie iets voor 100, 500 of zelfs 1.000 mensen? Wij brengen zoveel hosts samen als nodig, uit heel verschillende ambachten: kaarsen aan de ene tafel, terrariums aan de volgende, keramiek, zeefdruk, koken en meer door de hele ruimte. Jullie gasten kiezen of rouleren tussen de stations, en jullie hebben één contactpersoon, één offerte en één factuur.',
     points: [
-      'Van 30 tot meer dan 150 mensen, in een studio, op kantoor of op een eventlocatie',
+      'Van 30 tot 1.000 mensen, op jullie locatie, op kantoor of verspreid over meerdere studio’s',
       'Kies hosts van deze pagina, of laat ons het programma samenstellen',
       'Eén offerte binnen 24 uur, één factuur voor alles',
     ],
@@ -178,10 +178,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   pl: {
     kicker: 'Duże wydarzenia',
-    title: 'Kilku gospodarzy, jedno wydarzenie',
-    copy: 'Planujecie coś dla 40, 80 lub ponad 100 osób? Zbieramy kilku naszych gospodarzy na jeden wieczór: świece przy jednym stole, terraria przy następnym, sitodruk w kącie. Goście wybierają lub się wymieniają, a wy macie jeden kontakt, jedną ofertę i jedną fakturę.',
+    title: 'Do 1000 osób: wielu gospodarzy, jedno wydarzenie',
+    copy: 'Planujecie coś dla 100, 500 czy nawet 1000 osób? Zbieramy tylu gospodarzy, ilu potrzeba, z bardzo różnych rzemiosł: świece przy jednym stole, terraria przy następnym, ceramika, sitodruk, gotowanie i więcej w całej sali. Goście wybierają lub krążą między stanowiskami, a wy macie jeden kontakt, jedną ofertę i jedną fakturę.',
     points: [
-      'Od 30 do ponad 150 osób, w pracowni, w waszym biurze lub w miejscu eventowym',
+      'Od 30 do 1000 osób, w waszym miejscu, biurze lub w kilku pracowniach',
       'Wybierzcie dowolnych gospodarzy z tej strony albo zostawcie program nam',
       'Jedna oferta w ciągu 24 godzin, jedna faktura za wszystko',
     ],
@@ -202,10 +202,10 @@ export const bigEventsCopy: Record<Lang, BigEventsCopy> = {
   },
   tr: {
     kicker: 'Büyük etkinlikler',
-    title: 'Birkaç ev sahibi, tek etkinlik',
-    copy: '40, 80 ya da 100’den fazla kişi için mi plan yapıyorsunuz? Birkaç ev sahibimizi aynı akşamda bir araya getiriyoruz: bir masada mum, yanındakinde teraryum, köşede serigrafi. Konuklarınız seçer ya da sırayla dolaşır; sizin ise tek muhatabınız, tek teklifiniz ve tek faturanız olur.',
+    title: '1.000 kişiye kadar: çok sayıda ev sahibi, tek etkinlik',
+    copy: '100, 500 hatta 1.000 kişi için mi plan yapıyorsunuz? Çok farklı zanaatlardan, ihtiyacınız kadar ev sahibini bir araya getiriyoruz: bir masada mum, yanındakinde teraryum, salonun dört bir yanında seramik, serigrafi, yemek ve daha fazlası. Konuklarınız istasyonlar arasında seçer ya da dolaşır; sizin ise tek muhatabınız, tek teklifiniz ve tek faturanız olur.',
     points: [
-      '30’dan 150’yi aşkın kişiye, atölyede, ofisinizde ya da bir etkinlik mekânında',
+      '30’dan 1.000 kişiye kadar, mekânınızda, ofisinizde ya da birkaç atölyeye yayılarak',
       'Bu sayfadan istediğiniz ev sahiplerini seçin ya da programı biz kuralım',
       '24 saat içinde tek teklif, her şey için tek fatura',
     ],
