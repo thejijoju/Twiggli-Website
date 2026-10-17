@@ -25,16 +25,20 @@ jobs:
     timeout-minutes: 90
     steps:
       # "scrape:konfetti,subcultours,makery" as the url lists the Berlin hosts
-      # on those platforms instead (scripts/scrape-hosts.mjs).
-      - if: startsWith(inputs.url, 'scrape:')
+      # on those platforms instead (scripts/scrape-hosts.mjs); "emails:" looks
+      # up the published email of each host in scripts/data/hosts-to-find.json.
+      - if: startsWith(inputs.url, 'scrape:') || startsWith(inputs.url, 'emails:')
         uses: actions/checkout@v4
       - name: List Berlin hosts on other platforms
         if: startsWith(inputs.url, 'scrape:')
         run: node scripts/scrape-hosts.mjs
         env:
           SCRAPE_URL: ${{ inputs.url }}
+      - name: Find hosts' published emails
+        if: startsWith(inputs.url, 'emails:')
+        run: node scripts/find-emails.mjs
       - name: Fetch and describe
-        if: ${{ !startsWith(inputs.url, 'scrape:') }}
+        if: ${{ !startsWith(inputs.url, 'scrape:') && !startsWith(inputs.url, 'emails:') }}
         run: |
           node - <<'EOF'
           // One run can describe several pages — reading a host who splits
