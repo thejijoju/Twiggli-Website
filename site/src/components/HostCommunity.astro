@@ -1,5 +1,6 @@
 ---
-/** The host community card: a row of small round photos, one per craft,
+/** The host community card: a cluster of small round photos, one per craft,
+ *  overlapping like the faces on a "who's in" sign,
  *  beside a line on what hosts get from each other. On the home page it
  *  leads to the host page; on the host page, to the form above it. */
 import { hostCommunityCopy } from '../data/hostCommunity.ts';
@@ -19,12 +20,9 @@ const link = to === 'apply' ? '#apply' : href(lang, '/host/');
 <a class="find-solo host-circle" href={link}>
   <span class="host-circle-dots">
     {pics.map((p, i) => (
-      <span class="host-circle-dot">
-        <img src={withBase(`/img/mail/${p}.jpg`)} alt="" loading="lazy" decoding="async" />
-        <small>{c.crafts[i]}</small>
-      </span>
+      <img src={withBase(`/img/mail/${p}.jpg`)} alt="" title={c.crafts[i]} loading="lazy" decoding="async" />
     ))}
-    <span class="host-circle-dot host-circle-more" aria-hidden="true"><b>30+</b></span>
+    <b class="host-circle-more" aria-hidden="true">30+</b>
   </span>
   <span class="find-solo-text">
     <span class="host-circle-kicker">{c.kicker}</span>
