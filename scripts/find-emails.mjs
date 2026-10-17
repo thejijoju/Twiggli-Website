@@ -47,6 +47,25 @@ async function search(q) {
   return [...new Set(urls)].filter((u) => !PLATFORMS.test(u));
 }
 
+// Instagram handles linked from a page, minus the platform's own pages.
+const igIn = (html) => [...new Set([...html.matchAll(/instagram\.com\/([A-Za-z0-9._]{2,30})/g)].map((m) => m[1].toLowerCase()))]
+  .filter((u) => !/^(p|reel|reels|explore|accounts|stories|tv|gokonfetti|konfetti|subcultours|themakery\.de|themakery_de)$/.test(u));
+
+// "insta:" as the url: only find each host's Instagram, from their site or a search.
+if (process.env.FIND_MODE === 'insta') {
+  for (const h of hosts) {
+    let handles = h.site ? igIn(await get(new URL(h.site).origin)) : [];
+    if (!handles.length) {
+      const html = await get(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(`${h.name} Berlin ${h.hint ?? ''} instagram`.trim())}`);
+      const urls = [...html.matchAll(/uddg=([^&"]+)/g)].map((m) => { try { return decodeURIComponent(m[1]); } catch { return ''; } });
+      handles = igIn(urls.join(' '));
+      await sleep(1500);
+    }
+    console.log(['INSTA', h.key ?? h.name, handles.slice(0, 3).join(' ')].join('\t'));
+  }
+  process.exit(0);
+}
+
 for (const h of hosts) {
   // A site the research already found is used as is; otherwise search for one.
   let site = h.site ? new URL(h.site).origin : '';
