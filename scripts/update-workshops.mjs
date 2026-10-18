@@ -699,13 +699,6 @@ const SOURCES = [
     url: 'https://www.eventbrite.de/o/sinamaker-99895128061',
     district: 'Friedrichshain', venue: 'Ohma Studio', detail: true },
 
-  // Cèlia teaches in bursts — 33 events run, none on the books today — so a
-  // clean zero is her resting state and dates flow in the day she posts
-  // them.
-  { slug: 'celia', name: 'Cèlia Hoste (La HoCo) — Eventbrite box office', mode: 'eventbrite',
-    url: 'https://www.eventbrite.de/o/la-hoco-115794852461',
-    district: 'Friedrichshain', venue: 'Ohma Studio' },
-
   // studio32 (Bonvivant's cooking studio) sells every public class on its
   // own Eventbrite organiser page — cooking and baking at Goltzstraße,
   // cocktails at their bar academy on Großbeerenstraße, and the loft on
