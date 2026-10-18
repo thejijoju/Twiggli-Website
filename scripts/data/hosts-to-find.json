@@ -1,932 +1,202 @@
 [
 {
-"name": "Waldsamkeit",
-"key": "Waldsamkeit",
-"site": "https://waldsamkeit.de",
-"hint": ""
-},
-{
-"name": "bauNOVArt",
-"key": "bauNOVArt",
-"site": "",
-"hint": ""
-},
-{
-"name": "Hacking Gutenberg",
-"key": "Hacking Gutenberg",
-"site": "https://p98a.berlin",
-"hint": ""
-},
-{
-"name": "Koch- und Grillakademie Berlin GmbH",
-"key": "Koch- und Grillakademie Berlin GmbH",
-"site": "",
-"hint": ""
-},
-{
-"name": "Roots Radicals",
-"key": "Roots Radicals",
-"site": "",
-"hint": ""
-},
-{
-"name": "Salom Beaury",
-"key": "Salom Beaury",
-"site": "",
-"hint": ""
-},
-{
-"name": "Hubus Berlin",
-"key": "Hubus Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kitty Party",
-"key": "Kitty Party",
-"site": "",
-"hint": ""
-},
-{
-"name": "Maria Henn",
-"key": "Maria Henn",
-"site": "",
-"hint": ""
-},
-{
-"name": "Marija Brasnic",
-"key": "Marija Brasnic",
-"site": "",
-"hint": ""
-},
-{
-"name": "Lapàporter",
-"key": "Lapàporter",
-"site": "https://www.lapaporter.com",
-"hint": ""
-},
-{
 "name": "Bruno Otranto Hernandez",
 "key": "Bruno Otranto Hernandez",
-"site": "",
-"hint": ""
-},
-{
-"name": "b.alive!",
-"key": "b.alive!",
-"site": "",
-"hint": ""
-},
-{
-"name": "Tadeusz Fopp",
-"key": "Tadeusz Fopp",
-"site": "",
-"hint": ""
-},
-{
-"name": "Thore Hildebrandt",
-"key": "Thore Hildebrandt",
-"site": "",
-"hint": ""
-},
-{
-"name": "Elyas Hannoun | Bab Kisan",
-"key": "Elyas Hannoun | Bab Kisan",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kim Gerlach",
-"key": "Kim Gerlach",
-"site": "",
-"hint": ""
-},
-{
-"name": "adele - Eventfloristik. Dekostore.",
-"key": "adele - Eventfloristik. Dekostore.",
-"site": "",
-"hint": ""
-},
-{
-"name": "Valeria Tyumeneva",
-"key": "Valeria Tyumeneva",
-"site": "",
-"hint": ""
-},
-{
-"name": "Purelettering",
-"key": "Purelettering",
-"site": "https://www.purelettering.de",
-"hint": ""
-},
-{
-"name": "Theresa Michel",
-"key": "Theresa Michel",
-"site": "",
-"hint": ""
-},
-{
-"name": "Thies Köpke",
-"key": "Thies Köpke",
-"site": "",
-"hint": ""
-},
-{
-"name": "Frische Ideen für Ihren Garten",
-"key": "Frische Ideen für Ihren Garten",
-"site": "",
-"hint": ""
-},
-{
-"name": "Pradipta Ray",
-"key": "Pradipta Ray",
-"site": "",
-"hint": ""
-},
-{
-"name": "Caravan - Berlin",
-"key": "Caravan - Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "P3 Café Event",
-"key": "P3 Café Event",
-"site": "",
-"hint": ""
-},
-{
-"name": "Foto Safari",
-"key": "Foto Safari",
-"site": "",
-"hint": ""
-},
-{
-"name": "Gamze Zorlu Art",
-"key": "Gamze Zorlu Art",
-"site": "",
-"hint": ""
-},
-{
-"name": "Ambika Sharma",
-"key": "Ambika Sharma",
-"site": "",
-"hint": ""
-},
-{
-"name": "Sekundär-Schick",
-"key": "Sekundär-Schick",
-"site": "",
-"hint": ""
-},
-{
-"name": "Schankhalle Pfefferberg",
-"key": "Schankhalle Pfefferberg",
-"site": "https://www.schankhalle-pfefferberg.de",
-"hint": ""
-},
-{
-"name": "ito",
-"key": "ito",
-"site": "",
-"hint": ""
-},
-{
-"name": "Natascha Crybaby Ink",
-"key": "Natascha Crybaby Ink",
-"site": "",
-"hint": ""
-},
-{
-"name": "Manuela Mathäs",
-"key": "Manuela Mathäs",
-"site": "",
-"hint": ""
-},
-{
-"name": "Belmonte Naturkosmetik",
-"key": "Belmonte Naturkosmetik",
-"site": "",
-"hint": ""
-},
-{
-"name": "B&B Musikschule Berlin GbR",
-"key": "B&B Musikschule Berlin GbR",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kochbar Berlin",
-"key": "Kochbar Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Sektlust",
-"key": "Sektlust",
-"site": "",
-"hint": ""
-},
-{
-"name": "Mareen-Nicole Krawielitzki",
-"key": "Mareen-Nicole Krawielitzki",
-"site": "",
-"hint": ""
-},
-{
-"name": "Lucy Schmidt Art",
-"key": "Lucy Schmidt Art",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kristallschmiede",
-"key": "Kristallschmiede",
-"site": "",
-"hint": ""
-},
-{
-"name": "Renata Salas Rosas",
-"key": "Renata Salas Rosas",
-"site": "",
-"hint": ""
-},
-{
-"name": "Spreepflänzchen",
-"key": "Spreepflänzchen",
-"site": "",
-"hint": ""
-},
-{
-"name": "David Vendryes",
-"key": "David Vendryes",
-"site": "https://litmind.uk/vendryes",
-"hint": ""
-},
-{
-"name": "SLÄP",
-"key": "SLÄP",
-"site": "",
-"hint": ""
-},
-{
-"name": "TeachArt by TopTeach",
-"key": "TeachArt by TopTeach",
-"site": "",
-"hint": ""
-},
-{
-"name": "dittrich art",
-"key": "dittrich art",
-"site": "https://www.dittrich-art.de",
-"hint": ""
-},
-{
-"name": "Anna Nazier-Bochenska",
-"key": "Anna Nazier-Bochenska",
-"site": "",
-"hint": ""
-},
-{
-"name": "FriedeNOW",
-"key": "FriedeNOW",
-"site": "",
-"hint": ""
-},
-{
-"name": "Atelier Orth",
-"key": "Atelier Orth",
-"site": "",
-"hint": ""
-},
-{
-"name": "Dima Ustinov",
-"key": "Dima Ustinov",
-"site": "",
-"hint": ""
-},
-{
-"name": "Baum & Bogen",
-"key": "Baum & Bogen",
-"site": "https://www.baum-und-bogen.de/",
-"hint": ""
-},
-{
-"name": "eßkultur",
-"key": "eßkultur",
-"site": "",
-"hint": ""
-},
-{
-"name": "Voice! Vocal Studio",
-"key": "Voice! Vocal Studio",
-"site": "",
-"hint": ""
-},
-{
-"name": "HOT JAM 38",
-"key": "HOT JAM 38",
-"site": "",
-"hint": ""
-},
-{
-"name": "opening perspectives",
-"key": "opening perspectives",
-"site": "",
-"hint": ""
-},
-{
-"name": "Federico Carrasco",
-"key": "Federico Carrasco",
-"site": "",
-"hint": ""
-},
-{
-"name": "Wildesgut",
-"key": "Wildesgut",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kreativ Studio Renate Murawski",
-"key": "Kreativ Studio Renate Murawski",
-"site": "",
-"hint": ""
-},
-{
-"name": "2run_art",
-"key": "2run_art",
-"site": "",
-"hint": ""
-},
-{
-"name": "Space_junk_berlin",
-"key": "Space_junk_berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kolla",
-"key": "Kolla",
-"site": "",
-"hint": ""
-},
-{
-"name": "Jiika Styles",
-"key": "Jiika Styles",
-"site": "",
-"hint": ""
-},
-{
-"name": "Holly Birtwell",
-"key": "Holly Birtwell",
-"site": "",
-"hint": ""
-},
-{
-"name": "Ivy Teresa",
-"key": "Ivy Teresa",
-"site": "",
-"hint": ""
-},
-{
-"name": "Annas Kochkurse",
-"key": "Annas Kochkurse",
-"site": "",
-"hint": ""
-},
-{
-"name": "Sander Heremans",
-"key": "Sander Heremans",
-"site": "",
-"hint": ""
-},
-{
-"name": "ConsciousCrew",
-"key": "ConsciousCrew",
-"site": "",
-"hint": ""
-},
-{
-"name": "Clayfaqeh woodesign",
-"key": "Clayfaqeh woodesign",
-"site": "",
-"hint": ""
-},
-{
-"name": "Artfusionevents",
-"key": "Artfusionevents",
-"site": "",
-"hint": ""
-},
-{
-"name": "Lillian Morrissey",
-"key": "Lillian Morrissey",
-"site": "",
-"hint": ""
-},
-{
-"name": "Tape Art Toni",
-"key": "Tape Art Toni",
-"site": "",
-"hint": ""
-},
-{
-"name": "Maria Moch",
-"key": "Maria Moch",
-"site": "",
-"hint": ""
-},
-{
-"name": "Fulya Muftuoglu",
-"key": "Fulya Muftuoglu",
-"site": "",
-"hint": ""
-},
-{
-"name": "Sortengold",
-"key": "Sortengold",
-"site": "",
-"hint": ""
-},
-{
-"name": "Atelier Galerie Orange",
-"key": "Atelier Galerie Orange",
-"site": "",
-"hint": ""
-},
-{
-"name": "O'Bread Bakery",
-"key": "O'Bread Bakery",
-"site": "",
-"hint": ""
-},
-{
-"name": "Artmos4",
-"key": "Artmos4",
-"site": "",
-"hint": ""
-},
-{
-"name": "Little Miss Arty",
-"key": "Little Miss Arty",
-"site": "",
-"hint": ""
-},
-{
-"name": "Tape Art Sessions",
-"key": "Tape Art Sessions",
-"site": "",
-"hint": ""
-},
-{
-"name": "koogla Eis Berlin",
-"key": "koogla Eis Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Perlia",
-"key": "Perlia",
-"site": "",
-"hint": ""
-},
-{
-"name": "crazypaint Keramik-Café",
-"key": "crazypaint Keramik-Café",
-"site": "",
-"hint": ""
-},
-{
-"name": "edel weiss",
-"key": "edel weiss",
-"site": "",
-"hint": ""
-},
-{
-"name": "EASY MEAL",
-"key": "EASY MEAL",
-"site": "",
-"hint": ""
-},
-{
-"name": "Mama Art Lab",
-"key": "Mama Art Lab",
-"site": "",
-"hint": ""
-},
-{
-"name": "Marbella Studio",
-"key": "Marbella Studio",
-"site": "",
-"hint": ""
-},
-{
-"name": "EmbroiderMich",
-"key": "EmbroiderMich",
-"site": "",
-"hint": ""
-},
-{
-"name": "Studio-tow-7",
-"key": "Studio-tow-7",
-"site": "",
-"hint": ""
-},
-{
-"name": "FluegelMusic",
-"key": "FluegelMusic",
-"site": "",
-"hint": ""
-},
-{
-"name": "CUT KIT",
-"key": "CUT KIT",
-"site": "",
-"hint": ""
-},
-{
-"name": "amoreze",
-"key": "amoreze",
-"site": "",
-"hint": ""
-},
-{
-"name": "Tatsächlichkeiten und Seifenblasen",
-"key": "Tatsächlichkeiten und Seifenblasen",
-"site": "",
-"hint": ""
-},
-{
-"name": "Tina Mona Cohen Contemporary Art",
-"key": "Tina Mona Cohen Contemporary Art",
-"site": "https://tinamonacohen.art",
-"hint": ""
-},
-{
-"name": "Über den Tellerrand e.V.",
-"key": "Über den Tellerrand e.V.",
-"site": "https://ueberdentellerrand.org",
-"hint": ""
-},
-{
-"name": "Atelier Stefani",
-"key": "Atelier Stefani",
-"site": "",
-"hint": ""
-},
-{
-"name": "Shower Stories",
-"key": "Shower Stories",
-"site": "",
-"hint": ""
-},
-{
-"name": "pearls on skin",
-"key": "pearls on skin",
-"site": "",
-"hint": ""
-},
-{
-"name": "alina volando",
-"key": "alina volando",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kanapé Kollektiv",
-"key": "Kanapé Kollektiv",
-"site": "",
-"hint": ""
-},
-{
-"name": "BOLDred",
-"key": "BOLDred",
-"site": "",
-"hint": ""
-},
-{
-"name": "A Wool Connection",
-"key": "A Wool Connection",
-"site": "",
-"hint": ""
-},
-{
-"name": "Raum für Kunst im Maleratelier",
-"key": "Raum für Kunst im Maleratelier",
-"site": "",
-"hint": ""
-},
-{
-"name": "Studio FLOR",
-"key": "Studio FLOR",
-"site": "https://studioflor.de",
-"hint": ""
-},
-{
-"name": "MAKERS SPOT. Imagine & Do !",
-"key": "MAKERS SPOT. Imagine & Do !",
-"site": "",
-"hint": ""
-},
-{
-"name": "Twinkle Studio",
-"key": "Twinkle Studio",
-"site": "",
-"hint": ""
-},
-{
-"name": "Godshot Coffee Lab",
-"key": "Godshot Coffee Lab",
-"site": "",
-"hint": ""
-},
-{
-"name": "Color Flow",
-"key": "Color Flow",
-"site": "",
-"hint": ""
-},
-{
-"name": "Atelier Inspire",
-"key": "Atelier Inspire",
-"site": "",
-"hint": ""
-},
-{
-"name": "Schrottpresse",
-"key": "Schrottpresse",
-"site": "",
-"hint": ""
-},
-{
-"name": "Lini Floral Macrame",
-"key": "Lini Floral Macrame",
-"site": "",
-"hint": ""
-},
-{
-"name": "Caroline Daoulas",
-"key": "Caroline Daoulas",
-"site": "",
-"hint": ""
-},
-{
-"name": "MYMO",
-"key": "MYMO",
-"site": "",
-"hint": ""
-},
-{
-"name": "Color Chaos Berlin",
-"key": "Color Chaos Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Palavara Keramikstudio",
-"key": "Palavara Keramikstudio",
-"site": "",
-"hint": ""
-},
-{
-"name": "Kanoa Tea",
-"key": "Kanoa Tea",
-"site": "",
-"hint": ""
-},
-{
-"name": "Leonila Jewelry",
-"key": "Leonila Jewelry",
-"site": "",
-"hint": ""
-},
-{
-"name": "team-OMUSUBI",
-"key": "team-OMUSUBI",
-"site": "",
-"hint": ""
-},
-{
-"name": "Andy Sexton",
-"key": "Andy Sexton",
-"site": "",
-"hint": ""
-},
-{
-"name": "Blumenhaus Yasmin",
-"key": "Blumenhaus Yasmin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Glaskunstwerkstatt",
-"key": "Glaskunstwerkstatt",
-"site": "",
-"hint": ""
-},
-{
-"name": "Chopmix Berlin",
-"key": "Chopmix Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "The Spice Workshop",
-"key": "The Spice Workshop",
-"site": "https://spicebar.de",
-"hint": ""
-},
-{
-"name": "Atelier Klar & Kunter",
-"key": "Atelier Klar & Kunter",
-"site": "",
-"hint": ""
-},
-{
-"name": "Noa Heyne",
-"key": "Noa Heyne",
-"site": "https://bbk-kulturwerk.de/kioer/kuenstlerdatenbank/profil/noa-heyne",
-"hint": ""
-},
-{
-"name": "Ethiopian Home Cooking",
-"key": "Ethiopian Home Cooking",
-"site": "",
-"hint": ""
-},
-{
-"name": "Giomecca GmbH",
-"key": "Giomecca GmbH",
-"site": "",
-"hint": ""
-},
-{
-"name": "MADE BY JADE",
-"key": "MADE BY JADE",
-"site": "",
-"hint": ""
+"site": "https://beatheim.com"
 },
 {
 "name": "Shiran Berkovitz",
 "key": "Shiran Berkovitz",
-"site": "https://www.choreographyonpaper.com/",
-"hint": ""
+"site": "https://www.choreographyonpaper.com/"
 },
 {
-"name": "HABILLÉ",
-"key": "HABILLÉ",
-"site": "",
-"hint": ""
+"name": "Koch- und Grillakademie Berlin GmbH",
+"key": "Koch- und Grillakademie Berlin GmbH",
+"site": "https://kochundgrillakademie.de"
 },
 {
-"name": "Schniekeshandmade",
-"key": "Schniekeshandmade",
-"site": "",
-"hint": ""
+"name": "Kitty Party",
+"key": "Kitty Party",
+"site": "https://www.kitty-party.de"
+},
+{
+"name": "b.alive!",
+"key": "b.alive!",
+"site": "https://www.balive.org"
+},
+{
+"name": "Thies Köpke",
+"key": "Thies Köpke",
+"site": "http://www.thieskoepke.de"
+},
+{
+"name": "Sekundär-Schick",
+"key": "Sekundär-Schick",
+"site": "https://sekundaer-schick.de"
+},
+{
+"name": "Manuela Mathäs",
+"key": "Manuela Mathäs",
+"site": "https://www.manuelamathaes.de"
+},
+{
+"name": "Spreepflänzchen",
+"key": "Spreepflänzchen",
+"site": "https://www.spreepflaenzchen.de"
+},
+{
+"name": "Anna Nazier-Bochenska",
+"key": "Anna Nazier-Bochenska",
+"site": "https://hayah-art.com"
+},
+{
+"name": "Space_junk_berlin",
+"key": "Space_junk_berlin",
+"site": "https://space-junk.space"
+},
+{
+"name": "Clayfaqeh woodesign",
+"key": "Clayfaqeh woodesign",
+"site": "https://www.clayfaqeh.de"
+},
+{
+"name": "Maria Moch",
+"key": "Maria Moch",
+"site": "https://www.mariamoch.de"
+},
+{
+"name": "koogla Eis Berlin",
+"key": "koogla Eis Berlin",
+"site": "https://koogla.de"
+},
+{
+"name": "Atelier Stefani",
+"key": "Atelier Stefani",
+"site": "https://www.atelier-stefani.com"
+},
+{
+"name": "Kanapé Kollektiv",
+"key": "Kanapé Kollektiv",
+"site": "https://kollektiv.kanape.studio"
+},
+{
+"name": "Studio FLOR",
+"key": "Studio FLOR",
+"site": "https://studioflor.de"
+},
+{
+"name": "Kanoa Tea",
+"key": "Kanoa Tea",
+"site": "https://www.kanoatea.com"
+},
+{
+"name": "Melanie",
+"key": "Melanie",
+"site": "https://www.herzgemacht-friedrichshagen.de"
+},
+{
+"name": "Schankhalle Pfefferberg",
+"key": "Schankhalle Pfefferberg",
+"site": "https://www.schankhalle-pfefferberg.de"
+},
+{
+"name": "Salom Beaury",
+"key": "Salom Beaury",
+"site": "https://salombeaury.de"
+},
+{
+"name": "Marija Brasnic",
+"key": "Marija Brasnic",
+"site": "https://marijabrasnic.com"
+},
+{
+"name": "Thore Hildebrandt",
+"key": "Thore Hildebrandt",
+"site": "https://thore-hildebrandt.de"
+},
+{
+"name": "Pradipta Ray",
+"key": "Pradipta Ray",
+"site": "https://www.pradipta-ray.com"
+},
+{
+"name": "Gamze Zorlu Art",
+"key": "Gamze Zorlu Art",
+"site": "https://www.gamzezorluart.com"
+},
+{
+"name": "ito",
+"key": "ito",
+"site": "https://itoitoitoitoito.com"
+},
+{
+"name": "B&B Musikschule Berlin GbR",
+"key": "B&B Musikschule Berlin GbR",
+"site": "https://www.bb-musikschule.de"
+},
+{
+"name": "Kristallschmiede",
+"key": "Kristallschmiede",
+"site": "https://kristallschmiede.com"
+},
+{
+"name": "SLÄP",
+"key": "SLÄP",
+"site": "https://www.slaep.de"
+},
+{
+"name": "Kreativ Studio Renate Murawski",
+"key": "Kreativ Studio Renate Murawski",
+"site": "https://ikebana-kunst.de"
+},
+{
+"name": "Sander Heremans",
+"key": "Sander Heremans",
+"site": "https://www.sanderheremans.com"
+},
+{
+"name": "Lillian Morrissey",
+"key": "Lillian Morrissey",
+"site": "https://lillian-morrissey.de"
+},
+{
+"name": "Sortengold",
+"key": "Sortengold",
+"site": "https://www.sortengold.de"
+},
+{
+"name": "Little Miss Arty",
+"key": "Little Miss Arty",
+"site": "https://littlemissarty.de"
+},
+{
+"name": "edel weiss",
+"key": "edel weiss",
+"site": "https://www.edelweissdesigns.de"
+},
+{
+"name": "EmbroiderMich",
+"key": "EmbroiderMich",
+"site": "https://embroidermich.company.site"
+},
+{
+"name": "Twinkle Studio",
+"key": "Twinkle Studio",
+"site": "https://twinklestudio.de"
+},
+{
+"name": "Color Chaos Berlin",
+"key": "Color Chaos Berlin",
+"site": "https://colorchaos.de"
+},
+{
+"name": "MADE BY JADE",
+"key": "MADE BY JADE",
+"site": "https://www.madebyjade.de"
 },
 {
 "name": "dohnadesign Berlin",
 "key": "dohnadesign Berlin",
-"site": "",
-"hint": ""
-},
-{
-"name": "Katja Street art &",
-"key": "Katja",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "René Bouldering for beginners",
-"key": "René",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Gaja Floral workshop; rug",
-"key": "Gaja (and team)",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Kat Psychedelic painting; team",
-"key": "Kat",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Nyra Neon art party;",
-"key": "Nyra",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Jens Pizza making (team",
-"key": "Jens",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Stella Muay Thai team",
-"key": "Stella",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Daniela Portrait photography; ceramic",
-"key": "Daniela",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Cati Self-portrait painting; hat",
-"key": "Cati",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Lilah Hip-hop dance",
-"key": "Lilah",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Katharina Silver clay jewellery",
-"key": "Katharina",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Anastasia Perfumed candles",
-"key": "Anastasia",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Max Company health day,",
-"key": "Max and team",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Toni Tape art",
-"key": "Toni",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Pepe Vocal production",
-"key": "Pepe",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Maura Songwriting, singing technique",
-"key": "Maura",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Julia Collage",
-"key": "Julia",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Alexander Music composition &",
-"key": "Alexander",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Bilincka Electronic music with",
-"key": "Bilincka",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Michelle Textile painting &",
-"key": "Michelle",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Sébastien Street art (also",
-"key": "Sebastién",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Sabine Galaxy painting &",
-"key": "Sabine",
-"site": "",
-"hint": "Workshop"
-},
-{
-"name": "Melanie Moss pictures, book",
-"key": "Melanie",
-"site": "",
-"hint": "Workshop"
+"site": "https://www.dohnadesign.de"
 }
 ]
