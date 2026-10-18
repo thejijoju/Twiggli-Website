@@ -76,6 +76,9 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
   ? { 'data-partner-code': s.partner.code, 'data-partner-copied': partnerCopied[lang], target: '_blank', rel: 'noopener',
       // For the "partner-booking" event (lib/track.ts).
       'data-partner-host': s.host.slug, 'data-partner-title': s.title, 'data-partner-time': s.time,
+      // And what the inbox line reports: who, what it costs, how many places are left.
+      'data-partner-name': s.host.name, 'data-partner-price': s.price, 'data-partner-spots': s.spots,
+      'data-partner-duration': s.duration ?? s.host.duration, 'data-partner-place': s.district,
       'data-partner-date': isoDate(s.dayOffset) }
   : {
     'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',

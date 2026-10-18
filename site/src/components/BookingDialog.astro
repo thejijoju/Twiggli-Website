@@ -131,6 +131,22 @@ const e = bigEventsCopy[lang].dialog;
 <script>
   import { track } from '../lib/track.ts';
 
+  // How the visitor reached the site, taken on the first page of their
+  // visit (a campaign tag, or the site that linked to us) and kept for the
+  // tab, so a booking three pages later still says where it started.
+  const SOURCE_KEY = 'twiggli-came-from';
+  try {
+    if (!sessionStorage.getItem(SOURCE_KEY)) {
+      const q = new URLSearchParams(location.search);
+      const tag = ['utm_source', 'utm_medium', 'utm_campaign'].map((k) => q.get(k)).filter(Boolean).join(' / ');
+      const ref = document.referrer && new URL(document.referrer).host !== location.host ? new URL(document.referrer).host : '';
+      sessionStorage.setItem(SOURCE_KEY, tag || ref || 'direct');
+    }
+  } catch { /* storage blocked: the line just says unknown */ }
+  function cameFrom() {
+    try { return sessionStorage.getItem(SOURCE_KEY) || 'unknown'; } catch { return 'unknown'; }
+  }
+
   // A partner host's own booking page (partners.ts): the link opens as
   // usual, and our discount code goes to the clipboard on the way, with a
   // word saying so, so it is ready to paste at their checkout.
@@ -146,8 +162,9 @@ const e = bigEventsCopy[lang].dialog;
     setTimeout(() => toast.remove(), 3500);
 
     // And a line in our inbox, since the booking itself happens on the
-    // host's site: which session, from which page — nothing about the
-    // visitor. Once per session per page view, however often it is clicked.
+    // host's site: which session, what it costs and how full it is, from
+    // which page and how the visitor found us — nothing about who they are.
+    // Once per session per page view, however often it is clicked.
     const d = link.dataset;
     const key = `${d.partnerHost}|${d.partnerDate}|${d.partnerTime}|${d.partnerTitle}`;
     if (partnerSent.has(key)) return;
@@ -155,7 +172,7 @@ const e = bigEventsCopy[lang].dialog;
     const inbox = document.querySelector<HTMLElement>('[data-book-dialog]')?.dataset.inbox;
     if (!inbox) return;
     const host = d.partnerHost ?? '';
-    const name = host.charAt(0).toUpperCase() + host.slice(1);
+    const name = d.partnerName || host.charAt(0).toUpperCase() + host.slice(1);
     fetch(`https://formsubmit.co/ajax/${inbox}`, {
       method: 'POST',
       keepalive: true,
@@ -166,8 +183,15 @@ const e = bigEventsCopy[lang].dialog;
         Workshop: d.partnerTitle ?? '',
         Date: d.partnerDate ?? '',
         Time: d.partnerTime ?? '',
+        'Price per person': d.partnerPrice || 'not listed',
+        'Spots left': d.partnerSpots || 'not listed',
+        Duration: d.partnerDuration ?? '',
+        Area: d.partnerPlace ?? '',
         Code: d.partnerCode ?? '',
+        'Host booking page': (link as HTMLAnchorElement).href ?? '',
         'Clicked on': location.href,
+        'Came from': cameFrom(),
+        Device: matchMedia('(pointer: coarse)').matches ? 'phone or tablet' : 'computer',
         Language: document.documentElement.lang || 'en',
         _subject: `Booking click: ${name} — ${d.partnerTitle ?? ''}, ${d.partnerDate ?? ''} ${d.partnerTime ?? ''}`.trim(),
         _template: 'table',
@@ -325,6 +349,7 @@ const e = bigEventsCopy[lang].dialog;
         [kind === 'studio' ? 'Special notes' : 'Message']: String(data.get('message') ?? ''),
         'Host booking page': picked.bookLink ?? '',
         'Sent from': location.href,
+        'Came from': cameFrom(),
         Language: dialog.dataset.lang ?? '',
       };
       const studioWhen = kind === 'studio' ? [fields['Start time'], fields.Hours && `${fields.Hours} h`, fields['How often'] === 'Regularly' ? 'regularly' : ''].filter(Boolean).join(', ') : '';
