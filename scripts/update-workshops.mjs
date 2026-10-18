@@ -191,16 +191,6 @@ const SOURCES = [
   // its dated sessions (variants titled "DD.MM.YYYY - HH:MM"), per-date
   // price and availability — fully automatic, nothing configured per
   // workshop. New products in the collection appear on their own.
-  // Tessia's shop in the Oderberger Straße, with a goldsmith's bench built
-  // into the back of it. Two products, each variant a date — "13.11 12-18
-  // Uhr", German, no year, with the length in the range. Her shop keeps
-  // last season's options in the list, so a spent date rolls a year on and
-  // falls outside the 110-day window rather than reaching the calendar; the
-  // one that genuinely belongs to next year, 09.01, lands inside it. The
-  // "Gutschein" option is a voucher and carries no date, so it is skipped.
-  { slug: 'tessia', name: 'Tessia — Wax Carving & Sandguss', mode: 'shopify',
-    url: 'https://tessia-shop.com/collections/workshop/products.json?limit=250',
-    district: 'Prenzlauer Berg' },
   { slug: 'galleria-lucia', name: 'Galleria Lucia — workshops', mode: 'shopify',
     url: 'https://www.gallerialucia.com/collections/workshops/products.json?limit=250',
     district: 'Prenzlauer Berg' },

@@ -296,7 +296,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   lomu:             { activity: 'craft',     groupRange: [4, 20], hourRange: [1, 2] },
   // PLACEHOLDER upper bound — the page names a minimum of five and no cap.
   landsinn:         { activity: 'craft',     groupRange: [5, 12], hourRange: [2, 3] },
-  tessia:           { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 6] },
   // PLACEHOLDER group range — neither her page nor the VHS listings give a
   // class size; the VHS rooms seat about a dozen.
   tinkery:          { activity: 'craft',     groupRange: [1, 12], hourRange: [3.5, 7.5] },
@@ -521,9 +520,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'landsinn', name: 'Landsinn', specialty: 'Macramé, collage & seasonal craft', studio: 'Landsinn Concept Store',
       blurb: 'A concept store in Potsdam-Babelsberg that keeps a workshop room next door at BabelsWERK and fills it with a different maker every few weeks. Silvia teaches macramé and dot painting, Natalia jewellery in polymer clay and resin, Constanze modern collage, textile printing and gelli-print cards, Karina advent wreaths in the weeks before Christmas, Tina braiding and ceramics. Afternoons and evenings of two to three hours, from five people up, with every material and tool, a snack and a drink included — and any of them can be booked privately for a birthday, a hen do or a team.',
       group: 'From 5', duration: '2–3 h', place: 'BabelsWERK, Garnstr. 18, Potsdam-Babelsberg', languages: 'DE' },
-    { slug: 'tessia', name: 'Tessia', specialty: 'Wax carving & silver casting', studio: 'Tessia',
-      blurb: 'A jewellery shop on the Oderberger Straße with a goldsmith\u2019s bench built into the back of it, where what is on the shelves was made a few metres away. Two workshops, both for absolute beginners. In the half day you carve a ring out of wax, shaping it exactly as you want it; it is cast in sterling silver — or gold, if you ask — and ready to collect about three or four weeks later. The full day takes you the whole way in one sitting: you carve the wax, then cast it yourself in sand, set a stone into the pour if you like, and file and polish the ring until it is finished, going home with your own silver ring the same evening. Up to ten grams of silver, the wax and the use of every tool are in the price, along with a list of what to buy and where if you want to keep going. Six people on the half day, three on the full one, since the casting takes its time. She also opens the bench to anyone who has been before and wants to work alone.',
-      group: 'Up to 6', duration: '3\u20136 h', place: 'Oderberger Str. 40, Prenzlauer Berg', languages: 'DE \u00b7 EN' },
     { slug: 'tinkery', name: 'Astrid', specialty: 'Mending, embroidery & polymer clay', studio: 'the tinkery',
       blurb: 'An Austrian artist who has lived in Berlin since 2014 — art school in Linz, a degree in German at Graz, and most of what she teaches taught to herself, in order to run a sustainability workshop for a school in Potsdam. Her courses are about keeping clothes rather than replacing them. Over two days you learn darning, sashiko, doodle-stitching, hemming and buttons, then spend the second day putting them to work on the garments you brought, and leave with a handout so you can do it again at home. Shorter sessions add hand embroidery to a favourite piece, or turn a hole into a patch worth showing off. She also models 5–7 cm figurines in polymer clay, built up from the skeleton and painted at the end. Beginners throughout, in German or English, and she teaches the techniques that survive everyday use rather than the textbook ones.',
       group: 'Up to 12', duration: '3.5–7.5 h', place: 'VHS Marzahn-Hellersdorf / Grimms Garten, Mitte', languages: 'DE · EN' },
@@ -709,9 +705,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'landsinn', name: 'Landsinn', specialty: 'Makramee, Collage & Saisonhandwerk', studio: 'Landsinn Concept Store',
       blurb: 'Ein Concept Store in Potsdam-Babelsberg, der nebenan im BabelsWERK einen Workshopraum hat und ihn alle paar Wochen mit einer anderen Macherin füllt. Silvia unterrichtet Makramee und Dot Painting, Natalia Schmuck aus Polymermodelliermasse und Resin, Constanze Modern Collage, Textildruck und Gelli-Print-Karten, Karina in den Wochen vor Weihnachten das Adventskranzbinden, Tina Flechten und Keramik. Nachmittage und Abende von zwei bis drei Stunden, ab fünf Personen, Material und Werkzeug komplett dabei, dazu ein kleiner Snack und ein Getränk — und jeder Workshop ist auch privat buchbar, für Geburtstag, JGA oder Team.',
       group: 'Ab 5', duration: '2–3 Std.', place: 'BabelsWERK, Garnstr. 18, Potsdam-Babelsberg', languages: 'DE' },
-    { slug: 'tessia', name: 'Tessia', specialty: 'Wachsmodellieren & Silberguss', studio: 'Tessia',
-      blurb: 'Ein Schmuckladen in der Oderberger Stra\u00dfe mit einer Goldschmiede hinten drin \u2014 was in der Auslage liegt, ist ein paar Meter weiter entstanden. Zwei Workshops, beide f\u00fcr komplette Anf\u00e4nger:innen. Im Halbtagskurs schnitzt du deinen Ring aus Wachs, genau so, wie du ihn haben willst; gegossen wird er danach in Sterlingsilber \u2014 auf Wunsch in Gold \u2014 und ist nach drei bis vier Wochen abholbereit. Der ganze Tag f\u00fchrt dich in einem Rutsch durch alles: Wachs schnitzen, selbst im Sandguss gie\u00dfen, auf Wunsch einen Stein mit eingie\u00dfen, dann vers\u00e4ubern und polieren \u2014 und am Abend h\u00e4ltst du deinen eigenen Silberring in den H\u00e4nden. Bis zu zehn Gramm Silber, das Wachs und die Werkzeugnutzung sind dabei, dazu eine Liste, was man braucht und wo man es bekommt, falls du weitermachen willst. Sechs Pl\u00e4tze am halben Tag, drei am ganzen, weil der Guss seine Zeit braucht. Wer schon mal da war, kann die Werkstatt auch zum eigenst\u00e4ndigen Arbeiten nutzen.',
-      group: 'Bis 6', duration: '3\u20136 Std.', place: 'Oderberger Str. 40, Prenzlauer Berg', languages: 'DE \u00b7 EN' },
     { slug: 'tinkery', name: 'Astrid', specialty: 'Flicken, Sticken & Polymer Clay', studio: 'the tinkery',
       blurb: 'Österreicherin, seit 2014 in Berlin — Kunstschule in Linz, Germanistik in Graz, und das meiste, was sie unterrichtet, hat sie sich selbst beigebracht, um an einer Potsdamer Schule einen Nachhaltigkeits-Workshop zu geben. In ihren Kursen geht es darum, Kleidung zu behalten statt sie zu ersetzen. An zwei Tagen lernst du Stopfen, Sashiko, Doodlestitching, Säumen und Knöpfe annähen und wendest das am zweiten Tag direkt an mitgebrachten Stücken an; ein Handout nimmst du mit, damit du es zu Hause wiederholen kannst. Kürzere Sessions bringen Handstickerei auf ein Lieblingsstück oder machen aus einem Loch einen Flicken, den man herzeigt. Dazu modelliert sie 5–7 cm große Figuren aus Polymerton, vom Skelett aufgebaut und am Ende bemalt. Alles für Anfänger:innen, auf Deutsch oder Englisch — und sie unterrichtet die Techniken, die den Alltag überstehen, nicht die aus dem Lehrbuch.',
       group: 'Bis 12', duration: '3,5–7,5 Std.', place: 'VHS Marzahn-Hellersdorf / Grimms Garten, Mitte', languages: 'DE · EN' },
@@ -933,7 +926,6 @@ const reels: Record<string, { video: string; poster: string }> = {
   // in a band across the top fifth of every second of the clip, so taking
   // the frame from below them keeps the full width and every scene. A 4:5
   // export, which is the shape the tiles crop to anyway.
-  tessia: { video: '/video/tessia.mp4', poster: '/video/tessia-poster.jpg' },
   // The still is the photograph his card already carried, not a frame from
   // the clip: it was asked to stay, and it is the better picture — the reel
   // is a grey March morning, the photograph a sunlit wall.
@@ -1563,7 +1555,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },
-  tessia: { area: 'Prenzlauer Berg' }, tinkery: { area: 'Marzahn-Hellersdorf / Mitte' },
+tinkery: { area: 'Marzahn-Hellersdorf / Mitte' },
 };
 
 /** Hosts on the site twice over — a school and its teacher, say — mapped to

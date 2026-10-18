@@ -56,9 +56,13 @@ jobs:
           curl -sS https://www.twiggli.com/sitemap-0.xml \
             | grep -o '<loc>[^<]*' | sed 's/<loc>//' > urls.txt
           # Pages taken down, so search engines recrawl them, find them gone
-          # and drop them (Mijita, removed at the host's request on 11 Oct).
+          # and drop them (Mijita, removed at the host's request on 11 Oct;
+          # Tessia, taken off on 18 Oct until she agrees to be listed).
           for l in "" de/ fr/ es/ it/ nl/ pl/ tr/; do
             echo "https://www.twiggli.com/${l}workshops/craft/mijita/" >> urls.txt
+            for p in "" wax-carving-ring-workshop-halber-tag/ sandguss-wax-carving-workshop-ganzer-tag/; do
+              echo "https://www.twiggli.com/${l}workshops/craft/tessia/${p}" >> urls.txt
+            done
           done
           echo "$(wc -l < urls.txt) urls"
           jq -n --arg host www.twiggli.com --arg key "$KEY" \
