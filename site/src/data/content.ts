@@ -201,7 +201,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   evelyn:       { activity: 'craft', alsoIn: ['art', 'wellbeing'], groupRange: [1, 50], hourRange: [1.5, 3], groupPrice: 20 },
   nina:         { activity: 'art',         groupRange: [10, 150], hourRange: [4, 16] },
   helka:        { activity: 'ceramics',    groupRange: [5, 30],   hourRange: [1.5, 3], groupPrice: 95 },
-  haki:         { activity: 'ceramics',    groupRange: [1, 7],    hourRange: [2, 2] },
   alessia:      { activity: 'art',         groupRange: [1, 8],    hourRange: [4, 4] },
   // PLACEHOLDER group range — Acuity carries no class size for these.
   tufttuft:     { activity: 'craft',       groupRange: [1, 10],   hourRange: [3, 5] },
@@ -346,9 +345,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'alessia', name: 'Alessia', specialty: 'Realistic pencil portraits',
       blurb: 'An Italian artist based in Berlin teaching realistic portrait drawing from photographic references — a structured method rather than a knack. You work the grid for proportion, learn what pencils of different hardness actually do, and spend most of the afternoon on shading and hatching, which is where a portrait turns from flat to solid. Eight people at most, so the guidance follows your own way of drawing; beginners and improvers both. Professional materials, printed references, tea and a sweet treat at the break are all provided.',
       group: 'Up to 8', duration: '4 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
-    { slug: 'haki', name: 'Sümer', specialty: 'Handbuilding & wheel throwing', studio: 'Haki Ceramics',
-      blurb: 'Clay in an artist studio building on the RAW-Gelände. The Tuesday evening group has no fixed start or end — beginners and improvers work side by side, picking up techniques as their own pieces call for them, up to seven at a time. Clay, tools, glazes and both firings are included: once your work has dried you come back to glaze it, so you leave with finished stoneware you shaped yourself. Wheel throwing runs one-to-one by appointment, and confident throwers can take the studio\u2019s single wheel spot during the group session.',
-      group: 'Up to 7 \u00b7 1-to-1 \u00b7 teams to 6', duration: '2 h', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
     { slug: 'sina', name: 'Sina', specialty: 'Quilting, mending & embroidery', studio: 'Ohma Studio',
       blurb: 'A quilt maker and fibre artist working with recycled materials and reimagining what we already have. Beginner-friendly sessions in patchwork and improv quilting, visible mending by weave darning, and embroidery — all materials provided, tea and cookies included.',
       group: 'Small group', duration: '2–6 h', place: 'Ohma Studio, Friedrichshain', languages: 'EN · DE' },
@@ -554,9 +550,6 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'alessia', name: 'Alessia', specialty: 'Realistische Bleistiftporträts',
       blurb: 'Italienische Künstlerin in Berlin, die realistisches Porträtzeichnen nach Fotovorlage unterrichtet — als klare Methode, nicht als Talentfrage. Ihr arbeitet mit dem Raster für die Proportionen, lernt, was Bleistifte unterschiedlicher Härte wirklich können, und verbringt den größten Teil des Nachmittags mit Schraffur und Schattierung, wo ein Porträt von flach zu plastisch wird. Höchstens acht Personen, die Anleitung folgt eurer eigenen Handschrift; Anfängerinnen wie Geübte. Profimaterial, gedruckte Vorlagen, Tee und etwas Süßes in der Pause sind inklusive.',
       group: 'Bis 8', duration: '4 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
-    { slug: 'haki', name: 'Sümer', specialty: 'Aufbaukeramik & Drehscheibe', studio: 'Haki Ceramics',
-      blurb: 'Ton im K\u00fcnstlerhaus auf dem RAW-Gel\u00e4nde. Die Dienstagabend-Gruppe hat keinen festen Anfang und kein Ende \u2014 Einsteigerinnen und Ge\u00fcbte arbeiten nebeneinander und lernen die Techniken, die ihr St\u00fcck gerade braucht, zu siebt h\u00f6chstens. Ton, Werkzeug, Glasuren und beide Brände sind dabei: Ist deine Arbeit getrocknet, kommst du zum Glasieren wieder und nimmst fertiges Steinzeug mit, das du selbst geformt hast. Die Drehscheibe l\u00e4uft einzeln nach Absprache, und wer sicher dreht, kann w\u00e4hrend der Gruppe den einen Scheibenplatz belegen.',
-      group: 'Bis 7 \u00b7 Einzel \u00b7 Teams bis 6', duration: '2 Std.', place: 'RAW-Gel\u00e4nde, Revaler Str. 99, Friedrichshain', languages: 'EN' },
     { slug: 'sina', name: 'Sina', specialty: 'Quilten, Reparieren & Sticken', studio: 'Ohma Studio',
       blurb: 'Quiltmacherin und Textilkünstlerin, die mit recycelten Materialien arbeitet. Patchwork und Improv-Quilting für Einsteiger, sichtbares Reparieren per Webstopfen und Sticken — Material ist gestellt, Tee und Kekse inklusive.',
       group: 'Kleine Gruppe', duration: '2–6 Std.', place: 'Ohma Studio, Friedrichshain', languages: 'EN · DE' },
@@ -723,13 +716,6 @@ const reels: Record<string, { video: string; poster: string }> = {
   // tile exactly. Checked frame by frame: no full-width bright band survives.
   // The poster is the first still, the hexagon hanging.
   sina: { video: '/video/sina.mp4', poster: '/video/sina-poster.jpg' },
-  // Sümer's own: hands turning a small handbuilt cup on its cloth, a tool
-  // walking a row of marks around the foot, the studio table and the group
-  // behind it. Audio stripped. Seven seconds, the shortest reel here, but it
-  // is one unbroken shot of the thing her Tuesday group actually does, so it
-  // loops without a seam. Her handbuilding dates play her other clip
-  // instead — see workshopReels below.
-  haki: { video: '/video/haki.mp4', poster: '/video/haki-poster.jpg' },
   // Alessia's own: a pencil eye beside the photo it is drawn from, her
   // talking the class through it, the table at work, and the finished
   // portraits — a face in graphite that could be a photograph. Silent
@@ -1222,19 +1208,6 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
       { video: '/video/karen-rose-seife-2.mp4', poster: '/video/karen-rose-seife-2-poster.jpg' },
     ],
   },
-  // Her handbuilding class shows what comes out of it rather than the
-  // making: a tall pinched vessel pierced with holes, a painted koi down one
-  // side, being glazed on the table — then a small figure sitting on the rim
-  // of a plate, hugging its knees. Hers, audio stripped, no captions; the
-  // levels are converted from the full range it was tagged with.
-  // Her wheel dates and her card keep the general reel, which is the pinched
-  // cup in progress.
-  haki: {
-    Handbuilding: {
-      video: '/video/haki-handbuilding.mp4',
-      poster: '/video/haki-handbuilding-poster.jpg',
-    },
-  },
   // Live, not dormant: her Vulva Painting Workshop runs weekly out of
   // vulvas.berlin (a recurring entry rather than a dated one) and takes
   // private groups on request, and both titles carry the word. Same file as
@@ -1498,7 +1471,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = (() => {
 const firstNames: Record<string, string> = {
   qian: 'Qian', rebeca: 'Rebeca', nicole: 'Nicole', celina: 'Celina', evelyn: 'Evelyn',
   drawingwalks: 'Ditte', violaine: 'Violaine', tania: 'Tania', simone: 'Simone',
-  alessia: 'Alessia', haki: 'Sümer', sina: 'Sina', olivia: 'Olivia',
+  alessia: 'Alessia', sina: 'Sina', olivia: 'Olivia',
   nina: 'Nina', helka: 'Helka', jem: 'Jem', maximiliana: 'Maximiliana', pia: 'Pia',
   sarah: 'Sarah', anne: 'Anne', sabine: 'Sabine', angelo: 'Angelo', faye: 'Faye',
   dominik: 'Dominik', ana: 'Ana', 'karen-rose': 'Karen-Rose',
@@ -1527,7 +1500,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   evelyn: { area: 'Friedrichshain', onSite: true }, violaine: { area: 'Neukölln' },
   tania: { area: 'Charlottenburg' }, simone: { area: 'Lichtenberg' },
   tufttuft: { area: 'Prenzlauer Berg' }, alessia: { area: 'Prenzlauer Berg' },
-  haki: { area: 'Friedrichshain' }, sina: { area: 'Friedrichshain' },
+  sina: { area: 'Friedrichshain' },
   olivia: { area: 'Friedrichshain' },
   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
   maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },

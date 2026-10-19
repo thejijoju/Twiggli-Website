@@ -422,12 +422,6 @@
       "count": 3
     },
     {
-      "slug": "haki",
-      "url": "https://hakiceramics.onepage.me/",
-      "status": "ok",
-      "count": 3
-    },
-    {
       "slug": "pia",
       "url": "https://www.vulvas.berlin/",
       "status": "ok",
@@ -577,33 +571,6 @@
       "duration": "1 h",
       "district": "Spandau St. Wilhelm",
       "url": "https://www.ninakranzart.com/privat-freizeit"
-    },
-    {
-      "slug": "haki",
-      "sourceUrl": "https://hakiceramics.onepage.me/",
-      "title": "Handbuilding Workshop",
-      "weekdays": [
-        "tue"
-      ],
-      "time": "18:30",
-      "duration": "2 h",
-      "price": "€35",
-      "district": "Friedrichshain",
-      "url": "https://hakiceramics.onepage.me/"
-    },
-    {
-      "slug": "haki",
-      "sourceUrl": "https://hakiceramics.onepage.me/",
-      "title": "Offener Platz an der Drehscheibe (Fortgeschrittene)",
-      "titleEn": "Open Wheel Spot (experienced throwers)",
-      "weekdays": [
-        "tue"
-      ],
-      "time": "18:30",
-      "duration": "2 h",
-      "price": "€35",
-      "district": "Friedrichshain",
-      "url": "https://hakiceramics.onepage.me/"
     },
     {
       "slug": "pia",
@@ -779,17 +746,6 @@
       "district": "Charlottenburg",
       "request": true,
       "url": "https://taniavarelastudio.com/"
-    },
-    {
-      "slug": "haki",
-      "sourceUrl": "https://hakiceramics.onepage.me/",
-      "title": "Private Drehscheibenstunde",
-      "titleEn": "Private Wheel-Throwing Class",
-      "duration": "2 h",
-      "price": "€80",
-      "district": "Friedrichshain",
-      "request": true,
-      "url": "https://hakiceramics.onepage.me/"
     },
     {
       "slug": "pia",
