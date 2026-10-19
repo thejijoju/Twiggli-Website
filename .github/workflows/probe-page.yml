@@ -27,7 +27,9 @@ jobs:
       # "scrape:konfetti,subcultours,makery" as the url lists the Berlin hosts
       # on those platforms instead (scripts/scrape-hosts.mjs); "emails:" looks
       # up the published email of each host in scripts/data/hosts-to-find.json.
-      - if: startsWith(inputs.url, 'scrape:') || startsWith(inputs.url, 'emails:') || startsWith(inputs.url, 'insta:')
+      # "bios:" reads the public Instagram profile of each handle in
+      # scripts/data/ig-handles.json (scripts/ig-bios.mjs).
+      - if: startsWith(inputs.url, 'scrape:') || startsWith(inputs.url, 'emails:') || startsWith(inputs.url, 'insta:') || startsWith(inputs.url, 'bios:')
         uses: actions/checkout@v4
       - name: List Berlin hosts on other platforms
         if: startsWith(inputs.url, 'scrape:')
@@ -42,8 +44,11 @@ jobs:
         run: node scripts/find-emails.mjs
         env:
           FIND_MODE: insta
+      - name: Read Instagram bios
+        if: startsWith(inputs.url, 'bios:')
+        run: node scripts/ig-bios.mjs
       - name: Fetch and describe
-        if: ${{ !startsWith(inputs.url, 'scrape:') && !startsWith(inputs.url, 'emails:') && !startsWith(inputs.url, 'insta:') }}
+        if: ${{ !startsWith(inputs.url, 'scrape:') && !startsWith(inputs.url, 'emails:') && !startsWith(inputs.url, 'insta:') && !startsWith(inputs.url, 'bios:') }}
         run: |
           node - <<'EOF'
           // One run can describe several pages — reading a host who splits
