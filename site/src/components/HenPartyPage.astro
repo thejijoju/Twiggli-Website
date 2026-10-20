@@ -1,0 +1,226 @@
+---
+/**
+ * Hen parties (JGA): a pink landing page for groups of friends, in German
+ * (/de/jga/) and English (/jga/). Built like the Christmas page — real
+ * hosts with their own group sizes and prices, how it works, and a request
+ * form that lands in our inbox through FormSubmit — plus a FAQ that search
+ * engines read as FAQPage data. "Ask for this one" picks that workshop in
+ * the form.
+ */
+import Base from '../layouts/Base.astro';
+import { getHosts } from '../data/content.ts';
+import { henCopy, henPicks } from '../data/henParty.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
+import { href, withBase } from '../lib/url.ts';
+
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+const t = henCopy[lang];
+const hosts = getHosts(lang);
+
+const money = (n: number) => (lang === 'de' ? `${n} €` : `€${n}`);
+const cards = henPicks.map((pick, i) => {
+  const host = hosts.find((h) => h.slug === pick.slug);
+  const gp = pick.price ?? host?.groupPrice;
+  const from = host?.priceNote === (lang === 'de' ? 'Einstiegspreis' : 'starting price');
+  const price = gp == null ? undefined : Array.isArray(gp) ? `${money(gp[0])}–${money(gp[1])}` : `${from ? t.from : ''}${money(gp)}`;
+  return {
+    ...t.picks[i],
+    key: pick.slug,
+    host: host?.firstName ?? host?.name ?? '',
+    district: pick.area ?? host?.area,
+    image: withBase(`/img/mail/${pick.image}.jpg`),
+    meta: [
+      host ? t.people(host.groupRange[0], Math.min(host.groupRange[1], 20)) : '',
+      host ? t.hours(host.hourRange[0], host.hourRange[1]) : '',
+      price ? t.perPerson(price) : t.onRequest,
+    ].filter(Boolean),
+  };
+});
+const formCopy = { sending: t.sending, send: t.send, error: t.error };
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: t.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<Base title={t.title} description={t.description} lang={lang} translations={['en', 'de']} image="/img/mail/pia-vulva.jpg">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
+  </Fragment>
+  <div class="jga">
+    <div class="container xmas">
+      <section class="xmas-hero">
+        <div>
+          <span class="xmas-kicker">{t.kicker}</span>
+          <h1 class="xmas-title">{t.h1} <span class="xmas-hand">{t.h1Hand}</span></h1>
+          <p class="xmas-lede">{t.lede}</p>
+          <ul class="xmas-facts">{t.facts.map((f) => <li>{f}</li>)}</ul>
+          <div class="xmas-actions">
+            <a class="btn btn-primary" href="#quote">{t.cta}</a>
+            <a class="xmas-link" href="#workshops">{t.seeWorkshops} ↓</a>
+          </div>
+        </div>
+        <div class="xmas-collage" aria-hidden="true">
+          <img class="xmas-c1" src={withBase('/img/mail/pia-vulva.jpg')} alt="" />
+          <figure class="xmas-c2">
+            <div class="newsletter-paper"><img src={withBase('/img/mail/munio.jpg')} alt="" /><figcaption>{t.picks[1].title}</figcaption></div>
+            <span class="newsletter-tape is-tl"></span><span class="newsletter-tape is-br"></span>
+          </figure>
+          <img class="xmas-c3" src={withBase('/img/mail/karen-rose-naturkosmetik.jpg')} alt="" />
+          <p class="xmas-note"><b>{t.free}</b>{t.freeNote}</p>
+        </div>
+      </section>
+
+      <section class="xmas-section" id="workshops">
+        <h2 class="xmas-h2">{t.pickedTitle}</h2>
+        <p class="xmas-sub">{t.pickedSub}</p>
+        <div class="xmas-grid">
+          {cards.map((c) => (
+            <article class="xmas-card">
+              <img src={c.image} alt={`${c.title}${c.host ? ` · ${c.host}` : ''}`} loading="lazy" decoding="async" width="560" height="420" />
+              <div class="xmas-card-body">
+                <span class="xmas-tag">{c.tag}</span>
+                <h3>{c.title}</h3>
+                <p class="xmas-host">{c.host}{c.district ? ` · ${c.district}` : ''}</p>
+                <ul class="xmas-meta">{c.meta.map((m) => <li>{m}</li>)}</ul>
+                <a class="xmas-ask" href="#quote" data-xmas-pick={c.title}>{t.ask} →</a>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p class="xmas-more"><a href={href(lang, '/workshops/')}>{t.moreHosts} →</a></p>
+      </section>
+
+      <section class="xmas-section">
+        <h2 class="xmas-h2">{t.whyTitle}</h2>
+        <ol class="xmas-steps jga-why">
+          {t.why.map((s) => (
+            <li><span class="xmas-num">♡</span><b>{s.title}</b><p>{s.copy}</p></li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="xmas-section">
+        <h2 class="xmas-h2">{t.howTitle}</h2>
+        <ol class="xmas-steps">
+          {t.steps.map((s, i) => (
+            <li><span class="xmas-num">{i + 1}</span><b>{s.title}</b><p>{s.copy}</p></li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="xmas-quote" id="quote">
+        <div>
+          <h2 class="xmas-quote-title">{t.formTitle}</h2>
+          <p class="xmas-sub">{t.formLede}</p>
+          <ul class="xmas-bullets">{t.bullets.map((b) => <li>{b}</li>)}</ul>
+        </div>
+        <div class="xmas-form-card">
+          <form class="book-form xmas-form" data-xmas-form data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+            <div class="book-fields">
+              <label class="book-field"><span>{t.name}</span><input name="name" type="text" autocomplete="name" required /></label>
+              <label class="book-field"><span>{t.bride} <em>({t.optional})</em></span><input name="bride" type="text" /></label>
+              <label class="book-field"><span>{t.email}</span><input name="email" type="email" autocomplete="email" placeholder={t.emailPh} required /></label>
+              <label class="book-field"><span>{t.phone} <em>({t.optional})</em></span><input name="phone" type="tel" autocomplete="tel" /></label>
+              <label class="book-field"><span>{t.date}</span><input name="date" type="date" /></label>
+              <label class="book-field"><span>{t.size}</span><input name="size" type="number" min="2" max="100" inputmode="numeric" placeholder={t.sizePh} required /></label>
+              <label class="book-field book-field-wide">
+                <span>{t.workshop}</span>
+                <select name="workshop" data-xmas-select>
+                  <option value={t.notSure}>{t.notSure}</option>
+                  {cards.map((c) => <option value={c.title}>{c.title}{c.host ? ` · ${c.host}` : ''}</option>)}
+                </select>
+              </label>
+              <label class="book-field"><span>{t.budget} <em>({t.optional})</em></span><input name="budget" type="text" placeholder={t.budgetPh} /></label>
+              <label class="book-field"><span>{t.message} <em>({t.optional})</em></span><input name="message" type="text" placeholder={t.messagePh} /></label>
+              <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            </div>
+            <p class="book-error" data-xmas-error hidden></p>
+            <button type="submit" class="btn btn-primary book-send" data-xmas-send>{t.send}</button>
+          </form>
+          <div class="book-sent" data-xmas-sent hidden>
+            <h2 class="book-title">{t.sentTitle}</h2>
+            <p class="book-lede">{t.sentBody}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="xmas-section jga-faq">
+        <h2 class="xmas-h2">{t.faqTitle}</h2>
+        {t.faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+        <p class="jga-small">{lang === 'de' ? '* Je nach Gastgeberin, wir sagen es euch bei jedem Vorschlag.' : '* Depends on the host; we tell you with each idea.'}</p>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-xmas-pick]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const select = document.querySelector<HTMLSelectElement>('[data-xmas-select]');
+      if (select) select.value = link.dataset.xmasPick ?? select.value;
+    });
+  });
+
+  // Same route as the other request forms: FormSubmit to our inbox, or the
+  // visitor's mail app with the same message when that is unreachable.
+  const form = document.querySelector<HTMLFormElement>('[data-xmas-form]');
+  if (form) {
+    const copy = JSON.parse(form.dataset.copy || '{}');
+    const inbox = form.dataset.inbox ?? '';
+    const send = form.querySelector<HTMLButtonElement>('[data-xmas-send]');
+    const error = form.querySelector<HTMLElement>('[data-xmas-error]');
+    const sent = document.querySelector<HTMLElement>('[data-xmas-sent]');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('_honey')) return;
+      const get = (k: string) => String(data.get(k) ?? '');
+      let cameFrom = '';
+      try { cameFrom = sessionStorage.getItem('twiggli-came-from') ?? ''; } catch {}
+      const fields: Record<string, string> = {
+        Type: 'Hen party (JGA) request',
+        Name: get('name'),
+        Bride: get('bride'),
+        Email: get('email'),
+        Phone: get('phone'),
+        'Preferred date': get('date'),
+        'Group size': get('size'),
+        Workshop: get('workshop'),
+        'Budget per person': get('budget'),
+        Message: get('message'),
+        'Sent from': location.href,
+        'Came from': cameFrom,
+        Language: document.documentElement.lang,
+      };
+      const subject = `JGA request: ${fields.Name} — ${fields['Group size']} people${fields['Preferred date'] ? `, ${fields['Preferred date']}` : ''}`;
+      if (send) { send.disabled = true; send.textContent = copy.sending; }
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
+            email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        if (sent) sent.hidden = false;
+      } catch {
+        if (error) { error.textContent = String(copy.error).replace('{email}', form.dataset.contact ?? ''); error.hidden = false; }
+        if (send) { send.disabled = false; send.textContent = copy.send; }
+        const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
+        location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+    });
+  }
+</script>
