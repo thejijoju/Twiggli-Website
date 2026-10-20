@@ -5964,3 +5964,29 @@ h1, h2, h3, h4,
 .big-faq details { border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); border-radius: 14px; padding: 14px 18px; }
 .big-faq summary { cursor: pointer; font-weight: 700; }
 .big-faq p { margin: 10px 0 0; color: var(--color-text-muted); }
+
+/* — Hen parties / JGA (HenPartyPage.astro) — the Christmas page's layout
+   in pink: rosé ground, raspberry accent, blush cards. */
+.jga {
+  --color-accent: #e0457b;
+  --color-accent-700: #b8325f;
+  background: linear-gradient(180deg, #fff0f5 0%, #fff7fa 40%, #fff 100%);
+}
+.jga .btn-primary { background: #e0457b; border-color: #e0457b; color: #fff; }
+.jga .btn-primary:hover { background: #c93a6c; border-color: #c93a6c; }
+.jga .xmas-kicker { background: #ffe1ec; color: #b8325f; }
+.jga .xmas-hand { color: #e0457b; }
+.jga .xmas-facts li { background: #fff; border-color: #f9cfe0; }
+.jga .xmas-card { border-color: #f9d6e4; box-shadow: 0 8px 24px rgba(224, 69, 123, 0.08); }
+.jga .xmas-tag { color: #d03d73; }
+.jga .xmas-meta li { background: #fff0f5; color: #b8325f; }
+.jga .xmas-steps li { background: #fff; border: 1px solid #f9d6e4; }
+.jga .xmas-num { color: #e0457b; }
+.jga .xmas-quote { background: #ffe8f0; }
+.jga .xmas-note { box-shadow: 0 10px 30px rgba(224, 69, 123, 0.18); }
+.jga-faq { padding-bottom: 64px; }
+.jga-faq details { margin-top: 12px; padding: 16px 20px; border-radius: 16px; background: #fff; border: 1px solid #f9d6e4; }
+.jga-faq summary { cursor: pointer; font-weight: 700; color: var(--color-text); }
+.jga-faq summary::marker { color: #e0457b; }
+.jga-faq details p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.6; }
+.jga-small { margin-top: 18px; font-size: 13px; color: var(--color-text-muted); }
