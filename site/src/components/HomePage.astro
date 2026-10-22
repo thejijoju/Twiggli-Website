@@ -15,6 +15,7 @@ import { getHosts } from '../data/content.ts';
 import { ui } from '../data/i18n.ts';
 import { href, type Lang } from '../lib/url.ts';
 import Doodled from './Doodled.astro';
+import { clubCopy } from '../data/club.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -66,6 +67,14 @@ const hosts = getHosts(lang);
   <div class="container">
     <HomeSplits lang={lang} />
     <HostCommunity lang={lang} to="host" />
+
+    {/* The club's waitlist, in the two languages its page exists in. */}
+    {(lang === 'en' || lang === 'de') && (
+      <a class="club-teaser" href={href(lang, '/club/')}>
+        <span>{clubCopy[lang].teaser}</span>
+        <b>{clubCopy[lang].teaserLink} →</b>
+      </a>
+    )}
 
     <Newsletter lang={lang} />
   </div>
