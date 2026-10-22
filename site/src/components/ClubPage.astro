@@ -1,0 +1,214 @@
+---
+/**
+ * The Twiggli Club waitlist, in English (/club/) and German (/de/club/).
+ * The club is not open yet: a dark, quiet hero with a sealed envelope drawn
+ * in SVG, the three things members get, the price, a waitlist form that
+ * lands in our inbox through FormSubmit like the other request forms, and a
+ * short FAQ that search engines read as FAQPage data. Copy in club.ts.
+ */
+import Base from '../layouts/Base.astro';
+import { clubCopy } from '../data/club.ts';
+import { contactEmail, getSiteData, requestEmail } from '../data/site.ts';
+
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+const t = clubCopy[lang];
+const privacy = getSiteData(lang).legalLinks[1];
+
+/* The wax seal's edge: a circle with a soft, uneven rim, the way wax runs
+   out under the stamp. Fixed numbers, so every build draws the same seal. */
+const sealPath = (() => {
+  const cx = 180, cy = 148, n = 48;
+  const pts = Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2;
+    const r = 31 + 2.2 * Math.sin(a * 7 + 0.6) + 1.4 * Math.sin(a * 11 + 2.1);
+    return `${(cx + r * Math.cos(a)).toFixed(1)} ${(cy + r * Math.sin(a)).toFixed(1)}`;
+  });
+  return `M${pts.join(' L')} Z`;
+})();
+
+const formCopy = { sending: t.sending, send: t.send, error: t.error, sentBody: t.sentBody, sentBodyNamed: t.sentBodyNamed };
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: t.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<Base title={t.title} description={t.description} lang={lang} translations={['en', 'de']}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
+  </Fragment>
+  <div class="club">
+    <div class="container">
+      <section class="club-hero">
+        <div class="club-hero-copy">
+          <span class="club-kicker">{t.kicker}</span>
+          <h1 class="club-title">{t.h1}</h1>
+          <p class="club-hand">{t.h1Hand}</p>
+          <p class="club-lede">{t.lede.map((line) => <span>{line}</span>)}</p>
+          <a class="btn club-btn" href="#invite">{t.cta}</a>
+        </div>
+
+        <figure class="club-envelope">
+          <svg viewBox="0 0 360 260" role="img" aria-label={t.sealLabel}>
+            <defs>
+              <radialGradient id="club-wax" cx="40%" cy="35%" r="70%">
+                <stop offset="0" stop-color="#8a63ff" />
+                <stop offset=".55" stop-color="#6a3eec" />
+                <stop offset="1" stop-color="#3d2290" />
+              </radialGradient>
+              <linearGradient id="club-paper" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fbf6ee" />
+                <stop offset="1" stop-color="#efe5d6" />
+              </linearGradient>
+              <linearGradient id="club-flap" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f3eadc" />
+                <stop offset="1" stop-color="#e6d9c5" />
+              </linearGradient>
+            </defs>
+            {/* Envelope body and its folds */}
+            <rect x="30" y="40" width="300" height="190" rx="12" fill="url(#club-paper)" />
+            <path d="M34 226 L172 140 M326 226 L188 140" stroke="#d9cbb5" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            {/* The flap, closed down to the seal */}
+            <path d="M30 52 Q30 40 42 40 L318 40 Q330 40 330 52 L188 144 Q180 150 172 144 Z" fill="url(#club-flap)" stroke="#d9cbb5" stroke-width="1.2" />
+            {/* A twig tucked under the seal */}
+            <g class="club-twig" fill="none" stroke-linecap="round">
+              <path d="M132 186 C150 172 166 160 196 132" stroke="#7d6a52" stroke-width="2" />
+              <path d="M146 176 c-10 -2 -16 -10 -16 -16 c8 0 15 6 16 16 Z" fill="#c3b0ff" stroke="none" />
+              <path d="M156 168 c2 10 -2 18 -8 21 c-2 -8 2 -16 8 -21 Z" fill="#f4a3d6" stroke="none" />
+              <path d="M210 120 c8 -6 18 -6 22 -2 c-6 6 -14 6 -22 2 Z" fill="#c3b0ff" stroke="none" />
+            </g>
+            {/* The wax seal */}
+            <path d={sealPath} fill="url(#club-wax)" />
+            <circle cx="180" cy="148" r="21" fill="none" stroke="rgba(255,255,255,.32)" stroke-width="1.5" />
+            <text x="180" y="160" text-anchor="middle" class="club-seal-mark">T</text>
+            <ellipse cx="170" cy="134" rx="9" ry="4" fill="rgba(255,255,255,.22)" transform="rotate(-25 170 134)" />
+            {/* Addressed by hand */}
+            <text x="180" y="212" text-anchor="middle" class="club-envelope-label">{t.letterLabel}</text>
+          </svg>
+        </figure>
+      </section>
+
+      <section class="club-inside" aria-labelledby="club-inside-title">
+        <h2 class="club-h2" id="club-inside-title">{t.insideTitle}</h2>
+        <ol class="club-items">
+          {t.inside.map((item, i) => (
+            <li>
+              <svg class="club-icon" viewBox="0 0 48 48" aria-hidden="true">
+                {i === 0 && (
+                  <g>
+                    <path d="M16 12h16M18 12c0 6-6 9-6 18a12 8 0 0 0 24 0c0-9-6-12-6-18" />
+                    <path d="M15 30c6 3 12 3 18 0" />
+                  </g>
+                )}
+                {i === 1 && (
+                  <g>
+                    <rect x="8" y="13" width="32" height="22" rx="3" />
+                    <path d="M8 16l16 11 16-11" />
+                  </g>
+                )}
+                {i === 2 && (
+                  <g>
+                    <path d="M30 10a14 14 0 1 0 8 24 12 12 0 0 1-8-24z" />
+                    <path d="M14 12v4M12 14h4M36 8v3M34.5 9.5h3" />
+                  </g>
+                )}
+              </svg>
+              <b>{item.title}</b>
+              <p>{item.copy}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="club-price"><span>{t.price}</span>{t.priceNote}</p>
+      </section>
+
+      <section class="club-invite" id="invite">
+        <div class="club-invite-head">
+          <h2 class="club-invite-title">{t.formTitle}</h2>
+          <p>{t.formLede}</p>
+        </div>
+        <div class="club-card">
+          <form class="club-form" data-club-form data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+            <label class="book-field"><span>{t.email}</span><input name="email" type="email" autocomplete="email" placeholder={t.emailPh} required /></label>
+            <label class="book-field"><span>{t.firstName} <em>({t.optional})</em></span><input name="firstName" type="text" autocomplete="given-name" /></label>
+            <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <p class="book-error" data-club-error hidden></p>
+            <button type="submit" class="btn btn-primary club-send" data-club-send>{t.send}</button>
+            <p class="club-consent">{t.consent}{' '}<a href={privacy.href}>{privacy.label}</a></p>
+          </form>
+          <div class="club-sent" data-club-sent hidden role="status">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="url(#club-wax)" /><circle cx="32" cy="32" r="18" fill="none" stroke="rgba(255,255,255,.32)" stroke-width="1.5" /><text x="32" y="43" text-anchor="middle" class="club-seal-mark">T</text></svg>
+            <h3>{t.sentTitle}</h3>
+            <p data-club-sent-body>{t.sentBody}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="club-faq">
+        <h2 class="club-h2">{t.faqTitle}</h2>
+        {t.faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Same route as the other request forms: FormSubmit to our inbox, or the
+  // visitor's mail app with the same message when that is unreachable.
+  const form = document.querySelector<HTMLFormElement>('[data-club-form]');
+  if (form) {
+    const copy = JSON.parse(form.dataset.copy || '{}');
+    const inbox = form.dataset.inbox ?? '';
+    const send = form.querySelector<HTMLButtonElement>('[data-club-send]');
+    const error = form.querySelector<HTMLElement>('[data-club-error]');
+    const sent = document.querySelector<HTMLElement>('[data-club-sent]');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('_honey')) return;
+      const get = (k: string) => String(data.get(k) ?? '').trim();
+      let cameFrom = '';
+      try { cameFrom = sessionStorage.getItem('twiggli-came-from') ?? ''; } catch {}
+      const fields: Record<string, string> = {
+        Type: 'Club waitlist',
+        Email: get('email'),
+        'First name': get('firstName'),
+        Language: document.documentElement.lang,
+        'Sent from': location.href,
+        'Came from': cameFrom,
+      };
+      const subject = `Club waitlist: ${fields.Email}${fields['First name'] ? ` (${fields['First name']})` : ''}`;
+      if (error) error.hidden = true;
+      if (send) { send.disabled = true; send.textContent = copy.sending; }
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
+            email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        if (sent) {
+          const body = sent.querySelector<HTMLElement>('[data-club-sent-body]');
+          if (body && fields['First name']) body.textContent = String(copy.sentBodyNamed).replace('{name}', fields['First name']);
+          sent.hidden = false;
+        }
+      } catch {
+        if (error) { error.textContent = String(copy.error).replace('{email}', form.dataset.contact ?? ''); error.hidden = false; }
+        if (send) { send.disabled = false; send.textContent = copy.send; }
+        const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
+        location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+    });
+  }
+</script>

@@ -4,6 +4,7 @@ import Newsletter from './Newsletter.astro';
 import { getSiteData } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import { href, type Lang } from '../lib/url.ts';
+import { clubCopy } from '../data/club.ts';
 
 interface Props {
   lang: Lang;
@@ -14,6 +15,10 @@ const { brand, navLinks, secondaryLinks, workshopLinks, workshopColumnLabel, leg
 const t = ui(lang).footer;
 const columnLabels = { product: t.product, explore: t.explore, legal: t.legal };
 const cta = { title: t.appCta };
+/* The club page is in English and German only; the other languages link
+   to the English one. */
+const clubLang = lang === 'de' ? 'de' : 'en';
+const club = clubCopy[clubLang];
 ---
 
 <footer id="footer" class="footer">
@@ -26,6 +31,7 @@ const cta = { title: t.appCta };
         <a href={href(lang, '/')} class="footer-wordmark">{brand.name}</a>
         <p class="footer-tagline">{brand.tagline}</p>
         <Newsletter lang={lang} compact />
+        <a class="footer-club" href={href(clubLang, '/club/')}>✦ {club.teaserLink} <em>{club.footerSoon}</em></a>
       </div>
       <div class="footer-app">
         <p class="footer-app-title">{cta.title}</p>
