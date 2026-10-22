@@ -1,0 +1,120 @@
+---
+/**
+ * A quiet invitation to the Twiggli Club waitlist, on every page but the
+ * club page itself and the legal / payment pages (Base.astro decides).
+ * English and German get their own words; the other languages read the
+ * English version, which links to /club/.
+ *
+ * It opens once, after 12 seconds on a page or half a page of scrolling,
+ * whichever comes first, and never over another dialog. Closed, it stays
+ * away for 14 days; after a sign-up, for good (lib/clubWaitlist.ts keeps
+ * that in localStorage). A native modal <dialog>: Esc closes it and the
+ * page behind is inert; on a phone it is a bottom sheet.
+ */
+import { clubCopy } from '../data/club.ts';
+import { contactEmail, getSiteData, requestEmail } from '../data/site.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const l = lang === 'de' ? 'de' : 'en';
+const t = clubCopy[l];
+const p = t.popup;
+const privacy = getSiteData(l).legalLinks[1];
+const formCopy = { sending: t.sending, send: p.send, error: t.error, sentBody: t.sentBody, sentBodyNamed: t.sentBodyNamed };
+---
+
+<dialog class="club-pop" data-club-pop lang={l} aria-labelledby="club-pop-title">
+  <button type="button" class="book-close club-pop-close" data-club-pop-close aria-label={p.close}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+  <div class="club-pop-grid">
+    <picture class="club-pop-pic">
+      <source srcset={withBase('/img/club/club-letter.webp')} type="image/webp" />
+      <img src={withBase('/img/club/club-letter.jpg')} width="900" height="900" loading="lazy" decoding="async" alt={t.letterAlt} data-club-pop-img />
+    </picture>
+    <div class="club-pop-body">
+      <span class="club-pop-kicker">{p.kicker}</span>
+      <h2 class="club-pop-title" id="club-pop-title">{p.line}</h2>
+      <ul class="club-pop-list">
+        {p.bullets.map((b) => <li>{b}</li>)}
+      </ul>
+      <p class="club-pop-price">{p.price}</p>
+      <form class="club-pop-form" data-club-pop-form data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+        <label class="book-field"><span>{t.email}</span><input name="email" type="email" autocomplete="email" placeholder={t.emailPh} required /></label>
+        <label class="book-field"><span>{t.firstName} <em>({t.optional})</em></span><input name="firstName" type="text" autocomplete="given-name" /></label>
+        <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <p class="book-error" data-club-error hidden></p>
+        <button type="submit" class="btn btn-primary club-send" data-club-send>{p.send}</button>
+        <p class="club-pop-small">{t.consent}{' '}<a href={privacy.href}>{privacy.label}</a> · <a href={href(l, '/club/')}>{p.more}</a></p>
+      </form>
+      <div class="club-pop-sent" data-club-pop-sent hidden role="status">
+        <h3>{t.sentTitle}</h3>
+        <p data-club-sent-body>{t.sentBody}</p>
+        <a class="club-pop-more" href={href(l, '/club/')}>{p.more}</a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import { CLUB_POPUP_KEY, wireClubForm } from '../lib/clubWaitlist.ts';
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-club-pop]');
+  const DAY = 864e5;
+  const read = () => { try { return JSON.parse(localStorage.getItem(CLUB_POPUP_KEY) || 'null'); } catch { return null; } };
+  const write = (s: string) => { try { localStorage.setItem(CLUB_POPUP_KEY, JSON.stringify({ s, t: Date.now() })); } catch {} };
+  const state = read();
+  const due = !state || (state.s !== 'joined' && Date.now() - Number(state.t || 0) > 14 * DAY);
+
+  if (dialog && due && typeof dialog.showModal === 'function') {
+    const form = dialog.querySelector<HTMLFormElement>('[data-club-pop-form]');
+    if (form) wireClubForm(form, dialog.querySelector<HTMLElement>('[data-club-pop-sent]'), 'popup');
+    let opened = false;
+    let timer = 0;
+
+    const open = () => {
+      if (opened) return;
+      // Never on top of a booking form, a quick view or the tab sheet.
+      let sheetOpen = false;
+      try { sheetOpen = !!document.querySelector('.tabsheet:popover-open'); } catch {}
+      if (document.querySelector('dialog[open]') || sheetOpen) {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(open, 4000);
+        return;
+      }
+      opened = true;
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timer);
+      write('seen');
+      dialog.querySelector<HTMLImageElement>('[data-club-pop-img]')?.setAttribute('loading', 'eager');
+      dialog.showModal();
+      dialog.querySelector<HTMLInputElement>('input[name="email"]')?.focus({ preventScroll: true });
+    };
+    const close = () => { if (dialog.open) { write(read()?.s === 'joined' ? 'joined' : 'closed'); dialog.close(); } };
+
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0 && window.scrollY / max >= 0.5) open();
+    };
+    timer = window.setTimeout(open, 12000);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Fetch the picture a little ahead, so it is there when the sheet opens.
+    window.setTimeout(() => dialog.querySelector<HTMLImageElement>('[data-club-pop-img]')?.setAttribute('loading', 'eager'), 6000);
+
+    dialog.querySelector('[data-club-pop-close]')?.addEventListener('click', close);
+    dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    // A click on the dimmed page around it closes it too.
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) close(); });
+    // Keep Tab inside the dialog.
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const items = [...dialog.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([tabindex="-1"]):not([type="hidden"])')]
+        .filter((el) => el.offsetParent !== null);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+</script>
