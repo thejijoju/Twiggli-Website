@@ -280,6 +280,15 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // Antje, call of 22.10.26: company and group bookings for 7–20 people at
   // €57 per person, materials included; her public sessions run 2 h.
   'anna-malerlebnisse': { activity: 'art', groupRange: [7, 20], hourRange: [2, 2], groupPrice: 57 },
+  // Norbert, call notes of 20.10.26: portrait modelling in clay or painting
+  // on canvas, 2–3 h, at the company. PLACEHOLDER maximum: the size depends
+  // on the room, so the copy says larger groups on request. No price agreed
+  // yet, so no groupPrice and the card says "on request".
+  'norbert-bildhauerei': { activity: 'art', groupRange: [6, 20], hourRange: [2, 3] },
+  // chelti.de: private tastings from 4 people; their public qvevri tasting
+  // (Oct 2024) ran 19–21 h for 6–12 at €55 — dated, so no groupPrice here.
+  // PLACEHOLDER maximum, taken from that tasting's 12.
+  chelti: { activity: 'food', groupRange: [4, 12], hourRange: [2, 2] },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -502,6 +511,17 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'anna-malerlebnisse', name: 'Anna Malerlebnisse', specialty: 'Guided painting sessions', studio: 'Anna Malerlebnisse',
       blurb: 'Antje’s Malerlebnisse are painting sessions for everyone, with a personal touch: unlike an anonymous art night, she guides each person individually. An architect by profession, she left her permanent job four years ago. She started out painting with seniors in care homes and loves bringing young and old together and making a community stronger. Last year she ran around forty events in different places, including company events for startups, school teams and Christmas parties. Every four to six weeks there is a public session at the Begegnungsstätte Mehr Mitte on Torstraße; for a team she comes to your office, or a room is booked. Small easels, paints and all materials are included.',
       group: '7–20', duration: '2 h', place: 'Mehr Mitte, Torstraße 190, Berlin / your office', languages: 'DE · EN', priceNote: 'materials included · a booked room costs extra (usually around €200)' },
+    // Norbert, from Jirel’s call notes (20.10.26): company and team events only,
+    // no public dates. The company he painted with stays unnamed. No price,
+    // no photos yet; his site could not be reached from here.
+    { slug: 'norbert-bildhauerei', name: 'Norbert', specialty: 'Sculpture & painting for teams',
+      blurb: 'Norbert is a sculptor and painter who came to Germany a few years ago. He models portraits of personalities, figures from the rock scene among them, and paints in large formats. He teaches sculpture at a school once or twice a week and runs school workshops lasting one or several weeks, such as three weeks in late summer, each week with its own theme. His teaching covers the basics of sculpture, portrait modelling, ornaments and drawing, and he is especially good at showing movement. On Twiggli he offers company and team events only, in two formats of two to three hours: modelling a portrait in clay, or painting on canvas. He has already run a painting workshop for a company where the whole staff painted a farewell picture together at the easels. He comes to your company; the room and the materials (clay, modelling tools, canvases, easels) are arranged by you or by us.',
+      group: 'From 6 · larger groups on request', duration: '2–3 h', place: 'At your company', languages: 'DE' },
+    // Chelti, from chelti.de (shop, events and tasting pages). No photos:
+    // the site could not be reached from here.
+    { slug: 'chelti', name: 'Chelti', specialty: 'Georgian wine tastings', studio: 'Chelti',
+      blurb: 'Chelti is a family winery in the Alazani Valley in Kakheti, eastern Georgia, founded in 2001 in the village of Shilda and named after the river it lies on. Alongside wines aged in steel and oak, it makes qvevri wine, the oldest way of making wine: must and grape skins ferment together in a clay vessel buried in the ground. Its wine shop in Berlin-Friedenau holds tastings, and a private tasting for your group is put together around your interests, from four people, for a team evening or a Christmas party. At their qvevri tasting, for example, you taste six wines (three amber wines from the old Georgian grapes Rkatsiteli, Mtsvane and Khikhvi, and three reds from Saperavi) with Georgian antipasti, and learn how qvevri wine is made.',
+      group: 'From 4', duration: '2 h', place: 'Isoldestraße 4, Friedenau', languages: 'DE' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -684,6 +704,12 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'anna-malerlebnisse', name: 'Anna Malerlebnisse', specialty: 'Angeleitete Mal-Workshops', studio: 'Anna Malerlebnisse',
       blurb: 'Antjes Malerlebnisse sind Malstunden für alle, mit persönlicher Note: Anders als bei einer anonymen Art Night begleitet sie jede und jeden einzeln. Sie ist Architektin und hat vor vier Jahren ihre Festanstellung aufgegeben. Angefangen hat sie mit Seniorinnen und Senioren in Pflegeheimen, und am liebsten bringt sie Jung und Alt zusammen und stärkt die Gemeinschaft. Im letzten Jahr hat sie rund vierzig Events an verschiedenen Orten geleitet, darunter Firmenevents für Startups, Schulteams und Weihnachtsfeiern. Alle vier bis sechs Wochen gibt es einen offenen Termin in der Begegnungsstätte Mehr Mitte in der Torstraße; für Teams kommt sie zu euch ins Büro, oder es wird ein Raum gebucht. Kleine Staffeleien, Farben und alles Material sind inklusive.',
       group: '7–20', duration: '2 Std.', place: 'Mehr Mitte, Torstraße 190, Berlin / euer Büro', languages: 'DE · EN', priceNote: 'inkl. Material · ein gebuchter Raum kostet extra (meist rund 200 €)' },
+    { slug: 'norbert-bildhauerei', name: 'Norbert', specialty: 'Bildhauerei & Malerei für Teams',
+      blurb: 'Norbert ist Bildhauer und Maler und vor einigen Jahren nach Deutschland gekommen. Er modelliert Porträts von Persönlichkeiten, darunter Figuren aus der Rockszene, und malt großformatig. Ein- bis zweimal pro Woche unterrichtet er Bildhauerei an einer Schule und leitet ein- und mehrwöchige Schulworkshops, etwa drei Wochen im Spätsommer mit wechselnden Themen. Er vermittelt die Grundlagen der Bildhauerei, Porträtmodellieren, Ornamente und Zeichnen, und er kann besonders gut zeigen, wie man Bewegung einfängt. Auf Twiggli bietet er ausschließlich Firmen- und Teamevents an, in zwei Formaten von zwei bis drei Stunden: ein Porträt aus Ton modellieren oder auf Leinwand malen. Für eine Firma hat er schon einen Malworkshop geleitet, bei dem alle Mitarbeitenden gemeinsam an Staffeleien ein Abschiedsbild gemalt haben. Er kommt zu euch ins Unternehmen; Raum und Material (Ton, Modellierwerkzeug, Leinwände, Staffeleien) stellt ihr oder organisieren wir.',
+      group: 'Ab 6 · größere Gruppen auf Anfrage', duration: '2–3 Std.', place: 'Bei euch im Unternehmen', languages: 'DE' },
+    { slug: 'chelti', name: 'Chelti', specialty: 'Georgische Weinverkostungen', studio: 'Chelti',
+      blurb: 'Chelti ist ein Familienweingut im Alasani-Tal in Kachetien im Osten Georgiens, 2001 im Dorf Schilda gegründet und nach dem Fluss benannt, an dem es liegt. Neben Weinen aus Stahltank und Eichenfass entsteht dort Qvevri-Wein, die älteste Form der Weinherstellung: Most und Maische gären gemeinsam in einem Tongefäß, das in der Erde vergraben ist. Im Weinladen in Berlin-Friedenau finden Verkostungen statt, und eine private Degustation für eure Gruppe wird nach euren Interessen zusammengestellt, ab vier Personen, für den Teamabend oder die Weihnachtsfeier. Bei der Qvevri-Verkostung zum Beispiel probiert ihr sechs Weine (drei Bernsteinweine aus den alten georgischen Rebsorten Rkatsiteli, Mtsvane und Khikhvi und drei Rotweine aus Saperavi) zu georgischen Antipasti und erfahrt, wie Qvevri-Wein entsteht.',
+      group: 'Ab 4', duration: '2 Std.', place: 'Isoldestraße 4, Friedenau', languages: 'DE' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -1492,6 +1518,7 @@ const firstNames: Record<string, string> = {
   aria: 'Aria',
   petitejungle: 'Aurélie',
   'anna-malerlebnisse': 'Antje',
+  'norbert-bildhauerei': 'Norbert',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
   tinkery: 'Astrid', yurika: 'Yurika',
@@ -1530,6 +1557,8 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   aria: { area: 'Friedrichshagen', onSite: true },
   petitejungle: { area: 'Mitte', onSite: true },
   'anna-malerlebnisse': { area: 'Mitte', onSite: true },
+  'norbert-bildhauerei': { area: 'Berlin', onSite: true },
+  chelti: { area: 'Friedenau' },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },

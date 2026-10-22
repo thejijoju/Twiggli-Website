@@ -264,6 +264,9 @@ const SOURCES = [
     district: 'Lichtenberg' },
   // Anna Malerlebnisse (Antje) has no source here on purpose: she emails
   // her dates and they are entered in site/src/data/hostDates.ts.
+  // Norbert (norbert-bildhauerei) has no public dates: company events only.
+  // Chelti lists no current tastings on chelti.de, and the site could not be
+  // reached from here; dates would go in hostDates.ts too.
   // Petite Jungle sells one Shopify product per workshop evening, dated in
   // its description. The shop also sells jars, kits and vouchers, so only
   // the "Workshops" product type is read. The DIY-kit photos are The
