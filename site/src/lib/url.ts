@@ -42,8 +42,18 @@ export const LANG_META: Record<Lang, { name: string; flag: string; locale: strin
 /** Locale-aware version of withBase: English stays unprefixed (the default
  *  locale), every other language lives under its prefix. Pass paths as
  *  written in the design, e.g. '/' or '/corporate/' — same as withBase. */
-export const href = (lang: Lang, path: string): string =>
-  lang === DEFAULT_LANG ? withBase(path) : withBase(`/${lang}${path === '/' ? '/' : path}`);
+/** The few pages whose slug is translated: the bare (English) path, and
+ *  what it is called in the languages that rename it. href() writes the
+ *  local slug, splitLang() reads it back to the bare path, so the switcher
+ *  and the hreflang links pair the two versions. */
+const LOCAL_SLUGS: Record<string, Partial<Record<Lang, string>>> = {
+  '/about/': { de: '/ueber-uns/' },
+};
+
+export const href = (lang: Lang, path: string): string => {
+  const local = LOCAL_SLUGS[path]?.[lang] ?? path;
+  return lang === DEFAULT_LANG ? withBase(local) : withBase(`/${lang}${local === '/' ? '/' : local}`);
+};
 
 /** Strips the deploy base and any language prefix off a pathname, leaving
  *  the bare in-site path ('/corporate/'), plus the language it was in. */
@@ -53,7 +63,9 @@ export const splitLang = (pathname: string): { lang: Lang; bare: string } => {
   if (path.startsWith(base)) path = `/${path.slice(base.length)}`;
   const m = path.match(/^\/([a-z]{2})(\/|$)/);
   if (m && isLang(m[1]) && m[1] !== DEFAULT_LANG) {
-    return { lang: m[1], bare: path.slice(m[1].length + 1) || '/' };
+    const local = path.slice(m[1].length + 1) || '/';
+    const bare = Object.keys(LOCAL_SLUGS).find((k) => LOCAL_SLUGS[k][m[1] as Lang] === local) ?? local;
+    return { lang: m[1], bare };
   }
   return { lang: DEFAULT_LANG, bare: path || '/' };
 };

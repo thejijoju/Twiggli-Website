@@ -112,6 +112,8 @@ export function getSiteData(lang: Lang) {
     /* Out of the header, still a click away here. */
     { label: t.nav.contact, href: href(lang, '/contact/') },
     { label: t.nav.blog, href: href(docLang, '/blog/') },
+    /* The about page is in English and German only (/about/, /de/ueber-uns/). */
+    { label: t.footer.about, href: href(docLang, '/about/') },
   ];
 
   const workshopLinks: NavLink[] = ACTIVITY_ORDER.map((activity) => ({

@@ -1,0 +1,71 @@
+---
+/**
+ * About Twiggli, in English (/about/) and German (/de/ueber-uns/): a warm,
+ * quiet reading page — Jirel's note on why Twiggli exists, signed off with
+ * her portrait, and two small ways onward. Copy in about.ts.
+ */
+import Base from '../layouts/Base.astro';
+import { aboutCopy } from '../data/about.ts';
+import { SITE, absolute } from '../data/seo.ts';
+import { href, withBase } from '../lib/url.ts';
+
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+const t = aboutCopy[lang];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: t.title,
+  description: t.description,
+  url: absolute(href(lang, '/about/')),
+  inLanguage: lang,
+  about: { '@id': `${SITE}/#organization` },
+  mainEntity: {
+    '@type': 'Organization',
+    '@id': `${SITE}/#organization`,
+    name: 'Twiggli',
+    url: `${SITE}/`,
+    founder: { '@type': 'Person', name: t.name, image: absolute('/img/about/jirel.jpg') },
+    areaServed: { '@type': 'City', name: 'Berlin' },
+  },
+};
+---
+
+<Base title={t.title} description={t.description} lang={lang} translations={['en', 'de']} image="/img/about/jirel.jpg">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+  </Fragment>
+  <div class="about">
+    <article class="container about-inner">
+      <header class="about-hero">
+        <span class="about-kicker">{t.kicker}</span>
+        <h1 class="about-title">{t.lead}</h1>
+        <p class="about-intro">{t.intro}</p>
+      </header>
+
+      {t.sections.map((s, i) => (
+        <section class:list={['about-section', { 'is-statement': i === 0 }]}>
+          <h2 class="about-h2">{s.h2}</h2>
+          <p>{s.body}</p>
+        </section>
+      ))}
+
+      <footer class="about-signoff">
+        <picture class="about-photo">
+          <source srcset={withBase('/img/about/jirel.webp')} type="image/webp" />
+          <img src={withBase('/img/about/jirel.jpg')} width="416" height="416" loading="lazy" decoding="async" alt={t.photoAlt} />
+        </picture>
+        <div>
+          <p class="about-hand">{t.signoff}</p>
+          <p class="about-name"><b>{t.name}</b>, {t.role}</p>
+        </div>
+      </footer>
+
+      <div class="about-actions">
+        <a class="btn btn-primary" href={href(lang, '/workshops/')}>{t.ctaWorkshops}</a>
+        <a class="btn btn-secondary" href={href(lang, '/host/')}>{t.ctaHost}</a>
+      </div>
+    </article>
+  </div>
+</Base>
