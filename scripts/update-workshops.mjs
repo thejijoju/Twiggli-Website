@@ -262,6 +262,8 @@ const SOURCES = [
     requestBooking: true, infoUrl: 'https://www.mobile-dunkelkammer.com/workshops/termine/',
     imagePage: 'https://www.mobile-dunkelkammer.com/workshops/',
     district: 'Lichtenberg' },
+  // Anna Malerlebnisse (Antje) has no source here on purpose: she emails
+  // her dates and they are entered in site/src/data/hostDates.ts.
   // Petite Jungle sells one Shopify product per workshop evening, dated in
   // its description. The shop also sells jars, kits and vouchers, so only
   // the "Workshops" product type is read. The DIY-kit photos are The

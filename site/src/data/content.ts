@@ -277,6 +277,9 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // 15 (1 h); up to 20 in the studio, up to 150 on-site. Net prices per
   // person for companies: XS 35, S 55, M 75.
   petitejungle:     { activity: 'craft',     groupRange: [7, 150], hourRange: [1, 2], groupPrice: [35, 75] },
+  // Antje, call of 22.10.26: company and group bookings for 7–20 people at
+  // €57 per person, materials included; her public sessions run 2 h.
+  'anna-malerlebnisse': { activity: 'art', groupRange: [7, 20], hourRange: [2, 2], groupPrice: 57 },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -494,6 +497,11 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'petitejungle', name: 'Petite Jungle', specialty: 'Terrarium workshops', studio: 'Petite Jungle',
       blurb: 'Aurélie has been building gardens under glass as Petite Jungle since 2019 and teaches it in her studio in Mitte. First you learn how a closed terrarium works (it needs watering only a few times a year), then you layer the soil, set the moss and the tropical plants you pick yourself, and take your jar home. Three sizes for teams: M, a 5-litre jar with 4–5 plants, in two hours; S, a 1.5-litre Weck jar with 2–3 plants, in 90 minutes; and XS, a mini terrarium in an hour, which works for events of up to 150 people. Public evenings run on Wednesdays, in German or English.',
       group: '7–20 in the studio · up to 150 on-site', duration: '1–2 h', place: 'Ruppiner Str. 4, Berlin / on-site', languages: 'DE · EN · FR', priceNote: 'plus VAT' },
+    // Copy from our call with Antje (22.10.26). Her company clients stay
+    // unnamed on purpose. No photos or reel yet.
+    { slug: 'anna-malerlebnisse', name: 'Anna Malerlebnisse', specialty: 'Guided painting sessions', studio: 'Anna Malerlebnisse',
+      blurb: 'Antje’s Malerlebnisse are painting sessions for everyone, with a personal touch: unlike an anonymous art night, she guides each person individually. An architect by profession, she left her permanent job four years ago. She started out painting with seniors in care homes and loves bringing young and old together and making a community stronger. Last year she ran around forty events in different places, including company events for startups, school teams and Christmas parties. Every four to six weeks there is a public session at the Begegnungsstätte Mehr Mitte on Torstraße; for a team she comes to your office, or a room is booked. Small easels, paints and all materials are included.',
+      group: '7–20', duration: '2 h', place: 'Mehr Mitte, Torstraße 190, Berlin / your office', languages: 'DE · EN', priceNote: 'materials included · a booked room costs extra (usually around €200)' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -673,6 +681,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'petitejungle', name: 'Petite Jungle', specialty: 'Terrarium-Workshops', studio: 'Petite Jungle',
       blurb: 'Aurélie baut seit 2019 als Petite Jungle Gärten unter Glas und zeigt es in ihrem Studio in Mitte. Zuerst erfährst du, wie ein geschlossenes Terrarium funktioniert (gegossen wird nur ein paar Mal im Jahr), dann schichtest du Erde, setzt Moos und die tropischen Pflanzen, die du selbst aussuchst, und nimmst dein Glas mit nach Hause. Drei Größen für Teams: M, ein 5-Liter-Glas mit 4–5 Pflanzen, in zwei Stunden; S, ein 1,5-Liter-Weckglas mit 2–3 Pflanzen, in 90 Minuten; und XS, ein Mini-Terrarium in einer Stunde, das auch für Events mit bis zu 150 Personen funktioniert. Offene Abende gibt es mittwochs, auf Deutsch oder Englisch.',
       group: '7–20 im Studio · bis 150 vor Ort', duration: '1–2 Std.', place: 'Ruppiner Str. 4, Berlin / vor Ort', languages: 'DE · EN · FR', priceNote: 'zzgl. MwSt.' },
+    { slug: 'anna-malerlebnisse', name: 'Anna Malerlebnisse', specialty: 'Angeleitete Mal-Workshops', studio: 'Anna Malerlebnisse',
+      blurb: 'Antjes Malerlebnisse sind Malstunden für alle, mit persönlicher Note: Anders als bei einer anonymen Art Night begleitet sie jede und jeden einzeln. Sie ist Architektin und hat vor vier Jahren ihre Festanstellung aufgegeben. Angefangen hat sie mit Seniorinnen und Senioren in Pflegeheimen, und am liebsten bringt sie Jung und Alt zusammen und stärkt die Gemeinschaft. Im letzten Jahr hat sie rund vierzig Events an verschiedenen Orten geleitet, darunter Firmenevents für Startups, Schulteams und Weihnachtsfeiern. Alle vier bis sechs Wochen gibt es einen offenen Termin in der Begegnungsstätte Mehr Mitte in der Torstraße; für Teams kommt sie zu euch ins Büro, oder es wird ein Raum gebucht. Kleine Staffeleien, Farben und alles Material sind inklusive.',
+      group: '7–20', duration: '2 Std.', place: 'Mehr Mitte, Torstraße 190, Berlin / euer Büro', languages: 'DE · EN', priceNote: 'inkl. Material · ein gebuchter Raum kostet extra (meist rund 200 €)' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -1480,6 +1491,7 @@ const firstNames: Record<string, string> = {
   dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
   aria: 'Aria',
   petitejungle: 'Aurélie',
+  'anna-malerlebnisse': 'Antje',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
   tinkery: 'Astrid', yurika: 'Yurika',
@@ -1517,6 +1529,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   yurika: { area: 'Mitte / Wedding' },
   aria: { area: 'Friedrichshagen', onSite: true },
   petitejungle: { area: 'Mitte', onSite: true },
+  'anna-malerlebnisse': { area: 'Mitte', onSite: true },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },
