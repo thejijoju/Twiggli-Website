@@ -15,6 +15,11 @@ erstaunlich stabil.
 Auf so einem Blatt malt man bei Kirsten. Ihr Workshop-Name, Himapan Berlin,
 klingt nach Fernweh, und das ist kein Zufall.
 
+<figure class="post-figure">
+  <img src="/img/hosts/himapan-berlin-2.jpg" alt="Getrocknete, gepresste Lotusblätter mit Farbtuben und Schwamm" loading="lazy" decoding="async" />
+  <figcaption>Gepresste Lotusblätter aus Thailand, bevor die erste Farbe darauf kommt.</figcaption>
+</figure>
+
 ## Was Lotusblattmalerei ist
 
 Bei der Lotusblattmalerei ist das Blatt selbst die Leinwand. Die Blätter
@@ -97,6 +102,11 @@ Schicht für Schicht. Das geht langsam, und genau darin liegt der Reiz. Man
 versinkt darin. Kirsten erlebt immer wieder, dass Menschen, die unruhig
 ankommen, nach einer Weile ganz still werden.
 
+<figure class="post-figure">
+  <img src="/img/hosts/himapan-berlin-1.jpg" alt="Eine Hand arbeitet Farbe mit den Fingern in ein Lotusblatt ein" loading="lazy" decoding="async" />
+  <figcaption>Mit den Fingern statt mit dem Pinsel: Die Farbe wird ins Blatt eingearbeitet.</figcaption>
+</figure>
+
 Talent braucht es keins. Mit ihrer Anleitung geht jede und jeder mit einem
 schönen Bild nach Hause. Das kleinste Format, 40 × 40 Zentimeter, dauert drei
 bis vier Stunden. Größere Formate können sich über mehrere Tage ziehen.
@@ -106,6 +116,11 @@ den Gärten der Welt haben dreißig bis vierzig Besucherinnen und Besucher
 nacheinander an einem einzigen Bild gearbeitet, eine Hand nach der anderen. Für
 ein Team ist das eine schöne Idee: ein gemeinsames Bild, das danach im Büro
 hängt.
+
+<figure class="post-figure">
+  <img src="/img/hosts/himapan-berlin-5.jpg" alt="Fertiges Lotusblattbild in Blau- und Gelbtönen" loading="lazy" decoding="async" />
+  <figcaption>Ein fertiges Bild: jedes Blatt mit seiner eigenen Zeichnung.</figcaption>
+</figure>
 
 ## Für euer Team, eure Freundinnen, euer Wohnzimmer
 

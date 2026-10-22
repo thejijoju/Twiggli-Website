@@ -14,6 +14,11 @@ wooden frame, and it looks delicate and surprisingly sturdy at the same time.
 That is what you paint on with Kirsten. Her workshops go by the name Himapan
 Berlin, which sounds like somewhere far away. That is the point.
 
+<figure class="post-figure">
+  <img src="/img/hosts/himapan-berlin-2.jpg" alt="Dried, pressed lotus leaves with paint tubes and a sponge" loading="lazy" decoding="async" />
+  <figcaption>Pressed lotus leaves from Thailand, before the first colour goes on.</figcaption>
+</figure>
+
 ## What lotus leaf painting is
 
 In lotus leaf painting the leaf itself is the canvas. The leaves are harvested
@@ -92,6 +97,11 @@ fingers, layer by layer. It is slow, and that is exactly the appeal. You sink
 into it. Kirsten sees it again and again: people who arrive restless go quiet
 after a while.
 
+<figure class="post-figure">
+  <img src="/img/hosts/himapan-berlin-1.jpg" alt="A hand working paint into a lotus leaf with the fingers" loading="lazy" decoding="async" />
+  <figcaption>Fingers instead of a brush: the paint is worked into the leaf.</figcaption>
+</figure>
+
 No talent needed. With her guidance everyone goes home with a beautiful
 picture. The smallest format, 40 × 40 cm, takes three to four hours. Larger
 formats can take several days.
@@ -100,6 +110,11 @@ And not everyone has to paint their own. At an event in the Gärten der Welt,
 thirty to forty visitors worked on one single picture, one pair of hands after
 another. For a team that is a lovely idea: one shared picture that ends up on
 the office wall.
+
+<figure class="post-figure">
+  <img src="/img/hosts/himapan-berlin-5.jpg" alt="Finished lotus leaf painting in blues and yellows" loading="lazy" decoding="async" />
+  <figcaption>A finished picture: every leaf with its own pattern.</figcaption>
+</figure>
 
 ## For your team, your friends, your living room
 
