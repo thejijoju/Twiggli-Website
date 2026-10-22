@@ -39,8 +39,10 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
     <p class="newsletter-compact-title">{copy.heading}</p>
     <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-brevo={brevoFormUrl || undefined} data-lang={lang} novalidate>
       <label for={id} class="sr-only">{copy.label}</label>
-      <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
-      <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+      <div class="subscribe-field">
+        <input type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
+        <button type="submit" class="subscribe-btn" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+      </div>
     </form>
     <p class="newsletter-note" data-newsletter-thanks hidden>{brevoFormUrl ? copy.checkInbox : copy.thanks}</p>
     <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
@@ -73,8 +75,10 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
       <p class="newsletter-lede">{copy.lede}</p>
       <form class="newsletter-form" data-newsletter data-inbox={requestEmail} data-brevo={brevo || undefined} data-lang={lang} data-audience={audience} novalidate>
         <label for={id} class="sr-only">{copy.label}</label>
-        <input class="input" type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
-        <button type="submit" class="btn btn-primary" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+        <div class="subscribe-field">
+          <input type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
+          <button type="submit" class="subscribe-btn" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
+        </div>
       </form>
       <p class="newsletter-note" data-newsletter-thanks hidden>{brevo ? copy.checkInbox : copy.thanks}</p>
       <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>

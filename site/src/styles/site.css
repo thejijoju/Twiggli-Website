@@ -1011,22 +1011,13 @@ a:hover { color: var(--color-accent); }
   margin: 28px auto 0;
   max-width: 460px;
 }
-.newsletter .newsletter-form .input { flex: 1; min-width: 0; }
-.newsletter .newsletter-form .btn { flex: none; }
-.newsletter .input {
-  padding: 13px 20px;
-  border-radius: 999px;
-  border: 1.5px solid color-mix(in srgb, var(--color-accent) 18%, transparent);
-  background: rgba(255, 255, 255, 0.9);
-  font: 400 16px/1.3 var(--font-body);
-}
-.newsletter .input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent); }
+/* The field itself is the shared .subscribe-field (the host Follow pill). */
+.newsletter-form .subscribe-field { flex: 1; min-width: 0; }
+.newsletter-form .subscribe-field input { text-align: left; }
 .newsletter-consent { margin: 14px 0 0; font-size: 13.5px; color: var(--color-text-muted); }
 .newsletter-consent a { color: inherit; text-underline-offset: 3px; }
 @media (max-width: 520px) {
   .newsletter { padding: 56px 18px 48px; border-radius: 24px; }
-  .newsletter-form { flex-direction: column; }
-  .newsletter .newsletter-form .btn { justify-content: center; }
 }
 .newsletter-note { margin: 16px 0 0; font-weight: 700; color: var(--color-accent-700); }
 .newsletter-error { color: #b42318; font-weight: 400; }
@@ -1034,19 +1025,6 @@ a:hover { color: var(--color-accent); }
 .newsletter-compact { margin-top: 28px; max-width: 420px; }
 .newsletter-compact-title { margin: 0; font-weight: 700; font-size: 15px; color: #fff; }
 .newsletter-compact .newsletter-form { margin-top: 10px; flex-wrap: nowrap; gap: 8px; }
-.newsletter-compact .input {
-  flex: 1;
-  min-width: 0;
-  padding: 11px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font: 400 15px/1.3 var(--font-body);
-}
-.newsletter-compact .input::placeholder { color: rgba(255, 255, 255, 0.5); }
-.newsletter-compact .input:focus { outline: none; border-color: rgba(255, 255, 255, 0.6); }
-.newsletter-compact .btn { flex: none; padding-inline: 18px; }
 .newsletter-compact .newsletter-note { margin-top: 10px; color: #fff; }
 .newsletter-compact .newsletter-error { color: #ffb4a8; }
 
@@ -2125,25 +2103,33 @@ a:hover { color: var(--color-accent); }
    type your email, tap Follow. */
 .host-follow { margin-top: 36px; max-width: 340px; }
 .host-follow-prompt { display: block; margin: 0 0 10px; font-size: 15px; font-weight: 600; color: var(--color-text); }
-.host-follow-field {
+/* The shared subscribe look, used by every email signup on the site (host
+   Follow, newsletter box, footer, teams box) — an email field with its round
+   button inside, as one pill. .subscribe-btn on its own (club waitlist) is
+   the same button standing alone. The club pop-up keeps its own button. */
+.subscribe-field {
   display: flex; align-items: center; gap: 8px;
   height: 52px; padding: 0 0 0 20px; border-radius: 999px;
   background: #fff;
   border: 2px solid rgba(124, 77, 255, 0.28);
   box-shadow: 0 6px 20px rgba(84, 46, 188, 0.08);
 }
-.host-follow-field:focus-within { border-color: #6a3eec; box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.14); }
-.host-follow-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--color-text); padding: 0; }
-.host-follow-field input::placeholder { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
-.host-follow-field button {
-  /* Flush with the field's outline: top, right and bottom. */
-  flex: none; align-self: stretch; height: auto; margin: -2px -2px -2px 0;
-  border: 0; border-radius: 999px; padding: 0 24px; cursor: pointer;
+.subscribe-field:focus-within { border-color: #6a3eec; box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.14); }
+.subscribe-field input { flex: 1; width: 0; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; font: inherit; font-family: var(--font-body); font-size: 16px; color: var(--color-text); padding: 0; }
+.subscribe-field input::placeholder { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.subscribe-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 52px; border: 0; border-radius: 999px; padding: 0 24px; cursor: pointer;
   background: linear-gradient(135deg, #6a3eec, rgb(84, 46, 188)); color: #fff;
-  font-family: inherit; font-weight: 700; font-size: 15px;
+  font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1; white-space: nowrap;
+  text-decoration: none;
 }
-.host-follow-field button:hover { filter: brightness(1.08); }
-.host-follow-field button:disabled { opacity: 0.7; cursor: wait; }
+.subscribe-btn:hover { filter: brightness(1.08); color: #fff; }
+.subscribe-btn:focus-visible { outline: 2px solid #6a3eec; outline-offset: 2px; }
+.subscribe-btn:disabled { opacity: 0.7; cursor: wait; }
+/* Flush with the field's outline: top, right and bottom. */
+.subscribe-field .subscribe-btn { flex: none; align-self: stretch; height: auto; margin: -2px -2px -2px 0; }
+.subscribe-btn-block { width: 100%; }
 .host-follow-note { margin: 6px 0 0 18px; font-size: 13px; color: #b42318; }
 .host-follow-done { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 16px; border-radius: 999px; background: #f1ecff; color: rgb(84, 46, 188); font-size: 14.5px; font-weight: 600; width: fit-content; }
 .host-follow-done svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -6073,6 +6059,7 @@ h1, h2, h3, h4,
 .club-send { width: 100%; justify-content: center; margin-top: 4px; background: var(--accent-gradient); }
 .club-send:disabled { opacity: 0.6; cursor: wait; }
 .club-form .book-error { margin: 0; }
+.club-page-send { margin-top: 4px; }
 .club-consent { margin: 0; font-size: 13px; color: var(--color-text-muted); }
 .club-sent { text-align: center; padding: 8px 0; }
 .club-sent svg { width: 64px; height: 64px; }

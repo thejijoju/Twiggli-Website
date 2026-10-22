@@ -59,7 +59,7 @@ const link = (path: string) => {
         </svg>
         <p class="newsletter-lede">{copy.body}</p>
         <div class="newsletter-status-actions">
-          <a class="btn btn-primary" href={link(copy.ctaHref)}>{copy.cta}</a>
+          <a class={kind === 'unsubscribed' ? 'subscribe-btn' : 'btn btn-primary'} href={link(copy.ctaHref)}>{copy.cta}</a>
           <a class="newsletter-status-more" href={link(copy.moreHref)}>{copy.more}</a>
         </div>
       </div>
