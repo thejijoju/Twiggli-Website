@@ -23,8 +23,7 @@ export const hubShelvesCopy: Record<Lang, HubShelvesCopy> = {
 };
 
 /** The host featured at the top of the workshops page, by slug. Left
- *  unset, the page picks whoever with a reel has the most dates in the
- *  coming week, so the pick changes by itself with every build. */
+ *  unset, the hosts with a reel take turns, one per calendar week. */
 export const HUB_PICK: string | undefined = undefined;
 
 /** The occasion pages' day cards (HostDayCards.astro): one card per host
