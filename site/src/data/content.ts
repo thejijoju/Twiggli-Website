@@ -289,6 +289,10 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // (Oct 2024) ran 19–21 h for 6–12 at €55 — dated, so no groupPrice here.
   // PLACEHOLDER maximum, taken from that tasting's 12.
   chelti: { activity: 'food', groupRange: [4, 12], hourRange: [2, 2] },
+  // Kirsten, call of 22.10.26: 2–8 people, the 40 × 40 cm format in 3–4 h at
+  // €135 per person with frame and materials. Larger formats run over several
+  // days, so the copy says so rather than the range.
+  'himapan-berlin': { activity: 'art', groupRange: [2, 8], hourRange: [3, 4], groupPrice: 135 },
   // PLACEHOLDER group range — the studio says "small groups" and publishes
   // no cap. Hours span the 2h30 earrings class to the 8–9 h sandal day.
   lama:             { activity: 'craft',     groupRange: [1, 10], hourRange: [2.5, 9] },
@@ -522,6 +526,12 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'chelti', name: 'Chelti', specialty: 'Georgian wine tastings', studio: 'Chelti',
       blurb: 'Chelti is a family winery in the Alazani Valley in Kakheti, eastern Georgia, founded in 2001 in the village of Shilda and named after the river it lies on. Alongside wines aged in steel and oak, it makes qvevri wine, the oldest way of making wine: must and grape skins ferment together in a clay vessel buried in the ground. Its wine shop in Berlin-Friedenau holds tastings, and a private tasting for your group is put together around your interests, from four people, for a team evening or a Christmas party. At their qvevri tasting, for example, you taste six wines (three amber wines from the old Georgian grapes Rkatsiteli, Mtsvane and Khikhvi, and three reds from Saperavi) with Georgian antipasti, and learn how qvevri wine is made.',
       group: 'From 4', duration: '2 h', place: 'Isoldestraße 4, Friedenau', languages: 'DE' },
+    // Kirsten, from Jirel’s call (22.10.26). Group workshops only, no public
+    // dates; she comes to the group. No photos yet: himapanberlin.de could not
+    // be reached from here. No contact details on the site on purpose.
+    { slug: 'himapan-berlin', name: 'Himapan Berlin', specialty: 'Lotus leaf painting', studio: 'Himapan Berlin',
+      blurb: 'At Himapan Berlin, Kirsten teaches painting on real lotus leaves, a craft that is almost unknown: only one other person in Germany teaches it, and it is rare in Europe too. The leaves are harvested fresh in Thailand and prepared in a secret process of about three weeks, dried and pressed, so that they can be stretched on hand-made wooden frames from an atelier in Bangkok, frames you cannot buy in Germany. You do not just paint on the leaf: you work the paint into it with a sponge and your fingers, which is deeply calming, and people who arrive restless go home relaxed. No talent is needed: with her guidance everyone leaves with a beautiful picture. She worked as a nurse for forty years, has always painted, much of it in acrylic, and learned lotus leaf painting three years ago from her predecessor, who had lived in Asia and was looking for a successor. At the Gärten der Welt she had thirty to forty visitors create one picture together, passed from hand to hand. A workshop is for 2 to 8 people: the smallest format, 40 × 40 cm, takes three to four hours, frame and all materials included. She brings everything and comes to you, to the office, to your home or to any room; larger formats can take several days, and a group can also make one picture together. Kirsten also sells her own lotus leaf paintings, some of them currently on show in Prenzlauer Berg.',
+      group: '2–8', duration: '3–4 h · larger formats over several days', place: 'At your company, at home or in any room', languages: 'DE', priceNote: 'frame and all materials included · a booked room costs extra' },
     { slug: 'lama', name: 'Dani', specialty: 'Leather craft & sandal making', studio: 'LAMA Leather Goods',
       blurb: 'A leather atelier on Reichenberger Strasse where every LAMA piece is designed and made, and where the workshops run at the same benches. You work vegetable-tanned leather — the kind that takes on a patina rather than wearing out — and learn to cut, shape and finish it while making something of your own: earrings from the studio\u2019s offcuts, a journal cover, a belt fitted to you, a plant holder, a collar and leash for your dog, one of the house beltbags, or a pair of sandals cut to the shape of your own feet. Dani guides every step, the groups are small on purpose, and no experience is expected. Taught in English, French or Spanish; all materials included.',
       group: 'Small group', duration: '2.5–9 h', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -710,6 +720,9 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'chelti', name: 'Chelti', specialty: 'Georgische Weinverkostungen', studio: 'Chelti',
       blurb: 'Chelti ist ein Familienweingut im Alasani-Tal in Kachetien im Osten Georgiens, 2001 im Dorf Schilda gegründet und nach dem Fluss benannt, an dem es liegt. Neben Weinen aus Stahltank und Eichenfass entsteht dort Qvevri-Wein, die älteste Form der Weinherstellung: Most und Maische gären gemeinsam in einem Tongefäß, das in der Erde vergraben ist. Im Weinladen in Berlin-Friedenau finden Verkostungen statt, und eine private Degustation für eure Gruppe wird nach euren Interessen zusammengestellt, ab vier Personen, für den Teamabend oder die Weihnachtsfeier. Bei der Qvevri-Verkostung zum Beispiel probiert ihr sechs Weine (drei Bernsteinweine aus den alten georgischen Rebsorten Rkatsiteli, Mtsvane und Khikhvi und drei Rotweine aus Saperavi) zu georgischen Antipasti und erfahrt, wie Qvevri-Wein entsteht.',
       group: 'Ab 4', duration: '2 Std.', place: 'Isoldestraße 4, Friedenau', languages: 'DE' },
+    { slug: 'himapan-berlin', name: 'Himapan Berlin', specialty: 'Lotusblattmalerei', studio: 'Himapan Berlin',
+      blurb: 'Bei Himapan Berlin zeigt Kirsten die Malerei auf echten Lotusblättern, ein fast unbekanntes Handwerk: In Deutschland bietet es außer ihr nur noch eine Person an, und auch in Europa ist es selten. Die Blätter werden in Thailand frisch geerntet und in einem geheimen Verfahren von etwa drei Wochen getrocknet und gepresst, damit sie sich auf handgefertigte Holzrahmen aufziehen lassen. Die Rahmen kommen aus einem Atelier in Bangkok und sind in Deutschland nicht zu kaufen. Man malt nicht einfach auf das Blatt, sondern arbeitet die Farbe mit Schwamm und Fingern ein, und das ist sehr meditativ: Wer unruhig ankommt, geht entspannt nach Hause. Talent braucht es keins, mit ihrer Anleitung nimmt jede und jeder ein schönes Bild mit. Sie war vierzig Jahre Krankenschwester, hat immer gemalt, viel mit Acryl, und hat die Lotusblattmalerei vor drei Jahren von ihrer Vorgängerin gelernt, die in Asien gelebt hatte und eine Nachfolgerin suchte. In den Gärten der Welt haben unter ihrer Anleitung dreißig bis vierzig Besucherinnen und Besucher von Hand zu Hand ein gemeinsames Bild geschaffen. Ein Workshop ist für 2 bis 8 Personen: Das kleinste Format, 40 × 40 cm, dauert drei bis vier Stunden, Rahmen und alles Material inklusive. Sie bringt alles mit und kommt zu euch, ins Büro, nach Hause oder in jeden anderen Raum; größere Formate können mehrere Tage dauern, und eine Gruppe kann auch gemeinsam ein Bild gestalten. Kirsten verkauft auch ihre eigenen Lotusblattbilder, einige sind gerade in Prenzlauer Berg ausgestellt.',
+      group: '2–8', duration: '3–4 Std. · größere Formate über mehrere Tage', place: 'Bei euch im Unternehmen, zu Hause oder in jedem Raum', languages: 'DE', priceNote: 'inkl. Rahmen und Material · ein gebuchter Raum kostet extra' },
     { slug: 'lama', name: 'Dani', specialty: 'Lederhandwerk & Sandalen', studio: 'LAMA Leather Goods',
       blurb: 'Ein Lederatelier in der Reichenberger Straße, in dem jedes LAMA-Stück entworfen und gefertigt wird — und in dem die Workshops an denselben Werkbänken laufen. Du arbeitest mit pflanzlich gegerbtem Leder, das Patina ansetzt statt sich abzunutzen, und lernst schneiden, formen und finishen, während etwas Eigenes entsteht: Ohrringe aus den Resten des Studios, ein Notizbuchumschlag, ein Gürtel nach deinem Maß, ein Pflanzenhalter, Halsband und Leine für deinen Hund, eine der hauseigenen Beltbags oder ein Paar Sandalen, zugeschnitten auf deine Füße. Dani begleitet jeden Schritt, die Gruppen sind bewusst klein, Vorkenntnisse braucht es keine. Auf Englisch, Französisch oder Spanisch; Material inklusive.',
       group: 'Kleine Gruppe', duration: '2,5–9 Std.', place: 'Reichenberger Str. 115a, Kreuzberg', languages: 'EN · FR · ES' },
@@ -1519,6 +1532,7 @@ const firstNames: Record<string, string> = {
   petitejungle: 'Aurélie',
   'anna-malerlebnisse': 'Antje',
   'norbert-bildhauerei': 'Norbert',
+  'himapan-berlin': 'Kirsten',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
   loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
   tinkery: 'Astrid', yurika: 'Yurika',
@@ -1559,6 +1573,8 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   'anna-malerlebnisse': { area: 'Mitte', onSite: true },
   'norbert-bildhauerei': { area: 'Berlin', onSite: true },
   chelti: { area: 'Friedenau' },
+  // Based in the north of Berlin; she always comes to the group.
+  'himapan-berlin': { area: 'Berlin', onSite: true },
   lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },
