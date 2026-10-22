@@ -37,11 +37,13 @@ const hosts = getHosts(lang)
   .sort((a, b) => a.name.localeCompare(b.name, lang));
 const h = hubShelvesCopy[lang];
 
-/* The featured host: the one named in HUB_PICK, else whoever with a reel
-   has the most dates in the coming week. */
-const weekCount = (slug: string) => sessions.filter((s) => s.host.slug === slug && s.dayOffset < 7).length;
+/* The featured host: the one named in HUB_PICK, else the hosts with a reel
+   take turns, one per calendar week, so every host gets the spot in time.
+   The site rebuilds daily, so the pick moves on by itself each Monday. */
+const withReel = hosts.filter((x) => x.video).sort((a, b) => a.slug.localeCompare(b.slug));
+const weekNo = Math.floor((Date.now() / 86_400_000 + 3) / 7); // weeks since the Monday before 1 Jan 1970
 const pick = hosts.find((x) => x.slug === HUB_PICK && x.video)
-  ?? hosts.filter((x) => x.video).sort((a, b) => weekCount(b.slug) - weekCount(a.slug))[0];
+  ?? (withReel.length ? withReel[weekNo % withReel.length] : undefined);
 /* Its next three dates, one per day: two workshops on the same Saturday
    read as a duplicate on a chip. */
 const pickDates = pick
