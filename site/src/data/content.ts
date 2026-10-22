@@ -837,6 +837,14 @@ const reels: Record<string, { video: string; poster: string }> = {
      petite jungle, berlin") and its closing card ("book today",
      petitejungle.de) are cut off. Audio stripped. */
   petitejungle: { video: '/video/petitejungle.mp4', poster: '/video/petitejungle-poster.jpg' },
+  /* Antje's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
+     where her public dates run (22.10.26): the empty room laid out with
+     easels, the group at work, everyone holding up their canvases, then
+     hands on the blue seascape and the lavender field. No caption in it,
+     so it ships whole; audio stripped. Poster, card, strip and gallery are
+     stills from it and from her two phone clips, picked for hands and
+     canvases rather than guests' faces. */
+  'anna-malerlebnisse': { video: '/video/anna-malerlebnisse.mp4', poster: '/video/anna-malerlebnisse-poster.jpg' },
   /* Two of their own clips joined. The instruments first, from the walk
      through the empty studio — the balafons with the shakers laid beside
      them, then the wall of drums — dissolving into the end of the second
@@ -1325,6 +1333,16 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
       video: '/video/jem-sushi.mp4',
       poster: '/video/jem-sushi-poster.jpg',
     },
+  },  // Her one public format, so its dates take turns between her own reel
+  // (pick 0, what a single date shows) and a second cut from her two phone
+  // clips of a session in the same room: the long table of easels, then
+  // the group painting along. 10 s, a half-second dissolve between them,
+  // audio stripped.
+  'anna-malerlebnisse': {
+    Malerlebnis: [
+      { video: '/video/anna-malerlebnisse.mp4', poster: '/video/anna-malerlebnisse-poster.jpg' },
+      { video: '/video/anna-malerlebnisse-atelier.mp4', poster: '/video/anna-malerlebnisse-atelier-poster.jpg' },
+    ],
   },
 };
 
