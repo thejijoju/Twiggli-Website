@@ -15,7 +15,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) =>
-        !/paymentcanceled|stripe-connect|newsletter\/|corporate\/$|hosts\/$/.test(page),
+        !/paymentcanceled|stripe-connect|newsletter\/|corporate\/$|hosts\/$|\/de\/about\/$|\.com\/ueber-uns\/$/.test(page),
       // The pages built from the workshop feed change with every daily
       // rebuild — a date passes, a new one lands — so they say so; the
       // legal pages and the rest carry no lastmod rather than a false one.
@@ -38,5 +38,10 @@ export default defineConfig({
     '/de/corporate/': '/de/corporatebookings/',
     '/hosts/': '/corporatebookings/',
     '/de/hosts/': '/de/corporatebookings/',
+    // The about page's German slug is translated (lib/url.ts LOCAL_SLUGS);
+    // the browser-language redirect only swaps the prefix, so these catch
+    // the untranslated pairings.
+    '/de/about/': '/de/ueber-uns/',
+    '/ueber-uns/': '/about/',
   },
 });

@@ -20,7 +20,7 @@ const en = {
   footer: {
     product: 'Product', explore: 'Explore', legal: 'Legal', workshops: 'Workshops in Berlin',
     appCta: 'Ready to dive in? Download now on Apple Store and Google Play.',
-    howItWorks: 'How it works', hosts: 'Our hosts', host: 'Host with Twiggli',
+    howItWorks: 'How it works', about: 'About us', hosts: 'Our hosts', host: 'Host with Twiggli',
     terms: 'Terms of Service', privacy: 'Privacy Policy', impressum: 'Impressum',
     appStore: 'Download on the App Store', googlePlay: 'Get it on Google Play',
     copyright: '© 2026 Twiggli. All rights reserved.',
@@ -179,7 +179,7 @@ const de: UiCopy = {
   footer: {
     product: 'Produkt', explore: 'Entdecken', legal: 'Rechtliches', workshops: 'Workshops in Berlin',
     appCta: 'Bereit loszulegen? Jetzt im App Store und bei Google Play herunterladen.',
-    howItWorks: 'So funktioniert’s', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden',
+    howItWorks: 'So funktioniert’s', about: 'Über uns', hosts: 'Unsere Gastgeber', host: 'Gastgeber werden',
     terms: 'Nutzungsbedingungen', privacy: 'Datenschutzerklärung', impressum: 'Impressum',
     appStore: 'Laden im App Store', googlePlay: 'Jetzt bei Google Play',
     copyright: '© 2026 Twiggli. Alle Rechte vorbehalten.',
@@ -336,7 +336,7 @@ const fr: UiCopy = {
   footer: {
     product: 'Produit', explore: 'Explorer', legal: 'Mentions légales', workshops: 'Ateliers à Berlin',
     appCta: 'Prêt à vous lancer ? Téléchargez l’app sur l’App Store et Google Play.',
-    howItWorks: 'Comment ça marche', hosts: 'Nos hôtes', host: 'Devenir hôte',
+    howItWorks: 'Comment ça marche', about: 'À propos', hosts: 'Nos hôtes', host: 'Devenir hôte',
     terms: 'Conditions d’utilisation', privacy: 'Politique de confidentialité', impressum: 'Impressum',
     appStore: 'Télécharger dans l’App Store', googlePlay: 'Disponible sur Google Play',
     copyright: '© 2026 Twiggli. Tous droits réservés.',
@@ -493,7 +493,7 @@ const es: UiCopy = {
   footer: {
     product: 'Producto', explore: 'Explorar', legal: 'Legal', workshops: 'Talleres en Berlín',
     appCta: '¿Listo para empezar? Descarga la app en el App Store y Google Play.',
-    howItWorks: 'Cómo funciona', hosts: 'Nuestros anfitriones', host: 'Ser anfitrión',
+    howItWorks: 'Cómo funciona', about: 'Sobre nosotros', hosts: 'Nuestros anfitriones', host: 'Ser anfitrión',
     terms: 'Términos de servicio', privacy: 'Política de privacidad', impressum: 'Impressum',
     appStore: 'Descargar en el App Store', googlePlay: 'Disponible en Google Play',
     copyright: '© 2026 Twiggli. Todos los derechos reservados.',
@@ -650,7 +650,7 @@ const it: UiCopy = {
   footer: {
     product: 'Prodotto', explore: 'Esplora', legal: 'Note legali', workshops: 'Workshop a Berlino',
     appCta: 'Pronto a iniziare? Scarica l’app dall’App Store e da Google Play.',
-    howItWorks: 'Come funziona', hosts: 'I nostri host', host: 'Diventa host',
+    howItWorks: 'Come funziona', about: 'Chi siamo', hosts: 'I nostri host', host: 'Diventa host',
     terms: 'Termini di servizio', privacy: 'Informativa sulla privacy', impressum: 'Impressum',
     appStore: 'Scarica dall’App Store', googlePlay: 'Disponibile su Google Play',
     copyright: '© 2026 Twiggli. Tutti i diritti riservati.',
@@ -807,7 +807,7 @@ const nl: UiCopy = {
   footer: {
     product: 'Product', explore: 'Ontdekken', legal: 'Juridisch', workshops: 'Workshops in Berlijn',
     appCta: 'Klaar om te beginnen? Download de app in de App Store en op Google Play.',
-    howItWorks: 'Hoe het werkt', hosts: 'Onze hosts', host: 'Host worden',
+    howItWorks: 'Hoe het werkt', about: 'Over ons', hosts: 'Onze hosts', host: 'Host worden',
     terms: 'Gebruiksvoorwaarden', privacy: 'Privacybeleid', impressum: 'Impressum',
     appStore: 'Download in de App Store', googlePlay: 'Ontdek het op Google Play',
     copyright: '© 2026 Twiggli. Alle rechten voorbehouden.',
@@ -964,7 +964,7 @@ const pl: UiCopy = {
   footer: {
     product: 'Produkt', explore: 'Odkrywaj', legal: 'Informacje prawne', workshops: 'Warsztaty w Berlinie',
     appCta: 'Gotowi? Pobierz aplikację z App Store i Google Play.',
-    howItWorks: 'Jak to działa', hosts: 'Nasi prowadzący', host: 'Zostań prowadzącym',
+    howItWorks: 'Jak to działa', about: 'O nas', hosts: 'Nasi prowadzący', host: 'Zostań prowadzącym',
     terms: 'Regulamin', privacy: 'Polityka prywatności', impressum: 'Impressum',
     appStore: 'Pobierz w App Store', googlePlay: 'Pobierz z Google Play',
     copyright: '© 2026 Twiggli. Wszelkie prawa zastrzeżone.',
@@ -1128,7 +1128,7 @@ const tr: UiCopy = {
   footer: {
     product: 'Ürün', explore: 'Keşfet', legal: 'Yasal', workshops: 'Berlin’de atölyeler',
     appCta: 'Hazır mısınız? Uygulamayı App Store ve Google Play’den indirin.',
-    howItWorks: 'Nasıl çalışır', hosts: 'Eğitmenlerimiz', host: 'Eğitmen ol',
+    howItWorks: 'Nasıl çalışır', about: 'Hakkımızda', hosts: 'Eğitmenlerimiz', host: 'Eğitmen ol',
     terms: 'Kullanım koşulları', privacy: 'Gizlilik politikası', impressum: 'Impressum',
     appStore: 'App Store’dan indir', googlePlay: 'Google Play’den edinin',
     copyright: '© 2026 Twiggli. Tüm hakları saklıdır.',
