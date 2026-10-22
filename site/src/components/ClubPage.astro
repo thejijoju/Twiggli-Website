@@ -142,7 +142,7 @@ const faqSchema = {
             <label class="book-field"><span>{t.firstName} <em>({t.optional})</em></span><input name="firstName" type="text" autocomplete="given-name" /></label>
             <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
             <p class="book-error" data-club-error hidden></p>
-            <button type="submit" class="btn btn-primary club-send" data-club-send>{t.send}</button>
+            <button type="submit" class="subscribe-btn subscribe-btn-block club-page-send" data-club-send>{t.send}</button>
             <p class="club-consent">{t.consent}{' '}<a href={privacy.href}>{privacy.label}</a></p>
           </form>
           <div class="club-sent" data-club-sent hidden role="status">

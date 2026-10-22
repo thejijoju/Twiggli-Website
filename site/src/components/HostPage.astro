@@ -182,9 +182,9 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
         <div class="host-follow" data-follow={host.slug} data-follow-name={host.name} hidden>
           <form class="host-follow-form" data-follow-form data-inbox={requestEmail} data-sending={f.sending} data-send={f.send} novalidate>
             <label class="host-follow-prompt" for="follow-email">{f.prompt(host.name)}</label>
-            <div class="host-follow-field">
+            <div class="subscribe-field">
               <input id="follow-email" type="email" name="email" autocomplete="email" placeholder={f.placeholder} required />
-              <button type="submit">{f.send}</button>
+              <button type="submit" class="subscribe-btn">{f.send}</button>
             </div>
             <p class="host-follow-note" data-follow-error hidden>{f.error}</p>
           </form>
