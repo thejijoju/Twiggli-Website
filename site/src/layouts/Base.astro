@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import MobileTabs from '../components/MobileTabs.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import BookingDialog from '../components/BookingDialog.astro';
+import ClubPopup from '../components/ClubPopup.astro';
 import { getSiteData } from '../data/site.ts';
 import { href, splitLang, DEFAULT_LANG, LANGS, LANG_META, type Lang } from '../lib/url.ts';
 import '../styles/modernist.css';
@@ -49,6 +50,10 @@ const alternates = LANGS.filter((l) => translations.includes(l)).map((l) => ({
 }));
 const defaultUrl = new URL(href(DEFAULT_LANG, bare), origin).href;
 const available = alternates.map((a) => a.lang);
+// The Twiggli Club invitation (ClubPopup.astro) shows everywhere except on
+// the club page itself, the legal pages, the newsletter and payment
+// landing pages, and anything kept out of search.
+const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-service|paymentcanceled|stripe-connect-setup-completed|newsletter|404)(\/|$)/.test(bare);
 ---
 
 <!doctype html>
@@ -146,6 +151,7 @@ const available = alternates.map((a) => a.lang);
     <CookieBanner lang={lang} />
     {/* Every Book / Request / Notify button opens this, on the page. */}
     <BookingDialog lang={lang} />
+    {clubPopup && <ClubPopup lang={lang} />}
     <script>
       // Every outbound click, labelled with the card it came from. Runs
       // whether or not the analytics script loaded — track() is a no-op

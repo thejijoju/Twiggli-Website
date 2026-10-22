@@ -9,6 +9,7 @@
 import Base from '../layouts/Base.astro';
 import { clubCopy } from '../data/club.ts';
 import { contactEmail, getSiteData, requestEmail } from '../data/site.ts';
+import { withBase } from '../lib/url.ts';
 
 interface Props { lang: 'en' | 'de' }
 const { lang } = Astro.props;
@@ -92,6 +93,13 @@ const faqSchema = {
 
       <section class="club-inside" aria-labelledby="club-inside-title">
         <h2 class="club-h2" id="club-inside-title">{t.insideTitle}</h2>
+        <figure class="club-letter">
+          <picture>
+            <source srcset={withBase('/img/club/club-letter.webp')} type="image/webp" />
+            <img src={withBase('/img/club/club-letter.jpg')} width="900" height="900" loading="lazy" decoding="async" alt={t.letterAlt} />
+          </picture>
+          <figcaption>{t.letterCaption}</figcaption>
+        </figure>
         <ol class="club-items">
           {t.inside.map((item, i) => (
             <li>
@@ -159,56 +167,9 @@ const faqSchema = {
 </Base>
 
 <script>
-  // Same route as the other request forms: FormSubmit to our inbox, or the
-  // visitor's mail app with the same message when that is unreachable.
+  // The waitlist form: FormSubmit to our inbox (lib/clubWaitlist.ts, shared
+  // with the pop-up on the other pages).
+  import { wireClubForm } from '../lib/clubWaitlist.ts';
   const form = document.querySelector<HTMLFormElement>('[data-club-form]');
-  if (form) {
-    const copy = JSON.parse(form.dataset.copy || '{}');
-    const inbox = form.dataset.inbox ?? '';
-    const send = form.querySelector<HTMLButtonElement>('[data-club-send]');
-    const error = form.querySelector<HTMLElement>('[data-club-error]');
-    const sent = document.querySelector<HTMLElement>('[data-club-sent]');
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-      const data = new FormData(form);
-      if (data.get('_honey')) return;
-      const get = (k: string) => String(data.get(k) ?? '').trim();
-      let cameFrom = '';
-      try { cameFrom = sessionStorage.getItem('twiggli-came-from') ?? ''; } catch {}
-      const fields: Record<string, string> = {
-        Type: 'Club waitlist',
-        Email: get('email'),
-        'First name': get('firstName'),
-        Language: document.documentElement.lang,
-        'Sent from': location.href,
-        'Came from': cameFrom,
-      };
-      const subject = `Club waitlist: ${fields.Email}${fields['First name'] ? ` (${fields['First name']})` : ''}`;
-      if (error) error.hidden = true;
-      if (send) { send.disabled = true; send.textContent = copy.sending; }
-      try {
-        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({
-            ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
-            email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
-          }),
-        });
-        if (!res.ok) throw new Error(String(res.status));
-        form.hidden = true;
-        if (sent) {
-          const body = sent.querySelector<HTMLElement>('[data-club-sent-body]');
-          if (body && fields['First name']) body.textContent = String(copy.sentBodyNamed).replace('{name}', fields['First name']);
-          sent.hidden = false;
-        }
-      } catch {
-        if (error) { error.textContent = String(copy.error).replace('{email}', form.dataset.contact ?? ''); error.hidden = false; }
-        if (send) { send.disabled = false; send.textContent = copy.send; }
-        const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
-        location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      }
-    });
-  }
+  if (form) wireClubForm(form, document.querySelector<HTMLElement>('[data-club-sent]'), 'club page');
 </script>

@@ -15,8 +15,12 @@ export interface ClubCopy {
   send: string; sending: string; consent: string;
   sentTitle: string; sentBody: string; sentBodyNamed: string; error: string;
   faqTitle: string; faq: { q: string; a: string }[];
+  /** The flat lay of a letter's contents (public/img/club/club-letter.jpg). */
+  letterAlt: string; letterCaption: string;
   /** The small links elsewhere on the site. */
   teaser: string; teaserLink: string; footerSoon: string;
+  /** The pop-up on the other pages (ClubPopup.astro). */
+  popup: { kicker: string; line: string; bullets: string[]; price: string; send: string; more: string; close: string };
 }
 
 export const clubCopy: Record<'en' | 'de', ClubCopy> = {
@@ -53,9 +57,20 @@ export const clubCopy: Record<'en' | 'de', ClubCopy> = {
       { q: 'What does it cost?', a: '€59 a month. That covers the monthly workshop, The Twiggli Letter and the members’ evenings.' },
       { q: 'When does it start?', a: 'Soon. Leave your email and we’ll write to you first.' },
     ],
+    letterAlt: 'The contents of a Twiggli Letter laid out on paper: a painted art card of Berlin at dusk, a matching postcard and bookmark, a sheet of art stickers and the letter itself, beside a purple envelope with a wax seal.',
+    letterCaption: 'Every month: an art card, stickers and a letter from us.',
     teaser: 'Something is growing quietly.',
     teaserLink: 'Twiggli Club',
     footerSoon: 'soon',
+    popup: {
+      kicker: 'Twiggli Club · Soon',
+      line: 'Something is growing quietly. Want to be the first to know?',
+      bullets: ['1 workshop a month', 'The Twiggli Letter by post', 'Evenings for members only'],
+      price: '€59 a month',
+      send: 'Tell me when it opens',
+      more: 'Find out more',
+      close: 'Close',
+    },
   },
   de: {
     title: 'Twiggli Club: ein Club für Mitglieder in Berlin, bald | Twiggli',
@@ -90,8 +105,19 @@ export const clubCopy: Record<'en' | 'de', ClubCopy> = {
       { q: 'Was kostet er?', a: '59 € im Monat. Darin stecken der monatliche Workshop, der Twiggli-Brief und die Mitgliederabende.' },
       { q: 'Wann geht es los?', a: 'Bald. Trag dich ein, wir schreiben dir zuerst.' },
     ],
+    letterAlt: 'Der Inhalt eines Twiggli-Briefs auf Papier ausgebreitet: eine gemalte Kunstkarte von Berlin in der Abenddämmerung, passende Postkarte und Lesezeichen, ein Bogen Kunst-Sticker und der Brief selbst, neben einem lila Umschlag mit Wachssiegel.',
+    letterCaption: 'Jeden Monat: eine Kunstkarte, Sticker und ein Brief von uns.',
     teaser: 'Etwas wächst im Verborgenen.',
     teaserLink: 'Twiggli Club',
     footerSoon: 'bald',
+    popup: {
+      kicker: 'Twiggli Club · Bald',
+      line: 'Etwas wächst im Verborgenen. Willst du es als Erste:r wissen?',
+      bullets: ['1 Workshop im Monat', 'Der Twiggli-Brief per Post', 'Abende nur für Mitglieder'],
+      price: '59 € im Monat',
+      send: 'Sag mir Bescheid',
+      more: 'Mehr erfahren',
+      close: 'Schließen',
+    },
   },
 };
