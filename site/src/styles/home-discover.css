@@ -59,15 +59,21 @@
 }
 .hd-lede { margin: 0; max-width: 620px; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.55; color: var(--hd-muted); }
 
-/* Polaroids either side of the headline, where there is room for them. */
-.hd-hero-pics { display: none; }
-.hd-hero-pic { position: absolute; z-index: 0; width: 124px; }
-.hd-hero-pic figcaption { font-size: 19px; }
-.hd-hero-pic.is-1 { left: 1.5%; top: calc(var(--header-h) + 50px); }
-.hd-hero-pic.is-2 { left: 3.5%; top: calc(var(--header-h) + 250px); }
-.hd-hero-pic.is-3 { right: 1.5%; top: calc(var(--header-h) + 40px); }
-.hd-hero-pic.is-4 { right: 3.5%; top: calc(var(--header-h) + 245px); }
-@media (min-width: 1240px) { .hd-hero-pics { display: block; } }
+/* Four round pictures: either side of the headline on a wide screen, a
+   small row above it on anything narrower. No frame, no caption. */
+.hd-hero-pics { position: relative; z-index: 1; display: flex; justify-content: center; gap: 10px; margin: 0 0 18px; }
+.hd-hero-pic {
+  display: block; width: 58px; height: 58px; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 10px 24px -12px rgba(43, 33, 24, 0.45);
+}
+@media (min-width: 1240px) {
+  .hd-hero-pics { position: static; display: block; margin: 0; }
+  .hd-hero-pic { position: absolute; z-index: 0; }
+  .hd-hero-pic.is-1 { width: 144px; height: 144px; left: 3%; top: calc(var(--header-h) + 46px); }
+  .hd-hero-pic.is-2 { width: 104px; height: 104px; left: 8%; top: calc(var(--header-h) + 238px); }
+  .hd-hero-pic.is-3 { width: 120px; height: 120px; right: 4%; top: calc(var(--header-h) + 40px); }
+  .hd-hero-pic.is-4 { width: 140px; height: 140px; right: 6.5%; top: calc(var(--header-h) + 214px); }
+}
 
 /* — search pill — */
 .hd-search {
@@ -133,9 +139,19 @@
 /* — the date cards: white, rounded, in a grid — */
 .hd-track {
   list-style: none; margin: 0; padding: 10px 0 0;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px 24px;
 }
 .hd-track > li { min-width: 0; }
+
+/* The date tiles are the group-bookings directory's (.maker in site.css):
+   square reel or photo, then the lines. Only the handwritten date is ours. */
+.hd-tile { display: flex; flex-direction: column; color: var(--hd-ink); text-decoration: none; }
+.hd-tile:hover { color: var(--hd-ink); }
+.hd-tile .hd-card-when { margin-top: 10px; }
+.hd-tile .maker-line { margin-top: 3px; }
+.hd-tile .maker-title { font-weight: 600; }
+.hd-tile:hover .maker-title { color: var(--hd-purple-deep); }
+.hd-tile .maker-price strong { color: var(--hd-ink); }
 .hd-card {
   display: flex; flex-direction: column; height: 100%; box-sizing: border-box;
   padding: 10px 10px 14px; border-radius: 18px;
@@ -274,7 +290,7 @@
 
   .hd-row { padding-top: 40px; }
   .hd-row-head { align-items: flex-start; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-  .hd-track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 14px; padding-top: 6px; }
+  .hd-track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; padding-top: 6px; }
   .hd-track > li:nth-child(n + 5) { display: none; }
   .hd-card { padding: 7px 7px 10px; border-radius: 16px; }
   .hd-card-media { border-radius: 10px; }

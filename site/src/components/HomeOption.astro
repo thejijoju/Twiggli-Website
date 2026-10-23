@@ -31,7 +31,7 @@ import { homeFindCopy } from '../data/homeFind.ts';
 import { homeSplits } from '../data/homeSplits.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { hostAbout } from '../data/hostAbout.ts';
-import { activityThumb as thumb, cardImage, getHomeData, mailPic as mail } from '../data/homeData.ts';
+import { activityThumb as thumb, cardImage, getHomeData, mailPic as mail, makerPic } from '../data/homeData.ts';
 import { getSiteData } from '../data/site.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 import { lqipStyle } from '../lib/lqip.ts';
@@ -225,7 +225,7 @@ const isoWeek = (() => {
             const face = activityFace(a);
             return (
               <li><a href={activityHref(lang, a)}>
-                <span class="ho-c-circle"><img src={face?.photo ?? thumb(a)} alt="" loading="lazy" decoding="async" /></span>
+                <span class="ho-c-circle"><img src={(face && makerPic(face)) || thumb(a)} alt="" loading="lazy" decoding="async" /></span>
                 <span>{activityCopy[lang][a].short}</span>
               </a></li>
             );
@@ -256,7 +256,7 @@ const isoWeek = (() => {
       {evelyn && evelynWords && (
         <section class="container ho-section">
           <div class="ho-spot">
-            <img src={evelyn.photo} alt={evelyn.name} loading="lazy" decoding="async" />
+            <img src={makerPic(evelyn)} alt={evelyn.name} loading="lazy" decoding="async" />
             <div>
               <span class="ho-kicker">Maker*in im Porträt</span>
               <h2 class="hd-h2">{evelyn.firstName ?? evelyn.name}, <em>{evelyn.studio ?? evelyn.specialty}</em></h2>
@@ -293,7 +293,7 @@ const isoWeek = (() => {
           <div class="hd-row-head hd-row-head-center"><div><h2 class="hd-h2">{d.makersTitle} <em>{d.makersHand}</em></h2><p class="hd-sub">{d.makersSub}</p></div></div>
           <ul class="hd-wall">
             {makers.map((h) => (
-              <li><a class="hd-maker" href={hostHref(lang, h)}><img src={h.photo} alt="" width="400" height="400" loading="lazy" decoding="async" /><span class="hd-maker-name">{h.firstName ?? h.name}</span><span class="hd-maker-craft">{h.specialty}</span></a></li>
+              <li><a class="hd-maker" href={hostHref(lang, h)}><img src={makerPic(h)} alt="" width="400" height="400" loading="lazy" decoding="async" /><span class="hd-maker-name">{h.firstName ?? h.name}</span><span class="hd-maker-craft">{h.specialty}</span></a></li>
             ))}
           </ul>
         </div>
@@ -339,7 +339,7 @@ const isoWeek = (() => {
         <h2 class="hd-h2">{d.catsTitle} <em>{d.catsHand}</em></h2>
         <ul class="ho-d-cats">
           {ACTIVITY_ORDER.map((a) => (
-            <li><a href={activityHref(lang, a)}><img src={activityFace(a)?.photo ?? thumb(a)} alt="" loading="lazy" decoding="async" /><span>{activityCopy[lang][a].short}</span></a></li>
+            <li><a href={activityHref(lang, a)}><img src={(activityFace(a) && makerPic(activityFace(a)!)) || thumb(a)} alt="" loading="lazy" decoding="async" /><span>{activityCopy[lang][a].short}</span></a></li>
           ))}
         </ul>
       </section>
@@ -357,7 +357,7 @@ const isoWeek = (() => {
       </section>
       <section class="ho-d-block tone-lav ho-d-makers">
         <h2 class="hd-h2">{d.makersTitle} <em>{d.makersHand}</em></h2>
-        <ul>{makers.slice(0, 8).map((h) => <li><a href={hostHref(lang, h)}><img src={h.photo} alt="" loading="lazy" decoding="async" /><span>{h.firstName ?? h.name}</span></a></li>)}</ul>
+        <ul>{makers.slice(0, 8).map((h) => <li><a href={hostHref(lang, h)}><img src={makerPic(h)} alt="" loading="lazy" decoding="async" /><span>{h.firstName ?? h.name}</span></a></li>)}</ul>
         <a class="ho-pill ho-pill-white" href={teamsHref}>{t.meetAll(listed)}</a>
       </section>
     </div>
@@ -420,7 +420,7 @@ const isoWeek = (() => {
         <section class="container ho-section">
           <blockquote class="ho-e-quote">
             <p>„{evelynWords.paras[1]}“</p>
-            <footer><img src={evelyn.photo} alt="" loading="lazy" /><span><b>{evelyn.firstName ?? evelyn.name}</b>, {evelyn.studio}</span> <a href={hostHref(lang, evelyn)}>Zu ihren Workshops →</a></footer>
+            <footer><img src={makerPic(evelyn)} alt="" loading="lazy" /><span><b>{evelyn.firstName ?? evelyn.name}</b>, {evelyn.studio}</span> <a href={hostHref(lang, evelyn)}>Zu ihren Workshops →</a></footer>
           </blockquote>
         </section>
       )}

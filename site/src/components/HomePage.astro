@@ -27,7 +27,7 @@ import { homeFindCopy } from '../data/homeFind.ts';
 import { homeSplits } from '../data/homeSplits.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { clubCopy } from '../data/club.ts';
-import { activityThumb as thumb, cardImage, getHomeData, mailPic as mail } from '../data/homeData.ts';
+import { activityThumb as thumb, getHomeData, mailPic as mail, makerPic } from '../data/homeData.ts';
 import { href, type Lang } from '../lib/url.ts';
 import { lqipStyle } from '../lib/lqip.ts';
 import '../styles/home-discover.css';
@@ -39,9 +39,9 @@ const d = homeDiscoverCopy[lang];
 const find = homeFindCopy[lang];
 const split = homeSplits[lang];
 const f = filterCopy[lang];
-const { rows, calendarHref, chips, counts, activityFace, makers, listed } = getHomeData(lang);
+const { rows, calendarHref, chips, counts, activityFace, makers, listed, cardMedia } = getHomeData(lang);
 
-/* Polaroids beside the headline on a wide screen, captioned by hand. */
+/* Round pictures beside the headline on a wide screen. */
 const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ src: thumb(a), label: f.activities[a] }));
 ---
 
@@ -54,10 +54,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
   <section class="hd-hero">
     <div class="hd-hero-pics" aria-hidden="true">
       {heroPics.map((p, i) => (
-        <figure class={`hd-polaroid hd-hero-pic is-${i + 1}`}>
-          <img src={p.src} alt="" width="240" height="240" decoding="async" />
-          <figcaption>{p.label}</figcaption>
-        </figure>
+        <img class={`hd-hero-pic is-${i + 1}`} src={p.src} alt="" width="240" height="240" decoding="async" />
       ))}
     </div>
     <div class="container hd-hero-inner">
@@ -88,20 +85,25 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
         <ul class="hd-track">
           {row.list.map((s) => (
             <li>
-              <a class="hd-card" href={workshopHref(lang, s.host, s.workshopKey)} data-seen={`s:${s.id}`}>
-                <span class="hd-card-media" style={lqipStyle(s.host.poster)}>
-                  {cardImage(s) ? (
-                    <img src={cardImage(s)} alt="" loading={ri === 0 ? undefined : 'lazy'} decoding="async" />
+              {/* The same tile as the group-bookings directory (HostDirectory
+                  .maker): a square reel over its still, then the lines. */}
+              <a class="maker hd-tile" href={workshopHref(lang, s.host, s.workshopKey)} data-seen={`s:${s.id}`}>
+                <span class="maker-media" style={lqipStyle(cardMedia(s).poster)}>
+                  {cardMedia(s).video ? (
+                    <>
+                      <img class="maker-still" src={cardMedia(s).poster} alt="" loading={ri === 0 ? undefined : 'lazy'} decoding="async" />
+                      <video class="maker-video" src={cardMedia(s).video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                    </>
+                  ) : cardMedia(s).still ? (
+                    <img src={cardMedia(s).still} alt="" loading="lazy" decoding="async" />
                   ) : (
                     <HostMonogram name={s.host.name} />
                   )}
                 </span>
-                <span class="hd-card-body">
-                  <span class="hd-card-when">{formatWhen(s, lang)}</span>
-                  <span class="hd-card-title">{s.title}</span>
-                  <span class="hd-card-host">{s.host.firstName ?? s.host.name} · {s.district}</span>
-                  {s.price && <span class="hd-card-price"><b>{s.price}</b> {f.priceMeta}</span>}
-                </span>
+                <span class="hd-card-when">{formatWhen(s, lang)}</span>
+                <span class="maker-line"><span class="maker-title">{s.title}</span></span>
+                <span class="maker-sub">{s.host.firstName ?? s.host.name} · {s.district}</span>
+                {s.price && <span class="maker-price"><strong>{s.price}</strong><span>{f.priceMeta}</span></span>}
               </a>
             </li>
           ))}
@@ -124,7 +126,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
             <li>
               <a href={activityHref(lang, a)} aria-label={activityCopy[lang][a].h1}>
                 <span class="hd-cat-pic">
-                  <img src={face?.photo ?? thumb(a)} alt="" width="240" height="240" loading="lazy" decoding="async" />
+                  <img src={(face && makerPic(face)) || thumb(a)} alt="" width="240" height="240" loading="lazy" decoding="async" />
                 </span>
                 <span class="hd-cat-text">
                   <span class="hd-cat-name">{activityCopy[lang][a].short}</span>
@@ -163,7 +165,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
         {makers.map((h) => (
           <li>
             <a class="hd-maker" href={hostHref(lang, h)}>
-              <img src={h.photo} alt="" width="400" height="400" loading="lazy" decoding="async" />
+              <img src={makerPic(h)} alt="" width="400" height="400" loading="lazy" decoding="async" />
               <span class="hd-maker-name">{h.firstName ?? h.name}</span>
               <span class="hd-maker-craft">{h.specialty}</span>
             </a>
@@ -226,3 +228,20 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
   <SiteSchema lang={lang} />
 </Base>
 
+
+<script>
+  import { startReelWalk } from '../lib/reelwalk.ts';
+
+  // Each row of dates plays one reel at a time, walking along the tiles on
+  // screen, as the directory and the calendar do (lib/reelwalk.ts).
+  document.querySelectorAll<HTMLElement>('.hd-row').forEach((row) => {
+    const reels = Array.from(row.querySelectorAll<HTMLElement>('.hd-tile'))
+      .map((card) => ({
+        card,
+        tile: card.querySelector<HTMLElement>('.maker-media'),
+        video: card.querySelector<HTMLVideoElement>('.maker-video'),
+      }))
+      .filter((r): r is { card: HTMLElement; tile: HTMLElement; video: HTMLVideoElement } => !!r.tile && !!r.video);
+    startReelWalk(reels, { playingClass: 'is-playing', threshold: 0.5, startAt: 0, step: 1, holdMs: 3000 });
+  });
+</script>

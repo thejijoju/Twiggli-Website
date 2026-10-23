@@ -10,6 +10,7 @@ import { ACTIVITY_ORDER, occasionCopy, occasionHref, occasionSessions } from './
 import { ui } from './i18n.ts';
 import { homeDiscoverCopy } from './homeDiscover.ts';
 import { homeFindCopy } from './homeFind.ts';
+import { makerPictures } from './makerPictures.ts';
 import { href, withBase, LANG_META, type Lang } from '../lib/url.ts';
 
 export type HomeRow = {
@@ -30,6 +31,16 @@ export const mailPic = (name: string): string => withBase(`/img/mail/${name}.jpg
 /** A card's picture: the workshop's own reel poster, the host's photo, or
  *  the picture from the host's booking page. */
 export const cardImage = (s: Session): string | undefined => s.host.poster ?? s.host.photo ?? s.image;
+
+/** Hosts whose card on the home page shows their main reel rather than the
+ *  one cut for this workshop — where the workshop's own was the weaker
+ *  picture (Jirel, 23.10.26). */
+const PREFER_MAIN_REEL = new Set(['galleria-lucia']);
+
+/** A host's picture for introducing them (makerPictures.ts), or nothing
+ *  where we have none we know we may use. */
+export const makerPic = (h: Host): string | undefined =>
+  makerPictures[h.slug] === 'photo' ? h.photo : makerPictures[h.slug] === 'reel' ? h.poster : undefined;
 
 export function getHomeData(lang: Lang) {
   const d = homeDiscoverCopy[lang];
@@ -103,12 +114,23 @@ export function getHomeData(lang: Lang) {
   for (const h of hosts) for (const a of activitiesOf(h)) counts.set(a, (counts.get(a) ?? 0) + 1);
   /* Each activity with one maker's own photo. */
   const activityFace = (a: ActivityKey): Host | undefined =>
-    hosts.find((h) => h.photo && h.activity === a) ?? hosts.find((h) => h.photo && inActivity(h, a));
+    hosts.find((h) => makerPic(h) && h.activity === a) ?? hosts.find((h) => makerPic(h) && inActivity(h, a));
 
-  /* Ten makers with a square photo, those with dates coming up first, taken
-     round-robin across the activities so the wall is not all pottery. */
+  /* A date card's media: the host's reel and its poster (the workshop's own
+     cut where there is one), else their photo, else the picture from their
+     booking page. */
+  const mainBySlug = new Map(hosts.map((h) => [h.slug, h]));
+  const cardMedia = (s: Session): { video?: string; poster?: string; still?: string } => {
+    const reelHost = PREFER_MAIN_REEL.has(s.host.slug) ? mainBySlug.get(s.host.slug) ?? s.host : s.host;
+    return reelHost.video
+      ? { video: reelHost.video, poster: reelHost.poster }
+      : { still: s.host.photo ?? s.image ?? s.host.poster };
+  };
+
+  /* Ten makers with a picture we may use, those with dates coming up first,
+     taken round-robin across the activities so the wall is not all pottery. */
   const withDates = new Set(all.map((s) => s.host.slug));
-  const faces = hosts.filter((h) => h.photo);
+  const faces = hosts.filter((h) => makerPic(h));
   const byActivity = new Map<string, Host[]>();
   for (const h of [...faces.filter((h) => withDates.has(h.slug)), ...faces.filter((h) => !withDates.has(h.slug))]) {
     const list = byActivity.get(h.activity) ?? [];
@@ -127,6 +149,6 @@ export function getHomeData(lang: Lang) {
   return {
     hosts, all, rows, calendarHref, dayOf,
     whatOptions, whenOptions, whereOptions, chips,
-    counts, activityFace, makers, listed,
+    counts, activityFace, makers, listed, cardMedia,
   };
 }
