@@ -12,6 +12,7 @@ import { hosts as hostsIt } from './hosts/it.ts';
 import { hosts as hostsNl } from './hosts/nl.ts';
 import { hosts as hostsPl } from './hosts/pl.ts';
 import { hosts as hostsTr } from './hosts/tr.ts';
+import { preview, previewSlugs } from './hosts/preview.ts';
 
 /** The blank cream squares the design export dropped in for hosts whose
  *  photography had not been shot yet — byte-identical fillers, two sizes and
@@ -1523,14 +1524,16 @@ export const getWorkshopReel = (
 };
 
 const hostsCopy: Record<Lang, HostCopy[]> = (() => {
-  const en = hostsCopyBase.en;
+  // Preview hosts (hosts/preview.ts) ride at the end of the list in English
+  // and German; every other language falls back to their English copy.
+  const en = [...hostsCopyBase.en, ...preview.copy.en];
   const align = (list: HostCopy[]): HostCopy[] => {
     const bySlug = new Map(list.map((h) => [h.slug, h]));
     return en.map((h) => bySlug.get(h.slug) ?? h);
   };
   return {
     en,
-    de: align(hostsCopyBase.de),
+    de: align([...hostsCopyBase.de, ...preview.copy.de]),
     fr: align(hostsFr),
     es: align(hostsEs),
     it: align(hostsIt),
@@ -1618,7 +1621,17 @@ export const sameHostAs: Record<string, string> = {
   whittle: 'nicole',
 };
 
-export const getHosts = (lang: Lang): Host[] =>
+/** Whether a host is a hidden preview — built at its usual URL for the
+ *  host to look at before going live, but noindex and left out of every
+ *  listing, the sitemap, the calendar and the counts (hosts/preview.ts). */
+export const isPreviewHost = (slug: string): boolean => previewSlugs.has(slug);
+
+/** Every live host, in this language. `withPreview` adds the hidden preview
+ *  hosts — only the host pages themselves ask for them. */
+export const getHosts = (lang: Lang, opts: { withPreview?: boolean } = {}): Host[] =>
+  allHosts(lang).filter((h) => opts.withPreview || !previewSlugs.has(h.slug));
+
+const allHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
     const reel = reels[h.slug];
     const photo = shipped(`/img/hosts/${h.slug}.jpg`);
@@ -1633,9 +1646,9 @@ export const getHosts = (lang: Lang): Host[] =>
     }
     return {
       ...h,
-      ...facets[h.slug],
-      ...(firstNames[h.slug] ? { firstName: firstNames[h.slug] } : {}),
-      ...(areas[h.slug] ?? {}),
+      ...(facets[h.slug] ?? preview.facets[h.slug]),
+      ...((firstNames[h.slug] ?? preview.firstNames[h.slug]) ? { firstName: firstNames[h.slug] ?? preview.firstNames[h.slug] } : {}),
+      ...(areas[h.slug] ?? preview.areas[h.slug] ?? {}),
       ...(instagrams[h.slug] ? { instagram: instagrams[h.slug] } : {}),
       id: i + 1,
       ...(photo ? { photo } : {}),

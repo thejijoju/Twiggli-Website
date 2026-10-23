@@ -6,7 +6,9 @@ import { getHosts } from '../../../data/content.ts';
    The slug list is language-neutral, so English is the source for every
    language. */
 export function getStaticPaths() {
-  return getHosts('en').map((h) => ({ params: { activity: h.activity, slug: h.slug } }));
+  // Preview hosts (hosts/preview.ts) get their page too, reachable by
+  // direct link only: noindex, and in no listing or sitemap.
+  return getHosts('en', { withPreview: true }).map((h) => ({ params: { activity: h.activity, slug: h.slug } }));
 }
 const { slug } = Astro.params;
 ---
