@@ -847,6 +847,13 @@ const reels: Record<string, { video: string; poster: string }> = {
      stills from it and from her two phone clips, picked for hands and
      canvases rather than guests' faces. */
   'anna-malerlebnisse': { video: '/video/anna-malerlebnisse.mp4', poster: '/video/anna-malerlebnisse-poster.jpg' },
+  /* Their own footage from a wine fair (sent 22.10.26). The cut they sent
+     was edited by Konfetti, so this is our own edit of the raw shots: new
+     order, new in and out points, a slight crop and a warmer grade, and no
+     music (theirs came with Konfetti's edit). Corks in the decanter, a
+     glass of amber wine raised and swirled, the qvevri Saperavi, a tasting
+     at the stand, the shelves, the crowd, then bottles on ice. */
+  chelti: { video: '/video/chelti.mp4', poster: '/video/chelti-poster.jpg' },
   /* Two of their own clips joined. The instruments first, from the walk
      through the empty studio — the balafons with the shakers laid beside
      them, then the wall of drums — dissolving into the end of the second
