@@ -145,7 +145,7 @@
 .hd-tile:hover { color: var(--hd-ink); }
 .hd-frame {
   display: block; padding: 10px; border-radius: 18px;
-  background: #fff; box-shadow: var(--hd-shadow);
+  background: linear-gradient(180deg, #fff 45%, rgba(255, 255, 255, 0.6)); box-shadow: var(--hd-shadow);
   transition: transform 0.2s ease;
 }
 .hd-frame .maker-media { display: block; border-radius: 12px; }
