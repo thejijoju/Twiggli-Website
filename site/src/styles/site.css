@@ -55,8 +55,8 @@
   /* Page background: a warm off-white, per request, rather than pure white.
      --color-surface lifts off it in the other direction (a hair darker) so
      inputs and cards still read as distinct from the page. */
-  --color-bg: #f9f8f6;
-  --color-surface: #f2f1f1;
+  --color-bg: #fdf3e7;
+  --color-surface: #f6ebdd;
 
   --color-accent: #6a3eec;
   --color-accent-100: #f4f4ff;
@@ -150,14 +150,13 @@ a:hover { color: var(--color-accent); }
      is the part that makes it look deliberate. background-size confines it
      to the top 900px, so it is the head of the page and not a wash over the
      whole of it. */
+  /* Since 23.10.26 the home page's palette, site-wide: warm cream, with
+     the cream-into-lavender of the mail banners across the head of the
+     page, fading into the cream before the fold. */
   background-color: var(--color-bg);
-  background-image: radial-gradient(
-    108% 76% at 50% 4%,
-    color-mix(in srgb, var(--color-accent) 14%, transparent) 0%,
-    color-mix(in srgb, var(--color-accent) 6.5%, transparent) 33%,
-    color-mix(in srgb, var(--color-accent) 2%, transparent) 59%,
-    transparent 79%
-  );
+  background-image:
+    linear-gradient(to bottom, rgba(253, 243, 231, 0) 55%, var(--color-bg) 100%),
+    linear-gradient(135deg, #fff4e6 0%, #efe6ff 100%);
   background-repeat: no-repeat;
   background-size: 100% 960px;
   color: var(--color-text);
@@ -3166,7 +3165,7 @@ a:hover { color: var(--color-accent); }
 
    The ground goes flat: the violet glow across the head of every page, and
    the calendar's pale blue panel under the day, both give way to the page's
-   own #f9f8f6. On a wide screen they frame the content; at 393px they are
+   own cream. On a wide screen they frame the content; at 393px they are
    two tints inside 11 pixels of each other, read as a smudge, and cost the
    panel's own inset on top of the page's.
 
