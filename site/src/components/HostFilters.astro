@@ -1,4 +1,6 @@
 ---
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
 import { filterCopy } from '../data/content.ts';
 import { directoryCopy, seasonOccasion, type OccasionKey, type Season } from '../data/occasions.ts';
 import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
@@ -68,6 +70,7 @@ const pills = [
   </div>
 
   <header class="dir-head">
+    <PageCircles pics={circlesFor.teams(lang)} align="center" />
     <Doodled variant="c">
       <h1 class="dir-title">{head.title}</h1>
     </Doodled>

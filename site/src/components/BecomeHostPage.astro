@@ -1,4 +1,6 @@
 ---
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
 /**
  * Become a host: who we are looking for, the three ways a maker works with
  * us, and the application form. No account and no log-in — the form is the
@@ -26,6 +28,7 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
   <div class="container">
     <section class="host-apply">
       <div class="host-apply-intro">
+        <PageCircles pics={circlesFor.makers(lang)} />
         <span class="kicker">{t.kicker}</span>
         <h1 class="page-title">{t.h1}</h1>
         <p class="page-lede">{t.lede}</p>

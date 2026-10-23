@@ -17,21 +17,17 @@
   --hd-shadow: 0 14px 28px -14px rgba(43, 33, 24, 0.42);
   --hd-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
   --hd-hand: 'Caveat', cursive;
-  background-color: var(--hd-page);
-  background-image: none;
+  /* The ground is the site's own (.page in site.css), the same on every
+     page: cream, with cream into lavender across the head. */
   color: var(--hd-ink);
 }
 .hd main { overflow-x: clip; }
 
-/* — hero — runs up under the transparent nav so the gradient reaches the
-   top edge of the page, and fades into the page colour at the bottom. */
+/* — hero — runs up under the transparent nav, on the page's own ground. */
 .hd-hero {
   position: relative;
   margin-top: calc(-1 * var(--header-h));
   padding: calc(var(--header-h) + 64px) 0 56px;
-  background:
-    linear-gradient(to bottom, rgba(253, 243, 231, 0) 70%, var(--hd-page) 100%),
-    linear-gradient(135deg, var(--hd-cream), var(--hd-lav));
 }
 .hd-hero-inner {
   position: relative; z-index: 1;
@@ -147,7 +143,15 @@
    square reel or photo, then the lines. Only the handwritten date is ours. */
 .hd-tile { display: flex; flex-direction: column; color: var(--hd-ink); text-decoration: none; }
 .hd-tile:hover { color: var(--hd-ink); }
-.hd-tile .hd-card-when { margin-top: 10px; }
+.hd-frame {
+  display: block; padding: 10px; border-radius: 18px;
+  background: #fff; box-shadow: var(--hd-shadow);
+  transition: transform 0.2s ease;
+}
+.hd-frame .maker-media { display: block; border-radius: 12px; }
+.hd-tile:hover .hd-frame { transform: translateY(-4px); }
+.hd-tile:hover .maker-media { box-shadow: none; }
+.hd-tile .hd-card-when { margin-top: 12px; }
 .hd-tile .maker-line { margin-top: 3px; }
 .hd-tile .maker-title { font-weight: 600; }
 .hd-tile:hover .maker-title { color: var(--hd-purple-deep); }
@@ -295,6 +299,8 @@
   .hd-card { padding: 7px 7px 10px; border-radius: 16px; }
   .hd-card-media { border-radius: 10px; }
   .hd-card-when { font-size: 18px; }
+  .hd-frame { padding: 7px; border-radius: 16px; }
+  .hd-frame .maker-media { border-radius: 10px; }
   .hd-card-title { font-size: 13.5px; }
   .hd-card-host { font-size: 12px; }
   .hd-card-price { font-size: 12px; }

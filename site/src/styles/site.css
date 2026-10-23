@@ -3163,11 +3163,11 @@ a:hover { color: var(--color-accent); }
    Both are grids of video, and on a phone the video is the page. Three
    things get out of its way.
 
-   The ground goes flat: the violet glow across the head of every page, and
-   the calendar's pale blue panel under the day, both give way to the page's
-   own cream. On a wide screen they frame the content; at 393px they are
-   two tints inside 11 pixels of each other, read as a smudge, and cost the
-   panel's own inset on top of the page's.
+   The calendar's pale blue panel under the day gives way to the page's own
+   ground. On a wide screen it frames the content; at 393px it is a tint
+   inside 11 pixels of the page, read as a smudge, and costs the panel's own
+   inset on top of the page's. (The cream-to-lavender head of the page stays,
+   as on every page.)
 
    The rail is 11px a side, down from 17 plus the panel's 14. The nav keeps
    its own, since it is a bar across the top rather than part of the column.
@@ -3177,7 +3177,6 @@ a:hover { color: var(--color-accent); }
    measurements the tiles were asked to match. */
 @media (max-width: 720px) {
   .page-flush main { --gutter: 11px; }
-  .page-flush { background-image: none; }
   .page-flush .daysessions {
     margin-top: 22px;
     padding: 0 0 26px;
@@ -6182,3 +6181,18 @@ h1, h2, h3, h4,
 .about-name { margin: 6px 0 0; font-size: 15px; color: var(--color-text-muted); }
 .about-name b { color: var(--color-text); }
 .about-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; padding-top: 32px; border-top: 1px solid #f1e3d5; }
+
+/* — page circles (PageCircles.astro) — four round pictures above a main
+   page's heading, the home page's hero circles in a row. */
+.page-circles { display: flex; gap: 10px; margin: 0 0 16px; }
+.page-circles.is-center { justify-content: center; }
+.page-circles img {
+  display: block; width: 68px; height: 68px; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 10px 22px -12px rgba(43, 33, 24, 0.45);
+}
+.page-circles img:nth-child(2) { width: 56px; height: 56px; margin-top: 6px; }
+.page-circles img:nth-child(4) { width: 60px; height: 60px; margin-top: 4px; }
+@media (max-width: 720px) {
+  .page-circles { gap: 8px; margin-bottom: 12px; }
+  .page-circles img, .page-circles img:nth-child(2), .page-circles img:nth-child(4) { width: 52px; height: 52px; margin-top: 0; }
+}

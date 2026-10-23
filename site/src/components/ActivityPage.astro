@@ -1,4 +1,6 @@
 ---
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
 /** One activity's page — "Töpferkurse & Keramik-Workshops in Berlin": the
  *  hosts who teach it, each with their next date, then the next dates
  *  across all of them with times and Book links, then the other
@@ -67,6 +69,7 @@ const schema = {
     </nav>
 
     <section class="page-head">
+      <PageCircles pics={circlesFor.activity(activity, lang)} />
       <span class="kicker kicker-tight">{t.crumbsRoot} · Berlin</span>
       <h1 class="page-title">{copy.h1}</h1>
       <p class="page-lede">{copy.lede}</p>

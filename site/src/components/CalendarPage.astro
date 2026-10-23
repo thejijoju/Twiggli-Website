@@ -1,4 +1,6 @@
 ---
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
 import Base from '../layouts/Base.astro';
 import DayPicker from './DayPicker.astro';
 import EventSchema from './EventSchema.astro';
@@ -15,6 +17,7 @@ const t = ui(lang).calendarPage;
 <Base title={t.title} description={t.description} lang={lang} pageClass="page-flush">
   <div class="container">
     <section class="page-head">
+      <PageCircles pics={circlesFor.calendar(lang)} />
       {/* One heading: the place and the selected day together. The script
           rewrites it as the visitor moves along the day strip. */}
       <Doodled variant="b">

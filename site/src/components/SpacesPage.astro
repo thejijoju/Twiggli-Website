@@ -1,4 +1,6 @@
 ---
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 /** Studios our hosts rent out when they are not teaching in them — one
  *  card per space, the host's own reel playing on it, and an enquiry that
@@ -55,6 +57,7 @@ const marks = spaces.map((space) => ({
 <Base title={t.title} description={t.description} lang={lang}>
   <div class="container">
     <section class="page-head">
+      <PageCircles pics={circlesFor.spaces(lang)} />
       <span class="kicker">{t.kicker}</span>
       <h1 class="page-title">{t.h1}</h1>
       <p class="page-lede">{t.lede}</p>
