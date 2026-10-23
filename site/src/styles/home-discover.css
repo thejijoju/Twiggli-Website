@@ -55,20 +55,21 @@
 }
 .hd-lede { margin: 0; max-width: 620px; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.55; color: var(--hd-muted); }
 
-/* Four round pictures: either side of the headline on a wide screen, a
-   small row above it on anything narrower. No frame, no caption. */
-.hd-hero-pics { position: relative; z-index: 1; display: flex; justify-content: center; gap: 10px; margin: 0 0 18px; }
-.hd-hero-pic {
-  display: block; width: 58px; height: 58px; border-radius: 50%; object-fit: cover;
-  box-shadow: 0 10px 24px -12px rgba(43, 33, 24, 0.45);
-}
+/* Four polaroids, straight, rounded, captioned by hand: either side of the
+   headline on a wide screen, a small strip above it on anything narrower. */
+.hd-hero-pics { position: relative; z-index: 1; display: flex; justify-content: center; gap: 10px; margin: 0 0 16px; }
+.hd-hero-pic.hd-polaroid { width: 74px; padding: 5px 5px 0; border-radius: 12px; }
+.hd-hero-pic.hd-polaroid img { border-radius: 8px; }
+.hd-hero-pic.hd-polaroid figcaption { padding: 3px 0 4px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (min-width: 1240px) {
   .hd-hero-pics { position: static; display: block; margin: 0; }
-  .hd-hero-pic { position: absolute; z-index: 0; }
-  .hd-hero-pic.is-1 { width: 144px; height: 144px; left: 3%; top: calc(var(--header-h) + 46px); }
-  .hd-hero-pic.is-2 { width: 104px; height: 104px; left: 8%; top: calc(var(--header-h) + 238px); }
-  .hd-hero-pic.is-3 { width: 120px; height: 120px; right: 4%; top: calc(var(--header-h) + 40px); }
-  .hd-hero-pic.is-4 { width: 140px; height: 140px; right: 6.5%; top: calc(var(--header-h) + 214px); }
+  .hd-hero-pic.hd-polaroid { position: absolute; z-index: 0; width: 132px; padding: 8px 8px 0; border-radius: 18px; }
+  .hd-hero-pic.hd-polaroid img { border-radius: 12px; }
+  .hd-hero-pic.hd-polaroid figcaption { padding: 5px 2px 8px; font-size: 19px; }
+  .hd-hero-pic.is-1 { left: 2.5%; top: calc(var(--header-h) + 40px); }
+  .hd-hero-pic.is-2 { left: 5.5%; top: calc(var(--header-h) + 236px); }
+  .hd-hero-pic.is-3 { right: 2.5%; top: calc(var(--header-h) + 34px); }
+  .hd-hero-pic.is-4 { right: 5.5%; top: calc(var(--header-h) + 230px); }
 }
 
 /* — search pill — */

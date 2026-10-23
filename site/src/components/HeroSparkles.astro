@@ -1,0 +1,147 @@
+---
+/**
+ * A one-time intro for a hero, after LinkedIn Premium's upsell: as the page
+ * loads, hand-painted gold stars (the same brush strokes as Doodled.astro's)
+ * pop in and twinkle once around the pictures and the headline, a few small
+ * dots in the brand colours land beside them, and a soft rainbow shimmer
+ * sweeps across once. Then it all stays as it ends — the stars and dots
+ * remain, the shimmer is gone. Nothing loops.
+ *
+ * Pure CSS (keyframes, fill-mode forwards) over inline SVG. A reader who
+ * asks for reduced motion sees the end state straight away.
+ *
+ * Place it inside a positioned hero; it covers the hero and takes no
+ * pointer events. `layout` picks where the sparkles sit: 'home' around the
+ * home page's polaroids and headline, 'title' around a centred heading.
+ */
+import { brushStars, brushId, type BrushStar } from '../lib/brush.ts';
+
+interface Props { layout?: 'home' | 'title' }
+const { layout = 'home' } = Astro.props;
+
+type Spark = { shape: BrushStar; x: number; y: number; s: number; d: number; mx: number; my: number; ms: number; rot?: number };
+type Dot = { c: string; x: number; y: number; s: number; d: number; mx: number; my: number };
+/* x / y in % of the hero (desktop, then mx / my on a phone), s in px, d the
+   delay in seconds. */
+const sets: Record<NonNullable<Props['layout']>, { stars: Spark[]; dots: Dot[] }> = {
+  home: {
+    stars: [
+      { shape: 'burst', x: 15.5, y: 9, s: 44, d: 0.15, mx: 8, my: 7, ms: 24 },
+      { shape: 'twinkle', x: 3.5, y: 76, s: 28, d: 0.5, mx: 90, my: 5, ms: 20 },
+      { shape: 'cross', x: 21.5, y: 50, s: 18, d: 0.8, mx: 4, my: 22, ms: 13 },
+      { shape: 'twinkle', x: 83, y: 9, s: 34, d: 0.3, mx: 94, my: 24, ms: 15 },
+      { shape: 'burst', x: 86, y: 70, s: 36, d: 0.65, mx: 86, my: 31, ms: 17 },
+      { shape: 'cross', x: 76, y: 31, s: 16, d: 1.0, mx: 95, my: 36, ms: 11 },
+      { shape: 'twinkle', x: 29, y: 21, s: 15, d: 1.15, mx: 70, my: 2, ms: 10 },
+    ],
+    dots: [
+      { c: '#6a3eec', x: 20, y: 36, s: 7, d: 0.55, mx: 18, my: 3, },
+      { c: '#ffd84d', x: 9, y: 30, s: 9, d: 0.85, mx: 80, my: 9 },
+      { c: '#ffb59a', x: 27, y: 12, s: 6, d: 1.05, mx: 2, my: 15 },
+      { c: '#6a3eec', x: 88, y: 28, s: 6, d: 0.7, mx: 97, my: 14 },
+      { c: '#ffb59a', x: 96, y: 18, s: 8, d: 1.0, mx: 28, my: 1 },
+      { c: '#ffd84d', x: 83, y: 54, s: 7, d: 1.2, mx: 60, my: 33 },
+    ],
+  },
+  title: {
+    stars: [
+      { shape: 'twinkle', x: 27, y: 8, s: 24, d: 0.15, mx: 6, my: 6, ms: 16 },
+      { shape: 'cross', x: 71, y: 4, s: 15, d: 0.45, mx: 94, my: 10, ms: 12 },
+      { shape: 'burst', x: 3, y: 70, s: 28, d: 0.3, mx: 4, my: 88, ms: 16 },
+      { shape: 'cross', x: 97, y: 86, s: 15, d: 0.75, mx: 96, my: 90, ms: 11 },
+      { shape: 'twinkle', x: 80, y: 20, s: 14, d: 1.0, mx: 80, my: 3, ms: 10 },
+    ],
+    dots: [
+      { c: '#6a3eec', x: 13, y: 16, s: 7, d: 0.5, mx: 10, my: 12 },
+      { c: '#ffd84d', x: 94, y: 48, s: 8, d: 0.7, mx: 96, my: 44 },
+      { c: '#ffb59a', x: 78, y: 6, s: 6, d: 0.95, mx: 76, my: 4 },
+      { c: '#ffb59a', x: 5, y: 62, s: 6, d: 1.1, mx: 2, my: 60 },
+    ],
+  },
+};
+const { stars, dots } = sets[layout];
+const id = brushId();
+---
+
+<span class:list={['sparkles', `sparkles-${layout}`]} aria-hidden="true">
+  <svg class="sparkles-defs" width="0" height="0" focusable="false">
+    <defs>
+      <filter id={`${id}-f`} x="-15%" y="-15%" width="130%" height="130%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+      <linearGradient id={`${id}-g`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f2cf5b" />
+        <stop offset="0.5" stop-color="#d9ac35" />
+        <stop offset="1" stop-color="#c39b33" />
+      </linearGradient>
+    </defs>
+  </svg>
+  <span class="sparkles-sweep"></span>
+  {stars.map((st) => (
+    <svg class="sparkle" viewBox="0 0 100 100" focusable="false"
+      style={`--x:${st.x}%;--y:${st.y}%;--s:${st.s}px;--d:${st.d}s;--mx:${st.mx}%;--my:${st.my}%;--ms:${st.ms}px`}>
+      <g filter={`url(#${id}-f)`} fill={`url(#${id}-g)`}>
+        {brushStars[st.shape].map((d) => <path d={d} />)}
+      </g>
+    </svg>
+  ))}
+  {dots.map((dt) => (
+    <i class="sparkle-dot" style={`--x:${dt.x}%;--y:${dt.y}%;--s:${dt.s}px;--d:${dt.d}s;--mx:${dt.mx}%;--my:${dt.my}%;--c:${dt.c}`}></i>
+  ))}
+</span>
+
+<style>
+  .sparkles { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .sparkles-defs { position: absolute; }
+  /* The home hero runs up under the nav; the sparkles start below it. */
+  .sparkles-home { top: var(--header-h); }
+  .sparkle, .sparkle-dot {
+    position: absolute; left: var(--x); top: var(--y);
+    width: var(--s); height: var(--s);
+    translate: -50% -50%;
+    opacity: 0;
+    animation: sparkle-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.25) var(--d) forwards;
+  }
+  .sparkle { overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 216, 77, 0.55)); }
+  .sparkle-dot { border-radius: 50%; background: var(--c); box-shadow: 0 0 8px color-mix(in srgb, var(--c) 60%, transparent); animation-name: dot-in; animation-duration: 0.8s; }
+  /* Pop in, overshoot, one twinkle, settle. */
+  @keyframes sparkle-in {
+    0% { opacity: 0; transform: scale(0) rotate(-35deg); }
+    45% { opacity: 1; transform: scale(1.25) rotate(8deg); }
+    65% { transform: scale(0.85) rotate(0deg); }
+    80% { opacity: 0.75; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  @keyframes dot-in {
+    0% { opacity: 0; transform: scale(0) translateY(6px); }
+    60% { opacity: 1; transform: scale(1.4); }
+    100% { opacity: 0.9; transform: scale(1); }
+  }
+  /* The shimmer: a soft rainbow band that crosses once and is gone. */
+  .sparkles-sweep {
+    position: absolute; top: -20%; bottom: -20%; left: 0; width: 45%;
+    background: linear-gradient(100deg,
+      transparent 0%, rgba(255, 216, 77, 0.0) 15%, rgba(255, 216, 77, 0.22) 35%,
+      rgba(255, 181, 154, 0.22) 50%, rgba(106, 62, 236, 0.16) 65%, transparent 85%);
+    filter: blur(18px);
+    transform: translateX(-120%) skewX(-12deg);
+    opacity: 0;
+    animation: sweep 1.9s ease-in-out 0.1s forwards;
+  }
+  @keyframes sweep {
+    0% { opacity: 0; transform: translateX(-120%) skewX(-12deg); }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(260%) skewX(-12deg); }
+  }
+  @media (max-width: 720px) {
+    .sparkle, .sparkle-dot { left: var(--mx); top: var(--my); }
+    .sparkle { width: var(--ms); height: var(--ms); }
+    .sparkle-dot { width: calc(var(--s) * 0.8); height: calc(var(--s) * 0.8); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sparkle, .sparkle-dot { animation: none; opacity: 1; }
+    .sparkles-sweep { display: none; }
+  }
+</style>

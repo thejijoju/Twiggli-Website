@@ -3963,7 +3963,8 @@ a:hover { color: var(--color-accent); }
 .dir-search-btn:hover { background: var(--color-accent-700); }
 .dir-search-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
 
-.dir-head { text-align: center; margin: 48px auto 24px; max-width: 760px; }
+.dir-head { position: relative; text-align: center; margin: 48px auto 24px; max-width: 760px; }
+.dir-head > :not(.sparkles) { position: relative; z-index: 1; }
 .dir-title {
   font-family: "Fraunces", Georgia, "Times New Roman", serif;
   font-weight: 500;

@@ -19,6 +19,7 @@ import HostCommunity from './HostCommunity.astro';
 import SiteSchema from './SiteSchema.astro';
 import HostMonogram from './HostMonogram.astro';
 import HomeSearch from './HomeSearch.astro';
+import HeroSparkles from './HeroSparkles.astro';
 import { filterCopy } from '../data/content.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, formatWhen, hostHref, hubHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { ui } from '../data/i18n.ts';
@@ -41,7 +42,8 @@ const split = homeSplits[lang];
 const f = filterCopy[lang];
 const { rows, calendarHref, chips, counts, activityFace, makers, listed, cardMedia } = getHomeData(lang);
 
-/* Round pictures beside the headline on a wide screen. */
+/* Polaroids beside the headline on a wide screen, captioned by hand; a
+   small strip of them above it on anything narrower. */
 const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ src: thumb(a), label: f.activities[a] }));
 ---
 
@@ -52,9 +54,13 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
   </Fragment>
 
   <section class="hd-hero">
+    <HeroSparkles layout="home" />
     <div class="hd-hero-pics" aria-hidden="true">
       {heroPics.map((p, i) => (
-        <img class={`hd-hero-pic is-${i + 1}`} src={p.src} alt="" width="240" height="240" decoding="async" />
+        <figure class={`hd-polaroid hd-hero-pic is-${i + 1}`}>
+          <img src={p.src} alt="" width="240" height="240" decoding="async" />
+          <figcaption>{p.label}</figcaption>
+        </figure>
       ))}
     </div>
     <div class="container hd-hero-inner">
