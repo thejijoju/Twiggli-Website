@@ -203,7 +203,9 @@ export function startReelWalk(reels: Reel[], options: ReelWalkOptions = {}) {
    *  fresh each turn for the same reason, which is a row of rect reads every
    *  few seconds and nothing next to what a playing video costs. */
   const perRow = (): Reel[] => {
-    const shown = reels.filter((reel) => !marked(reel).hidden);
+    // Laid out at all: a tile inside a hidden day (or any hidden ancestor)
+    // has no box, and would otherwise make a row of its own at the top.
+    const shown = reels.filter((reel) => !marked(reel).hidden && reel.tile.getClientRects().length > 0);
     const rows: Reel[][] = [];
     let top = NaN;
     for (const reel of shown) {

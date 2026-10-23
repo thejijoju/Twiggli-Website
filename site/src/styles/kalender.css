@@ -1,0 +1,471 @@
+/* ── Calendar redesign drafts (CalendarPreview.astro, DayPicker `variant`) ──
+   The home page's look on the live calendar's data: Fraunces headings with
+   a purple italic accent, Caveat for the times, soft tinted chips, tiles in
+   an even white frame with the lines under it, and no panel behind the day.
+   Imported by the preview component only, so the live calendar is
+   untouched. Everything is scoped to `.kal-page`. */
+
+.kal-page {
+  --hd-ink: #2b2118;
+  --hd-muted: #6b5f53;
+  --hd-purple: #6a3eec;
+  --hd-purple-deep: #542ebc;
+  --hd-lav: #efe6ff;
+  --hd-soft: #f3edff;
+  --hd-line: rgba(43, 33, 24, 0.1);
+  --hd-shadow: 0 14px 28px -14px rgba(43, 33, 24, 0.42);
+  --hd-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hd-hand: 'Caveat', cursive;
+  color: var(--hd-ink);
+}
+.kal-page main { overflow-x: clip; }
+
+/* — head — */
+.kal-page .kal-head { padding: 40px 0 26px; }
+.kal-page .kal-head.is-center { text-align: center; }
+.kal-page .kal-h1 {
+  margin: 0;
+  font-family: var(--hd-serif); font-weight: 800;
+  font-size: clamp(34px, 4.6vw, 58px); line-height: 1.05; letter-spacing: -0.02em;
+  color: var(--hd-ink); text-wrap: balance;
+}
+.kal-page .kal-h1 em, .kal-page .kal-h2 em { font-style: italic; font-weight: 500; color: var(--hd-purple); }
+.kal-page .kal-h1 em { white-space: nowrap; }
+.kal-page .kal-h2 {
+  margin: 0; font-family: var(--hd-serif); font-weight: 800;
+  font-size: clamp(26px, 3vw, 34px); line-height: 1.1; letter-spacing: -0.015em;
+}
+.kal-page .kal-sub { margin: 6px 0 0; font-size: 15px; line-height: 1.5; color: var(--hd-muted); }
+
+/* — what the live calendar has and the drafts do not — */
+.kal-page .kal .daysessions { margin-top: 0; padding: 0; background: none; border-radius: 0; }
+.kal-page .kal .dayresults { margin-top: 30px; }
+.kal-page .kal .timegroup-head { display: none; }
+.kal-page .kal .timegroup { margin-top: 0; }
+
+/* — the day strip — */
+.kal-page .kal .daystrip-month { display: none; }
+.kal-page .kal .daystrip {
+  gap: 8px; padding: 4px 2px 10px; margin: 0;
+  scroll-snap-type: none; scrollbar-width: none;
+  mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+}
+.kal-page .kal .daystrip::-webkit-scrollbar { display: none; }
+.kal-page .kal .daychip { transform: none; transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
+.kal-page .kal .daychip .daychip-dow,
+.kal-page .kal .daychip .daychip-num { color: inherit; }
+
+/* Soft chips, one line each: "Heute", "Morgen", "So 25" (drafts 1, 2). */
+.kal-page .kal-1 .daychip,
+.kal-page .kal-2 .daychip {
+  flex-direction: row; align-items: baseline; gap: 5px;
+  min-width: 0; padding: 9px 15px;
+  border: 1px solid var(--hd-line); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--hd-ink); white-space: nowrap;
+}
+.kal-page .kal-1 .daychip .daychip-dow,
+.kal-page .kal-2 .daychip .daychip-dow { font: 600 14px/1.2 var(--font-body); }
+.kal-page .kal-1 .daychip .daychip-num,
+.kal-page .kal-2 .daychip .daychip-num { font: 500 14px/1.2 var(--font-body); color: var(--hd-muted); }
+.kal-page .kal .daychip[data-offset='0'] .daychip-num,
+.kal-page .kal .daychip[data-offset='1'] .daychip-num { display: none; }
+.kal-page .kal-1 .daychip:hover,
+.kal-page .kal-2 .daychip:hover { border-color: var(--hd-purple); }
+.kal-page .kal-1 .daychip[aria-selected='true'],
+.kal-page .kal-2 .daychip[aria-selected='true'] { background: var(--hd-purple); border-color: var(--hd-purple); color: #fff; }
+.kal-page .kal-1 .daychip[aria-selected='true'] .daychip-num,
+.kal-page .kal-2 .daychip[aria-selected='true'] .daychip-num { color: rgba(255, 255, 255, 0.82); }
+.kal-page .kal .daychip.is-weekend:not([aria-selected='true']) .daychip-dow { color: var(--hd-purple-deep); }
+/* A month's first day says which month it is, in front of the chip. */
+.kal-page .kal-1 .daychip[data-month],
+.kal-page .kal-2 .daychip[data-month] { margin-left: 46px; position: relative; }
+.kal-page .kal-1 .daychip[data-month]::before,
+.kal-page .kal-2 .daychip[data-month]::before {
+  content: attr(data-month);
+  position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+  font: 700 19px/1 var(--hd-hand); color: var(--hd-purple);
+}
+
+/* — tiles: the picture in an even white frame, the lines under it — */
+.kal-page .kal .kal-card {
+  position: relative; isolation: isolate;
+  display: flex; flex-direction: column; align-items: stretch; gap: 0;
+  min-width: 0; color: var(--hd-ink);
+}
+/* The whole tile books, through its title; the picture (which plays its
+   reel on a tap), the host's name and the button keep their own. */
+.kal-page .kal .kal-card .session-title::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+.kal-page .kal .kal-card .session-host a,
+.kal-page .kal .kal-card .session-book { position: relative; z-index: 3; }
+.kal-page .kal .kal-card .kal-frame {
+  order: -1; position: relative; z-index: 2;
+  display: block; padding: 10px; border-radius: 18px;
+  background: linear-gradient(180deg, #fff 45%, rgba(255, 255, 255, 0.6));
+  box-shadow: var(--hd-shadow);
+  transition: transform 0.2s ease;
+}
+.kal-page .kal .kal-card:hover .kal-frame { transform: translateY(-4px); }
+.kal-page .kal .kal-card .session-thumb {
+  position: relative; display: block; width: 100%; height: auto; aspect-ratio: 1 / 1;
+  border-radius: 12px; overflow: hidden; background: #eee6da;
+}
+.kal-page .kal .kal-card .session-thumb img,
+.kal-page .kal .kal-card .session-thumb video,
+.kal-page .kal .kal-card .session-thumb .media-monogram { border-radius: 12px; position: absolute; inset: 0; width: 100%; height: 100%; }
+.kal-page .kal .kal-card .session-thumb .session-availbadge {
+  display: inline-block; position: absolute; right: 8px; bottom: 8px; z-index: 2;
+  padding: 3px 9px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  font-size: 11px; font-weight: 700; color: var(--hd-purple-deep);
+}
+.kal-page .kal .kal-card .session-thumb .session-availbadge.session-soldout { color: #b45309; }
+.kal-page .kal .kal-card .kal-when { display: flex; align-items: baseline; gap: 8px; margin-top: 12px; }
+.kal-page .kal .kal-time { font: 700 22px/1 var(--hd-hand); color: var(--hd-purple); white-space: nowrap; }
+.kal-page .kal .kal-dur { font-size: 12.5px; color: var(--hd-muted); white-space: nowrap; }
+.kal-page .kal .kal-card .session-main { display: block; margin-top: 3px; }
+.kal-page .kal .kal-card .session-title {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  overflow-wrap: anywhere;
+  margin: 0; font: 600 16px/1.3 var(--font-body); color: var(--hd-ink);
+}
+.kal-page .kal .kal-card:hover .session-title { color: var(--hd-purple-deep); }
+.kal-page .kal .kal-card .session-host {
+  margin-top: 3px; font-size: 13.5px; letter-spacing: 0; text-transform: none; color: var(--hd-muted);
+}
+.kal-page .kal .kal-card .session-host a { color: inherit; text-decoration: none; }
+.kal-page .kal .kal-card .session-host a:hover { color: var(--hd-purple-deep); text-decoration: underline; }
+.kal-page .kal .kal-card .session-code,
+.kal-page .kal .kal-card .session-deadline { display: block; margin-top: 4px; font-size: 12px; color: var(--hd-muted); }
+.kal-page .kal .kal-card .session-side {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; margin-top: auto; padding-top: 8px;
+}
+.kal-page .kal .kal-card .session-price {
+  padding: 0; background: none; color: var(--hd-ink);
+  font-size: 16px; font-weight: 700; margin: 0;
+}
+.kal-page .kal .kal-card .session-book {
+  width: auto; padding: 7px 14px; border: 0; border-radius: 999px;
+  background: var(--hd-soft); color: var(--hd-purple-deep);
+  font: 600 13px/1.2 var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer;
+}
+.kal-page .kal .kal-card .session-book:hover { background: var(--hd-purple); color: #fff; }
+
+/* The grid of the day (drafts 1, 3) and of "on request". */
+.kal-page .daypicker.kal[data-view='grid'] .daysessions .daygroup,
+.kal-page .kal .kal-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px;
+}
+.kal-page .kal .kal-grid { padding: 0; margin: 22px 0 0; list-style: none; }
+
+/* — empty, more, reset — */
+.kal-page .kal .daypicker-empty,
+.kal-page .kal .kal-emptyall {
+  grid-column: 1 / -1; margin: 0; padding: 36px 24px; border-radius: 22px;
+  background: rgba(255, 255, 255, 0.6); text-align: center;
+  font-size: 16px; line-height: 1.5; color: var(--hd-muted);
+}
+.kal-page .kal .kal-emptyall p { margin: 0 0 6px; }
+.kal-page .kal .kal-reset {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: 600 15px/1.4 var(--font-body); color: var(--hd-purple-deep); text-decoration: underline; text-underline-offset: 3px;
+}
+.kal-page .kal .kal-more {
+  display: block; margin: 36px auto 0; padding: 13px 26px; border-radius: 999px;
+  border: 1px solid var(--hd-line); background: #fff; box-shadow: 0 10px 22px -16px rgba(43, 33, 24, 0.5);
+  font: 600 15px/1.2 var(--font-body); color: var(--hd-ink); cursor: pointer;
+}
+.kal-page .kal .kal-more:hover { border-color: var(--hd-purple); color: var(--hd-purple-deep); }
+
+.kal-page .kal .kal-onrequest { margin-top: 72px; }
+
+/* — the map button and the soft controls — */
+.kal-page .kal .kal-ctl {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: 42px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid var(--hd-line); background: #fff; color: var(--hd-ink);
+  box-shadow: 0 8px 18px -14px rgba(43, 33, 24, 0.55);
+  font: 600 14px/1 var(--font-body); white-space: nowrap; cursor: pointer;
+}
+.kal-page .kal .kal-ctl svg { width: 17px; height: 17px; flex: none; }
+.kal-page .kal .kal-ctl:hover { border-color: var(--hd-purple); color: var(--hd-purple-deep); }
+.kal-page .kal .kal-ctl-map { background: var(--hd-purple); border-color: var(--hd-purple); color: #fff; }
+.kal-page .kal .kal-ctl-map:hover { background: var(--hd-purple-deep); color: #fff; }
+
+/* ── 1 · Suchleiste ─────────────────────────────────────────────────── */
+.kal-page .kal-1 .kal-search { width: min(860px, 100%); margin: 0 auto; }
+.kal-page .kal-1 .kal-search .hd-field { position: relative; border-right: 0; }
+.kal-page .kal-1 .kal-search .hd-field + .hd-field::before {
+  content: ''; position: absolute; left: 0; top: 24%; bottom: 24%; width: 1px; background: var(--hd-line);
+}
+.kal-page .kal-1 .kal-mapbtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+.kal-page .kal-1 .kal-stripwrap { margin-top: 22px; }
+.kal-page .kal-1 .daystrip { justify-content: flex-start; }
+
+/* ── 2 · Luma ──────────────────────────────────────────────────────── */
+.kal-page .daypicker.kal-2 {
+  display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 0 44px; align-items: start;
+}
+.kal-page .kal-2 > .kal-aside {
+  grid-column: 1; grid-row: 1 / span 6;
+  position: sticky; top: calc(var(--header-h) + 16px);
+}
+.kal-page .kal-2 > :not(.kal-aside) { grid-column: 2; min-width: 0; }
+.kal-page .kal-2 .dayresults { margin-top: 0; }
+.kal-page .kal-2 .kal-panel {
+  padding: 18px; border-radius: 24px;
+  background: linear-gradient(180deg, #fff 55%, rgba(255, 255, 255, 0.7));
+  box-shadow: var(--hd-shadow);
+}
+.kal-page .kal-2 .kal-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.kal-page .kal-2 .kal-cal-month { font: 800 18px/1.2 var(--hd-serif); text-transform: capitalize; }
+.kal-page .kal-2 .kal-cal-nav {
+  width: 32px; height: 32px; border: 0; border-radius: 50%; background: none;
+  font: 400 22px/1 var(--font-body); color: var(--hd-ink); cursor: pointer;
+}
+.kal-page .kal-2 .kal-cal-nav:hover:not(:disabled) { background: var(--hd-soft); }
+.kal-page .kal-2 .kal-cal-nav:disabled { opacity: 0.25; cursor: default; }
+.kal-page .kal-2 .kal-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.kal-page .kal-2 .kal-cal-dow { padding: 4px 0; text-align: center; font-size: 11.5px; font-weight: 600; color: var(--hd-muted); }
+.kal-page .kal-2 .kal-cal-day {
+  position: relative; aspect-ratio: 1; border: 0; border-radius: 50%; background: none;
+  font: 500 14px/1 var(--font-body); color: var(--hd-ink); cursor: pointer;
+}
+.kal-page .kal-2 .kal-cal-day:disabled { color: rgba(43, 33, 24, 0.22); cursor: default; }
+.kal-page .kal-2 .kal-cal-day:not(:disabled):not(.has-on) { color: rgba(43, 33, 24, 0.4); }
+.kal-page .kal-2 .kal-cal-day.has-on::after {
+  content: ''; position: absolute; left: 50%; bottom: 5px; width: 4px; height: 4px; margin-left: -2px;
+  border-radius: 50%; background: var(--hd-purple);
+}
+.kal-page .kal-2 .kal-cal-day:hover:not(:disabled) { background: var(--hd-soft); }
+.kal-page .kal-2 .kal-cal-day.is-today { font-weight: 800; color: var(--hd-purple-deep); }
+.kal-page .kal-2 .kal-cal-day.is-selected { background: var(--hd-purple); color: #fff; }
+.kal-page .kal-2 .kal-cal-day.is-selected::after { background: #fff; }
+.kal-page .kal-2 .kal-cal-all {
+  display: block; width: 100%; margin-top: 10px; padding: 9px; border: 0; border-radius: 999px;
+  background: none; font: 600 14px/1.2 var(--font-body); color: var(--hd-purple-deep); cursor: pointer;
+}
+.kal-page .kal-2 .kal-cal-all:hover { background: var(--hd-soft); }
+.kal-page .kal-2 .kal-cal-all.is-active { background: var(--hd-lav); }
+.kal-page .kal-2 .kal-sels { display: grid; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hd-line); }
+.kal-page .kal-2 .kal-sel {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  padding: 8px 14px; border-radius: 16px; background: #fff; border: 1px solid var(--hd-line); cursor: pointer;
+}
+.kal-page .kal-2 .kal-sel:focus-within { box-shadow: inset 0 0 0 2px var(--hd-purple); }
+.kal-page .kal-2 .kal-sel > span { font: 700 12px/1.3 var(--font-body); }
+.kal-page .kal-2 .kal-sel select {
+  appearance: none; -webkit-appearance: none; width: 100%; margin: 0; padding: 2px 18px 2px 0;
+  border: 0; outline: 0; background: transparent no-repeat right center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%236b5f53' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  font: 400 15px/1.4 var(--font-body); color: var(--hd-muted); cursor: pointer; text-overflow: ellipsis;
+}
+.kal-page .kal-2 .kal-sels .kal-ctl-map { width: 100%; height: 46px; }
+.kal-page .kal-2 .kal-stripwrap { display: none; }
+
+/* The days, a heading each, and a row per date: the time on the left, a
+   white card with the lines and the picture beside it. */
+.kal-page .kal-2 .daygroup:not([hidden]) ~ .daygroup:not([hidden]) { margin-top: 40px; }
+.kal-page .kal-2 .kal-dayhead {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 14px;
+  font: 800 28px/1.1 var(--hd-serif); letter-spacing: -0.015em; color: var(--hd-ink);
+}
+.kal-page .kal-2 .kal-dayhead-sub { font: 400 15px/1.3 var(--font-body); letter-spacing: 0; color: var(--hd-muted); }
+.kal-page .kal-2 .daysessions .session-list { gap: 14px; }
+.kal-page .kal-2 .daysessions .timegroup + .timegroup { margin-top: 14px; }
+.kal-page .daypicker.kal-2 .daysessions .kal-card {
+  position: relative;
+  display: grid; grid-template-columns: 70px minmax(0, 1fr) 132px; grid-template-rows: auto 1fr auto;
+  column-gap: 18px; align-items: start;
+}
+.kal-page .daypicker.kal-2 .daysessions .kal-card::before {
+  content: ''; grid-column: 2 / 4; grid-row: 1 / 4; align-self: stretch; z-index: -1;
+  border-radius: 20px; background: #fff; box-shadow: var(--hd-shadow);
+  transition: box-shadow 0.2s ease;
+}
+.kal-page .daypicker.kal-2 .daysessions .kal-card:hover::before { box-shadow: 0 18px 34px -16px rgba(43, 33, 24, 0.5); }
+.kal-page .daypicker.kal-2 .daysessions .kal-when {
+  grid-column: 1; grid-row: 1 / 4; flex-direction: column; align-items: flex-end; gap: 4px;
+  margin: 0; padding-top: 16px; text-align: right;
+}
+.kal-page .daypicker.kal-2 .daysessions .kal-time { font-size: 25px; }
+.kal-page .daypicker.kal-2 .daysessions .kal-frame {
+  order: 0; grid-column: 3; grid-row: 1 / 4; padding: 10px 10px 10px 0;
+  background: none; box-shadow: none; transform: none;
+}
+.kal-page .daypicker.kal-2 .daysessions .session-main { grid-column: 2; grid-row: 1; margin: 0; padding: 16px 0 0 18px; }
+.kal-page .daypicker.kal-2 .daysessions .session-title { font-size: 17px; }
+.kal-page .daypicker.kal-2 .daysessions .session-side {
+  grid-column: 2; grid-row: 3; justify-content: flex-start; gap: 14px; padding: 10px 0 14px 18px; width: auto;
+}
+.kal-page .daypicker.kal-2 .daysessions .session-thumb .session-availbadge { display: none; }
+/* The map beside the dates takes the dates' column, not the page. */
+@media (min-width: 1100px) {
+  .kal-page .kal-2[data-map='open'] .sidemap-results,
+  .kal-page .kal-2[data-map='expanded'] .sidemap-results { margin-inline: 0; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+}
+
+/* ── 3 · Chips light ───────────────────────────────────────────────── */
+.kal-page .kal-3 .daystrip { gap: 8px; }
+.kal-page .kal-3 .daychip {
+  flex-direction: column; align-items: center; gap: 2px;
+  min-width: 58px; padding: 9px 6px 10px;
+  border: 1px solid var(--hd-line); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72); color: var(--hd-ink);
+}
+.kal-page .kal-3 .daychip .daychip-dow { font: 600 12.5px/1.2 var(--font-body); color: var(--hd-muted); }
+.kal-page .kal-3 .daychip .daychip-num { font: 700 18px/1.1 var(--font-body); }
+.kal-page .kal-3 .daychip[data-offset='0'],
+.kal-page .kal-3 .daychip[data-offset='1'] { padding-inline: 14px; }
+.kal-page .kal-3 .daychip[data-offset='0'] .daychip-num,
+.kal-page .kal-3 .daychip[data-offset='1'] .daychip-num { display: block; }
+.kal-page .kal-3 .daychip:hover { border-color: var(--hd-purple); }
+.kal-page .kal-3 .daychip[aria-selected='true'] { background: var(--hd-purple); border-color: var(--hd-purple); color: #fff; }
+.kal-page .kal-3 .daychip[aria-selected='true'] .daychip-dow { color: rgba(255, 255, 255, 0.85); }
+.kal-page .kal-3 .daychip[data-month] { margin-left: 40px; position: relative; }
+.kal-page .kal-3 .daychip[data-month]::before {
+  content: attr(data-month); position: absolute; right: calc(100% + 9px); top: 50%; transform: translateY(-50%);
+  font: 700 19px/1 var(--hd-hand); color: var(--hd-purple);
+}
+.kal-page .kal-3 .kal-filterrow { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.kal-page .kal-3 .kal-chips {
+  flex: 1 1 auto; min-width: 0; display: flex; gap: 8px; padding: 3px 2px;
+  overflow-x: auto; scrollbar-width: none;
+  mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+}
+.kal-page .kal-3 .kal-chips::-webkit-scrollbar { display: none; }
+.kal-page .kal-3 .kal-chip {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  padding: 9px 15px; border: 1px solid transparent; border-radius: 999px;
+  background: var(--tint, #fff); color: var(--hd-ink);
+  font: 500 14px/1.2 var(--font-body); cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.kal-page .kal-3 .kal-chip:hover { border-color: var(--hd-purple); color: var(--hd-purple-deep); }
+.kal-page .kal-3 .kal-chip.is-active { background: var(--hd-purple); color: #fff; border-color: var(--hd-purple); }
+.kal-page .kal-3 .kal-menuwrap { position: relative; flex: none; }
+.kal-page .kal-3 .kal-menubtn > span { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+.kal-page .kal-3 .kal-menubtn .kal-caret { width: 12px; height: 12px; }
+.kal-page .kal-3 .kal-menubtn.is-on { background: var(--hd-soft); border-color: var(--hd-purple); color: var(--hd-purple-deep); }
+.kal-page .kal-3 .kal-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 30;
+  width: min(340px, calc(100vw - 32px)); max-height: min(420px, 60vh); overflow-y: auto; overscroll-behavior: contain;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  padding: 8px; border-radius: 20px; background: #fff;
+  box-shadow: 0 24px 50px -20px rgba(43, 33, 24, 0.45), 0 0 0 1px var(--hd-line);
+}
+.kal-page .kal-3 .kal-menu-item {
+  padding: 9px 12px; border: 0; border-radius: 12px; background: none; text-align: left;
+  font: 400 14px/1.25 var(--font-body); color: var(--hd-ink); cursor: pointer;
+}
+.kal-page .kal-3 .kal-menu-item:first-child { grid-column: 1 / -1; font-weight: 600; }
+.kal-page .kal-3 .kal-menu-item:hover { background: var(--hd-soft); }
+.kal-page .kal-3 .kal-menu-item.is-active { background: var(--hd-lav); color: var(--hd-purple-deep); font-weight: 600; }
+
+/* ── Narrower screens ─────────────────────────────────────────────── */
+@media (max-width: 1099px) {
+  .kal-page .daypicker.kal[data-view='grid'] .daysessions .daygroup,
+  .kal-page .kal .kal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 899px) {
+  .kal-page .daypicker.kal-2 { display: block; }
+  .kal-page .kal-2 > .kal-aside { position: static; }
+  .kal-page .kal-2 .kal-panel { padding: 0; background: none; box-shadow: none; border-radius: 0; }
+  .kal-page .kal-2 .kal-cal { display: none; }
+  .kal-page .kal-2 .kal-sels {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px;
+    margin: 0; padding: 0; border: 0;
+  }
+  .kal-page .kal-2 .kal-sels .kal-ctl-map { width: 46px; height: auto; padding: 0; }
+  .kal-page .kal-2 .kal-sels .kal-ctl-map span { display: none; }
+  .kal-page .kal-2 .kal-stripwrap { display: block; margin-top: 14px; }
+  .kal-page .kal-2 .dayresults { margin-top: 22px; }
+}
+@media (max-width: 720px) {
+  .kal-page main { --gutter: 16px; }
+  .kal-page .kal-head { padding: 22px 0 18px; }
+  .kal-page .kal-h1 { font-size: 34px; }
+
+  .kal-page .daypicker.kal[data-view='grid'] .daysessions .daygroup,
+  .kal-page .kal .kal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 12px; }
+  .kal-page .kal .kal-card .kal-frame { padding: 7px; border-radius: 16px; }
+  .kal-page .kal .kal-card .session-thumb,
+  .kal-page .kal .kal-card .session-thumb img,
+  .kal-page .kal .kal-card .session-thumb video,
+  .kal-page .kal .kal-card .session-thumb .media-monogram { border-radius: 10px; }
+  .kal-page .kal .kal-card .kal-when { margin-top: 10px; gap: 6px; }
+  .kal-page .kal .kal-time { font-size: 19px; }
+  .kal-page .kal .kal-dur { font-size: 11.5px; }
+  .kal-page .kal .kal-card .session-title { font-size: 14px; }
+  .kal-page .kal .kal-card .session-host { font-size: 12px; }
+  .kal-page .kal .kal-card .session-side { gap: 6px; }
+  /* The tile itself books on a phone; the button would only wrap. */
+  .kal-page .kal .kal-card .session-book { display: none; }
+  .kal-page .kal .kal-card .session-price { font-size: 15px; }
+  .kal-page .kal .kal-card .session-book { padding: 6px 11px; font-size: 12.5px; }
+  .kal-page .kal .dayresults { margin-top: 20px; }
+  .kal-page .kal .kal-onrequest { margin-top: 52px; }
+  .kal-page .kal .daystrip { margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
+
+  /* 1 — the pill keeps one line: Was? and Wo? with the map at the end;
+     the strip underneath is the "when". */
+  .kal-page .kal-1 .kal-search { flex-direction: row; border-radius: 999px; padding: 5px; margin-top: 0; }
+  .kal-page .kal-1 .kal-search .hd-field {
+    padding: 6px 12px 6px 16px; border-bottom: 0; border-right: 1px solid var(--hd-line); border-radius: 999px;
+  }
+  .kal-page .kal-1 .kal-search .kal-field-when { display: none; }
+  .kal-page .kal-1 .kal-search .hd-field { position: relative; border-right: 0; }
+.kal-page .kal-1 .kal-search .hd-field + .hd-field::before {
+  content: ''; position: absolute; left: 0; top: 24%; bottom: 24%; width: 1px; background: var(--hd-line);
+}
+  .kal-page .kal-1 .kal-search .hd-field > span { font-size: 11.5px; }
+  .kal-page .kal-1 .kal-search .hd-field select { font-size: 14.5px; }
+  .kal-page .kal-1 .kal-search .kal-mapbtn { width: 50px; min-height: 50px; margin: 0; padding: 0; }
+  .kal-page .kal-1 .kal-search .kal-mapbtn span { display: none; }
+  .kal-page .kal-1 .kal-stripwrap { margin-top: 14px; }
+
+  /* 2 — the row: time, card, picture, all a size down. */
+  .kal-page .kal-2 .kal-dayhead { font-size: 23px; margin-bottom: 12px; }
+  .kal-page .kal-2 .kal-dayhead-sub { font-size: 13.5px; }
+  .kal-page .kal-2 .daygroup:not([hidden]) ~ .daygroup:not([hidden]) { margin-top: 30px; }
+  .kal-page .kal-2 .kal-sel { padding: 7px 10px 7px 12px; border-radius: 14px; }
+  .kal-page .kal-2 .kal-sel select { font-size: 14px; padding-right: 14px; }
+  .kal-page .daypicker.kal-2 .daysessions .kal-card { grid-template-columns: 48px minmax(0, 1fr) 104px; column-gap: 10px; }
+  .kal-page .daypicker.kal-2 .daysessions .kal-when { padding-top: 13px; }
+  .kal-page .daypicker.kal-2 .daysessions .kal-time { font-size: 20px; }
+  .kal-page .daypicker.kal-2 .daysessions .kal-dur { font-size: 11px; white-space: normal; }
+  .kal-page .daypicker.kal-2 .daysessions .kal-frame { padding: 8px 8px 8px 0; }
+  .kal-page .daypicker.kal-2 .daysessions .session-main { padding: 12px 0 0 13px; }
+  .kal-page .daypicker.kal-2 .daysessions .session-title { font-size: 14.5px; }
+  .kal-page .daypicker.kal-2 .daysessions .session-side { padding: 6px 0 11px 13px; gap: 8px; flex-wrap: wrap; }
+
+  /* 3 — the map keeps its icon; the menu keeps its word. */
+  .kal-page .kal-3 .kal-filterrow { gap: 6px; margin-top: 10px; margin-right: calc(-1 * var(--gutter) + 16px); }
+  .kal-page .kal-3 .kal-chips { margin-left: calc(-1 * var(--gutter)); padding-left: var(--gutter); }
+  .kal-page .kal-3 .kal-chip { padding: 8px 13px; font-size: 13.5px; }
+  .kal-page .kal-3 .kal-ctl { height: 40px; padding: 0 12px; }
+  /* Two round buttons at the end of the row: the district (a pin, purple
+     once one is chosen) and the map. */
+  .kal-page .kal-3 .kal-menubtn,
+  .kal-page .kal-3 .kal-ctl-map { width: 40px; padding: 0; }
+  .kal-page .kal-3 .kal-menubtn > span,
+  .kal-page .kal-3 .kal-menubtn .kal-caret,
+  .kal-page .kal-3 .kal-ctl-map span { display: none; }
+  .kal-page .kal-3 .kal-menubtn.is-on { background: var(--hd-purple); color: #fff; }
+  .kal-page .kal-3 .daychip { min-width: 52px; padding: 8px 5px 9px; }
+  .kal-page .kal-3 .daychip .daychip-num { font-size: 17px; }
+}
+
+/* Air above the footer, and draft 2's narrower "on request" row. */
+.kal-page .daypicker.kal { padding-bottom: 80px; }
+@media (min-width: 900px) {
+  .kal-page .kal-2 .kal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+/* The open map has its own close button; the opener steps aside. */
+@media (min-width: 1100px) {
+  .kal-page .kal[data-map='open'] .map-btn,
+  .kal-page .kal[data-map='expanded'] .map-btn { display: none; }
+}
