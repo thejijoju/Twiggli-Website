@@ -1,0 +1,13 @@
+---
+/** Four round pictures above a page's heading, as on the home page: plain
+ *  circles, no frame, no caption. Purely decorative — the pictures come
+ *  from data/pageCircles.ts. `align` follows the heading under it. */
+interface Props { pics: string[]; align?: 'start' | 'center' }
+const { pics, align = 'start' } = Astro.props;
+---
+
+{pics.length > 0 && (
+  <div class:list={['page-circles', `is-${align}`]} aria-hidden="true">
+    {pics.map((src) => <img src={src} alt="" width="72" height="72" decoding="async" />)}
+  </div>
+)}

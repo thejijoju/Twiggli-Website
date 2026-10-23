@@ -1,4 +1,6 @@
 ---
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
 /** /workshops/ — the index of every activity page and every host page.
  *  A crawler landing here reaches all of them in one hop, which is the
  *  point of it; a visitor gets the same thing as a menu. */
@@ -76,6 +78,7 @@ const schema = {
   <div class="container">
     <section class="hub-top">
       <div class="hub-intro">
+        <PageCircles pics={circlesFor.activities()} />
         <span class="kicker">{copy.kicker}</span>
         <h1 class="hub-title">{copy.h1},<span class="hub-hand"> {h.hand}</span></h1>
         <p class="page-lede">{copy.lede}</p>

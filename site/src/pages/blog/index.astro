@@ -1,4 +1,6 @@
 ---
+import PageCircles from '../../components/PageCircles.astro';
+import { circlesFor } from '../../data/pageCircles.ts';
 import { LEGAL_LANGS } from '../../lib/url.ts';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
@@ -16,6 +18,7 @@ const posts = await getPosts(lang);
 >
   <div class="container">
     <section class="page-head">
+      <PageCircles pics={circlesFor.activities()} />
       <span class="kicker">Blog</span>
       <h1 class="page-title">Notes from the workshop</h1>
       <p class="page-lede">

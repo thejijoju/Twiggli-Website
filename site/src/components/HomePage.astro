@@ -85,9 +85,11 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
         <ul class="hd-track">
           {row.list.map((s) => (
             <li>
-              {/* The same tile as the group-bookings directory (HostDirectory
-                  .maker): a square reel over its still, then the lines. */}
+              {/* The group-bookings directory's tile (HostDirectory .maker), a
+                  square reel over its still, in an even white frame; the
+                  lines sit under the frame on the page. */}
               <a class="maker hd-tile" href={workshopHref(lang, s.host, s.workshopKey)} data-seen={`s:${s.id}`}>
+                <span class="hd-frame">
                 <span class="maker-media" style={lqipStyle(cardMedia(s).poster)}>
                   {cardMedia(s).video ? (
                     <>
@@ -99,6 +101,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                   ) : (
                     <HostMonogram name={s.host.name} />
                   )}
+                </span>
                 </span>
                 <span class="hd-card-when">{formatWhen(s, lang)}</span>
                 <span class="maker-line"><span class="maker-title">{s.title}</span></span>
