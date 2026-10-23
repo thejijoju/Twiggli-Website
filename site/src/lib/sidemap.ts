@@ -207,13 +207,16 @@ export function startSideMap(
     if (event.key === 'Escape' && !wide.matches && root.dataset.map !== 'closed') setState('closed');
   });
   // Crossing the breakpoint: a phone never inherits a desktop's open map.
-  wide.addEventListener('change', () => setState(wide.matches ? 'open' : 'closed'));
+  // A page can ask to start with the map shut (data-map-start="closed", the
+  // calendar since 23.10.26); then only the map button opens it.
+  const startsShut = root.dataset.mapStart === 'closed';
+  wide.addEventListener('change', () => setState(wide.matches && !startsShut ? 'open' : 'closed'));
 
   // An earlier version remembered a close; forget it, so no one is left
   // without the map.
   try { localStorage.removeItem('twiggli-map'); } catch { /* private mode */ }
   root.dataset.mapLive = '';
-  setState(wide.matches ? 'open' : 'closed');
+  setState(wide.matches && !startsShut ? 'open' : 'closed');
 
   return {
     setMarks: (next) => { marks = next; render(); },

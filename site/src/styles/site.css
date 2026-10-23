@@ -154,11 +154,13 @@ a:hover { color: var(--color-accent); }
      the cream-into-lavender of the mail banners across the head of the
      page, fading into the cream before the fold. */
   background-color: var(--color-bg);
-  background-image:
-    linear-gradient(to bottom, rgba(253, 243, 231, 0) 55%, var(--color-bg) 100%),
-    linear-gradient(135deg, #fff4e6 0%, #efe6ff 100%);
+  /* Since 23.10.26 the wash runs the whole page, top to bottom: warm cream
+     on the left into lavender on the right, held in place while the page
+     scrolls (phones that ignore fixed simply stretch it down the page). */
+  background-image: linear-gradient(115deg, #fff4e6 0%, #fbeee9 45%, #efe6ff 100%);
   background-repeat: no-repeat;
-  background-size: 100% 960px;
+  background-size: 100% 100%;
+  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-body);
   min-height: 100vh;
