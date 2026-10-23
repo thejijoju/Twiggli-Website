@@ -16,8 +16,18 @@ import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
  *  day strip right at the top, one row of activity pills under it (the only
  *  filter), and the day's sessions grouped under bold time headers. The
  *  pills filter the list live, client-side. */
-interface Props { lang?: Lang }
-const { lang = DEFAULT_LANG } = Astro.props;
+interface Props {
+  lang?: Lang;
+  /** The calendar redesign drafts (src/pages/de/preview/kalender-1…3,
+   *  styled in kalender.css): 1 "Suchleiste" — the home page's search pill
+   *  over a strip of soft day chips; 2 "Luma" — a sticky column with a
+   *  month calendar and two selects beside the dates grouped by day; 3
+   *  "Chips light" — day pills over one row of tinted category chips with
+   *  a district menu and the map button. Left out, the live calendar. The
+   *  data, the filters and the client logic are the same for all four. */
+  variant?: '1' | '2' | '3';
+}
+const { lang = DEFAULT_LANG, variant } = Astro.props;
 
 // Two a day per host at most, so one busy studio cannot fill the day.
 const sessions = capPerHostPerDay(getSessions(lang));
@@ -157,6 +167,39 @@ const promosIn = (offset: number, list: Session[]): Session[] =>
 const mc = membershipCopy[lang];
 
 const fullLabel = (s: { waitingList?: boolean }) => (s.waitingList ? t.waitingList : t.soldOut);
+
+/* — the redesign drafts only — */
+/** The drafts' own words. German and English while they are drafts; the
+ *  other languages fall back to English until one of them goes live. */
+const kalCopyAll = {
+  de: { what: 'Was?', whatAny: 'Alle Workshops', when: 'Wann?', where: 'Wo?', whereAny: 'Ganz Berlin',
+        category: 'Kategorie', district: 'Bezirk', allDays: 'Alle Tage', moreDays: 'Weitere Tage zeigen',
+        map: 'Karte', reset: 'Filter zurücksetzen', noMatchAll: 'Dazu läuft gerade nichts. Probier einen anderen Bezirk oder eine andere Kategorie.',
+        uhr: '', prev: 'Voriger Monat', next: 'Nächster Monat', soon: 'demnächst' },
+  en: { what: 'What?', whatAny: 'Any workshop', when: 'When?', where: 'Where?', whereAny: 'All of Berlin',
+        category: 'Category', district: 'District', allDays: 'All days', moreDays: 'Show more days',
+        map: 'Map', reset: 'Clear filters', noMatchAll: 'Nothing on for that right now. Try another district or category.',
+        uhr: '', prev: 'Previous month', next: 'Next month', soon: 'soon' },
+};
+const k = lang === 'de' ? kalCopyAll.de : kalCopyAll.en;
+/** The chips' soft grounds, the home page's tints (homeData.ts). */
+const activityTints: Record<ActivityKey, string> = {
+  ceramics: '#ffe1d3', art: '#e6ddff', craft: '#ffe9a8', food: '#d9f3ea',
+  photography: '#dbe8ff', wellbeing: '#e4f3d6', music: '#ffd9ee',
+};
+/** A day's name as the build sees it; the script writes the visitor's own
+ *  over it, as it does for the strip. */
+const dayName = (offset: number, style: 'short' | 'long' = 'short') => {
+  if (offset === 0) return t.today;
+  if (offset === 1) return t.tomorrow;
+  const d = new Date(berlinTodayMs() + offset * 86400000);
+  return style === 'long'
+    ? d.toLocaleDateString(LANG_META[lang].locale, { weekday: 'long', timeZone: 'UTC' })
+    : d.toLocaleDateString(LANG_META[lang].locale, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+};
+const dayDate = (offset: number) =>
+  new Date(berlinTodayMs() + offset * 86400000).toLocaleDateString(LANG_META[lang].locale, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+const mapIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>';
 const formatDeadline = (iso: string): string => {
   const d = new Date(iso);
   if (Number.isNaN(d.valueOf())) return iso;
@@ -166,9 +209,13 @@ const formatDeadline = (iso: string): string => {
 ---
 
 <div
-  class="daypicker has-sidemap"
+  class:list={['daypicker has-sidemap', variant && `kal kal-${variant}`]}
   data-daypicker
-  data-view="grid"
+  data-variant={variant}
+  data-view={variant === '2' ? 'luma' : 'grid'}
+  data-all-days={variant === '2' ? 'true' : undefined}
+  data-when-soon={variant ? k.soon : undefined}
+  data-uhr={variant ? k.uhr : undefined}
   data-map="closed"
   data-map-start="closed"
   data-locale={LANG_META[lang].locale}
@@ -176,6 +223,8 @@ const formatDeadline = (iso: string): string => {
   data-today={t.today}
   data-tomorrow={t.tomorrow}
 >
+  {!variant && (
+  <>
   <span class="daystrip-month" data-month aria-hidden="true"></span>
   <div class="daystrip" role="tablist" aria-label={t.pick}>
     {days.map((offset) => (
@@ -268,6 +317,126 @@ const formatDeadline = (iso: string): string => {
     </button>
   </div>
 
+  </>
+  )}
+
+  {variant && (() => {
+    const strip = (
+      <div class="kal-stripwrap">
+        <span class="daystrip-month" data-month aria-hidden="true"></span>
+        <div class="daystrip kal-days" role="tablist" aria-label={t.pick}>
+          {variant === '2' && (
+            <button class="daychip kal-allchip" type="button" role="tab" data-offset="all" aria-selected="true">
+              <span class="daychip-dow">{k.allDays}</span>
+            </button>
+          )}
+          {days.map((offset) => (
+            <button class="daychip" type="button" role="tab" data-offset={offset}
+              aria-selected={variant !== '2' && offset === 0 ? 'true' : 'false'}>
+              <span class="daychip-dow">{dayName(offset).split(',')[0]}</span>
+              <span class="daychip-num">{new Date(berlinTodayMs() + offset * 86400000).getUTCDate()}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+    const activityOptions = [
+      <option value="all">{k.whatAny}</option>,
+      ...activities.map((a) => <option value={a}>{activityLabels[a]}</option>),
+    ];
+    const districtOptions = [
+      <option value="all">{k.whereAny}</option>,
+      ...districts.map((d) => <option value={d}>{d}</option>),
+    ];
+    const mapBtn = (cls: string) => (
+      <button type="button" class={`map-btn ${cls}`} data-map-open aria-label={k.map} title={k.map}>
+        <Fragment set:html={mapIcon} /><span>{k.map}</span>
+      </button>
+    );
+    if (variant === '1') return (
+      <div class="kal-top">
+        <div class="hd-search kal-search" role="search" aria-label={t.filter}>
+          <label class="hd-field kal-field-what">
+            <span>{k.what}</span>
+            <select data-activity-select>{activityOptions}</select>
+          </label>
+          <label class="hd-field kal-field-when">
+            <span>{k.when}</span>
+            <select data-day-select>
+              {days.map((offset) => <option value={offset}>{dayName(offset)}</option>)}
+            </select>
+          </label>
+          <label class="hd-field kal-field-where">
+            <span>{k.where}</span>
+            <select data-district-select>{districtOptions}</select>
+          </label>
+          {mapBtn('hd-search-btn kal-mapbtn')}
+        </div>
+        {strip}
+      </div>
+    );
+    if (variant === '3') return (
+      <div class="kal-top">
+        {strip}
+        <div class="kal-filterrow">
+          <div class="kal-chips" role="group" aria-label={t.filter}>
+            <button class="kal-chip is-active" type="button" data-activity-filter="all">{t.all}</button>
+            {activities.map((a) => (
+              <button class="kal-chip" type="button" data-activity-filter={a} style={`--tint:${activityTints[a]}`}>
+                <span aria-hidden="true">{activityIcons[a]}</span>{activityLabels[a]}
+              </button>
+            ))}
+            {hasKids && (
+              <button class="kal-chip" type="button" data-kids-filter aria-pressed="false" style="--tint:#ffd9ee">{t.kids}</button>
+            )}
+          </div>
+          <div class="kal-menuwrap">
+            <button type="button" class="kal-ctl kal-menubtn" data-kal-menu-btn aria-expanded="false" aria-controls="kal-districts" title={k.district}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+              <span data-district-label data-any={k.district}>{k.district}</span>
+              <svg class="kal-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+            <div class="kal-menu" id="kal-districts" data-kal-menu hidden role="group" aria-label={t.filterDistrict}>
+              <button class="kal-menu-item is-active" type="button" data-district-filter="all">{k.whereAny}</button>
+              {districts.map((d) => (
+                <button class="kal-menu-item" type="button" data-district-filter={d}>{d}</button>
+              ))}
+            </div>
+          </div>
+          {mapBtn('kal-ctl kal-ctl-map')}
+        </div>
+      </div>
+    );
+    // 2 — the column beside the dates.
+    return (
+      <aside class="kal-aside">
+        <div class="kal-panel">
+          <div class="kal-cal" data-minical>
+            <div class="kal-cal-head">
+              <button type="button" class="kal-cal-nav" data-cal-prev aria-label={k.prev}>‹</button>
+              <span class="kal-cal-month" data-cal-month></span>
+              <button type="button" class="kal-cal-nav" data-cal-next aria-label={k.next}>›</button>
+            </div>
+            <div class="kal-cal-grid" data-cal-grid></div>
+            <button type="button" class="kal-cal-all is-active" data-cal-all>{k.allDays}</button>
+          </div>
+          <div class="kal-sels">
+            <label class="kal-sel">
+              <span>{k.category}</span>
+              <select data-activity-select>{activityOptions}</select>
+            </label>
+            <label class="kal-sel">
+              <span>{k.district}</span>
+              <select data-district-select>{districtOptions}</select>
+            </label>
+            {mapBtn('kal-ctl kal-ctl-map')}
+          </div>
+          {strip}
+        </div>
+      </aside>
+    );
+  })()}
+
   {/* The workshops and, beside them, the map. */}
   <div class="dayresults sidemap-results">
   <div class="daysessions sidemap-list">
@@ -277,7 +446,14 @@ const formatDeadline = (iso: string): string => {
       // two sessions never sit next to each other; the list keeps time order.
       const spread = spreadByHost(forDay);
       return (
-        <div class="daygroup" data-day={offset} hidden={offset !== 0}>
+        <div class="daygroup" data-day={offset} hidden={variant === '2' ? offset > 6 : offset !== 0}>
+          {/* The dates grouped by day (draft 2): the day's own heading. */}
+          {variant === '2' && (
+            <h2 class="kal-dayhead" data-dayhead={offset}>
+              <span class="kal-dayhead-main">{offset < 2 ? dayLabel(offset) : dayName(offset, 'long')}</span>
+              <span class="kal-dayhead-sub">{dayDate(offset)}</span>
+            </h2>
+          )}
           {forDay.length ? (
             <>
               {byTime(forDay).map(([time, list], groupIndex) => (
@@ -288,7 +464,7 @@ const formatDeadline = (iso: string): string => {
                       : time || t.timeTba}
                   </h3>
                   <ul class="session-list">
-                    {promosIn(offset, list).map((s) => {
+                    {!variant && promosIn(offset, list).map((s) => {
                       const m = membershipPromos[s.host.slug];
                       const price = `${mc.from(m.from)} ${m.per === 'hour' ? mc.hour : mc.month}`;
                       return (
@@ -312,7 +488,62 @@ const formatDeadline = (iso: string): string => {
                         </li>
                       );
                     })}
-                    {list.map((s) => (
+                    {list.map((s) => variant ? (
+                      /* A draft's tile, after the home page's: the picture in
+                         an even white frame, then the time in hand, the
+                         title, host · district and the price underneath. */
+                      <li class="session kal-card" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                        data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
+                        <span class="kal-when">
+                          <span class="kal-time">{s.time ? `${s.time}${k.uhr}` : t.timeTba}</span>
+                          <span class="kal-dur">{s.duration ?? s.host.duration}</span>
+                        </span>
+                        <span class="kal-frame">
+                          <a
+                            class="session-thumb"
+                            {...(s.host.video ? {} : { href: s.bookUrl, ...bookAttrs(s) })}
+                            tabindex="-1"
+                            aria-hidden="true"
+                          >
+                            {s.soldOut ? (
+                              <span class="session-availbadge session-soldout">{fullLabel(s)}</span>
+                            ) : (
+                              typeof s.spots === 'number' ? <span class="session-availbadge">{spotsText(s.spots, lang, t.spots)}</span>
+                              : s.almostFull && <span class="session-availbadge session-almostfull">{almostFullLabel[lang]}</span>
+                            )}
+                            {s.host.video ? (
+                              <>
+                                {s.host.poster && <img class="session-still" src={s.host.poster} alt="" loading="lazy" decoding="async" />}
+                                <video class="session-video" src={s.host.video} muted loop playsinline preload="none"></video>
+                              </>
+                            ) : (s.image ?? s.host.photo) ? (
+                              <img src={s.image ?? s.host.photo} alt="" loading="lazy" decoding="async" />
+                            ) : (
+                              <HostMonogram name={s.host.name} />
+                            )}
+                          </a>
+                        </span>
+                        <span class="session-main">
+                          <a class="session-title" href={s.bookUrl} {...bookAttrs(s)}>{s.title}</a>
+                          <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.firstName ?? s.host.name}</a> · {districtOf(s)}</span>
+                          {s.partner && <span class="session-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
+                          {s.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(s.salesEnd)}</span>}
+                        </span>
+                        <span class="session-side">
+                          {s.price && (
+                            <span class="session-price">
+                              {showPrice(s.price)}
+                              {s.priceWas && <s class="session-price-was">{s.priceWas}</s>}
+                            </span>
+                          )}
+                          {s.soldOut ? (
+                            <button class="session-book session-notify" type="button" {...bookAttrs(s)}>{t.notify}</button>
+                          ) : (
+                            <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{s.request ? t.request : s.partner ? partnerBook[lang](s.partner.percent) : t.book}</a>
+                          )}
+                        </span>
+                      </li>
+                    ) : (
                       <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
@@ -446,7 +677,7 @@ const formatDeadline = (iso: string): string => {
                   </ul>
                 </section>
               ))}
-              <p class="daypicker-empty" data-empty hidden>{t.noMatch}</p>
+              <p class="daypicker-empty" data-empty hidden>{t.noMatch}{variant && <> <button type="button" class="kal-reset" data-kal-reset>{k.reset}</button></>}</p>
             </>
           ) : (
             <p class="daypicker-empty">{t.none}</p>
@@ -454,13 +685,59 @@ const formatDeadline = (iso: string): string => {
         </div>
       );
     })}
+    {variant && (
+      <div class="kal-emptyall" data-kal-empty hidden>
+        <p>{k.noMatchAll}</p>
+        <button type="button" class="kal-reset" data-kal-reset>{k.reset}</button>
+      </div>
+    )}
+    {variant === '2' && <button type="button" class="kal-more" data-kal-more hidden>{k.moreDays}</button>}
   </div>
   <DayMap lang={lang} />
   </div>
 
+  {/* The drafts' "on request" row: the same framed tiles, on the page's own
+      ground rather than in a tinted panel. */}
+  {variant && onRequest.length > 0 && (
+    <section class="kal-onrequest">
+      <h2 class="kal-h2">{t.onRequestHead}</h2>
+      <p class="kal-sub">{t.onRequestNote}</p>
+      <ul class="session-list kal-grid">
+        {onRequest.map((o) => (
+          <li class="session kal-card" id={o.id} data-seen={`s:${o.id}`} data-activity={activitiesOf(o.host).join(' ')}
+            data-track-card="on-request" data-track-host={o.host.name} data-track-title={o.title}>
+            <span class="kal-when"><span class="kal-time">{t.onRequestHead}</span><span class="kal-dur">{o.duration ?? o.host.duration}</span></span>
+            <span class="kal-frame">
+              <a class="session-thumb" {...(o.host.video ? {} : { href: o.bookUrl, ...inquireAttrs(o) })} tabindex="-1" aria-hidden="true">
+                {o.host.video ? (
+                  <>
+                    {o.host.poster && <img class="session-still" src={o.host.poster} alt="" loading="lazy" decoding="async" />}
+                    <video class="session-video" src={o.host.video} muted loop playsinline preload="none"></video>
+                  </>
+                ) : o.host.photo ? (
+                  <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  <HostMonogram name={o.host.name} />
+                )}
+              </a>
+            </span>
+            <span class="session-main">
+              <a class="session-title" href={o.bookUrl} {...inquireAttrs(o)}>{o.title}</a>
+              <span class="session-host">{o.host.firstName ?? o.host.name} · {o.district}</span>
+            </span>
+            <span class="session-side">
+              {o.price && <span class="session-price">{showPrice(o.price)}</span>}
+              <a class="session-book" href={o.bookUrl} {...inquireAttrs(o)}>{t.inquire}</a>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   {/* Workshops without published dates sit under the day feed, whatever
       day is selected — the host schedules them around the inquiry. */}
-  {onRequest.length > 0 && (
+  {!variant && onRequest.length > 0 && (
     <section class="timegroup onrequest">
       <h3 class="timegroup-head">{t.onRequestHead}</h3>
       <p class="onrequest-note">{t.onRequestNote}</p>
@@ -545,23 +822,37 @@ const formatDeadline = (iso: string): string => {
     const copy: Record<string, string> = JSON.parse(root.dataset.clientCopy || '{}');
     const fill = (template: string, values: Record<string, string>) =>
       template.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? '');
+    /* The redesign drafts (DayPicker's `variant`). Draft 2 can show every
+       day at once, grouped by day, in windows of a week. */
+    const variant = root.dataset.variant || '';
+    const allDaysMode = root.dataset.allDays === 'true';
     const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.daychip'));
+    const dayChips = chips.filter((c) => c.dataset.offset !== 'all');
     const groups = Array.from(root.querySelectorAll<HTMLElement>('.daygroup'));
     const monthEl = root.querySelector<HTMLElement>('[data-month]');
+    const daySelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-day-select]'));
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const dateAt = (offset: number) => {
+      const date = new Date(today);
+      date.setDate(date.getDate() + offset);
+      return date;
+    };
 
     // Grid ↔ list, remembered per visitor. Grid is the baked-in default.
+    // The drafts have one layout each and no toggle.
     const viewBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-view-btn]'));
     const setView = (v: string) => {
       root.dataset.view = v;
       viewBtns.forEach((b) => b.classList.toggle('is-active', b.dataset.viewBtn === v));
       try { localStorage.setItem('twiggli-view', v); } catch { /* private mode */ }
     };
-    let savedView = 'grid';
-    try { savedView = localStorage.getItem('twiggli-view') || 'grid'; } catch { /* private mode */ }
-    if (savedView !== 'grid') setView(savedView);
-    viewBtns.forEach((b) => b.addEventListener('click', () => setView(b.dataset.viewBtn || 'grid')));
+    if (viewBtns.length) {
+      let savedView = 'grid';
+      try { savedView = localStorage.getItem('twiggli-view') || 'grid'; } catch { /* private mode */ }
+      if (savedView !== 'grid') setView(savedView);
+      viewBtns.forEach((b) => b.addEventListener('click', () => setView(b.dataset.viewBtn || 'grid')));
+    }
 
     const monthOf = (date: Date) => date.toLocaleDateString(locale, { month: 'long' });
     if (monthEl) monthEl.textContent = monthOf(today);
@@ -570,66 +861,127 @@ const formatDeadline = (iso: string): string => {
     // "Happening tomorrow" → "Happening this Sunday" → "Happening next
     // Sunday" → "Happening on 12 October" (and the German equivalents).
     const happeningTitle = document.querySelector<HTMLElement>('[data-happening-title]');
-    // One title carries both the place and the chosen day, so the page has
-    // a single heading rather than a kicker repeating it.
-    const headingFor = (offset: number, date: Date): string => {
+    // A draft's heading keeps its own words and hand-set accent; only the
+    // day in it changes.
+    const happeningWhen = document.querySelector<HTMLElement>('[data-happening-when]');
+    const whenFor = (offset: number, date: Date): string => {
       const weekday = date.toLocaleDateString(locale, { weekday: 'long' });
-      const when =
-        offset === 0 ? copy.today
+      return offset === 0 ? copy.today
         : offset === 1 ? copy.tomorrow
         : offset <= 6 ? fill(copy.thisDay, { weekday })
         : offset <= 13 ? fill(copy.nextDay, { weekday })
         : fill(copy.onDate, { date: date.toLocaleDateString(locale, { day: 'numeric', month: 'long' }) });
-      return fill(copy.heading, { when });
+    };
+    // One title carries both the place and the chosen day, so the page has
+    // a single heading rather than a kicker repeating it.
+    const setHeading = (offset: number | 'all') => {
+      if (happeningWhen) {
+        happeningWhen.textContent = offset === 'all' ? (root.dataset.whenSoon || '') : whenFor(offset, dateAt(offset));
+      } else if (happeningTitle && offset !== 'all') {
+        happeningTitle.textContent = fill(copy.heading, { when: whenFor(offset, dateAt(offset)) });
+      }
     };
 
-    chips.forEach((chip) => {
-      const offset = Number(chip.dataset.offset || 0);
-      const date = new Date(today);
-      date.setDate(date.getDate() + offset);
+    const shortDay = (offset: number, date: Date) =>
+      offset === 0 ? root.dataset.today || 'Today'
+      : offset === 1 ? root.dataset.tomorrow || 'Tomorrow'
+      : date.toLocaleDateString(locale, { weekday: 'short' });
 
+    dayChips.forEach((chip) => {
+      const offset = Number(chip.dataset.offset || 0);
+      const date = dateAt(offset);
       const dow = chip.querySelector('.daychip-dow');
       const num = chip.querySelector('.daychip-num');
-      if (dow) {
-        dow.textContent =
-          offset === 0 ? root.dataset.today || 'Today'
-          : offset === 1 ? root.dataset.tomorrow || 'Tomorrow'
-          : date.toLocaleDateString(locale, { weekday: 'short' });
-      }
+      if (dow) dow.textContent = shortDay(offset, date);
       // Just the day number — the month is spelled out once above the strip.
       if (num) num.textContent = date.toLocaleDateString(locale, { day: 'numeric' });
-
       chip.setAttribute(
         'aria-label',
         date.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }),
       );
       if (date.getDay() === 0 || date.getDay() === 6) chip.classList.add('is-weekend');
-
-      chip.addEventListener('click', () => {
-        chips.forEach((c) => {
-          c.setAttribute('aria-selected', String(c === chip));
-          // Days before the selected one grey out, like the app's strip —
-          // the eye reads position at a glance without boxes around dates.
-          c.classList.toggle('is-before', Number(c.dataset.offset || 0) < offset);
-        });
-        groups.forEach((g) => { g.hidden = g.dataset.day !== String(offset); });
-        if (monthEl) monthEl.textContent = monthOf(date);
-        if (happeningTitle) happeningTitle.textContent = headingFor(offset, date);
-        chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        // The sheet counts the day on show, so a new day is a new count.
-        applyFilters();
+      // The first of a month is where the strip says which month it is.
+      if (variant && date.getDate() === 1) chip.dataset.month = date.toLocaleDateString(locale, { month: 'short' });
+    });
+    // The "When?" select, in the visitor's own days.
+    daySelects.forEach((select) => {
+      Array.from(select.options).forEach((option) => {
+        const offset = Number(option.value);
+        if (Number.isNaN(offset)) return;
+        const date = dateAt(offset);
+        option.textContent = offset < 2
+          ? shortDay(offset, date)
+          : date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
       });
     });
+    // Draft 2's day headings, likewise.
+    root.querySelectorAll<HTMLElement>('[data-dayhead]').forEach((head) => {
+      const offset = Number(head.dataset.dayhead || 0);
+      const date = dateAt(offset);
+      const main = head.querySelector('.kal-dayhead-main');
+      const sub = head.querySelector('.kal-dayhead-sub');
+      if (main) main.textContent = offset < 2 ? shortDay(offset, date) : date.toLocaleDateString(locale, { weekday: 'long' });
+      if (sub) sub.textContent = date.toLocaleDateString(locale, offset < 2
+        ? { weekday: 'long', day: 'numeric', month: 'long' }
+        : { day: 'numeric', month: 'long' });
+    });
+
+    /* Which day is on show: a day's offset, or every day (draft 2). */
+    let selected: number | 'all' = allDaysMode ? 'all' : 0;
+    /** Draft 2 shows the days a week at a time; "more" adds a week. */
+    const WINDOW = 7;
+    let windowDays = WINDOW;
+
+    const selectDay = (offset: number | 'all') => {
+      selected = offset;
+      windowDays = WINDOW;
+      const key = String(offset);
+      chips.forEach((c) => {
+        c.setAttribute('aria-selected', String(c.dataset.offset === key));
+        // Days before the selected one grey out, like the app's strip —
+        // the eye reads position at a glance without boxes around dates.
+        c.classList.toggle('is-before', offset !== 'all' && c.dataset.offset !== 'all' && Number(c.dataset.offset || 0) < offset);
+      });
+      daySelects.forEach((s) => { if (offset !== 'all') s.value = key; });
+      if (offset !== 'all') groups.forEach((g) => { g.hidden = g.dataset.day !== key; });
+      if (monthEl) monthEl.textContent = monthOf(offset === 'all' ? today : dateAt(offset));
+      setHeading(offset);
+      const chip = chips.find((c) => c.dataset.offset === key);
+      if (!variant) {
+        chip?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      } else if (chip?.parentElement) {
+        // A draft scrolls only the strip itself: the page stays where it is.
+        const strip = chip.parentElement;
+        const left = strip.scrollLeft + chip.getBoundingClientRect().left - strip.getBoundingClientRect().left
+          - (strip.clientWidth - chip.offsetWidth) / 2;
+        strip.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+      }
+      // The sheet counts the day on show, so a new day is a new count.
+      applyFilters();
+      calendar?.render();
+    };
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const o = chip.dataset.offset;
+        selectDay(o === 'all' ? 'all' : Number(o || 0));
+      });
+    });
+    daySelects.forEach((s) => s.addEventListener('change', () => selectDay(Number(s.value))));
 
     // Live filtering: the activity and district pill rows combine. A time
     // header disappears with its last matching session, and an empty day
     // shows the no-match line.
     const activityPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-activity-filter]'));
     const districtPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-district-filter]'));
+    // The drafts choose with selects as well as with pills.
+    const activitySelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-activity-select]'));
+    const districtSelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-district-select]'));
     const kidsPill = root.querySelector<HTMLButtonElement>('[data-kids-filter]');
     let activityFilter = 'all';
     let districtFilter = 'all';
     let kidsOnly = false;
+    const hasValue = (value: string, pills: HTMLButtonElement[], key: 'activityFilter' | 'districtFilter', selects: HTMLSelectElement[]) =>
+      pills.some((p) => p.dataset[key] === value) || selects.some((s) => Array.from(s.options).some((o) => o.value === value));
 
     /* The phone's folded bar. On a wide screen none of this is on screen,
        but it costs nothing to keep in step. */
@@ -638,31 +990,61 @@ const formatDeadline = (iso: string): string => {
     const pillOn = root.querySelector<HTMLElement>('.pillbar-on');
     const pillClear = root.querySelector<HTMLButtonElement>('.pill-clear');
     const pillDone = root.querySelector<HTMLButtonElement>('.pill-done');
+    const emptyAll = root.querySelector<HTMLElement>('[data-kal-empty]');
+    const moreBtn = root.querySelector<HTMLButtonElement>('[data-kal-more]');
 
     // Set once the map is running (below); the filters tell it what to show.
     let dayMap: { update: () => void } | undefined;
+    let walk: { resync: () => void } | undefined;
+    let calendar: { render: () => void } | undefined;
+
+    const matches = (li: HTMLElement) =>
+      (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
+      (districtFilter === 'all' || li.dataset.district === districtFilter) &&
+      (!kidsOnly || li.dataset.kids === 'true');
 
     const applyFilters = () => {
-      let shown = 0;
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
-        const matchesActivity = activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter);
-        const matchesDistrict = districtFilter === 'all' || li.dataset.district === districtFilter;
-        const matchesKids = !kidsOnly || li.dataset.kids === 'true';
-        li.hidden = !(matchesActivity && matchesDistrict && matchesKids);
-        /* Only the day on show counts — every other day is in the page too,
-           and counting those would promise workshops that are not there. */
-        if (!li.hidden && li.closest('[data-day]:not([hidden])')) shown++;
+        // A draft's "on request" row is not a day's: only the activity applies.
+        if (variant && !li.closest('.daygroup')) {
+          li.hidden = !(activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter));
+          return;
+        }
+        li.hidden = !matches(li);
       });
       // A membership tile goes with its host's cards: shown while one is.
       root.querySelectorAll<HTMLElement>('.promo').forEach((promo) => {
         promo.hidden = !promo.parentElement?.querySelector(`.session[data-host="${promo.dataset.promoHost}"]:not([hidden])`);
       });
-      root.querySelectorAll<HTMLElement>('.timegroup').forEach((group) => {
+      root.querySelectorAll<HTMLElement>('.timegroup, .kal-onrequest').forEach((group) => {
         group.hidden = !group.querySelector('.session:not([hidden])');
       });
       groups.forEach((day) => {
         const empty = day.querySelector<HTMLElement>('[data-empty]');
         if (empty) empty.hidden = !!day.querySelector('.timegroup:not([hidden])');
+      });
+      // Every day at once (draft 2): the days with something on, a week of
+      // them at a time.
+      if (selected === 'all') {
+        let n = 0;
+        let more = false;
+        groups.forEach((day) => {
+          const any = !!day.querySelector('.session:not([hidden])');
+          if (any && n < windowDays) { day.hidden = false; n++; }
+          else { day.hidden = true; if (any) more = true; }
+        });
+        if (moreBtn) moreBtn.hidden = !more;
+        if (emptyAll) emptyAll.hidden = n > 0;
+      } else {
+        if (moreBtn) moreBtn.hidden = true;
+        if (emptyAll) emptyAll.hidden = true;
+      }
+
+      /* Only the days on show count — every other day is in the page too,
+         and counting those would promise workshops that are not there. */
+      let shown = 0;
+      groups.forEach((day) => {
+        if (!day.hidden) shown += day.querySelectorAll('.session:not([hidden])').length;
       });
 
       /* The names of what is on, beside the shut button — a number would
@@ -694,26 +1076,51 @@ const formatDeadline = (iso: string): string => {
         pillDone.textContent = (pillDone.dataset.show ?? '%s').replace('%s', label);
       }
       dayMap?.update();
+      calendar?.render();
+      walk?.resync();
+    };
+
+    const setActivity = (value: string) => {
+      activityFilter = value;
+      activityPills.forEach((p) => p.classList.toggle('is-active', p.dataset.activityFilter === value));
+      activitySelects.forEach((s) => { s.value = value; });
+      applyFilters();
+    };
+    const districtLabels = Array.from(root.querySelectorAll<HTMLElement>('[data-district-label]'));
+    const setDistrict = (value: string) => {
+      districtFilter = value;
+      districtPills.forEach((p) => p.classList.toggle('is-active', p.dataset.districtFilter === value));
+      districtSelects.forEach((s) => { s.value = value; });
+      districtLabels.forEach((el) => {
+        el.textContent = value === 'all' ? el.dataset.any || '' : value;
+        el.closest('button')?.classList.toggle('is-on', value !== 'all');
+      });
+      applyFilters();
+    };
+    const setKids = (on: boolean) => {
+      kidsOnly = on;
+      kidsPill?.classList.toggle('is-active', on);
+      kidsPill?.setAttribute('aria-pressed', String(on));
+      applyFilters();
     };
 
     activityPills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        activityFilter = pill.dataset.activityFilter || 'all';
-        activityPills.forEach((p) => p.classList.toggle('is-active', p === pill));
-        applyFilters();
-      });
+      pill.addEventListener('click', () => setActivity(pill.dataset.activityFilter || 'all'));
     });
     districtPills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        districtFilter = pill.dataset.districtFilter || 'all';
-        districtPills.forEach((p) => p.classList.toggle('is-active', p === pill));
-        applyFilters();
-      });
+      pill.addEventListener('click', () => setDistrict(pill.dataset.districtFilter || 'all'));
     });
-    kidsPill?.addEventListener('click', () => {
-      kidsOnly = !kidsOnly;
-      kidsPill.classList.toggle('is-active', kidsOnly);
-      kidsPill.setAttribute('aria-pressed', String(kidsOnly));
+    activitySelects.forEach((s) => s.addEventListener('change', () => setActivity(s.value || 'all')));
+    districtSelects.forEach((s) => s.addEventListener('change', () => setDistrict(s.value || 'all')));
+    kidsPill?.addEventListener('click', () => setKids(!kidsOnly));
+    const clearAll = () => {
+      if (kidsOnly) setKids(false);
+      setActivity('all');
+      setDistrict('all');
+    };
+    root.querySelectorAll<HTMLButtonElement>('[data-kal-reset]').forEach((b) => b.addEventListener('click', clearAll));
+    moreBtn?.addEventListener('click', () => {
+      windowDays += WINDOW;
       applyFilters();
     });
 
@@ -734,11 +1141,7 @@ const formatDeadline = (iso: string): string => {
         setOpen(false);
         pillBtn.focus();
       });
-      pillClear?.addEventListener('click', () => {
-        activityPills.find((p) => p.dataset.activityFilter === 'all')?.click();
-        districtPills.find((p) => p.dataset.districtFilter === 'all')?.click();
-        if (kidsOnly) kidsPill?.click();
-      });
+      pillClear?.addEventListener('click', clearAll);
       // A tap anywhere else means the reader has moved on.
       document.addEventListener('click', (event) => {
         const target = event.target as Node;
@@ -752,21 +1155,108 @@ const formatDeadline = (iso: string): string => {
       });
     }
 
+    /* Draft 3's district menu: a button and the list under it. */
+    const menuBtn = root.querySelector<HTMLButtonElement>('[data-kal-menu-btn]');
+    const menu = root.querySelector<HTMLElement>('[data-kal-menu]');
+    if (menuBtn && menu) {
+      const setMenu = (open: boolean) => {
+        menu.hidden = !open;
+        menuBtn.setAttribute('aria-expanded', String(open));
+      };
+      menuBtn.addEventListener('click', () => setMenu(menu.hidden));
+      menu.addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).closest('[data-district-filter]')) setMenu(false);
+      });
+      document.addEventListener('click', (event) => {
+        const target = event.target as Node;
+        if (!menu.hidden && !menu.contains(target) && !menuBtn.contains(target)) setMenu(false);
+      });
+      document.addEventListener('keydown', (event) => {
+        if ((event as KeyboardEvent).key === 'Escape' && !menu.hidden) { setMenu(false); menuBtn.focus(); }
+      });
+    }
+
+    /* Draft 2's month calendar: the visitor's own month, a dot under every
+       day with something on for the filters in force. */
+    const cal = root.querySelector<HTMLElement>('[data-minical]');
+    if (cal) {
+      const grid = cal.querySelector<HTMLElement>('[data-cal-grid]')!;
+      const monthLabel = cal.querySelector<HTMLElement>('[data-cal-month]')!;
+      const prev = cal.querySelector<HTMLButtonElement>('[data-cal-prev]')!;
+      const next = cal.querySelector<HTMLButtonElement>('[data-cal-next]')!;
+      const allBtn = cal.querySelector<HTMLButtonElement>('[data-cal-all]');
+      const last = groups.length - 1;
+      let shownMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastMonth = (() => { const d = dateAt(last); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+      // Monday first, in the visitor's language.
+      const weekdays = Array.from({ length: 7 }, (_, i) =>
+        new Date(2024, 0, 1 + i).toLocaleDateString(locale, { weekday: 'narrow' }));
+      const render = () => {
+        monthLabel.textContent = shownMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+        prev.disabled = shownMonth <= new Date(today.getFullYear(), today.getMonth(), 1);
+        next.disabled = shownMonth >= lastMonth;
+        grid.textContent = '';
+        for (const w of weekdays) {
+          const el = document.createElement('span');
+          el.className = 'kal-cal-dow';
+          el.textContent = w;
+          grid.append(el);
+        }
+        const lead = (shownMonth.getDay() + 6) % 7;
+        for (let i = 0; i < lead; i++) grid.append(document.createElement('span'));
+        const days = new Date(shownMonth.getFullYear(), shownMonth.getMonth() + 1, 0).getDate();
+        for (let d = 1; d <= days; d++) {
+          const date = new Date(shownMonth.getFullYear(), shownMonth.getMonth(), d);
+          const offset = Math.round((date.getTime() - today.getTime()) / 86400000);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'kal-cal-day';
+          btn.textContent = String(d);
+          const group = groups[offset];
+          if (offset < 0 || offset > last || !group) {
+            btn.disabled = true;
+          } else {
+            const any = Array.from(group.querySelectorAll<HTMLElement>('.session')).some(matches);
+            if (any) btn.classList.add('has-on');
+            if (offset === 0) btn.classList.add('is-today');
+            if (selected === offset) btn.classList.add('is-selected');
+            btn.setAttribute('aria-label', date.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }));
+            btn.addEventListener('click', () => selectDay(selected === offset ? 'all' : offset));
+          }
+          grid.append(btn);
+        }
+        allBtn?.classList.toggle('is-active', selected === 'all');
+      };
+      prev.addEventListener('click', () => { shownMonth = new Date(shownMonth.getFullYear(), shownMonth.getMonth() - 1, 1); render(); });
+      next.addEventListener('click', () => { shownMonth = new Date(shownMonth.getFullYear(), shownMonth.getMonth() + 1, 1); render(); });
+      allBtn?.addEventListener('click', () => selectDay('all'));
+      calendar = {
+        render: () => {
+          // A chosen day in another month brings its month along.
+          if (selected !== 'all') {
+            const d = dateAt(selected);
+            shownMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+          }
+          render();
+        },
+      };
+    }
+
+    const visibleDays = () => groups.filter((g) => !g.hidden);
     dayMap = startDayMap(root, {
       // Every filter but the district: the map is where the district is chosen.
-      sessions: () => {
-        const day = groups.find((g) => !g.hidden);
-        return Array.from(day?.querySelectorAll<HTMLElement>('.session') ?? []).filter((li) =>
+      sessions: () => visibleDays().flatMap((day) =>
+        Array.from(day.querySelectorAll<HTMLElement>('.session')).filter((li) =>
           (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
-          (!kidsOnly || li.dataset.kids === 'true'));
-      },
+          (!kidsOnly || li.dataset.kids === 'true'))),
       district: () => districtFilter,
-      pick: (name) => districtPills.find((p) => p.dataset.districtFilter === name)?.click(),
-      day: () => groups.find((g) => !g.hidden)?.dataset.day ?? '',
+      pick: (name) => { if (name === 'all' || hasValue(name, districtPills, 'districtFilter', districtSelects)) setDistrict(name); },
+      day: () => String(selected),
     });
 
     // First paint: the bar and the count start out true.
     applyFilters();
+    if (variant) setHeading(selected);
 
     // Share: the native sheet where the browser offers one (phones), a
     // copied link elsewhere — the text carries workshop, host and date.
@@ -803,20 +1293,20 @@ const formatDeadline = (iso: string): string => {
     });
 
     // A search from elsewhere (the home page's what / when / where pill)
-    // arrives as ?activity=…&date=YYYY-MM-DD&district=… and presses the same
-    // pills and day chip a visitor would. Anything that names no pill on
+    // arrives as ?activity=…&date=YYYY-MM-DD&district=… and sets the same
+    // filters and day a visitor would. Anything that names no filter on
     // this page is ignored, so a stale link still lands on the calendar.
     {
       const params = new URLSearchParams(location.search);
       const activity = params.get('activity');
       const district = params.get('district');
       const date = params.get('date');
-      if (activity) activityPills.find((p) => p.dataset.activityFilter === activity)?.click();
-      if (district) districtPills.find((p) => p.dataset.districtFilter === district)?.click();
+      if (activity && hasValue(activity, activityPills, 'activityFilter', activitySelects)) setActivity(activity);
+      if (district && hasValue(district, districtPills, 'districtFilter', districtSelects)) setDistrict(district);
       if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
         const [y, m, dd] = date.split('-').map(Number);
         const offset = Math.round((new Date(y, m - 1, dd).getTime() - today.getTime()) / 86400000);
-        chips.find((c) => c.dataset.offset === String(offset))?.click();
+        if (dayChips.some((c) => c.dataset.offset === String(offset))) selectDay(offset);
       }
     }
 
@@ -827,7 +1317,7 @@ const formatDeadline = (iso: string): string => {
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
       if (target && root.contains(target)) {
         const day = target.closest<HTMLElement>('.daygroup')?.dataset.day;
-        chips.find((c) => c.dataset.offset === day)?.click();
+        if (day !== undefined) selectDay(Number(day));
         setTimeout(() => {
           target.scrollIntoView({ behavior: 'smooth', block: 'center' });
           target.classList.add('is-highlighted');
@@ -836,12 +1326,14 @@ const formatDeadline = (iso: string): string => {
     }
 
     /* Reels play themselves, one at a time, walking across the feed — see
-       lib/reelwalk.ts, which the host directory uses too. */
+       lib/reelwalk.ts, which the host directory uses too. The drafts walk
+       down the grid a row at a time, one reel in each. */
     const tiles = Array.from(root.querySelectorAll<HTMLElement>('.session-thumb'));
-    startReelWalk(
-      tiles
-        .map((tile) => ({ tile, video: tile.querySelector<HTMLVideoElement>('.session-video') }))
-        .filter((r): r is { tile: HTMLElement; video: HTMLVideoElement } => !!r.video),
-    );
+    const reels = tiles
+      .map((tile) => ({ tile, video: tile.querySelector<HTMLVideoElement>('.session-video'), card: tile.closest<HTMLElement>('.session') ?? undefined }))
+      .filter((r): r is { tile: HTMLElement; video: HTMLVideoElement; card: HTMLElement | undefined } => !!r.video);
+    walk = variant
+      ? startReelWalk(reels, { byRow: true, step: 1, startAt: 0, playingClass: 'is-playing' })
+      : startReelWalk(reels.map(({ tile, video }) => ({ tile, video })));
   });
 </script>

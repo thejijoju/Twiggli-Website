@@ -1,0 +1,44 @@
+---
+/** Three redesign drafts of the calendar (/happening-today/), for Jirel to
+ *  compare: src/pages/de/preview/kalender-1…3.astro, German only, noindex,
+ *  out of the sitemap (astro.config.mjs). The live page is CalendarPage;
+ *  these use the same DayPicker with its `variant` set, so the data and the
+ *  filtering are the live ones, and add the home page's look on top
+ *  (kalender.css, with the search pill from home-discover.css).
+ *
+ *    1  Suchleiste    the home page's Was? / Wann? / Wo? pill, then a strip
+ *                     of soft day chips
+ *    2  Luma          a sticky column with a month calendar, two selects and
+ *                     the map; the dates beside it grouped by day
+ *    3  Chips light   day pills, then one row of tinted category chips, a
+ *                     district menu and the map button */
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
+import Base from '../layouts/Base.astro';
+import DayPicker from './DayPicker.astro';
+import { ui } from '../data/i18n.ts';
+import type { Lang } from '../lib/url.ts';
+import '../styles/home-discover.css';
+import '../styles/kalender.css';
+
+interface Props { variant: '1' | '2' | '3' }
+const { variant } = Astro.props;
+const lang: Lang = 'de';
+const t = ui(lang).calendarPage;
+const names = { '1': 'Suchleiste', '2': 'Luma', '3': 'Chips light' };
+---
+
+<Base title={`Kalender-Entwurf ${variant} · ${names[variant]} | Twiggli`} description={t.description} lang={lang}
+  pageClass={`kal-page kal-page-${variant}`} noindex translations={['de']}>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&family=Caveat:wght@600;700&display=swap" />
+  </Fragment>
+  <div class="container">
+    <section class:list={['kal-head', variant === '1' && 'is-center']}>
+      <PageCircles pics={circlesFor.calendar(lang)} align={variant === '1' ? 'center' : 'start'} />
+      {/* The day in it follows the strip; the accent stays. */}
+      <h1 class="kal-h1">Was <span data-happening-when>{variant === '2' ? 'demnächst' : 'heute'}</span> <em>in Berlin los ist</em></h1>
+    </section>
+    <DayPicker lang={lang} variant={variant} />
+  </div>
+</Base>
