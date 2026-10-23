@@ -13,6 +13,7 @@ import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
 import { availabilityNotes } from './availability.ts';
 import { hostDates } from './hostDates.ts';
+import { preview } from './hosts/preview.ts';
 import { partnerCodes, type PartnerCode } from './partners.ts';
 
 
@@ -477,4 +478,30 @@ export function getSessions(lang: Lang): Session[] {
   return liveSessions(hosts, lang).sort(
     (a, b) => a.dayOffset - b.dayOffset || (a.time ?? '~').localeCompare(b.time ?? '~'),
   );
+}
+
+/** A preview host's own dates (hostDates.ts) — what their hidden page lists.
+ *  getSessions leaves preview hosts out, so these reach no calendar, no
+ *  activity page and no count; only the host's own page asks for them. */
+export function previewSessionsFor(slug: string, lang: Lang): Session[] {
+  const host = getHosts(lang, { withPreview: true }).filter((h) => h.slug === slug);
+  return liveSessions(host, lang).sort(
+    (a, b) => a.dayOffset - b.dayOffset || (a.time ?? '~').localeCompare(b.time ?? '~'),
+  );
+}
+
+/** A preview host's formats that run on request (hosts/preview.ts). */
+export function previewOnRequestFor(slug: string, lang: Lang): OnRequestWorkshop[] {
+  const host = getHosts(lang, { withPreview: true }).find((h) => h.slug === slug);
+  if (!host) return [];
+  return (preview.onRequest[slug] ?? []).map((o) => ({
+    id: `req-${slug}-${hash(o.title)}`,
+    host,
+    title: lang === 'de' || !o.titleEn ? o.title : o.titleEn,
+    district: o.district ?? host.area ?? host.place,
+    bookUrl: o.url,
+    ...(o.duration ? { duration: o.duration } : {}),
+    ...(o.price ? { price: o.price } : {}),
+    request: true,
+  }));
 }

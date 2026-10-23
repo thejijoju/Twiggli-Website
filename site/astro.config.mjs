@@ -1,6 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { readFileSync } from 'node:fs';
+
+const previewSlugs = JSON.parse(readFileSync(new URL('./src/data/hosts/preview-slugs.json', import.meta.url), 'utf8'));
 
 // Served from https://www.twiggli.com — the domain is live, pointed at GitHub
 // Pages by public/CNAME plus the registrar's DNS. No `base`: the site sits at
@@ -14,7 +17,10 @@ export default defineConfig({
   // Event markup) through this sitemap; payment/redirect stubs stay out.
   integrations: [
     sitemap({
+      // Preview hosts' pages (src/data/hosts/preview.ts) are for the host
+      // to look at by direct link before going live — never in the sitemap.
       filter: (page) =>
+        !previewSlugs.some((slug) => page.includes(`/workshops/`) && page.endsWith(`/${slug}/`)) &&
         !/paymentcanceled|stripe-connect|\/preview\/|newsletter\/|corporate\/$|hosts\/$|\/de\/about\/$|\.com\/ueber-uns\/$/.test(page),
       // The pages built from the workshop feed change with every daily
       // rebuild — a date passes, a new one lands — so they say so; the

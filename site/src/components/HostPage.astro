@@ -7,12 +7,12 @@ import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
 import PhotoFade from './PhotoFade.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
-import { getHosts, requestMin } from '../data/content.ts';
+import { getHosts, isPreviewHost, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { followCopy } from '../data/follow.ts';
 import { tagsFor } from '../data/hostTags.ts';
 import { requestEmail } from '../data/site.ts';
-import { getHostPriceRanges } from '../data/sessions.ts';
+import { getHostPriceRanges, previewOnRequestFor, previewSessionsFor } from '../data/sessions.ts';
 import {
   activityCopy, activityHref, formatWhen, hostDescription, hostDurationText, hostGroupText, hostH1, hostHref, hostImage,
   hostLanguagesText, hostLede, hostTitle, hostsIn, hubExtraCopy, hubHref, nextSessionByHost, onRequestFor, pageCopy,
@@ -25,15 +25,19 @@ interface Props {
   slug: string;
 }
 const { lang, slug } = Astro.props;
-const host = getHosts(lang).find((h) => h.slug === slug);
+const host = getHosts(lang, { withPreview: true }).find((h) => h.slug === slug);
 if (!host) throw new Error(`No host with slug ${slug}`);
 
 const t = pageCopy[lang];
 const x = hubExtraCopy[lang];
 const activity = activityCopy[lang][host.activity];
-const sessions = sessionsFor(host.slug, lang);
-const workshops = workshopsFor(host.slug, lang);
-const onRequest = onRequestFor(host.slug, lang);
+// A preview host (hosts/preview.ts) is in no listing: the page is noindex,
+// its dates come only from its own entries, and a date's title books
+// rather than leading to a per-workshop page that is not built for it.
+const preview = isPreviewHost(host.slug);
+const sessions = preview ? previewSessionsFor(host.slug, lang) : sessionsFor(host.slug, lang);
+const workshops = preview ? [] : workshopsFor(host.slug, lang);
+const onRequest = preview ? previewOnRequestFor(host.slug, lang) : onRequestFor(host.slug, lang);
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 // The host's own words and logo, where they sent us some (hostAbout.ts).
@@ -72,6 +76,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
   description={hostDescription(host, sessions, lang)}
   lang={lang}
   image={hostImage(host)}
+  noindex={preview}
 >
   <div class="container">
     <nav class="crumbs" aria-label="Breadcrumb">
@@ -223,7 +228,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
     <section class="section" id="dates">
       <h2 class="section-title">{t.upcoming}</h2>
       {sessions.length ? (
-        <DateRows sessions={sessions} lang={lang} />
+        <DateRows sessions={sessions} lang={lang} linkTitlesTo={preview ? 'booking' : 'workshop'} />
       ) : (
         <p class="section-lede">{t.noDates}</p>
       )}
@@ -289,7 +294,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
       </>
     )}
   </div>
-  <WorkshopSchema host={host} sessions={sessions} lang={lang} />
+  {!preview && <WorkshopSchema host={host} sessions={sessions} lang={lang} />}
 </Base>
 
 <script>
