@@ -106,7 +106,9 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
             aria-label={`${host.name} — ${host.specialty}`}
           ></video>
         ) : host.gallery && host.gallery.length > 1 ? (
-          <PhotoFade photos={host.gallery} alt={`${host.name} — ${host.specialty}`} eager />
+          /* Starts one picture on, so the frame and the slides under it do
+             not open on the same photo. */
+          <PhotoFade photos={[...host.gallery.slice(1), host.gallery[0]]} alt={`${host.name} — ${host.specialty}`} eager />
         ) : host.photo ? (
           <img src={host.photo} alt={`${host.name} — ${host.specialty}`} loading="lazy" decoding="async" />
         ) : (
