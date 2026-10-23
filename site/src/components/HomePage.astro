@@ -18,19 +18,17 @@ import Newsletter from './Newsletter.astro';
 import HostCommunity from './HostCommunity.astro';
 import SiteSchema from './SiteSchema.astro';
 import HostMonogram from './HostMonogram.astro';
-import { activitiesOf, filterCopy, getHosts, hasMedia, inActivity, type ActivityKey, type Host } from '../data/content.ts';
-import { berlinTodayMs, capPerHostPerDay, getSessions, type Session } from '../data/sessions.ts';
-import {
-  ACTIVITY_ORDER, activityCopy, activityHref, formatWhen, hostHref, hubHref,
-  occasionCopy, occasionHref, occasionSessions, pageCopy, workshopHref,
-} from '../data/seo.ts';
+import HomeSearch from './HomeSearch.astro';
+import { filterCopy } from '../data/content.ts';
+import { ACTIVITY_ORDER, activityCopy, activityHref, formatWhen, hostHref, hubHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { ui } from '../data/i18n.ts';
 import { homeDiscoverCopy } from '../data/homeDiscover.ts';
 import { homeFindCopy } from '../data/homeFind.ts';
 import { homeSplits } from '../data/homeSplits.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { clubCopy } from '../data/club.ts';
-import { href, withBase, LANG_META, type Lang } from '../lib/url.ts';
+import { activityThumb as thumb, cardImage, getHomeData, mailPic as mail } from '../data/homeData.ts';
+import { href, type Lang } from '../lib/url.ts';
 import { lqipStyle } from '../lib/lqip.ts';
 import '../styles/home-discover.css';
 
@@ -39,108 +37,12 @@ const { lang } = Astro.props;
 const t = ui(lang).home;
 const d = homeDiscoverCopy[lang];
 const find = homeFindCopy[lang];
-const occ = occasionCopy[lang];
 const split = homeSplits[lang];
 const f = filterCopy[lang];
-const locale = LANG_META[lang].locale;
-const calendarHref = href(lang, '/happening-today/');
-const hosts = getHosts(lang);
-
-/* ── The dates ─────────────────────────────────────────────────────────
-   Classes only (an open studio day is for people who already know the
-   craft), nothing sold out, and only cards with a picture to show. */
-const bookable = (s: Session) => !s.openStudio && !s.soldOut && !!(s.host.poster || s.host.photo || s.image);
-const all = getSessions(lang).filter(bookable);
-const shownHosts = new Set<string>();
-/** Up to `max` dates, one per host, preferring hosts no earlier row has
- *  shown — variety sells the calendar better than one busy studio. */
-const pick = (list: Session[], max = 8) => {
-  const fresh = list.filter((s) => !shownHosts.has(s.host.slug));
-  const out: Session[] = [];
-  const seen = new Set<string>();
-  for (const s of [...fresh, ...list]) {
-    if (seen.has(s.host.slug)) continue;
-    seen.add(s.host.slug);
-    out.push(s);
-    if (out.length === max) break;
-  }
-  out.sort((a, b) => a.dayOffset - b.dayOffset || (a.time ?? '~').localeCompare(b.time ?? '~'));
-  for (const s of out) shownHosts.add(s.host.slug);
-  return out;
-};
-const soon = (s: Session) => s.dayOffset <= 13;
-const rows = [
-  { id: 'this-week', title: d.weekTitle, hand: d.weekHand, sub: d.weekSub, link: calendarHref, linkText: ui(lang).teaser.cta,
-    list: pick(all.filter((s) => s.dayOffset <= 6)) },
-  { id: 'weekend', title: occ.weekend.short, hand: '', sub: '', link: occasionHref(lang, 'weekend'), linkText: d.seeAll,
-    list: pick(occasionSessions('weekend', lang).filter((s) => bookable(s) && soon(s))) },
-  { id: 'evenings', title: occ.evenings.short, hand: '', sub: '', link: occasionHref(lang, 'evenings'), linkText: d.seeAll,
-    list: pick(occasionSessions('evenings', lang).filter((s) => bookable(s) && soon(s))) },
-].filter((r) => r.list.length >= 3);
-
-const dayOf = (offset: number) => new Date(berlinTodayMs() + offset * 86400000);
-const cardImage = (s: Session) => s.host.poster ?? s.host.photo ?? s.image;
-
-/* ── The search pill ───────────────────────────────────────────────────
-   The same choices the calendar offers, so every combination lands on a
-   filter that exists there: its activities, its districts (folded the way
-   DayPicker folds them), and the next two weeks of days. */
-const calSessions = capPerHostPerDay(getSessions(lang));
-const presentActivities = new Set(calSessions.flatMap((s) => activitiesOf(s.host)));
-const whatOptions = ACTIVITY_ORDER.filter((a) => presentActivities.has(a));
-const districtOf = (s: Session): string => s.district.replace(/\s+St\.\s.*$/, '');
-const whereOptions = [...new Set(calSessions.map(districtOf))].sort((a, b) => a.localeCompare(b, locale));
-const isoOf = (offset: number) => dayOf(offset).toISOString().slice(0, 10);
-const whenOptions = Array.from({ length: 14 }, (_, i) => ({
-  value: isoOf(i),
-  label: i === 0 ? ui(lang).teaser.today : i === 1 ? ui(lang).teaser.tomorrow
-    : dayOf(i).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }),
-}));
-
-const chips = [
-  { label: find.today, href: calendarHref, icon: '⚡', tint: '#e6ddff' },
-  { label: occ.weekend.short, href: occasionHref(lang, 'weekend'), icon: '🎉', tint: '#ffe1d3' },
-  { label: occ.evenings.short, href: occasionHref(lang, 'evenings'), icon: '🌙', tint: '#dbe8ff' },
-  { label: occ.kids.short, href: occasionHref(lang, 'kids'), icon: '🧸', tint: '#ffd9ee' },
-  { label: find.team, href: href(lang, '/corporatebookings/'), icon: '🙌', tint: '#d9f3ea' },
-  { label: find.solo, href: calendarHref, icon: '🙋', tint: '#ffe9a8' },
-];
-
-/* ── Activities and makers ─────────────────────────────────────────── */
-const counts = new Map<string, number>();
-for (const h of hosts) for (const a of activitiesOf(h)) counts.set(a, (counts.get(a) ?? 0) + 1);
-/* A picture per activity for the hero polaroids — the same clips the old
-   activity row used. */
-const catPic: Record<string, string> = {
-  ceramics: 'ceramic-kingdom', art: 'rebeca', craft: 'tufttuft', food: 'jem-sushi',
-  photography: 'anne', wellbeing: 'sarah', music: 'beat-etage',
-};
-const thumb = (a: string) => withBase(`/video/thumbs/${catPic[a]}.jpg`);
-/* Each category circle shows one maker's own photo, with their name. */
-const activityFace = (a: ActivityKey) => hosts.find((h) => h.photo && h.activity === a) ?? hosts.find((h) => h.photo && inActivity(h, a));
-
-/* Ten makers with a square photo, those with dates coming up first, taken
-   round-robin across the activities so the wall is not all pottery. */
-const withDates = new Set(all.map((s) => s.host.slug));
-const faces = hosts.filter((h) => h.photo);
-const byActivity = new Map<string, Host[]>();
-for (const h of [...faces.filter((h) => withDates.has(h.slug)), ...faces.filter((h) => !withDates.has(h.slug))]) {
-  const list = byActivity.get(h.activity) ?? [];
-  list.push(h);
-  byActivity.set(h.activity, list);
-}
-const makers: Host[] = [];
-while (makers.length < 10 && [...byActivity.values()].some((l) => l.length)) {
-  for (const a of ACTIVITY_ORDER) {
-    const next = byActivity.get(a)?.shift();
-    if (next && makers.length < 10) makers.push(next);
-  }
-}
-const listed = hosts.filter(hasMedia).length;
+const { rows, calendarHref, chips, counts, activityFace, makers, listed } = getHomeData(lang);
 
 /* Polaroids beside the headline on a wide screen, captioned by hand. */
 const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ src: thumb(a), label: f.activities[a] }));
-const mail = (name: string) => withBase(`/img/mail/${name}.jpg`);
 ---
 
 <Base title={t.title} description={t.description} lang={lang} pageClass="page-home hd">
@@ -163,33 +65,7 @@ const mail = (name: string) => withBase(`/img/mail/${name}.jpg`);
       <h1 class="hd-h1">{d.h1a} <span class="hd-hand">{d.h1b}</span></h1>
       <p class="hd-lede">{d.lede}</p>
 
-      <form class="hd-search" action={calendarHref} method="get" role="search" aria-label={d.searchLabel} data-hd-search>
-        <label class="hd-field">
-          <span>{d.what}</span>
-          <select name="activity">
-            <option value="">{d.whatAny}</option>
-            {whatOptions.map((a) => <option value={a}>{f.activities[a]}</option>)}
-          </select>
-        </label>
-        <label class="hd-field">
-          <span>{d.when}</span>
-          <select name="date">
-            <option value="">{d.whenAny}</option>
-            {whenOptions.map((o) => <option value={o.value}>{o.label}</option>)}
-          </select>
-        </label>
-        <label class="hd-field">
-          <span>{d.where}</span>
-          <select name="district">
-            <option value="">{d.whereAny}</option>
-            {whereOptions.map((w) => <option value={w}>{w}</option>)}
-          </select>
-        </label>
-        <button type="submit" class="hd-search-btn">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
-          <span>{d.search}</span>
-        </button>
-      </form>
+      <HomeSearch lang={lang} />
 
       <ul class="hd-chips">
         {chips.map((c) => (
@@ -350,15 +226,3 @@ const mail = (name: string) => withBase(`/img/mail/${name}.jpg`);
   <SiteSchema lang={lang} />
 </Base>
 
-<script>
-  // The search pill: only the fields that were set go into the address, so
-  // "Any day" does not arrive at the calendar as an empty date.
-  const form = document.querySelector<HTMLFormElement>('[data-hd-search]');
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    new FormData(form).forEach((value, key) => { if (value) params.set(key, String(value)); });
-    const query = params.toString();
-    location.href = form.action + (query ? `?${query}` : '');
-  });
-</script>

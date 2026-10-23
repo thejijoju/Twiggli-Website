@@ -1,0 +1,439 @@
+---
+/** Five more directions for the home page, for Jirel to compare
+ *  (src/pages/de/preview/home-a…e.astro: German only, noindex, out of the
+ *  sitemap). The live home page is HomePage.astro; these reuse its data
+ *  (homeData.ts), its search pill (HomeSearch.astro) and its stylesheet,
+ *  and add their own sections on top (home-options.css).
+ *
+ *    a  PayPal soft       calm, lots of air, pastel cards, photo collage,
+ *                         a row of plain facts
+ *    b  Luma events       a short hero, a sticky filter bar and the week as
+ *                         a dated event list
+ *    c  Etsy marketplace  categories first, a grid of this week, one maker
+ *                         in her own words, a warm "give time" section
+ *    d  Linktree soft     one column of big pastel blocks and pill buttons
+ *    e  Magazine          editorial type, one big photo with a polaroid
+ *                         stack, a numbered list, alternating stripes
+ *
+ *  Copy is German only and lives here while these are drafts. Every date,
+ *  photo, name and link is real; nothing is promised that the site does
+ *  not do (no vouchers, no reviews). */
+import Base from '../layouts/Base.astro';
+import Newsletter from './Newsletter.astro';
+import HostMonogram from './HostMonogram.astro';
+import HomeSearch from './HomeSearch.astro';
+import SiteSchema from './SiteSchema.astro';
+import { filterCopy } from '../data/content.ts';
+import { ACTIVITY_ORDER, activityCopy, activityHref, formatDay, formatWhen, hostHref, hubHref, occasionHref, workshopHref } from '../data/seo.ts';
+import { ui } from '../data/i18n.ts';
+import { homeDiscoverCopy } from '../data/homeDiscover.ts';
+import { homeFindCopy } from '../data/homeFind.ts';
+import { homeSplits } from '../data/homeSplits.ts';
+import { bookingCopy } from '../data/bookingCopy.ts';
+import { hostAbout } from '../data/hostAbout.ts';
+import { activityThumb as thumb, cardImage, getHomeData, mailPic as mail } from '../data/homeData.ts';
+import { getSiteData } from '../data/site.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
+import { lqipStyle } from '../lib/lqip.ts';
+import type { Session } from '../data/sessions.ts';
+import '../styles/home-discover.css';
+import '../styles/home-options.css';
+
+interface Props { variant: 'a' | 'b' | 'c' | 'd' | 'e' }
+const { variant: v } = Astro.props;
+const lang: Lang = 'de';
+const t = ui(lang).home;
+const d = homeDiscoverCopy[lang];
+const find = homeFindCopy[lang];
+const split = homeSplits[lang];
+const f = filterCopy[lang];
+const { brand } = getSiteData(lang);
+const { hosts, all, rows, calendarHref, chips, counts, activityFace, makers, listed, whereOptions, dayOf } = getHomeData(lang);
+const week = rows[0]?.list ?? [];
+const teamsHref = href(lang, '/corporatebookings/');
+const hostCta = href(lang, '/host/');
+const names = { a: 'PayPal soft', b: 'Luma events', c: 'Etsy marketplace', d: 'Linktree soft', e: 'Magazin' };
+const host = (p: string) => withBase(`/img/hosts/${p}.jpg`);
+
+/* The week as days, for the event list (b): up to four dates a day, one
+   per host, on the first five days that have any. */
+const days: [number, Session[]][] = [];
+for (let off = 0; off <= 6 && days.length < 5; off++) {
+  const seen = new Set<string>();
+  const list = all.filter((s) => s.dayOffset === off && !seen.has(s.host.slug) && seen.add(s.host.slug)).slice(0, 4);
+  if (list.length) days.push([off, list]);
+}
+const dayWord = (off: number) => (off <= 1 ? formatDay(off, lang) : dayOf(off).toLocaleDateString('de-DE', { weekday: 'long', timeZone: 'UTC' }));
+const dayDate = (off: number) => dayOf(off).toLocaleDateString('de-DE', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+/* A maker in her own words (c, e): the only host who has sent us some. */
+const evelyn = hosts.find((h) => h.slug === 'evelyn');
+const evelynWords = hostAbout.evelyn?.[lang];
+const evelynDates = all.filter((s) => s.host.slug === 'evelyn').slice(0, 3);
+
+/* The calendar week, for the magazine's masthead. */
+const isoWeek = (() => {
+  const date = dayOf(0);
+  const day = (date.getUTCDay() + 6) % 7;
+  date.setUTCDate(date.getUTCDate() - day + 3);
+  const first = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+  return 1 + Math.round(((date.getTime() - first.getTime()) / 86400000 - 3 + ((first.getUTCDay() + 6) % 7)) / 7);
+})();
+
+---
+
+<Base title={`Entwurf ${v.toUpperCase()} · ${names[v]} | Twiggli`} description={t.description} lang={lang} pageClass={`page-home hd ho ho-${v}`} noindex translations={['de']}>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&family=Caveat:wght@600;700&display=swap" />
+  </Fragment>
+
+  {/* ═══════════════ A · PayPal soft ═══════════════ */}
+  {v === 'a' && (
+    <>
+      <section class="ho-a-hero">
+        <div class="container ho-a-hero-grid">
+          <div class="ho-a-hero-text">
+            <span class="hd-eyebrow">{d.eyebrow}</span>
+            <h1 class="hd-h1">{d.h1a} <span class="hd-hand">{d.h1b}</span></h1>
+            <p class="hd-lede">{d.lede}</p>
+            <div class="ho-actions">
+              <a class="ho-btn ho-btn-purple" href={calendarHref}>Workshops entdecken</a>
+              <a class="ho-btn ho-btn-soft" href={teamsHref}>Für Teams</a>
+            </div>
+          </div>
+          <div class="ho-a-collage" aria-hidden="true">
+            <span class="ho-a-blob"></span>
+            <img class="is-1" src={host('anna-malerlebnisse-3')} alt="" />
+            <img class="is-2" src={host('petitejungle-4')} alt="" />
+            <img class="is-3" src={host('landsinn-3')} alt="" />
+            <span class="ho-a-note">heute Abend frei?</span>
+          </div>
+        </div>
+      </section>
+      <div class="container">
+        <div class="ho-a-searchcard"><HomeSearch lang={lang} /></div>
+        <ul class="ho-a-trust">
+          <li><b>{listed}</b><span>Maker*innen in Berlin</span></li>
+          <li><b>{whereOptions.length}</b><span>Bezirke mit Terminen</span></li>
+          <li><b>{all.filter((s) => s.dayOffset <= 6).length}</b><span>Termine in den nächsten 7 Tagen</span></li>
+          <li><b>1</b><span>Rechnung für euer Team</span></li>
+        </ul>
+      </div>
+      <section class="container ho-section">
+        <div class="hd-row-head">
+          <h2 class="hd-h2">{d.weekTitle} <em>{d.weekHand}</em></h2>
+          <a class="hd-more" href={calendarHref}>{ui(lang).teaser.cta} →</a>
+        </div>
+        <ul class="ho-a-cards">
+          {week.slice(0, 4).map((s, i) => (
+            <li class={`tone-${i % 4}`}>
+              <a href={workshopHref(lang, s.host, s.workshopKey)}>
+                <span class="ho-a-media" style={lqipStyle(s.host.poster)}>{cardImage(s) ? <img src={cardImage(s)} alt="" decoding="async" /> : <HostMonogram name={s.host.name} />}</span>
+                <span class="ho-when">{formatWhen(s, lang)}</span>
+                <span class="ho-title">{s.title}</span>
+                <span class="ho-meta">{s.host.firstName ?? s.host.name} · {s.district}{s.price && <> · <b>{s.price}</b></>}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section class="container ho-section ho-a-three">
+        <a href={calendarHref} class="tone-0"><span class="ho-a-icon">🙋</span><b>Für dich</b><span>{find.soloTitle}. Kleine Gruppen, alle fangen bei null an.</span><i>Termine ansehen →</i></a>
+        <a href={teamsHref} class="tone-1" data-book="group" data-book-title={bookingCopy[lang].anyHost}><span class="ho-a-icon">🙌</span><b>Fürs Team</b><span>{split.teams.ticks.join(' · ')}.</span><i>{split.teams.cta} →</i></a>
+        <a href={hostCta} class="tone-2"><span class="ho-a-icon">✋</span><b>Für Maker*innen</b><span>{split.makers.ticks[0]}. {split.makers.hand}</span><i>{split.makers.cta} →</i></a>
+      </section>
+    </>
+  )}
+
+  {/* ═══════════════ B · Luma events ═══════════════ */}
+  {v === 'b' && (
+    <>
+      <section class="ho-b-hero">
+        <div class="container">
+          <h1 class="hd-h1">{d.h1a} <span class="hd-hand">{d.h1b}</span></h1>
+          <p class="hd-lede">{d.lede}</p>
+          <HomeSearch lang={lang} />
+        </div>
+      </section>
+      <nav class="ho-b-bar" aria-label="Schnellfilter">
+        <div class="container">
+          <ul>
+            <li><a class="is-on" href={calendarHref}>Alle Termine</a></li>
+            {chips.map((c) => <li><a href={c.href}><span aria-hidden="true">{c.icon}</span> {c.label}</a></li>)}
+          </ul>
+        </div>
+      </nav>
+      <div class="container ho-b-layout">
+        <div class="ho-b-list">
+          {days.map(([off, list]) => (
+            <section class="ho-b-day">
+              <h2 class="ho-b-date"><b>{dayWord(off)}</b><span>{dayDate(off)}</span></h2>
+              <ul>
+                {list.map((s) => (
+                  <li>
+                    <a class="ho-b-item" href={workshopHref(lang, s.host, s.workshopKey)}>
+                      <span class="ho-b-time">{s.time ?? '—'}</span>
+                      <span class="ho-b-main">
+                        <span class="ho-title">{s.title}</span>
+                        <span class="ho-b-host">
+                          {(s.host.photo ?? s.host.poster) ? <img src={s.host.photo ?? s.host.poster} alt="" loading="lazy" decoding="async" /> : <i></i>}
+                          {s.host.firstName ?? s.host.name} · {s.district}
+                        </span>
+                        {s.price && <span class="ho-b-price">{s.price} <small>{f.priceMeta}</small></span>}
+                      </span>
+                      <span class="ho-b-thumb" style={lqipStyle(s.host.poster)}>{cardImage(s) && <img src={cardImage(s)} alt="" loading="lazy" decoding="async" />}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+          <div class="hd-center"><a class="ho-btn ho-btn-ink" href={calendarHref}>{ui(lang).teaser.cta}</a></div>
+        </div>
+        <aside class="ho-b-aside">
+          <div class="ho-b-box is-team">
+            <b>Fürs Team</b>
+            <p>{split.teams.title} {split.teams.hand}. Angebot in 24 Stunden.</p>
+            <a class="ho-btn ho-btn-light" href={teamsHref} data-book="group" data-book-title={bookingCopy[lang].anyHost}>{split.teams.cta}</a>
+          </div>
+          <div class="ho-b-box is-host">
+            <b>Für Maker*innen</b>
+            <p>{split.makers.title} {split.makers.hand}</p>
+            <a class="ho-btn ho-btn-ink" href={hostCta}>{split.makers.cta}</a>
+          </div>
+          <div class="ho-b-box is-cats">
+            <b>Nach Handwerk</b>
+            <ul>{ACTIVITY_ORDER.map((a) => <li><a href={activityHref(lang, a)}>{activityCopy[lang][a].short}</a></li>)}</ul>
+          </div>
+        </aside>
+      </div>
+    </>
+  )}
+
+  {/* ═══════════════ C · Etsy marketplace ═══════════════ */}
+  {v === 'c' && (
+    <>
+      <section class="ho-c-hero">
+        <div class="container hd-hero-inner">
+          <h1 class="hd-h1">{d.h1a} <span class="hd-hand">{d.h1b}</span></h1>
+          <HomeSearch lang={lang} />
+        </div>
+      </section>
+      <section class="container ho-c-cats">
+        <ul>
+          {ACTIVITY_ORDER.map((a) => {
+            const face = activityFace(a);
+            return (
+              <li><a href={activityHref(lang, a)}>
+                <span class="ho-c-circle"><img src={face?.photo ?? thumb(a)} alt="" loading="lazy" decoding="async" /></span>
+                <span>{activityCopy[lang][a].short}</span>
+              </a></li>
+            );
+          })}
+        </ul>
+      </section>
+      <section class="container ho-section">
+        <div class="hd-row-head">
+          <h2 class="hd-h2">Beliebt <em>diese Woche</em></h2>
+          <a class="hd-more" href={calendarHref}>{ui(lang).teaser.cta} →</a>
+        </div>
+        <ul class="hd-track">
+          {week.map((s) => (
+            <li>
+              <a class="hd-card" href={workshopHref(lang, s.host, s.workshopKey)}>
+                <span class="hd-card-media" style={lqipStyle(s.host.poster)}>{cardImage(s) && <img src={cardImage(s)} alt="" decoding="async" />}</span>
+                <span class="hd-card-body">
+                  <span class="hd-card-when">{formatWhen(s, lang)}</span>
+                  <span class="hd-card-title">{s.title}</span>
+                  <span class="hd-card-host">{s.host.firstName ?? s.host.name} · {s.district}</span>
+                  {s.price && <span class="hd-card-price"><b>{s.price}</b> {f.priceMeta}</span>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+      {evelyn && evelynWords && (
+        <section class="container ho-section">
+          <div class="ho-spot">
+            <img src={evelyn.photo} alt={evelyn.name} loading="lazy" decoding="async" />
+            <div>
+              <span class="ho-kicker">Maker*in im Porträt</span>
+              <h2 class="hd-h2">{evelyn.firstName ?? evelyn.name}, <em>{evelyn.studio ?? evelyn.specialty}</em></h2>
+              {evelynWords.paras.slice(0, 2).map((p) => <p>{p}</p>)}
+              {evelynDates.length > 0 && (
+                <ul class="ho-spot-dates">
+                  {evelynDates.map((s) => <li><a href={workshopHref(lang, s.host, s.workshopKey)}><span class="ho-when">{formatWhen(s, lang)}</span> {s.title}</a></li>)}
+                </ul>
+              )}
+              <a class="ho-btn ho-btn-ink" href={hostHref(lang, evelyn)}>Zu {evelyn.firstName ?? evelyn.name} →</a>
+            </div>
+          </div>
+        </section>
+      )}
+      <section class="container ho-section">
+        <div class="ho-c-gift">
+          <div>
+            <span class="ho-kicker">Zum Verschenken</span>
+            <h2 class="hd-h2">Schenk Zeit <em>statt Zeug</em></h2>
+            <p>Such einen Termin aus und geht zusammen hin: zu zweit an die Töpferscheibe, mit der besten Freundin zum Kerzenziehen, mit den Kindern ins Atelier.</p>
+            <div class="ho-actions">
+              <a class="ho-btn ho-btn-purple" href={occasionHref(lang, 'weekend')}>Termine am Wochenende</a>
+              <a class="ho-btn ho-btn-soft" href={occasionHref(lang, 'kids')}>Für Kinder</a>
+            </div>
+          </div>
+          <div class="ho-c-gift-pics" aria-hidden="true">
+            <figure class="hd-polaroid"><img src={mail('galleria-lucia-dipdye')} alt="" loading="lazy" /><figcaption>Kerzen</figcaption></figure>
+            <figure class="hd-polaroid"><img src={mail('qian')} alt="" loading="lazy" /><figcaption>Tee & Ton</figcaption></figure>
+          </div>
+        </div>
+      </section>
+      <section class="hd-makers">
+        <div class="container">
+          <div class="hd-row-head hd-row-head-center"><div><h2 class="hd-h2">{d.makersTitle} <em>{d.makersHand}</em></h2><p class="hd-sub">{d.makersSub}</p></div></div>
+          <ul class="hd-wall">
+            {makers.map((h) => (
+              <li><a class="hd-maker" href={hostHref(lang, h)}><img src={h.photo} alt="" width="400" height="400" loading="lazy" decoding="async" /><span class="hd-maker-name">{h.firstName ?? h.name}</span><span class="hd-maker-craft">{h.specialty}</span></a></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+      <section class="container hd-blocks">
+        <div class="hd-block is-teams"><div class="hd-block-text"><span class="hd-block-kicker">{split.teams.kicker}</span><h2 class="hd-block-title">{split.teams.title} <em>{split.teams.hand}</em></h2><p>{split.teams.copy}</p><div class="hd-block-actions"><a href={teamsHref} class="hd-btn hd-btn-light" data-book="group" data-book-title={bookingCopy[lang].anyHost}>{split.teams.cta}</a></div></div></div>
+        <div class="hd-block is-makers"><div class="hd-block-text"><span class="hd-block-kicker">{split.makers.kicker}</span><h2 class="hd-block-title">{split.makers.title} <em>{split.makers.hand}</em></h2><p>{split.makers.copy}</p><div class="hd-block-actions"><a href={hostCta} class="hd-btn hd-btn-ink">{split.makers.cta}</a></div></div></div>
+      </section>
+    </>
+  )}
+
+  {/* ═══════════════ D · Linktree soft ═══════════════ */}
+  {v === 'd' && (
+    <div class="ho-d-col">
+      <header class="ho-d-head">
+        <img class="ho-d-logo" src={brand.logo} alt="" width="72" height="72" />
+        <h1 class="hd-h1">{d.h1a} <span class="hd-hand">{d.h1b}</span></h1>
+        <p class="hd-lede">{d.lede}</p>
+      </header>
+      <ul class="ho-d-links">
+        <li><a class="tone-lav" href={calendarHref}><span>⚡</span> Was heute läuft</a></li>
+        <li><a class="tone-butter" href={occasionHref(lang, 'weekend')}><span>🎉</span> Am Wochenende</a></li>
+        <li><a class="tone-peach" href={occasionHref(lang, 'evenings')}><span>🌙</span> Nach Feierabend</a></li>
+        <li><a class="tone-mint" href={occasionHref(lang, 'kids')}><span>🧸</span> Mit Kindern</a></li>
+      </ul>
+      <section class="ho-d-block tone-lav">
+        <h2 class="hd-h2">{d.weekTitle} <em>{d.weekHand}</em></h2>
+        <ul class="ho-d-week">
+          {week.slice(0, 4).map((s) => (
+            <li><a href={workshopHref(lang, s.host, s.workshopKey)}>
+              <span class="ho-d-thumb" style={lqipStyle(s.host.poster)}>{cardImage(s) && <img src={cardImage(s)} alt="" loading="lazy" decoding="async" />}</span>
+              <span><span class="ho-when">{formatWhen(s, lang)}</span><span class="ho-title">{s.title}</span><span class="ho-meta">{s.host.firstName ?? s.host.name}{s.price && <> · {s.price}</>}</span></span>
+            </a></li>
+          ))}
+        </ul>
+        <a class="ho-pill ho-pill-white" href={calendarHref}>Alle Termine im Kalender →</a>
+      </section>
+      <section class="ho-d-block tone-white">
+        <h2 class="hd-h2">Workshop <em>suchen</em></h2>
+        <HomeSearch lang={lang} />
+      </section>
+      <section class="ho-d-block tone-butter">
+        <h2 class="hd-h2">{d.catsTitle} <em>{d.catsHand}</em></h2>
+        <ul class="ho-d-cats">
+          {ACTIVITY_ORDER.map((a) => (
+            <li><a href={activityHref(lang, a)}><img src={activityFace(a)?.photo ?? thumb(a)} alt="" loading="lazy" decoding="async" /><span>{activityCopy[lang][a].short}</span></a></li>
+          ))}
+        </ul>
+      </section>
+      <section class="ho-d-block tone-peach">
+        <span class="ho-kicker">{split.teams.kicker}</span>
+        <h2 class="hd-h2">{split.teams.title} <em>{split.teams.hand}</em></h2>
+        <p>{split.teams.ticks.join(' · ')}</p>
+        <a class="ho-pill ho-pill-ink" href={teamsHref} data-book="group" data-book-title={bookingCopy[lang].anyHost}>{split.teams.cta}</a>
+      </section>
+      <section class="ho-d-block tone-mint">
+        <span class="ho-kicker">{split.makers.kicker}</span>
+        <h2 class="hd-h2">{split.makers.title} <em>{split.makers.hand}</em></h2>
+        <p>{split.makers.ticks.join(' · ')}</p>
+        <a class="ho-pill ho-pill-ink" href={hostCta}>{split.makers.cta}</a>
+      </section>
+      <section class="ho-d-block tone-lav ho-d-makers">
+        <h2 class="hd-h2">{d.makersTitle} <em>{d.makersHand}</em></h2>
+        <ul>{makers.slice(0, 8).map((h) => <li><a href={hostHref(lang, h)}><img src={h.photo} alt="" loading="lazy" decoding="async" /><span>{h.firstName ?? h.name}</span></a></li>)}</ul>
+        <a class="ho-pill ho-pill-white" href={teamsHref}>{t.meetAll(listed)}</a>
+      </section>
+    </div>
+  )}
+
+  {/* ═══════════════ E · Magazine ═══════════════ */}
+  {v === 'e' && (
+    <>
+      <section class="container ho-e-hero">
+        <div class="ho-e-mast"><span>Twiggli</span><span>Berlin · KW {isoWeek}</span><span>{listed} Maker*innen</span></div>
+        <div class="ho-e-grid">
+          <div>
+            <h1 class="hd-h1">{d.h1a} <span class="hd-hand">{d.h1b}</span></h1>
+            <p class="hd-lede">{d.lede}</p>
+            <div class="ho-actions">
+              <a class="ho-btn ho-btn-purple" href={calendarHref}>Was diese Woche läuft</a>
+              <a class="ho-btn ho-btn-soft" href={teamsHref}>Fürs Team</a>
+            </div>
+          </div>
+          <div class="ho-e-photo">
+            <img src={host('craftkai')} alt="Gruppe an einem langen Werktisch bei einem Holz-Workshop" />
+            <div class="ho-e-stack" aria-hidden="true">
+              {(['ceramics', 'food', 'art'] as const).map((a) => (
+                <figure class="hd-polaroid"><img src={thumb(a)} alt="" /><figcaption>{f.activities[a]}</figcaption></figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="container ho-section">
+        <div class="hd-row-head">
+          <h2 class="hd-h2">{d.weekTitle} <em>{d.weekHand}</em></h2>
+          <a class="hd-more" href={calendarHref}>{ui(lang).teaser.cta} →</a>
+        </div>
+        <ol class="ho-e-list">
+          {week.slice(0, 6).map((s, i) => (
+            <li><a href={workshopHref(lang, s.host, s.workshopKey)}>
+              <span class="ho-e-num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="ho-e-text"><span class="ho-when">{formatWhen(s, lang)}</span><span class="ho-e-title">{s.title}</span><span class="ho-meta">{s.host.firstName ?? s.host.name} · {s.district}{s.price && <> · {s.price}</>}</span></span>
+              <span class="ho-e-thumb" style={lqipStyle(s.host.poster)}>{cardImage(s) && <img src={cardImage(s)} alt="" loading="lazy" decoding="async" />}</span>
+            </a></li>
+          ))}
+        </ol>
+      </section>
+      <section class="container ho-e-stripes">
+        <article>
+          <img src={host('anna-malerlebnisse-3')} alt="" loading="lazy" decoding="async" />
+          <div><span class="ho-kicker">Für dich</span><h2 class="hd-h2">{find.soloTitle}</h2><p>{find.soloCopy}</p><a class="ho-btn ho-btn-purple" href={calendarHref}>{find.soloCta}</a></div>
+        </article>
+        <article class="is-flip">
+          <img src={host('petitejungle-1')} alt="" loading="lazy" decoding="async" />
+          <div><span class="ho-kicker">Fürs Team</span><h2 class="hd-h2">{split.teams.title} <em>{split.teams.hand}</em></h2><p>{split.teams.copy}</p><a class="ho-btn ho-btn-ink" href={teamsHref} data-book="group" data-book-title={bookingCopy[lang].anyHost}>{split.teams.cta}</a></div>
+        </article>
+        <article>
+          <img src={host('craftkai-7')} alt="" loading="lazy" decoding="async" />
+          <div><span class="ho-kicker">Für Maker*innen</span><h2 class="hd-h2">{split.makers.title} <em>{split.makers.hand}</em></h2><p>{split.makers.copy}</p><a class="ho-btn ho-btn-ink" href={hostCta}>{split.makers.cta}</a></div>
+        </article>
+      </section>
+      {evelyn && evelynWords && (
+        <section class="container ho-section">
+          <blockquote class="ho-e-quote">
+            <p>„{evelynWords.paras[1]}“</p>
+            <footer><img src={evelyn.photo} alt="" loading="lazy" /><span><b>{evelyn.firstName ?? evelyn.name}</b>, {evelyn.studio}</span> <a href={hostHref(lang, evelyn)}>Zu ihren Workshops →</a></footer>
+          </blockquote>
+        </section>
+      )}
+      <section class="container ho-section ho-e-cats">
+        <h2 class="hd-h2">{d.catsTitle} <em>{d.catsHand}</em></h2>
+        <ul>{ACTIVITY_ORDER.map((a) => <li><a href={activityHref(lang, a)}>{activityCopy[lang][a].short} <small>{counts.get(a) ?? 0}</small></a></li>)}</ul>
+        <a class="hd-more" href={hubHref(lang)}>{t.activitiesAll} →</a>
+      </section>
+    </>
+  )}
+
+  <div class="container hd-tail">
+    <Newsletter lang={lang} />
+  </div>
+  <SiteSchema lang={lang} />
+</Base>
