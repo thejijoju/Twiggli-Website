@@ -801,6 +801,24 @@ const formatDeadline = (iso: string): string => {
       });
     });
 
+    // A search from elsewhere (the home page's what / when / where pill)
+    // arrives as ?activity=…&date=YYYY-MM-DD&district=… and presses the same
+    // pills and day chip a visitor would. Anything that names no pill on
+    // this page is ignored, so a stale link still lands on the calendar.
+    {
+      const params = new URLSearchParams(location.search);
+      const activity = params.get('activity');
+      const district = params.get('district');
+      const date = params.get('date');
+      if (activity) activityPills.find((p) => p.dataset.activityFilter === activity)?.click();
+      if (district) districtPills.find((p) => p.dataset.districtFilter === district)?.click();
+      if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [y, m, dd] = date.split('-').map(Number);
+        const offset = Math.round((new Date(y, m - 1, dd).getTime() - today.getTime()) / 86400000);
+        chips.find((c) => c.dataset.offset === String(offset))?.click();
+      }
+    }
+
     // A notification email links straight to its card (#live-…): select
     // that card's day, scroll to it and highlight it, so the reader lands
     // on the Book button.
