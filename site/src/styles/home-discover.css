@@ -479,3 +479,12 @@
   .hd-strip-row > li { width: 136px; }
   .hd-strip-note { font-size: 21px; padding: 0 var(--gutter); }
 }
+
+/* Variant 2, as chosen (23.10.26): the same polaroids, but straight and
+   with rounded corners. */
+.hd-v2 .hd-card, .hd-v2 .hd-maker, .hd-v2 .hd-polaroid, .hd-v2 .hd-hero-pic.is-1, .hd-v2 .hd-hero-pic.is-2, .hd-v2 .hd-hero-pic.is-3, .hd-v2 .hd-hero-pic.is-4,
+.hd-v2 .hd-block-pics .hd-polaroid:first-child, .hd-v2 .hd-block-pics .hd-polaroid:last-child {
+  transform: none; border-radius: 18px;
+}
+.hd-v2 .hd-card:hover, .hd-v2 .hd-maker:hover { transform: translateY(-4px); }
+.hd-v2 .hd-card-media, .hd-v2 .hd-maker img, .hd-v2 .hd-polaroid img { border-radius: 12px; }
