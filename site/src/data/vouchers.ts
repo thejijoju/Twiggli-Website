@@ -90,7 +90,10 @@ export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed:
     // "Customers choose what to pay": the free amount and host vouchers.
     custom: 'https://buy.stripe.com/test_14AcN7aoWddw5ld46RfUQ00',
     // Fixed prices: a click on that amount goes straight to Stripe.
-    fixed: { 25: 'https://buy.stripe.com/test_6oU14pdB8ehAfZR6eZfUQ01' },
+    fixed: {
+      25: 'https://buy.stripe.com/test_6oU14pdB8ehAfZR6eZfUQ01',
+      50: 'https://buy.stripe.com/test_3cI6oJfJg2yS8xp5aVfUQ02',
+    },
   },
   live: { custom: '', fixed: {} },
 };
