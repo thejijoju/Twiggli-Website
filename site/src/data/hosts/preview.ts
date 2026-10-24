@@ -110,11 +110,15 @@ const en: HostCopy[] = [
   { slug: 'atelier-sinn', name: 'Atelier Sinn', specialty: 'Natural cosmetics, textile art, collage & more', studio: 'Atelier Kora Sinn',
     blurb: 'A creative space near Senefelderplatz founded by interior designer and creative director Kornelia Sinn: high ceilings, a carefully designed interior and two generous rooms. For teams there are eight three-hour formats — collage and mixed media, natural cosmetics with your own packaging, textile art, scented candles, room sprays, clay, jewellery and charms, and porcelain design — and they can tailor one to your brand colours, logo or a shared theme. Materials, guidance, snacks and drinks are included; catering on request. Public workshops include an autumn glow serum and festive Christmas tablescaping.',
     group: '5–20', duration: '3 h', place: 'Saarbrücker Str. 15, Prenzlauer Berg', languages: 'DE · EN' },
-  // Lucille, 21.–22.10.26 (call Monday 26.10). From lucilleguder.com and
-  // her Konfetti listings (23.10.26).
-  { slug: 'lucille-guder', name: 'Lucille Guder', specialty: 'Self-photography, flower collage & flower crowns',
-    blurb: 'French artist Lucille Guder paints faceless women out of flowers, paper and acrylic, so that every woman can find herself in them. With Ātma Portrait she runs a workshop that helps women make peace with their bodies: after a conversation about how we see our bodies, you photograph yourself alone in the studio, then turn your own body lines into a flower collage with real flowers. You take home about fifty black-and-white photos and your collage. For birthdays and hen parties there is a flower-crown workshop with a group photo session, and a class in her signature dot-painting technique.',
-    group: 'Up to 4 · flower crowns up to 10', duration: '2–3.5 h', place: 'Ātma Portrait Studio, Thaerstraße 23, Friedrichshain', languages: 'EN · FR' },
+  // Lucille, 21.–22.10.26; on 24.10.26 she asked us to use her own product
+  // page instead of her older listings, and said the workshop takes place
+  // from 3 participants (she cancels with only 1 or 2). Everything below is
+  // from lucilleguder.com (workshop, dots class, workshops & about pages,
+  // 24.10.26); photos from her product pages, used with her OK.
+  { slug: 'lucille-guder', name: 'Lucille Guder', specialty: 'Self-photography & flower collage workshop for women',
+    blurb: 'Lucille Guder is a self-taught French artist living in Berlin, who makes flower women out of acrylics, paper and dried flowers, their faces left blank so that any woman can relate to them. Together with Ātma Portrait she runs a workshop that helps women reconcile with their bodies and gain self-awareness through photography. After an introduction and a conversation about our relationship with our bodies, you photograph yourself for an hour, completely alone in the studio behind privacy curtains: you are the only one who sees your pictures. After a break with drinks and snacks, you turn your own body lines into a handmade flower collage, with an easy technique that needs no drawing experience. You take home about fifty high-quality black-and-white photos, your A4 collage and the technique. Bring a USB stick for your photos, as they are not stored, and a folder for the collage. She also teaches her signature dots painting technique, and runs a flower-crown workshop with a group photo session for birthdays and hen parties.',
+    group: 'Takes place from 3 participants · max. 4, women only', duration: '3.5 h', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
+    priceNote: 'dots painting class €49' },
 ];
 
 const de: HostCopy[] = [
@@ -161,9 +165,19 @@ const de: HostCopy[] = [
   { slug: 'atelier-sinn', name: 'Atelier Sinn', specialty: 'Naturkosmetik, Textile Art, Collage & mehr', studio: 'Atelier Kora Sinn',
     blurb: 'Ein kreativer Ort nahe Senefelderplatz, gegründet von Interior Designerin und Creative Director Kornelia Sinn: hohe Decken, ein sorgfältig gestaltetes Interior und zwei großzügige Räume. Für Teams gibt es acht dreistündige Formate – Collage & Mixed Media, Naturkosmetik mit eigener Verpackung, Textile Art, Duftkerzen, Duftsprays, Ton, Schmuck & Charms und Porzellandesign –, und auf Wunsch wird eines auf eure Markenfarben, euer Logo oder ein gemeinsames Thema zugeschnitten. Material, Anleitung, Snacks und Getränke sind inklusive, Catering auf Anfrage. Offene Workshops gibt es etwa zum Glow-Serum oder zum festlichen Weihnachts-Tablescaping.',
     group: '5–20', duration: '3 Std.', place: 'Saarbrücker Str. 15, Prenzlauer Berg', languages: 'DE · EN' },
-  { slug: 'lucille-guder', name: 'Lucille Guder', specialty: 'Selbstfotografie, Blumencollage & Blumenkränze',
-    blurb: 'Die französische Künstlerin Lucille Guder malt gesichtslose Frauen aus Blumen, Papier und Acryl, damit sich jede Frau in ihnen wiederfinden kann. Mit Ātma Portrait bietet sie einen Workshop an, der Frauen hilft, sich mit ihrem Körper zu versöhnen: Nach einem Gespräch darüber, wie wir unseren Körper sehen, fotografierst du dich allein im Studio und verwandelst danach deine eigenen Körperlinien in eine Collage aus echten Blumen. Du nimmst rund fünfzig Schwarz-Weiß-Fotos und deine Collage mit nach Hause. Für Geburtstage und JGAs gibt es einen Blumenkranz-Workshop mit Gruppen-Fotosession, dazu einen Kurs in ihrer typischen Punkt-Maltechnik.',
-    group: 'Bis 4 · Blumenkränze bis 10', duration: '2–3,5 Std.', place: 'Ātma Portrait Studio, Thaerstraße 23, Friedrichshain', languages: 'EN · FR' },
+  { slug: 'lucille-guder', name: 'Lucille Guder', specialty: 'Selbstfotografie- & Blumencollage-Workshop für Frauen',
+    blurb: 'Lucille Guder ist eine französische Autodidaktin, die in Berlin lebt und Blumenfrauen aus Acryl, Papier und getrockneten Blumen macht – mit leeren Gesichtern, damit sich jede Frau in ihnen wiederfinden kann. Zusammen mit Ātma Portrait bietet sie einen Workshop an, der Frauen hilft, sich mit ihrem Körper zu versöhnen und sich durch Fotografie selbst besser wahrzunehmen. Nach einer Einführung und einem Gespräch über unsere Beziehung zu unserem Körper fotografierst du dich eine Stunde lang selbst, ganz allein im Studio hinter Sichtschutzvorhängen: Nur du siehst deine Bilder. Nach einer Pause mit Getränken und Snacks verwandelst du deine eigenen Körperlinien in eine handgemachte Blumencollage, mit einer einfachen Technik, für die du keine Zeichenerfahrung brauchst. Du nimmst rund fünfzig hochwertige Schwarz-Weiß-Fotos, deine A4-Collage und die Technik mit nach Hause. Bring einen USB-Stick für deine Fotos mit, denn sie werden nicht gespeichert, und eine Mappe für die Collage. Außerdem unterrichtet sie ihre typische Punkt-Maltechnik und bietet für Geburtstage und JGAs einen Blumenkranz-Workshop mit Gruppen-Fotosession an.',
+    group: 'Findet ab 3 Teilnehmerinnen statt · max. 4, nur für Frauen', duration: '3,5 Std.', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
+    priceNote: 'Punkt-Malkurs 49 €' },
+];
+
+/** French copy, for a host who writes in French (Lucille). Every other
+ *  preview host falls back to English in French. */
+const fr: HostCopy[] = [
+  { slug: 'lucille-guder', name: 'Lucille Guder', specialty: 'Atelier d’autoportrait photo et de collage floral pour femmes',
+    blurb: 'Lucille Guder est une artiste française autodidacte installée à Berlin, qui crée des femmes-fleurs en acrylique, papier et fleurs séchées, le visage laissé vide pour que chaque femme puisse s’y reconnaître. Avec Ātma Portrait, elle propose un atelier qui aide les femmes à se réconcilier avec leur corps et à mieux se connaître grâce à la photographie. Après une introduction et un échange sur notre rapport à notre corps, tu te photographies pendant une heure, seule dans le studio derrière des rideaux d’intimité : tu es la seule à voir tes photos. Après une pause avec boissons et en-cas, tu transformes les lignes de ton corps en un collage floral fait main, avec une technique simple qui ne demande aucune expérience en dessin. Tu repars avec une cinquantaine de photos numériques en noir et blanc de haute qualité, ton collage A4 et la technique. Apporte une clé USB pour tes photos, qui ne sont pas conservées, et une pochette pour le collage. Elle enseigne aussi sa technique de peinture à points et propose un atelier de couronnes de fleurs avec séance photo de groupe pour les anniversaires et les EVJF.',
+    group: 'A lieu à partir de 3 participantes · 4 max., uniquement pour les femmes', duration: '3,5 h', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
+    priceNote: 'cours de peinture à points 49 €' },
 ];
 
 const facets: Record<string, Facets> = {
@@ -190,7 +204,11 @@ const facets: Record<string, Facets> = {
   // 200 on their Konfetti listings.
   paintnow:              { activity: 'art',         groupRange: [10, 200], hourRange: [2, 3],   groupPrice: 79 },
   'atelier-sinn':        { activity: 'craft',       groupRange: [5, 20],   hourRange: [3, 3],   groupPrice: 59 },
-  'lucille-guder':       { activity: 'photography', alsoIn: ['art'], groupRange: [1, 10], hourRange: [2, 3.5], groupPrice: [65, 99] },
+  // From 3 (she cancels with 1 or 2) to 4 for the collage workshop, 10 for
+  // flower crowns; 2–3.5 h. €119 for the collage workshop (dots class €49,
+  // in priceNote; flower crowns are booked through Ātma Portrait, no price
+  // on her site).
+  'lucille-guder':       { activity: 'photography', alsoIn: ['art'], groupRange: [3, 10], hourRange: [2, 3.5], groupPrice: 119 },
 };
 
 const firstNames: Record<string, string> = {
@@ -204,7 +222,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
   'luc-demissy': { area: 'Wedding' }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Berlin' },
-  paintnow: { area: 'Moabit', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Friedrichshain' },
+  paintnow: { area: 'Moabit', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg' },
 };
 
 /** Formats each preview host runs on request, with no public date. */
@@ -262,13 +280,14 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Teamevent: eines von acht Formaten, auf Wunsch in euren Markenfarben', titleEn: 'Team event: one of eight formats, in your brand colours if you like', duration: '3 h', price: '€59', url: 'https://www.atelier.korasinn.de/teams' },
   ],
   'lucille-guder': [
-    { title: 'Selbstfotografie & Blumencollage (nur für Frauen, bis 4)', titleEn: 'Self-photography & flower collage (women only, up to 4)', duration: '3.5 h', price: '€99', url: 'https://www.lucilleguder.com/self-photography-and-flower-collage-workshop' },
-    { title: 'Blumenkranz-Workshop & Gruppen-Fotosession (bis 10)', titleEn: 'Flower-crown workshop & group photo session (up to 10)', duration: '2 h', price: '€65', url: 'https://www.lucilleguder.com/self-photography-and-flower-collage-workshop' },
+    { title: 'Selbstfotografie & Blumencollage (nur für Frauen, max. 4 – findet ab 3 Teilnehmerinnen statt)', titleEn: 'Self-photography & flower collage (women only, max. 4 – takes place from 3 participants)', duration: '3.5 h', price: '€119', url: 'https://www.lucilleguder.com/product/self-photography-and-flower-collage-workshop' },
+    { title: 'Malkurs: Lucilles Punkt-Technik (nur für Frauen, max. 4)', titleEn: 'Painting class: Lucille’s dots technique (women only, max. 4)', duration: '2.5 h', price: '€49', district: 'U Bernauer Straße', url: 'https://www.lucilleguder.com/product/painting-class-learn-the-dots-technique-with-me' },
+    { title: 'Blumenkranz-Workshop & Gruppen-Fotosession (bis 10)', titleEn: 'Flower-crown workshop & group photo session (up to 10)', duration: '2 h', district: 'Ātma Portrait', url: 'https://www.lucilleguder.com/self-photography-and-flower-collage-workshop' },
   ],
 };
 
-export const preview = { copy: { en, de }, facets, firstNames, areas, onRequest } satisfies {
-  copy: { en: HostCopy[]; de: HostCopy[] };
+export const preview = { copy: { en, de, fr }, facets, firstNames, areas, onRequest } satisfies {
+  copy: { en: HostCopy[]; de: HostCopy[]; fr: HostCopy[] };
   facets: Record<string, Facets>;
   firstNames: Record<string, string>;
   areas: Record<string, { area: string; onSite?: boolean }>;
