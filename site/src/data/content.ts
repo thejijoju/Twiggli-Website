@@ -389,7 +389,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'sarah', name: 'Sarah', specialty: 'Mindfulness & creative writing',
       blurb: 'Out of function mode and into the here and now. A mix of mindfulness, meditation, journaling, creative writing and gentle movement — simple tools for more calm, clarity and focus at work.',
       group: '3–12', duration: '1–7 h', place: 'On-site / Warschauer Str. / online', languages: 'DE · EN' },
-    { slug: 'anne', name: 'Anne', specialty: 'Creative photography',
+    { slug: 'anne', name: 'Anna', specialty: 'Creative photography',
       blurb: 'A playful photography workshop where teammates photograph each other, swapping between model and photographer. Creative prompts and simple props spark fresh ways of seeing. Any phone works.',
       group: '5–20', duration: '1.5–2 h', place: 'Your office / a venue in Berlin', languages: 'EN · UA' },
     { slug: 'sabine', name: 'Sabine', specialty: 'Analog photography & cyanotypes', studio: 'Mobile Dunkelkammer',
@@ -618,7 +618,7 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'sarah', name: 'Sarah', specialty: 'Achtsamkeit & kreatives Schreiben',
       blurb: 'Raus aus dem Funktionsmodus, rein ins Hier und Jetzt. Achtsamkeit, Meditation, Journaling, kreatives Schreiben und sanfte Bewegung — für Ruhe, Klarheit und Fokus.',
       group: '3–12', duration: '1–7 Std.', place: 'Vor Ort / Warschauer Str. / online', languages: 'DE · EN' },
-    { slug: 'anne', name: 'Anne', specialty: 'Kreative Fotografie',
+    { slug: 'anne', name: 'Anna', specialty: 'Kreative Fotografie',
       blurb: 'Ein verspielter Foto-Workshop, in dem sich das Team gegenseitig fotografiert und zwischen Modell und Fotograf wechselt. Jedes Handy reicht aus.',
       group: '5–20', duration: '1,5–2 Std.', place: 'Euer Büro / eine Location in Berlin', languages: 'EN · UA' },
     { slug: 'sabine', name: 'Sabine', specialty: 'Analoge Fotografie & Cyanotypie', studio: 'Mobile Dunkelkammer',
@@ -1077,7 +1077,7 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Gestaltwandel's bookbinding film — sewing a signature, then the finished
   // books. Celina's own, audio stripped.
   celina: { video: '/video/celina.mp4', poster: '/video/celina-poster.jpg' },
-  // Anne's session reel — props, and everyone photographing each other. Her
+  // Anna's (Anna Martynenko) session reel — props, and everyone photographing each other. Her
   // own, audio stripped; the top band is cropped off to lose the CapCut
   // watermark her export carried.
   anne: { video: '/video/anne.mp4', poster: '/video/anne-poster.jpg' },
@@ -1554,7 +1554,7 @@ const firstNames: Record<string, string> = {
   drawingwalks: 'Ditte', violaine: 'Violaine', tania: 'Tania', simone: 'Simone',
   alessia: 'Alessia', sina: 'Sina', olivia: 'Olivia',
   nina: 'Nina', helka: 'Helka', jem: 'Jem', maximiliana: 'Maximiliana', pia: 'Pia',
-  sarah: 'Sarah', anne: 'Anne', sabine: 'Sabine', angelo: 'Angelo', faye: 'Faye',
+  sarah: 'Sarah', anne: 'Anna', sabine: 'Sabine', angelo: 'Angelo', faye: 'Faye',
   dominik: 'Dominik', ana: 'Ana', 'karen-rose': 'Karen-Rose',
   pastamadre: 'Maria-Lucrezia & Frank', 'monk-garden': 'Martin', bumerang: 'Christian',
   'ceramic-kingdom': 'Madeline', daisuki: 'Naoko', whittle: 'Nicole',

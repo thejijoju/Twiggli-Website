@@ -64,7 +64,7 @@ export const hosts: HostCopy[] = [
   { slug: 'sarah', name: 'Sarah', specialty: 'Pleine conscience & écriture créative',
     blurb: 'Sortir du mode fonctionnel pour entrer dans l’ici et maintenant. Un mélange de pleine conscience, de méditation, de journaling, d’écriture créative et de mouvement doux — des outils simples pour plus de calme, de clarté et de concentration au travail.',
     group: '3–12', duration: '1–7 h', place: 'Sur site / Warschauer Str. / en ligne', languages: 'DE · EN' },
-  { slug: 'anne', name: 'Anne', specialty: 'Photographie créative',
+  { slug: 'anne', name: 'Anna', specialty: 'Photographie créative',
     blurb: 'Un atelier photo ludique où les collègues se photographient les uns les autres, en alternant les rôles de modèle et de photographe. Des consignes créatives et des accessoires simples suscitent de nouvelles manières de voir. N’importe quel téléphone fait l’affaire.',
     group: '5–20', duration: '1,5–2 h', place: 'Vos bureaux / un lieu à Berlin', languages: 'EN · UA' },
   { slug: 'sabine', name: 'Sabine', specialty: 'Photographie argentique & cyanotypes', studio: 'Mobile Dunkelkammer',

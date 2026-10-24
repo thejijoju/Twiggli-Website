@@ -45,15 +45,15 @@ import type { Lang } from '../lib/url.ts';
  *  - maximiliana: Maximiliana Marti, bird sketching.
  *  - nicole / whittle: Nicole, Anybody Can Whittle (both of her cards).
  *  - pia: Pia, Vulva Painting (agreed in the WhatsApp group, 24.10.26).
- * Not added yet, as no host matched for certain: "Fred / Terre Studio 32"
- * (studio32 is Bonvivant's cooking studio, not a match) and "Anna
- * (photography)" (the photography host here is Anne, slug anne).
+ *  - studio32: Fred, studio32 Berlin (cooking studio, www.studio32.berlin).
+ *  - anne: Anna Martynenko, creative photography (slug kept as "anne").
+ * Both agreed in the host WhatsApp group (Jirel, 24.10.26).
  */
 export const voucherHosts: string[] = [
   'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
   'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
-  'nicole', 'whittle', 'pia',
+  'nicole', 'whittle', 'pia', 'studio32', 'anne',
 ];
 
 export const isVoucherHost = (slug: string): boolean => voucherHosts.includes(slug);

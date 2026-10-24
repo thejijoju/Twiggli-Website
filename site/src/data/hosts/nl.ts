@@ -64,7 +64,7 @@ export const hosts: HostCopy[] = [
   { slug: 'sarah', name: 'Sarah', specialty: 'Mindfulness & creatief schrijven',
     blurb: 'Uit de functiemodus en het hier en nu in. Een mix van mindfulness, meditatie, journaling, creatief schrijven en zachte beweging — eenvoudige tools voor meer rust, helderheid en focus op het werk.',
     group: '3–12', duration: '1–7 u', place: 'Op locatie / Warschauer Str. / online', languages: 'DE · EN' },
-  { slug: 'anne', name: 'Anne', specialty: 'Creatieve fotografie',
+  { slug: 'anne', name: 'Anna', specialty: 'Creatieve fotografie',
     blurb: 'Een speelse fotografieworkshop waarin collega\'s elkaar fotograferen en afwisselen tussen model en fotograaf. Creatieve opdrachten en eenvoudige props zetten aan tot een frisse blik. Elke telefoon werkt.',
     group: '5–20', duration: '1,5–2 u', place: 'Je kantoor / een locatie in Berlijn', languages: 'EN · UA' },
   { slug: 'sabine', name: 'Sabine', specialty: 'Analoge fotografie & cyanotypie', studio: 'Mobile Dunkelkammer',
