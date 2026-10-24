@@ -9,6 +9,8 @@
  *   tile   C · "🎁 Give as a gift →" under a tile's price
  *   pill   A · the outlined second button under a booking button, with the
  *          "valid for 3 years" note
+ *   under  A · a lighter, smaller button straight under a tile's or a date
+ *          row's "Booking request": "🎁 Give as a gift"
  *   box    B · the dashed yellow gift box: 1 or 2 people, then "Buy"
  *
  * Every one but the badge opens the voucher form (VoucherDialog.astro);
@@ -19,7 +21,7 @@ import { isVoucherHost, voucherCopy, voucherPrice } from '../data/vouchers.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
-  kind: 'badge' | 'tile' | 'pill' | 'box';
+  kind: 'badge' | 'tile' | 'pill' | 'under' | 'box';
   host: Pick<Host, 'slug' | 'name' | 'specialty' | 'groupPrice'>;
   lang: Lang;
   /** The workshop, where the trigger belongs to one; the host's specialty
@@ -52,6 +54,10 @@ const attrs = {
     <a class="vc-pill" href={link} {...attrs} data-voucher-people="1">{c.give}</a>
     <p class="vc-note">{c.validNote}</p>
   </div>
+)}
+
+{on && kind === 'under' && (
+  <a class:list={['vc-under', cls]} href={link} {...attrs} data-voucher-people="1">{c.gift}</a>
 )}
 
 {on && kind === 'box' && (
