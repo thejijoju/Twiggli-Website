@@ -102,8 +102,21 @@ export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed:
   live: { custom: '', fixed: {} },
 };
 
+/**
+ * Our own checkout (supabase/functions/voucher-checkout): creates a Stripe
+ * Checkout Session for the exact amount, host and places, so every voucher
+ * is two clicks and the amount can't be changed at Stripe. When `url` is
+ * set it replaces the Payment Links above; `live: false` keeps it to visits
+ * with ?stripetest=1. The anon key is Supabase's public key, safe here.
+ */
+export const voucherCheckout = {
+  url: '',
+  anonKey: '',
+  live: false,
+};
+
 /** The "host" a general voucher is for, as it lands in our inbox. */
-export const GENERAL_VOUCHER_HOST = 'Twiggli (frei wählbar)';
+export const GENERAL_VOUCHER_HOST = 'General Twiggli voucher (any participating host)';
 
 export type VoucherCopy = {
   /** Header and footer link. */

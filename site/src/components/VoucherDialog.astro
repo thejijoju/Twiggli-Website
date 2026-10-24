@@ -11,7 +11,7 @@
  * Every trigger is a real link to the voucher page, so without scripts it
  * still goes somewhere useful.
  */
-import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST, stripeVoucherLink } from '../data/vouchers.ts';
+import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST, stripeVoucherLink, voucherCheckout } from '../data/vouchers.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
 import '../styles/vouchers.css';
@@ -32,6 +32,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
   data-general-host={GENERAL_VOUCHER_HOST}
   data-stripe-live={JSON.stringify(stripeVoucherLink.live)}
   data-stripe-test={JSON.stringify(stripeVoucherLink.test)}
+  data-checkout={JSON.stringify(voucherCheckout)}
   data-copy={JSON.stringify(c)}
 >
   <button type="button" class="book-close" data-vc-close aria-label={c.close}>
@@ -163,12 +164,40 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
     type Links = { custom: string; fixed: Record<string, string> };
     const parse = (v?: string): Links => { try { return JSON.parse(v || '{}'); } catch { return { custom: '', fixed: {} }; } };
     const live = parse(dialog.dataset.stripeLive);
-    const links = live.custom ? live : testing ? parse(dialog.dataset.stripeTest) : { custom: '', fixed: {} };
+    // Our own checkout wins over the Payment Links once it is configured.
+    let checkout = { url: '', anonKey: '', live: false };
+    try { checkout = { ...checkout, ...JSON.parse(dialog.dataset.checkout || '{}') }; } catch { /* keep off */ }
+    const useCheckout = !!checkout.url && (checkout.live || testing);
+    const links = useCheckout ? { custom: checkout.url, fixed: {} as Record<string, string> }
+      : live.custom ? live : testing ? parse(dialog.dataset.stripeTest) : { custom: '', fixed: {} };
     const stripeUrl = links.custom || '';
     const buyerFields = Array.from(dialog.querySelectorAll<HTMLElement>('[data-vc-buyer]'));
     /** Hands over to Stripe: the amount's own link if it has one, else the
      *  "customers choose" link. The reference ties it to the inbox note. */
-    const goToStripe = (value: number, ref: string, note: Record<string, string>) => {
+    const goToStripe = async (value: number, ref: string, note: Record<string, string>) => {
+      if (useCheckout) {
+        if (send) { send.disabled = true; send.textContent = copy.sending; }
+        try {
+          const res = await fetch(checkout.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: checkout.anonKey, Authorization: `Bearer ${checkout.anonKey}` },
+            body: JSON.stringify({
+              amount: value, ref, lang: dialog.dataset.lang ?? 'de',
+              host: note.Host === dialog.dataset.generalHost ? '' : note.Host,
+              hostSlug: note['Host slug'] ?? '', title: note['Host slug'] ? note.Workshop ?? '' : '', people: Number(note.People) || 1,
+            }),
+          });
+          const out = await res.json();
+          if (!res.ok || !out.url) throw new Error(out.error || String(res.status));
+          track('voucher-to-stripe', { host: note.Host, amount: String(value) });
+          location.href = out.url;
+        } catch (err) {
+          if (error) { error.textContent = String(copy.error).replace('{email}', dialog.dataset.contact ?? ''); error.hidden = false; }
+          if (send) { send.disabled = false; update(); }
+          if (!dialog.open) dialog.showModal();
+        }
+        return;
+      }
       const url = new URL(links.fixed?.[String(value)] || links.custom);
       url.searchParams.set('client_reference_id', ref);
       // A background note, so the inbox knows what is coming.
@@ -253,7 +282,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       event.stopPropagation();
       // One click to Stripe: a general voucher at an amount with its own link.
       const fixedAmount = Number(el.dataset.voucherAmount);
-      if (el.dataset.voucher === 'general' && fixedAmount && links.fixed?.[String(fixedAmount)]) {
+      if (el.dataset.voucher === 'general' && fixedAmount && (useCheckout || links.fixed?.[String(fixedAmount)])) {
         goToStripe(fixedAmount, `vc-${Date.now().toString(36)}`, {
           Type: 'Voucher checkout', Host: dialog.dataset.generalHost ?? '', Amount: `€${fixedAmount}`,
           'Sent from': location.href, Language: dialog.dataset.lang ?? '',
@@ -301,7 +330,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
         Type: 'Voucher request',
         Host: host,
         Workshop: g ? 'Any workshop at a host taking vouchers' : (picked.voucherTitle ?? ''),
-        ...(g ? {} : { People: people.value, 'Price per person': price() ? `€${price()}` : 'not listed' }),
+        ...(g ? {} : { People: people.value, 'Price per person': price() ? `€${price()}` : 'not listed', 'Host slug': picked.voucherSlug ?? '' }),
         Amount: value ? `€${value}` : 'to be quoted',
         Name: String(data.get('name') ?? ''),
         Email: String(data.get('email') ?? ''),
