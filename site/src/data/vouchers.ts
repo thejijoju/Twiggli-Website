@@ -33,8 +33,9 @@ import type { Lang } from '../lib/url.ts';
  *  - petitejungle: Aurélie, Petite Jungle.
  *  - sabine: Sabine & Alex, Mobile Dunkelkammer.
  *  - druckrausch: Deborah, Druckrausch.
- *  - qian: Qian, Clay Garden. A partner host (partners.ts): her dates book
- *    on her own site with our code, but a voucher still goes through us.
+ *  - qian: NOT yet. Listed on 24.10.26, but her reply the same day asks
+ *    how tracking, payout and the 3 years work before she decides. Taken
+ *    off again until she says yes.
  *  - rebeca: Rebeca, Arte Gorda.
  *  - angelo: Angelo, Coffee and Bananas.
  *  - evelyn: Evelyn Cseh (Tuka Creative Club, at Ohma Studio).
@@ -48,7 +49,7 @@ import type { Lang } from '../lib/url.ts';
  */
 export const voucherHosts: string[] = [
   'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
-  'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'qian', 'rebeca',
+  'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
 ];
 
