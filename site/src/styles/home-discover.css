@@ -98,6 +98,20 @@
   cursor: pointer; text-overflow: ellipsis;
 }
 .hd-field:focus-within { box-shadow: inset 0 0 0 2px var(--hd-purple); }
+/* The home pill hugs its words: each field is as wide as its label or its
+   current choice, the chevron sits right after the text, and the pill is
+   only as wide as the four fields and the button. A select is natively as
+   wide as its longest option, so HomeSearch.astro's script sizes each one
+   to the option showing (and again on every change); without scripting
+   it falls back to that native width, which still fits. The calendar's own
+   pill (.kal-search) keeps its even columns. */
+.hd-search:not(.kal-search) { width: fit-content; max-width: 100%; }
+.hd-search:not(.kal-search) .hd-field { flex: 0 1 auto; padding: 6px 20px; }
+.hd-search:not(.kal-search) .hd-field select {
+  width: auto; max-width: 100%; padding-right: 17px; background-size: 11px;
+  white-space: nowrap; overflow: hidden;
+}
+.hd-search:not(.kal-search) .hd-search-btn { margin-left: 6px; }
 .hd-search-btn {
   flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 56px; padding: 0 26px;
@@ -288,7 +302,9 @@
   .hd-field select { font-size: 16px; }
   .hd-search-btn { min-height: 52px; margin-top: 4px; }
   .hd-search:not(.kal-search) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .hd-search:not(.kal-search) .hd-field { padding: 10px 14px; }
+  .hd-search:not(.kal-search) { width: 100%; }
+  .hd-search:not(.kal-search) .hd-field { padding: 10px 12px; }
+  .hd-search:not(.kal-search) .hd-search-btn { margin-left: 0; }
   .hd-search:not(.kal-search) .hd-field:nth-of-type(odd) { border-right: 1px solid var(--hd-line); border-radius: 18px 0 0 18px; }
   .hd-search:not(.kal-search) .hd-field:nth-of-type(even) { border-radius: 0 18px 18px 0; }
   .hd-search:not(.kal-search) .hd-field:nth-of-type(n + 3) { border-bottom: 0; }

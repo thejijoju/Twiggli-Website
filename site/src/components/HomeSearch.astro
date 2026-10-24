@@ -58,7 +58,42 @@ const { calendarHref, whatOptions, whenOptions, whereOptions, priceOptions } = g
 <script>
   // Only the fields that were set go into the address, so "Any day" does
   // not arrive at the calendar as an empty date.
+  // Each select as wide as the option it shows, so its chevron sits right
+  // after the words (home-discover.css). Natively a select is as wide as
+  // its longest option, which left a wide gap after "Jederzeit".
+  const ctx = document.createElement('canvas').getContext('2d');
+  // On a phone the fields sit two by two in half the screen, where a long
+  // choice ("Marzahn-Hellersdorf") would be cut off: the type steps down
+  // until it fits, to 12.5px at the least.
+  const phone = matchMedia('(max-width: 720px)');
+  const fit = (select: HTMLSelectElement) => {
+    if (!ctx) return;
+    select.style.fontSize = '';
+    const cs = getComputedStyle(select);
+    const text = select.options[select.selectedIndex]?.text ?? '';
+    const pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    let size = parseFloat(cs.fontSize);
+    const measure = () => {
+      ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${size}px ${cs.fontFamily}`;
+      return Math.ceil(ctx.measureText(text).width + pad) + 2;
+    };
+    let width = measure();
+    const field = select.parentElement;
+    if (phone.matches && field) {
+      const fs = getComputedStyle(field);
+      const room = field.clientWidth - parseFloat(fs.paddingLeft) - parseFloat(fs.paddingRight);
+      if (width > room) {
+        size = Math.max(12.5, Math.floor(size * (room - pad - 2) / (width - pad - 2) * 10) / 10);
+        select.style.fontSize = `${size}px`;
+        width = Math.min(measure(), room);
+      }
+    }
+    select.style.width = `${width}px`;
+  };
+  const fitAll = () => document.querySelectorAll<HTMLSelectElement>('[data-hd-search] select').forEach(fit);
+
   document.querySelectorAll<HTMLFormElement>('[data-hd-search]').forEach((form) => {
+    form.querySelectorAll('select').forEach((select) => select.addEventListener('change', () => fit(select)));
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const params = new URLSearchParams();
@@ -67,4 +102,11 @@ const { calendarHref, whatOptions, whenOptions, whereOptions, priceOptions } = g
       location.href = form.action + (query ? `?${query}` : '');
     });
   });
+  fitAll();
+  // Again once the web font is in (it measures wider than the fallback),
+  // when the phone layout switches font size, and after a back-navigation
+  // restores a choice.
+  document.fonts?.ready.then(fitAll);
+  phone.addEventListener('change', fitAll);
+  addEventListener('pageshow', fitAll);
 </script>
