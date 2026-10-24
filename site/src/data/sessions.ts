@@ -315,6 +315,23 @@ const dateOrdinals = (rows: { slug: string; title: string; date: string; time?: 
   return ordinals;
 };
 
+/** Hosts who need notice before a date: the number of working days
+ *  (Mon–Fri) that must lie between today and the date for it to show, so
+ *  nobody books them same-day. The site rebuilds daily, so a date drops
+ *  off by itself once it gets too close.
+ *  - qian: "at least one or two working days' notice" (her email, 24.10.26). */
+const bookingLeadDays: Record<string, number> = { qian: 2 };
+
+/** Working days strictly between today and a date, both Berlin dates. */
+const workingDaysBetween = (todayMs: number, dateMs: number): number => {
+  let n = 0;
+  for (let t = todayMs + 86400000; t < dateMs; t += 86400000) {
+    const dow = new Date(t).getUTCDay();
+    if (dow !== 0 && dow !== 6) n += 1;
+  }
+  return n;
+};
+
 /** Real sessions scraped weekly from hosts' public schedules — see
  *  scripts/update-workshops.mjs. A host with real sessions in the window
  *  drops out of the placeholder rotation entirely, and their Book button
@@ -346,6 +363,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     if (!host) continue;
     const dayOffset = Math.round((Date.parse(w.date) - today) / 86400000);
     if (dayOffset < 0 || dayOffset >= DAYS_AHEAD) continue;
+    const lead = bookingLeadDays[w.slug];
+    if (lead && workingDaysBetween(today, Date.parse(w.date)) < lead) continue;
     sessions.push({
       id: `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`,
       workshopKey: slugify(w.title),
