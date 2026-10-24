@@ -2729,7 +2729,6 @@ html.sheet-locked { overflow: hidden; }
 .daystatus-count { margin: 0; font-size: 15px; font-weight: 700; }
 .daystatus-on { display: flex; flex-wrap: wrap; gap: 6px; }
 .daystatus-on:empty { display: none; }
-.daystatus-reset { font-size: 14px; font-weight: 600; }
 .donchip {
   display: inline-flex;
   align-items: center;
@@ -2737,7 +2736,7 @@ html.sheet-locked { overflow: hidden; }
   padding: 6px 10px 6px 12px;
   border: 0;
   border-radius: 999px;
-  background: rgba(239, 230, 255, 0.9);
+  background: rgba(106, 62, 236, 0.12);
   color: var(--color-accent-700);
   font: inherit;
   font-size: 13px;
@@ -2745,7 +2744,16 @@ html.sheet-locked { overflow: hidden; }
   cursor: pointer;
 }
 .donchip span:last-child { font-size: 16px; line-height: 0.8; }
-.donchip:hover { background: #e2d4ff; }
+.donchip:hover { background: rgba(106, 62, 236, 0.2); }
+.daystatus-reset {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  font-size: 13px;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(43, 33, 24, 0.05);
+}
+.daystatus-reset:hover { background: rgba(255, 255, 255, 0.75); }
 .daypicker .daystatus .view-toggle { margin: 0 0 0 auto; }
 .daystatus ~ .dayresults { margin-top: 18px; }
 
@@ -3204,22 +3212,37 @@ html.sheet-locked { overflow: hidden; }
   justify-content: flex-end;
   gap: 6px;
 }
+/* Luma-like: round, no stroke, a frosted fill that lets the page's ground
+   through; hover lifts the white a little, the chosen view takes a soft
+   purple. The chips and the reset beside them (.donchip, .daystatus-reset)
+   share the same glass, so the row reads as one set. */
+.view-btn,
+.donchip,
+.daystatus-reset {
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
 .view-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1.5px solid var(--color-accent-800);
-  border-radius: 10px;
-  background: transparent;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
   color: var(--color-accent-800);
+  box-shadow: 0 1px 2px rgba(43, 33, 24, 0.05);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
 }
 .view-btn svg { width: 16px; height: 16px; }
-.view-btn:hover { background: var(--color-accent-100); }
-.view-btn.is-active { background: var(--color-accent-800); color: #fff; }
+.view-btn:hover { background: rgba(255, 255, 255, 0.75); box-shadow: 0 4px 12px -6px rgba(43, 33, 24, 0.25); }
+.view-btn:focus-visible { outline: 2px solid var(--color-accent-700); outline-offset: 2px; }
+.view-btn.is-active,
+.view-btn[aria-pressed='true'] { background: rgba(106, 62, 236, 0.16); color: var(--color-accent-800); box-shadow: none; }
+.view-btn.is-active:hover { background: rgba(106, 62, 236, 0.22); }
 
 /* The hidden attribute must always win — filtering and the day switch
    set it on elements whose classes carry their own display values. */
@@ -6427,4 +6450,24 @@ h1, h2, h3, h4,
 @media (max-width: 720px) {
   .page-circles { gap: 8px; margin-bottom: 12px; }
   .page-circles img, .page-circles img:nth-child(2), .page-circles img:nth-child(4) { width: 52px; height: 52px; margin-top: 0; }
+}
+
+/* ── The calendar page (CalendarPage.astro) ──
+   On a wide screen the day's workshops sit in the home page's white frame
+   (.hd-frame in home-discover.css): white that fades to 60% towards the
+   bottom, rounded, on the cream-to-lavender ground, in place of the old
+   baby-blue panel. */
+.page-calendar .daysessions {
+  background: linear-gradient(180deg, #fff 45%, rgba(255, 255, 255, 0.6));
+  border-radius: 22px;
+  box-shadow: 0 14px 28px -14px rgba(43, 33, 24, 0.42);
+}
+/* On a phone the filter block sits close under the heading, with the same
+   ~1 cm (38px) of air above it and below it, down to the results row. */
+@media (max-width: 720px) {
+  .page-calendar .page-head { padding: 22px 0 38px; }
+  .page-calendar .section-flush { padding-top: 0; }
+  .page-calendar .dfilter { margin-top: 0; }
+  .page-calendar .daystatus { margin-top: 38px; }
+  .page-calendar .daysessions { background: none; box-shadow: none; border-radius: 0; }
 }
