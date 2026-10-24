@@ -23,7 +23,7 @@ export interface HostDate {
 
 export const hostDates: HostDate[] = [
   // Qian's dates now come straight from her Acuity account in the feed.
-  // Anna Malerlebnisse (Antje) sends her dates by email (call of 22.10.26):
+  // ANNA-Malerlebnisse (Anna) sends her dates by email (call of 22.10.26):
   // a public session every 4–6 weeks at the Begegnungsstätte Mehr Mitte,
   // Torstraße 190, €35 per person, booked on her own site.
   { slug: 'anna-malerlebnisse', title: 'Malerlebnis: Malen mit persönlicher Anleitung',

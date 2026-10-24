@@ -3507,6 +3507,7 @@ a:hover { color: var(--color-accent); }
 }
 .host-blurb {
   margin: 0 0 8px;
+  white-space: pre-line; /* a blank line in a blurb is a paragraph break */
   font-size: 16px;
   line-height: 1.65;
   color: var(--color-text-muted);
@@ -4162,7 +4163,7 @@ a:hover { color: var(--color-accent); }
   line-height: 1.1;
 }
 .qv-who { margin: 0 0 14px; font-size: 15px; color: var(--color-text-muted); }
-.qv-blurb { font-size: 16px; line-height: 1.6; margin: 0 0 18px; }
+.qv-blurb { font-size: 16px; line-height: 1.6; margin: 0 0 18px; white-space: pre-line; }
 .qv-body .maker-request { display: inline-flex; margin-top: 4px; }
 .qv-close {
   position: absolute;
