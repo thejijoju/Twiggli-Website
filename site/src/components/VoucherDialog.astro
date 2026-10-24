@@ -114,6 +114,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
 </dialog>
 
 <script>
+  import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
   // The gift box's chips (VoucherBox.astro): picking 1 or 2 people sets
@@ -250,7 +251,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      if (data.get('_honey')) return;
+      if (looksLikeBot(data)) return;
       const g = general();
       const value = amount();
       if (g && value < Number(wish.min || 20)) { wish.focus(); wish.reportValidity(); return; }

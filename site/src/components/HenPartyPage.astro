@@ -162,6 +162,7 @@ const faqSchema = {
 </Base>
 
 <script>
+  import { looksLikeBot } from '../lib/honey.ts';
   document.querySelectorAll<HTMLElement>('[data-xmas-pick]').forEach((link) => {
     link.addEventListener('click', () => {
       const select = document.querySelector<HTMLSelectElement>('[data-xmas-select]');
@@ -182,7 +183,7 @@ const faqSchema = {
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      if (data.get('_honey')) return;
+      if (looksLikeBot(data)) return;
       const get = (k: string) => String(data.get(k) ?? '');
       let cameFrom = '';
       try { cameFrom = sessionStorage.getItem('twiggli-came-from') ?? ''; } catch {}

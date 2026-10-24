@@ -142,6 +142,7 @@ const formCopy = { sending: t.sending, send: t.send, error: t.error };
 </Base>
 
 <script>
+  import { looksLikeBot } from '../lib/honey.ts';
   // "Ask for this one" picks the workshop in the form on the way down.
   document.querySelectorAll<HTMLElement>('[data-xmas-pick]').forEach((link) => {
     link.addEventListener('click', () => {
@@ -163,7 +164,7 @@ const formCopy = { sending: t.sending, send: t.send, error: t.error };
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      if (data.get('_honey')) return;
+      if (looksLikeBot(data)) return;
       const get = (k: string) => String(data.get(k) ?? '');
       const fields: Record<string, string> = {
         Type: 'Christmas party request',

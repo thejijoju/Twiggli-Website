@@ -129,6 +129,7 @@ const e = bigEventsCopy[lang].dialog;
 </dialog>
 
 <script>
+  import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
   // How the visitor reached the site, taken on the first page of their
@@ -314,7 +315,7 @@ const e = bigEventsCopy[lang].dialog;
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      if (data.get('_honey')) return;
+      if (looksLikeBot(data)) return;
       const kind = picked.book || 'book';
       const label = kind === 'event' ? 'Multi-host event request' : kind === 'special' ? 'Special request' : kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : 'Booking request';
       const wish = String(data.get('when') ?? '');
