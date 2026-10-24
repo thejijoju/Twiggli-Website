@@ -2,6 +2,7 @@
 import SocialIcon from './SocialIcon.astro';
 import { getSiteData } from '../data/site.ts';
 import { voucherCopy } from '../data/vouchers.ts';
+import { authCopy } from '../data/auth.ts';
 import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 
 /** The dark social strip. Sits above the nav, at the very top of the page. */
@@ -25,5 +26,13 @@ const { socialLinks } = getSiteData(lang);
     ))}
     {/* Gift vouchers (VoucherPage.astro), on every page and every screen. */}
     <a class="social-bar-gift" href={href(lang, '/voucher/')}>{voucherCopy[lang].nav}</a>
+    {/* Sign in (SignInDialog.astro), Luma-style, at the strip's right edge.
+        On a phone it joins the row as a round person icon; the label stays
+        for screen readers through aria-label. data-signin-pill is where the
+        signed-in initial will go (lib/auth.ts getUser). */}
+    <button type="button" class="social-bar-signin" data-signin data-signin-pill aria-haspopup="dialog" aria-label={authCopy[lang].signInAria}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" /><path d="M5 20c.6-3.6 3.4-5.8 7-5.8s6.4 2.2 7 5.8" /></svg>
+      <span class="social-bar-signin-label" data-signin-label>{authCopy[lang].signIn}</span>
+    </button>
   </div>
 </div>

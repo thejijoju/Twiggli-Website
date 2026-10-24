@@ -1,0 +1,153 @@
+---
+/**
+ * The sign-in dialog, Luma-style: a centred card with a title, one email
+ * field and "Continue with email". Every [data-signin] button opens it (the
+ * pill in the dark strip, the entry in the phone's More sheet).
+ *
+ * Accounts are not live yet, so the submit goes through lib/auth.ts's
+ * startEmailSignIn(), which today posts "Login interest" to our inbox via
+ * FormSubmit and later becomes Supabase's signInWithOtp. The dialog only
+ * ever talks to lib/auth.ts.
+ *
+ * A native <dialog> opened with showModal(): the page behind is inert, Esc
+ * closes it, and focus goes back to the button that opened it. Tab is
+ * kept inside the card as well. Styles are the booking dialog's
+ * (.book-dialog in site.css), plus a few .signin-* rules.
+ */
+import { authCopy } from '../data/auth.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = authCopy[lang];
+const hostHref = `${href(lang, '/host/')}#apply`;
+---
+
+<dialog
+  class="book-dialog signin-dialog"
+  data-signin-dialog
+  data-lang={lang}
+  data-contact={contactEmail}
+  data-inbox={requestEmail}
+  data-copy={JSON.stringify({ submit: c.submit, sending: c.sending, error: c.error })}
+  aria-labelledby="signin-title"
+>
+  <button type="button" class="book-close" data-signin-close aria-label={c.close}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+  <div class="book-scroll">
+    <form class="book-form signin-form" data-signin-form novalidate>
+      <span class="signin-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6" /><path d="M5 20c.6-3.6 3.4-5.8 7-5.8s6.4 2.2 7 5.8" /></svg>
+      </span>
+      <h2 class="book-title signin-title" id="signin-title">{c.title}</h2>
+      <p class="book-lede signin-lede">{c.lede}</p>
+      <label class="book-field">
+        <span>{c.email}</span>
+        <input name="email" type="email" autocomplete="email" inputmode="email" placeholder={c.emailPh} required aria-describedby="signin-hint" />
+      </label>
+      <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <p class="book-error" data-signin-error role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary book-send" data-signin-send>{c.submit}</button>
+      <p class="signin-hint" id="signin-hint">{c.hint}</p>
+      <p class="signin-host">{c.hostQ} <a href={hostHref}>{c.hostLink} <span aria-hidden="true">→</span></a></p>
+    </form>
+    <div class="book-sent signin-sent" data-signin-sent hidden tabindex="-1">
+      <h2 class="book-title signin-title">{c.sentTitle}</h2>
+      <p class="book-lede">{c.sentBody}</p>
+      <button type="button" class="btn btn-primary" data-signin-close>{c.close}</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import { startEmailSignIn, getUser, initialOf } from '../lib/auth.ts';
+  import { track } from '../lib/track.ts';
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-signin-dialog]');
+  const form = dialog?.querySelector<HTMLFormElement>('[data-signin-form]');
+  if (dialog && form) {
+    const copy = JSON.parse(dialog.dataset.copy || '{}');
+    const lang = dialog.dataset.lang ?? '';
+    const email = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+    const send = form.querySelector<HTMLButtonElement>('[data-signin-send]')!;
+    const error = form.querySelector<HTMLElement>('[data-signin-error]')!;
+    const sent = dialog.querySelector<HTMLElement>('[data-signin-sent]')!;
+    let opener: HTMLElement | null = null;
+
+    const open = (from: HTMLElement) => {
+      opener = from;
+      form.hidden = false;
+      sent.hidden = true;
+      error.hidden = true;
+      send.disabled = false;
+      send.textContent = copy.submit;
+      // Hand over from any other panel (the More sheet, another dialog).
+      document.querySelectorAll<HTMLElement>('[popover]').forEach((p) => { try { p.hidePopover(); } catch { /* not open */ } });
+      document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => { if (d !== dialog) d.close(); });
+      dialog.showModal();
+      email.focus();
+      track('signin-open', { lang });
+    };
+
+    document.addEventListener('click', (event) => {
+      const el = (event.target as HTMLElement).closest<HTMLElement>('[data-signin]');
+      if (!el) return;
+      event.preventDefault();
+      open(el);
+    });
+    dialog.querySelectorAll('[data-signin-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => { opener?.focus(); opener = null; });
+
+    // Keep Tab inside the card (showModal makes the page inert, but Tab
+    // can still leave for the browser's own toolbar).
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab') return;
+      const items = Array.from(dialog.querySelectorAll<HTMLElement>('button, a[href], input:not([tabindex="-1"])'))
+        .filter((el) => !el.closest('[hidden]') && !(el as HTMLButtonElement).disabled);
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('_honey')) return;
+      const address = String(data.get('email') ?? '').trim();
+      send.disabled = true;
+      send.textContent = copy.sending;
+      error.hidden = true;
+      try {
+        await startEmailSignIn(address, { lang, page: location.href, inbox: dialog.dataset.inbox ?? '' });
+        track('signin-sent', { lang });
+        form.hidden = true;
+        sent.hidden = false;
+        sent.focus();
+        form.reset();
+      } catch {
+        error.textContent = String(copy.error).replace('{email}', dialog.dataset.contact ?? '');
+        error.hidden = false;
+        send.disabled = false;
+        send.textContent = copy.submit;
+      }
+    });
+
+    // Signed in (once accounts are live): the pill shows the visitor's
+    // initial, like Luma's avatar chip. getUser() is null until then.
+    getUser().then((user) => {
+      if (!user) return;
+      document.querySelectorAll<HTMLElement>('[data-signin-pill]').forEach((pill) => {
+        pill.classList.add('is-user');
+        pill.setAttribute('aria-label', user.name || user.email);
+        const label = pill.querySelector<HTMLElement>('[data-signin-label]');
+        if (label) label.textContent = initialOf(user);
+      });
+    });
+  }
+</script>
