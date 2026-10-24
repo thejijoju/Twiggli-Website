@@ -114,6 +114,8 @@ export type VoucherCopy = {
   sentTitle: string; sentBody: string; error: string; close: string;
   /** Stripe step: '{amount}' is the voucher's value. */
   payNow: string; payHint: string; paidTitle: string; paidBody: string;
+  /** The form's intro when Stripe is on (no 'nothing to pay yet'). */
+  payLede: string;
   /** '{host}' is the host's name. */
   validAt: string; validAny: string;
   // The voucher page.
@@ -147,6 +149,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'That didn’t go through. Please try again, or write to us at {email}.', close: 'Close',
     payNow: 'Pay now · {amount}', payHint: 'Pay securely with Stripe. Please enter {amount} on the payment page. Jirel then sends you the voucher as a PDF.',
     paidTitle: 'Payment received, thank you! 🎁', paidBody: 'Jirel sends you the voucher as a PDF within 24 hours.',
+    payLede: 'Tell us who it’s for, then pay securely with Stripe. You get the voucher as a PDF.',
     validAt: 'Valid for 3 years · for {host}', validAny: 'Valid for 3 years · at every host taking part',
     pageTitle: 'Gift vouchers for workshops in Berlin | Twiggli',
     pageDescription: 'Give time, not stuff: a Twiggli voucher for €25, €50, €75 or any amount from €20, valid for 3 years and redeemable at Berlin makers’ workshops.',
@@ -182,6 +185,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib uns an {email}.', close: 'Schließen',
     payNow: 'Jetzt bezahlen · {amount}', payHint: 'Sicher bezahlen mit Stripe. Bitte trag auf der Zahlungsseite {amount} ein. Danach schickt dir Jirel den Gutschein als PDF.',
     paidTitle: 'Zahlung erhalten, danke! 🎁', paidBody: 'Jirel schickt dir den Gutschein innerhalb von 24 Stunden als PDF.',
+    payLede: 'Sag uns, für wen er ist, dann zahlst du sicher mit Stripe. Den Gutschein bekommst du als PDF.',
     validAt: '3 Jahre gültig · für {host}', validAny: '3 Jahre gültig · bei allen teilnehmenden Maker*innen',
     pageTitle: 'Gutscheine für Workshops in Berlin | Twiggli',
     pageDescription: 'Verschenk Zeit statt Zeug: ein Twiggli-Gutschein über 25, 50, 75 € oder deinen Wunschbetrag ab 20 €, 3 Jahre gültig und einlösbar bei Berliner Maker*innen.',
@@ -217,6 +221,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'Cela n’a pas fonctionné. Réessayez ou écrivez-nous à {email}.', close: 'Fermer',
     payNow: 'Payer maintenant · {amount}', payHint: 'Paiement sécurisé avec Stripe. Indiquez {amount} sur la page de paiement. Jirel vous envoie ensuite le bon en PDF.',
     paidTitle: 'Paiement reçu, merci ! 🎁', paidBody: 'Jirel vous envoie le bon en PDF sous 24 heures.',
+    payLede: 'Dites-nous pour qui il est, puis payez en toute sécurité avec Stripe. Vous recevez le bon en PDF.',
     validAt: 'Valable 3 ans · chez {host}', validAny: 'Valable 3 ans · chez tous les hôtes participants',
     pageTitle: 'Bons cadeaux pour des ateliers à Berlin | Twiggli',
     pageDescription: 'Offrez du temps plutôt que des objets : un bon Twiggli de 25, 50, 75 € ou du montant de votre choix dès 20 €, valable 3 ans chez des créateurs berlinois.',
@@ -252,6 +257,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'No se ha podido enviar. Inténtalo de nuevo o escríbenos a {email}.', close: 'Cerrar',
     payNow: 'Pagar ahora · {amount}', payHint: 'Pago seguro con Stripe. Introduce {amount} en la página de pago. Después Jirel te envía el vale en PDF.',
     paidTitle: '¡Pago recibido, gracias! 🎁', paidBody: 'Jirel te envía el vale en PDF en menos de 24 horas.',
+    payLede: 'Dinos para quién es y paga de forma segura con Stripe. Recibes el vale en PDF.',
     validAt: 'Válido 3 años · para {host}', validAny: 'Válido 3 años · con todos los anfitriones participantes',
     pageTitle: 'Vales regalo para talleres en Berlín | Twiggli',
     pageDescription: 'Regala tiempo, no cosas: un vale Twiggli de 25, 50, 75 € o el importe que quieras desde 20 €, válido 3 años con creadores de Berlín.',
@@ -287,6 +293,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'Non è andata. Riprova o scrivici a {email}.', close: 'Chiudi',
     payNow: 'Paga ora · {amount}', payHint: 'Pagamento sicuro con Stripe. Inserisci {amount} nella pagina di pagamento. Poi Jirel ti manda il buono in PDF.',
     paidTitle: 'Pagamento ricevuto, grazie! 🎁', paidBody: 'Jirel ti manda il buono in PDF entro 24 ore.',
+    payLede: 'Dicci per chi è, poi paga in sicurezza con Stripe. Ricevi il buono in PDF.',
     validAt: 'Valido 3 anni · per {host}', validAny: 'Valido 3 anni · presso tutti gli host aderenti',
     pageTitle: 'Buoni regalo per workshop a Berlino | Twiggli',
     pageDescription: 'Regala tempo, non cose: un buono Twiggli da 25, 50, 75 € o dell’importo che vuoi da 20 €, valido 3 anni presso maker berlinesi.',
@@ -322,6 +329,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'Dat lukte niet. Probeer het opnieuw of mail ons op {email}.', close: 'Sluiten',
     payNow: 'Nu betalen · {amount}', payHint: 'Veilig betalen met Stripe. Vul op de betaalpagina {amount} in. Daarna stuurt Jirel je de cadeaubon als pdf.',
     paidTitle: 'Betaling ontvangen, dank je! 🎁', paidBody: 'Jirel stuurt je de cadeaubon binnen 24 uur als pdf.',
+    payLede: 'Vertel ons voor wie hij is en betaal veilig met Stripe. Je krijgt de cadeaubon als pdf.',
     validAt: '3 jaar geldig · voor {host}', validAny: '3 jaar geldig · bij alle deelnemende makers',
     pageTitle: 'Cadeaubonnen voor workshops in Berlijn | Twiggli',
     pageDescription: 'Geef tijd in plaats van spullen: een Twiggli-cadeaubon van €25, €50, €75 of een eigen bedrag vanaf €20, 3 jaar geldig bij Berlijnse makers.',
@@ -357,6 +365,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'Nie udało się. Spróbuj ponownie lub napisz do nas na {email}.', close: 'Zamknij',
     payNow: 'Zapłać teraz · {amount}', payHint: 'Bezpieczna płatność przez Stripe. Wpisz {amount} na stronie płatności. Potem Jirel wyśle ci bon w PDF.',
     paidTitle: 'Płatność otrzymana, dziękujemy! 🎁', paidBody: 'Jirel wyśle ci bon w PDF w ciągu 24 godzin.',
+    payLede: 'Powiedz nam, dla kogo jest bon, a potem zapłać bezpiecznie przez Stripe. Bon dostaniesz w PDF.',
     validAt: 'Ważny 3 lata · u {host}', validAny: 'Ważny 3 lata · u wszystkich uczestniczących twórców',
     pageTitle: 'Bony podarunkowe na warsztaty w Berlinie | Twiggli',
     pageDescription: 'Podaruj czas, nie rzeczy: bon Twiggli na 25, 50, 75 € lub dowolną kwotę od 20 €, ważny 3 lata u berlińskich twórców.',
@@ -392,6 +401,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     error: 'Gönderilemedi. Lütfen tekrar dene ya da bize {email} adresinden yaz.', close: 'Kapat',
     payNow: 'Şimdi öde · {amount}', payHint: 'Stripe ile güvenli ödeme. Ödeme sayfasında {amount} gir. Ardından Jirel hediye çekini PDF olarak gönderir.',
     paidTitle: 'Ödeme alındı, teşekkürler! 🎁', paidBody: 'Jirel hediye çekini 24 saat içinde PDF olarak gönderir.',
+    payLede: 'Kimin için olduğunu söyle, ardından Stripe ile güvenle öde. Hediye çekini PDF olarak alırsın.',
     validAt: '3 yıl geçerli · {host} için', validAny: '3 yıl geçerli · katılan tüm ev sahiplerinde',
     pageTitle: 'Berlin’de atölyeler için hediye çekleri | Twiggli',
     pageDescription: 'Eşya değil zaman hediye et: 25, 50, 75 € ya da 20 €’dan başlayan istediğin tutarda, Berlinli üreticilerde 3 yıl geçerli bir Twiggli hediye çeki.',
