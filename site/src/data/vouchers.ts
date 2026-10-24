@@ -93,6 +93,7 @@ export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed:
     fixed: {
       25: 'https://buy.stripe.com/test_6oU14pdB8ehAfZR6eZfUQ01',
       50: 'https://buy.stripe.com/test_3cI6oJfJg2yS8xp5aVfUQ02',
+      75: 'https://buy.stripe.com/test_aFa6oJcx44H07tl32NfUQ03',
     },
   },
   live: { custom: '', fixed: {} },
