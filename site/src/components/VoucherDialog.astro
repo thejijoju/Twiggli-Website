@@ -11,7 +11,7 @@
  * Every trigger is a real link to the voucher page, so without scripts it
  * still goes somewhere useful.
  */
-import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST } from '../data/vouchers.ts';
+import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST, stripeVoucherLink } from '../data/vouchers.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
 import '../styles/vouchers.css';
@@ -30,6 +30,8 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
   data-lang={lang}
   data-years={VOUCHER_YEARS}
   data-general-host={GENERAL_VOUCHER_HOST}
+  data-stripe-live={stripeVoucherLink.live}
+  data-stripe-test={stripeVoucherLink.test}
   data-copy={JSON.stringify(c)}
 >
   <button type="button" class="book-close" data-vc-close aria-label={c.close}>
@@ -102,9 +104,11 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
     <button type="submit" class="btn btn-primary book-send vc-send" data-vc-send>{c.send}</button>
   </form>
   <div class="book-sent" data-vc-sent hidden>
-    <h2 class="book-title">{c.sentTitle} <span aria-hidden="true">🎁</span></h2>
-    <p class="book-lede">{c.sentBody}</p>
-    <button type="button" class="btn btn-primary" data-vc-close>{c.close}</button>
+    <h2 class="book-title" data-vc-sent-title>{c.sentTitle} <span aria-hidden="true">🎁</span></h2>
+    <p class="book-lede" data-vc-sent-body>{c.sentBody}</p>
+    {/* Stripe step (data/vouchers.ts stripeVoucherLink): shown when a link is on. */}
+    <a class="btn btn-primary vc-pay" data-vc-pay href="#" hidden></a>
+    <button type="button" class="btn btn-primary" data-vc-close data-vc-done>{c.close}</button>
   </div>
   </div>
 </dialog>
@@ -148,6 +152,18 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
     const picks = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="pick"]'));
     const deliveries = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="delivery"]'));
     let picked: DOMStringMap = {};
+
+    // Stripe: the live link for everyone once it is set; until then the
+    // test link only for a visit that came in with ?stripetest=1.
+    const params = new URLSearchParams(location.search);
+    try { if (params.get('stripetest') === '1') sessionStorage.setItem('twiggli-stripe-test', '1'); } catch { /* blocked */ }
+    let testing = params.get('stripetest') === '1';
+    try { testing = testing || sessionStorage.getItem('twiggli-stripe-test') === '1'; } catch { /* blocked */ }
+    const stripeUrl = dialog.dataset.stripeLive || (testing ? dialog.dataset.stripeTest ?? '' : '');
+    const pay = $<HTMLAnchorElement>('[data-vc-pay]');
+    const sentTitle = $('[data-vc-sent-title]');
+    const sentBody = $('[data-vc-sent-body]');
+    const done = $<HTMLButtonElement>('[data-vc-done]');
 
     const general = () => picked.voucher === 'general';
     const price = () => Number(picked.voucherPrice) || 0;
@@ -218,6 +234,18 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       : null;
     if (linked) open(linked);
 
+    // Back from Stripe (its "after payment" redirect adds ?danke=1).
+    if (q.get('danke') === '1' && sent && sentTitle && sentBody) {
+      form.hidden = true;
+      sent.hidden = false;
+      sentTitle.textContent = copy.paidTitle;
+      sentBody.textContent = copy.paidBody;
+      if (pay) pay.hidden = true;
+      if (done) done.hidden = false;
+      dialog.showModal();
+      track('voucher-paid-return', {});
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
@@ -247,6 +275,9 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
         'Came from': cameFrom,
         Language: dialog.dataset.lang ?? '',
       };
+      // Matches this request to its Stripe payment (client_reference_id).
+      const ref = `vc-${Date.now().toString(36)}`;
+      if (stripeUrl) fields['Payment ref'] = ref;
       const subject = `Voucher request: ${host}${g ? '' : ` · ${picked.voucherTitle ?? ''} (${people.value})`} — ${fields.Amount}`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
@@ -263,6 +294,21 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
         track('voucher-sent', { host, amount: String(value), lang: dialog.dataset.lang ?? '' });
         form.hidden = true;
         if (sent) sent.hidden = false;
+        if (stripeUrl && pay && value) {
+          const url = new URL(stripeUrl);
+          if (fields.Email) url.searchParams.set('prefilled_email', fields.Email);
+          url.searchParams.set('client_reference_id', ref);
+          const euros = `€${value}`;
+          pay.href = url.toString();
+          pay.textContent = String(copy.payNow).replace('{amount}', euros);
+          pay.hidden = false;
+          if (sentBody) sentBody.textContent = String(copy.payHint).replace('{amount}', euros);
+          if (done) done.hidden = true;
+          track('voucher-pay-shown', { host, amount: String(value) });
+        } else {
+          if (pay) pay.hidden = true;
+          if (done) done.hidden = false;
+        }
         form.reset();
       } catch {
         if (error) {
