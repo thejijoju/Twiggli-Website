@@ -2,6 +2,7 @@
 /** One host's page: the search phrase in the title and heading, the reel,
  *  the blurb and the practical facts, then every upcoming date and time
  *  they have published, and the other hosts in the same activity. */
+import { priceSummary } from '../data/priceFilter.ts';
 import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
@@ -31,6 +32,8 @@ const host = getHosts(lang, { withPreview: true }).find((h) => h.slug === slug);
 if (!host) throw new Error(`No host with slug ${slug}`);
 
 const t = pageCopy[lang];
+/** "€0" reads as a number, not as free (DayPicker.astro, showPrice). */
+const showFree = (p: string) => (/^€\s*0([.,]0+)?$/.test(p.trim()) ? t.free : p);
 const x = hubExtraCopy[lang];
 const activity = activityCopy[lang][host.activity];
 // A preview host (hosts/preview.ts) is in no listing: the page is noindex,
@@ -225,7 +228,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
               <li>
                 <a href={workshopHref(lang, host, w.key)}>
                   {w.title}
-                  <span class="activity-links-count">{t.next}: {formatWhen(w.sessions[0], lang)} · {t.dates(w.sessions.length)}</span>
+                  <span class="activity-links-count">{t.next}: {formatWhen(w.sessions[0], lang)}{priceSummary(w.sessions.map((s) => s.price)) && <> · <strong class="activity-links-price">{showFree(priceSummary(w.sessions.map((s) => s.price))!)}</strong></>} · {t.dates(w.sessions.length)}</span>
                 </a>
               </li>
             ))}

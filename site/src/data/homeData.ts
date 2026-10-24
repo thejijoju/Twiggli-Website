@@ -12,6 +12,7 @@ import { homeDiscoverCopy } from './homeDiscover.ts';
 import { homeFindCopy } from './homeFind.ts';
 import { makerPictures } from './makerPictures.ts';
 import { href, withBase, LANG_META, type Lang } from '../lib/url.ts';
+import { bandsFor, priceFilterCopy } from './priceFilter.ts';
 
 export type HomeRow = {
   id: 'this-week' | 'weekend' | 'evenings';
@@ -94,6 +95,7 @@ export function getHomeData(lang: Lang) {
   const whatOptions = ACTIVITY_ORDER.filter((a) => presentActivities.has(a)).map((a) => ({ value: a, label: f.activities[a] }));
   const districtOf = (s: Session): string => s.district.replace(/\s+St\.\s.*$/, '');
   const whereOptions = [...new Set(calSessions.map(districtOf))].sort((a, b) => a.localeCompare(b, locale));
+  const priceOptions = bandsFor(calSessions.map((s) => s.price)).map((b) => ({ value: b.id, label: priceFilterCopy[lang].bands[b.id] }));
   const whenOptions = Array.from({ length: 14 }, (_, i) => ({
     value: dayOf(i).toISOString().slice(0, 10),
     label: i === 0 ? ui(lang).teaser.today : i === 1 ? ui(lang).teaser.tomorrow
@@ -148,7 +150,7 @@ export function getHomeData(lang: Lang) {
 
   return {
     hosts, all, rows, calendarHref, dayOf,
-    whatOptions, whenOptions, whereOptions, chips,
+    whatOptions, whenOptions, whereOptions, priceOptions, chips,
     counts, activityFace, makers, listed, cardMedia,
   };
 }

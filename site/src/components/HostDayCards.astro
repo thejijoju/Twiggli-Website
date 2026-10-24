@@ -4,6 +4,7 @@
  *  workshops of the day with each start time as a button that books it,
  *  and a link to the host for the rest. A host running twenty classes on a
  *  Saturday is one card rather than twenty rows of the same reel. */
+import { priceSummary } from '../data/priceFilter.ts';
 import type { Session } from '../data/sessions.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
 import { hostHref, pageCopy, workshopHref } from '../data/seo.ts';
@@ -73,7 +74,7 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
       {workshops.slice(0, SHOWN).map((list) => (
         <div class="hd-ws">
           <a class="hd-title" href={workshopHref(lang, host, list[0].workshopKey)}>{list[0].title}</a>
-          {showPrice(list[0].price) && <span class="hd-price">{showPrice(list[0].price)}</span>}
+          {showPrice(priceSummary(list.map((s) => s.price))) && <span class="hd-price">{showPrice(priceSummary(list.map((s) => s.price)))}</span>}
           <div class="hd-times">
             {list.slice(0, TIMES).map((s) => (
               <a class:list={['hd-time', { 'is-full': s.soldOut }]} href={s.bookUrl} {...bookAttrs(s)} title={s.soldOut ? t.soldOut : undefined}>{s.time ?? t.timeTba}</a>
