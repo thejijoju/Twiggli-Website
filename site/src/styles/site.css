@@ -1583,7 +1583,7 @@ a:hover { color: var(--color-accent); }
    without competing with the yellow voucher pill. */
 .social-bar-signin {
   position: absolute;
-  right: 16px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;
