@@ -191,7 +191,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       picked = { ...el.dataset };
       const g = general();
       if (heading) heading.firstChild!.textContent = `${g ? copy.generalTitle : copy.formTitle} `;
-      if (lede) lede.textContent = g ? copy.generalLede : copy.formLede;
+      if (lede) lede.textContent = stripeUrl ? copy.payLede : g ? copy.generalLede : copy.formLede;
       if (what) what.textContent = g ? copy.generalTitle : [picked.voucherTitle, picked.voucherHost].filter(Boolean).join(' · ');
       if (valid) valid.textContent = g ? copy.validAny : String(copy.validAt).replace('{host}', picked.voucherHost ?? '');
       if (peopleField) peopleField.hidden = g;
@@ -281,8 +281,11 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       if (stripeUrl) fields['Payment ref'] = ref;
       const subject = `Voucher request: ${host}${g ? '' : ` · ${picked.voucherTitle ?? ''} (${people.value})`} — ${fields.Amount}`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
-      try {
-        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+      const post = () => {
+        // FormSubmit can hang for a long time; give up after 12 s.
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 12000);
+        return fetch(`https://formsubmit.co/ajax/${inbox}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           // "email" (lower case) is the field FormSubmit replies to.
@@ -290,26 +293,44 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
             ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
             email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
           }),
-        });
-        if (!res.ok) throw new Error(String(res.status));
-        track('voucher-sent', { host, amount: String(value), lang: dialog.dataset.lang ?? '' });
+          signal: ctrl.signal,
+          keepalive: true,
+        }).then((res) => { if (!res.ok) throw new Error(String(res.status)); }).finally(() => clearTimeout(timer));
+      };
+      const showSent = () => {
         form.hidden = true;
         if (sent) sent.hidden = false;
-        if (stripeUrl && pay && value) {
-          const url = new URL(stripeUrl);
-          if (fields.Email) url.searchParams.set('prefilled_email', fields.Email);
-          url.searchParams.set('client_reference_id', ref);
-          const euros = `€${value}`;
-          pay.href = url.toString();
-          pay.textContent = String(copy.payNow).replace('{amount}', euros);
-          pay.hidden = false;
-          if (sentBody) sentBody.textContent = String(copy.payHint).replace('{amount}', euros);
-          if (done) done.hidden = true;
-          track('voucher-pay-shown', { host, amount: String(value) });
-        } else {
-          if (pay) pay.hidden = true;
-          if (done) done.hidden = false;
-        }
+        if (pay) pay.hidden = true;
+        if (done) done.hidden = false;
+      };
+
+      // With Stripe on, payment never waits for the inbox mail: the request
+      // goes out in the background (Stripe keeps the same reference, the
+      // buyer's email and the recipient field), and the pay step shows at once.
+      if (stripeUrl && pay && value) {
+        post().then(
+          () => track('voucher-sent', { host, amount: String(value), lang: dialog.dataset.lang ?? '' }),
+          () => track('voucher-mail-failed', { host, ref }),
+        );
+        showSent();
+        const url = new URL(stripeUrl);
+        if (fields.Email) url.searchParams.set('prefilled_email', fields.Email);
+        url.searchParams.set('client_reference_id', ref);
+        const euros = `€${value}`;
+        pay.href = url.toString();
+        pay.textContent = String(copy.payNow).replace('{amount}', euros);
+        pay.hidden = false;
+        if (sentBody) sentBody.textContent = String(copy.payHint).replace('{amount}', euros);
+        if (done) done.hidden = true;
+        track('voucher-pay-shown', { host, amount: String(value) });
+        form.reset();
+        return;
+      }
+
+      try {
+        await post();
+        track('voucher-sent', { host, amount: String(value), lang: dialog.dataset.lang ?? '' });
+        showSent();
         form.reset();
       } catch {
         if (error) {
