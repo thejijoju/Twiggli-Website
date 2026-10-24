@@ -1,0 +1,762 @@
+---
+/** Five filter designs for the calendar, for Jirel to compare:
+ *  src/pages/de/preview/kalender-filter-a…e.astro, German only, noindex,
+ *  out of the sitemap (astro.config.mjs). The live calendar (DayPicker) is
+ *  untouched; these draw their own list of the same dates (sessions.ts,
+ *  the next 30 days, two a day per host as on the calendar) and filter it
+ *  for real, client-side, by activity, date, district, price and kids.
+ *
+ *    A  Suchleiste   one pill, Was · Wann · Wo · Preis, each opening a
+ *                    popover (one sheet with all four on a phone)
+ *    B  Kategorien   a scroll of category icons, Airbnb style, and a
+ *                    Filter button with a count that opens a sheet
+ *    C  Seitenleiste a column of collapsible sections with checkboxes and a
+ *                    price slider; a bottom sheet on a phone
+ *    D  Datumsleiste the next 14 days as day pills and quick toggles under
+ *                    them (Heute, Wochenende, Abends, Unter 50 €, Kinder)
+ *    E  Dropdowns    one row of dropdown chips, the active ones in purple
+ *
+ *  Styled in kalender-filter.css; the controls all speak one small protocol
+ *  (data-set / data-when / data-flag / data-pmax, see the script) so the
+ *  five share one filter. */
+import Base from '../layouts/Base.astro';
+import HostMonogram from './HostMonogram.astro';
+import PageCircles from './PageCircles.astro';
+import { circlesFor } from '../data/pageCircles.ts';
+import { getSessions, capPerHostPerDay, berlinTodayMs, type Session } from '../data/sessions.ts';
+import { activitiesOf, filterCopy, type ActivityKey } from '../data/content.ts';
+import { hostHref } from '../data/seo.ts';
+import { bandsFor, priceRange, priceFilterCopy, PRICE_BANDS } from '../data/priceFilter.ts';
+import '../styles/home-discover.css';
+import '../styles/kalender.css';
+import '../styles/kalender-filter.css';
+
+type Variant = 'a' | 'b' | 'c' | 'd' | 'e';
+interface Props { variant: Variant }
+const { variant } = Astro.props;
+const lang = 'de' as const;
+const names: Record<Variant, string> = { a: 'Suchleiste', b: 'Kategorien', c: 'Seitenleiste', d: 'Datumsleiste', e: 'Dropdowns' };
+
+const HORIZON = 30;
+const STRIP = 14;
+const sessions = capPerHostPerDay(getSessions(lang)).filter((s) => s.dayOffset < HORIZON);
+
+const ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'];
+const present = new Set(sessions.flatMap((s) => activitiesOf(s.host)));
+const acts = ORDER.filter((a) => present.has(a));
+const actLabel = filterCopy[lang].activities;
+const actIcon: Record<ActivityKey, string> = {
+  ceramics: '🏺', art: '🎨', craft: '🛠️', food: '🍳', photography: '📷', wellbeing: '🌿', music: '🥁',
+};
+const actTint: Record<ActivityKey, string> = {
+  ceramics: '#ffe1d3', art: '#e6ddff', craft: '#ffe9a8', food: '#d9f3ea',
+  photography: '#dbe8ff', wellbeing: '#e4f3d6', music: '#ffd9ee',
+};
+const actCount = (a: ActivityKey) => sessions.filter((s) => activitiesOf(s.host).includes(a)).length;
+
+const districtOf = (s: Session) => s.district.replace(/\s+St\.\s.*$/, '');
+const distCount = new Map<string, number>();
+for (const s of sessions) distCount.set(districtOf(s), (distCount.get(districtOf(s)) ?? 0) + 1);
+const districts = [...distCount.keys()].sort((a, b) => a.localeCompare(b, 'de'));
+/** The busiest first, for the short lists that fold the rest away. */
+const topDistricts = [...distCount.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'de')).map(([d]) => d);
+
+const pc = priceFilterCopy[lang];
+const bands = bandsFor(sessions.map((s) => s.price));
+const hasKids = sessions.some((s) => s.kids);
+const maxPrice = Math.min(200, Math.ceil(Math.max(...sessions.map((s) => priceRange(s.price)?.[0] ?? 0)) / 10) * 10);
+
+/* — days — */
+const dayDate = (o: number) => new Date(berlinTodayMs() + o * 86400000);
+const fmt = (o: number, opts: Intl.DateTimeFormatOptions) => dayDate(o).toLocaleDateString('de-DE', { ...opts, timeZone: 'UTC' });
+const dow = (o: number) => dayDate(o).getUTCDay();
+const dayShort = (o: number) => (o === 0 ? 'Heute' : o === 1 ? 'Morgen' : fmt(o, { weekday: 'short', day: 'numeric', month: 'short' }));
+const dayLong = (o: number) => fmt(o, { weekday: 'long', day: 'numeric', month: 'long' });
+const strip = Array.from({ length: STRIP }, (_, o) => o);
+const range = (a: number, b: number) => Array.from({ length: b - a }, (_, i) => a + i);
+const sat = strip.find((o) => dow(o) === 6) ?? 0;
+const weekend = dow(0) === 0 ? [0] : [sat, sat + 1];
+const presets: Record<string, number[]> = {
+  today: [0], tomorrow: [1], weekend, week: range(0, 7), next: range(7, 14),
+};
+const presetLabel: Record<string, string> = {
+  today: 'Heute', tomorrow: 'Morgen', weekend: 'Wochenende', week: 'Nächste 7 Tage', next: 'Übernächste Woche',
+};
+
+/* — what the script needs to word the chips — */
+const labels = {
+  act: Object.fromEntries(acts.map((a) => [a, actLabel[a]])),
+  price: Object.fromEntries(bands.map((b) => [b.id, pc.bands[b.id]])),
+  day: Object.fromEntries(range(0, HORIZON).map((o) => [o, dayShort(o)])),
+  preset: presetLabel,
+};
+const presetsJson = JSON.stringify(presets);
+const bandsJson = JSON.stringify(PRICE_BANDS.map((b) => [b.id, b.min, Number.isFinite(b.max) ? b.max : null]));
+
+const byDay = range(0, HORIZON).map((o) => [o, sessions.filter((s) => s.dayOffset === o)] as const).filter(([, l]) => l.length);
+const hourOf = (s: Session) => (s.time ? parseInt(s.time, 10) : -1);
+/** Our own copy of a picture first (the workshop's, the host's photo, the
+ *  reel's still), then the host's hotlinked one. */
+const pic = (s: Session) => [s.image, s.host.photo, s.host.poster].find((u) => u?.startsWith('/')) ?? s.image;
+const showPrice = (p?: string) => (p && /^€\s*0([.,]0+)?$/.test(p.trim()) ? 'Kostenlos' : p);
+
+const caret = '<svg class="kf-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const sliders = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>';
+const searchIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>';
+const closeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+---
+
+<Base title={`Kalender-Filter ${variant.toUpperCase()} · ${names[variant]} | Twiggli`} description="Entwurf: Filter für den Kalender."
+  lang={lang} pageClass={`kal-page kf-page kf-page-${variant}`} noindex translations={['de']}>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&family=Caveat:wght@600;700&display=swap" />
+  </Fragment>
+  <div class="container">
+    <section class:list={['kal-head kf-head', (variant === 'a' || variant === 'e') && 'is-center']}>
+      <PageCircles pics={circlesFor.calendar(lang)} align={variant === 'a' || variant === 'e' ? 'center' : 'start'} />
+      <p class="kf-draft">Filter-Entwurf {variant.toUpperCase()} · {names[variant]}</p>
+      <h1 class="kal-h1">Was <em>in Berlin los ist</em></h1>
+    </section>
+
+    <div class:list={['kf', `kf-${variant}`]} data-kf data-presets={presetsJson} data-bands={bandsJson}
+      data-labels={JSON.stringify(labels)} data-maxprice={maxPrice}>
+
+      {/* ───────────── A · one pill, a popover per field ───────────── */}
+      {variant === 'a' && (
+        <div class="kf-a-wrap">
+          <div class="kf-a-bar" role="search" aria-label="Workshops filtern">
+            <div class="kf-a-seg" data-active-key="act">
+              <button type="button" class="kf-a-btn" data-pop-open="kf-a-what" aria-expanded="false">
+                <span class="kf-a-k">Was?</span>
+                <span class="kf-a-v" data-label="act" data-any="Alle Workshops">Alle Workshops</span>
+              </button>
+              <div class="kf-pop kf-a-pop kf-a-pop-what" id="kf-a-what" data-pop>
+                <div class="kf-sheethead"><b>Was möchtest du machen?</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+                <div class="kf-a-cats">
+                  {acts.map((a) => (
+                    <button type="button" class="kf-a-cat" data-set="act" data-val={a} style={`--tint:${actTint[a]}`}>
+                      <span class="kf-a-cat-ico" aria-hidden="true">{actIcon[a]}</span>
+                      <span><b>{actLabel[a]}</b><small>{actCount(a)} Termine</small></span>
+                    </button>
+                  ))}
+                </div>
+                {hasKids && (
+                  <label class="kf-switch"><input type="checkbox" data-flag="kids" /><span class="kf-switch-ui" aria-hidden="true"></span>Nur Workshops für Kinder</label>
+                )}
+              </div>
+            </div>
+            <div class="kf-a-seg" data-active-key="day">
+              <button type="button" class="kf-a-btn" data-pop-open="kf-a-when" aria-expanded="false">
+                <span class="kf-a-k">Wann?</span>
+                <span class="kf-a-v" data-label="day" data-any="Jederzeit">Jederzeit</span>
+              </button>
+              <div class="kf-pop kf-a-pop kf-a-pop-when" id="kf-a-when" data-pop>
+                <div class="kf-sheethead"><b>Wann hast du Zeit?</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+                <div class="kf-presets">
+                  {['today', 'tomorrow', 'weekend', 'week'].map((p) => (
+                    <button type="button" class="kf-chip" data-when={p}>{presetLabel[p]}</button>
+                  ))}
+                </div>
+                <div class="kf-minical">
+                  {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((d) => <span class="kf-minical-dow">{d}</span>)}
+                  {Array.from({ length: (dow(0) + 6) % 7 }, () => <span></span>)}
+                  {strip.map((o) => (
+                    <button type="button" class:list={['kf-minical-day', (dow(o) === 0 || dow(o) === 6) && 'is-we']} data-set="day" data-val={o}
+                      aria-label={dayLong(o)}>{dayDate(o).getUTCDate()}</button>
+                  ))}
+                </div>
+                <label class="kf-switch"><input type="checkbox" data-flag="evening" /><span class="kf-switch-ui" aria-hidden="true"></span>Nur abends (ab 17 Uhr)</label>
+              </div>
+            </div>
+            <div class="kf-a-seg" data-active-key="dist">
+              <button type="button" class="kf-a-btn" data-pop-open="kf-a-where" aria-expanded="false">
+                <span class="kf-a-k">Wo?</span>
+                <span class="kf-a-v" data-label="dist" data-any="Ganz Berlin">Ganz Berlin</span>
+              </button>
+              <div class="kf-pop kf-a-pop kf-a-pop-where" id="kf-a-where" data-pop>
+                <div class="kf-sheethead"><b>In welchem Bezirk?</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+                <p class="kf-poplabel">Beliebt</p>
+                <div class="kf-presets">
+                  {topDistricts.slice(0, 6).map((d) => <button type="button" class="kf-chip" data-set="dist" data-val={d}>{d}</button>)}
+                </div>
+                <p class="kf-poplabel">Alle Bezirke</p>
+                <div class="kf-checks kf-checks-2">
+                  {districts.map((d) => (
+                    <label class="kf-check"><input type="checkbox" data-set="dist" value={d} /><span>{d}</span><small>{distCount.get(d)}</small></label>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div class="kf-a-seg" data-active-key="price">
+              <button type="button" class="kf-a-btn" data-pop-open="kf-a-price" aria-expanded="false">
+                <span class="kf-a-k">Preis?</span>
+                <span class="kf-a-v" data-label="price" data-any="Jeder Preis">Jeder Preis</span>
+              </button>
+              <div class="kf-pop kf-a-pop kf-a-pop-price" id="kf-a-price" data-pop>
+                <div class="kf-sheethead"><b>Preis pro Person</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+                <div class="kf-bands">
+                  {bands.map((b) => <button type="button" class="kf-band" data-set="price" data-val={b.id}>{pc.bands[b.id]}</button>)}
+                </div>
+              </div>
+            </div>
+            <button type="button" class="kf-a-go" data-pop-close aria-label="Suchen"><Fragment set:html={searchIcon} /><span>Suchen</span></button>
+          </div>
+
+          {/* A phone gets the Airbnb collapse: one line that says what is on,
+              opening one sheet with all four questions. */}
+          <button type="button" class="kf-a-mini" data-pop-open="kf-a-all" aria-expanded="false">
+            <Fragment set:html={searchIcon} />
+            <span class="kf-a-mini-text">
+              <b data-label="act" data-any="Alle Workshops">Alle Workshops</b>
+              <small><span data-label="day" data-any="Jederzeit">Jederzeit</span> · <span data-label="dist" data-any="Ganz Berlin">Ganz Berlin</span> · <span data-label="price" data-any="Jeder Preis">Jeder Preis</span></small>
+            </span>
+            <span class="kf-badge" data-badge hidden></span>
+          </button>
+          <div class="kf-pop kf-sheet" id="kf-a-all" data-pop data-modal>
+            <div class="kf-sheethead"><b>Workshops finden</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+            <div class="kf-sheetbody">
+              <section class="kf-card-sec">
+                <h3>Was?</h3>
+                <div class="kf-presets">
+                  {acts.map((a) => <button type="button" class="kf-chip" data-set="act" data-val={a}><span aria-hidden="true">{actIcon[a]}</span>{actLabel[a]}</button>)}
+                  {hasKids && <button type="button" class="kf-chip" data-flag="kids">🧸 Für Kinder</button>}
+                </div>
+              </section>
+              <section class="kf-card-sec">
+                <h3>Wann?</h3>
+                <div class="kf-presets">
+                  {['today', 'tomorrow', 'weekend', 'week'].map((p) => <button type="button" class="kf-chip" data-when={p}>{presetLabel[p]}</button>)}
+                  <button type="button" class="kf-chip" data-flag="evening">🌙 Abends</button>
+                </div>
+              </section>
+              <section class="kf-card-sec">
+                <h3>Wo?</h3>
+                <div class="kf-presets">
+                  {topDistricts.slice(0, 8).map((d) => <button type="button" class="kf-chip" data-set="dist" data-val={d}>{d}</button>)}
+                </div>
+              </section>
+              <section class="kf-card-sec">
+                <h3>Preis?</h3>
+                <div class="kf-bands">
+                  {bands.map((b) => <button type="button" class="kf-band" data-set="price" data-val={b.id}>{pc.bands[b.id]}</button>)}
+                </div>
+              </section>
+            </div>
+            <div class="kf-sheetfoot">
+              <button type="button" class="kf-clear" data-reset>Alles löschen</button>
+              <button type="button" class="kf-show" data-pop-close data-kf-show></button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ───────────── B · category icons and a Filter sheet ───────────── */}
+      {variant === 'b' && (
+        <div class="kf-b-bar">
+          <div class="kf-b-cats" role="group" aria-label="Kategorie">
+            <button type="button" class="kf-b-cat" data-set="act" data-val="" data-single>
+              <span class="kf-b-ico" aria-hidden="true">✨</span><span>Alle</span>
+            </button>
+            {acts.map((a) => (
+              <button type="button" class="kf-b-cat" data-set="act" data-val={a} data-single>
+                <span class="kf-b-ico" aria-hidden="true">{actIcon[a]}</span><span>{actLabel[a]}</span>
+              </button>
+            ))}
+            {hasKids && (
+              <button type="button" class="kf-b-cat" data-flag="kids">
+                <span class="kf-b-ico" aria-hidden="true">🧸</span><span>Für Kinder</span>
+              </button>
+            )}
+            <button type="button" class="kf-b-cat" data-flag="evening">
+              <span class="kf-b-ico" aria-hidden="true">🌙</span><span>Abends</span>
+            </button>
+          </div>
+          <button type="button" class="kf-b-filter" data-pop-open="kf-b-sheet" aria-expanded="false">
+            <Fragment set:html={sliders} /><span>Filter</span><span class="kf-badge" data-badge data-badge-keys="day dist price" hidden></span>
+          </button>
+          <div class="kf-pop kf-sheet kf-modal" id="kf-b-sheet" data-pop data-modal>
+            <div class="kf-sheethead"><b>Filter</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+            <div class="kf-sheetbody">
+              <section class="kf-card-sec">
+                <h3>Datum</h3>
+                <div class="kf-presets">
+                  {['today', 'tomorrow', 'weekend', 'week', 'next'].map((p) => <button type="button" class="kf-chip" data-when={p}>{presetLabel[p]}</button>)}
+                </div>
+                <div class="kf-b-days">
+                  {strip.map((o) => (
+                    <button type="button" class:list={['kf-b-day', (dow(o) === 0 || dow(o) === 6) && 'is-we']} data-set="day" data-val={o}>
+                      <small>{o === 0 ? 'Heute' : fmt(o, { weekday: 'short' }).replace('.', '')}</small><b>{dayDate(o).getUTCDate()}</b>
+                    </button>
+                  ))}
+                </div>
+              </section>
+              <section class="kf-card-sec">
+                <h3>Bezirk</h3>
+                <div class="kf-presets">
+                  {topDistricts.map((d) => <button type="button" class="kf-chip" data-set="dist" data-val={d}>{d} <small>{distCount.get(d)}</small></button>)}
+                </div>
+              </section>
+              <section class="kf-card-sec">
+                <h3>Preis pro Person</h3>
+                <div class="kf-bands">
+                  {bands.map((b) => <button type="button" class="kf-band" data-set="price" data-val={b.id}>{pc.bands[b.id]}</button>)}
+                </div>
+              </section>
+            </div>
+            <div class="kf-sheetfoot">
+              <button type="button" class="kf-clear" data-reset>Alles löschen</button>
+              <button type="button" class="kf-show" data-pop-close data-kf-show></button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ───────────── D · the next 14 days and quick toggles ───────────── */}
+      {variant === 'd' && (
+        <div class="kf-d-top">
+          <div class="kf-d-strip" role="group" aria-label="Tag">
+            <button type="button" class="kf-d-day kf-d-all" data-set="day" data-val="" data-single><b>Alle</b><small>Tage</small></button>
+            {strip.map((o) => (
+              <button type="button" class:list={['kf-d-day', (dow(o) === 0 || dow(o) === 6) && 'is-we', o > 0 && dayDate(o).getUTCDate() === 1 && 'is-month']} data-set="day" data-val={o} data-single
+                aria-label={dayLong(o)}>
+                <small>{o === 0 ? 'Heute' : fmt(o, { weekday: 'short' }).replace('.', '')}</small>
+                <b>{dayDate(o).getUTCDate()}</b>
+                <small class="kf-d-mon">{fmt(o, { month: 'short' }).replace('.', '')}</small>
+              </button>
+            ))}
+          </div>
+          <div class="kf-d-toggles">
+            <button type="button" class="kf-tog" data-when="today">⚡ Heute</button>
+            <button type="button" class="kf-tog" data-when="weekend">🎉 Wochenende</button>
+            <button type="button" class="kf-tog" data-flag="evening">🌙 Abends</button>
+            <button type="button" class="kf-tog" data-pmax-toggle="50">💸 Unter 50 €</button>
+            {hasKids && <button type="button" class="kf-tog" data-flag="kids">🧸 Mit Kindern</button>}
+            <span class="kf-d-sep" aria-hidden="true"></span>
+            <button type="button" class="kf-tog kf-tog-more" data-pop-open="kf-d-sheet" aria-expanded="false">
+              <Fragment set:html={sliders} /><span>Mehr Filter</span><span class="kf-badge" data-badge data-badge-keys="act dist" hidden></span>
+            </button>
+          </div>
+          <div class="kf-pop kf-sheet kf-modal" id="kf-d-sheet" data-pop data-modal>
+            <div class="kf-sheethead"><b>Mehr Filter</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+            <div class="kf-sheetbody">
+              <section class="kf-card-sec">
+                <h3>Kategorie</h3>
+                <div class="kf-presets">
+                  {acts.map((a) => <button type="button" class="kf-chip" data-set="act" data-val={a} style={`--tint:${actTint[a]}`}><span aria-hidden="true">{actIcon[a]}</span>{actLabel[a]}</button>)}
+                </div>
+              </section>
+              <section class="kf-card-sec">
+                <h3>Bezirk</h3>
+                <div class="kf-presets">
+                  {topDistricts.map((d) => <button type="button" class="kf-chip" data-set="dist" data-val={d}>{d}</button>)}
+                </div>
+              </section>
+            </div>
+            <div class="kf-sheetfoot">
+              <button type="button" class="kf-clear" data-reset>Alles löschen</button>
+              <button type="button" class="kf-show" data-pop-close data-kf-show></button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ───────────── E · dropdown chips ───────────── */}
+      {variant === 'e' && (
+        <div class="kf-e-row" role="group" aria-label="Filter">
+          <div class="kf-e-wrap" data-active-key="act">
+            <button type="button" class="kf-e-chip" data-pop-open="kf-e-act" aria-expanded="false">
+              <span data-label="act" data-any="Kategorie">Kategorie</span><Fragment set:html={caret} />
+            </button>
+            <div class="kf-pop kf-e-pop" id="kf-e-act" data-pop>
+              <div class="kf-sheethead"><b>Kategorie</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+              <div class="kf-checks">
+                {acts.map((a) => <label class="kf-check"><input type="checkbox" data-set="act" value={a} /><span><span aria-hidden="true">{actIcon[a]}</span> {actLabel[a]}</span><small>{actCount(a)}</small></label>)}
+              </div>
+              <div class="kf-e-foot"><button type="button" class="kf-clear" data-reset-key="act">Zurücksetzen</button><button type="button" class="kf-show kf-show-sm" data-pop-close data-kf-show></button></div>
+            </div>
+          </div>
+          <div class="kf-e-wrap" data-active-key="day">
+            <button type="button" class="kf-e-chip" data-pop-open="kf-e-day" aria-expanded="false">
+              <span data-label="day" data-any="Datum">Datum</span><Fragment set:html={caret} />
+            </button>
+            <div class="kf-pop kf-e-pop" id="kf-e-day" data-pop>
+              <div class="kf-sheethead"><b>Datum</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+              <div class="kf-radios">
+                <label class="kf-check"><input type="radio" name="kf-e-when" data-when="all" /><span>Jederzeit</span></label>
+                {['today', 'tomorrow', 'weekend', 'week', 'next'].map((p) => (
+                  <label class="kf-check"><input type="radio" name="kf-e-when" data-when={p} /><span>{presetLabel[p]}</span></label>
+                ))}
+              </div>
+              <div class="kf-e-foot"><button type="button" class="kf-clear" data-reset-key="day">Zurücksetzen</button><button type="button" class="kf-show kf-show-sm" data-pop-close data-kf-show></button></div>
+            </div>
+          </div>
+          <div class="kf-e-wrap" data-active-key="dist">
+            <button type="button" class="kf-e-chip" data-pop-open="kf-e-dist" aria-expanded="false">
+              <span data-label="dist" data-any="Bezirk">Bezirk</span><Fragment set:html={caret} />
+            </button>
+            <div class="kf-pop kf-e-pop kf-e-pop-wide" id="kf-e-dist" data-pop>
+              <div class="kf-sheethead"><b>Bezirk</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+              <div class="kf-checks kf-checks-2">
+                {districts.map((d) => <label class="kf-check"><input type="checkbox" data-set="dist" value={d} /><span>{d}</span><small>{distCount.get(d)}</small></label>)}
+              </div>
+              <div class="kf-e-foot"><button type="button" class="kf-clear" data-reset-key="dist">Zurücksetzen</button><button type="button" class="kf-show kf-show-sm" data-pop-close data-kf-show></button></div>
+            </div>
+          </div>
+          <div class="kf-e-wrap" data-active-key="price">
+            <button type="button" class="kf-e-chip" data-pop-open="kf-e-price" aria-expanded="false">
+              <span data-label="price" data-any="Preis">Preis</span><Fragment set:html={caret} />
+            </button>
+            <div class="kf-pop kf-e-pop" id="kf-e-price" data-pop>
+              <div class="kf-sheethead"><b>Preis pro Person</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+              <div class="kf-checks">
+                {bands.map((b) => <label class="kf-check"><input type="checkbox" data-set="price" value={b.id} /><span>{pc.bands[b.id]}</span></label>)}
+              </div>
+              <div class="kf-e-foot"><button type="button" class="kf-clear" data-reset-key="price">Zurücksetzen</button><button type="button" class="kf-show kf-show-sm" data-pop-close data-kf-show></button></div>
+            </div>
+          </div>
+          {hasKids && <button type="button" class="kf-e-chip kf-e-toggle" data-flag="kids">Kinder</button>}
+          <button type="button" class="kf-e-reset" data-reset hidden data-when-active>Alle löschen</button>
+        </div>
+      )}
+
+      <div class="kf-body">
+        {/* ───────────── C · the column ───────────── */}
+        {variant === 'c' && (
+          <>
+            <button type="button" class="kf-c-open" data-pop-open="kf-c-side" aria-expanded="false">
+              <Fragment set:html={sliders} /><span>Filter</span><span class="kf-badge" data-badge hidden></span>
+            </button>
+            <aside class="kf-pop kf-c-side" id="kf-c-side" data-pop data-modal aria-label="Filter">
+              <div class="kf-sheethead"><b>Filter</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
+              <div class="kf-c-scroll">
+                <div class="kf-c-top"><b>Filter</b><button type="button" class="kf-clear" data-reset>Alle löschen</button></div>
+                <details class="kf-c-sec" open>
+                  <summary>Kategorie<Fragment set:html={caret} /></summary>
+                  <div class="kf-checks">
+                    {acts.map((a) => <label class="kf-check"><input type="checkbox" data-set="act" value={a} /><span><span aria-hidden="true">{actIcon[a]}</span> {actLabel[a]}</span><small>{actCount(a)}</small></label>)}
+                  </div>
+                </details>
+                <details class="kf-c-sec" open>
+                  <summary>Datum<Fragment set:html={caret} /></summary>
+                  <div class="kf-radios">
+                    <label class="kf-check"><input type="radio" name="kf-c-when" data-when="all" /><span>Jederzeit</span></label>
+                    {['today', 'tomorrow', 'weekend', 'week', 'next'].map((p) => (
+                      <label class="kf-check"><input type="radio" name="kf-c-when" data-when={p} /><span>{presetLabel[p]}</span></label>
+                    ))}
+                  </div>
+                  <label class="kf-check kf-check-sep"><input type="checkbox" data-flag="evening" /><span>Nur abends (ab 17 Uhr)</span></label>
+                </details>
+                <details class="kf-c-sec" open>
+                  <summary>Preis pro Person<Fragment set:html={caret} /></summary>
+                  <div class="kf-range">
+                    <div class="kf-range-head"><span>bis</span><output data-pmax-out data-any="beliebig">beliebig</output></div>
+                    <input type="range" min="20" max={maxPrice} step="5" value={maxPrice} data-pmax aria-label="Höchstpreis pro Person" />
+                    <div class="kf-range-scale"><span>20 €</span><span>{maxPrice} €+</span></div>
+                  </div>
+                </details>
+                <details class="kf-c-sec" open>
+                  <summary>Bezirk<Fragment set:html={caret} /></summary>
+                  <div class="kf-checks kf-c-dists">
+                    {topDistricts.map((d, i) => (
+                      <label class:list={['kf-check', i >= 7 && 'kf-c-more']}><input type="checkbox" data-set="dist" value={d} /><span>{d}</span><small>{distCount.get(d)}</small></label>
+                    ))}
+                  </div>
+                  {topDistricts.length > 7 && (
+                    <button type="button" class="kf-c-morebtn" data-more>Alle {topDistricts.length} Bezirke zeigen</button>
+                  )}
+                </details>
+                {hasKids && (
+                  <div class="kf-c-sec kf-c-flat">
+                    <label class="kf-switch"><input type="checkbox" data-flag="kids" /><span class="kf-switch-ui" aria-hidden="true"></span>Für Kinder</label>
+                  </div>
+                )}
+              </div>
+              <div class="kf-sheetfoot">
+                <button type="button" class="kf-clear" data-reset>Alles löschen</button>
+                <button type="button" class="kf-show" data-pop-close data-kf-show></button>
+              </div>
+            </aside>
+          </>
+        )}
+
+        <div class="kf-results">
+          <div class="kf-status">
+            <p class="kf-count" data-kf-count></p>
+            <div class="kf-active" data-kf-active></div>
+          </div>
+          {byDay.map(([o, list]) => (
+            <section class="kf-day" data-kf-day={o}>
+              <h2 class="kf-dayhead">{o < 2 ? dayShort(o) : fmt(o, { weekday: 'long' })} <small>{o < 2 ? dayLong(o) : fmt(o, { day: 'numeric', month: 'long' })}</small></h2>
+              <ul class="kf-grid">
+                {list.map((s) => {
+                  const r = priceRange(s.price);
+                  return (
+                    <li class="kf-card" data-day={o} data-hour={hourOf(s)} data-act={activitiesOf(s.host).join(' ')}
+                      data-dist={districtOf(s)} data-kids={s.kids ? '1' : undefined}
+                      data-pmin={r?.[0]} data-pmax={r?.[1]}>
+                      <a class="kf-frame" href={s.bookUrl} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+                        {pic(s) ? <img src={pic(s)} alt="" loading="lazy" decoding="async" /> : <HostMonogram name={s.host.name} />}
+                        {s.kids && <span class="kf-tag">Für Kinder</span>}
+                        {s.soldOut && <span class="kf-tag kf-tag-full">{s.waitingList ? 'Warteliste' : 'Ausgebucht'}</span>}
+                      </a>
+                      <span class="kf-when"><span class="kf-time">{s.time ?? 'Uhrzeit folgt'}</span><span class="kf-dur">{s.duration ?? s.host.duration}</span></span>
+                      <a class="kf-title" href={s.bookUrl} target="_blank" rel="noopener">{s.title}</a>
+                      <span class="kf-host"><a href={hostHref(lang, s.host)}>{s.host.firstName ?? s.host.name}</a> · {districtOf(s)}</span>
+                      {s.price && <span class="kf-price">{showPrice(s.price)} <small>p. P.</small></span>}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))}
+          <div class="kf-empty" data-kf-empty hidden>
+            <p><b>Dazu läuft gerade nichts.</b> Probier einen anderen Tag, Bezirk oder Preis.</p>
+            <button type="button" class="kf-show" data-reset>Filter zurücksetzen</button>
+          </div>
+          <button type="button" class="kf-more" data-kf-more hidden>Mehr Termine zeigen</button>
+        </div>
+      </div>
+      <div class="kf-scrim" data-kf-scrim></div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  /* One filter for all five drafts. State: act / day / dist / price are
+     sets, kids / evening flags, pmax a top price. Controls:
+       [data-set=key][data-val=v]       toggles v (data-single: only v; "" clears)
+       input[data-set=key][value=v]     checkbox for the same
+       [data-when=preset]               a date preset (data-presets), "all" clears
+       [data-flag=kids|evening]         a toggle (button or checkbox)
+       [data-pmax-toggle=50]            top price on/off
+       input[type=range][data-pmax]     top price slider
+       [data-reset] / [data-reset-key]  clear all / one
+       [data-pop-open=id] / [data-pop-close]  popovers and sheets */
+  const root = document.querySelector<HTMLElement>('[data-kf]');
+  if (root) {
+    type Key = 'act' | 'day' | 'dist' | 'price';
+    const presets: Record<string, number[]> = JSON.parse(root.dataset.presets || '{}');
+    const bands: [string, number, number | null][] = JSON.parse(root.dataset.bands || '[]');
+    const labels = JSON.parse(root.dataset.labels || '{}');
+    const maxPrice = Number(root.dataset.maxprice || 200);
+    const PAGE = 24;
+    const st = {
+      act: new Set<string>(), day: new Set<string>(), dist: new Set<string>(), price: new Set<string>(),
+      kids: false, evening: false, pmax: null as number | null,
+    };
+    let shown = PAGE;
+    const cards = [...root.querySelectorAll<HTMLElement>('.kf-card')];
+    const days = [...root.querySelectorAll<HTMLElement>('[data-kf-day]')];
+    const $$ = <T extends Element = HTMLElement>(sel: string) => [...root.querySelectorAll<T>(sel)];
+
+    const samePreset = (name: string) => {
+      const p = presets[name];
+      if (name === 'all') return st.day.size === 0;
+      return !!p && p.length === st.day.size && p.every((d) => st.day.has(String(d)));
+    };
+    const presetName = () => Object.keys(presets).find(samePreset);
+
+    const matches = (c: HTMLElement) => {
+      const d = c.dataset;
+      if (st.act.size && !(d.act || '').split(' ').some((a) => st.act.has(a))) return false;
+      if (st.day.size && !st.day.has(d.day || '')) return false;
+      if (st.dist.size && !st.dist.has(d.dist || '')) return false;
+      if (st.kids && !d.kids) return false;
+      if (st.evening && Number(d.hour) < 17) return false;
+      const lo = d.pmin === undefined ? NaN : Number(d.pmin);
+      const hi = d.pmax === undefined ? NaN : Number(d.pmax);
+      if (st.price.size) {
+        if (Number.isNaN(lo)) return false;
+        const hit = bands.some(([id, min, max]) => st.price.has(id) && lo <= (max ?? Infinity) && hi > min);
+        if (!hit) return false;
+      }
+      if (st.pmax !== null && (Number.isNaN(lo) || lo > st.pmax)) return false;
+      return true;
+    };
+
+    const summary = (key: Key): string => {
+      const set = st[key];
+      if (key === 'price' && !set.size && st.pmax !== null) return `bis ${st.pmax} €`;
+      if (!set.size) return '';
+      if (key === 'day') {
+        const p = presetName();
+        if (p) return labels.preset[p];
+      }
+      const vals = [...set];
+      const name = (v: string) => (key === 'act' ? labels.act[v] : key === 'price' ? labels.price[v] : key === 'day' ? labels.day[v] : v);
+      return vals.length === 1 ? name(vals[0]) : `${name(vals[0])} +${vals.length - 1}`;
+    };
+    const activeCount = (keys: string[]) => keys.reduce((n, k) => {
+      if (k === 'price') return n + (st.price.size || st.pmax !== null ? 1 : 0);
+      if (k === 'kids' || k === 'evening') return n + (st[k] ? 1 : 0);
+      return n + (st[k as Key].size ? 1 : 0);
+    }, 0);
+    const ALL = ['act', 'day', 'dist', 'price', 'kids', 'evening'];
+
+    const render = () => {
+      // The list.
+      let total = 0;
+      let visible = 0;
+      const perDay = new Map<string, number>();
+      for (const c of cards) {
+        const ok = matches(c);
+        if (ok) total++;
+        const show = ok && visible < shown;
+        if (show) { visible++; perDay.set(c.dataset.day!, (perDay.get(c.dataset.day!) || 0) + 1); }
+        c.hidden = !show;
+      }
+      for (const d of days) d.hidden = !perDay.get(d.dataset.kfDay!);
+      const word = (n: number) => `${n} ${n === 1 ? 'Termin' : 'Termine'}`;
+      $$('[data-kf-count]').forEach((el) => { el.textContent = word(total); });
+      $$('[data-kf-show]').forEach((el) => { el.textContent = total ? `${word(total)} anzeigen` : 'Keine Termine'; });
+      $$('[data-kf-empty]').forEach((el) => { el.hidden = total > 0; });
+      $$('[data-kf-more]').forEach((el) => { el.hidden = total <= shown; });
+
+      // Every control.
+      $$('[data-set][data-val]').forEach((b) => {
+        const key = b.dataset.set as Key; const v = b.dataset.val!;
+        const on = v === '' ? st[key].size === 0 : st[key].has(v);
+        b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on));
+      });
+      $$<HTMLInputElement>('input[data-set]').forEach((i) => { i.checked = st[i.dataset.set as Key].has(i.value); });
+      $$('[data-when]').forEach((b) => {
+        const on = samePreset(b.dataset.when!);
+        if (b instanceof HTMLInputElement) b.checked = on;
+        else { b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); }
+      });
+      $$('[data-flag]').forEach((b) => {
+        const on = st[b.dataset.flag as 'kids' | 'evening'];
+        if (b instanceof HTMLInputElement) b.checked = on;
+        else { b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); }
+      });
+      $$('[data-pmax-toggle]').forEach((b) => {
+        const on = st.pmax === Number(b.dataset.pmaxToggle);
+        b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on));
+      });
+      $$<HTMLInputElement>('input[data-pmax]').forEach((i) => {
+        i.value = String(st.pmax ?? maxPrice);
+        i.style.setProperty('--fill', `${((Number(i.value) - Number(i.min)) / (Number(i.max) - Number(i.min))) * 100}%`);
+      });
+      $$('[data-pmax-out]').forEach((o) => { o.textContent = st.pmax === null ? o.dataset.any! : `${st.pmax} €`; });
+      $$('[data-label]').forEach((el) => { el.textContent = summary(el.dataset.label as Key) || el.dataset.any || ''; });
+      $$('[data-active-key]').forEach((el) => {
+        const k = el.dataset.activeKey!;
+        el.classList.toggle('is-active', activeCount([k]) > 0);
+      });
+      $$('[data-badge]').forEach((el) => {
+        const n = activeCount((el.dataset.badgeKeys || ALL.join(' ')).split(' '));
+        el.textContent = String(n); el.hidden = n === 0;
+      });
+      $$('[data-when-active]').forEach((el) => { el.hidden = activeCount(ALL) === 0; });
+
+      // What is on, as removable chips over the list.
+      const chips: string[] = [];
+      const chip = (label: string, attr: string) => chips.push(`<button type="button" class="kf-onchip" ${attr}>${label}<span aria-hidden="true">×</span></button>`);
+      st.act.forEach((v) => chip(labels.act[v], `data-drop="act" data-v="${v}"`));
+      if (st.day.size) chip(summary('day'), 'data-drop="day"');
+      st.dist.forEach((v) => chip(v, `data-drop="dist" data-v="${v}"`));
+      st.price.forEach((v) => chip(labels.price[v], `data-drop="price" data-v="${v}"`));
+      if (st.pmax !== null) chip(`bis ${st.pmax} €`, 'data-drop="pmax"');
+      if (st.evening) chip('Abends', 'data-drop="evening"');
+      if (st.kids) chip('Für Kinder', 'data-drop="kids"');
+      $$('[data-kf-active]').forEach((el) => { el.innerHTML = chips.join(''); });
+    };
+
+    const reset = (key?: string) => {
+      if (!key || key === 'act') st.act.clear();
+      if (!key || key === 'day') st.day.clear();
+      if (!key || key === 'dist') st.dist.clear();
+      if (!key || key === 'price') { st.price.clear(); st.pmax = null; }
+      if (!key) { st.kids = false; st.evening = false; }
+    };
+
+    /* — popovers and sheets — */
+    let open: HTMLElement | null = null;
+    const close = () => {
+      if (!open) return;
+      open.classList.remove('is-open');
+      $$(`[data-pop-open="${open.id}"]`).forEach((b) => b.setAttribute('aria-expanded', 'false'));
+      open = null;
+      root.classList.remove('has-pop', 'has-modal');
+    };
+    const show = (id: string) => {
+      const pop = root.querySelector<HTMLElement>(`#${id}`);
+      if (!pop) return;
+      const again = open === pop;
+      close();
+      if (again) return;
+      open = pop;
+      pop.classList.add('is-open');
+      $$(`[data-pop-open="${id}"]`).forEach((b) => b.setAttribute('aria-expanded', 'true'));
+      root.classList.add('has-pop');
+      if (pop.hasAttribute('data-modal')) root.classList.add('has-modal');
+    };
+
+    root.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      const el = t.closest<HTMLElement>('[data-pop-open],[data-pop-close],[data-set][data-val],[data-when],[data-flag],[data-pmax-toggle],[data-reset],[data-reset-key],[data-drop],[data-kf-more],[data-more],[data-kf-scrim]');
+      if (!el) {
+        if (open && !t.closest('[data-pop]') && !matchMedia('(max-width: 720px)').matches) close();
+        return;
+      }
+      if (el instanceof HTMLInputElement && (el.dataset.when || el.dataset.flag)) return; // handled on change
+      const d = el.dataset;
+      let changed = true;
+      if (d.popOpen !== undefined) { show(d.popOpen); changed = false; }
+      else if (d.kfScrim !== undefined) { close(); changed = false; }
+      else if (d.kfMore !== undefined) { shown += PAGE; }
+      else if (d.more !== undefined) { el.closest('details')?.classList.add('show-all'); el.remove(); changed = false; }
+      else if (d.set && d.val !== undefined) {
+        const set = st[d.set as Key];
+        if (d.val === '') set.clear();
+        else if (d.single !== undefined) { const had = set.has(d.val) && set.size === 1; set.clear(); if (!had) set.add(d.val); }
+        else if (set.has(d.val)) set.delete(d.val); else set.add(d.val);
+      } else if (d.when) {
+        const p = d.when;
+        const already = samePreset(p);
+        st.day.clear();
+        if (p !== 'all' && !already) presets[p].forEach((x) => st.day.add(String(x)));
+      } else if (d.flag) { const f = d.flag as 'kids' | 'evening'; st[f] = !st[f]; }
+      else if (d.pmaxToggle) { const v = Number(d.pmaxToggle); st.pmax = st.pmax === v ? null : v; st.price.clear(); }
+      else if (d.drop) {
+        if (d.drop === 'pmax') st.pmax = null;
+        else if (d.drop === 'kids' || d.drop === 'evening') st[d.drop] = false;
+        else if (d.drop === 'day') st.day.clear();
+        else st[d.drop as Key].delete(d.v!);
+      } else if (d.resetKey) reset(d.resetKey);
+      else if (d.reset !== undefined) reset();
+      if (d.popClose !== undefined) close();
+      if (changed) { if (d.kfMore === undefined) shown = PAGE; render(); }
+    });
+    root.addEventListener('change', (e) => {
+      const i = e.target as HTMLInputElement;
+      const d = i.dataset;
+      if (d.set) { const set = st[d.set as Key]; if (i.checked) set.add(i.value); else set.delete(i.value); }
+      else if (d.when) { st.day.clear(); if (d.when !== 'all') presets[d.when].forEach((x) => st.day.add(String(x))); }
+      else if (d.flag) st[d.flag as 'kids' | 'evening'] = i.checked;
+      else return;
+      shown = PAGE; render();
+    });
+    root.addEventListener('input', (e) => {
+      const i = e.target as HTMLInputElement;
+      if (i.dataset.pmax === undefined) return;
+      const v = Number(i.value);
+      st.pmax = v >= maxPrice ? null : v;
+      st.price.clear();
+      shown = PAGE; render();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    document.addEventListener('click', (e) => { if (open && !root.contains(e.target as Node)) close(); });
+
+    // Preview links: ?open=<pop id> opens one (for the screenshots), and
+    // ?act=ceramics&dist=Neukölln… start filtered.
+    const q = new URLSearchParams(location.search);
+    (['act', 'day', 'dist', 'price'] as Key[]).forEach((k) => q.get(k)?.split(',').forEach((v) => v && st[k].add(v)));
+    if (q.get('when') && presets[q.get('when')!]) presets[q.get('when')!].forEach((x) => st.day.add(String(x)));
+    if (q.has('kids')) st.kids = true;
+    if (q.has('evening')) st.evening = true;
+    if (q.get('pmax')) st.pmax = Number(q.get('pmax'));
+    render();
+    if (q.get('open')) show(q.get('open')!);
+  }
+</script>
