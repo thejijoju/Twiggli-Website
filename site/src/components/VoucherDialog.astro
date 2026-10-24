@@ -1,0 +1,278 @@
+---
+/**
+ * The voucher request form (data/vouchers.ts). Every voucher button, badge
+ * link and gift box on the site opens it: a host's voucher (data-voucher=
+ * "host", with -host, -title, -price per person and -people) or a general
+ * Twiggli voucher (data-voucher="general", with -amount). There is no
+ * payment system yet, so — like the booking form (BookingDialog.astro) — it
+ * lands in our inbox through FormSubmit, as "Voucher request", and Jirel
+ * sends the payment link and the PDF by hand.
+ *
+ * Every trigger is a real link to the voucher page, so without scripts it
+ * still goes somewhere useful.
+ */
+import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST } from '../data/vouchers.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
+import type { Lang } from '../lib/url.ts';
+import '../styles/vouchers.css';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = voucherCopy[lang];
+const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
+---
+
+<dialog
+  class="book-dialog vc-dialog"
+  data-voucher-dialog
+  data-inbox={requestEmail}
+  data-contact={contactEmail}
+  data-lang={lang}
+  data-years={VOUCHER_YEARS}
+  data-general-host={GENERAL_VOUCHER_HOST}
+  data-copy={JSON.stringify(c)}
+>
+  <button type="button" class="book-close" data-vc-close aria-label={c.close}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+  <div class="book-scroll">
+  <form class="book-form" data-vc-form novalidate>
+    <h2 class="book-title" data-vc-heading>{c.formTitle} <span aria-hidden="true">🎁</span></h2>
+    <div class="book-summary vc-summary">
+      <p class="book-workshop" data-vc-what></p>
+      <p class="book-when" data-vc-valid></p>
+    </div>
+    <p class="book-lede" data-vc-lede>{c.formLede}</p>
+    <div class="book-fields">
+      {/* A host's voucher: how many places; the amount follows. */}
+      <label class="book-field" data-vc-people-field>
+        <span>{c.people}</span>
+        <select name="people" class="vc-select">
+          {people.map((n) => <option value={n}>{n === 1 ? c.onePerson : c.nPeople.replace('{n}', String(n))}</option>)}
+        </select>
+      </label>
+      <div class="book-field vc-amount-field" data-vc-total-field>
+        <span>{c.amount}</span>
+        <output class="vc-total" data-vc-total aria-live="polite"></output>
+      </div>
+      {/* A general voucher: one of the fixed amounts, or one of their own. */}
+      <fieldset class="book-field book-field-wide book-often" data-vc-amounts hidden>
+        <legend>{c.pick}</legend>
+        <div class="book-often-chips">
+          {voucherAmounts.map((a) => (
+            <label><input type="radio" name="pick" value={a} /><span>€{a}</span></label>
+          ))}
+          <label><input type="radio" name="pick" value="wish" /><span>{c.wish}</span></label>
+        </div>
+      </fieldset>
+      <label class="book-field book-field-wide" data-vc-wish hidden>
+        <span>{c.wish} (€)</span>
+        <input name="wish" type="number" min={VOUCHER_MIN} max="2000" step="1" inputmode="numeric" placeholder={c.wishHint} />
+      </label>
+      <label class="book-field book-field-wide">
+        <span>{c.buyerName}</span>
+        <input name="name" type="text" autocomplete="name" required />
+      </label>
+      <label class="book-field book-field-wide">
+        <span>{c.buyerEmail}</span>
+        <input name="email" type="email" autocomplete="email" required />
+      </label>
+      <label class="book-field book-field-wide">
+        <span>{c.recipient} <em>({c.optional})</em></span>
+        <input name="recipient" type="text" autocomplete="off" />
+      </label>
+      <label class="book-field book-field-wide">
+        <span>{c.message} <em>({c.optional})</em></span>
+        <textarea name="message" rows="3" placeholder={c.messagePh}></textarea>
+      </label>
+      <fieldset class="book-field book-field-wide book-often">
+        <legend>{c.delivery}</legend>
+        <div class="book-often-chips">
+          <label><input type="radio" name="delivery" value="me" checked /><span>{c.toMe}</span></label>
+          <label><input type="radio" name="delivery" value="them" /><span>{c.toThem}</span></label>
+        </div>
+      </fieldset>
+      <label class="book-field book-field-wide" data-vc-their-email hidden>
+        <span>{c.recipientEmail}</span>
+        <input name="recipientEmail" type="email" autocomplete="off" />
+      </label>
+      <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    </div>
+    <p class="book-error" data-vc-error hidden></p>
+    <button type="submit" class="btn btn-primary book-send vc-send" data-vc-send>{c.send}</button>
+  </form>
+  <div class="book-sent" data-vc-sent hidden>
+    <h2 class="book-title">{c.sentTitle} <span aria-hidden="true">🎁</span></h2>
+    <p class="book-lede">{c.sentBody}</p>
+    <button type="button" class="btn btn-primary" data-vc-close>{c.close}</button>
+  </div>
+  </div>
+</dialog>
+
+<script>
+  import { track } from '../lib/track.ts';
+
+  // The gift box's chips (VoucherBox.astro): picking 1 or 2 people sets
+  // how many places its "Buy a voucher" button asks for.
+  document.addEventListener('click', (event) => {
+    const chip = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-vc-chip]');
+    if (!chip) return;
+    const box = chip.closest<HTMLElement>('[data-vc-box]');
+    box?.querySelectorAll<HTMLButtonElement>('[data-vc-chip]').forEach((b) => b.setAttribute('aria-pressed', String(b === chip)));
+    const buy = box?.querySelector<HTMLElement>('[data-vc-buy]');
+    if (buy) buy.dataset.voucherPeople = chip.dataset.vcChip;
+  });
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-voucher-dialog]');
+  const form = dialog?.querySelector<HTMLFormElement>('[data-vc-form]');
+  if (dialog && form) {
+    const copy = JSON.parse(dialog.dataset.copy || '{}');
+    const inbox = dialog.dataset.inbox ?? '';
+    const $ = <T extends HTMLElement>(sel: string) => dialog.querySelector<T>(sel);
+    const heading = $('[data-vc-heading]');
+    const what = $('[data-vc-what]');
+    const valid = $('[data-vc-valid]');
+    const lede = $('[data-vc-lede]');
+    const peopleField = $('[data-vc-people-field]');
+    const totalField = $('[data-vc-total-field]');
+    const total = $<HTMLOutputElement>('[data-vc-total]');
+    const amounts = $('[data-vc-amounts]');
+    const wishField = $('[data-vc-wish]');
+    const theirEmail = $('[data-vc-their-email]');
+    const error = $('[data-vc-error]');
+    const send = $<HTMLButtonElement>('[data-vc-send]');
+    const sent = $('[data-vc-sent]');
+    const people = form.querySelector<HTMLSelectElement>('select[name="people"]')!;
+    const wish = form.querySelector<HTMLInputElement>('input[name="wish"]')!;
+    const theirEmailInput = form.querySelector<HTMLInputElement>('input[name="recipientEmail"]')!;
+    const picks = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="pick"]'));
+    const deliveries = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="delivery"]'));
+    let picked: DOMStringMap = {};
+
+    const general = () => picked.voucher === 'general';
+    const price = () => Number(picked.voucherPrice) || 0;
+    /** The voucher's value in euros, or 0 where it is not known yet. */
+    const amount = () => {
+      if (!general()) return price() * Number(people.value || 1);
+      const p = picks.find((r) => r.checked)?.value;
+      return p === 'wish' ? Math.round(Number(wish.value) || 0) : Number(p) || 0;
+    };
+    const update = () => {
+      if (total) total.textContent = amount() ? `€${amount()}` : '—';
+      if (wishField) wishField.hidden = !(general() && picks.find((r) => r.checked)?.value === 'wish');
+      wish.required = !!wishField && !wishField.hidden;
+      const them = deliveries.find((r) => r.checked)?.value === 'them';
+      if (theirEmail) theirEmail.hidden = !them;
+      theirEmailInput.required = them;
+    };
+    people.addEventListener('change', update);
+    wish.addEventListener('input', update);
+    picks.forEach((r) => r.addEventListener('change', () => { update(); if (r.value === 'wish' && r.checked) wish.focus(); }));
+    deliveries.forEach((r) => r.addEventListener('change', update));
+
+    const open = (el: HTMLElement) => {
+      picked = { ...el.dataset };
+      const g = general();
+      if (heading) heading.firstChild!.textContent = `${g ? copy.generalTitle : copy.formTitle} `;
+      if (lede) lede.textContent = g ? copy.generalLede : copy.formLede;
+      if (what) what.textContent = g ? copy.generalTitle : [picked.voucherTitle, picked.voucherHost].filter(Boolean).join(' · ');
+      if (valid) valid.textContent = g ? copy.validAny : String(copy.validAt).replace('{host}', picked.voucherHost ?? '');
+      if (peopleField) peopleField.hidden = g;
+      if (amounts) amounts.hidden = !g;
+      // A general voucher always shows its amount; a host's only where
+      // the host's price is known.
+      if (totalField) totalField.hidden = !g && !price();
+      if (totalField) totalField.classList.toggle('book-field-wide', g);
+      people.value = String(Math.min(10, Math.max(1, Number(picked.voucherPeople) || 1)));
+      picks.forEach((r) => { r.checked = r.value === (picked.voucherAmount || '50'); r.required = g; });
+      if (!g) picks.forEach((r) => { r.checked = false; });
+      wish.value = '';
+      if (error) error.hidden = true;
+      form.hidden = false;
+      if (sent) sent.hidden = true;
+      if (send) { send.disabled = false; send.textContent = copy.send; }
+      update();
+      // A button inside another panel (the group page's quick view) hands
+      // over to this form rather than stacking it on top.
+      document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => { if (d !== dialog) d.close(); });
+      dialog.showModal();
+      (g ? form.querySelector<HTMLInputElement>('input[name="pick"]:checked') : people)?.focus();
+      track('voucher-open', { host: picked.voucherHost ?? 'general', lang: dialog.dataset.lang ?? '' });
+    };
+
+    document.addEventListener('click', (event) => {
+      const el = (event.target as HTMLElement).closest<HTMLElement>('[data-voucher]');
+      if (!el) return;
+      event.preventDefault();
+      event.stopPropagation();
+      open(el);
+    }, true);
+    dialog.querySelectorAll('[data-vc-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+
+    // The voucher page's own amount cards open the form at that amount;
+    // a ?host= or ?amount= link (the no-script fallback) opens it too.
+    const q = new URLSearchParams(location.search);
+    const linked = q.get('host') ? document.querySelector<HTMLElement>(`[data-voucher-slug="${CSS.escape(q.get('host')!)}"]`)
+      : q.get('amount') ? document.querySelector<HTMLElement>(`[data-voucher="general"][data-voucher-amount="${CSS.escape(q.get('amount')!)}"]`)
+      : null;
+    if (linked) open(linked);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('_honey')) return;
+      const g = general();
+      const value = amount();
+      if (g && value < Number(wish.min || 20)) { wish.focus(); wish.reportValidity(); return; }
+      const them = data.get('delivery') === 'them';
+      let cameFrom = 'unknown';
+      try { cameFrom = sessionStorage.getItem('twiggli-came-from') || 'unknown'; } catch { /* blocked */ }
+      const host = g ? (dialog.dataset.generalHost ?? '') : (picked.voucherHost ?? '');
+      const fields: Record<string, string> = {
+        Type: 'Voucher request',
+        Host: host,
+        Workshop: g ? 'Any workshop at a host taking vouchers' : (picked.voucherTitle ?? ''),
+        ...(g ? {} : { People: people.value, 'Price per person': price() ? `€${price()}` : 'not listed' }),
+        Amount: value ? `€${value}` : 'to be quoted',
+        Name: String(data.get('name') ?? ''),
+        Email: String(data.get('email') ?? ''),
+        Recipient: String(data.get('recipient') ?? ''),
+        'Personal message': String(data.get('message') ?? ''),
+        Delivery: them ? 'Directly to the recipient' : 'PDF by email to the buyer',
+        ...(them ? { 'Recipient email': String(data.get('recipientEmail') ?? '') } : {}),
+        Valid: `${dialog.dataset.years} years`,
+        'Sent from': location.href,
+        'Came from': cameFrom,
+        Language: dialog.dataset.lang ?? '',
+      };
+      const subject = `Voucher request: ${host}${g ? '' : ` · ${picked.voucherTitle ?? ''} (${people.value})`} — ${fields.Amount}`;
+      if (send) { send.disabled = true; send.textContent = copy.sending; }
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          // "email" (lower case) is the field FormSubmit replies to.
+          body: JSON.stringify({
+            ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
+            email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        track('voucher-sent', { host, amount: String(value), lang: dialog.dataset.lang ?? '' });
+        form.hidden = true;
+        if (sent) sent.hidden = false;
+        form.reset();
+      } catch {
+        if (error) {
+          error.textContent = String(copy.error).replace('{email}', dialog.dataset.contact ?? '');
+          error.hidden = false;
+        }
+        if (send) { send.disabled = false; send.textContent = copy.send; }
+        const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
+        location.href = `mailto:${dialog.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+    });
+  }
+</script>

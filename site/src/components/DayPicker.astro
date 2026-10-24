@@ -206,6 +206,7 @@ const formatDeadline = (iso: string): string => {
   const locale = LANG_META[lang].locale;
   return `${d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}, ${d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`;
 };
+import Voucher from './Voucher.astro';
 ---
 
 <div
@@ -521,6 +522,7 @@ const formatDeadline = (iso: string): string => {
                             ) : (
                               <HostMonogram name={s.host.name} />
                             )}
+                            <Voucher kind="badge" host={s.host} lang={lang} />
                           </a>
                         </span>
                         <span class="session-main">
@@ -528,6 +530,7 @@ const formatDeadline = (iso: string): string => {
                           <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.firstName ?? s.host.name}</a> · {districtOf(s)}</span>
                           {s.partner && <span class="session-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
                           {s.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(s.salesEnd)}</span>}
+                          <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
                         </span>
                         <span class="session-side">
                           {s.price && (
@@ -599,6 +602,7 @@ const formatDeadline = (iso: string): string => {
                           ) : (
                             <HostMonogram name={s.host.name} />
                           )}
+                          <Voucher kind="badge" host={s.host} lang={lang} />
                         </a>
                         <span class="session-main">
                           <span class="session-duration">
@@ -625,6 +629,7 @@ const formatDeadline = (iso: string): string => {
                               itself, so nobody arrives at a booking page
                               that has already shut. */}
                           {s.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(s.salesEnd)}</span>}
+                          <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
                         </span>
                         {/* Price and Book share one row so every card's
                             action line sits at the same height; the spots
