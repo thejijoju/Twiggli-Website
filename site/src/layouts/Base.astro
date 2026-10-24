@@ -6,6 +6,7 @@ import MobileTabs from '../components/MobileTabs.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import BookingDialog from '../components/BookingDialog.astro';
 import VoucherDialog from '../components/VoucherDialog.astro';
+import SignInDialog from '../components/SignInDialog.astro';
 import ClubPopup from '../components/ClubPopup.astro';
 import { getSiteData } from '../data/site.ts';
 import { href, splitLang, DEFAULT_LANG, LANGS, LANG_META, type Lang } from '../lib/url.ts';
@@ -153,6 +154,7 @@ const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-servi
     {/* Every Book / Request / Notify button opens this, on the page. */}
     <BookingDialog lang={lang} />
     <VoucherDialog lang={lang} />
+    <SignInDialog lang={lang} />
     {clubPopup && <ClubPopup lang={lang} />}
     <script>
       // Every outbound click, labelled with the card it came from. Runs

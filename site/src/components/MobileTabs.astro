@@ -9,6 +9,7 @@ import { getSiteData, appUrl } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import { retreatsCopy } from '../data/retreats.ts';
 import { tabsCopy } from '../data/tabs.ts';
+import { authCopy } from '../data/auth.ts';
 import { hubHref } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 
@@ -81,5 +82,7 @@ const tabs = [
       <li><a href={l.href} aria-current={under(l.href) ? 'page' : undefined}>{l.label}<span aria-hidden="true">→</span></a></li>
     ))}
   </ul>
+  {/* Sign in (SignInDialog.astro): the strip at the top has it too. */}
+  <button type="button" class="btn btn-secondary tabsheet-signin" data-signin aria-haspopup="dialog">{authCopy[lang].signIn}</button>
   <a href={appUrl} class="btn btn-primary tabsheet-cta" target="_blank" rel="noopener">{t.nav.cta}</a>
 </div>

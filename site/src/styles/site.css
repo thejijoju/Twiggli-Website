@@ -1578,6 +1578,57 @@ a:hover { color: var(--color-accent); }
 .social-bar-icons a { display: flex; color: #fff; }
 .social-bar-icons a:hover { color: var(--color-accent-400); }
 
+/* Sign in, Luma-style: a compact pill on the dark strip, pinned to the
+   strip's right edge (the same edge the nav's CTA ends on). A soft
+   lavender-to-violet wash and a hairline of the same, so it reads as
+   Twiggli without competing with the yellow voucher pill. */
+.social-bar-icons { position: relative; }
+.social-bar-signin {
+  position: absolute;
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px 5px 10px;
+  border: 1px solid rgba(178, 172, 252, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(178, 172, 252, 0.16), rgba(106, 62, 236, 0.26));
+  color: #fff;
+  font: 500 13px/1.3 var(--font-body);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.social-bar-signin svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.social-bar-signin:hover {
+  background: linear-gradient(135deg, rgba(178, 172, 252, 0.26), rgba(106, 62, 236, 0.4));
+  border-color: rgba(178, 172, 252, 0.5);
+}
+.social-bar-signin:focus-visible { outline: 2px solid var(--color-accent-400); outline-offset: 2px; }
+/* Signed in (lib/auth.ts getUser): the pill becomes a round initial. */
+.social-bar-signin.is-user { padding: 0; width: 28px; height: 28px; justify-content: center; font-weight: 700; }
+.social-bar-signin.is-user svg { display: none; }
+/* A phone: back into the row as a round icon after the voucher pill — the
+   centred icons leave no room for a label at the edge. */
+@media (max-width: 720px) {
+  .social-bar-signin {
+    position: static;
+    transform: none;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    justify-content: center;
+    flex: none;
+  }
+  .social-bar-signin svg { width: 16px; height: 16px; }
+  .social-bar-signin-label {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .social-bar-signin.is-user .social-bar-signin-label { position: static; width: auto; height: auto; clip-path: none; }
+}
+
 /* — store buttons — */
 .store-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
 .store-badge { display: block; }
@@ -4582,6 +4633,32 @@ html.map-locked { overflow: hidden; }
 .book-send { width: 100%; justify-content: center; margin-top: 18px; }
 .book-send:disabled { opacity: 0.6; cursor: wait; }
 .book-sent .book-lede { margin-bottom: 20px; }
+/* The sign-in card (SignInDialog.astro): narrower and centred, like Luma's. */
+.signin-dialog { width: min(420px, calc(100vw - 32px)); }
+.signin-form { text-align: center; padding-top: 34px; }
+.signin-form .book-field { text-align: left; }
+.signin-mark {
+  display: grid; place-items: center;
+  width: 52px; height: 52px; margin: 0 auto 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-accent-200), var(--color-accent-300));
+  color: var(--color-accent-700);
+}
+.signin-mark svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.signin-title { margin: 0 0 6px; }
+.signin-form .signin-title { margin-inline: 0; }
+.signin-lede { margin-bottom: 20px; }
+.signin-hint { margin: 12px 0 0; font-size: 13px; color: var(--color-text-muted); }
+.signin-host {
+  margin: 18px 0 0; padding-top: 16px;
+  border-top: 1px solid rgba(124, 77, 255, 0.14);
+  font-size: 13.5px; color: var(--color-text-muted);
+}
+.signin-host a { color: var(--color-accent-700); font-weight: 600; text-decoration: none; }
+.signin-host a:hover { text-decoration: underline; }
+.signin-sent { text-align: center; padding-top: 40px; }
+.signin-sent .signin-title { margin: 0 0 10px; }
+.signin-sent:focus { outline: none; }
 @media (max-width: 560px) {
   .book-dialog {
     width: 100vw;
@@ -5212,6 +5289,8 @@ h1, h2, h3, h4,
   .tabsheet-links a span { color: var(--color-text-muted); }
   .tabsheet-links a[aria-current='page'] { color: var(--color-accent-deep); font-weight: 700; }
   .tabsheet-cta { display: flex; justify-content: center; width: 100%; margin-top: 16px; min-height: 48px; align-items: center; }
+  .tabsheet-signin { display: flex; justify-content: center; width: 100%; margin-top: 16px; min-height: 48px; align-items: center; border-radius: 999px; font: 600 15px/1.2 var(--font-body); color: var(--color-text); background: transparent; }
+  .tabsheet-signin + .tabsheet-cta { margin-top: 10px; }
 
   /* Things that float on the bottom edge sit above the bar, not under it. */
   .cookie-banner { bottom: calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom, 0px)); }
