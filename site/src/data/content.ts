@@ -1525,7 +1525,8 @@ export const getWorkshopReel = (
 
 const hostsCopy: Record<Lang, HostCopy[]> = (() => {
   // Preview hosts (hosts/preview.ts) ride at the end of the list in English
-  // and German; every other language falls back to their English copy.
+  // and German (Lucille also in French); every other language falls back
+  // to their English copy.
   const en = [...hostsCopyBase.en, ...preview.copy.en];
   const align = (list: HostCopy[]): HostCopy[] => {
     const bySlug = new Map(list.map((h) => [h.slug, h]));
@@ -1534,7 +1535,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = (() => {
   return {
     en,
     de: align([...hostsCopyBase.de, ...preview.copy.de]),
-    fr: align(hostsFr),
+    fr: align([...hostsFr, ...preview.copy.fr]),
     es: align(hostsEs),
     it: align(hostsIt),
     nl: align(hostsNl),

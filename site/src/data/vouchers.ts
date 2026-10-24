@@ -17,13 +17,17 @@ import type { Lang } from '../lib/url.ts';
  *  - chelti: NOT yet. The same voucher line was in their agreement email
  *    (22.10.26), but they have not confirmed it ("Ja") — they only sent
  *    photos. Add them once they do.
+ *  - lucille-guder: agreed to vouchers (her reply to Jirel, 24.10.26). She
+ *    is still a preview host, so the voucher page's host list (getHosts
+ *    without `withPreview`) leaves her out until she goes live; only her
+ *    own hidden page shows the voucher button and gift box.
  *
  * There is no payment system yet: every voucher button opens a request form
  * (VoucherDialog.astro) that lands in our inbox as "Voucher request", and
  * Jirel sends the payment link and the PDF by hand. Twiggli takes the
  * payment and pays the host their share (15 % commission, as agreed).
  */
-export const voucherHosts: string[] = ['anna-malerlebnisse', 'himapan-berlin'];
+export const voucherHosts: string[] = ['anna-malerlebnisse', 'himapan-berlin', 'lucille-guder'];
 
 export const isVoucherHost = (slug: string): boolean => voucherHosts.includes(slug);
 
