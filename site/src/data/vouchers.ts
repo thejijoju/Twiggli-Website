@@ -110,8 +110,8 @@ export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed:
  * with ?stripetest=1. The anon key is Supabase's public key, safe here.
  */
 export const voucherCheckout = {
-  url: '',
-  anonKey: '',
+  url: 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-checkout',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3eW1wdndvdXpiaHNodHJwdGZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzUzNjYsImV4cCI6MjEwODQ1MTM2Nn0.hszNu1l3fJJsY9g47SAY4ZmKS0BP7OQwixQ_VMoxcYQ',
   live: false,
 };
 
