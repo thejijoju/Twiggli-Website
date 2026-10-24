@@ -5,6 +5,7 @@ import { href, withBase, LEGAL_LANGS, type Lang } from '../lib/url.ts';
 import { retreatsCopy } from './retreats.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, hubHref } from './seo.ts';
 import { ui } from './i18n.ts';
+import { voucherCopy } from './vouchers.ts';
 
 export type NavLink = { label: string; href: string; external?: boolean };
 
@@ -107,6 +108,10 @@ export function getSiteData(lang: Lang) {
   ];
 
   const secondaryLinks: NavLink[] = [
+    /* Gift vouchers (vouchers.ts): /voucher/, /de/gutschein/. The header
+       carries it in the dark strip above the nav (SocialBar.astro), as the
+       nav row has no room left for a ninth label in German or Polish. */
+    { label: voucherCopy[lang].nav, href: href(lang, '/voucher/') },
     { label: t.footer.howItWorks, href: href(lang, '/how-it-works/') },
     { label: t.footer.hosts, href: href(lang, '/corporatebookings/') },
     /* Out of the header, still a click away here. */

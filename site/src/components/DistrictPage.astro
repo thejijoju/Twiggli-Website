@@ -43,6 +43,7 @@ const schema = {
     },
   ],
 };
+import Voucher from './Voucher.astro';
 ---
 
 <Base title={copy.title} description={copy.description} lang={lang}>
@@ -74,11 +75,13 @@ const schema = {
                     {h.poster ? <img src={h.poster} alt="" loading="lazy" decoding="async" />
                       : h.photo ? <img src={h.photo} alt="" loading="lazy" decoding="async" />
                       : <HostMonogram name={h.name} />}
+                    <Voucher kind="badge" host={h} lang={lang} />
                   </span>
                   <span class="host-card-name">{h.name}</span>
                   <span class="host-card-spec">{h.specialty}</span>
                   <span class="host-card-next">{n ? `${t.next}: ${formatWhen(n, lang)}${n.price ? ` · ${n.price}` : ''}` : t.onRequest}</span>
                 </a>
+                <Voucher kind="tile" host={h} lang={lang} />
               </li>
             );
           })}

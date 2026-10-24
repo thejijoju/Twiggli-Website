@@ -72,6 +72,7 @@ const schema = {
     url: absolute(activityHref(lang, a.key)),
   })),
 };
+import Voucher from './Voucher.astro';
 ---
 
 <Base title={copy.title} description={copy.description} lang={lang}>
@@ -135,10 +136,12 @@ const schema = {
                     {still && <img src={still} alt="" loading="lazy" decoding="async" />}
                     {host.video && <video class="hub-card-video" src={host.video} muted loop playsinline preload="none"></video>}
                     <span class="hub-card-date">{n ? formatDay(n.dayOffset, lang) : h.onRequest}</span>
+                    <Voucher kind="badge" host={host} lang={lang} />
                   </span>
                   <span class="hub-card-name">{host.name}</span>
                   <span class="hub-card-spec">{host.specialty}</span>
                 </a>
+                <Voucher kind="tile" host={host} lang={lang} />
               </li>
             );
           })}

@@ -10,6 +10,7 @@ import { mapCopy } from '../data/mapCopy.ts';
 import { directoryCopy, occasionsFor } from '../data/occasions.ts';
 import HostMonogram from './HostMonogram.astro';
 import PhotoFade from './PhotoFade.astro';
+import Voucher from './Voucher.astro';
 
 /**
  * The group-bookings directory, laid out like a marketplace grid: a large
@@ -141,6 +142,7 @@ const searchText = (host: Host) => [
         ) : (
           <HostMonogram name={host.firstName ?? host.specialty} />
         )}
+        <Voucher kind="badge" host={host} lang={lang} />
       </div>
 
       <div class="maker-line">
@@ -156,6 +158,7 @@ const searchText = (host: Host) => [
         <strong>{priceStart(rangeFor(host))}</strong>
         {hasFigure(rangeFor(host)) && <span>{priceCopy.priceMeta}</span>}
       </p>
+      <Voucher kind="tile" host={host} lang={lang} />
 
       {/* What the quick view shows: in the page for search engines and for
           the panel to copy, out of sight in the grid. */}
@@ -193,6 +196,7 @@ const searchText = (host: Host) => [
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {labels.request}
         </a>
+        <Voucher kind="pill" host={host} lang={lang} />
       </div>
     </article>
   ))}

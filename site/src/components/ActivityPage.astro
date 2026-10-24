@@ -58,6 +58,7 @@ const schema = {
     },
   ],
 };
+import Voucher from './Voucher.astro';
 ---
 
 <Base title={copy.title} description={copy.description} lang={lang}>
@@ -94,6 +95,7 @@ const schema = {
                   ) : (
                     <HostMonogram name={h.name} />
                   )}
+                  <Voucher kind="badge" host={h} lang={lang} />
                 </span>
                 <span class="host-card-name">{h.name}</span>
                 <span class="host-card-spec">{h.specialty}</span>
@@ -102,6 +104,7 @@ const schema = {
                 </span>
                 {count > 1 && <span class="host-card-count">{t.dates(count)}</span>}
               </a>
+              <Voucher kind="tile" host={h} lang={lang} />
             </li>
           );
         })}

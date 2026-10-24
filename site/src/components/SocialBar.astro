@@ -1,7 +1,8 @@
 ---
 import SocialIcon from './SocialIcon.astro';
 import { getSiteData } from '../data/site.ts';
-import { DEFAULT_LANG, type Lang } from '../lib/url.ts';
+import { voucherCopy } from '../data/vouchers.ts';
+import { DEFAULT_LANG, href, type Lang } from '../lib/url.ts';
 
 /** The dark social strip. Sits above the nav, at the very top of the page. */
 interface Props {
@@ -22,5 +23,7 @@ const { socialLinks } = getSiteData(lang);
         rel={s.href.startsWith('http') ? 'noopener' : undefined}
       ><SocialIcon name={s.icon} /></a>
     ))}
+    {/* Gift vouchers (VoucherPage.astro), on every page and every screen. */}
+    <a class="social-bar-gift" href={href(lang, '/voucher/')}>{voucherCopy[lang].nav}</a>
   </div>
 </div>

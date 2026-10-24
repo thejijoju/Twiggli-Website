@@ -43,6 +43,7 @@ const days = byDay(sessions).map(([offset, list]) => {
   }).sort((a, b) => (a.lead.time || '~').localeCompare(b.lead.time || '~'));
   return { offset, cards };
 });
+import Voucher from './Voucher.astro';
 ---
 
 <ol class="dl-days">
@@ -73,10 +74,12 @@ const days = byDay(sessions).map(([offset, list]) => {
                   {[sameTimes > 0 ? c.moreTimes(sameTimes) : '', others > 0 ? c.moreWorkshops(others) : ''].filter(Boolean).join(' · ')}
                 </a>
               )}
+              <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
             </div>
             <a class="dl-media" href={workshopHref(lang, s.host, s.workshopKey)} tabindex="-1" aria-hidden="true" style={lqipStyle(s.host.poster)}>
               {(s.host.poster ?? s.host.photo) && <img src={s.host.poster ?? s.host.photo} alt="" loading="lazy" decoding="async" />}
               {s.host.video && <video class="dl-video" src={s.host.video} muted loop playsinline preload="none"></video>}
+              <Voucher kind="badge" host={s.host} lang={lang} />
             </a>
           </li>
         ))}

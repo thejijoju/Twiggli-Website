@@ -48,6 +48,7 @@ export const LANG_META: Record<Lang, { name: string; flag: string; locale: strin
  *  and the hreflang links pair the two versions. */
 const LOCAL_SLUGS: Record<string, Partial<Record<Lang, string>>> = {
   '/about/': { de: '/ueber-uns/' },
+  '/voucher/': { de: '/gutschein/' },
 };
 
 export const href = (lang: Lang, path: string): string => {

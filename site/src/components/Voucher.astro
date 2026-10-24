@@ -1,0 +1,72 @@
+---
+/**
+ * The voucher bits a host who takes vouchers (data/vouchers.ts) wears around
+ * the site; for any other host this renders nothing, so it can sit in every
+ * tile and booking box unconditionally.
+ *
+ *   badge  C · "🎁 Voucher" on a tile's picture (inside the picture's box,
+ *          which must be position: relative)
+ *   tile   C · "🎁 Give as a gift →" under a tile's price
+ *   pill   A · the outlined second button under a booking button, with the
+ *          "valid for 3 years" note
+ *   box    B · the dashed yellow gift box: 1 or 2 people, then "Buy"
+ *
+ * Every one but the badge opens the voucher form (VoucherDialog.astro);
+ * without scripts it is a link to the voucher page.
+ */
+import type { Host } from '../data/content.ts';
+import { isVoucherHost, voucherCopy, voucherPrice } from '../data/vouchers.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  kind: 'badge' | 'tile' | 'pill' | 'box';
+  host: Pick<Host, 'slug' | 'name' | 'specialty' | 'groupPrice'>;
+  lang: Lang;
+  /** The workshop, where the trigger belongs to one; the host's specialty
+   *  otherwise. */
+  title?: string;
+  class?: string;
+}
+const { kind, host, lang, title, class: cls } = Astro.props;
+const on = isVoucherHost(host.slug);
+const c = voucherCopy[lang];
+const price = on ? voucherPrice(host) : undefined;
+const link = `${href(lang, '/voucher/')}?host=${encodeURIComponent(host.slug)}`;
+const attrs = {
+  'data-voucher': 'host',
+  'data-voucher-slug': host.slug,
+  'data-voucher-host': host.name,
+  'data-voucher-title': title ?? host.specialty,
+  'data-voucher-price': price,
+};
+---
+
+{on && kind === 'badge' && <span class:list={['vc-badge', cls]}>{c.badge}</span>}
+
+{on && kind === 'tile' && (
+  <a class:list={['vc-tile-link', cls]} href={link} {...attrs}>{c.tileLink}{' '}<span aria-hidden="true">→</span></a>
+)}
+
+{on && kind === 'pill' && (
+  <div class:list={['vc-pill-wrap', cls]}>
+    <a class="vc-pill" href={link} {...attrs} data-voucher-people="1">{c.give}</a>
+    <p class="vc-note">{c.validNote}</p>
+  </div>
+)}
+
+{on && kind === 'box' && (
+  <div class:list={['vc-box', cls]} data-vc-box>
+    <p class="vc-box-title">{c.boxTitle}{' '}<em>{c.boxEm}</em>{' '}<span aria-hidden="true">🎁</span></p>
+    {price && (
+      <div class="vc-chips" role="group" aria-label={c.people}>
+        {[1, 2].map((n) => (
+          <button type="button" class="vc-chip" data-vc-chip={n} aria-pressed={n === 1 ? 'true' : 'false'}>
+            {n === 1 ? c.onePerson : c.nPeople.replace('{n}', String(n))} · €{price * n}
+          </button>
+        ))}
+      </div>
+    )}
+    <a class="vc-buy" href={link} {...attrs} data-voucher-people="1" data-vc-buy>{c.buy}</a>
+    <p class="vc-note">{c.boxNote}</p>
+  </div>
+)}

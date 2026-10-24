@@ -1,0 +1,87 @@
+---
+/**
+ * The gift voucher page (/voucher/, /de/gutschein/, /fr/voucher/ …): a
+ * general Twiggli voucher for €25, €50, €75 or an amount of one's own from
+ * €20, valid for 3 years at every host who takes vouchers (data/vouchers.ts),
+ * and those hosts as tiles. Every amount card opens the voucher request form
+ * (VoucherDialog.astro); a host tile's gift link opens it for that host.
+ */
+import Base from '../layouts/Base.astro';
+import HostMonogram from './HostMonogram.astro';
+import Voucher from './Voucher.astro';
+import { getHosts } from '../data/content.ts';
+import { hostHref } from '../data/seo.ts';
+import { isVoucherHost, voucherAmounts, voucherCopy, voucherPrice } from '../data/vouchers.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = voucherCopy[lang];
+const hosts = getHosts(lang).filter((h) => isVoucherHost(h.slug));
+const self = href(lang, '/voucher/');
+---
+
+<Base title={c.pageTitle} description={c.pageDescription} lang={lang} pageClass="vcp">
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&family=Caveat:wght@600;700&display=swap" />
+  </Fragment>
+  <div class="container">
+    <section class="vcp-hero">
+      <span class="vcp-kicker">{c.kicker}</span>
+      <h1 class="vcp-h1">{c.h1a} <em>{c.h1em}</em> <span aria-hidden="true">🎁</span></h1>
+      <p class="vcp-lede">{c.lede}</p>
+      <ul class="vcp-facts">{c.facts.map((f) => <li>{f}</li>)}</ul>
+    </section>
+
+    <ul class="vcp-amounts">
+      {voucherAmounts.map((a, i) => (
+        <li>
+          <a class:list={['vcp-amount', { 'is-pop': i === 1 }]} href={`${self}?amount=${a}`} data-voucher="general" data-voucher-amount={a}>
+            <span class="vcp-amount-figure">€{a}</span>
+            <span class="vcp-amount-label">{c.cards[i]}</span>
+            <span class="vcp-amount-cta">{c.choose} →</span>
+          </a>
+        </li>
+      ))}
+      <li>
+        <a class="vcp-amount is-wish" href={`${self}?amount=wish`} data-voucher="general" data-voucher-amount="wish">
+          <span class="vcp-amount-figure">{c.wishCard}</span>
+          <span class="vcp-amount-label">{c.wishFrom}</span>
+          <span class="vcp-amount-cta">{c.choose} →</span>
+        </a>
+      </li>
+    </ul>
+
+    <section class="vcp-section">
+      <h2 class="vcp-h2">{c.howTitle} <em>{c.howEm}</em></h2>
+      <ol class="vcp-steps">
+        {c.steps.map((s, i) => <li><strong>{s}</strong><p>{c.stepsCopy[i]}</p></li>)}
+      </ol>
+    </section>
+
+    <section class="vcp-section vcp-bottom">
+      <h2 class="vcp-h2">{c.hostsTitle} <em>{c.hostsEm}</em></h2>
+      <p class="vcp-sub">{c.hostsSub}</p>
+      <ul class="vcp-hosts">
+        {hosts.map((h) => {
+          const price = voucherPrice(h);
+          const pic = h.poster ?? h.photo;
+          return (
+            <li class="vcp-host">
+              <a href={hostHref(lang, h)}>
+                <span class="vcp-host-media">
+                  {pic ? <img src={pic} alt="" loading="lazy" decoding="async" /> : <HostMonogram name={h.name} />}
+                  <Voucher kind="badge" host={h} lang={lang} />
+                </span>
+                <span class="vcp-host-name">{h.name}</span>
+                <span class="vcp-host-spec">{h.specialty}{h.area ? ` · ${h.area}` : ''}</span>
+                {price && <span class="vcp-host-price"><strong>€{price}</strong> {c.perPerson}</span>}
+              </a>
+              <Voucher kind="tile" host={h} lang={lang} />
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  </div>
+</Base>

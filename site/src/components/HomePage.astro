@@ -20,6 +20,8 @@ import SiteSchema from './SiteSchema.astro';
 import HostMonogram from './HostMonogram.astro';
 import HomeSearch from './HomeSearch.astro';
 import HeroSparkles from './HeroSparkles.astro';
+import Voucher from './Voucher.astro';
+import { voucherCopy } from '../data/vouchers.ts';
 import { filterCopy } from '../data/content.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, formatWhen, hostHref, hubHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { ui } from '../data/i18n.ts';
@@ -108,18 +110,33 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                     <HostMonogram name={s.host.name} />
                   )}
                 </span>
+                <Voucher kind="badge" host={s.host} lang={lang} />
                 </span>
                 <span class="hd-card-when">{formatWhen(s, lang)}</span>
                 <span class="maker-line"><span class="maker-title">{s.title}</span></span>
                 <span class="maker-sub">{s.host.firstName ?? s.host.name} · {s.district}</span>
                 {s.price && <span class="maker-price"><strong>{s.price}</strong><span>{f.priceMeta}</span></span>}
               </a>
+              <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
             </li>
           ))}
         </ul>
       </div>
     </section>
   ))}
+
+  {/* Gift vouchers, with Christmas coming (VoucherPage.astro). */}
+  <div class="container">
+    <a class="vc-teaser" href={href(lang, '/voucher/')}>
+      <span class="vc-teaser-gift" aria-hidden="true">🎁</span>
+      <span>
+        <span class="vc-teaser-kicker">{voucherCopy[lang].teaserKicker}</span>
+        <span class="vc-teaser-title">{voucherCopy[lang].teaserTitle} <em>{voucherCopy[lang].teaserEm}</em></span>
+        <span class="vc-teaser-copy">{voucherCopy[lang].teaserCopy}</span>
+      </span>
+      <span class="vc-teaser-cta">{voucherCopy[lang].teaserCta} →</span>
+    </a>
+  </div>
 
   <section class="hd-cats" id="workshops">
     <div class="container">

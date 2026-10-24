@@ -7,11 +7,13 @@ import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
 import PhotoFade from './PhotoFade.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
+import Voucher from './Voucher.astro';
 import { getHosts, isPreviewHost, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { followCopy } from '../data/follow.ts';
 import { tagsFor } from '../data/hostTags.ts';
 import { requestEmail } from '../data/site.ts';
+import { isVoucherHost } from '../data/vouchers.ts';
 import { getHostPriceRanges, previewOnRequestFor, previewSessionsFor } from '../data/sessions.ts';
 import {
   activityCopy, activityHref, formatWhen, hostDescription, hostDurationText, hostGroupText, hostH1, hostHref, hostImage,
@@ -78,6 +80,10 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
   image={hostImage(host)}
   noindex={preview}
 >
+  <Fragment slot="head">
+    {/* The gift box's display serif, only where it shows. */}
+    {isVoucherHost(host.slug) && <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&display=swap" />}
+  </Fragment>
   <div class="container">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href={hubHref(lang)}>{t.crumbsRoot}</a>
@@ -183,7 +189,11 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {t.request}
         </a>
+        {/* A · the second button, for a host who takes vouchers. */}
+        <Voucher kind="pill" host={host} lang={lang} title={sessions[0]?.title} />
         </div>
+        {/* B · the gift box: 1 or 2 places at the host's price. */}
+        <Voucher kind="box" host={host} lang={lang} title={sessions[0]?.title} />
         {/* Follow: an email when this host adds dates (data/follow.ts). The
             field is the button's first step; a remembered email is filled in. */}
         <div class="host-follow" data-follow={host.slug} data-follow-name={host.name} hidden>
@@ -279,6 +289,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
                       ) : (
                         <HostMonogram name={h.name} />
                       )}
+                      <Voucher kind="badge" host={h} lang={lang} />
                     </span>
                     <span class="host-card-name">{h.name}</span>
                     <span class="host-card-spec">{h.specialty}</span>
@@ -286,6 +297,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
                       {n ? `${t.next}: ${formatWhen(n, lang)}${n.price ? ` · ${n.price}` : ''}` : t.onRequest}
                     </span>
                   </a>
+                  <Voucher kind="tile" host={h} lang={lang} />
                 </li>
               );
             })}
