@@ -2,6 +2,7 @@
  *  and the pop-up that invites people to it (ClubPopup.astro). Same route as
  *  the other request forms: FormSubmit to our inbox as "Club waitlist", or
  *  the visitor's mail app with the same message when that is unreachable. */
+import { looksLikeBot } from './honey.ts';
 
 /** What the pop-up remembers, in this browser only: when it was last shown
  *  (or closed), or that this visitor already joined. */
@@ -24,7 +25,7 @@ export function wireClubForm(form: HTMLFormElement, sent: HTMLElement | null, so
     event.preventDefault();
     if (!form.reportValidity()) return;
     const data = new FormData(form);
-    if (data.get('_honey')) return;
+    if (looksLikeBot(data)) return;
     const get = (k: string) => String(data.get(k) ?? '').trim();
     let cameFrom = '';
     try { cameFrom = sessionStorage.getItem('twiggli-came-from') ?? ''; } catch {}
