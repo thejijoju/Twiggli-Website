@@ -64,7 +64,7 @@ export const hosts: HostCopy[] = [
   { slug: 'sarah', name: 'Sarah', specialty: 'Mindfulness & scrittura creativa',
     blurb: 'Fuori dalla modalità funzione, dentro il qui e ora. Un mix di mindfulness, meditazione, journaling, scrittura creativa e movimento dolce — strumenti semplici per più calma, chiarezza e concentrazione al lavoro.',
     group: '3–12', duration: '1–7 h', place: 'In sede / Warschauer Str. / online', languages: 'DE · EN' },
-  { slug: 'anne', name: 'Anne', specialty: 'Fotografia creativa',
+  { slug: 'anne', name: 'Anna', specialty: 'Fotografia creativa',
     blurb: 'Un workshop di fotografia giocoso in cui i colleghi si fotografano a vicenda, alternandosi tra modello e fotografo. Spunti creativi e semplici oggetti di scena accendono nuovi modi di vedere. Va bene qualsiasi telefono.',
     group: '5–20', duration: '1.5–2 h', place: 'Il tuo ufficio / una location a Berlino', languages: 'EN · UA' },
   { slug: 'sabine', name: 'Sabine', specialty: 'Fotografia analogica & cianotipie', studio: 'Mobile Dunkelkammer',

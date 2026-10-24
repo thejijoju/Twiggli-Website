@@ -64,7 +64,7 @@ export const hosts: HostCopy[] = [
   { slug: 'sarah', name: 'Sarah', specialty: 'Uważność & pisanie kreatywne',
     blurb: 'Wyjdź z trybu funkcjonowania i wejdź w tu i teraz. Połączenie uważności, medytacji, journalingu, pisania kreatywnego i łagodnego ruchu — proste narzędzia dla większego spokoju, jasności i skupienia w pracy.',
     group: '3–12', duration: '1–7 godz.', place: 'U was na miejscu / Warschauer Str. / online', languages: 'DE · EN' },
-  { slug: 'anne', name: 'Anne', specialty: 'Fotografia kreatywna',
+  { slug: 'anne', name: 'Anna', specialty: 'Fotografia kreatywna',
     blurb: 'Zabawne warsztaty fotograficzne, podczas których członkowie zespołu fotografują się nawzajem, zamieniając się rolami modela i fotografa. Kreatywne zadania i proste rekwizyty otwierają nowe sposoby patrzenia. Wystarczy dowolny telefon.',
     group: '5–20', duration: '1,5–2 godz.', place: 'Twoje biuro / sala w Berlinie', languages: 'EN · UA' },
   { slug: 'sabine', name: 'Sabine', specialty: 'Fotografia analogowa & cyjanotypia', studio: 'Mobile Dunkelkammer',

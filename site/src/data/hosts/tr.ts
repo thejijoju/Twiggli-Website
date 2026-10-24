@@ -64,7 +64,7 @@ export const hosts: HostCopy[] = [
   { slug: 'sarah', name: 'Sarah', specialty: 'Farkındalık & yaratıcı yazarlık',
     blurb: 'İşlev modundan çık, şimdi ve buradaya gel. Farkındalık, meditasyon, günlük tutma, yaratıcı yazarlık ve nazik hareketin bir karışımı — işte daha fazla sükûnet, netlik ve odak için basit araçlar.',
     group: '3–12', duration: '1–7 sa', place: 'Yerinde / Warschauer Str. / online', languages: 'DE · EN' },
-  { slug: 'anne', name: 'Anne', specialty: 'Yaratıcı fotoğrafçılık',
+  { slug: 'anne', name: 'Anna', specialty: 'Yaratıcı fotoğrafçılık',
     blurb: 'Ekip arkadaşlarının model ve fotoğrafçı rollerini değiştirerek birbirini fotoğrafladığı eğlenceli bir fotoğraf atölyesi. Yaratıcı yönergeler ve basit aksesuarlar yeni görme biçimlerini tetikliyor. Herhangi bir telefon yeterli.',
     group: '5–20', duration: '1,5–2 sa', place: 'Senin ofisin / Berlin’de bir mekân', languages: 'EN · UA' },
   { slug: 'sabine', name: 'Sabine', specialty: 'Analog fotoğraf & siyanotipi', studio: 'Mobile Dunkelkammer',
