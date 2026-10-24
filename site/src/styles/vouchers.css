@@ -359,3 +359,8 @@
   white-space: nowrap;
 }
 .social-bar-icons a.social-bar-gift:hover { color: var(--vc-ink); filter: brightness(0.95); }
+
+/* Stripe step in the form's thank-you (VoucherDialog.astro). */
+.vc-pay { display: flex; justify-content: center; width: 100%; margin-top: 8px; color: #fff; text-decoration: none; }
+.vc-pay:hover, .vc-pay:visited { color: #fff; }
+.vc-pay[hidden], [data-vc-done][hidden] { display: none; }
