@@ -26,8 +26,31 @@ import type { Lang } from '../lib/url.ts';
  * (VoucherDialog.astro) that lands in our inbox as "Voucher request", and
  * Jirel sends the payment link and the PDF by hand. Twiggli takes the
  * payment and pays the host their share (15 % commission, as agreed).
+ *
+ * Agreed to vouchers (confirmed by Jirel, 24.10.26), matched to their slugs:
+ *  - sarah: Sarah, mindfulness & creative writing.
+ *  - ceramic-kingdom: Madeline, Ceramic Kingdom.
+ *  - petitejungle: Aurélie, Petite Jungle.
+ *  - sabine: Sabine & Alex, Mobile Dunkelkammer.
+ *  - druckrausch: Deborah, Druckrausch.
+ *  - qian: Qian, Clay Garden. A partner host (partners.ts): her dates book
+ *    on her own site with our code, but a voucher still goes through us.
+ *  - rebeca: Rebeca, Arte Gorda.
+ *  - angelo: Angelo, Coffee and Bananas.
+ *  - evelyn: Evelyn Cseh (Tuka Creative Club, at Ohma Studio).
+ *  - nina: Nina Kranz Art.
+ *  - ana: Ana Kavalis, Resonant Body.
+ *  - helka: Lisa, Helka Ceramics.
+ *  - maximiliana: Maximiliana Marti, bird sketching.
+ * Not added yet, as no host matched for certain: "Fred / Terre Studio 32"
+ * (studio32 is Bonvivant's cooking studio, not a match) and "Anna
+ * (photography)" (the photography host here is Anne, slug anne).
  */
-export const voucherHosts: string[] = ['anna-malerlebnisse', 'himapan-berlin', 'lucille-guder'];
+export const voucherHosts: string[] = [
+  'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
+  'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'qian', 'rebeca',
+  'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
+];
 
 export const isVoucherHost = (slug: string): boolean => voucherHosts.includes(slug);
 
@@ -58,6 +81,8 @@ export type VoucherCopy = {
   nav: string;
   // A · the second button under a booking button.
   give: string; validNote: string;
+  /** A · the small button under a tile's or a date row's booking button. */
+  gift: string;
   // B · the gift box on the host page.
   boxTitle: string; boxEm: string; buy: string; boxNote: string;
   /** '{n}' stands for the number: the copy travels to the page as JSON. */
@@ -89,6 +114,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   en: {
     nav: '🎁 Vouchers',
     give: '🎁 Give it as a voucher', validNote: 'Voucher valid for 3 years',
+    gift: '🎁 Give as a gift',
     boxTitle: 'Give', boxEm: 'this experience', buy: 'Buy a voucher', boxNote: 'Valid for 3 years · as a PDF',
     onePerson: '1 person', nPeople: '{n} people',
     badge: '🎁 Voucher', tileLink: '🎁 Give as a gift',
@@ -121,6 +147,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   de: {
     nav: '🎁 Gutscheine',
     give: '🎁 Als Gutschein verschenken', validNote: 'Gutschein 3 Jahre gültig',
+    gift: '🎁 Als Gutschein verschenken',
     boxTitle: 'Verschenk', boxEm: 'dieses Erlebnis', buy: 'Gutschein kaufen', boxNote: '3 Jahre gültig · als PDF',
     onePerson: '1 Person', nPeople: '{n} Personen',
     badge: '🎁 Gutschein', tileLink: '🎁 Verschenken',
@@ -153,6 +180,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   fr: {
     nav: '🎁 Bons cadeaux',
     give: '🎁 Offrir en bon cadeau', validNote: 'Bon valable 3 ans',
+    gift: '🎁 Offrir en bon cadeau',
     boxTitle: 'Offrez', boxEm: 'cette expérience', buy: 'Acheter un bon', boxNote: 'Valable 3 ans · en PDF',
     onePerson: '1 personne', nPeople: '{n} personnes',
     badge: '🎁 Bon cadeau', tileLink: '🎁 Offrir',
@@ -185,6 +213,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   es: {
     nav: '🎁 Tarjetas regalo',
     give: '🎁 Regalar como vale', validNote: 'Vale válido 3 años',
+    gift: '🎁 Regalar como vale',
     boxTitle: 'Regala', boxEm: 'esta experiencia', buy: 'Comprar vale', boxNote: 'Válido 3 años · en PDF',
     onePerson: '1 persona', nPeople: '{n} personas',
     badge: '🎁 Vale regalo', tileLink: '🎁 Regalar',
@@ -217,6 +246,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   it: {
     nav: '🎁 Buoni regalo',
     give: '🎁 Regalalo come buono', validNote: 'Buono valido 3 anni',
+    gift: '🎁 Regalalo come buono',
     boxTitle: 'Regala', boxEm: 'questa esperienza', buy: 'Compra il buono', boxNote: 'Valido 3 anni · in PDF',
     onePerson: '1 persona', nPeople: '{n} persone',
     badge: '🎁 Buono regalo', tileLink: '🎁 Regala',
@@ -249,6 +279,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   nl: {
     nav: '🎁 Cadeaubonnen',
     give: '🎁 Geef het als cadeaubon', validNote: 'Cadeaubon 3 jaar geldig',
+    gift: '🎁 Geef als cadeaubon',
     boxTitle: 'Geef', boxEm: 'deze ervaring', buy: 'Cadeaubon kopen', boxNote: '3 jaar geldig · als pdf',
     onePerson: '1 persoon', nPeople: '{n} personen',
     badge: '🎁 Cadeaubon', tileLink: '🎁 Cadeau geven',
@@ -281,6 +312,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   pl: {
     nav: '🎁 Bony podarunkowe',
     give: '🎁 Podaruj jako bon', validNote: 'Bon ważny 3 lata',
+    gift: '🎁 Podaruj jako bon',
     boxTitle: 'Podaruj', boxEm: 'to przeżycie', buy: 'Kup bon', boxNote: 'Ważny 3 lata · jako PDF',
     onePerson: '1 osoba', nPeople: 'Osoby: {n}',
     badge: '🎁 Bon', tileLink: '🎁 Podaruj',
@@ -313,6 +345,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
   tr: {
     nav: '🎁 Hediye çekleri',
     give: '🎁 Hediye çeki olarak ver', validNote: 'Hediye çeki 3 yıl geçerli',
+    gift: '🎁 Hediye çeki olarak ver',
     boxTitle: 'Bu deneyimi', boxEm: 'hediye et', buy: 'Hediye çeki al', boxNote: '3 yıl geçerli · PDF olarak',
     onePerson: '1 kişi', nPeople: '{n} kişi',
     badge: '🎁 Hediye çeki', tileLink: '🎁 Hediye et',

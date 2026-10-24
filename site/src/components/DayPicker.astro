@@ -629,7 +629,6 @@ import Voucher from './Voucher.astro';
                               itself, so nobody arrives at a booking page
                               that has already shut. */}
                           {s.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(s.salesEnd)}</span>}
-                          <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
                         </span>
                         {/* Price and Book share one row so every card's
                             action line sits at the same height; the spots
@@ -652,6 +651,9 @@ import Voucher from './Voucher.astro';
                           ) : (
                             <a class="session-book" href={s.bookUrl} {...bookAttrs(s)}>{s.partner ? partnerBook[lang](s.partner.percent) : t.book}</a>
                           )}
+                          {/* For a host who takes vouchers (data/vouchers.ts): a
+                              lighter second button straight under Book. */}
+                          <Voucher kind="under" host={s.host} lang={lang} title={s.title} />
                           {/* People send workshops to friends — the native
                               share sheet where the browser has one, copied
                               link elsewhere. */}

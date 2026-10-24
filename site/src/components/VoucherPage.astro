@@ -18,6 +18,12 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = voucherCopy[lang];
 const hosts = getHosts(lang).filter((h) => isVoucherHost(h.slug));
+/* A hidden preview host who takes vouchers (Lucille Guder, for now) is not
+   listed above, but her own page's voucher buttons still lead here as
+   ?host=<slug> — so the form needs something to open from. A bare data
+   holder: no text, no link, nothing a visitor or a crawler sees. */
+const unlisted = getHosts(lang, { withPreview: true })
+  .filter((h) => isVoucherHost(h.slug) && !hosts.some((l) => l.slug === h.slug));
 const self = href(lang, '/voucher/');
 ---
 
@@ -82,6 +88,17 @@ const self = href(lang, '/voucher/');
           );
         })}
       </ul>
+      {unlisted.map((h) => (
+        <span
+          hidden
+          data-voucher="host"
+          data-voucher-slug={h.slug}
+          data-voucher-host={h.name}
+          data-voucher-title={h.specialty}
+          data-voucher-price={voucherPrice(h)}
+          data-voucher-people="1"
+        ></span>
+      ))}
     </section>
   </div>
 </Base>

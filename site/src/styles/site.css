@@ -5096,10 +5096,13 @@ h1, h2, h3, h4,
 /* — tab bar — the phone's navigation (MobileTabs.astro): four pages and a
    More tab along the bottom edge, in thumb reach, over the home indicator.
    The current page's icon sits in a soft violet pill. More slides up a
-   sheet with the other pages. Hidden above 720px. */
+   sheet with the other pages. Hidden above 720px. Sized a third up from
+   the first cut (64px bar, 22px icons, 11px labels): easier to read and to
+   hit with a thumb. Everything that floats on the bottom edge clears it
+   through --tabbar-h. */
 .tabbar, .tabsheet { display: none; }
 @media (max-width: 720px) {
-  :root { --tabbar-h: 64px; }
+  :root { --tabbar-h: 84px; }
   body { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px)); }
   .tabbar {
     position: fixed;
@@ -5108,14 +5111,14 @@ h1, h2, h3, h4,
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
-    padding: 6px 4px env(safe-area-inset-bottom, 0px);
+    padding: 8px 1px env(safe-area-inset-bottom, 0px);
     background: color-mix(in srgb, var(--color-bg) 94%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     backdrop-filter: blur(14px) saturate(1.4);
     border-top: 1px solid rgba(255, 255, 255, 0.7);
     /* Rounded top corners and a soft lift off the page: a sheet the page
        slides under, not a strip painted on it. */
-    border-radius: 20px 20px 0 0;
+    border-radius: 24px 24px 0 0;
     box-shadow:
       0 -1px 0 rgba(36, 39, 46, 0.06),
       0 -6px 18px rgba(36, 39, 46, 0.07);
@@ -5127,12 +5130,15 @@ h1, h2, h3, h4,
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    gap: 3px;
+    gap: 4px;
     min-width: 0;
     padding: 2px 0 0;
     border: 0;
     background: none;
-    font: 600 11px/1.2 var(--font-body);
+    /* 13.5px on a 390px phone: the most a five-way split fits for the
+       longest labels ("Workshops", "Calendario") without an ellipsis. */
+    font: 600 clamp(12px, 3.46vw, 14px)/1.2 var(--font-body);
+    letter-spacing: -0.02em;
     color: var(--color-text-muted);
     text-decoration: none;
     cursor: pointer;
@@ -5142,13 +5148,13 @@ h1, h2, h3, h4,
   .tabbar-icon {
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 30px;
+    width: 64px;
+    height: 40px;
     border-radius: 999px;
     transition: background-color 0.2s;
   }
   .tabbar-icon svg {
-    width: 22px; height: 22px;
+    width: 29px; height: 29px;
     fill: none; stroke: currentColor; stroke-width: 1.8;
     stroke-linecap: round; stroke-linejoin: round;
   }

@@ -10,6 +10,7 @@ import { almostFullLabel, spotsText } from '../data/availability.ts';
 import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
 import type { Lang } from '../lib/url.ts';
 import { lqipStyle } from '../lib/lqip.ts';
+import Voucher from './Voucher.astro';
 
 interface Props {
   sessions: Session[];
@@ -90,6 +91,8 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
         ) : (
           <a class="date-book" href={s.bookUrl} {...bookAttrs(s)}>{s.partner ? partnerBook[lang](s.partner.percent) : t.book}</a>
         )}
+        {/* For a host who takes vouchers: a lighter second button under Book. */}
+        <Voucher kind="under" host={s.host} lang={lang} title={s.title} />
         {!s.soldOut && typeof s.spots === 'number' && (
           <span class="date-spots">{spotsText(s.spots, lang, t.spots)}</span>
         )}
