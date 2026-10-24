@@ -278,7 +278,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // 15 (1 h); up to 20 in the studio, up to 150 on-site. Net prices per
   // person for companies: XS 35, S 55, M 75.
   petitejungle:     { activity: 'craft',     groupRange: [7, 150], hourRange: [1, 2], groupPrice: [35, 75] },
-  // Antje, call of 22.10.26: company and group bookings for 7–20 people at
+  // Anna, call of 22.10.26: company and group bookings for 7–20 people at
   // €57 per person, materials included; her public sessions run 2 h.
   'anna-malerlebnisse': { activity: 'art', groupRange: [7, 20], hourRange: [2, 2], groupPrice: 57 },
   // Norbert, call notes of 20.10.26: portrait modelling in clay or painting
@@ -511,10 +511,10 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'petitejungle', name: 'Petite Jungle', specialty: 'Terrarium workshops', studio: 'Petite Jungle',
       blurb: 'Aurélie has been building gardens under glass as Petite Jungle since 2019 and teaches it in her studio in Mitte. First you learn how a closed terrarium works (it needs watering only a few times a year), then you layer the soil, set the moss and the tropical plants you pick yourself, and take your jar home. Three sizes for teams: M, a 5-litre jar with 4–5 plants, in two hours; S, a 1.5-litre Weck jar with 2–3 plants, in 90 minutes; and XS, a mini terrarium in an hour, which works for events of up to 150 people. Public evenings run on Wednesdays, in German or English.',
       group: '7–20 in the studio · up to 150 on-site', duration: '1–2 h', place: 'Ruppiner Str. 4, Berlin / on-site', languages: 'DE · EN · FR', priceNote: 'plus VAT' },
-    // Copy from our call with Antje (22.10.26). Her company clients stay
+    // Copy from our call with Anna (22.10.26). Her company clients stay
     // unnamed on purpose. No photos or reel yet.
-    { slug: 'anna-malerlebnisse', name: 'Anna Malerlebnisse', specialty: 'Guided painting sessions', studio: 'Anna Malerlebnisse',
-      blurb: 'Antje’s Malerlebnisse are painting sessions for everyone, with a personal touch: unlike an anonymous art night, she guides each person individually. An architect by profession, she left her permanent job four years ago. She started out painting with seniors in care homes and loves bringing young and old together and making a community stronger. Last year she ran around forty events in different places, including company events for startups, school teams and Christmas parties. Every four to six weeks there is a public session at the Begegnungsstätte Mehr Mitte on Torstraße; for a team she comes to your office, or a room is booked. Small easels, paints and all materials are included.',
+    { slug: 'anna-malerlebnisse', name: 'ANNA-Malerlebnisse', specialty: 'Guided painting sessions', studio: 'ANNA-Malerlebnisse',
+      blurb: 'At ANNA-Malerlebnisse you can leave everyday life behind for a while and get creative at your own pace. With homemade biscuits, warm organic tea and music, Anna creates a cosy atmosphere where everyone feels welcome. You don’t need to know how to paint: Anna guides each of you personally, offers ideas and encourages you to simply give it a try. It’s all about the joy of colour, lovely encounters and creating something of your own – with no pressure to perform.\n\nAnna is an architect and gave up her permanent job four years ago. She held her first painting sessions with seniors in care homes. Bringing young and old together and letting people experience community is especially close to her heart. Last year she hosted around forty events, including company events for startups, school teams and Christmas parties.\n\nEvery four to six weeks there is an open session at the Begegnungsstätte Mehr Mitte on Torstraße. For teams, Anna comes to your office, or a suitable room is booked. Small easels, paints, canvases and all other materials are included. At the end you take home your own painting and the memory of a lovely time together.',
       group: '7–20', duration: '2 h', place: 'Mehr Mitte, Torstraße 190, Berlin / your office', languages: 'DE · EN', priceNote: 'materials included · a booked room costs extra (usually around €200)' },
     // Norbert, from Jirel’s call notes (20.10.26): company and team events only,
     // no public dates. The company he painted with stays unnamed. No price.
@@ -714,8 +714,8 @@ const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'petitejungle', name: 'Petite Jungle', specialty: 'Terrarium-Workshops', studio: 'Petite Jungle',
       blurb: 'Aurélie baut seit 2019 als Petite Jungle Gärten unter Glas und zeigt es in ihrem Studio in Mitte. Zuerst erfährst du, wie ein geschlossenes Terrarium funktioniert (gegossen wird nur ein paar Mal im Jahr), dann schichtest du Erde, setzt Moos und die tropischen Pflanzen, die du selbst aussuchst, und nimmst dein Glas mit nach Hause. Drei Größen für Teams: M, ein 5-Liter-Glas mit 4–5 Pflanzen, in zwei Stunden; S, ein 1,5-Liter-Weckglas mit 2–3 Pflanzen, in 90 Minuten; und XS, ein Mini-Terrarium in einer Stunde, das auch für Events mit bis zu 150 Personen funktioniert. Offene Abende gibt es mittwochs, auf Deutsch oder Englisch.',
       group: '7–20 im Studio · bis 150 vor Ort', duration: '1–2 Std.', place: 'Ruppiner Str. 4, Berlin / vor Ort', languages: 'DE · EN · FR', priceNote: 'zzgl. MwSt.' },
-    { slug: 'anna-malerlebnisse', name: 'Anna Malerlebnisse', specialty: 'Angeleitete Mal-Workshops', studio: 'Anna Malerlebnisse',
-      blurb: 'Antjes Malerlebnisse sind Malstunden für alle, mit persönlicher Note: Anders als bei einer anonymen Art Night begleitet sie jede und jeden einzeln. Sie ist Architektin und hat vor vier Jahren ihre Festanstellung aufgegeben. Angefangen hat sie mit Seniorinnen und Senioren in Pflegeheimen, und am liebsten bringt sie Jung und Alt zusammen und stärkt die Gemeinschaft. Im letzten Jahr hat sie rund vierzig Events an verschiedenen Orten geleitet, darunter Firmenevents für Startups, Schulteams und Weihnachtsfeiern. Alle vier bis sechs Wochen gibt es einen offenen Termin in der Begegnungsstätte Mehr Mitte in der Torstraße; für Teams kommt sie zu euch ins Büro, oder es wird ein Raum gebucht. Kleine Staffeleien, Farben und alles Material sind inklusive.',
+    { slug: 'anna-malerlebnisse', name: 'ANNA-Malerlebnisse', specialty: 'Angeleitete Mal-Workshops', studio: 'ANNA-Malerlebnisse',
+      blurb: 'Bei ANNA-Malerlebnissen könnt ihr den Alltag für eine Weile hinter euch lassen und in Ruhe kreativ werden. Bei selbstgebackenen Keksen, warmem Bio-Tee und Musik schafft Anna eine gemütliche Atmosphäre, in der sich alle willkommen fühlen. Ihr müsst dafür nicht malen können: Anna begleitet jede und jeden persönlich, gibt Anregungen und ermutigt euch, einfach auszuprobieren. Es geht um die Freude an Farben, schöne Begegnungen und darum, etwas Eigenes zu schaffen – ganz ohne Leistungsdruck.\n\nAnna ist Architektin und hat vor vier Jahren ihre Festanstellung aufgegeben. Ihre ersten Malerlebnisse hat sie mit Seniorinnen und Senioren in Pflegeheimen gestaltet. Besonders am Herzen liegt ihr, Jung und Alt zusammenzubringen und Gemeinschaft erlebbar zu machen. Im letzten Jahr hat sie rund vierzig Events begleitet, darunter Firmenevents für Startups, Schulteams und Weihnachtsfeiern.\n\nAlle vier bis sechs Wochen gibt es einen offenen Termin in der Begegnungsstätte Mehr Mitte in der Torstraße. Für Teams kommt Anna zu euch ins Büro, oder es wird ein passender Raum gebucht. Kleine Staffeleien, Farben, Leinwände und alle weiteren Materialien sind inklusive. Am Ende nehmt ihr euer eigenes Bild und die Erinnerung an eine schöne gemeinsame Zeit mit nach Hause.',
       group: '7–20', duration: '2 Std.', place: 'Mehr Mitte, Torstraße 190, Berlin / euer Büro', languages: 'DE · EN', priceNote: 'inkl. Material · ein gebuchter Raum kostet extra (meist rund 200 €)' },
     { slug: 'norbert-bildhauerei', name: 'Norbert', specialty: 'Bildhauerei & Malerei für Teams',
       blurb: 'Norbert ist Bildhauer und Maler und vor einigen Jahren nach Deutschland gekommen. Er modelliert Porträts von Persönlichkeiten, darunter Figuren aus der Rockszene, und malt großformatig. Ein- bis zweimal pro Woche unterrichtet er Bildhauerei an einer Schule und leitet ein- und mehrwöchige Schulworkshops, etwa drei Wochen im Spätsommer mit wechselnden Themen. Er vermittelt die Grundlagen der Bildhauerei, Porträtmodellieren, Ornamente und Zeichnen, und er kann besonders gut zeigen, wie man Bewegung einfängt. Auf Twiggli bietet er ausschließlich Firmen- und Teamevents an, in zwei Formaten von zwei bis drei Stunden: ein Porträt aus Ton modellieren oder auf Leinwand malen. Für eine Firma hat er schon einen Malworkshop geleitet, bei dem alle Mitarbeitenden gemeinsam an Staffeleien ein Abschiedsbild gemalt haben. Er kommt zu euch ins Unternehmen; Raum und Material (Ton, Modellierwerkzeug, Leinwände, Staffeleien) stellt ihr oder organisieren wir.',
@@ -840,7 +840,7 @@ const reels: Record<string, { video: string; poster: string }> = {
      petite jungle, berlin") and its closing card ("book today",
      petitejungle.de) are cut off. Audio stripped. */
   petitejungle: { video: '/video/petitejungle.mp4', poster: '/video/petitejungle-poster.jpg' },
-  /* Antje's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
+  /* Anna's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
      where her public dates run (22.10.26): the empty room laid out with
      easels, the group at work, everyone holding up their canvases, then
      hands on the blue seascape and the lavender field. No caption in it,
@@ -1560,7 +1560,7 @@ const firstNames: Record<string, string> = {
   dirt: 'Kerstin & Julia', rose: 'Rose', techno: 'Dina', arcoiris: 'Barbara',
   aria: 'Aria',
   petitejungle: 'Aurélie',
-  'anna-malerlebnisse': 'Antje',
+  'anna-malerlebnisse': 'Anna',
   'norbert-bildhauerei': 'Norbert',
   'himapan-berlin': 'Kirsten',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
