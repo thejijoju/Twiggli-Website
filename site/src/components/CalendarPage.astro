@@ -9,12 +9,19 @@ import { ui } from '../data/i18n.ts';
 import { href, type Lang } from '../lib/url.ts';
 import Doodled from './Doodled.astro';
 
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+interface Props {
+  lang: Lang;
+  /** The filter draft D's preview address (src/pages/de/preview/
+   *  kalender-filter-d), which now shows the live calendar itself: noindex,
+   *  German only, and no event markup of its own. */
+  preview?: boolean;
+}
+const { lang, preview = false } = Astro.props;
 const t = ui(lang).calendarPage;
 ---
 
-<Base title={t.title} description={t.description} lang={lang} pageClass="page-flush">
+<Base title={t.title} description={t.description} lang={lang} pageClass="page-flush"
+  {...(preview ? { noindex: true, translations: [lang] } : {})}>
   <div class="container">
     <section class="page-head">
       <PageCircles pics={circlesFor.calendar(lang)} />
@@ -30,5 +37,5 @@ const t = ui(lang).calendarPage;
     </section>
 
   </div>
-  <EventSchema lang={lang} pageUrl={`${SITE}${href(lang, '/happening-today/')}`} />
+  {!preview && <EventSchema lang={lang} pageUrl={`${SITE}${href(lang, '/happening-today/')}`} />}
 </Base>

@@ -12,8 +12,9 @@
  *                    Filter button with a count that opens a sheet
  *    C  Seitenleiste a column of collapsible sections with checkboxes and a
  *                    price slider; a bottom sheet on a phone
- *    D  Datumsleiste the next 14 days as day pills and quick toggles under
- *                    them (Heute, Wochenende, Abends, Unter 50 €, Kinder)
+ *    D  Datumsleiste the one chosen: it is now the live calendar's own
+ *                    filter (DayPicker.astro), and kalender-filter-d shows
+ *                    the live calendar
  *    E  Dropdowns    one row of dropdown chips, the active ones in purple
  *
  *  Styled in kalender-filter.css; the controls all speak one small protocol
@@ -31,11 +32,11 @@ import '../styles/home-discover.css';
 import '../styles/kalender.css';
 import '../styles/kalender-filter.css';
 
-type Variant = 'a' | 'b' | 'c' | 'd' | 'e';
+type Variant = 'a' | 'b' | 'c' | 'e';
 interface Props { variant: Variant }
 const { variant } = Astro.props;
 const lang = 'de' as const;
-const names: Record<Variant, string> = { a: 'Suchleiste', b: 'Kategorien', c: 'Seitenleiste', d: 'Datumsleiste', e: 'Dropdowns' };
+const names: Record<Variant, string> = { a: 'Suchleiste', b: 'Kategorien', c: 'Seitenleiste', e: 'Dropdowns' };
 
 const HORIZON = 30;
 const STRIP = 14;
@@ -311,55 +312,6 @@ const closeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 
         </div>
       )}
 
-      {/* ───────────── D · the next 14 days and quick toggles ───────────── */}
-      {variant === 'd' && (
-        <div class="kf-d-top">
-          <div class="kf-d-strip" role="group" aria-label="Tag">
-            <button type="button" class="kf-d-day kf-d-all" data-set="day" data-val="" data-single><b>Alle</b><small>Tage</small></button>
-            {strip.map((o) => (
-              <button type="button" class:list={['kf-d-day', (dow(o) === 0 || dow(o) === 6) && 'is-we', o > 0 && dayDate(o).getUTCDate() === 1 && 'is-month']} data-set="day" data-val={o} data-single
-                aria-label={dayLong(o)}>
-                <small>{o === 0 ? 'Heute' : fmt(o, { weekday: 'short' }).replace('.', '')}</small>
-                <b>{dayDate(o).getUTCDate()}</b>
-                <small class="kf-d-mon">{fmt(o, { month: 'short' }).replace('.', '')}</small>
-              </button>
-            ))}
-          </div>
-          <div class="kf-d-toggles">
-            <button type="button" class="kf-tog" data-when="today">⚡ Heute</button>
-            <button type="button" class="kf-tog" data-when="weekend">🎉 Wochenende</button>
-            <button type="button" class="kf-tog" data-flag="evening">🌙 Abends</button>
-            <button type="button" class="kf-tog" data-pmax-toggle="50">💸 Unter 50 €</button>
-            {hasKids && <button type="button" class="kf-tog" data-flag="kids">🧸 Mit Kindern</button>}
-            <span class="kf-d-sep" aria-hidden="true"></span>
-            <button type="button" class="kf-tog kf-tog-more" data-pop-open="kf-d-sheet" aria-expanded="false">
-              <Fragment set:html={sliders} /><span>Mehr Filter</span><span class="kf-badge" data-badge data-badge-keys="act dist" hidden></span>
-            </button>
-          </div>
-          <div class="kf-pop kf-sheet kf-modal" id="kf-d-sheet" data-pop data-modal>
-            <div class="kf-sheethead"><b>Mehr Filter</b><button type="button" class="kf-x" data-pop-close aria-label="Schließen" set:html={closeIcon} /></div>
-            <div class="kf-sheetbody">
-              <section class="kf-card-sec">
-                <h3>Kategorie</h3>
-                <div class="kf-presets">
-                  {acts.map((a) => <button type="button" class="kf-chip" data-set="act" data-val={a} style={`--tint:${actTint[a]}`}><span aria-hidden="true">{actIcon[a]}</span>{actLabel[a]}</button>)}
-                </div>
-              </section>
-              <section class="kf-card-sec">
-                <h3>Bezirk</h3>
-                <div class="kf-presets">
-                  {topDistricts.map((d) => <button type="button" class="kf-chip" data-set="dist" data-val={d}>{d}</button>)}
-                </div>
-              </section>
-            </div>
-            <div class="kf-sheetfoot">
-              <button type="button" class="kf-clear" data-reset>Alles löschen</button>
-              <button type="button" class="kf-show" data-pop-close data-kf-show></button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* ───────────── E · dropdown chips ───────────── */}
       {variant === 'e' && (
         <div class="kf-e-row" role="group" aria-label="Filter">
@@ -522,13 +474,12 @@ const closeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 
 </Base>
 
 <script>
-  /* One filter for all five drafts. State: act / day / dist / price are
+  /* One filter for the drafts. State: act / day / dist / price are
      sets, kids / evening flags, pmax a top price. Controls:
        [data-set=key][data-val=v]       toggles v (data-single: only v; "" clears)
        input[data-set=key][value=v]     checkbox for the same
        [data-when=preset]               a date preset (data-presets), "all" clears
        [data-flag=kids|evening]         a toggle (button or checkbox)
-       [data-pmax-toggle=50]            top price on/off
        input[type=range][data-pmax]     top price slider
        [data-reset] / [data-reset-key]  clear all / one
        [data-pop-open=id] / [data-pop-close]  popovers and sheets */
@@ -629,10 +580,6 @@ const closeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 
         if (b instanceof HTMLInputElement) b.checked = on;
         else { b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); }
       });
-      $$('[data-pmax-toggle]').forEach((b) => {
-        const on = st.pmax === Number(b.dataset.pmaxToggle);
-        b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on));
-      });
       $$<HTMLInputElement>('input[data-pmax]').forEach((i) => {
         i.value = String(st.pmax ?? maxPrice);
         i.style.setProperty('--fill', `${((Number(i.value) - Number(i.min)) / (Number(i.max) - Number(i.min))) * 100}%`);
@@ -694,7 +641,7 @@ const closeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 
 
     root.addEventListener('click', (e) => {
       const t = e.target as HTMLElement;
-      const el = t.closest<HTMLElement>('[data-pop-open],[data-pop-close],[data-set][data-val],[data-when],[data-flag],[data-pmax-toggle],[data-reset],[data-reset-key],[data-drop],[data-kf-more],[data-more],[data-kf-scrim]');
+      const el = t.closest<HTMLElement>('[data-pop-open],[data-pop-close],[data-set][data-val],[data-when],[data-flag],[data-reset],[data-reset-key],[data-drop],[data-kf-more],[data-more],[data-kf-scrim]');
       if (!el) {
         if (open && !t.closest('[data-pop]') && !matchMedia('(max-width: 720px)').matches) close();
         return;
@@ -717,7 +664,6 @@ const closeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 
         st.day.clear();
         if (p !== 'all' && !already) presets[p].forEach((x) => st.day.add(String(x)));
       } else if (d.flag) { const f = d.flag as 'kids' | 'evening'; st[f] = !st[f]; }
-      else if (d.pmaxToggle) { const v = Number(d.pmaxToggle); st.pmax = st.pmax === v ? null : v; st.price.clear(); }
       else if (d.drop) {
         if (d.drop === 'pmax') st.pmax = null;
         else if (d.drop === 'kids' || d.drop === 'evening') st[d.drop] = false;

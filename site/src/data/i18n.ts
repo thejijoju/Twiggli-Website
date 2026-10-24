@@ -63,7 +63,6 @@ const en = {
   calendar: {
     spots: 'spots left', book: 'Booking request', request: 'Booking request', timeTba: 'Time when booking',
     none: 'Nothing scheduled for this day yet.',
-    noMatch: 'Nothing in this activity on this day — try another.',
     today: 'Today', tomorrow: 'Tomorrow', pick: 'Pick a day',
     filter: 'Filter by activity', filterDistrict: 'Filter by district', all: 'All',
     kids: '🧸 For kids', share: 'Share', copied: 'Link copied',
@@ -75,6 +74,8 @@ const en = {
     onRequestHead: 'On request', inquire: 'Booking request',
     onRequestNote: 'These workshops run whenever you ask — the host schedules a date around you.',
     viewGrid: 'Grid view', viewList: 'List view',
+    allDays: 'All days', weekend: 'Weekend', evening: 'Evenings', withKids: 'With kids', moreFilters: 'More filters',
+    district: 'District', close: 'Close', moreDays: 'Show more days', noMatchFilters: 'Nothing on for that. Try another day or loosen a filter.',
     results: (n: number) => (n === 1 ? '1 workshop' : `${n} workshops`),
     mailBookSubject: (title: string, when: string) => `Booking request: ${title} on ${when}`,
     mailBookBody: (title: string, host: string, when: string, price?: string) =>
@@ -222,7 +223,6 @@ const de: UiCopy = {
   calendar: {
     spots: 'Plätze frei', book: 'Buchungsanfrage', request: 'Buchungsanfrage', timeTba: 'Uhrzeit bei Buchung',
     none: 'Für diesen Tag ist noch nichts geplant.',
-    noMatch: 'In dieser Kategorie läuft an diesem Tag nichts — probier eine andere.',
     today: 'Heute', tomorrow: 'Morgen', pick: 'Tag wählen',
     filter: 'Nach Aktivität filtern', filterDistrict: 'Nach Bezirk filtern', all: 'Alle',
     kids: '🧸 Für Kinder', share: 'Teilen', copied: 'Link kopiert',
@@ -234,6 +234,8 @@ const de: UiCopy = {
     onRequestHead: 'Auf Anfrage', inquire: 'Buchungsanfrage',
     onRequestNote: 'Diese Workshops laufen, wann du willst — der Host legt den Termin mit dir fest.',
     viewGrid: 'Rasteransicht', viewList: 'Listenansicht',
+    allDays: 'Alle Tage', weekend: 'Wochenende', evening: 'Abends', withKids: 'Mit Kindern', moreFilters: 'Mehr Filter',
+    district: 'Bezirk', close: 'Schließen', moreDays: 'Weitere Tage zeigen', noMatchFilters: 'Dazu läuft gerade nichts. Probier einen anderen Tag oder lockere einen Filter.',
     results: (n: number) => (n === 1 ? '1 Workshop' : `${n} Workshops`),
     mailBookSubject: (title, when) => `Buchungsanfrage: ${title} am ${when}`,
     mailBookBody: (title, host, when, price) =>
@@ -379,7 +381,6 @@ const fr: UiCopy = {
   calendar: {
     spots: 'places restantes', book: 'Demande de réservation', request: 'Demande de réservation', timeTba: 'Horaire à la réservation',
     none: 'Rien de prévu ce jour-là pour l’instant.',
-    noMatch: 'Rien dans cette catégorie ce jour-là — essayez-en une autre.',
     today: 'Aujourd’hui', tomorrow: 'Demain', pick: 'Choisir un jour',
     filter: 'Filtrer par activité', filterDistrict: 'Filtrer par quartier', all: 'Tout',
     kids: '🧸 Pour les enfants', share: 'Partager', copied: 'Lien copié',
@@ -391,6 +392,8 @@ const fr: UiCopy = {
     onRequestHead: 'Sur demande', inquire: 'Demande de réservation',
     onRequestNote: 'Ces ateliers ont lieu quand vous le souhaitez — l’hôte fixe la date avec vous.',
     viewGrid: 'Vue grille', viewList: 'Vue liste',
+    allDays: 'Tous les jours', weekend: 'Week-end', evening: 'Le soir', withKids: 'Avec enfants', moreFilters: 'Plus de filtres',
+    district: 'Quartier', close: 'Fermer', moreDays: 'Afficher plus de jours', noMatchFilters: 'Rien pour ces critères. Essayez un autre jour ou retirez un filtre.',
     results: (n: number) => (n === 1 ? '1 atelier' : `${n} ateliers`),
     mailBookSubject: (title, when) => `Demande de réservation : ${title} le ${when}`,
     mailBookBody: (title, host, when, price) =>
@@ -536,7 +539,6 @@ const es: UiCopy = {
   calendar: {
     spots: 'plazas libres', book: 'Solicitud de reserva', request: 'Solicitud de reserva', timeTba: 'Hora al reservar',
     none: 'Todavía no hay nada programado para este día.',
-    noMatch: 'No hay nada de esta categoría ese día — prueba otra.',
     today: 'Hoy', tomorrow: 'Mañana', pick: 'Elige un día',
     filter: 'Filtrar por actividad', filterDistrict: 'Filtrar por barrio', all: 'Todo',
     kids: '🧸 Para niños', share: 'Compartir', copied: 'Enlace copiado',
@@ -548,6 +550,8 @@ const es: UiCopy = {
     onRequestHead: 'Bajo petición', inquire: 'Solicitud de reserva',
     onRequestNote: 'Estos talleres se hacen cuando tú quieras — el anfitrión fija la fecha contigo.',
     viewGrid: 'Vista en cuadrícula', viewList: 'Vista en lista',
+    allDays: 'Todos los días', weekend: 'Fin de semana', evening: 'Por la noche', withKids: 'Con niños', moreFilters: 'Más filtros',
+    district: 'Barrio', close: 'Cerrar', moreDays: 'Mostrar más días', noMatchFilters: 'No hay nada para eso. Prueba otro día o quita un filtro.',
     results: (n: number) => (n === 1 ? '1 taller' : `${n} talleres`),
     mailBookSubject: (title, when) => `Solicitud de reserva: ${title} el ${when}`,
     mailBookBody: (title, host, when, price) =>
@@ -693,7 +697,6 @@ const it: UiCopy = {
   calendar: {
     spots: 'posti liberi', book: 'Richiesta di prenotazione', request: 'Richiesta di prenotazione', timeTba: 'Orario alla prenotazione',
     none: 'Per questo giorno non c’è ancora nulla in programma.',
-    noMatch: 'Niente in questa categoria per questo giorno — provane un’altra.',
     today: 'Oggi', tomorrow: 'Domani', pick: 'Scegli un giorno',
     filter: 'Filtra per attività', filterDistrict: 'Filtra per quartiere', all: 'Tutto',
     kids: '🧸 Per bambini', share: 'Condividi', copied: 'Link copiato',
@@ -705,6 +708,8 @@ const it: UiCopy = {
     onRequestHead: 'Su richiesta', inquire: 'Richiesta di prenotazione',
     onRequestNote: 'Questi workshop si tengono quando vuoi tu — l’host fissa la data con te.',
     viewGrid: 'Vista a griglia', viewList: 'Vista a elenco',
+    allDays: 'Tutti i giorni', weekend: 'Weekend', evening: 'Di sera', withKids: 'Con bambini', moreFilters: 'Altri filtri',
+    district: 'Quartiere', close: 'Chiudi', moreDays: 'Mostra altri giorni', noMatchFilters: 'Niente per questa ricerca. Prova un altro giorno o togli un filtro.',
     results: (n: number) => `${n} workshop`,
     mailBookSubject: (title, when) => `Richiesta di prenotazione: ${title} il ${when}`,
     mailBookBody: (title, host, when, price) =>
@@ -850,7 +855,6 @@ const nl: UiCopy = {
   calendar: {
     spots: 'plekken vrij', book: 'Boekingsaanvraag', request: 'Boekingsaanvraag', timeTba: 'Tijd bij het boeken',
     none: 'Voor deze dag staat nog niets gepland.',
-    noMatch: 'Niets in deze categorie op deze dag — probeer een andere.',
     today: 'Vandaag', tomorrow: 'Morgen', pick: 'Kies een dag',
     filter: 'Filteren op activiteit', filterDistrict: 'Filteren op wijk', all: 'Alles',
     kids: '🧸 Voor kinderen', share: 'Delen', copied: 'Link gekopieerd',
@@ -862,6 +866,8 @@ const nl: UiCopy = {
     onRequestHead: 'Op aanvraag', inquire: 'Boekingsaanvraag',
     onRequestNote: 'Deze workshops vinden plaats wanneer jij wilt — de host prikt de datum samen met jou.',
     viewGrid: 'Rasterweergave', viewList: 'Lijstweergave',
+    allDays: 'Alle dagen', weekend: 'Weekend', evening: '’s Avonds', withKids: 'Met kinderen', moreFilters: 'Meer filters',
+    district: 'Wijk', close: 'Sluiten', moreDays: 'Meer dagen tonen', noMatchFilters: 'Daarvoor staat niets gepland. Probeer een andere dag of zet een filter uit.',
     results: (n: number) => (n === 1 ? '1 workshop' : `${n} workshops`),
     mailBookSubject: (title, when) => `Boekingsaanvraag: ${title} op ${when}`,
     mailBookBody: (title, host, when, price) =>
@@ -1007,7 +1013,6 @@ const pl: UiCopy = {
   calendar: {
     spots: 'wolnych miejsc', book: 'Prośba o rezerwację', request: 'Prośba o rezerwację', timeTba: 'Godzina przy rezerwacji',
     none: 'Na ten dzień nic jeszcze nie zaplanowano.',
-    noMatch: 'Nic z tej kategorii tego dnia — spróbuj innej.',
     today: 'Dziś', tomorrow: 'Jutro', pick: 'Wybierz dzień',
     filter: 'Filtruj według aktywności', filterDistrict: 'Filtruj według dzielnicy', all: 'Wszystko',
     kids: '🧸 Dla dzieci', share: 'Udostępnij', copied: 'Link skopiowany',
@@ -1021,6 +1026,8 @@ const pl: UiCopy = {
     viewGrid: 'Widok siatki', viewList: 'Widok listy',
     // 'warsztaty' is plural-only in Polish, so it carries the count in its
     // base form; 2–4 take that form, everything else the genitive.
+    allDays: 'Wszystkie dni', weekend: 'Weekend', evening: 'Wieczorem', withKids: 'Z dziećmi', moreFilters: 'Więcej filtrów',
+    district: 'Dzielnica', close: 'Zamknij', moreDays: 'Pokaż więcej dni', noMatchFilters: 'Nic tu nie pasuje. Wybierz inny dzień albo wyłącz jakiś filtr.',
     results: (n: number) => {
       const ones = n % 10;
       const teens = n % 100;
@@ -1171,7 +1178,6 @@ const tr: UiCopy = {
   calendar: {
     spots: 'yer kaldı', book: 'Rezervasyon talebi', request: 'Rezervasyon talebi', timeTba: 'Saat rezervasyonda',
     none: 'Bu gün için henüz bir şey planlanmadı.',
-    noMatch: 'Bu kategoride o gün bir şey yok — başka birini deneyin.',
     today: 'Bugün', tomorrow: 'Yarın', pick: 'Bir gün seçin',
     filter: 'Etkinliğe göre filtrele', filterDistrict: 'Semte göre filtrele', all: 'Tümü',
     kids: '🧸 Çocuklar için', share: 'Paylaş', copied: 'Bağlantı kopyalandı',
@@ -1183,6 +1189,8 @@ const tr: UiCopy = {
     onRequestHead: 'Talep üzerine', inquire: 'Rezervasyon talebi',
     onRequestNote: 'Bu atölyeler siz istediğinizde yapılır — tarihi eğitmen sizinle birlikte belirler.',
     viewGrid: 'Izgara görünümü', viewList: 'Liste görünümü',
+    allDays: 'Tüm günler', weekend: 'Hafta sonu', evening: 'Akşam', withKids: 'Çocuklarla', moreFilters: 'Daha fazla filtre',
+    district: 'Semt', close: 'Kapat', moreDays: 'Daha fazla gün göster', noMatchFilters: 'Buna uygun bir şey yok. Başka bir gün dene ya da bir filtreyi kaldır.',
     results: (n: number) => `${n} atölye`,
     mailBookSubject: (title, when) => `Rezervasyon talebi: ${title}, ${when}`,
     mailBookBody: (title, host, when, price) =>

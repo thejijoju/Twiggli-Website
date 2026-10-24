@@ -75,6 +75,35 @@ const byTime = (list: Session[]): [string, Session[]][] => {
 };
 
 const t = ui(lang).calendar;
+
+/* — the filter (draft D) — */
+/** The day pills: the next two weeks. Every later day is still in the page,
+ *  reached through "All days" or a ?date= link. */
+const STRIP_DAYS = 14;
+const stripDays = days.slice(0, STRIP_DAYS);
+const dayAt = (offset: number) => new Date(berlinTodayMs() + offset * 86400000);
+const isWeekend = (offset: number) => [0, 6].includes(dayAt(offset).getUTCDay());
+const stripDow = (offset: number) =>
+  offset === 1 ? t.tomorrow : dayAt(offset).toLocaleDateString(LANG_META[lang].locale, { weekday: 'short', timeZone: 'UTC' }).replace('.', '');
+const stripMonth = (offset: number) =>
+  dayAt(offset).toLocaleDateString(LANG_META[lang].locale, { month: 'short', timeZone: 'UTC' }).replace('.', '');
+/** "Evenings": a session that starts at 17:00 or later. */
+const isEvening = (s: Session) => !!s.time && Number(s.time.slice(0, 2)) >= 17;
+const hasEvening = sessions.some(isEvening);
+/** "Under €50": the price bands that end at €50 or below (priceFilter.ts),
+ *  of those the feed actually fills. */
+const under50 = priceBands.filter((b) => b.max <= 50).map((b) => b.id);
+/** "12 workshops" in each plural form the language has, so the script can
+ *  word any count without carrying the language itself. */
+const resultForms = (() => {
+  const rules = new Intl.PluralRules(LANG_META[lang].locale);
+  const forms: Record<string, string> = {};
+  for (let n = 0; n < 200; n++) {
+    const cat = rules.select(n);
+    if (!forms[cat]) forms[cat] = t.results(n).replace(String(n), '{n}');
+  }
+  return forms;
+})();
 /** The filter bar's own words, shared with the corporate directory's so the
  *  two read the same. */
 const f = filterCopy[lang];
@@ -123,30 +152,40 @@ const dayLabel = (offset: number) =>
  *  script itself carries no language. */
 const clientCopy: Record<Lang, {
   today: string; tomorrow: string; thisDay: string; nextDay: string; onDate: string; heading: string;
+  /** The heading's day for the weekend toggle and for every day at once. */
+  weekend: string; soon: string;
   share: string; shareTime: string; notifyBody: string;
 }> = {
   en: { today: 'today', tomorrow: 'tomorrow', thisDay: 'this {weekday}', nextDay: 'next {weekday}', onDate: 'on {date}', heading: 'What is on in Berlin {when}',
+        weekend: 'this weekend', soon: 'over the coming days',
         share: '{title} with {host} on {when}{time} — found on twiggli.com', shareTime: ' at {time}',
         notifyBody: 'Hi Twiggli,\n\nplease notify me when this sold-out workshop is bookable again:\n\nWorkshop: {title}\nHost: {host}\nDate: {when}\nNotify this address: {address}\n\nThanks!' },
   de: { today: 'heute', tomorrow: 'morgen', thisDay: 'diesen {weekday}', nextDay: 'nächsten {weekday}', onDate: 'am {date}', heading: 'Was {when} in Berlin läuft',
+        weekend: 'am Wochenende', soon: 'in den nächsten Tagen',
         share: '{title} bei {host} am {when}{time} — gefunden auf twiggli.com', shareTime: ' um {time} Uhr',
         notifyBody: 'Hallo Twiggli,\n\nbitte benachrichtigt mich, sobald dieser ausgebuchte Workshop wieder buchbar ist:\n\nWorkshop: {title}\nGastgeber: {host}\nTermin: {when}\nBenachrichtigung an: {address}\n\nDanke!' },
   fr: { today: 'aujourd’hui', tomorrow: 'demain', thisDay: 'ce {weekday}', nextDay: '{weekday} prochain', onDate: 'le {date}', heading: 'Ce qui se passe à Berlin {when}',
+        weekend: 'ce week-end', soon: 'dans les prochains jours',
         share: '{title} avec {host} le {when}{time} — trouvé sur twiggli.com', shareTime: ' à {time}',
         notifyBody: 'Bonjour Twiggli,\n\nmerci de me prévenir dès que cet atelier complet est de nouveau réservable :\n\nAtelier : {title}\nHôte : {host}\nDate : {when}\nAdresse à prévenir : {address}\n\nMerci !' },
   es: { today: 'hoy', tomorrow: 'mañana', thisDay: 'este {weekday}', nextDay: 'el próximo {weekday}', onDate: 'el {date}', heading: 'Qué hay en Berlín {when}',
+        weekend: 'este fin de semana', soon: 'en los próximos días',
         share: '{title} con {host} el {when}{time} — encontrado en twiggli.com', shareTime: ' a las {time}',
         notifyBody: 'Hola Twiggli:\n\navisadme cuando este taller agotado vuelva a estar disponible:\n\nTaller: {title}\nAnfitrión: {host}\nFecha: {when}\nAvisar a: {address}\n\n¡Gracias!' },
   it: { today: 'oggi', tomorrow: 'domani', thisDay: 'questo {weekday}', nextDay: '{weekday} prossimo', onDate: 'il {date}', heading: 'Cosa c’è a Berlino {when}',
+        weekend: 'questo fine settimana', soon: 'nei prossimi giorni',
         share: '{title} con {host} {when}{time} — trovato su twiggli.com', shareTime: ' alle {time}',
         notifyBody: 'Ciao Twiggli,\n\navvisatemi quando questo workshop esaurito sarà di nuovo prenotabile:\n\nWorkshop: {title}\nHost: {host}\nData: {when}\nAvvisare: {address}\n\nGrazie!' },
   nl: { today: 'vandaag', tomorrow: 'morgen', thisDay: 'deze {weekday}', nextDay: 'volgende week {weekday}', onDate: 'op {date}', heading: 'Wat er {when} in Berlijn te doen is',
+        weekend: 'dit weekend', soon: 'de komende dagen',
         share: '{title} met {host} op {when}{time} — gevonden op twiggli.com', shareTime: ' om {time}',
         notifyBody: 'Hallo Twiggli,\n\nlaat me weten zodra deze uitverkochte workshop weer te boeken is:\n\nWorkshop: {title}\nHost: {host}\nDatum: {when}\nBericht naar: {address}\n\nBedankt!' },
   pl: { today: 'dziś', tomorrow: 'jutro', thisDay: 'w ten {weekday}', nextDay: 'w przyszły {weekday}', onDate: '{date}', heading: 'Co dzieje się w Berlinie {when}',
+        weekend: 'w ten weekend', soon: 'w najbliższych dniach',
         share: '{title} — {host}, {when}{time} — znalezione na twiggli.com', shareTime: ' o {time}',
         notifyBody: 'Cześć Twiggli,\n\nproszę o powiadomienie, gdy te wyprzedane warsztaty znów będzie można zarezerwować:\n\nWarsztaty: {title}\nProwadzący: {host}\nTermin: {when}\nPowiadomić na adres: {address}\n\nDziękuję!' },
   tr: { today: 'bugün', tomorrow: 'yarın', thisDay: 'bu {weekday}', nextDay: 'gelecek {weekday}', onDate: '{date}', heading: 'Berlin’de {when} neler var',
+        weekend: 'bu hafta sonu', soon: 'önümüzdeki günlerde',
         share: '{title} — {host}, {when}{time} — twiggli.com’da bulundu', shareTime: ' saat {time}',
         notifyBody: 'Merhaba Twiggli,\n\nbu tükenmiş atölye yeniden rezervasyona açıldığında lütfen bana haber verin:\n\nAtölye: {title}\nEğitmen: {host}\nTarih: {when}\nBildirim adresi: {address}\n\nTeşekkürler!' },
 };
@@ -231,112 +270,130 @@ import Voucher from './Voucher.astro';
   data-price-bands={JSON.stringify(PRICE_BANDS.map((b) => [b.id, b.min, Number.isFinite(b.max) ? b.max : null]))}
   data-today={t.today}
   data-tomorrow={t.tomorrow}
+  data-results={JSON.stringify(resultForms)}
 >
+  {/* The filter (draft D, "Datumsleiste", src/pages/de/preview/
+      kalender-filter-d): the next two weeks as day pills, the weekend
+      tinted; quick toggles under them; activity, district and price in a
+      "More filters" sheet. A frosted panel, so the page's ground shows
+      through it. */}
   {!variant && (
   <>
-  <span class="daystrip-month" data-month aria-hidden="true"></span>
-  <div class="daystrip" role="tablist" aria-label={t.pick}>
-    {days.map((offset) => (
-      <button
-        class="daychip"
-        type="button"
-        role="tab"
-        data-offset={offset}
-        aria-selected={offset === 0 ? 'true' : 'false'}
-      >
-        {/* filled in by the script — the date depends on the visitor's clock,
-            not on when the site was built */}
-        <span class="daychip-dow"></span>
-        <span class="daychip-num"></span>
+  <div class="dfilter">
+    <div class="dfilter-strip" role="tablist" aria-label={t.pick}>
+      <button class="dpill dpill-all" type="button" role="tab" data-offset="all" aria-selected="false">
+        <b>{t.allDays}</b>
       </button>
-    ))}
-  </div>
-
-  {/* Two discreet filter rows in the accent, after themakery.de's category
-      pills: what to do, and where. They combine.
-
-      On a phone those two rows wrap into a wall around 450px tall — eight
-      activities and every district Berlin has — and the first workshop of
-      the day lands a full screen below the fold. There they fold behind one
-      Filters button and open as a sheet on the bottom edge; the bar keeps
-      the names of whatever is on, so a shut sheet is never a hidden state.
-      On a wider screen the rows cost two lines and stay where they are.
-
-      The class goes on before the rows are parsed, so the pills are never
-      painted on a phone and then taken away. Without scripting nothing is
-      hidden at all: the rows render as they always did. */}
-  <script is:inline>document.documentElement.classList.add('js-pilldrop');</script>
-  <div class="pillbar">
-    <button type="button" class="filterbtn pillbtn" aria-expanded="false" aria-controls="day-pills">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 7h10" /><path d="M18 7h2" /><circle cx="16" cy="7" r="2" />
-        <path d="M4 17h4" /><path d="M12 17h8" /><circle cx="10" cy="17" r="2" />
-      </svg>
-      <span>{f.filters}</span>
-    </button>
-    {/* What is on, in words, beside the shut button. */}
-    <div class="pillbar-on" hidden></div>
-  </div>
-
-  <div class="pillgroups is-shut" id="day-pills">
-    <h3 class="pillgroup-head" id="day-pills-activity">{t.filter}</h3>
-    <div class="activity-pills" role="group" aria-labelledby="day-pills-activity">
-      <button class="activity-pill is-active" type="button" data-activity-filter="all">{t.all}</button>
-      {activities.map((a) => (
-        <button class="activity-pill" type="button" data-activity-filter={a}>
-          <span class="pill-icon" aria-hidden="true">{activityIcons[a]}</span>{activityLabels[a]}
+      {stripDays.map((offset) => (
+        <button
+          class:list={['dpill', isWeekend(offset) && 'is-weekend']}
+          type="button"
+          role="tab"
+          data-offset={offset}
+          aria-selected={offset === 0 ? 'true' : 'false'}
+          aria-label={dayDate(offset)}
+        >
+          {/* As the build sees the day; the script writes the visitor's own
+              over it, as the date depends on their clock. */}
+          <small class="dpill-dow">{offset === 0 ? t.today : stripDow(offset)}</small>
+          <b class="dpill-num">{dayAt(offset).getUTCDate()}</b>
+          <small class="dpill-mon">{stripMonth(offset)}</small>
         </button>
       ))}
-      {/* An on/off toggle rather than one of the either-or activity pills —
-          "kids + ceramics" is a sensible combination. */}
-      {hasKids && (
-        <button class="activity-pill kids-pill" type="button" data-kids-filter aria-pressed="false">{t.kids}</button>
+    </div>
+    <div class="dfilter-toggles" role="group" aria-label={f.filters}>
+      <button class="dtog" type="button" data-when="today" aria-pressed="true"><span aria-hidden="true">⚡</span>{t.today}</button>
+      <button class="dtog" type="button" data-when="weekend" aria-pressed="false"><span aria-hidden="true">🎉</span>{t.weekend}</button>
+      {/* Toggles follow the no-dead-filters rule, as the pills did. */}
+      {hasEvening && (
+        <button class="dtog" type="button" data-evening-filter aria-pressed="false"><span aria-hidden="true">🌙</span>{t.evening}</button>
       )}
+      {under50.length > 0 && (
+        <button class="dtog" type="button" data-under50={under50.join(',')} aria-pressed="false"><span aria-hidden="true">💸</span>{f.prices.budget}</button>
+      )}
+      {hasKids && (
+        <button class="dtog" type="button" data-kids-filter aria-pressed="false"><span aria-hidden="true">🧸</span>{t.withKids}</button>
+      )}
+      <span class="dfilter-sep" aria-hidden="true"></span>
+      <button class="dtog dtog-more" type="button" data-sheet-open aria-expanded="false" aria-controls="day-more">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h10" /><path d="M18 7h2" /><circle cx="16" cy="7" r="2" />
+          <path d="M4 17h4" /><path d="M12 17h8" /><circle cx="10" cy="17" r="2" />
+        </svg>
+        <span>{t.moreFilters}</span>
+        <span class="dbadge" data-sheet-badge hidden></span>
+      </button>
     </div>
-    <h3 class="pillgroup-head" id="day-pills-district">{t.filterDistrict}</h3>
-    <div class="activity-pills district-pills" role="group" aria-labelledby="day-pills-district">
-      <button class="activity-pill is-active" type="button" data-district-filter="all">{t.all}</button>
-      {districts.map((d) => (
-        <button class="activity-pill" type="button" data-district-filter={d}>{d}</button>
-      ))}
+  </div>
+
+  {/* A centred card on a wide screen, a sheet on the bottom edge of a
+      phone. Choosing keeps it open; the button at its foot says how many
+      workshops it will leave and closes it. */}
+  <div class="dsheet" id="day-more" role="dialog" aria-modal="true" aria-labelledby="day-more-title" data-sheet hidden>
+    <div class="dsheet-head">
+      <h2 id="day-more-title">{t.moreFilters}</h2>
+      <button class="dsheet-x" type="button" data-sheet-close aria-label={t.close}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
     </div>
-    {priceBands.length > 0 && (
-      <>
-        <h3 class="pillgroup-head" id="day-pills-price">{f.priceLabel}</h3>
-        <div class="activity-pills district-pills price-pills" role="group" aria-labelledby="day-pills-price">
-          <button class="activity-pill is-active" type="button" data-price-filter="all">{t.all}</button>
-          {priceBands.map((b) => (
-            <button class="activity-pill" type="button" data-price-filter={b.id}>{pc.bands[b.id]}</button>
+    <div class="dsheet-body">
+      <section class="dsheet-sec">
+        <h3>{f.activityLabel}</h3>
+        <div class="dchips">
+          {activities.map((a) => (
+            <button class="dchip" type="button" data-activity-filter={a} aria-pressed="false">
+              <span aria-hidden="true">{activityIcons[a]}</span>{activityLabels[a]}
+            </button>
           ))}
         </div>
-      </>
-    )}
-
-    {/* Only ever seen inside the sheet: on a wide screen the rows are the
-        page's own, and there is nothing to close. */}
-    <div class="pillgroups-foot">
-      <button type="button" class="pill-clear" hidden>{f.clear}</button>
-      <button type="button" class="btn btn-primary pill-done" data-show={f.show('%s')}
-        data-one={t.results(1)} data-many={t.results(0)}></button>
+      </section>
+      <section class="dsheet-sec">
+        <h3>{t.district}</h3>
+        <div class="dchips">
+          {districts.map((d) => (
+            <button class="dchip" type="button" data-district-filter={d} aria-pressed="false">{d}</button>
+          ))}
+        </div>
+      </section>
+      {priceBands.length > 0 && (
+        <section class="dsheet-sec">
+          <h3>{f.priceLabel}</h3>
+          <div class="dchips">
+            {priceBands.map((b) => (
+              <button class="dchip" type="button" data-price-filter={b.id} aria-pressed="false">{pc.bands[b.id]}</button>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+    <div class="dsheet-foot">
+      <button class="dsheet-clear" type="button" data-kal-reset>{f.clear}</button>
+      <button class="btn btn-primary dsheet-show" type="button" data-sheet-close data-show-count data-show={f.show('%s')}></button>
     </div>
   </div>
+  <div class="dscrim" data-sheet-close hidden></div>
 
-  {/* Grid ↔ list. Grid is the default; the choice sticks per visitor. */}
-  <div class="view-toggle" role="group" aria-label={`${t.viewGrid} / ${t.viewList}`}>
-    {/* The map opens beside the workshops (DayMap below); this brings it
-        back once closed, and is how a phone opens it. */}
-    <button class="view-btn map-btn" type="button" data-map-open aria-label={mapCopy[lang].map} title={mapCopy[lang].map}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
-      <span>{mapCopy[lang].map}</span>
-    </button>
-    <button class="view-btn is-active" type="button" data-view-btn="grid" aria-label={t.viewGrid} title={t.viewGrid}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-    </button>
-    <button class="view-btn" type="button" data-view-btn="list" aria-label={t.viewList} title={t.viewList}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-    </button>
+  {/* How many, what is on (each one removable), and the views. */}
+  <div class="daystatus">
+    <p class="daystatus-count" data-count aria-live="polite"></p>
+    <div class="daystatus-on" data-on-chips></div>
+    <button class="daystatus-reset" type="button" data-kal-reset data-reset-link hidden>{f.clear}</button>
+    {/* Grid ↔ list. Grid is the default; the choice sticks per visitor. */}
+    <div class="view-toggle" role="group" aria-label={`${t.viewGrid} / ${t.viewList}`}>
+      {/* The map opens beside the workshops (DayMap below); this brings it
+          back once closed, and is how a phone opens it. */}
+      <button class="view-btn map-btn" type="button" data-map-open aria-label={mapCopy[lang].map} title={mapCopy[lang].map}>
+        <Fragment set:html={mapIcon} />
+        <span>{mapCopy[lang].map}</span>
+      </button>
+      <button class="view-btn is-active" type="button" data-view-btn="grid" aria-label={t.viewGrid} title={t.viewGrid}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      </button>
+      <button class="view-btn" type="button" data-view-btn="list" aria-label={t.viewList} title={t.viewList}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
+    </div>
   </div>
-
   </>
   )}
 
@@ -499,8 +556,11 @@ import Voucher from './Voucher.astro';
       return (
         <div class="daygroup" data-day={offset} hidden={variant === '2' ? offset > 6 : offset !== 0}>
           {/* The dates grouped by day (draft 2): the day's own heading. */}
-          {variant === '2' && (
-            <h2 class="kal-dayhead" data-dayhead={offset}>
+          {/* The day's own heading: always in draft 2, and on the live
+              calendar while several days are on show (all days, the
+              weekend). */}
+          {(variant === '2' || !variant) && (
+            <h2 class:list={[variant ? 'kal-dayhead' : 'dayhead']} data-dayhead={offset}>
               <span class="kal-dayhead-main">{offset < 2 ? dayLabel(offset) : dayName(offset, 'long')}</span>
               <span class="kal-dayhead-sub">{dayDate(offset)}</span>
             </h2>
@@ -543,7 +603,7 @@ import Voucher from './Voucher.astro';
                       /* A draft's tile, after the home page's: the picture in
                          an even white frame, then the time in hand, the
                          title, host · district and the price underneath. */
-                      <li class="session kal-card" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined} {...priceAttrs(s.price)}
+                      <li class="session kal-card" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined} data-evening={isEvening(s) ? 'true' : undefined} {...priceAttrs(s.price)}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         <span class="kal-when">
                           <span class="kal-time">{s.time ? `${s.time}${k.uhr}` : t.timeTba}</span>
@@ -597,7 +657,7 @@ import Voucher from './Voucher.astro';
                         </span>
                       </li>
                     ) : (
-                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined} {...priceAttrs(s.price)}
+                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined} data-evening={isEvening(s) ? 'true' : undefined} {...priceAttrs(s.price)}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
@@ -734,7 +794,7 @@ import Voucher from './Voucher.astro';
                   </ul>
                 </section>
               ))}
-              <p class="daypicker-empty" data-empty hidden>{t.noMatch}{variant && <> <button type="button" class="kal-reset" data-kal-reset>{k.reset}</button></>}</p>
+              <p class="daypicker-empty" data-empty hidden>{t.noMatchFilters} <button type="button" class={variant ? 'kal-reset' : 'daypicker-reset'} data-kal-reset>{variant ? k.reset : f.clear}</button></p>
             </>
           ) : (
             <p class="daypicker-empty">{t.none}</p>
@@ -742,13 +802,18 @@ import Voucher from './Voucher.astro';
         </div>
       );
     })}
-    {variant && (
+    {/* Several days on show (draft 2, or all days / the weekend live) and
+        none of them with anything for the filters. */}
+    {variant ? (
       <div class="kal-emptyall" data-kal-empty hidden>
         <p>{k.noMatchAll}</p>
         <button type="button" class="kal-reset" data-kal-reset>{k.reset}</button>
       </div>
+    ) : (
+      <p class="daypicker-empty" data-kal-empty hidden>{t.noMatchFilters} <button type="button" class="daypicker-reset" data-kal-reset>{f.clear}</button></p>
     )}
     {variant === '2' && <button type="button" class="kal-more" data-kal-more hidden>{k.moreDays}</button>}
+    {!variant && <button type="button" class="daypicker-more" data-kal-more hidden>{t.moreDays}</button>}
   </div>
   <DayMap lang={lang} />
   </div>
@@ -874,6 +939,10 @@ import Voucher from './Voucher.astro';
   // chip's date is resolved here against the visitor's own clock, and the
   // groups underneath are plain show/hide — which means the schedule is in the
   // HTML for search engines and still readable if this never runs.
+  /** Which days are on show: one (its offset from today), every day, or
+   *  the weekend. */
+  type Selection = number | 'all' | 'weekend';
+
   document.querySelectorAll<HTMLElement>('[data-daypicker]').forEach((root) => {
     const locale = root.dataset.locale || 'en-GB';
     const copy: Record<string, string> = JSON.parse(root.dataset.clientCopy || '{}');
@@ -883,7 +952,8 @@ import Voucher from './Voucher.astro';
        day at once, grouped by day, in windows of a week. */
     const variant = root.dataset.variant || '';
     const allDaysMode = root.dataset.allDays === 'true';
-    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.daychip'));
+    // The day chips (the drafts) or pills (live), and "all days".
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('button[data-offset]'));
     const dayChips = chips.filter((c) => c.dataset.offset !== 'all');
     const groups = Array.from(root.querySelectorAll<HTMLElement>('.daygroup'));
     const monthEl = root.querySelector<HTMLElement>('[data-month]');
@@ -931,11 +1001,12 @@ import Voucher from './Voucher.astro';
     };
     // One title carries both the place and the chosen day, so the page has
     // a single heading rather than a kicker repeating it.
-    const setHeading = (offset: number | 'all') => {
+    const setHeading = (offset: Selection) => {
       if (happeningWhen) {
-        happeningWhen.textContent = offset === 'all' ? (root.dataset.whenSoon || '') : whenFor(offset, dateAt(offset));
-      } else if (happeningTitle && offset !== 'all') {
-        happeningTitle.textContent = fill(copy.heading, { when: whenFor(offset, dateAt(offset)) });
+        if (offset !== 'weekend') happeningWhen.textContent = offset === 'all' ? (root.dataset.whenSoon || '') : whenFor(offset, dateAt(offset));
+      } else if (happeningTitle) {
+        const when = offset === 'all' ? copy.soon : offset === 'weekend' ? copy.weekend : whenFor(offset, dateAt(offset));
+        happeningTitle.textContent = fill(copy.heading, { when });
       }
     };
 
@@ -947,16 +1018,18 @@ import Voucher from './Voucher.astro';
     dayChips.forEach((chip) => {
       const offset = Number(chip.dataset.offset || 0);
       const date = dateAt(offset);
-      const dow = chip.querySelector('.daychip-dow');
-      const num = chip.querySelector('.daychip-num');
-      if (dow) dow.textContent = shortDay(offset, date);
+      const dow = chip.querySelector('.daychip-dow, .dpill-dow');
+      const num = chip.querySelector('.daychip-num, .dpill-num');
+      const mon = chip.querySelector('.dpill-mon');
+      if (dow) dow.textContent = shortDay(offset, date).replace('.', '');
+      if (mon) mon.textContent = date.toLocaleDateString(locale, { month: 'short' }).replace('.', '');
       // Just the day number — the month is spelled out once above the strip.
       if (num) num.textContent = date.toLocaleDateString(locale, { day: 'numeric' });
       chip.setAttribute(
         'aria-label',
         date.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }),
       );
-      if (date.getDay() === 0 || date.getDay() === 6) chip.classList.add('is-weekend');
+      chip.classList.toggle('is-weekend', date.getDay() === 0 || date.getDay() === 6);
       // The first of a month is where the strip says which month it is.
       if (variant && date.getDate() === 1) chip.dataset.month = date.toLocaleDateString(locale, { month: 'short' });
     });
@@ -983,31 +1056,42 @@ import Voucher from './Voucher.astro';
         : { day: 'numeric', month: 'long' });
     });
 
-    /* Which day is on show: a day's offset, or every day (draft 2). */
-    let selected: number | 'all' = allDaysMode ? 'all' : 0;
+    /* Which days are on show: a day's offset, every day, or the weekend —
+       this one's, or today alone on a Sunday. */
+    const defaultSelection: Selection = allDaysMode ? 'all' : 0;
+    let selected: Selection = defaultSelection;
+    const weekendDays = today.getDay() === 0 ? [0] : [6 - today.getDay(), 7 - today.getDay()];
+    /** The offsets a selection covers; null for every day. */
+    const daysOf = (sel: Selection): number[] | null =>
+      sel === 'all' ? null : sel === 'weekend' ? weekendDays : [sel];
+    const several = () => selected === 'all' || selected === 'weekend';
+    const whenToggles = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-when]'));
     /** Draft 2 shows the days a week at a time; "more" adds a week. */
     const WINDOW = 7;
     let windowDays = WINDOW;
 
-    const selectDay = (offset: number | 'all') => {
+    const selectDay = (offset: Selection) => {
       selected = offset;
       windowDays = WINDOW;
       const key = String(offset);
+      const covered = daysOf(offset);
       chips.forEach((c) => {
-        c.setAttribute('aria-selected', String(c.dataset.offset === key));
+        const on = c.dataset.offset === 'all' ? offset === 'all' : !!covered?.includes(Number(c.dataset.offset));
+        c.setAttribute('aria-selected', String(on));
         // Days before the selected one grey out, like the app's strip —
         // the eye reads position at a glance without boxes around dates.
-        c.classList.toggle('is-before', offset !== 'all' && c.dataset.offset !== 'all' && Number(c.dataset.offset || 0) < offset);
+        c.classList.toggle('is-before', typeof offset === 'number' && c.dataset.offset !== 'all' && Number(c.dataset.offset || 0) < offset);
       });
-      daySelects.forEach((s) => { if (offset !== 'all') s.value = key; });
-      if (offset !== 'all') groups.forEach((g) => { g.hidden = g.dataset.day !== key; });
-      if (monthEl) monthEl.textContent = monthOf(offset === 'all' ? today : dateAt(offset));
+      whenToggles.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.when === (offset === 0 ? 'today' : offset))));
+      daySelects.forEach((s) => { if (typeof offset === 'number') s.value = key; });
+      if (typeof offset === 'number') groups.forEach((g) => { g.hidden = g.dataset.day !== key; });
+      // Several days on show carry a heading each.
+      root.toggleAttribute('data-several', several());
+      if (monthEl) monthEl.textContent = monthOf(typeof offset === 'number' ? dateAt(offset) : today);
       setHeading(offset);
-      const chip = chips.find((c) => c.dataset.offset === key);
-      if (!variant) {
-        chip?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      } else if (chip?.parentElement) {
-        // A draft scrolls only the strip itself: the page stays where it is.
+      const chip = chips.find((c) => c.dataset.offset === (covered ? String(covered[0]) : 'all'));
+      if (chip?.parentElement) {
+        // Only the strip itself scrolls: the page stays where it is.
         const strip = chip.parentElement;
         const left = strip.scrollLeft + chip.getBoundingClientRect().left - strip.getBoundingClientRect().left
           - (strip.clientWidth - chip.offsetWidth) / 2;
@@ -1023,6 +1107,13 @@ import Voucher from './Voucher.astro';
         selectDay(o === 'all' ? 'all' : Number(o || 0));
       });
     });
+    // Today and the weekend are toggles: on again, they go back to every day.
+    whenToggles.forEach((b) => {
+      b.addEventListener('click', () => {
+        const want: Selection = b.dataset.when === 'weekend' ? 'weekend' : 0;
+        selectDay(selected === want ? 'all' : want);
+      });
+    });
     daySelects.forEach((s) => s.addEventListener('change', () => selectDay(Number(s.value))));
 
     // Live filtering: the activity and district pill rows combine. A time
@@ -1034,6 +1125,10 @@ import Voucher from './Voucher.astro';
     const activitySelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-activity-select]'));
     const districtSelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-district-select]'));
     const kidsPill = root.querySelector<HTMLButtonElement>('[data-kids-filter]');
+    const eveningPill = root.querySelector<HTMLButtonElement>('[data-evening-filter]');
+    // "Under €50": the bands up to €50, on together.
+    const under50Pill = root.querySelector<HTMLButtonElement>('[data-under50]');
+    const under50 = (under50Pill?.dataset.under50 ?? '').split(',').filter(Boolean);
     // Price per person, in bands (priceFilter.ts): a band's id and its
     // (min, max] in euros. A card carries its price as data-price-min/max; a
     // span ("€40–100") is in every band it touches, and a card with no price
@@ -1045,24 +1140,33 @@ import Voucher from './Voucher.astro';
         .map(([id, min, max]) => [id, [min, max ?? Infinity]]));
     let activityFilter = 'all';
     let districtFilter = 'all';
-    let priceFilter = 'all';
+    /** The bands picked; none picked is every price. */
+    const priceFilter = new Set<string>();
     let kidsOnly = false;
+    let eveningOnly = false;
     const inPrice = (li: HTMLElement) => {
-      if (priceFilter === 'all') return true;
-      const band = priceBands.get(priceFilter);
-      if (!band || li.dataset.priceMin === undefined) return false;
-      return Number(li.dataset.priceMin) <= band[1] && Number(li.dataset.priceMax ?? li.dataset.priceMin) > band[0];
+      if (!priceFilter.size) return true;
+      if (li.dataset.priceMin === undefined) return false;
+      const lo = Number(li.dataset.priceMin);
+      const hi = Number(li.dataset.priceMax ?? li.dataset.priceMin);
+      return [...priceFilter].some((id) => {
+        const band = priceBands.get(id);
+        return !!band && lo <= band[1] && hi > band[0];
+      });
     };
+    const isUnder50 = () => under50.length > 0 && priceFilter.size === under50.length && under50.every((id) => priceFilter.has(id));
     const hasValue = (value: string, pills: HTMLButtonElement[], key: 'activityFilter' | 'districtFilter' | 'priceFilter', selects: HTMLSelectElement[]) =>
       pills.some((p) => p.dataset[key] === value) || selects.some((s) => Array.from(s.options).some((o) => o.value === value));
 
-    /* The phone's folded bar. On a wide screen none of this is on screen,
-       but it costs nothing to keep in step. */
-    const pillBtn = root.querySelector<HTMLButtonElement>('.pillbtn');
-    const pillGroups = root.querySelector<HTMLElement>('.pillgroups');
-    const pillOn = root.querySelector<HTMLElement>('.pillbar-on');
-    const pillClear = root.querySelector<HTMLButtonElement>('.pill-clear');
-    const pillDone = root.querySelector<HTMLButtonElement>('.pill-done');
+    /* The count, what is on, and the "More filters" sheet (live). */
+    const resultForms: Record<string, string> = JSON.parse(root.dataset.results || '{}');
+    const plural = new Intl.PluralRules(locale);
+    const results = (n: number) => (resultForms[plural.select(n)] ?? resultForms.other ?? '{n}').replace('{n}', String(n));
+    const countEls = Array.from(root.querySelectorAll<HTMLElement>('[data-count]'));
+    const showBtns = Array.from(root.querySelectorAll<HTMLElement>('[data-show-count]'));
+    const onChips = root.querySelector<HTMLElement>('[data-on-chips]');
+    const resetLinks = Array.from(root.querySelectorAll<HTMLElement>('[data-reset-link]'));
+    const sheetBadge = root.querySelector<HTMLElement>('[data-sheet-badge]');
     const emptyAll = root.querySelector<HTMLElement>('[data-kal-empty]');
     const moreBtn = root.querySelector<HTMLButtonElement>('[data-kal-more]');
 
@@ -1071,11 +1175,14 @@ import Voucher from './Voucher.astro';
     let walk: { resync: () => void } | undefined;
     let calendar: { render: () => void } | undefined;
 
-    const matches = (li: HTMLElement) =>
+    /** Every filter but the district — what the map shows. */
+    const matchesBesidesDistrict = (li: HTMLElement) =>
       (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
-      (districtFilter === 'all' || li.dataset.district === districtFilter) &&
       inPrice(li) &&
-      (!kidsOnly || li.dataset.kids === 'true');
+      (!kidsOnly || li.dataset.kids === 'true') &&
+      (!eveningOnly || li.dataset.evening === 'true');
+    const matches = (li: HTMLElement) =>
+      matchesBesidesDistrict(li) && (districtFilter === 'all' || li.dataset.district === districtFilter);
 
     const applyFilters = () => {
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
@@ -1098,13 +1205,15 @@ import Voucher from './Voucher.astro';
         const empty = day.querySelector<HTMLElement>('[data-empty]');
         if (empty) empty.hidden = !!day.querySelector('.timegroup:not([hidden])');
       });
-      // Every day at once (draft 2): the days with something on, a week of
-      // them at a time.
-      if (selected === 'all') {
+      // Several days at once (every day, the weekend): the days with
+      // something on, a week of them at a time.
+      const covered = daysOf(selected);
+      const inSelection = (day: HTMLElement) => !covered || covered.includes(Number(day.dataset.day));
+      if (several()) {
         let n = 0;
         let more = false;
         groups.forEach((day) => {
-          const any = !!day.querySelector('.session:not([hidden])');
+          const any = inSelection(day) && !!day.querySelector('.session:not([hidden])');
           if (any && n < windowDays) { day.hidden = false; n++; }
           else { day.hidden = true; if (any) more = true; }
         });
@@ -1115,43 +1224,50 @@ import Voucher from './Voucher.astro';
         if (emptyAll) emptyAll.hidden = true;
       }
 
-      /* Only the days on show count — every other day is in the page too,
+      /* Only the days chosen count — every other day is in the page too,
          and counting those would promise workshops that are not there. */
       let shown = 0;
       groups.forEach((day) => {
-        if (!day.hidden) shown += day.querySelectorAll('.session:not([hidden])').length;
+        if (inSelection(day)) shown += day.querySelectorAll('.session:not([hidden])').length;
       });
-
-      /* The names of what is on, beside the shut button — a number would
-         say how many filters, which is not what anyone wants to know. */
-      if (pillOn) {
-        const names: string[] = [];
-        const label = (el: Element | null) => (el?.textContent ?? '').trim();
-        if (activityFilter !== 'all')
-          names.push(label(root.querySelector(`[data-activity-filter="${activityFilter}"]`)));
-        if (districtFilter !== 'all')
-          names.push(label(root.querySelector(`[data-district-filter="${districtFilter}"]`)));
-        if (priceFilter !== 'all')
-          names.push(label(root.querySelector(`[data-price-filter="${priceFilter}"]`)));
-        if (kidsOnly) names.push(label(kidsPill));
-        pillOn.textContent = '';
-        for (const name of names) {
-          const chip = document.createElement('span');
-          chip.className = 'onpill';
-          chip.textContent = name;
-          pillOn.append(chip);
-        }
-        pillOn.hidden = names.length === 0;
-        if (pillClear) pillClear.hidden = names.length === 0;
-      }
+      countEls.forEach((el) => { el.textContent = results(shown); });
       // "Show 6 workshops" on the button that shuts the sheet, so the reader
       // sees what they are about to be left with before it closes.
-      if (pillDone) {
-        const label = shown === 1
-          ? (pillDone.dataset.one ?? '')
-          : (pillDone.dataset.many ?? '').replace('0', String(shown));
-        pillDone.textContent = (pillDone.dataset.show ?? '%s').replace('%s', label);
+      showBtns.forEach((el) => { el.textContent = (el.dataset.show ?? '%s').replace('%s', results(shown)); });
+
+      // The toggles' own state.
+      eveningPill?.setAttribute('aria-pressed', String(eveningOnly));
+      under50Pill?.setAttribute('aria-pressed', String(isUnder50()));
+
+      /* What the sheet holds, named over the list with a cross each, so a
+         shut sheet is never a hidden state; the toggles show their own. */
+      const label = (el: Element | null) => (el?.textContent ?? '').trim();
+      const on: [string, string, string][] = [];
+      if (activityFilter !== 'all')
+        // The name without its emoji.
+        on.push(['activity', activityFilter, (root.querySelector(`.dchip[data-activity-filter="${activityFilter}"]`)?.lastChild?.textContent ?? '').trim()]);
+      if (districtFilter !== 'all') on.push(['district', districtFilter, districtFilter]);
+      if (!isUnder50())
+        priceFilter.forEach((id) => on.push(['price', id, label(root.querySelector(`.dchip[data-price-filter="${id}"]`))]));
+      if (onChips) {
+        onChips.textContent = '';
+        for (const [kind, value, name] of on) {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'donchip';
+          chip.dataset.drop = kind;
+          chip.dataset.value = value;
+          chip.innerHTML = '<span></span><span aria-hidden="true">×</span>';
+          chip.firstElementChild!.textContent = name;
+          onChips.append(chip);
+        }
       }
+      if (sheetBadge) {
+        sheetBadge.textContent = String(on.length);
+        sheetBadge.hidden = on.length === 0;
+      }
+      const anything = on.length > 0 || priceFilter.size > 0 || kidsOnly || eveningOnly;
+      resetLinks.forEach((el) => { el.hidden = !anything; });
       dayMap?.update();
       calendar?.render();
       walk?.resync();
@@ -1173,25 +1289,36 @@ import Voucher from './Voucher.astro';
       };
       set('activity', activityFilter === 'all' ? null : activityFilter);
       set('district', districtFilter === 'all' ? null : districtFilter);
-      set('price', priceFilter === 'all' ? null : priceFilter);
-      if (selected === 'all' || selected === 0) set('date', null);
+      set('price', [...priceBands.keys()].filter((id) => priceFilter.has(id)).join(',') || null);
+      set('evening', eveningOnly ? '1' : null);
+      set('kids', kidsOnly ? '1' : null);
+      if (selected === defaultSelection) set('date', null);
+      else if (selected === 'all' || selected === 'weekend') set('date', selected);
       else {
         const d = dateAt(selected);
         set('date', `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
       }
+      // Several bands read better as ?price=0-30,30-50 than with %2C.
+      url.search = url.search.replace(/%2C/gi, ',');
       if (url.href !== location.href) history.replaceState(history.state, '', url);
     };
 
     const setActivity = (value: string) => {
       activityFilter = value;
-      activityPills.forEach((p) => p.classList.toggle('is-active', p.dataset.activityFilter === value));
+      activityPills.forEach((p) => {
+        p.classList.toggle('is-active', p.dataset.activityFilter === value);
+        if (p.hasAttribute('aria-pressed')) p.setAttribute('aria-pressed', String(p.dataset.activityFilter === value));
+      });
       activitySelects.forEach((s) => { s.value = value; });
       applyFilters();
     };
     const districtLabels = Array.from(root.querySelectorAll<HTMLElement>('[data-district-label]'));
     const setDistrict = (value: string) => {
       districtFilter = value;
-      districtPills.forEach((p) => p.classList.toggle('is-active', p.dataset.districtFilter === value));
+      districtPills.forEach((p) => {
+        p.classList.toggle('is-active', p.dataset.districtFilter === value);
+        if (p.hasAttribute('aria-pressed')) p.setAttribute('aria-pressed', String(p.dataset.districtFilter === value));
+      });
       districtSelects.forEach((s) => { s.value = value; });
       districtLabels.forEach((el) => {
         el.textContent = value === 'all' ? el.dataset.any || '' : value;
@@ -1200,14 +1327,21 @@ import Voucher from './Voucher.astro';
       applyFilters();
     };
     const priceLabels = Array.from(root.querySelectorAll<HTMLElement>('[data-price-label]'));
-    const setPrice = (value: string) => {
-      priceFilter = value;
-      pricePills.forEach((p) => p.classList.toggle('is-active', p.dataset.priceFilter === value));
-      priceSelects.forEach((s) => { s.value = value; });
+    /** Sets the bands picked: one ("30-50"), several, or none ("all"). */
+    const setPrice = (value: string | string[]) => {
+      priceFilter.clear();
+      (Array.isArray(value) ? value : [value]).forEach((id) => { if (id && id !== 'all') priceFilter.add(id); });
+      const only = priceFilter.size === 1 ? [...priceFilter][0] : 'all';
+      pricePills.forEach((p) => {
+        const on = p.dataset.priceFilter === 'all' ? priceFilter.size === 0 : priceFilter.has(p.dataset.priceFilter || '');
+        p.classList.toggle('is-active', on);
+        if (p.hasAttribute('aria-pressed')) p.setAttribute('aria-pressed', String(on));
+      });
+      priceSelects.forEach((s) => { s.value = only; });
       priceLabels.forEach((el) => {
-        const pill = pricePills.find((p) => p.dataset.priceFilter === value);
-        el.textContent = value === 'all' ? el.dataset.any || '' : (pill?.textContent ?? '').trim();
-        el.closest('button')?.classList.toggle('is-on', value !== 'all');
+        const pill = pricePills.find((p) => p.dataset.priceFilter === only);
+        el.textContent = only === 'all' ? el.dataset.any || '' : (pill?.textContent ?? '').trim();
+        el.closest('button')?.classList.toggle('is-on', only !== 'all');
       });
       applyFilters();
     };
@@ -1217,15 +1351,43 @@ import Voucher from './Voucher.astro';
       kidsPill?.setAttribute('aria-pressed', String(on));
       applyFilters();
     };
+    const setEvening = (on: boolean) => {
+      eveningOnly = on;
+      applyFilters();
+    };
 
+    // A chosen activity or district, tapped again, is let go.
     activityPills.forEach((pill) => {
-      pill.addEventListener('click', () => setActivity(pill.dataset.activityFilter || 'all'));
+      pill.addEventListener('click', () => {
+        const v = pill.dataset.activityFilter || 'all';
+        setActivity(v !== 'all' && v === activityFilter ? 'all' : v);
+      });
     });
     districtPills.forEach((pill) => {
-      pill.addEventListener('click', () => setDistrict(pill.dataset.districtFilter || 'all'));
+      pill.addEventListener('click', () => {
+        const v = pill.dataset.districtFilter || 'all';
+        setDistrict(v !== 'all' && v === districtFilter ? 'all' : v);
+      });
     });
+    // Bands combine: each one a toggle. A draft's menu picks just one.
     pricePills.forEach((pill) => {
-      pill.addEventListener('click', () => setPrice(pill.dataset.priceFilter || 'all'));
+      pill.addEventListener('click', () => {
+        const v = pill.dataset.priceFilter || 'all';
+        if (variant || v === 'all') { setPrice(v); return; }
+        const next = new Set(priceFilter);
+        if (next.has(v)) next.delete(v); else next.add(v);
+        setPrice([...next]);
+      });
+    });
+    under50Pill?.addEventListener('click', () => setPrice(isUnder50() ? [] : under50));
+    eveningPill?.addEventListener('click', () => setEvening(!eveningOnly));
+    // The crosses on what is on.
+    onChips?.addEventListener('click', (event) => {
+      const chip = (event.target as HTMLElement).closest<HTMLElement>('[data-drop]');
+      if (!chip) return;
+      if (chip.dataset.drop === 'activity') setActivity('all');
+      else if (chip.dataset.drop === 'district') setDistrict('all');
+      else setPrice([...priceFilter].filter((id) => id !== chip.dataset.value));
     });
     priceSelects.forEach((s) => s.addEventListener('change', () => setPrice(s.value || 'all')));
     activitySelects.forEach((s) => s.addEventListener('change', () => setActivity(s.value || 'all')));
@@ -1233,6 +1395,7 @@ import Voucher from './Voucher.astro';
     kidsPill?.addEventListener('click', () => setKids(!kidsOnly));
     const clearAll = () => {
       if (kidsOnly) setKids(false);
+      if (eveningOnly) setEvening(false);
       setActivity('all');
       setDistrict('all');
       setPrice('all');
@@ -1243,34 +1406,25 @@ import Voucher from './Voucher.astro';
       applyFilters();
     });
 
-    /* The sheet. `hidden` is what closes it, so nothing on a wide screen is
-       ever hidden: the button is not shown there, so it cannot be set. The
-       CSS keeps the rows visible regardless of it above the breakpoint. */
-    if (pillBtn && pillGroups) {
-      const shut = () => pillGroups.classList.contains('is-shut');
-      const setOpen = (open: boolean) => {
-        pillGroups.classList.toggle('is-shut', !open);
-        pillBtn.setAttribute('aria-expanded', String(open));
-        pillBtn.classList.toggle('is-open', open);
+    /* The "More filters" sheet. Choosing keeps it open; the cross, the
+       scrim, Escape and the show button close it and hand focus back to
+       the button that opened it. */
+    const sheet = root.querySelector<HTMLElement>('[data-sheet]');
+    const sheetOpen = root.querySelector<HTMLButtonElement>('[data-sheet-open]');
+    const scrim = root.querySelector<HTMLElement>('.dscrim');
+    if (sheet && sheetOpen) {
+      const setSheet = (open: boolean) => {
+        sheet.hidden = !open;
+        if (scrim) scrim.hidden = !open;
+        sheetOpen.setAttribute('aria-expanded', String(open));
+        document.documentElement.classList.toggle('sheet-locked', open);
+        if (open) sheet.querySelector<HTMLElement>('.dsheet-x')?.focus();
+        else sheetOpen.focus();
       };
-      pillBtn.addEventListener('click', () => setOpen(shut()));
-      // Done choosing: shut it and hand focus back to the button that opened
-      // it, so the keyboard does not land at the top of the page.
-      pillDone?.addEventListener('click', () => {
-        setOpen(false);
-        pillBtn.focus();
-      });
-      pillClear?.addEventListener('click', clearAll);
-      // A tap anywhere else means the reader has moved on.
-      document.addEventListener('click', (event) => {
-        const target = event.target as Node;
-        if (shut() || pillBtn.contains(target) || pillGroups.contains(target)) return;
-        setOpen(false);
-      });
+      sheetOpen.addEventListener('click', () => setSheet(sheet.hidden));
+      root.querySelectorAll<HTMLElement>('[data-sheet-close]').forEach((el) => el.addEventListener('click', () => setSheet(false)));
       document.addEventListener('keydown', (event) => {
-        if ((event as KeyboardEvent).key !== 'Escape' || shut()) return;
-        setOpen(false);
-        pillBtn.focus();
+        if ((event as KeyboardEvent).key === 'Escape' && !sheet.hidden) setSheet(false);
       });
     }
 
@@ -1352,7 +1506,7 @@ import Voucher from './Voucher.astro';
       calendar = {
         render: () => {
           // A chosen day in another month brings its month along.
-          if (selected !== 'all') {
+          if (typeof selected === 'number') {
             const d = dateAt(selected);
             shownMonth = new Date(d.getFullYear(), d.getMonth(), 1);
           }
@@ -1365,10 +1519,7 @@ import Voucher from './Voucher.astro';
     dayMap = startDayMap(root, {
       // Every filter but the district: the map is where the district is chosen.
       sessions: () => visibleDays().flatMap((day) =>
-        Array.from(day.querySelectorAll<HTMLElement>('.session')).filter((li) =>
-          (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
-          inPrice(li) &&
-          (!kidsOnly || li.dataset.kids === 'true'))),
+        Array.from(day.querySelectorAll<HTMLElement>('.session')).filter(matchesBesidesDistrict)),
       district: () => districtFilter,
       pick: (name) => { if (name === 'all' || hasValue(name, districtPills, 'districtFilter', districtSelects)) setDistrict(name); },
       day: () => String(selected),
@@ -1376,6 +1527,7 @@ import Voucher from './Voucher.astro';
 
     // First paint: the bar and the count start out true.
     applyFilters();
+    root.toggleAttribute('data-several', several());
     if (variant) setHeading(selected);
 
     // Share: the native sheet where the browser offers one (phones), a
@@ -1423,15 +1575,22 @@ import Voucher from './Voucher.astro';
       const date = params.get('date');
       if (activity && hasValue(activity, activityPills, 'activityFilter', activitySelects)) setActivity(activity);
       if (district && hasValue(district, districtPills, 'districtFilter', districtSelects)) setDistrict(district);
-      // ?price=30-50; the top band also as 80+ (which arrives as "80 "), 80-
-      // or a bare 80.
-      const rawPrice = (params.get('price') ?? '').trim().toLowerCase();
-      const price = /^80(\+|-|plus)?$/.test(rawPrice) ? '80plus' : rawPrice;
-      if (price && hasValue(price, pricePills, 'priceFilter', priceSelects)) setPrice(price);
-      if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      // ?price=30-50, or several bands as ?price=0-30,30-50 ("under €50");
+      // the top band also as 80+ (which arrives as "80 "), 80- or a bare 80.
+      const prices = (params.get('price') ?? '').split(',')
+        .map((raw) => raw.trim().toLowerCase())
+        .map((raw) => (/^80(\+|-|plus)?$/.test(raw) ? '80plus' : raw))
+        .filter((id) => id && hasValue(id, pricePills, 'priceFilter', priceSelects));
+      if (prices.length) setPrice(variant ? prices[0] : prices);
+      if (params.get('evening') && eveningPill) setEvening(true);
+      if (params.get('kids') && kidsPill) setKids(true);
+      // ?date=YYYY-MM-DD for one day — any day in the page, the strip's or
+      // later — or ?date=weekend / ?date=all.
+      if (date === 'all' || (date === 'weekend' && whenToggles.length)) selectDay(date);
+      else if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
         const [y, m, dd] = date.split('-').map(Number);
         const offset = Math.round((new Date(y, m - 1, dd).getTime() - today.getTime()) / 86400000);
-        if (dayChips.some((c) => c.dataset.offset === String(offset))) selectDay(offset);
+        if (groups.some((g) => g.dataset.day === String(offset))) selectDay(offset);
       }
       addressRead = true;
       syncAddress();
