@@ -75,17 +75,24 @@ export const voucherPrice = (host: Pick<Host, 'slug' | 'groupPrice'>): number | 
 };
 
 /**
- * Stripe Payment Link for vouchers ("Twiggli Gutschein", customer chooses the
- * amount, from €20). The request form still lands in our inbox first; its
- * thank-you step then offers "Pay now" with the buyer's email prefilled and a
- * reference that matches the inbox mail. While `live` is empty, the button
+ * Stripe Payment Links for vouchers. A fixed amount with its own link goes
+ * straight to Stripe in one click; anything else (the free amount, a host's
+ * places) opens the short form, which only asks the amount and then hands
+ * over to the "customers choose" link. Stripe collects name, email, card and
+ * the recipient; a background note with the same reference still lands in
+ * our inbox. While `live` is empty, the button
  * only appears for someone who opened the site with ?stripetest=1 (Jirel
  * testing with Stripe's test cards); everyone else gets today's flow, where
  * Jirel sends the payment link by hand.
  */
-export const stripeVoucherLink = {
-  test: 'https://buy.stripe.com/test_14AcN7aoWddw5ld46RfUQ00',
-  live: '',
+export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed: Record<number, string> }> = {
+  test: {
+    // "Customers choose what to pay": the free amount and host vouchers.
+    custom: 'https://buy.stripe.com/test_14AcN7aoWddw5ld46RfUQ00',
+    // Fixed prices: a click on that amount goes straight to Stripe.
+    fixed: { 25: 'https://buy.stripe.com/test_6oU14pdB8ehAfZR6eZfUQ01' },
+  },
+  live: { custom: '', fixed: {} },
 };
 
 /** The "host" a general voucher is for, as it lands in our inbox. */
