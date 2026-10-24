@@ -1563,8 +1563,9 @@ a:hover { color: var(--color-accent); }
   .footer-nav { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
 
-/* Dark social strip, pinned above the nav at the top of the page. */
-.social-bar { background: #0b0a0d; }
+/* Social strip above the nav: no fill of its own, the page's cream-to-lavender
+   ground runs through it. */
+.social-bar { position: relative; background: transparent; }
 .social-bar-icons {
   max-width: 1200px;
   margin: 0 auto;
@@ -1573,29 +1574,26 @@ a:hover { color: var(--color-accent); }
   justify-content: center;
   gap: 20px;
 }
-/* Full white, not a dimmed tint — the icons are the only thing in the strip
-   and read as disabled at anything less. Hover shifts to the accent instead. */
-.social-bar-icons a { display: flex; color: #fff; }
+/* Full text colour, not a dimmed tint. Hover shifts to the accent instead. */
+.social-bar-icons a { display: flex; color: var(--color-text); }
 .social-bar-icons a:hover { color: var(--color-accent-400); }
 
-/* Sign in, Luma-style: a compact pill on the dark strip, pinned to the
-   strip's right edge (the same edge the nav's CTA ends on). A soft
-   lavender-to-violet wash and a hairline of the same, so it reads as
-   Twiggli without competing with the yellow voucher pill. */
-.social-bar-icons { position: relative; }
+/* Sign in, Luma-style: a compact borderless pill pinned to the screen's
+   right edge, with a soft lavender-to-violet wash so it reads as Twiggli
+   without competing with the yellow voucher pill. */
 .social-bar-signin {
   position: absolute;
-  right: var(--gutter);
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 5px 14px;
-  border: 1px solid rgba(178, 172, 252, 0.32);
+  border: 0;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(178, 172, 252, 0.16), rgba(106, 62, 236, 0.26));
-  color: #fff;
+  background: linear-gradient(135deg, rgba(178, 172, 252, 0.22), rgba(106, 62, 236, 0.16));
+  color: #4b2bb8;
   font: 500 13px/1.3 var(--font-body);
   white-space: nowrap;
   cursor: pointer;
@@ -1605,8 +1603,7 @@ a:hover { color: var(--color-accent); }
 /* With its label the pill is text only; the icon shows on phones, where the label is hidden. */
 .social-bar-signin svg { display: none; }
 .social-bar-signin:hover {
-  background: linear-gradient(135deg, rgba(178, 172, 252, 0.26), rgba(106, 62, 236, 0.4));
-  border-color: rgba(178, 172, 252, 0.5);
+  background: linear-gradient(135deg, rgba(178, 172, 252, 0.34), rgba(106, 62, 236, 0.26));
 }
 .social-bar-signin:focus-visible { outline: 2px solid var(--color-accent-400); outline-offset: 2px; }
 /* Signed in (lib/auth.ts getUser): the pill becomes a round initial. */
