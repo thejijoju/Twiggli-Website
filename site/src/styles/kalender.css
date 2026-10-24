@@ -357,6 +357,7 @@
   padding: 8px; border-radius: 20px; background: #fff;
   box-shadow: 0 24px 50px -20px rgba(43, 33, 24, 0.45), 0 0 0 1px var(--hd-line);
 }
+.kal-page .kal-3 .kal-menu-price { width: 220px; grid-template-columns: 1fr; }
 .kal-page .kal-3 .kal-menu-item {
   padding: 9px 12px; border: 0; border-radius: 12px; background: none; text-align: left;
   font: 400 14px/1.25 var(--font-body); color: var(--hd-ink); cursor: pointer;

@@ -11,11 +11,13 @@ import { almostFullLabel, spotsText } from '../data/availability.ts';
 import Going from './Going.astro';
 import { membershipCopy, membershipPromos } from '../data/memberships.ts';
 import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
+import { bandsFor, priceAttrs, priceFilterCopy, PRICE_BANDS } from '../data/priceFilter.ts';
 
 /** The schedule feed, styled after the app's search screen: the borderless
- *  day strip right at the top, one row of activity pills under it (the only
- *  filter), and the day's sessions grouped under bold time headers. The
- *  pills filter the list live, client-side. */
+ *  day strip right at the top, rows of activity, district and price pills
+ *  under it, and the day's sessions grouped under bold time headers. The
+ *  pills filter the list live, client-side, and the address follows them
+ *  (?activity, ?district, ?price, ?date). */
 interface Props {
   lang?: Lang;
   /** The calendar redesign drafts (src/pages/de/preview/kalender-1…3,
@@ -55,6 +57,11 @@ const districts = [...new Set(sessions.map(districtOf))].sort((a, b) => a.locale
 // The kids pill follows the no-dead-filters rule: it only renders once the
 // feed actually carries sessions designed for children.
 const hasKids = sessions.some((s) => s.kids);
+
+// The price bands (priceFilter.ts), per person on the price the cards show.
+// Same rule: a band nothing falls in gets no pill.
+const priceBands = bandsFor([...sessions, ...onRequest].map((s) => s.price));
+const pc = priceFilterCopy[lang];
 
 /** Sessions arrive sorted by time, so grouping keeps that order. */
 const byTime = (list: Session[]): [string, Session[]][] => {
@@ -221,6 +228,7 @@ import Voucher from './Voucher.astro';
   data-map-start="closed"
   data-locale={LANG_META[lang].locale}
   data-client-copy={JSON.stringify(clientCopy[lang])}
+  data-price-bands={JSON.stringify(PRICE_BANDS.map((b) => [b.id, b.min, Number.isFinite(b.max) ? b.max : null]))}
   data-today={t.today}
   data-tomorrow={t.tomorrow}
 >
@@ -292,6 +300,17 @@ import Voucher from './Voucher.astro';
         <button class="activity-pill" type="button" data-district-filter={d}>{d}</button>
       ))}
     </div>
+    {priceBands.length > 0 && (
+      <>
+        <h3 class="pillgroup-head" id="day-pills-price">{f.priceLabel}</h3>
+        <div class="activity-pills district-pills price-pills" role="group" aria-labelledby="day-pills-price">
+          <button class="activity-pill is-active" type="button" data-price-filter="all">{t.all}</button>
+          {priceBands.map((b) => (
+            <button class="activity-pill" type="button" data-price-filter={b.id}>{pc.bands[b.id]}</button>
+          ))}
+        </div>
+      </>
+    )}
 
     {/* Only ever seen inside the sheet: on a wide screen the rows are the
         page's own, and there is nothing to close. */}
@@ -349,6 +368,10 @@ import Voucher from './Voucher.astro';
       <option value="all">{k.whereAny}</option>,
       ...districts.map((d) => <option value={d}>{d}</option>),
     ];
+    const priceOptions = [
+      <option value="all">{pc.any}</option>,
+      ...priceBands.map((b) => <option value={b.id}>{pc.bands[b.id]}</option>),
+    ];
     const mapBtn = (cls: string) => (
       <button type="button" class={`map-btn ${cls}`} data-map-open aria-label={k.map} title={k.map}>
         <Fragment set:html={mapIcon} /><span>{k.map}</span>
@@ -371,6 +394,12 @@ import Voucher from './Voucher.astro';
             <span>{k.where}</span>
             <select data-district-select>{districtOptions}</select>
           </label>
+          {priceBands.length > 0 && (
+            <label class="hd-field kal-field-price">
+              <span>{pc.ask}</span>
+              <select data-price-select>{priceOptions}</select>
+            </label>
+          )}
           {mapBtn('hd-search-btn kal-mapbtn')}
         </div>
         {strip}
@@ -404,6 +433,21 @@ import Voucher from './Voucher.astro';
               ))}
             </div>
           </div>
+          {priceBands.length > 0 && (
+            <div class="kal-menuwrap">
+              <button type="button" class="kal-ctl kal-menubtn" data-kal-menu-btn aria-expanded="false" aria-controls="kal-prices" title={f.priceLabel}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 6.5a6.5 6.5 0 1 0 0 11"/><path d="M5 10.5h8.5M5 13.5h8.5"/></svg>
+                <span data-price-label data-any={pc.ask.replace(/\s*[?¿]\s*/g, '')}>{pc.ask.replace(/\s*[?¿]\s*/g, '')}</span>
+                <svg class="kal-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </button>
+              <div class="kal-menu kal-menu-price" id="kal-prices" data-kal-menu hidden role="group" aria-label={f.priceLabel}>
+                <button class="kal-menu-item is-active" type="button" data-price-filter="all">{pc.any}</button>
+                {priceBands.map((b) => (
+                  <button class="kal-menu-item" type="button" data-price-filter={b.id}>{pc.bands[b.id]}</button>
+                ))}
+              </div>
+            </div>
+          )}
           {mapBtn('kal-ctl kal-ctl-map')}
         </div>
       </div>
@@ -430,6 +474,12 @@ import Voucher from './Voucher.astro';
               <span>{k.district}</span>
               <select data-district-select>{districtOptions}</select>
             </label>
+            {priceBands.length > 0 && (
+              <label class="kal-sel">
+                <span>{f.priceLabel}</span>
+                <select data-price-select>{priceOptions}</select>
+              </label>
+            )}
             {mapBtn('kal-ctl kal-ctl-map')}
           </div>
           {strip}
@@ -493,7 +543,7 @@ import Voucher from './Voucher.astro';
                       /* A draft's tile, after the home page's: the picture in
                          an even white frame, then the time in hand, the
                          title, host · district and the price underneath. */
-                      <li class="session kal-card" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                      <li class="session kal-card" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined} {...priceAttrs(s.price)}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         <span class="kal-when">
                           <span class="kal-time">{s.time ? `${s.time}${k.uhr}` : t.timeTba}</span>
@@ -547,7 +597,7 @@ import Voucher from './Voucher.astro';
                         </span>
                       </li>
                     ) : (
-                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined}
+                      <li class="session" id={s.id} data-host={s.host.slug} data-seen={`s:${s.id}`} style={`--spread:${spread.get(s)}`} data-activity={activitiesOf(s.host).join(' ')} data-district={districtOf(s)} data-kids={s.kids ? 'true' : undefined} {...priceAttrs(s.price)}
                         data-track-card="session" data-track-host={s.host.name} data-track-title={s.title} data-track-date={isoDate(s.dayOffset)}>
                         {/* The thumbnail plays the host's reel where footage
                             exists — the card shows the session moving, per
@@ -711,7 +761,7 @@ import Voucher from './Voucher.astro';
       <p class="kal-sub">{t.onRequestNote}</p>
       <ul class="session-list kal-grid">
         {onRequest.map((o) => (
-          <li class="session kal-card" id={o.id} data-seen={`s:${o.id}`} data-activity={activitiesOf(o.host).join(' ')}
+          <li class="session kal-card" id={o.id} data-seen={`s:${o.id}`} data-activity={activitiesOf(o.host).join(' ')} {...priceAttrs(o.price)}
             data-track-card="on-request" data-track-host={o.host.name} data-track-title={o.title}>
             <span class="kal-when"><span class="kal-time">{t.onRequestHead}</span><span class="kal-dur">{o.duration ?? o.host.duration}</span></span>
             <span class="kal-frame">
@@ -750,7 +800,7 @@ import Voucher from './Voucher.astro';
       <p class="onrequest-note">{t.onRequestNote}</p>
       <ul class="session-list">
         {onRequest.map((o) => (
-          <li class="session" id={o.id} data-seen={`s:${o.id}`} data-activity={activitiesOf(o.host).join(' ')}
+          <li class="session" id={o.id} data-seen={`s:${o.id}`} data-activity={activitiesOf(o.host).join(' ')} {...priceAttrs(o.price)}
             data-track-card="on-request" data-track-host={o.host.name} data-track-title={o.title}>
             {/* Same tile as a dated card: the host's reel where footage
                 exists, otherwise the stock photo. */}
@@ -984,10 +1034,26 @@ import Voucher from './Voucher.astro';
     const activitySelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-activity-select]'));
     const districtSelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-district-select]'));
     const kidsPill = root.querySelector<HTMLButtonElement>('[data-kids-filter]');
+    // Price per person, in bands (priceFilter.ts): a band's id and its
+    // (min, max] in euros. A card carries its price as data-price-min/max; a
+    // span ("€40–100") is in every band it touches, and a card with no price
+    // (on request) only shows while no band is picked.
+    const pricePills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-price-filter]'));
+    const priceSelects = Array.from(root.querySelectorAll<HTMLSelectElement>('select[data-price-select]'));
+    const priceBands = new Map<string, [number, number]>(
+      (JSON.parse(root.dataset.priceBands || '[]') as [string, number, number | null][])
+        .map(([id, min, max]) => [id, [min, max ?? Infinity]]));
     let activityFilter = 'all';
     let districtFilter = 'all';
+    let priceFilter = 'all';
     let kidsOnly = false;
-    const hasValue = (value: string, pills: HTMLButtonElement[], key: 'activityFilter' | 'districtFilter', selects: HTMLSelectElement[]) =>
+    const inPrice = (li: HTMLElement) => {
+      if (priceFilter === 'all') return true;
+      const band = priceBands.get(priceFilter);
+      if (!band || li.dataset.priceMin === undefined) return false;
+      return Number(li.dataset.priceMin) <= band[1] && Number(li.dataset.priceMax ?? li.dataset.priceMin) > band[0];
+    };
+    const hasValue = (value: string, pills: HTMLButtonElement[], key: 'activityFilter' | 'districtFilter' | 'priceFilter', selects: HTMLSelectElement[]) =>
       pills.some((p) => p.dataset[key] === value) || selects.some((s) => Array.from(s.options).some((o) => o.value === value));
 
     /* The phone's folded bar. On a wide screen none of this is on screen,
@@ -1008,13 +1074,15 @@ import Voucher from './Voucher.astro';
     const matches = (li: HTMLElement) =>
       (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
       (districtFilter === 'all' || li.dataset.district === districtFilter) &&
+      inPrice(li) &&
       (!kidsOnly || li.dataset.kids === 'true');
 
     const applyFilters = () => {
       root.querySelectorAll<HTMLElement>('.session').forEach((li) => {
-        // A draft's "on request" row is not a day's: only the activity applies.
+        // A draft's "on request" row is not a day's: only the activity and
+        // the price apply.
         if (variant && !li.closest('.daygroup')) {
-          li.hidden = !(activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter));
+          li.hidden = !((activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) && inPrice(li));
           return;
         }
         li.hidden = !matches(li);
@@ -1063,6 +1131,8 @@ import Voucher from './Voucher.astro';
           names.push(label(root.querySelector(`[data-activity-filter="${activityFilter}"]`)));
         if (districtFilter !== 'all')
           names.push(label(root.querySelector(`[data-district-filter="${districtFilter}"]`)));
+        if (priceFilter !== 'all')
+          names.push(label(root.querySelector(`[data-price-filter="${priceFilter}"]`)));
         if (kidsOnly) names.push(label(kidsPill));
         pillOn.textContent = '';
         for (const name of names) {
@@ -1085,6 +1155,31 @@ import Voucher from './Voucher.astro';
       dayMap?.update();
       calendar?.render();
       walk?.resync();
+      syncAddress();
+    };
+
+    /* The address follows the filters, so a filtered calendar can be
+       shared as it is: ?activity=…&district=…&price=…&date=YYYY-MM-DD, the
+       same names the home page's search pill sends. Only what is set goes
+       in; anything else in the address (and the #card) is left alone. Off
+       until the address has been read on arrival, below, so the first
+       paint cannot wipe a link's filters before they are applied. */
+    let addressRead = false;
+    const syncAddress = () => {
+      if (!addressRead) return;
+      const url = new URL(location.href);
+      const set = (key: string, value: string | null) => {
+        if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
+      };
+      set('activity', activityFilter === 'all' ? null : activityFilter);
+      set('district', districtFilter === 'all' ? null : districtFilter);
+      set('price', priceFilter === 'all' ? null : priceFilter);
+      if (selected === 'all' || selected === 0) set('date', null);
+      else {
+        const d = dateAt(selected);
+        set('date', `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+      }
+      if (url.href !== location.href) history.replaceState(history.state, '', url);
     };
 
     const setActivity = (value: string) => {
@@ -1104,6 +1199,18 @@ import Voucher from './Voucher.astro';
       });
       applyFilters();
     };
+    const priceLabels = Array.from(root.querySelectorAll<HTMLElement>('[data-price-label]'));
+    const setPrice = (value: string) => {
+      priceFilter = value;
+      pricePills.forEach((p) => p.classList.toggle('is-active', p.dataset.priceFilter === value));
+      priceSelects.forEach((s) => { s.value = value; });
+      priceLabels.forEach((el) => {
+        const pill = pricePills.find((p) => p.dataset.priceFilter === value);
+        el.textContent = value === 'all' ? el.dataset.any || '' : (pill?.textContent ?? '').trim();
+        el.closest('button')?.classList.toggle('is-on', value !== 'all');
+      });
+      applyFilters();
+    };
     const setKids = (on: boolean) => {
       kidsOnly = on;
       kidsPill?.classList.toggle('is-active', on);
@@ -1117,6 +1224,10 @@ import Voucher from './Voucher.astro';
     districtPills.forEach((pill) => {
       pill.addEventListener('click', () => setDistrict(pill.dataset.districtFilter || 'all'));
     });
+    pricePills.forEach((pill) => {
+      pill.addEventListener('click', () => setPrice(pill.dataset.priceFilter || 'all'));
+    });
+    priceSelects.forEach((s) => s.addEventListener('change', () => setPrice(s.value || 'all')));
     activitySelects.forEach((s) => s.addEventListener('change', () => setActivity(s.value || 'all')));
     districtSelects.forEach((s) => s.addEventListener('change', () => setDistrict(s.value || 'all')));
     kidsPill?.addEventListener('click', () => setKids(!kidsOnly));
@@ -1124,6 +1235,7 @@ import Voucher from './Voucher.astro';
       if (kidsOnly) setKids(false);
       setActivity('all');
       setDistrict('all');
+      setPrice('all');
     };
     root.querySelectorAll<HTMLButtonElement>('[data-kal-reset]').forEach((b) => b.addEventListener('click', clearAll));
     moreBtn?.addEventListener('click', () => {
@@ -1162,17 +1274,17 @@ import Voucher from './Voucher.astro';
       });
     }
 
-    /* Draft 3's district menu: a button and the list under it. */
-    const menuBtn = root.querySelector<HTMLButtonElement>('[data-kal-menu-btn]');
-    const menu = root.querySelector<HTMLElement>('[data-kal-menu]');
-    if (menuBtn && menu) {
+    /* Draft 3's district and price menus: a button and the list under it. */
+    root.querySelectorAll<HTMLButtonElement>('[data-kal-menu-btn]').forEach((menuBtn) => {
+      const menu = menuBtn.parentElement?.querySelector<HTMLElement>('[data-kal-menu]');
+      if (!menu) return;
       const setMenu = (open: boolean) => {
         menu.hidden = !open;
         menuBtn.setAttribute('aria-expanded', String(open));
       };
       menuBtn.addEventListener('click', () => setMenu(menu.hidden));
       menu.addEventListener('click', (event) => {
-        if ((event.target as HTMLElement).closest('[data-district-filter]')) setMenu(false);
+        if ((event.target as HTMLElement).closest('[data-district-filter], [data-price-filter]')) setMenu(false);
       });
       document.addEventListener('click', (event) => {
         const target = event.target as Node;
@@ -1181,7 +1293,7 @@ import Voucher from './Voucher.astro';
       document.addEventListener('keydown', (event) => {
         if ((event as KeyboardEvent).key === 'Escape' && !menu.hidden) { setMenu(false); menuBtn.focus(); }
       });
-    }
+    });
 
     /* Draft 2's month calendar: the visitor's own month, a dot under every
        day with something on for the filters in force. */
@@ -1255,6 +1367,7 @@ import Voucher from './Voucher.astro';
       sessions: () => visibleDays().flatMap((day) =>
         Array.from(day.querySelectorAll<HTMLElement>('.session')).filter((li) =>
           (activityFilter === 'all' || (li.dataset.activity ?? '').split(' ').includes(activityFilter)) &&
+          inPrice(li) &&
           (!kidsOnly || li.dataset.kids === 'true'))),
       district: () => districtFilter,
       pick: (name) => { if (name === 'all' || hasValue(name, districtPills, 'districtFilter', districtSelects)) setDistrict(name); },
@@ -1300,7 +1413,7 @@ import Voucher from './Voucher.astro';
     });
 
     // A search from elsewhere (the home page's what / when / where pill)
-    // arrives as ?activity=…&date=YYYY-MM-DD&district=… and sets the same
+    // arrives as ?activity=…&date=YYYY-MM-DD&district=…&price=… and sets the same
     // filters and day a visitor would. Anything that names no filter on
     // this page is ignored, so a stale link still lands on the calendar.
     {
@@ -1310,11 +1423,18 @@ import Voucher from './Voucher.astro';
       const date = params.get('date');
       if (activity && hasValue(activity, activityPills, 'activityFilter', activitySelects)) setActivity(activity);
       if (district && hasValue(district, districtPills, 'districtFilter', districtSelects)) setDistrict(district);
+      // ?price=30-50; the top band also as 80+ (which arrives as "80 "), 80-
+      // or a bare 80.
+      const rawPrice = (params.get('price') ?? '').trim().toLowerCase();
+      const price = /^80(\+|-|plus)?$/.test(rawPrice) ? '80plus' : rawPrice;
+      if (price && hasValue(price, pricePills, 'priceFilter', priceSelects)) setPrice(price);
       if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
         const [y, m, dd] = date.split('-').map(Number);
         const offset = Math.round((new Date(y, m - 1, dd).getTime() - today.getTime()) / 86400000);
         if (dayChips.some((c) => c.dataset.offset === String(offset))) selectDay(offset);
       }
+      addressRead = true;
+      syncAddress();
     }
 
     // A notification email links straight to its card (#live-…): select

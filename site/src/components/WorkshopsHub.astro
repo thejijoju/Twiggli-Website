@@ -1,4 +1,5 @@
 ---
+import { filterCopy } from '../data/content.ts';
 import PageCircles from './PageCircles.astro';
 import { circlesFor } from '../data/pageCircles.ts';
 /** /workshops/ — the index of every activity page and every host page.
@@ -140,6 +141,9 @@ import Voucher from './Voucher.astro';
                   </span>
                   <span class="hub-card-name">{host.name}</span>
                   <span class="hub-card-spec">{host.specialty}</span>
+                  {/* The next date's price, as the host page's own cards give it,
+                      so it is there before the click. */}
+                  {n?.price && <span class="hub-card-price">{n.price} <span>{filterCopy[lang].priceMeta}</span></span>}
                 </a>
                 <Voucher kind="tile" host={host} lang={lang} />
               </li>

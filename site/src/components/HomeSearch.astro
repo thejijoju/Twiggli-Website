@@ -1,17 +1,20 @@
 ---
-/** The home page's what / when / where pill. It hands the choices to the
- *  calendar (/happening-today/?activity=…&date=…&district=…), whose own
+/** The home page's what / when / where / price pill. It hands the choices
+ *  to the calendar (/happening-today/?activity=…&date=…&district=…&price=…),
+ *  whose own
  *  filter pills read them — see the end of DayPicker.astro. Without
  *  scripting the form still lands on the calendar, unfiltered. Styled in
  *  home-discover.css. */
 import { homeDiscoverCopy } from '../data/homeDiscover.ts';
 import { getHomeData } from '../data/homeData.ts';
+import { priceFilterCopy } from '../data/priceFilter.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang; class?: string }
 const { lang, class: extra } = Astro.props;
 const d = homeDiscoverCopy[lang];
-const { calendarHref, whatOptions, whenOptions, whereOptions } = getHomeData(lang);
+const p = priceFilterCopy[lang];
+const { calendarHref, whatOptions, whenOptions, whereOptions, priceOptions } = getHomeData(lang);
 ---
 
 <form class:list={['hd-search', extra]} action={calendarHref} method="get" role="search" aria-label={d.searchLabel} data-hd-search>
@@ -36,6 +39,16 @@ const { calendarHref, whatOptions, whenOptions, whereOptions } = getHomeData(lan
       {whereOptions.map((w) => <option value={w}>{w}</option>)}
     </select>
   </label>
+  {/* Per person, on the price the tiles show (priceFilter.ts). */}
+  {priceOptions.length > 0 && (
+    <label class="hd-field hd-field-price">
+      <span>{p.ask}</span>
+      <select name="price">
+        <option value="">{p.any}</option>
+        {priceOptions.map((o) => <option value={o.value}>{o.label}</option>)}
+      </select>
+    </label>
+  )}
   <button type="submit" class="hd-search-btn">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
     <span>{d.search}</span>

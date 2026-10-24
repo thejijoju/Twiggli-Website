@@ -2,6 +2,7 @@
 /** One class's page — "Try the wheel" under Ceramic Kingdom — with every
  *  upcoming date of it. The long tail: someone who has heard the name of a
  *  class, or searches the exact thing a host calls theirs. */
+import { priceSummary } from '../data/priceFilter.ts';
 import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
@@ -25,6 +26,8 @@ const w = all.find((x) => x.key === key);
 if (!w) throw new Error(`No workshop ${key} for ${slug}`);
 
 const t = pageCopy[lang];
+/** "€0" reads as a number, not as free (DayPicker.astro, showPrice). */
+const showFree = (p: string) => (/^€\s*0([.,]0+)?$/.test(p.trim()) ? t.free : p);
 const x = hubExtraCopy[lang];
 const activity = activityCopy[lang][host.activity];
 const others = all.filter((o) => o.key !== key);
@@ -141,7 +144,7 @@ import Voucher from './Voucher.astro';
               <li>
                 <a href={workshopHref(lang, host, o.key)}>
                   {o.title}
-                  <span class="activity-links-count">{t.next}: {formatWhen(o.sessions[0], lang)} · {t.dates(o.sessions.length)}</span>
+                  <span class="activity-links-count">{t.next}: {formatWhen(o.sessions[0], lang)}{priceSummary(o.sessions.map((s) => s.price)) && <> · <strong class="activity-links-price">{showFree(priceSummary(o.sessions.map((s) => s.price))!)}</strong></>} · {t.dates(o.sessions.length)}</span>
                 </a>
               </li>
             ))}
