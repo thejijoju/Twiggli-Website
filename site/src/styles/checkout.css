@@ -71,12 +71,30 @@
 .co-side { display: grid; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--co-soft); }
 .co-sum-head { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .co-thumb {
-  flex: none; width: 52px; height: 52px; border-radius: 12px; overflow: hidden;
-  display: grid; place-items: center;
-  background: radial-gradient(120% 90% at 0% 0%, #fff4e6 0%, #fbeee9 45%, #e3d6ff 100%);
+  /* A golden frame, like the ribbon on a present: a gold gradient ring
+     around the picture, a hand-drawn gift sticker on its corner. */
+  position: relative; flex: none; width: 56px; height: 56px; border-radius: 14px; padding: 3px;
+  background: linear-gradient(135deg, #fff1b8 0%, #e9b949 30%, #c8902a 55%, #f6d67a 80%, #e2ad3f 100%);
+  box-shadow: 0 6px 16px -8px rgba(178, 128, 32, 0.55), 0 0 0 1px rgba(255, 241, 184, 0.7) inset;
+}
+.co-thumb-in {
+  width: 100%; height: 100%; border-radius: 11px; overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(120% 90% at 0% 0%, #fff8ec 0%, #fbeee9 50%, #efe4ff 100%);
+  /* A stitched line just inside the gold, like a crafted card. */
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
 }
 .co-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.co-thumb-art { font-size: 26px; line-height: 1; }
+.co-thumb-art { display: grid; place-items: center; width: 100%; height: 100%; }
+.co-gift-big { width: 62%; height: 62%; }
+.co-thumb > .co-gift {
+  position: absolute; right: -10px; top: -12px; width: 30px; height: 30px; transform: rotate(10deg);
+  filter: drop-shadow(0 2px 3px rgba(150, 100, 20, 0.35));
+}
+.co-thumb:has(.co-thumb-art:not([hidden])) > .co-gift { display: none; }
+.co-gift-fill { fill: #fff6d8; }
+.co-gift-line { fill: none; stroke: url(#coGold); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.co-gift-big .co-gift-line { stroke: url(#coGoldBig); }
+.co-gift-spark { fill: #e9b949; }
 .co-sum-text { flex: 1; min-width: 0; }
 .co-kicker { margin: 0 0 1px; font: 500 12.5px/1.3 var(--font-body); color: var(--co-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .co-title { margin: 0; font: 600 15.5px/1.3 var(--font-body); color: var(--co-ink); overflow-wrap: anywhere; }
@@ -192,8 +210,9 @@
     background: rgba(255, 255, 255, 0.7); box-shadow: 0 0 0 1px var(--co-soft) inset;
   }
   .co-sum-head { flex-direction: column; align-items: stretch; gap: 12px; }
-  .co-thumb { width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: 12px; }
-  .co-thumb-art { font-size: 40px; }
+  .co-thumb { width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: 16px; padding: 4px; }
+  .co-thumb-in { border-radius: 12px; }
+  .co-thumb > .co-gift { width: 46px; height: 46px; right: -14px; top: -16px; }
   .co-total-top { display: none; }
   .co-title { font-size: 17px; }
   .co-total {
