@@ -1,0 +1,9 @@
+{
+  "_comment": "Hosts taken off the site. Their old pages, in every language, become static redirect stubs (astro.config.mjs, removedHostRedirects) to the same-language activity hub, noindex and out of the sitemap. 'workshops' are the per-class subpage keys they had (slugify of the class title, shared by every language). If a host comes back and her page is built again, the stub for that path is skipped, so removing her entry here is tidy but not required.",
+  "hosts": [
+    { "slug": "mijita", "activity": "craft", "removed": "2026-10-11", "workshops": [] },
+    { "slug": "tessia", "activity": "craft", "removed": "2026-10-18", "workshops": ["wax-carving-ring-workshop-halber-tag", "sandguss-wax-carving-workshop-ganzer-tag"] },
+    { "slug": "celia", "activity": "craft", "removed": "2026-10-18", "workshops": ["knit-club", "knitting-course-the-jumper", "knitting-course-beanie-edition"] },
+    { "slug": "haki", "activity": "ceramics", "removed": "2026-10-19", "workshops": ["handbuilding-workshop", "offener-platz-an-der-drehscheibe-fortgeschrittene"] }
+  ]
+}
