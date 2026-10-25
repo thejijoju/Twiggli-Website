@@ -138,6 +138,7 @@ const config = {
             <button type="button" data-co-step="1" aria-label={t.more}>+</button>
           </div>
         </div>
+        <p class="co-fine" data-co-together hidden>{t.together}</p>
 
         {/* A general voucher: the amount. */}
         <div class="co-amounts" data-co-amounts role="radiogroup" aria-label={t.total} hidden>
@@ -315,6 +316,7 @@ const config = {
       $('[data-co-total]').textContent = shown;
       $('[data-co-total-top]').textContent = shown;
       $('[data-co-people-n]').textContent = String(people);
+      $('[data-co-together]').hidden = people < 2;
       $('[data-co-per]').textContent = fixedPrice ? `× ${euro(fixedPrice)}` : '';
       root.querySelectorAll<HTMLButtonElement>('[data-co-step]').forEach((b) => {
         b.disabled = b.dataset.coStep === '-1' ? people <= 1 : people >= (cfg.maxPeople || 10);

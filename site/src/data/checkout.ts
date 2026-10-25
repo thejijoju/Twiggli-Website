@@ -14,7 +14,7 @@ export type CheckoutCopy = {
   details: string; name: string; email: string;
   forWhom: string; recipient: string; recipientPh: string; message: string; messagePh: string;
   payment: string; orCard: string; payNow: string; paying: string; secure: string;
-  summary: string; valid: string; total: string;
+  together: string; summary: string; valid: string; total: string;
   generalName: string; redeem: string;
   needName: string; needEmail: string;
   declined: string; failed: string; error: string; loadError: string;
@@ -32,7 +32,7 @@ const en: CheckoutCopy = {
   forWhom: 'Who is the voucher for?', recipient: 'For whom?', recipientPh: 'e.g. Lena', message: 'Message', messagePh: 'A few words for the voucher',
   payment: 'Payment', orCard: 'or by card', payNow: 'Pay now · {amount}', paying: 'Processing…',
   secure: 'Secure payment with Stripe',
-  summary: 'Your order', valid: 'Valid for 3 years', total: 'Total',
+  together: 'For 2 people: one voucher, redeemed together.', summary: 'Your order', valid: 'Valid for 3 years', total: 'Total',
   generalName: 'Twiggli gift voucher', redeem: 'Redeem a voucher',
   needName: 'Please enter your name.', needEmail: 'Please enter a valid email address.',
   declined: 'The payment didn’t go through: {reason} Please try again or use another payment method.',
@@ -53,7 +53,7 @@ const de: CheckoutCopy = {
   forWhom: 'Für wen ist der Gutschein?', recipient: 'Für wen?', recipientPh: 'z. B. Lena', message: 'Nachricht', messagePh: 'Ein paar Worte für den Gutschein',
   payment: 'Zahlung', orCard: 'oder mit Karte', payNow: 'Jetzt bezahlen · {amount}', paying: 'Zahlung läuft…',
   secure: 'Sicher bezahlt mit Stripe',
-  summary: 'Deine Bestellung', valid: '3 Jahre gültig', total: 'Gesamt',
+  together: 'Für 2 Personen: ein Gutschein, gemeinsam einzulösen.', summary: 'Deine Bestellung', valid: '3 Jahre gültig', total: 'Gesamt',
   generalName: 'Twiggli-Gutschein', redeem: 'Gutschein einlösen',
   needName: 'Bitte gib deinen Namen ein.', needEmail: 'Bitte gib eine gültige E-Mail-Adresse ein.',
   declined: 'Die Zahlung hat nicht geklappt: {reason} Versuch es bitte noch einmal oder nimm eine andere Zahlungsart.',
