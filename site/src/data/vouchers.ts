@@ -56,7 +56,16 @@ export const voucherHosts: string[] = [
   'nicole', 'whittle', 'pia', 'studio32', 'anne',
 ];
 
-export const isVoucherHost = (slug: string): boolean => voucherHosts.includes(slug);
+/**
+ * Master switch. Off (25.10.26): vouchers are hidden on the site until the
+ * hosts have the confirmation email with how tracking, payout and the
+ * 3 years work. Off hides every gift button, badge and gift box, the
+ * "🎁 Gutscheine" pill and the home teaser; /voucher/ itself still opens by
+ * its address (no host list) for testing.
+ */
+export const VOUCHERS_ON = false;
+
+export const isVoucherHost = (slug: string): boolean => VOUCHERS_ON && voucherHosts.includes(slug);
 
 /** How long a voucher is valid, in years. */
 export const VOUCHER_YEARS = 3;
