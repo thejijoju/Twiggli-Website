@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 
 const previewSlugs = JSON.parse(readFileSync(new URL('./src/data/hosts/preview-slugs.json', import.meta.url), 'utf8'));
 const removedHosts = JSON.parse(readFileSync(new URL('./src/data/removed-hosts.json', import.meta.url), 'utf8')).hosts;
+const liveFeed = JSON.parse(readFileSync(new URL('./src/data/live-workshops.json', import.meta.url), 'utf8')).workshops ?? [];
 
 const SITE = 'https://www.twiggli.com';
 // Same list as LANGS in src/lib/url.ts; English has no prefix.
@@ -50,6 +51,65 @@ const removedHostRedirects = () => ({
   },
 });
 
+/* Class pages (/workshops/<activity>/<host>/<class>/) exist only while a
+   class has upcoming dates, so once its last date passes the URL would 404
+   — a steady trickle of dead pages that crawlers dislike. After the build,
+   every class the workshop feed has ever listed whose page was not built
+   this time gets a redirect stub to its host's page in the same language
+   (noindex, canonical, meta refresh, JS). Hosts that are gone entirely are
+   handled by removedHostRedirects. Same slug rule as slugify() in
+   src/data/sessions.ts. */
+const slugify = (title) =>
+  title
+    .toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60)
+    .replace(/-+$/, '') || 'workshop';
+
+const ACTIVITIES = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music', 'plants', 'dance', 'sport', 'textiles', 'wood', 'jewellery', 'printing', 'candles', 'writing', 'nature', 'drinks', 'kids', 'other'];
+
+const expiredClassRedirects = () => ({
+  name: 'expired-class-redirects',
+  hooks: {
+    'astro:build:done': ({ dir, logger }) => {
+      const stub = (lang, target) => {
+        const abs = SITE + target;
+        return `<!doctype html><html lang="${lang || 'en'}"><head><meta charset="utf-8">`
+          + `<title>Twiggli</title><meta name="robots" content="noindex">`
+          + `<link rel="canonical" href="${abs}"><meta http-equiv="refresh" content="0; url=${abs}">`
+          + `<script>location.replace(${JSON.stringify(target)})</script></head>`
+          + `<body><a href="${target}">${abs}</a></body></html>\n`;
+      };
+      const classes = new Map();
+      for (const w of liveFeed) {
+        if (!w?.slug || !w?.title) continue;
+        const key = slugify(w.title);
+        classes.set(`${w.slug}|${key}`, { slug: w.slug, key });
+      }
+      let written = 0;
+      for (const prefix of LANG_PREFIXES) {
+        const lp = prefix ? `/${prefix}` : '';
+        for (const { slug, key } of classes.values()) {
+          // The host's page tells which activity folder it lives in.
+          const activity = ACTIVITIES.find((a) => existsSync(new URL(`.${lp}/workshops/${a}/${slug}/index.html`, dir)));
+          if (!activity) continue;
+          const from = `${lp}/workshops/${activity}/${slug}/${key}/`;
+          const file = new URL(`.${from}index.html`, dir);
+          if (existsSync(file)) continue;
+          mkdirSync(new URL('.', file), { recursive: true });
+          writeFileSync(file, stub(prefix, `${lp}/workshops/${activity}/${slug}/`));
+          written++;
+        }
+      }
+      logger.info(`${written} redirect stubs for classes without upcoming dates`);
+    },
+  },
+});
+
 // Served from https://www.twiggli.com — the domain is live, pointed at GitHub
 // Pages by public/CNAME plus the registrar's DNS. No `base`: the site sits at
 // the domain root, not under a repository path. Do not reintroduce `base`
@@ -62,6 +122,7 @@ export default defineConfig({
   // Event markup) through this sitemap; payment/redirect stubs stay out.
   integrations: [
     removedHostRedirects(),
+    expiredClassRedirects(),
     sitemap({
       // Preview hosts' pages (src/data/hosts/preview.ts) are for the host
       // to look at by direct link before going live — never in the sitemap.
