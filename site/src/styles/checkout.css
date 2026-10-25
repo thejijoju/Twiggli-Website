@@ -210,7 +210,9 @@
     background: rgba(255, 255, 255, 0.7); box-shadow: 0 0 0 1px var(--co-soft) inset;
   }
   .co-sum-head { flex-direction: column; align-items: stretch; gap: 12px; }
-  .co-thumb { width: 132px; height: 132px; border-radius: 16px; padding: 4px; }
+  .co-thumb { width: 100%; height: auto; min-height: 0; aspect-ratio: 1 / 1; border-radius: 16px; padding: 4px; }
+  .co-thumb-in { position: relative; }
+  .co-thumb img { position: absolute; inset: 0; }
   .co-thumb-in { border-radius: 12px; }
   .co-thumb > .co-gift { width: 46px; height: 46px; right: -14px; top: -16px; }
   .co-total-top { display: none; }
