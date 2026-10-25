@@ -576,6 +576,10 @@ const config = {
         stripe = S(cfg.pk, { locale: lang === 'de' ? 'de' : 'en' });
         elements = stripe.elements({
           mode: 'payment', currency: 'eur', amount: Math.max(amount(), cfg.min) * 100, appearance,
+          // Card only in the form: no Stripe Link "save my info" box, which
+          // distracts from paying (Jirel, 25.10). Apple/Google Pay stay
+          // as express buttons above.
+          paymentMethodTypes: ['card'],
           fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap' }],
         });
         // Apple Pay, Google Pay, PayPal (whatever is on in Stripe and in
@@ -583,6 +587,7 @@ const config = {
         const express = elements.create('expressCheckout', {
           buttonHeight: 48,
           buttonType: { applePay: 'buy', googlePay: 'buy', paypal: 'buynow' },
+          paymentMethods: { link: 'never' },
           layout: { maxColumns: 3, maxRows: 1, overflow: 'auto' },
         });
         express.on('ready', (e: any) => {
