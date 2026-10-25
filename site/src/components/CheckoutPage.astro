@@ -1,10 +1,12 @@
 ---
 /**
  * Our own voucher payment page (/checkout/, /de/checkout/), Luma-style: the
- * buyer stays on twiggli.com. Left, their details and the payment (Stripe's
- * Express Checkout Element for Apple Pay / Google Pay / PayPal, then the
- * Payment Element for cards); right, the order in the home page's white
- * frame. On a phone the order sits on top, folded.
+ * buyer stays on twiggli.com and sees one thing only. No nav, footer or tab
+ * bar (Base `bare`); behind the card, the host's picture blurred (or soft
+ * colour blobs for the general voucher). One frosted card: left, name and
+ * email and the payment (Stripe's Express Checkout Element for Apple Pay /
+ * Google Pay / PayPal, then the Payment Element for cards); right, the
+ * order. On a phone the order is a compact row on top. A round × closes.
  *
  *   ?host=<slug>&people=<n>   a host's voucher: price per place × people,
  *                             from the same data as everywhere else
@@ -25,7 +27,7 @@ import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { checkoutCopy } from '../data/checkout.ts';
 import {
-  voucherHosts, voucherPrice, voucherPayment, voucherAmounts, voucherCopy,
+  voucherHosts, voucherPrice, voucherPayment, voucherAmounts,
   VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST,
 } from '../data/vouchers.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
@@ -35,145 +37,140 @@ import '../styles/checkout.css';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = checkoutCopy(lang);
-const vc = voucherCopy[lang];
 
 /* Every host who takes vouchers, whether or not vouchers are switched on
    site-wide, so the page can be tried before they are. */
 const hosts = Object.fromEntries(
   getHosts(lang, { withPreview: true })
     .filter((h) => voucherHosts.includes(h.slug))
-    .map((h) => [h.slug, { name: h.name, title: h.specialty, price: voucherPrice(h) ?? 0, image: h.poster ?? h.photo ?? '' }]),
+    .map((h) => [h.slug, {
+      name: h.name, title: h.specialty, price: voucherPrice(h) ?? 0, image: h.poster ?? h.photo ?? '',
+      page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
+    }]),
 );
 const voucherPage = href(lang, '/voucher/');
 const config = {
   url: voucherPayment.url, anonKey: voucherPayment.anonKey, pk: voucherPayment.publishableKey, live: voucherPayment.live,
   min: VOUCHER_MIN, max: 2000, maxPeople: VOUCHER_MAX_PEOPLE, years: VOUCHER_YEARS, amounts: voucherAmounts,
-  generalHost: GENERAL_VOUCHER_HOST, inbox: requestEmail, contact: contactEmail, home: href(lang, '/'),
+  generalHost: GENERAL_VOUCHER_HOST, inbox: requestEmail, contact: contactEmail, home: href(lang, '/'), vouchers: voucherPage,
 };
 ---
 
-<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="co-page" noindex translations={['en', 'de']}>
+<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="co-page" noindex bare translations={['en', 'de']}>
   <Fragment slot="head">
     <link rel="preconnect" href="https://js.stripe.com" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800&display=swap" />
   </Fragment>
 
   <div
-    class="container co"
+    class="co"
     data-co
     data-lang={lang}
     data-config={JSON.stringify(config)}
     data-hosts={JSON.stringify(hosts)}
     data-copy={JSON.stringify(t)}
   >
-    <a class="co-back" href={voucherPage}><span aria-hidden="true">←</span> {t.back}</a>
+    {/* The ground: the host's picture, blurred, or soft colour blobs. */}
+    <div class="co-bg" aria-hidden="true">
+      <span class="co-blob co-blob-1"></span>
+      <span class="co-blob co-blob-2"></span>
+      <span class="co-blob co-blob-3"></span>
+      <img class="co-bg-img" data-co-bg alt="" hidden />
+      <span class="co-scrim"></span>
+    </div>
 
-    <div class="co-grid">
+    <a class="co-close" href={voucherPage} data-co-close aria-label={t.close}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+    </a>
+
+    <div class="co-card">
+      <h1 class="co-sr" data-co-h1>{t.generalTitle}</h1>
+
       {/* The order. First in the page, so it sits on top on a phone. */}
-      <aside class="co-side" aria-label={t.summary}>
-        <details class="co-sum" open data-co-sum>
-          <summary class="co-sum-toggle">
-            <span class="co-sum-toggle-label"><span aria-hidden="true">🎁</span> {t.showSummary}</span>
-            <span class="co-sum-toggle-right"><strong data-co-total-top>—</strong><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></span>
-          </summary>
-          <div class="co-frame co-card">
-            <div class="co-media" data-co-media>
-              <img data-co-img alt="" hidden />
-              <div class="co-art" data-co-art>
-                <span class="co-art-gift" aria-hidden="true">🎁</span>
-                <span class="co-art-amount" data-co-art-amount>—</span>
-                <span class="co-art-name">{t.generalName}</span>
-              </div>
-            </div>
-            <div class="co-card-body">
-              <p class="co-card-kicker" data-co-kicker>{t.summary}</p>
-              <h2 class="co-card-title" data-co-title>{t.generalName}</h2>
-              <dl class="co-lines">
-                <div data-co-line="host"><dt>{t.host}</dt><dd data-co-v-host></dd></div>
-                <div data-co-line="workshop"><dt>{t.workshop}</dt><dd data-co-v-workshop></dd></div>
-                <div data-co-line="places"><dt>{t.places}</dt><dd data-co-v-places></dd></div>
-                <div data-co-line="amount"><dt>{t.amount}</dt><dd data-co-v-amount></dd></div>
-                <div><dt>{t.valid}</dt><dd>{t.validValue}</dd></div>
-              </dl>
-              <p class="co-card-sub" data-co-general-sub>{t.generalSub}</p>
-              <div class="co-total"><span>{t.total}</span><strong data-co-total>—</strong></div>
-              {/* For later: redeeming a code here. No function yet. */}
-              <button type="button" class="co-redeem" aria-disabled="true" data-co-redeem>{t.redeem}</button>
-            </div>
+      <aside class="co-side" aria-label={t.summary} data-co-side>
+        <div class="co-sum-head">
+          <div class="co-thumb">
+            <img data-co-img alt="" hidden />
+            <span class="co-thumb-art" data-co-art aria-hidden="true">🎁</span>
           </div>
-        </details>
+          <div class="co-sum-text">
+            <p class="co-kicker" data-co-kicker hidden></p>
+            <p class="co-title" data-co-title>{t.generalName}</p>
+          </div>
+          <strong class="co-total-top" data-co-total-top>—</strong>
+        </div>
+
+        {/* A host's voucher: how many places. */}
+        <div class="co-row" data-co-people hidden>
+          <span class="co-row-label">{t.places} <small data-co-per></small></span>
+          <div class="co-stepper" role="group" aria-label={t.places}>
+            <button type="button" data-co-step="-1" aria-label={t.less}>−</button>
+            <output data-co-people-n aria-live="polite">1</output>
+            <button type="button" data-co-step="1" aria-label={t.more}>+</button>
+          </div>
+        </div>
+
+        {/* A general voucher: the amount. */}
+        <div class="co-amounts" data-co-amounts role="radiogroup" aria-label={t.total} hidden>
+          <div class="co-chips">
+            {voucherAmounts.map((a) => (
+              <label class="co-chip"><input type="radio" name="pick" value={a} /><span>€{a}</span></label>
+            ))}
+            <label class="co-chip"><input type="radio" name="pick" value="wish" /><span>{t.wish}</span></label>
+          </div>
+          <label class="co-field" data-co-wish hidden>
+            <span class="co-sr">{t.wishHint}</span>
+            <input name="wish" type="number" min={VOUCHER_MIN} max="2000" step="1" inputmode="numeric" placeholder={t.wishHint} />
+          </label>
+        </div>
+        <p class="co-note" data-co-min hidden></p>
+
+        <div class="co-meta">
+          <span>{t.valid}</span>
+          {/* For later: redeeming a code here. No function yet. */}
+          <button type="button" class="co-redeem" aria-disabled="true" data-co-redeem>{t.redeem}</button>
+        </div>
+        <div class="co-total"><span>{t.total}</span><strong data-co-total>—</strong></div>
       </aside>
 
-      <section class="co-main co-frame">
+      <section class="co-main">
         <form class="co-form" data-co-form novalidate>
-          <header class="co-head">
-            <h1 class="co-h1" data-co-h1>{t.generalTitle}</h1>
-            <p class="co-lede">{t.lede}</p>
-          </header>
-
-          {/* A general voucher: the amount, changeable here. */}
-          <fieldset class="co-block" data-co-amounts hidden>
-            <legend class="co-h2">{t.amountTitle}</legend>
-            <div class="co-chips">
-              {voucherAmounts.map((a) => (
-                <label class="co-chip"><input type="radio" name="pick" value={a} /><span>€{a}</span></label>
-              ))}
-              <label class="co-chip"><input type="radio" name="pick" value="wish" /><span>{t.wish}</span></label>
-            </div>
-            <label class="co-field" data-co-wish hidden>
-              <span>{t.wish} (€)</span>
-              <input name="wish" type="number" min={VOUCHER_MIN} max="2000" step="1" inputmode="numeric" placeholder={t.wishHint} />
+          <div class="co-block">
+            <h2 class="co-h2">{t.details}</h2>
+            <label class="co-field">
+              <span>{t.name}</span>
+              <input name="name" type="text" autocomplete="name" required />
+              <small class="co-field-error" data-co-err="name" hidden>{t.needName}</small>
             </label>
-          </fieldset>
-
-          {/* A host's voucher: how many places. */}
-          <div class="co-block" data-co-people hidden>
-            <p class="co-h2">{t.people}</p>
-            <div class="co-stepper-row">
-              <div class="co-stepper" role="group" aria-label={t.people}>
-                <button type="button" data-co-step="-1" aria-label={t.less}>−</button>
-                <output data-co-people-n aria-live="polite">1</output>
-                <button type="button" data-co-step="1" aria-label={t.more}>+</button>
+            <label class="co-field">
+              <span>{t.email}</span>
+              <input name="email" type="email" autocomplete="email" required />
+              <small class="co-field-error" data-co-err="email" hidden>{t.needEmail}</small>
+            </label>
+            <details class="co-more" data-co-more>
+              <summary>+ {t.forWhom} <em>(optional)</em></summary>
+              <div class="co-more-body">
+                <label class="co-field">
+                  <span>{t.recipient}</span>
+                  <input name="recipient" type="text" autocomplete="off" placeholder={t.recipientPh} maxlength="200" />
+                </label>
+                <label class="co-field">
+                  <span>{t.message}</span>
+                  <textarea name="message" rows="2" placeholder={t.messagePh} maxlength="480"></textarea>
+                </label>
               </div>
-              <p class="co-per" data-co-per></p>
-            </div>
-          </div>
-          <p class="co-note" data-co-min hidden></p>
-
-          <fieldset class="co-block">
-            <legend class="co-h2">{t.details}</legend>
-            <div class="co-fields">
-              <label class="co-field">
-                <span>{t.name}</span>
-                <input name="name" type="text" autocomplete="name" required />
-                <small class="co-field-error" data-co-err="name" hidden>{t.needName}</small>
-              </label>
-              <label class="co-field">
-                <span>{t.email}</span>
-                <input name="email" type="email" autocomplete="email" required />
-                <small class="co-field-error" data-co-err="email" hidden>{t.needEmail}</small>
-                <small class="co-field-hint">{t.emailHint}</small>
-              </label>
-              <label class="co-field co-field-wide">
-                <span>{t.recipient} <em>({t.optional})</em></span>
-                <input name="recipient" type="text" autocomplete="off" placeholder={t.recipientPh} maxlength="200" />
-              </label>
-              <label class="co-field co-field-wide">
-                <span>{t.message} <em>({t.optional})</em></span>
-                <textarea name="message" rows="3" placeholder={t.messagePh} maxlength="480"></textarea>
-              </label>
-            </div>
+            </details>
             <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          </fieldset>
+          </div>
 
-          <fieldset class="co-block">
-            <legend class="co-h2">{t.payment}</legend>
+          <div class="co-block">
+            <h2 class="co-h2">{t.payment}</h2>
             <div class="co-express" id="co-express" data-co-express></div>
             <div class="co-or" data-co-or hidden><span>{t.orCard}</span></div>
             <div class="co-payment" id="co-payment" data-co-payment>
               <div class="co-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
             </div>
-          </fieldset>
+          </div>
 
           <p class="co-error" data-co-error role="alert" hidden></p>
           <button type="submit" class="co-pay" data-co-pay disabled>{t.payNow.replace('{amount}', '…')}</button>
@@ -181,20 +178,16 @@ const config = {
         </form>
 
         <div class="co-done" data-co-done hidden>
-          <p class="co-done-gift" aria-hidden="true">🎁</p>
-          <h1 class="co-h1">{t.doneTitle.replace(' 🎁', '')}</h1>
-          <p class="co-lede">{t.doneLede}</p>
-          <dl class="co-lines co-done-lines">
-            <div data-co-done-line="for"><dt>{t.doneFor}</dt><dd data-co-d-for></dd></div>
-            <div data-co-done-line="receipt"><dt>{t.doneReceipt}</dt><dd data-co-d-receipt></dd></div>
-            <div><dt>{t.doneRef}</dt><dd data-co-d-ref></dd></div>
-          </dl>
-          <a class="co-pay co-pay-link" href={href(lang, '/workshops/')}>{t.doneMore}</a>
+          <p class="co-done-mark" aria-hidden="true">🎁</p>
+          <h2 class="co-done-title">{t.doneTitle}</h2>
+          <p class="co-done-text">{t.doneLede}</p>
+          <a class="co-pay co-pay-link" href={href(lang, '/')}>{t.doneBack}</a>
         </div>
 
-        <div class="co-off" data-co-off hidden>
-          <h1 class="co-h1" data-co-off-title>{vc.generalTitle}</h1>
-          <p class="co-lede" data-co-off-text>{t.inactive}</p>
+        <div class="co-done co-off" data-co-off hidden>
+          <p class="co-done-mark" aria-hidden="true">🎁</p>
+          <h2 class="co-done-title">{t.generalTitle}</h2>
+          <p class="co-done-text" data-co-off-text>{t.inactive}</p>
           <a class="co-pay co-pay-link" href={voucherPage}>{t.toVouchers}</a>
         </div>
       </section>
@@ -206,7 +199,7 @@ const config = {
   import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
-  type HostInfo = { name: string; title: string; price: number; image: string };
+  type HostInfo = { name: string; title: string; price: number; image: string; page: string };
   type Order = {
     ref: string; amount: number; people: number; slug: string;
     name: string; email: string; recipient: string; message: string;
@@ -228,8 +221,9 @@ const config = {
     const emailIn = form.querySelector<HTMLInputElement>('input[name="email"]')!;
     const recipientIn = form.querySelector<HTMLInputElement>('input[name="recipient"]')!;
     const messageIn = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]')!;
-    const wishIn = form.querySelector<HTMLInputElement>('input[name="wish"]')!;
-    const picks = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="pick"]'));
+    const wishIn = root.querySelector<HTMLInputElement>('input[name="wish"]')!;
+    const picks = Array.from(root.querySelectorAll<HTMLInputElement>('input[name="pick"]'));
+    const side = $('[data-co-side]');
     const euro = (n: number) => `€${n}`;
     // Stripe's state, filled in once js.stripe.com has loaded.
     let stripe: StripeLike = null;
@@ -279,32 +273,20 @@ const config = {
     const valid = () => amount() >= cfg.min && amount() <= cfg.max;
 
     // ── The page, filled in.
-    const off = (title: string, text: string) => {
+    const off = (text: string) => {
       form.hidden = true;
+      side.hidden = true;
       $('[data-co-off]').hidden = false;
-      $('[data-co-off-title]').textContent = title;
       $('[data-co-off-text]').textContent = text;
-      root.querySelector<HTMLElement>('.co-side')!.hidden = true;
       root.classList.add('is-off');
-    };
-    const line = (k: string, show: boolean, v = '') => {
-      const row = $(`[data-co-line="${k}"]`);
-      row.hidden = !show;
-      $(`[data-co-v-${k}]`).textContent = v;
     };
     const render = () => {
       const a = amount();
       const shown = a ? euro(a) : '—';
       $('[data-co-total]').textContent = shown;
       $('[data-co-total-top]').textContent = shown;
-      $('[data-co-art-amount]').textContent = shown;
-      line('host', !!host, host?.name);
-      line('workshop', !!host, host?.title);
-      line('places', !!host, String(people));
-      line('amount', !!fixedPrice, `${people} × ${euro(fixedPrice)}`);
-      $('[data-co-general-sub]').hidden = !!host;
       $('[data-co-people-n]').textContent = String(people);
-      $('[data-co-per]').textContent = fixedPrice ? `${euro(fixedPrice)} ${t.perPerson}` : '';
+      $('[data-co-per]').textContent = fixedPrice ? `× ${euro(fixedPrice)}` : '';
       root.querySelectorAll<HTMLButtonElement>('[data-co-step]').forEach((b) => {
         b.disabled = b.dataset.coStep === '-1' ? people <= 1 : people >= (cfg.maxPeople || 10);
       });
@@ -321,26 +303,34 @@ const config = {
       if (elements && valid()) { try { elements.update({ amount: a * 100 }); } catch { /* not yet */ } }
     };
 
-    $('[data-co-h1]').textContent = host ? t.hostTitle : t.generalTitle;
+    $('[data-co-h1]').textContent = host ? `${t.hostTitle}: ${host.title}` : t.generalTitle;
     $('[data-co-title]').textContent = host ? host.title : t.generalName;
-    $('[data-co-kicker]').textContent = host ? host.name : t.summary;
+    $('[data-co-kicker]').textContent = host ? host.name : '';
+    $('[data-co-kicker]').hidden = !host;
     if (host?.image) {
       const img = $<HTMLImageElement>('[data-co-img]');
       img.src = host.image;
       img.hidden = false;
       $('[data-co-art]').hidden = true;
+      // The same picture, blurred, is the ground behind the card.
+      const bg = $<HTMLImageElement>('[data-co-bg]');
+      bg.src = host.image;
+      bg.hidden = false;
+      root.classList.add('has-photo');
     }
     $('[data-co-amounts]').hidden = !usesAmountInput;
     $('[data-co-people]').hidden = !fixedPrice;
-
-    // The order folds on a phone; on a wide screen it is always open.
-    const sum = $<HTMLDetailsElement>('[data-co-sum]');
-    const wide = matchMedia('(min-width: 900px)');
-    const syncSum = () => { sum.open = wide.matches; };
-    syncSum();
-    wide.addEventListener('change', syncSum);
-    sum.querySelector('summary')!.addEventListener('click', (e) => { if (wide.matches) e.preventDefault(); });
     $('[data-co-redeem]').addEventListener('click', (e) => e.preventDefault());
+
+    // × : back where the visitor came from when that was us, else the
+    // host's page or the voucher page.
+    const close = $<HTMLAnchorElement>('[data-co-close]');
+    if (host?.page) close.href = host.page;
+    close.addEventListener('click', (e) => {
+      let same = false;
+      try { same = !!document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1; } catch { /* bad referrer */ }
+      if (same && !root.classList.contains('is-done')) { e.preventDefault(); history.back(); }
+    });
 
     root.querySelectorAll<HTMLButtonElement>('[data-co-step]').forEach((b) => b.addEventListener('click', () => {
       people = clampPeople(people + Number(b.dataset.coStep));
@@ -363,12 +353,8 @@ const config = {
     // ── Done: the thank-you, the order, and the note to our inbox.
     const showDone = (o: Order) => {
       form.hidden = true;
+      side.hidden = true;
       $('[data-co-done]').hidden = false;
-      $('[data-co-d-ref]').textContent = o.ref;
-      $('[data-co-d-for]').textContent = o.recipient;
-      $<HTMLElement>('[data-co-done-line="for"]').hidden = !o.recipient;
-      $('[data-co-d-receipt]').textContent = o.email;
-      $<HTMLElement>('[data-co-done-line="receipt"]').hidden = !o.email;
       root.classList.add('is-done');
       if (!o.noted) {
         noteInbox(o);
@@ -429,6 +415,7 @@ const config = {
       } else if (before) {
         nameIn.value = before.name; emailIn.value = before.email;
         recipientIn.value = before.recipient; messageIn.value = before.message;
+        if (before.recipient || before.message) $<HTMLDetailsElement>('[data-co-more]').open = true;
         showError(t.failed);
       }
     }
@@ -552,8 +539,8 @@ const config = {
 
     form.addEventListener('submit', (e) => { e.preventDefault(); if (!busy && ready) pay(); });
 
-    if (!active) off(t.generalTitle, t.inactive);
-    else if (slug && !host) off(t.generalTitle, t.unknown);
+    if (!active) off(t.inactive);
+    else if (slug && !host) off(t.unknown);
     else if (!landed) {
       render();
       loadStripe().then((S) => {

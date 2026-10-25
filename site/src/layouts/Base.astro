@@ -31,11 +31,16 @@ interface Props {
    *  hreflang set, the switcher and the redirect only ever name a page
    *  that is really there. */
   translations?: Lang[];
+  /** A page with nothing around it: no social strip, nav, footer, tab bar,
+   *  cookie note, dialogs or club popup — just the page itself, for a flow
+   *  that wants all the attention (the voucher checkout). Head, meta and
+   *  analytics stay as they are. */
+  bare?: boolean;
 }
 
 import { umamiWebsiteId, umamiScript, analyticsOn } from '../data/analytics.ts';
 
-const { title, description, pageClass, lang = DEFAULT_LANG, noindex = false, image, translations = LANGS } = Astro.props;
+const { title, description, pageClass, lang = DEFAULT_LANG, noindex = false, image, translations = LANGS, bare: chromeless = false } = Astro.props;
 const { brand } = getSiteData(lang);
 const pageDescription = description ?? brand.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
@@ -55,7 +60,7 @@ const available = alternates.map((a) => a.lang);
 // The Twiggli Club invitation (ClubPopup.astro) shows everywhere except on
 // the club page itself, the legal pages, the newsletter and payment
 // landing pages, and anything kept out of search.
-const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-service|paymentcanceled|stripe-connect-setup-completed|newsletter|404)(\/|$)/.test(bare);
+const clubPopup = !chromeless && !noindex && !/^\/(club|impressum|privacy-policy|terms-of-service|paymentcanceled|stripe-connect-setup-completed|newsletter|404)(\/|$)/.test(bare);
 ---
 
 <!doctype html>
@@ -142,7 +147,15 @@ const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-servi
       <script is:inline defer src={umamiScript} data-website-id={umamiWebsiteId}></script>
     )}
   </head>
-  <body>
+  <body class:list={[chromeless && 'is-bare']}>
+    {chromeless ? (
+      <div class:list={['page', 'page-bare', pageClass]}>
+        <main>
+          <slot />
+        </main>
+      </div>
+    ) : (
+    <>
     <div class:list={['page', pageClass]}>
       <SocialBar lang={lang} />
       {/* The nav is pinned; the dark social strip above it is not, so it
@@ -161,6 +174,8 @@ const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-servi
     <BookingDialog lang={lang} />
     <VoucherDialog lang={lang} />
     <SignInDialog lang={lang} />
+    </>
+    )}
     {clubPopup && <ClubPopup lang={lang} />}
     <script>
       // Every outbound click, labelled with the card it came from. Runs
