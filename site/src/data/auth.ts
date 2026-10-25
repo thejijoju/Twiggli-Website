@@ -10,6 +10,10 @@ export interface AuthCopy {
   signIn: string;
   /** What a screen reader hears on the pill, and the dialog's name. */
   signInAria: string;
+  /** The "Get app" pill beside it in the dark strip, and what a screen
+   *  reader hears on it (on a phone it is a round phone icon). */
+  getApp: string;
+  getAppAria: string;
   title: string;
   lede: string;
   email: string;
@@ -31,6 +35,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   en: {
     signIn: 'Sign in',
     signInAria: 'Sign in to Twiggli',
+    getApp: 'Get app',
+    getAppAria: 'Get the Twiggli app',
     title: 'Welcome to Twiggli',
     lede: 'Sign in or create an account with your email.',
     email: 'Email',
@@ -48,6 +54,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   de: {
     signIn: 'Anmelden',
     signInAria: 'Bei Twiggli anmelden',
+    getApp: 'App holen',
+    getAppAria: 'Twiggli-App holen',
     title: 'Willkommen bei Twiggli',
     lede: 'Melde dich mit deiner E-Mail an oder erstelle ein Konto.',
     email: 'E-Mail',
@@ -65,6 +73,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   fr: {
     signIn: 'Connexion',
     signInAria: 'Se connecter à Twiggli',
+    getApp: 'Obtenir l’app',
+    getAppAria: 'Obtenir l’app Twiggli',
     title: 'Bienvenue sur Twiggli',
     lede: 'Connecte-toi ou crée un compte avec ton e-mail.',
     email: 'E-mail',
@@ -82,6 +92,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   es: {
     signIn: 'Iniciar sesión',
     signInAria: 'Iniciar sesión en Twiggli',
+    getApp: 'Descargar app',
+    getAppAria: 'Descargar la app de Twiggli',
     title: 'Bienvenido a Twiggli',
     lede: 'Inicia sesión o crea una cuenta con tu email.',
     email: 'Email',
@@ -99,6 +111,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   it: {
     signIn: 'Accedi',
     signInAria: 'Accedi a Twiggli',
+    getApp: 'Scarica l’app',
+    getAppAria: 'Scarica l’app di Twiggli',
     title: 'Benvenuto su Twiggli',
     lede: 'Accedi o crea un account con la tua email.',
     email: 'Email',
@@ -116,6 +130,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   nl: {
     signIn: 'Inloggen',
     signInAria: 'Inloggen bij Twiggli',
+    getApp: 'App downloaden',
+    getAppAria: 'De Twiggli-app downloaden',
     title: 'Welkom bij Twiggli',
     lede: 'Log in of maak een account aan met je e-mail.',
     email: 'E-mail',
@@ -133,6 +149,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   pl: {
     signIn: 'Zaloguj się',
     signInAria: 'Zaloguj się do Twiggli',
+    getApp: 'Pobierz apkę',
+    getAppAria: 'Pobierz aplikację Twiggli',
     title: 'Witaj w Twiggli',
     lede: 'Zaloguj się lub załóż konto przez e-mail.',
     email: 'E-mail',
@@ -150,6 +168,8 @@ export const authCopy: Record<Lang, AuthCopy> = {
   tr: {
     signIn: 'Giriş yap',
     signInAria: 'Twiggli’ye giriş yap',
+    getApp: 'Uygulamayı al',
+    getAppAria: 'Twiggli uygulamasını al',
     title: 'Twiggli’ye hoş geldin',
     lede: 'E-postanla giriş yap ya da hesap oluştur.',
     email: 'E-posta',

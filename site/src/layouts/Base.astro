@@ -74,29 +74,35 @@ const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-servi
         if (localStorage.getItem('twiggli-cookie-consent')) {
           document.documentElement.classList.add('cookie-consent-set');
         }
-        // First-visit language detection: if the visitor has not picked a
-        // language before (LangSwitch.astro records that choice), walk the
-        // browser's preferred languages and send them to the first one this
-        // page exists in — unless that is the language they are already
-        // reading. Runs once per page, never fights a stored preference, and
-        // only ever names a language in `langs`, which is the list of
-        // versions this page really has. deployBase comes from BASE_URL
-        // rather than a literal, so it cannot drift from astro.config.mjs.
-        var storedLang = localStorage.getItem('twiggli-lang');
-        if (!storedLang) {
-          var prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+        // Language on the home entry. Only the English root (`/`) ever
+        // redirects, client-side, with location.replace: deep links and
+        // every other page stay exactly where they were linked (so a shared
+        // /fr/… link, or a crawler's fetch of /de/…, is never bounced), and
+        // since no prefixed page redirects, it cannot loop. The language is
+        // the one the visitor picked in the switcher (LangSwitch.astro
+        // stores it as 'twiggli-lang'), else the first of the browser's
+        // preferred languages that the site has, else English — which is
+        // the root itself, so nothing happens. A visitor who is already
+        // browsing (a same-site referrer: they clicked through to the
+        // English home on purpose) and crawlers are left alone.
+        var rel = location.pathname.indexOf(deployBase) === 0 ? location.pathname.slice(deployBase.length) : null;
+        var bot = /bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|embedly|whatsapp|telegram/i.test(navigator.userAgent || '');
+        var internal = false;
+        try { internal = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+        if ((rel === '' || rel === 'index.html') && current === defaultLang && !bot && !internal) {
+          var storedLang = localStorage.getItem('twiggli-lang');
           var wanted = null;
-          for (var i = 0; i < prefs.length && !wanted; i++) {
-            var code = String(prefs[i] || '').toLowerCase().slice(0, 2);
-            if (langs.indexOf(code) !== -1) wanted = code;
+          if (storedLang && langs.indexOf(storedLang) !== -1) {
+            wanted = storedLang;
+          } else {
+            var prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+            for (var i = 0; i < prefs.length && !wanted; i++) {
+              var code = String(prefs[i] || '').toLowerCase().slice(0, 2);
+              if (langs.indexOf(code) !== -1) wanted = code;
+            }
           }
-          if (wanted && wanted !== current) {
-            var path = location.pathname;
-            var rel = path.indexOf(deployBase) === 0 ? path.slice(deployBase.length) : path.replace(/^\//, '');
-            var m = rel.match(/^([a-z]{2})(\/|$)/);
-            if (m && langs.indexOf(m[1]) !== -1) rel = rel.slice(m[0].length);
-            var target = deployBase + (wanted === defaultLang ? '' : wanted + '/') + rel;
-            if (target !== path) location.replace(target + location.search + location.hash);
+          if (wanted && wanted !== defaultLang) {
+            location.replace(deployBase + wanted + '/' + location.search + location.hash);
           }
         }
       } catch (e) {}
@@ -142,14 +148,14 @@ const clubPopup = !noindex && !/^\/(club|impressum|privacy-policy|terms-of-servi
       {/* The nav is pinned; the dark social strip above it is not, so it
           scrolls away and leaves the transparent nav at the top edge. */}
       <header class="site-header" data-site-header>
-        <Nav lang={lang} translations={available} />
+        <Nav lang={lang} />
       </header>
       <main>
         <slot />
       </main>
-      <Footer lang={lang} />
+      <Footer lang={lang} translations={available} />
     </div>
-    <MobileTabs lang={lang} />
+    <MobileTabs lang={lang} translations={available} />
     <CookieBanner lang={lang} />
     {/* Every Book / Request / Notify button opens this, on the page. */}
     <BookingDialog lang={lang} />

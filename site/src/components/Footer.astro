@@ -1,15 +1,18 @@
 ---
 import StoreButtons from './StoreButtons.astro';
 import Newsletter from './Newsletter.astro';
+import LangSwitch from './LangSwitch.astro';
 import { getSiteData } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
-import { href, type Lang } from '../lib/url.ts';
+import { href, LANGS, type Lang } from '../lib/url.ts';
 import { clubCopy } from '../data/club.ts';
 
 interface Props {
   lang: Lang;
+  /** The languages this page exists in — handed on to the switcher. */
+  translations?: Lang[];
 }
-const { lang } = Astro.props;
+const { lang, translations = LANGS } = Astro.props;
 const { brand, navLinks, secondaryLinks, workshopLinks, workshopColumnLabel, legalLinks, copyright } = getSiteData(lang);
 
 const t = ui(lang).footer;
@@ -72,6 +75,14 @@ const club = clubCopy[clubLang];
       </div>
     </nav>
 
-    <p class="footer-note">{copyright}</p>
+    {/* The language switcher lives here (and in the phone's More sheet),
+        not in the header. Its menu opens upwards, off the page's end. */}
+    <div class="footer-bottom">
+      <p class="footer-note">{copyright}</p>
+      <div class="footer-lang">
+        <span class="footer-lang-label" aria-hidden="true">{ui(lang).nav.language}</span>
+        <LangSwitch lang={lang} translations={translations} placement="up" />
+      </div>
+    </div>
   </div>
 </footer>

@@ -14,7 +14,7 @@ const en = {
   brand: { tagline: "Discover Berlin's most unique experiences — through video" },
   nav: {
     home: 'Home', getStarted: 'Get Started', workshops: 'Workshops', happening: 'Calendar',
-    corporate: 'Corporate & Group Bookings', spaces: 'Rent a studio', blog: 'Blog', contact: 'Contact', cta: 'Get started',
+    corporate: 'Corporate & Group Bookings', spaces: 'Rent a studio', blog: 'Blog', contact: 'Contact', club: 'Club',
     language: 'Language',
   },
   footer: {
@@ -174,7 +174,7 @@ const de: UiCopy = {
   brand: { tagline: 'Entdecke Berlins einzigartigste Erlebnisse — im Video' },
   nav: {
     home: 'Startseite', getStarted: 'Jetzt starten', workshops: 'Workshops', happening: 'Kalender',
-    corporate: 'Teamevents & Gruppen', spaces: 'Raum mieten', blog: 'Blog', contact: 'Kontakt', cta: 'Jetzt starten',
+    corporate: 'Teamevents & Gruppen', spaces: 'Raum mieten', blog: 'Blog', contact: 'Kontakt', club: 'Club',
     language: 'Sprache',
   },
   footer: {
@@ -332,7 +332,7 @@ const fr: UiCopy = {
   brand: { tagline: 'Découvrez les expériences les plus singulières de Berlin — en vidéo' },
   nav: {
     home: 'Accueil', getStarted: 'Commencer', workshops: 'Ateliers', happening: 'Calendrier',
-    corporate: 'Entreprises & groupes', spaces: 'Louer un atelier', blog: 'Blog', contact: 'Contact', cta: 'Commencer',
+    corporate: 'Entreprises & groupes', spaces: 'Louer un atelier', blog: 'Blog', contact: 'Contact', club: 'Club',
     language: 'Langue',
   },
   footer: {
@@ -490,7 +490,7 @@ const es: UiCopy = {
   brand: { tagline: 'Descubre las experiencias más singulares de Berlín — en vídeo' },
   nav: {
     home: 'Inicio', getStarted: 'Empezar', workshops: 'Talleres', happening: 'Calendario',
-    corporate: 'Empresas y grupos', spaces: 'Alquilar un taller', blog: 'Blog', contact: 'Contacto', cta: 'Empezar',
+    corporate: 'Empresas y grupos', spaces: 'Alquilar un taller', blog: 'Blog', contact: 'Contacto', club: 'Club',
     language: 'Idioma',
   },
   footer: {
@@ -648,7 +648,7 @@ const it: UiCopy = {
   brand: { tagline: 'Scopri le esperienze più originali di Berlino — in video' },
   nav: {
     home: 'Home', getStarted: 'Inizia', workshops: 'Workshop', happening: 'Calendario',
-    corporate: 'Aziende e gruppi', spaces: 'Affittare uno studio', blog: 'Blog', contact: 'Contatti', cta: 'Inizia',
+    corporate: 'Aziende e gruppi', spaces: 'Affittare uno studio', blog: 'Blog', contact: 'Contatti', club: 'Club',
     language: 'Lingua',
   },
   footer: {
@@ -806,7 +806,7 @@ const nl: UiCopy = {
   brand: { tagline: 'Ontdek de bijzonderste ervaringen van Berlijn — op video' },
   nav: {
     home: 'Home', getStarted: 'Aan de slag', workshops: 'Workshops', happening: 'Kalender',
-    corporate: 'Zakelijk & groepen', spaces: 'Ruimte huren', blog: 'Blog', contact: 'Contact', cta: 'Aan de slag',
+    corporate: 'Zakelijk & groepen', spaces: 'Ruimte huren', blog: 'Blog', contact: 'Contact', club: 'Club',
     language: 'Taal',
   },
   footer: {
@@ -964,7 +964,7 @@ const pl: UiCopy = {
   brand: { tagline: 'Odkryj najbardziej wyjątkowe doświadczenia Berlina — na wideo' },
   nav: {
     home: 'Start', getStarted: 'Zacznij', workshops: 'Warsztaty', happening: 'Kalendarz',
-    corporate: 'Firmy i grupy', spaces: 'Wynajem pracowni', blog: 'Blog', contact: 'Kontakt', cta: 'Zacznij',
+    corporate: 'Firmy i grupy', spaces: 'Wynajem pracowni', blog: 'Blog', contact: 'Kontakt', club: 'Club',
     language: 'Język',
   },
   footer: {
@@ -1129,7 +1129,7 @@ const tr: UiCopy = {
   brand: { tagline: 'Berlin’in en özgün deneyimlerini keşfedin — videoyla' },
   nav: {
     home: 'Ana sayfa', getStarted: 'Başla', workshops: 'Atölyeler', happening: 'Takvim',
-    corporate: 'Kurumsal & grup', spaces: 'Atölye kirala', blog: 'Blog', contact: 'İletişim', cta: 'Başla',
+    corporate: 'Kurumsal & grup', spaces: 'Atölye kirala', blog: 'Blog', contact: 'İletişim', club: 'Club',
     language: 'Dil',
   },
   footer: {

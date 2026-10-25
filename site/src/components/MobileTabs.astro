@@ -5,16 +5,21 @@
  *  native popover, so it opens, closes on a tap outside or Escape, and
  *  traps nothing, without a script. Hidden above 720px, where the header
  *  shows every link. */
-import { getSiteData, appUrl } from '../data/site.ts';
+import LangSwitch from './LangSwitch.astro';
+import { getSiteData } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import { retreatsCopy } from '../data/retreats.ts';
 import { tabsCopy } from '../data/tabs.ts';
 import { authCopy } from '../data/auth.ts';
 import { hubHref } from '../data/seo.ts';
-import { href, type Lang } from '../lib/url.ts';
+import { href, LANGS, LEGAL_LANGS, type Lang } from '../lib/url.ts';
 
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+interface Props {
+  lang: Lang;
+  /** The languages this page exists in — handed on to the switcher. */
+  translations?: Lang[];
+}
+const { lang, translations = LANGS } = Astro.props;
 const t = ui(lang);
 const c = tabsCopy[lang];
 const { secondaryLinks } = getSiteData(lang);
@@ -30,6 +35,8 @@ const more = [
   { label: t.nav.spaces, href: href(lang, '/studio-rental/') },
   { label: retreatsCopy[lang].nav, href: href(lang, '/retreats/') },
   { label: t.home.becomeHost, href: href(lang, '/host/') },
+  /* The club page is in English and German only. */
+  { label: t.nav.club, href: href(LEGAL_LANGS.includes(lang) ? lang : 'en', '/club/') },
   ...secondaryLinks.filter((l) => trim(l.href) !== trim(teams)),
 ];
 
@@ -84,5 +91,10 @@ const tabs = [
   </ul>
   {/* Sign in (SignInDialog.astro): the strip at the top has it too. */}
   <button type="button" class="btn btn-secondary tabsheet-signin" data-signin aria-haspopup="dialog">{authCopy[lang].signIn}</button>
-  <a href={appUrl} class="btn btn-primary tabsheet-cta" target="_blank" rel="noopener">{t.nav.cta}</a>
+  {/* The language switcher (the footer has it too); it unfolds in the
+      sheet's own flow rather than as a floating menu. */}
+  <div class="tabsheet-lang">
+    <span class="tabsheet-lang-label" aria-hidden="true">{t.nav.language}</span>
+    <LangSwitch lang={lang} translations={translations} placement="inline" />
+  </div>
 </div>

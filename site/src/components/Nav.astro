@@ -1,26 +1,22 @@
 ---
 import ImageSlot from './ImageSlot.astro';
-import LangSwitch from './LangSwitch.astro';
-import { getSiteData, appUrl } from '../data/site.ts';
-import { ui } from '../data/i18n.ts';
-import { href, LANGS, type Lang } from '../lib/url.ts';
+import { getSiteData } from '../data/site.ts';
+import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
   lang: Lang;
-  /** The languages this page exists in — handed on to the switcher. */
-  translations?: Lang[];
 }
-const { lang, translations = LANGS } = Astro.props;
+const { lang } = Astro.props;
 const { brand, navLinks } = getSiteData(lang);
 
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const isCurrent = (link: (typeof navLinks)[number]) =>
   !link.external && (link.href.replace(/\/+$/, '') || '/') === path;
 
-const ctaLabel = ui(lang).nav.cta;
-
-/* The "Get Started" entry is promoted to the black CTA pill on the right,
-   so it is dropped from the inline link list to avoid showing twice. */
+/* The external "Get Started" entry (the web app) is footer-only: the header
+   has no CTA pill any more — the app is the "Get app" pill in the dark strip
+   above (SocialBar.astro), and the language switcher lives in the footer and
+   the phone's More sheet. */
 const inlineLinks = navLinks.filter((link) => !link.external);
 ---
 
@@ -33,9 +29,8 @@ const inlineLinks = navLinks.filter((link) => !link.external);
     </a>
   </div>
   {/* Everything but the mark sits inside the page's own column, so the
-      first link starts exactly where the heading below it does and the CTA
-      ends where that heading's line ends. The mark keeps the margin to the
-      left of that column — see .nav-inner in site.css. */}
+      links end exactly where the heading's line below them ends. The mark
+      keeps the margin to the left of that column — see .nav-inner. */}
   <div class="nav-inner">
   <div class="nav-links">
     {inlineLinks.map((link) => (
@@ -44,19 +39,6 @@ const inlineLinks = navLinks.filter((link) => !link.external);
         aria-current={isCurrent(link) ? 'page' : undefined}
       >{link.label}</a>
     ))}
-  </div>
-  <div class="nav-end">
-    <LangSwitch lang={lang} translations={translations} />
-    {/* The label is a span so a phone can drop it and leave the arrow: on a
-        390px bar the words cost more room than the links can spare. The
-        aria-label keeps the button announced either way. */}
-    <a href={appUrl} class="nav-cta" target="_blank" rel="noopener" aria-label={ctaLabel}>
-      <span class="nav-cta-label">{ctaLabel}</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M7 17 17 7" />
-        <path d="M8 7h9v9" />
-      </svg>
-    </a>
   </div>
   </div>
 </nav>

@@ -105,6 +105,9 @@ export function getSiteData(lang: Lang) {
     { label: t.nav.spaces, href: href(lang, '/studio-rental/') },
     { label: retreatsCopy[lang].nav, href: href(lang, '/retreats/') },
     { label: t.home.becomeHost, href: href(lang, '/host/') },
+    /* The Twiggli Club waitlist (ClubPage.astro) is in English and German
+       only, like the legal pages: the other languages link to English. */
+    { label: t.nav.club, href: href(docLang, '/club/') },
   ];
 
   const secondaryLinks: NavLink[] = [

@@ -3,33 +3,39 @@ import Flag from './Flag.astro';
 import { ui } from '../data/i18n.ts';
 import { href, splitLang, LANGS, LANG_META, type Lang } from '../lib/url.ts';
 
-/** The language switcher: the current language's flag, and behind it a
- *  list of the languages this page exists in, each with its flag and its
- *  own name. A <details> element, so it opens and closes with no script
+/** The language switcher: the current language's flag and name, and behind
+ *  it a list of the languages this page exists in, each with its flag and
+ *  its own name. A <details> element, so it opens and closes with no script
  *  and works as a keyboard menu for free; the script only remembers a
- *  choice, so the browser-language redirect in Base.astro never overrides
- *  it on a later visit. */
+ *  choice (localStorage 'twiggli-lang'), which the home-page redirect in
+ *  Base.astro then honours on a later visit to the root.
+ *
+ *  It sits at the bottom of the page now, not in the header: in the footer
+ *  (placement "up", a menu that opens upwards) and in the phone's More
+ *  sheet (placement "inline", a list that unfolds in the sheet's flow). */
 interface Props {
   lang: Lang;
   /** Which languages this page exists in — the legal pages and the blog
    *  are English and German only, and the menu must not offer a French
    *  version that would 404. */
   translations?: Lang[];
+  placement?: 'up' | 'inline';
+  class?: string;
 }
-const { lang, translations = LANGS } = Astro.props;
+const { lang, translations = LANGS, placement = 'up', class: extra } = Astro.props;
 
 const { bare } = splitLang(Astro.url.pathname);
 const options = LANGS.filter((l) => translations.includes(l));
 ---
 
-<details class="lang-switch" id="lang-switch">
+<details class:list={['lang-switch', `lang-switch--${placement}`, extra]} data-lang-switch>
   <summary
     class="lang-switch-current"
     aria-label={`${ui(lang).nav.language}: ${LANG_META[lang].name}`}
-    title={ui(lang).nav.language}
   >
-    <Flag lang={lang} size={22} />
-    <span class="lang-switch-code" aria-hidden="true">{lang.toUpperCase()}</span>
+    <Flag lang={lang} size={20} />
+    <span class="lang-switch-name">{LANG_META[lang].name}</span>
+    <svg class="lang-switch-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
   </summary>
   <ul class="lang-switch-menu">
     {options.map((l) => (
@@ -51,12 +57,14 @@ const options = LANGS.filter((l) => translations.includes(l));
 </details>
 
 <script>
-  // A manual switch is a deliberate choice — remember it so the auto-detect
-  // redirect in Base.astro's <head> never overrides it on a later visit.
-  // The menu also closes on a click outside it and on Escape, which a bare
-  // <details> does not do by itself.
-  const root = document.getElementById('lang-switch') as HTMLDetailsElement | null;
-  if (root) {
+  // A manual switch is a deliberate choice — remember it, so the home-page
+  // redirect in Base.astro's <head> sends the visitor back to it rather than
+  // to their browser's language. A menu also closes on a click outside it
+  // and on Escape, which a bare <details> does not do by itself. The
+  // component appears twice on a page (footer, More sheet), so every
+  // instance is wired.
+  const roots = Array.from(document.querySelectorAll<HTMLDetailsElement>('[data-lang-switch]'));
+  roots.forEach((root) => {
     root.querySelectorAll('a[data-lang]').forEach((link) => {
       link.addEventListener('click', () => {
         const chosen = link.getAttribute('data-lang');
@@ -65,11 +73,14 @@ const options = LANGS.filter((l) => translations.includes(l));
         } catch (e) {}
       });
     });
-    document.addEventListener('click', (event) => {
+  });
+  document.addEventListener('click', (event) => {
+    roots.forEach((root) => {
       if (root.open && !root.contains(event.target as Node)) root.open = false;
     });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && root.open) root.open = false;
-    });
-  }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    roots.forEach((root) => { root.open = false; });
+  });
 </script>
