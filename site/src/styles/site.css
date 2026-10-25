@@ -6487,3 +6487,7 @@ h1, h2, h3, h4,
   .page-calendar .daystatus { margin-top: 38px; }
   .page-calendar .daysessions { background: none; box-shadow: none; border-radius: 0; }
 }
+
+/* A page without the site's chrome (Base `bare`, the checkout): no tab bar,
+   so no room kept for one. */
+body.is-bare { padding-bottom: 0; }
