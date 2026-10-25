@@ -3,19 +3,29 @@ import Base from '../layouts/Base.astro';
 import { withBase } from '../lib/url.ts';
 
 const lang = 'en';
+// GitHub Pages serves this for every missing path, in any language, with a
+// 404 status. noindex so it is never indexed at /404/; the German line is
+// there because many of the old links people follow are German.
 ---
 
-<Base title="Page not found — Twiggli" description="That page does not exist." lang={lang} translations={['en']}>
+<Base title="Page not found — Twiggli" description="That page does not exist." lang={lang} translations={['en']} noindex>
   <div class="container">
     <section class="page-head">
       <span class="kicker">404</span>
       <h1 class="page-title">That page does not exist</h1>
       <p class="page-lede">
-        The link may be old, or the workshop may have wrapped up. Head back to the start.
+        The link may be old, or the workshop may have wrapped up. Every class running in Berlin
+        is in the calendar, and the workshops are sorted by activity.
+      </p>
+      <p class="page-lede" lang="de">
+        Diese Seite gibt es nicht (mehr). Alle Workshops in Berlin findest du im
+        <a href={withBase('/de/happening-today/')}>Kalender</a> und
+        <a href={withBase('/de/workshops/')}>nach Aktivität</a>.
       </p>
       <div class="hero-actions">
-        <a href={withBase('/')} class="btn btn-primary">Back to home</a>
-        <a href={withBase('/corporatebookings/')} class="btn btn-ghost">See our hosts</a>
+        <a href={withBase('/happening-today/')} class="btn btn-primary">What’s on</a>
+        <a href={withBase('/workshops/')} class="btn btn-ghost">All workshops</a>
+        <a href={withBase('/')} class="btn btn-ghost">Back to home</a>
       </div>
     </section>
   </div>
