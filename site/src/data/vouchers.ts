@@ -73,7 +73,7 @@ export const VOUCHER_YEARS = 3;
 export const voucherAmounts = [25, 50, 75];
 export const VOUCHER_MIN = 20;
 /** The most people one host voucher covers. */
-export const VOUCHER_MAX_PEOPLE = 10;
+export const VOUCHER_MAX_PEOPLE = 2;
 
 /** What one place costs for a voucher: the cheapest of the host's own dated
  *  sessions (a voucher is for a seat at one of those), otherwise the
