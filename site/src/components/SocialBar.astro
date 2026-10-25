@@ -26,13 +26,23 @@ const { socialLinks } = getSiteData(lang);
     ))}
     {/* Gift vouchers (VoucherPage.astro), on every page and every screen. */}
     {VOUCHERS_ON && <a class="social-bar-gift" href={href(lang, '/voucher/')}>{voucherCopy[lang].nav}</a>}
-    {/* Sign in (SignInDialog.astro), Luma-style, at the strip's right edge.
-        On a phone it joins the row as a round person icon; the label stays
-        for screen readers through aria-label. data-signin-pill is where the
-        signed-in initial will go (lib/auth.ts getUser). */}
-    <button type="button" class="social-bar-signin" data-signin data-signin-pill aria-haspopup="dialog" aria-label={authCopy[lang].signInAria}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" /><path d="M5 20c.6-3.6 3.4-5.8 7-5.8s6.4 2.2 7 5.8" /></svg>
-      <span class="social-bar-signin-label" data-signin-label>{authCopy[lang].signIn}</span>
-    </button>
+    {/* The strip's right edge: "Get app", then Sign in (SignInDialog.astro),
+        Luma-style. On a phone both join the row as round icons after the
+        voucher pill (.social-bar-end turns into display: contents); the
+        labels stay for screen readers through aria-label.
+        Get app goes nowhere yet: a plain button with no action, and
+        data-get-app is the hook to wire it to the stores later.
+        data-signin-pill is where the signed-in initial will go
+        (lib/auth.ts getUser). */}
+    <div class="social-bar-end">
+      <button type="button" class="social-bar-getapp" data-get-app aria-label={authCopy[lang].getAppAria}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.75" width="11" height="18.5" rx="2.5" /><path d="M10.5 18h3" /></svg>
+        <span class="social-bar-getapp-label">{authCopy[lang].getApp}</span>
+      </button>
+      <button type="button" class="social-bar-signin" data-signin data-signin-pill aria-haspopup="dialog" aria-label={authCopy[lang].signInAria}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" /><path d="M5 20c.6-3.6 3.4-5.8 7-5.8s6.4 2.2 7 5.8" /></svg>
+        <span class="social-bar-signin-label" data-signin-label>{authCopy[lang].signIn}</span>
+      </button>
+    </div>
   </div>
 </div>
