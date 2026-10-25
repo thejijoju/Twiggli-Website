@@ -21,7 +21,7 @@ import HostMonogram from './HostMonogram.astro';
 import HomeSearch from './HomeSearch.astro';
 import HeroSparkles from './HeroSparkles.astro';
 import Voucher from './Voucher.astro';
-import { voucherCopy } from '../data/vouchers.ts';
+import { voucherCopy, VOUCHERS_ON } from '../data/vouchers.ts';
 import { filterCopy } from '../data/content.ts';
 import { ACTIVITY_ORDER, activityCopy, activityHref, formatWhen, hostHref, hubHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { ui } from '../data/i18n.ts';
@@ -126,7 +126,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
   ))}
 
   {/* Gift vouchers, with Christmas coming (VoucherPage.astro). */}
-  <div class="container">
+  {VOUCHERS_ON && (  <div class="container">
     <a class="vc-teaser" href={href(lang, '/voucher/')}>
       <span class="vc-teaser-gift" aria-hidden="true">🎁</span>
       <span>
@@ -137,6 +137,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
       <span class="vc-teaser-cta">{voucherCopy[lang].teaserCta} →</span>
     </a>
   </div>
+  )}
 
   <section class="hd-cats" id="workshops">
     <div class="container">
