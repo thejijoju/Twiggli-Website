@@ -21,7 +21,7 @@ export default defineConfig({
       // to look at by direct link before going live — never in the sitemap.
       filter: (page) =>
         !previewSlugs.some((slug) => page.includes(`/workshops/`) && page.endsWith(`/${slug}/`)) &&
-        !/paymentcanceled|stripe-connect|\/preview\/|newsletter\/|corporate\/$|hosts\/$|\/de\/about\/$|\.com\/ueber-uns\/$|\/de\/voucher\/$|\.com\/gutschein\/$/.test(page),
+        !/paymentcanceled|stripe-connect|\/checkout\/$|\/preview\/|newsletter\/|corporate\/$|hosts\/$|\/de\/about\/$|\.com\/ueber-uns\/$|\/de\/voucher\/$|\.com\/gutschein\/$/.test(page),
       // The pages built from the workshop feed change with every daily
       // rebuild — a date passes, a new one lands — so they say so; the
       // legal pages and the rest carry no lastmod rather than a false one.

@@ -1,0 +1,597 @@
+---
+/**
+ * Our own voucher payment page (/checkout/, /de/checkout/), Luma-style: the
+ * buyer stays on twiggli.com. Left, their details and the payment (Stripe's
+ * Express Checkout Element for Apple Pay / Google Pay / PayPal, then the
+ * Payment Element for cards); right, the order in the home page's white
+ * frame. On a phone the order sits on top, folded.
+ *
+ *   ?host=<slug>&people=<n>   a host's voucher: price per place × people,
+ *                             from the same data as everywhere else
+ *   ?amount=<euros|wish>      a general Twiggli voucher
+ *   ?ref=<vc-…>               our reference (made up here when absent)
+ *   ?done=1                   back from a payment (Stripe adds
+ *                             payment_intent and redirect_status)
+ *
+ * Stripe runs in deferred-intent mode: the fields mount straight away with
+ * the amount, and the PaymentIntent is only made (supabase/functions/
+ * voucher-payment) when the buyer presses Pay, with everything they typed.
+ * A background FormSubmit note "Voucher paid" lands in our inbox after.
+ *
+ * Off (vouchers.ts voucherPayment.live false) unless the visit came with
+ * ?stripetest=1; then the page only points to the voucher page.
+ */
+import Base from '../layouts/Base.astro';
+import { getHosts } from '../data/content.ts';
+import { checkoutCopy } from '../data/checkout.ts';
+import {
+  voucherHosts, voucherPrice, voucherPayment, voucherAmounts, voucherCopy,
+  VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST,
+} from '../data/vouchers.ts';
+import { contactEmail, requestEmail } from '../data/site.ts';
+import { href, type Lang } from '../lib/url.ts';
+import '../styles/checkout.css';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = checkoutCopy(lang);
+const vc = voucherCopy[lang];
+
+/* Every host who takes vouchers, whether or not vouchers are switched on
+   site-wide, so the page can be tried before they are. */
+const hosts = Object.fromEntries(
+  getHosts(lang, { withPreview: true })
+    .filter((h) => voucherHosts.includes(h.slug))
+    .map((h) => [h.slug, { name: h.name, title: h.specialty, price: voucherPrice(h) ?? 0, image: h.poster ?? h.photo ?? '' }]),
+);
+const voucherPage = href(lang, '/voucher/');
+const config = {
+  url: voucherPayment.url, anonKey: voucherPayment.anonKey, pk: voucherPayment.publishableKey, live: voucherPayment.live,
+  min: VOUCHER_MIN, max: 2000, maxPeople: VOUCHER_MAX_PEOPLE, years: VOUCHER_YEARS, amounts: voucherAmounts,
+  generalHost: GENERAL_VOUCHER_HOST, inbox: requestEmail, contact: contactEmail, home: href(lang, '/'),
+};
+---
+
+<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="co-page" noindex translations={['en', 'de']}>
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://js.stripe.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,500&display=swap" />
+  </Fragment>
+
+  <div
+    class="container co"
+    data-co
+    data-lang={lang}
+    data-config={JSON.stringify(config)}
+    data-hosts={JSON.stringify(hosts)}
+    data-copy={JSON.stringify(t)}
+  >
+    <a class="co-back" href={voucherPage}><span aria-hidden="true">←</span> {t.back}</a>
+
+    <div class="co-grid">
+      {/* The order. First in the page, so it sits on top on a phone. */}
+      <aside class="co-side" aria-label={t.summary}>
+        <details class="co-sum" open data-co-sum>
+          <summary class="co-sum-toggle">
+            <span class="co-sum-toggle-label"><span aria-hidden="true">🎁</span> {t.showSummary}</span>
+            <span class="co-sum-toggle-right"><strong data-co-total-top>—</strong><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></span>
+          </summary>
+          <div class="co-frame co-card">
+            <div class="co-media" data-co-media>
+              <img data-co-img alt="" hidden />
+              <div class="co-art" data-co-art>
+                <span class="co-art-gift" aria-hidden="true">🎁</span>
+                <span class="co-art-amount" data-co-art-amount>—</span>
+                <span class="co-art-name">{t.generalName}</span>
+              </div>
+            </div>
+            <div class="co-card-body">
+              <p class="co-card-kicker" data-co-kicker>{t.summary}</p>
+              <h2 class="co-card-title" data-co-title>{t.generalName}</h2>
+              <dl class="co-lines">
+                <div data-co-line="host"><dt>{t.host}</dt><dd data-co-v-host></dd></div>
+                <div data-co-line="workshop"><dt>{t.workshop}</dt><dd data-co-v-workshop></dd></div>
+                <div data-co-line="places"><dt>{t.places}</dt><dd data-co-v-places></dd></div>
+                <div data-co-line="amount"><dt>{t.amount}</dt><dd data-co-v-amount></dd></div>
+                <div><dt>{t.valid}</dt><dd>{t.validValue}</dd></div>
+              </dl>
+              <p class="co-card-sub" data-co-general-sub>{t.generalSub}</p>
+              <div class="co-total"><span>{t.total}</span><strong data-co-total>—</strong></div>
+              {/* For later: redeeming a code here. No function yet. */}
+              <button type="button" class="co-redeem" aria-disabled="true" data-co-redeem>{t.redeem}</button>
+            </div>
+          </div>
+        </details>
+      </aside>
+
+      <section class="co-main co-frame">
+        <form class="co-form" data-co-form novalidate>
+          <header class="co-head">
+            <h1 class="co-h1" data-co-h1>{t.generalTitle}</h1>
+            <p class="co-lede">{t.lede}</p>
+          </header>
+
+          {/* A general voucher: the amount, changeable here. */}
+          <fieldset class="co-block" data-co-amounts hidden>
+            <legend class="co-h2">{t.amountTitle}</legend>
+            <div class="co-chips">
+              {voucherAmounts.map((a) => (
+                <label class="co-chip"><input type="radio" name="pick" value={a} /><span>€{a}</span></label>
+              ))}
+              <label class="co-chip"><input type="radio" name="pick" value="wish" /><span>{t.wish}</span></label>
+            </div>
+            <label class="co-field" data-co-wish hidden>
+              <span>{t.wish} (€)</span>
+              <input name="wish" type="number" min={VOUCHER_MIN} max="2000" step="1" inputmode="numeric" placeholder={t.wishHint} />
+            </label>
+          </fieldset>
+
+          {/* A host's voucher: how many places. */}
+          <div class="co-block" data-co-people hidden>
+            <p class="co-h2">{t.people}</p>
+            <div class="co-stepper-row">
+              <div class="co-stepper" role="group" aria-label={t.people}>
+                <button type="button" data-co-step="-1" aria-label={t.less}>−</button>
+                <output data-co-people-n aria-live="polite">1</output>
+                <button type="button" data-co-step="1" aria-label={t.more}>+</button>
+              </div>
+              <p class="co-per" data-co-per></p>
+            </div>
+          </div>
+          <p class="co-note" data-co-min hidden></p>
+
+          <fieldset class="co-block">
+            <legend class="co-h2">{t.details}</legend>
+            <div class="co-fields">
+              <label class="co-field">
+                <span>{t.name}</span>
+                <input name="name" type="text" autocomplete="name" required />
+                <small class="co-field-error" data-co-err="name" hidden>{t.needName}</small>
+              </label>
+              <label class="co-field">
+                <span>{t.email}</span>
+                <input name="email" type="email" autocomplete="email" required />
+                <small class="co-field-error" data-co-err="email" hidden>{t.needEmail}</small>
+                <small class="co-field-hint">{t.emailHint}</small>
+              </label>
+              <label class="co-field co-field-wide">
+                <span>{t.recipient} <em>({t.optional})</em></span>
+                <input name="recipient" type="text" autocomplete="off" placeholder={t.recipientPh} maxlength="200" />
+              </label>
+              <label class="co-field co-field-wide">
+                <span>{t.message} <em>({t.optional})</em></span>
+                <textarea name="message" rows="3" placeholder={t.messagePh} maxlength="480"></textarea>
+              </label>
+            </div>
+            <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          </fieldset>
+
+          <fieldset class="co-block">
+            <legend class="co-h2">{t.payment}</legend>
+            <div class="co-express" id="co-express" data-co-express></div>
+            <div class="co-or" data-co-or hidden><span>{t.orCard}</span></div>
+            <div class="co-payment" id="co-payment" data-co-payment>
+              <div class="co-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+            </div>
+          </fieldset>
+
+          <p class="co-error" data-co-error role="alert" hidden></p>
+          <button type="submit" class="co-pay" data-co-pay disabled>{t.payNow.replace('{amount}', '…')}</button>
+          <p class="co-secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>{t.secure}</p>
+        </form>
+
+        <div class="co-done" data-co-done hidden>
+          <p class="co-done-gift" aria-hidden="true">🎁</p>
+          <h1 class="co-h1">{t.doneTitle.replace(' 🎁', '')}</h1>
+          <p class="co-lede">{t.doneLede}</p>
+          <dl class="co-lines co-done-lines">
+            <div data-co-done-line="for"><dt>{t.doneFor}</dt><dd data-co-d-for></dd></div>
+            <div data-co-done-line="receipt"><dt>{t.doneReceipt}</dt><dd data-co-d-receipt></dd></div>
+            <div><dt>{t.doneRef}</dt><dd data-co-d-ref></dd></div>
+          </dl>
+          <a class="co-pay co-pay-link" href={href(lang, '/workshops/')}>{t.doneMore}</a>
+        </div>
+
+        <div class="co-off" data-co-off hidden>
+          <h1 class="co-h1" data-co-off-title>{vc.generalTitle}</h1>
+          <p class="co-lede" data-co-off-text>{t.inactive}</p>
+          <a class="co-pay co-pay-link" href={voucherPage}>{t.toVouchers}</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { looksLikeBot } from '../lib/honey.ts';
+  import { track } from '../lib/track.ts';
+
+  type HostInfo = { name: string; title: string; price: number; image: string };
+  type Order = {
+    ref: string; amount: number; people: number; slug: string;
+    name: string; email: string; recipient: string; message: string;
+    pi?: string; paid?: boolean; noted?: boolean;
+  };
+  type StripeLike = any; // js.stripe.com/v3 — no types bundled
+
+  const root = document.querySelector<HTMLElement>('[data-co]');
+  if (root) {
+    const cfg = JSON.parse(root.dataset.config || '{}');
+    const hosts: Record<string, HostInfo> = JSON.parse(root.dataset.hosts || '{}');
+    const t: Record<string, string> = JSON.parse(root.dataset.copy || '{}');
+    const lang = root.dataset.lang || 'en';
+    const $ = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const form = $<HTMLFormElement>('[data-co-form]');
+    const payBtn = $<HTMLButtonElement>('[data-co-pay]');
+    const errorBox = $('[data-co-error]');
+    const nameIn = form.querySelector<HTMLInputElement>('input[name="name"]')!;
+    const emailIn = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+    const recipientIn = form.querySelector<HTMLInputElement>('input[name="recipient"]')!;
+    const messageIn = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]')!;
+    const wishIn = form.querySelector<HTMLInputElement>('input[name="wish"]')!;
+    const picks = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="pick"]'));
+    const euro = (n: number) => `€${n}`;
+    // Stripe's state, filled in once js.stripe.com has loaded.
+    let stripe: StripeLike = null;
+    let elements: StripeLike = null;
+    let ready = false;
+    let busy = false;
+    /** The intent made on the last Pay, kept for a retry at the same amount. */
+    let intent: { id: string; clientSecret: string; amount: number } | null = null;
+    const fill = (s: string, k: string, v: string) => s.replace(`{${k}}`, v);
+
+    // ── Is it on? Live for everyone, or this visit came with ?stripetest=1
+    //    (the flag VoucherDialog.astro keeps for the session too).
+    const q = new URLSearchParams(location.search);
+    try { if (q.get('stripetest') === '1') sessionStorage.setItem('twiggli-stripe-test', '1'); } catch { /* blocked */ }
+    let testing = q.get('stripetest') === '1';
+    try { testing = testing || sessionStorage.getItem('twiggli-stripe-test') === '1'; } catch { /* blocked */ }
+    const active = !!cfg.url && !!cfg.pk && (cfg.live || testing);
+
+    // ── What is being bought.
+    const slug = (q.get('host') || '').trim();
+    const host: HostInfo | null = slug ? hosts[slug] ?? null : null;
+    const clampPeople = (n: number) => Math.max(1, Math.min(cfg.maxPeople || 10, Math.round(n) || 1));
+    let people = clampPeople(Number(q.get('people')) || 1);
+    const fixedPrice = host && host.price > 0 ? host.price : 0;
+    const qAmount = q.get('amount') || '';
+    const ref = (q.get('ref') || '').replace(/[^\w-]/g, '').slice(0, 60) || `vc-${Date.now().toString(36)}`;
+    const store = (o: Order) => { try { sessionStorage.setItem(`twiggli-co-${o.ref}`, JSON.stringify(o)); } catch { /* blocked */ } };
+    const stored = (): Order | null => { try { return JSON.parse(sessionStorage.getItem(`twiggli-co-${ref}`) || 'null'); } catch { return null; } };
+
+    // A general voucher (or a host without a listed price): an amount chip
+    // or an amount of one's own.
+    const usesAmountInput = !fixedPrice;
+    if (usesAmountInput) {
+      const n = Math.round(Number(qAmount));
+      const chip = picks.find((r) => r.value === String(n));
+      if (chip) chip.checked = true;
+      else {
+        picks.find((r) => r.value === 'wish')!.checked = true;
+        if (n) wishIn.value = String(n);
+      }
+    }
+    const amount = (): number => {
+      if (fixedPrice) return fixedPrice * people;
+      const p = picks.find((r) => r.checked)?.value;
+      return p === 'wish' ? Math.round(Number(wishIn.value) || 0) : Number(p) || 0;
+    };
+    const valid = () => amount() >= cfg.min && amount() <= cfg.max;
+
+    // ── The page, filled in.
+    const off = (title: string, text: string) => {
+      form.hidden = true;
+      $('[data-co-off]').hidden = false;
+      $('[data-co-off-title]').textContent = title;
+      $('[data-co-off-text]').textContent = text;
+      root.querySelector<HTMLElement>('.co-side')!.hidden = true;
+      root.classList.add('is-off');
+    };
+    const line = (k: string, show: boolean, v = '') => {
+      const row = $(`[data-co-line="${k}"]`);
+      row.hidden = !show;
+      $(`[data-co-v-${k}]`).textContent = v;
+    };
+    const render = () => {
+      const a = amount();
+      const shown = a ? euro(a) : '—';
+      $('[data-co-total]').textContent = shown;
+      $('[data-co-total-top]').textContent = shown;
+      $('[data-co-art-amount]').textContent = shown;
+      line('host', !!host, host?.name);
+      line('workshop', !!host, host?.title);
+      line('places', !!host, String(people));
+      line('amount', !!fixedPrice, `${people} × ${euro(fixedPrice)}`);
+      $('[data-co-general-sub]').hidden = !!host;
+      $('[data-co-people-n]').textContent = String(people);
+      $('[data-co-per]').textContent = fixedPrice ? `${euro(fixedPrice)} ${t.perPerson}` : '';
+      root.querySelectorAll<HTMLButtonElement>('[data-co-step]').forEach((b) => {
+        b.disabled = b.dataset.coStep === '-1' ? people <= 1 : people >= (cfg.maxPeople || 10);
+      });
+      $('[data-co-wish]').hidden = !(usesAmountInput && picks.find((r) => r.checked)?.value === 'wish');
+      const min = $('[data-co-min]');
+      const tooLow = a > 0 && a < cfg.min, tooHigh = a > cfg.max;
+      min.hidden = !(tooLow || tooHigh || (!a && $('[data-co-wish]').hidden === false && wishIn.value !== ''));
+      min.textContent = tooHigh ? t.maxNote : t.minNote;
+      if (!busy) {
+        payBtn.textContent = fill(t.payNow, 'amount', a ? euro(a) : '…');
+        payBtn.disabled = !valid() || !ready;
+      }
+      $('[data-co-express]').classList.toggle('is-locked', !valid());
+      if (elements && valid()) { try { elements.update({ amount: a * 100 }); } catch { /* not yet */ } }
+    };
+
+    $('[data-co-h1]').textContent = host ? t.hostTitle : t.generalTitle;
+    $('[data-co-title]').textContent = host ? host.title : t.generalName;
+    $('[data-co-kicker]').textContent = host ? host.name : t.summary;
+    if (host?.image) {
+      const img = $<HTMLImageElement>('[data-co-img]');
+      img.src = host.image;
+      img.hidden = false;
+      $('[data-co-art]').hidden = true;
+    }
+    $('[data-co-amounts]').hidden = !usesAmountInput;
+    $('[data-co-people]').hidden = !fixedPrice;
+
+    // The order folds on a phone; on a wide screen it is always open.
+    const sum = $<HTMLDetailsElement>('[data-co-sum]');
+    const wide = matchMedia('(min-width: 900px)');
+    const syncSum = () => { sum.open = wide.matches; };
+    syncSum();
+    wide.addEventListener('change', syncSum);
+    sum.querySelector('summary')!.addEventListener('click', (e) => { if (wide.matches) e.preventDefault(); });
+    $('[data-co-redeem]').addEventListener('click', (e) => e.preventDefault());
+
+    root.querySelectorAll<HTMLButtonElement>('[data-co-step]').forEach((b) => b.addEventListener('click', () => {
+      people = clampPeople(people + Number(b.dataset.coStep));
+      intent = null;
+      render();
+    }));
+    picks.forEach((r) => r.addEventListener('change', () => {
+      render();
+      if (r.value === 'wish' && r.checked) wishIn.focus();
+    }));
+    wishIn.addEventListener('input', render);
+
+    // ── Errors, in words.
+    const showError = (msg: string) => { errorBox.textContent = msg; errorBox.hidden = !msg; };
+    const genericError = () => fill(t.error, 'email', cfg.contact);
+    const fieldError = (k: string, on: boolean) => { $(`[data-co-err="${k}"]`).hidden = !on; };
+    nameIn.addEventListener('input', () => fieldError('name', false));
+    emailIn.addEventListener('input', () => fieldError('email', false));
+
+    // ── Done: the thank-you, the order, and the note to our inbox.
+    const showDone = (o: Order) => {
+      form.hidden = true;
+      $('[data-co-done]').hidden = false;
+      $('[data-co-d-ref]').textContent = o.ref;
+      $('[data-co-d-for]').textContent = o.recipient;
+      $<HTMLElement>('[data-co-done-line="for"]').hidden = !o.recipient;
+      $('[data-co-d-receipt]').textContent = o.email;
+      $<HTMLElement>('[data-co-done-line="receipt"]').hidden = !o.email;
+      root.classList.add('is-done');
+      if (!o.noted) {
+        noteInbox(o);
+        store({ ...o, paid: true, noted: true });
+      }
+      window.scrollTo({ top: 0 });
+    };
+    const noteInbox = (o: Order) => {
+      const h = o.slug ? hosts[o.slug] : null;
+      let cameFrom = 'unknown';
+      try { cameFrom = sessionStorage.getItem('twiggli-came-from') || 'unknown'; } catch { /* blocked */ }
+      const fields: Record<string, string> = {
+        Type: 'Voucher paid',
+        Host: h ? h.name : cfg.generalHost,
+        Workshop: h ? h.title : 'Any workshop at a host taking vouchers',
+        ...(h ? { People: String(o.people), 'Price per person': h.price ? euro(h.price) : 'not listed', 'Host slug': o.slug } : {}),
+        Amount: euro(o.amount),
+        Name: o.name,
+        Recipient: o.recipient,
+        'Personal message': o.message,
+        Valid: `${cfg.years} years`,
+        'Payment ref': o.ref,
+        'Stripe PaymentIntent': o.pi || '',
+        'Paid on': 'Twiggli checkout page (Stripe Payment Element)',
+        'Sent from': location.origin + location.pathname,
+        'Came from': cameFrom,
+        Language: lang,
+      };
+      try {
+        fetch(`https://formsubmit.co/ajax/${cfg.inbox}`, {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            ...Object.fromEntries(Object.entries(fields).filter(([, v]) => v)),
+            email: o.email,
+            _subject: `Voucher paid: ${fields.Host}${h ? ` · ${h.title} (${o.people})` : ''} — ${euro(o.amount)} · ${o.ref}`,
+            _template: 'table', _captcha: 'false',
+          }),
+        }).catch(() => {});
+      } catch { /* no fetch */ }
+      track('voucher-paid', { host: fields.Host, amount: String(o.amount), lang });
+    };
+
+    // ── Back from a payment that left the page (PayPal, 3-D Secure …),
+    //    or a reload after a payment made here.
+    let landed = false;
+    render();
+    if (q.get('done') === '1') {
+      const status = q.get('redirect_status');
+      const before = stored();
+      const order: Order = before ?? {
+        ref, amount: amount(), people, slug: host ? slug : '', name: '', email: '', recipient: '', message: '',
+      };
+      if (q.get('payment_intent')) order.pi = q.get('payment_intent')!;
+      if (status === 'succeeded' || status === 'processing' || (!status && before?.paid)) {
+        showDone(order);
+        landed = true;
+      } else if (before) {
+        nameIn.value = before.name; emailIn.value = before.email;
+        recipientIn.value = before.recipient; messageIn.value = before.message;
+        showError(t.failed);
+      }
+    }
+
+    // ── Stripe.
+
+    const loadStripe = () => new Promise<StripeLike>((resolve, reject) => {
+      const w = window as any;
+      if (w.Stripe) return resolve(w.Stripe);
+      const s = document.createElement('script');
+      s.src = 'https://js.stripe.com/v3/';
+      s.async = true;
+      s.onload = () => (w.Stripe ? resolve(w.Stripe) : reject(new Error('no Stripe')));
+      s.onerror = () => reject(new Error('Stripe blocked'));
+      document.head.append(s);
+    });
+
+    const appearance = {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#6a3eec', colorText: '#2b2118', colorTextSecondary: '#6b5f53', colorBackground: '#ffffff',
+        colorDanger: '#c2334d', fontFamily: 'Poppins, system-ui, sans-serif', fontSizeBase: '15.5px',
+        borderRadius: '14px', spacingUnit: '4px', focusBoxShadow: '0 0 0 3px rgba(106, 62, 236, 0.18)',
+      },
+      rules: {
+        '.Input': { border: '1.5px solid rgba(43, 33, 24, 0.14)', boxShadow: 'none', padding: '12px 14px' },
+        '.Input:focus': { borderColor: '#6a3eec' },
+        '.Tab': { border: '1.5px solid rgba(43, 33, 24, 0.14)', boxShadow: 'none' },
+        '.Tab--selected': { borderColor: '#6a3eec', boxShadow: '0 0 0 1px #6a3eec' },
+        '.Label': { fontWeight: '500', color: '#2b2118' },
+      },
+    };
+
+    const post = async (body: Record<string, unknown>) => {
+      const res = await fetch(cfg.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: cfg.anonKey, Authorization: `Bearer ${cfg.anonKey}` },
+        body: JSON.stringify(body),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(out.error || String(res.status));
+      return out;
+    };
+
+    const setBusy = (on: boolean) => {
+      busy = on;
+      payBtn.disabled = on || !valid() || !ready;
+      payBtn.classList.toggle('is-busy', on);
+      if (on) payBtn.textContent = t.paying;
+      else render();
+    };
+
+    const friendly = (err: { type?: string; message?: string }) =>
+      err.type === 'card_error' || err.type === 'validation_error'
+        ? fill(t.declined, 'reason', (err.message || '').replace(/\.?$/, '.'))
+        : genericError();
+
+    /** Pay: settle the details, make (or refresh) the intent, confirm. */
+    const pay = async (wallet?: { name?: string; email?: string }) => {
+      showError('');
+      const a = amount();
+      if (!valid()) { render(); $('[data-co-min]').hidden = false; return false; }
+      const name = nameIn.value.trim() || wallet?.name || '';
+      const email = emailIn.value.trim() || wallet?.email || '';
+      const okName = !!name, okEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+      if (!wallet) {
+        fieldError('name', !okName);
+        fieldError('email', !okEmail);
+        if (!okName) { nameIn.focus(); return false; }
+        if (!okEmail) { emailIn.focus(); return false; }
+      }
+      if (looksLikeBot(new FormData(form))) return false;
+      setBusy(true);
+      try {
+        const { error: submitError } = await elements.submit();
+        if (submitError) { setBusy(false); if (submitError.type !== 'validation_error') showError(friendly(submitError)); return false; }
+        const details = { name, email, recipient: recipientIn.value.trim(), message: messageIn.value.trim() };
+        if (intent && intent.amount === a) {
+          // A retry: same intent, with what may have changed meanwhile.
+          await post({ update: true, paymentIntentId: intent.id, clientSecret: intent.clientSecret, ...details }).catch(() => {});
+        } else {
+          const out = await post({
+            amount: a, ref, lang,
+            host: host ? host.name : '', hostSlug: host ? slug : '', title: host ? host.title : '',
+            people: host ? people : 1, ...details,
+          });
+          if (!out.clientSecret) throw new Error('no client secret');
+          intent = { id: String(out.clientSecret).split('_secret_')[0], clientSecret: out.clientSecret, amount: a };
+        }
+        const order: Order = { ref, amount: a, people: host ? people : 1, slug: host ? slug : '', ...details, pi: intent.id };
+        store(order);
+        const back = new URLSearchParams();
+        if (host) { back.set('host', slug); back.set('people', String(people)); } else back.set('amount', String(a));
+        back.set('done', '1');
+        back.set('ref', ref);
+        const returnUrl = `${location.origin}${location.pathname}?${back}`;
+        const confirmParams: Record<string, unknown> = { return_url: returnUrl, receipt_email: email };
+        if (!wallet) confirmParams.payment_method_data = { billing_details: { name, email } };
+        track('voucher-pay', { host: host?.name ?? 'general', amount: String(a) });
+        const { error, paymentIntent } = await stripe.confirmPayment({
+          elements, clientSecret: intent.clientSecret, confirmParams, redirect: 'if_required',
+        });
+        if (error) { setBusy(false); showError(friendly(error)); return false; }
+        if (paymentIntent && ['succeeded', 'processing', 'requires_capture'].includes(paymentIntent.status)) {
+          const paid = { ...order, paid: true };
+          store(paid);
+          history.replaceState(null, '', `${location.pathname}?${back}`);
+          busy = false;
+          showDone(paid);
+          return true;
+        }
+        setBusy(false);
+        showError(t.failed);
+        return false;
+      } catch {
+        setBusy(false);
+        showError(genericError());
+        return false;
+      }
+    };
+
+    form.addEventListener('submit', (e) => { e.preventDefault(); if (!busy && ready) pay(); });
+
+    if (!active) off(t.generalTitle, t.inactive);
+    else if (slug && !host) off(t.generalTitle, t.unknown);
+    else if (!landed) {
+      render();
+      loadStripe().then((S) => {
+        stripe = S(cfg.pk, { locale: lang === 'de' ? 'de' : 'en' });
+        elements = stripe.elements({
+          mode: 'payment', currency: 'eur', amount: Math.max(amount(), cfg.min) * 100, appearance,
+          fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap' }],
+        });
+        // Apple Pay, Google Pay, PayPal (whatever is on in Stripe and in
+        // this browser) on top; nothing there → the space folds away.
+        const express = elements.create('expressCheckout', {
+          buttonHeight: 48,
+          buttonType: { applePay: 'buy', googlePay: 'buy', paypal: 'buynow' },
+          layout: { maxColumns: 3, maxRows: 1, overflow: 'auto' },
+        });
+        express.on('ready', (e: any) => {
+          const any = !!e?.availablePaymentMethods && Object.values(e.availablePaymentMethods).some(Boolean);
+          $('[data-co-express]').hidden = !any;
+          $('[data-co-or]').hidden = !any;
+        });
+        express.on('click', (e: any) => { if (valid()) e.resolve({ emailRequired: true }); });
+        express.on('confirm', async (e: any) => {
+          const ok = await pay({ name: e?.billingDetails?.name, email: e?.billingDetails?.email });
+          if (!ok) e?.paymentFailed?.({ reason: 'fail' });
+        });
+        express.mount('#co-express');
+        const card = elements.create('payment', {
+          layout: { type: 'tabs' },
+          fields: { billingDetails: { name: 'never', email: 'never' } },
+          wallets: { applePay: 'never', googlePay: 'never' },
+        });
+        card.on('ready', () => { $('[data-co-payment]').classList.add('is-ready'); });
+        card.mount('#co-payment');
+        ready = true;
+        render();
+      }).catch(() => {
+        showError(fill(t.loadError, 'email', cfg.contact));
+      });
+    }
+  }
+</script>

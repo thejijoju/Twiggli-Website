@@ -11,7 +11,7 @@
  * Every trigger is a real link to the voucher page, so without scripts it
  * still goes somewhere useful.
  */
-import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST, stripeVoucherLink, voucherCheckout } from '../data/vouchers.ts';
+import { voucherCopy, voucherAmounts, VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST, stripeVoucherLink, voucherCheckout, voucherPayment, checkoutPath } from '../data/vouchers.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import type { Lang } from '../lib/url.ts';
 import '../styles/vouchers.css';
@@ -33,6 +33,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
   data-stripe-live={JSON.stringify(stripeVoucherLink.live)}
   data-stripe-test={JSON.stringify(stripeVoucherLink.test)}
   data-checkout={JSON.stringify(voucherCheckout)}
+  data-payment={JSON.stringify({ url: voucherPayment.url, live: voucherPayment.live, page: checkoutPath(lang) })}
   data-copy={JSON.stringify(c)}
 >
   <button type="button" class="book-close" data-vc-close aria-label={c.close}>
@@ -171,6 +172,27 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
     const links = useCheckout ? { custom: checkout.url, fixed: {} as Record<string, string> }
       : live.custom ? live : testing ? parse(dialog.dataset.stripeTest) : { custom: '', fixed: {} };
     const stripeUrl = links.custom || '';
+    // Our own payment page (CheckoutPage.astro) wins over both: every
+    // voucher button goes there, and this form stays the fallback.
+    let payment = { url: '', live: false, page: '' };
+    try { payment = { ...payment, ...JSON.parse(dialog.dataset.payment || '{}') }; } catch { /* keep off */ }
+    const usePaymentPage = !!payment.url && !!payment.page && (payment.live || testing);
+    /** The payment page for what a button stands for. */
+    const paymentPageUrl = (el: HTMLElement) => {
+      const u = new URL(payment.page, location.origin);
+      if (el.dataset.voucher === 'host' && el.dataset.voucherSlug) {
+        u.searchParams.set('host', el.dataset.voucherSlug);
+        u.searchParams.set('people', String(Math.min(10, Math.max(1, Number(el.dataset.voucherPeople) || 1))));
+      } else {
+        const a = Number(el.dataset.voucherAmount);
+        u.searchParams.set('amount', a ? String(a) : 'wish');
+      }
+      return u.toString();
+    };
+    const toPaymentPage = (el: HTMLElement, replace = false) => {
+      track('voucher-to-checkout', { host: el.dataset.voucherHost ?? 'general', amount: el.dataset.voucherAmount ?? '' });
+      if (replace) location.replace(paymentPageUrl(el)); else location.href = paymentPageUrl(el);
+    };
     const buyerFields = Array.from(dialog.querySelectorAll<HTMLElement>('[data-vc-buyer]'));
     /** Hands over to Stripe: the amount's own link if it has one, else the
      *  "customers choose" link. The reference ties it to the inbox note. */
@@ -280,6 +302,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       if (!el) return;
       event.preventDefault();
       event.stopPropagation();
+      if (usePaymentPage) { toPaymentPage(el); return; }
       // One click to Stripe: a general voucher at an amount with its own link.
       const fixedAmount = Number(el.dataset.voucherAmount);
       if (el.dataset.voucher === 'general' && fixedAmount && (useCheckout || links.fixed?.[String(fixedAmount)])) {
@@ -300,7 +323,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
     const linked = q.get('host') ? document.querySelector<HTMLElement>(`[data-voucher-slug="${CSS.escape(q.get('host')!)}"]`)
       : q.get('amount') ? document.querySelector<HTMLElement>(`[data-voucher="general"][data-voucher-amount="${CSS.escape(q.get('amount')!)}"]`)
       : null;
-    if (linked) open(linked);
+    if (linked) { if (usePaymentPage) toPaymentPage(linked, true); else open(linked); }
 
     // Back from Stripe (its "after payment" redirect adds ?danke=1).
     if (q.get('danke') === '1' && sent && sentTitle && sentBody) {

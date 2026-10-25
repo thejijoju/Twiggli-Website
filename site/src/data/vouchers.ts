@@ -1,6 +1,6 @@
 import type { Host } from './content.ts';
 import { getHostPriceRanges } from './sessions.ts';
-import type { Lang } from '../lib/url.ts';
+import { withBase, type Lang } from '../lib/url.ts';
 
 /**
  * Gift vouchers ("Gutscheine"). The single source of truth for who takes
@@ -123,6 +123,25 @@ export const voucherCheckout = {
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3eW1wdndvdXpiaHNodHJwdGZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzUzNjYsImV4cCI6MjEwODQ1MTM2Nn0.hszNu1l3fJJsY9g47SAY4ZmKS0BP7OQwixQ_VMoxcYQ',
   live: false,
 };
+
+/**
+ * Our own payment page (CheckoutPage.astro at /checkout/ and /de/checkout/,
+ * with supabase/functions/voucher-payment): Stripe's Payment Element and
+ * Express Checkout (Apple Pay, Google Pay, PayPal where enabled) right on
+ * twiggli.com, no jump to a Stripe page. When it is on, every voucher button
+ * goes to that page instead of the form or the Stripe redirect above, which
+ * stay as the fallback. `live: false` keeps it to visits with ?stripetest=1.
+ * The publishable key is Stripe's public key, safe here.
+ */
+export const voucherPayment = {
+  url: 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-payment',
+  anonKey: voucherCheckout.anonKey,
+  publishableKey: 'pk_test_51Pyt7jRQ5Tx7BE7RseiZobyVTmVJM8n8aVl7jVmRokqKNdJdbfyrY6oCSBOmhOYZ0v0cLxoSsbr2IAEWZGkuEZNM00ZEG3bZT0',
+  live: false,
+};
+/** The checkout page exists in English and German; the other languages
+ *  use the English one for now. */
+export const checkoutPath = (lang: Lang): string => withBase(lang === 'de' ? '/de/checkout/' : '/checkout/');
 
 /** The "host" a general voucher is for, as it lands in our inbox. */
 export const GENERAL_VOUCHER_HOST = 'General Twiggli voucher (any participating host)';
