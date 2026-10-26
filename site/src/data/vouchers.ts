@@ -53,7 +53,7 @@ export const voucherHosts: string[] = [
   'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
   'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
-  'nicole', 'whittle', 'pia', 'studio32', 'anne',
+  'nicole', 'whittle', 'pia', 'studio32', 'anne', 'munio',
 ];
 
 /**
