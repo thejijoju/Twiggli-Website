@@ -47,7 +47,7 @@ export const hosts: HostCopy[] = [
     blurb: 'Twórzcie razem na jednym wielkim wspólnym płótnie — albo każdy na własnym — akrylami, szpachlami, markerami i fakturami. Prowadzenie krok po kroku; chodzi o ekspresję i flow, a nie o perfekcję.',
     group: '10–150', duration: 'Pół dnia – kilka dni', place: 'Twoje biuro / sala, w całych Niemczech', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Toczenie na kole & lepienie ręczne',
-    blurb: 'Dwa formaty ceramiczne: toczenie na kole, czyli nauka podstaw koła garncarskiego, albo lepienie ręczne dla większych grup, od szczypania po budowanie z płatów. Każdy zatrzymuje jedną lub dwie prace.',
+    blurb: 'Dwa formaty ceramiczne: toczenie na kole, czyli nauka podstaw koła garncarskiego, albo lepienie ręczne dla większych grup, od szczypania po budowanie z płatów. Każdy zatrzymuje jedną lub dwie prace. Regularne warsztaty wieczorne to tylko toczenie na kole.',
     group: '5–15 osób w pracowni · 5–30 na miejscu', duration: '1,5–3 godz.', place: 'Nasza pracownia w Kreuzbergu / twoja przestrzeń', languages: 'EN', priceNote: 'cena wyjściowa' },
   { slug: 'jem', name: 'Jem', specialty: 'Robienie sushi & kimchi', studio: 'Fischtal Foodlab',
     blurb: 'Praktyczne warsztaty kulinarne — zabawne, interaktywne i pyszne. Przyjazne dla początkujących zajęcia z sushi i kimchi: posiekaj, posól i sfermentuj własne kimchi albo zwiń trzy rodzaje maki i zakończ wspólnym posiłkiem.',

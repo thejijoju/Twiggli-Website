@@ -47,7 +47,7 @@ export const hosts: HostCopy[] = [
     blurb: 'Create insieme su un’unica grande tela collettiva — oppure ognuno sul proprio pezzo — con acrilici, spatole, pennarelli e texture. Guidati passo dopo passo; contano l’espressione e il flusso, non la perfezione.',
     group: '10–150', duration: 'Mezza giornata – più giorni', place: 'Il tuo ufficio / una location, in tutta la Germania', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Tornio & modellazione a mano',
-    blurb: 'Due formati ceramici: il tornio, per imparare le basi della ruota del vasaio; oppure la modellazione a mano per gruppi più numerosi, dal pizzicato alla costruzione a lastre. Ognuno tiene uno o due pezzi.',
+    blurb: 'Due formati ceramici: il tornio, per imparare le basi della ruota del vasaio; oppure la modellazione a mano per gruppi più numerosi, dal pizzicato alla costruzione a lastre. Ognuno tiene uno o due pezzi. I workshop serali regolari sono solo al tornio.',
     group: '5–15 in studio · 5–30 in sede', duration: '1.5–3 h', place: 'Il nostro studio a Kreuzberg / il tuo spazio', languages: 'EN', priceNote: 'prezzo di partenza' },
   { slug: 'jem', name: 'Jem', specialty: 'Preparazione di sushi & kimchi', studio: 'Fischtal Foodlab',
     blurb: 'Workshop di cucina pratici, divertenti, interattivi e deliziosi. Sessioni di sushi e kimchi adatte ai principianti: taglia, sala e fermenta il tuo kimchi, oppure arrotola tre tipi di maki e concludi con un pasto condiviso.',

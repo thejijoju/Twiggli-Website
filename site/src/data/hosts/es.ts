@@ -47,7 +47,7 @@ export const hosts: HostCopy[] = [
     blurb: 'Cread juntos sobre un gran lienzo colectivo —o cada uno su propia obra— con acrílicos, espátulas, rotuladores y texturas. Guiado paso a paso; se trata de expresión y fluidez, no de perfección.',
     group: '10–150', duration: 'Media jornada – varios días', place: 'Tu oficina / un local, en toda Alemania', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Torno & modelado cerámico',
-    blurb: 'Dos formatos de cerámica: torno, para aprender lo básico del torno de alfarero; o modelado a mano para grupos más grandes, desde el pellizcado hasta la construcción con planchas. Cada persona se queda con una o dos piezas.',
+    blurb: 'Dos formatos de cerámica: torno, para aprender lo básico del torno de alfarero; o modelado a mano para grupos más grandes, desde el pellizcado hasta la construcción con planchas. Cada persona se queda con una o dos piezas. Los talleres de tarde habituales son solo de torno.',
     group: '5–15 en el estudio · 5–30 in situ', duration: '1,5–3 h', place: 'Nuestro estudio en Kreuzberg / tu espacio', languages: 'EN', priceNote: 'precio inicial' },
   { slug: 'jem', name: 'Jem', specialty: 'Elaboración de sushi & kimchi', studio: 'Fischtal Foodlab',
     blurb: 'Talleres gastronómicos prácticos, divertidos, interactivos y deliciosos. Sesiones de sushi y kimchi aptas para principiantes: pica, sala y fermenta tu propio kimchi, o enrolla tres tipos de maki y termina con una comida compartida.',
