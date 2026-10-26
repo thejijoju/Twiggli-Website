@@ -137,6 +137,9 @@ export const voucherPayment = {
   url: 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-payment',
   anonKey: voucherCheckout.anonKey,
   publishableKey: 'pk_test_51Pyt7jRQ5Tx7BE7RseiZobyVTmVJM8n8aVl7jVmRokqKNdJdbfyrY6oCSBOmhOYZ0v0cLxoSsbr2IAEWZGkuEZNM00ZEG3bZT0',
+  /** Swapped in for publishableKey once STRIPE_SECRET_KEY in Supabase is
+   *  the sk_live one: both have to be from the same mode. */
+  publishableKeyLive: 'pk_live_51Pyt7jRQ5Tx7BE7RD1fgKwJmYTYvPbmjjgMVDdUNZQwjxXTRN4rEyq2n4NgUD1MXZtMwP7GdB0qb79mrcI9jl77t000GDWu0V3',
   live: false,
 };
 /** The checkout page exists in English and German; the other languages
