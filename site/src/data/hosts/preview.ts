@@ -102,9 +102,9 @@ const en: HostCopy[] = [
   // Ilinca, 21.–23.10.26 (call on Monday 26.10). From paintnow.de and their
   // Konfetti store (23.10.26).
   { slug: 'paintnow', name: 'PaintNow', specialty: 'Painting workshops for teams', studio: 'PaintNow',
-    blurb: 'PaintNow brings guided painting to companies, in Berlin and across Germany, for groups from ten to several hundred. The formats are made for people who swear they cannot draw: Sip & Paint, painting together on one large canvas, speed-painting portraits of your colleagues, giant paper letters painted with your team values, puzzle painting on wood, T-shirts with your company logo, and calmer formats with a sound bath, mandalas or clay. They come to your office or event venue with everything needed.',
-    group: '10–200', duration: '2–3 h', place: 'Rathenower Str. 24, Moabit / your venue', languages: 'EN · DE',
-    priceNote: '10% off from 25 people' },
+    blurb: 'PaintNow brings guided painting to companies, in Berlin and across Germany, for groups from ten to several hundred. The formats are made for people who swear they cannot draw: Sip & Paint, painting together on one large canvas, speed-painting portraits of your colleagues, giant paper letters painted with your team values, puzzle painting on wood, T-shirts with your company logo, and calmer formats with a sound bath, mandalas or clay. Ilinca started out combining sound healing and painting in yoga studios, and now runs PaintNow full time. She comes with everything needed to your office, a restaurant, a bar or a meeting room, anywhere in Berlin; a studio can be booked for a small extra. Two hours, with an extra hour if you like, and a motif designed for your team on request.',
+    group: '10–200', duration: '2–3 h', place: 'Your office or venue, all over Berlin', languages: 'EN · DE',
+    priceNote: 'from 10 people · extra hour €15 pp' },
   // Chris & Kora, 18.10.26: "können uns eine Zusammenarbeit gut
   // vorstellen". From atelier.korasinn.de (23.10.26).
   { slug: 'atelier-sinn', name: 'Atelier Sinn', specialty: 'Natural cosmetics, textile art, collage & more', studio: 'Atelier Kora Sinn',
@@ -159,9 +159,9 @@ const de: HostCopy[] = [
     blurb: 'Jeannette ist Kunstlehrerin und malt in Aquarell, leicht und lebendig, mit einem besonderen Blick für Menschen, Tiere und Yoga-Motive. Ihre Kurse sind für Eltern und Kinder gemacht, die nebeneinander malen: ein leichter Einstieg, der Kleinen wie Großen die Angst vor dem weißen Blatt nimmt.',
     group: 'Kleine Gruppen', duration: 'Auf Anfrage', place: 'Berlin', languages: 'DE' },
   { slug: 'paintnow', name: 'PaintNow', specialty: 'Mal-Workshops für Teams', studio: 'PaintNow',
-    blurb: 'PaintNow bringt angeleitetes Malen in Unternehmen, in Berlin und ganz Deutschland, für Gruppen von zehn bis mehreren hundert Personen. Die Formate sind für alle gemacht, die schwören, nicht malen zu können: Sip & Paint, gemeinsam auf einer großen Leinwand malen, Speed-Painting-Porträts der Kolleg:innen, riesige Papierbuchstaben mit euren Teamwerten, Puzzle-Malerei auf Holz, T-Shirts mit Firmenlogo und ruhigere Formate mit Klangbad, Mandalas oder Ton. Sie kommen mit allem Nötigen zu euch ins Büro oder in die Eventlocation.',
-    group: '10–200', duration: '2–3 Std.', place: 'Rathenower Str. 24, Moabit / bei euch', languages: 'EN · DE',
-    priceNote: '10 % Rabatt ab 25 Personen' },
+    blurb: 'PaintNow bringt angeleitetes Malen in Unternehmen, in Berlin und ganz Deutschland, für Gruppen von zehn bis mehreren hundert Personen. Die Formate sind für alle gemacht, die schwören, nicht malen zu können: Sip & Paint, gemeinsam auf einer großen Leinwand malen, Speed-Painting-Porträts der Kolleg:innen, riesige Papierbuchstaben mit euren Teamwerten, Puzzle-Malerei auf Holz, T-Shirts mit Firmenlogo und ruhigere Formate mit Klangbad, Mandalas oder Ton. Ilinca hat damit angefangen, Klangheilung und Malen in Yogastudios zu verbinden, und macht PaintNow heute in Vollzeit. Sie kommt mit allem Nötigen zu euch ins Büro, in ein Restaurant, eine Bar oder einen Meetingraum, überall in Berlin; ein Studio kann gegen einen kleinen Aufpreis dazugebucht werden. Zwei Stunden, auf Wunsch mit einer Extrastunde, und auf Anfrage ein Motiv, das sie für euer Team entwirft.',
+    group: '10–200', duration: '2–3 Std.', place: 'Bei euch im Büro oder in der Location, überall in Berlin', languages: 'EN · DE',
+    priceNote: 'ab 10 Personen · Extrastunde 15 € p. P.' },
   { slug: 'atelier-sinn', name: 'Atelier Sinn', specialty: 'Naturkosmetik, Textile Art, Collage & mehr', studio: 'Atelier Kora Sinn',
     blurb: 'Ein kreativer Ort nahe Senefelderplatz, gegründet von Interior Designerin und Creative Director Kornelia Sinn: hohe Decken, ein sorgfältig gestaltetes Interior und zwei großzügige Räume. Für Teams gibt es acht dreistündige Formate – Collage & Mixed Media, Naturkosmetik mit eigener Verpackung, Textile Art, Duftkerzen, Duftsprays, Ton, Schmuck & Charms und Porzellandesign –, und auf Wunsch wird eines auf eure Markenfarben, euer Logo oder ein gemeinsames Thema zugeschnitten. Material, Anleitung, Snacks und Getränke sind inklusive, Catering auf Anfrage. Offene Workshops gibt es etwa zum Glow-Serum oder zum festlichen Weihnachts-Tablescaping.',
     group: '5–20', duration: '3 Std.', place: 'Saarbrücker Str. 15, Prenzlauer Berg', languages: 'DE · EN' },
@@ -200,9 +200,10 @@ const facets: Record<string, Facets> = {
   concreare:             { activity: 'ceramics',    groupRange: [4, 12],   hourRange: [2, 2] },
   // PLACEHOLDER ranges — nothing published.
   'jeannette-tolksdorff': { activity: 'art',        groupRange: [1, 10],   hourRange: [1.5, 2] },
-  // From €79 per person on paintnow.de; groups from 10 (eventinc), up to
+  // Ilinca, call 26.10.26: from €59 per person, minimum 10 (fewer pay for
+  // 10), 2 h + optional hour at €15 pp; usually 20–30 people. Up to
   // 200 on their Konfetti listings.
-  paintnow:              { activity: 'art',         groupRange: [10, 200], hourRange: [2, 3],   groupPrice: 79 },
+  paintnow:              { activity: 'art',         groupRange: [10, 200], hourRange: [2, 3],   groupPrice: 59 },
   'atelier-sinn':        { activity: 'craft',       groupRange: [5, 20],   hourRange: [3, 3],   groupPrice: 59 },
   // From 3 (she cancels with 1 or 2) to 4 for the collage workshop, 10 for
   // flower crowns; 2–3.5 h. €119 for the collage workshop (dots class €49,
@@ -222,7 +223,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
   'luc-demissy': { area: 'Wedding' }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Berlin' },
-  paintnow: { area: 'Moabit', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg' },
+  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg' },
 };
 
 /** Formats each preview host runs on request, with no public date. */
@@ -275,6 +276,7 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Gemeinsam auf Großleinwand malen', titleEn: 'Painting together on a large canvas', url: 'https://www.paintnow.de/team-building' },
     { title: 'Speed-Painting: Kolleg:innen porträtieren', titleEn: 'Speed painting: portraits of your colleagues', url: 'https://www.paintnow.de/team-building' },
     { title: 'T-Shirts mit Firmenlogo bemalen', titleEn: 'Paint T-shirts with your company logo', url: 'https://www.paintnow.de/team-building' },
+    { title: 'Abstraktes Malen für dich oder zu zweit', titleEn: 'Abstract painting for one or two', url: 'https://www.paintnow.de/' },
   ],
   'atelier-sinn': [
     { title: 'Teamevent: eines von acht Formaten, auf Wunsch in euren Markenfarben', titleEn: 'Team event: one of eight formats, in your brand colours if you like', duration: '3 h', price: '€59', url: 'https://www.atelier.korasinn.de/teams' },
