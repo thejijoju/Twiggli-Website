@@ -47,7 +47,7 @@ export const hosts: HostCopy[] = [
     blurb: 'Créez ensemble sur une grande toile collective — ou sur votre propre pièce — avec acryliques, couteaux à peindre, marqueurs et textures. Guidé pas à pas ; il s’agit d’expression et de flow plutôt que de perfection.',
     group: '10–150', duration: 'Demi-journée – plusieurs jours', place: 'Vos bureaux / un lieu, partout en Allemagne', languages: 'DE' },
   { slug: 'helka', name: 'Helka', specialty: 'Tournage & modelage céramique',
-    blurb: 'Deux formats céramique : le tournage, pour apprendre les bases du tour de potier ; ou le modelage pour les groupes plus grands, du pincé au montage à la plaque. Chacun garde une ou deux pièces.',
+    blurb: 'Deux formats céramique : le tournage, pour apprendre les bases du tour de potier ; ou le modelage pour les groupes plus grands, du pincé au montage à la plaque. Chacun garde une ou deux pièces. Les ateliers du soir habituels sont uniquement au tour.',
     group: '5–15 en atelier · 5–30 sur site', duration: '1,5–3 h', place: 'Notre atelier à Kreuzberg / vos locaux', languages: 'EN', priceNote: 'tarif de départ' },
   { slug: 'jem', name: 'Jem', specialty: 'Ateliers sushi & kimchi', studio: 'Fischtal Foodlab',
     blurb: 'Des ateliers culinaires pratiques, amusants, interactifs et délicieux. Des séances sushi et kimchi accessibles aux débutants : hachez, salez et fermentez votre propre kimchi, ou roulez trois types de maki et terminez par un repas partagé.',
