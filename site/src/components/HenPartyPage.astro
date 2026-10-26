@@ -10,16 +10,20 @@
 import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { henCopy, henPicks } from '../data/henParty.ts';
+import { birthdayCopy, birthdayPicks } from '../data/birthday.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import { href, withBase } from '../lib/url.ts';
 
-interface Props { lang: 'en' | 'de' }
-const { lang } = Astro.props;
-const t = henCopy[lang];
+/* The same page serves birthdays (/birthday/): its own copy and picks. */
+interface Props { lang: 'en' | 'de'; occasion?: 'hen' | 'birthday' }
+const { lang, occasion = 'hen' } = Astro.props;
+const t = (occasion === 'birthday' ? birthdayCopy : henCopy)[lang];
+const picks = occasion === 'birthday' ? birthdayPicks : henPicks;
+const hero = picks.slice(0, 3).map((p) => withBase(`/img/mail/${p.image}.jpg`));
 const hosts = getHosts(lang);
 
 const money = (n: number) => (lang === 'de' ? `${n} €` : `€${n}`);
-const cards = henPicks.map((pick, i) => {
+const cards = picks.map((pick, i) => {
   const host = hosts.find((h) => h.slug === pick.slug);
   const gp = pick.price ?? host?.groupPrice;
   const from = host?.priceNote === (lang === 'de' ? 'Einstiegspreis' : 'starting price');
@@ -45,7 +49,7 @@ const faqSchema = {
 };
 ---
 
-<Base title={t.title} description={t.description} lang={lang} translations={['en', 'de']} image="/img/mail/pia-vulva.jpg">
+<Base title={t.title} description={t.description} lang={lang} translations={['en', 'de']} image={`/img/mail/${picks[0].image}.jpg`}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
   </Fragment>
@@ -63,12 +67,12 @@ const faqSchema = {
           </div>
         </div>
         <div class="xmas-collage" aria-hidden="true">
-          <img class="xmas-c1" src={withBase('/img/mail/pia-vulva.jpg')} alt="" />
+          <img class="xmas-c1" src={hero[0]} alt="" />
           <figure class="xmas-c2">
-            <div class="newsletter-paper"><img src={withBase('/img/mail/munio.jpg')} alt="" /><figcaption>{t.picks[1].title}</figcaption></div>
+            <div class="newsletter-paper"><img src={hero[1]} alt="" /><figcaption>{t.picks[1].title}</figcaption></div>
             <span class="newsletter-tape is-tl"></span><span class="newsletter-tape is-br"></span>
           </figure>
-          <img class="xmas-c3" src={withBase('/img/mail/karen-rose-naturkosmetik.jpg')} alt="" />
+          <img class="xmas-c3" src={hero[2]} alt="" />
           <p class="xmas-note"><b>{t.free}</b>{t.freeNote}</p>
         </div>
       </section>
@@ -118,7 +122,7 @@ const faqSchema = {
           <ul class="xmas-bullets">{t.bullets.map((b) => <li>{b}</li>)}</ul>
         </div>
         <div class="xmas-form-card">
-          <form class="book-form xmas-form" data-xmas-form data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
+          <form class="book-form xmas-form" data-xmas-form data-occasion={occasion} data-inbox={requestEmail} data-contact={contactEmail} data-copy={JSON.stringify(formCopy)} novalidate>
             <div class="book-fields">
               <label class="book-field"><span>{t.name}</span><input name="name" type="text" autocomplete="name" required /></label>
               <label class="book-field"><span>{t.bride} <em>({t.optional})</em></span><input name="bride" type="text" /></label>
@@ -179,6 +183,7 @@ const faqSchema = {
     const send = form.querySelector<HTMLButtonElement>('[data-xmas-send]');
     const error = form.querySelector<HTMLElement>('[data-xmas-error]');
     const sent = document.querySelector<HTMLElement>('[data-xmas-sent]');
+    const birthday = form.dataset.occasion === 'birthday';
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
@@ -188,9 +193,9 @@ const faqSchema = {
       let cameFrom = '';
       try { cameFrom = sessionStorage.getItem('twiggli-came-from') ?? ''; } catch {}
       const fields: Record<string, string> = {
-        Type: 'Hen party (JGA) request',
+        Type: birthday ? 'Birthday request' : 'Hen party (JGA) request',
         Name: get('name'),
-        Bride: get('bride'),
+        [birthday ? 'Birthday person' : 'Bride']: get('bride'),
         Email: get('email'),
         Phone: get('phone'),
         'Preferred date': get('date'),
@@ -202,7 +207,7 @@ const faqSchema = {
         'Came from': cameFrom,
         Language: document.documentElement.lang,
       };
-      const subject = `JGA request: ${fields.Name} — ${fields['Group size']} people${fields['Preferred date'] ? `, ${fields['Preferred date']}` : ''}`;
+      const subject = `${birthday ? 'Birthday request' : 'JGA request'}: ${fields.Name} — ${fields['Group size']} people${fields['Preferred date'] ? `, ${fields['Preferred date']}` : ''}`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {

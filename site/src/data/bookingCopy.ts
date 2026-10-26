@@ -15,6 +15,9 @@ export const bookingCopy: Record<Lang, {
   studio: string; studioAsk: string; start: string; hours: string; often: string; once: string; regular: string; studioNotes: string; studioNotesPh: string;
   where: string; atHost: string; atVenue: string; venue: string; venuePh: string;
   anyHost: string; anySpace: string;
+  /** A group request: what it's for, and extras the host can add. */
+  occasion: string; occasions: [string, string, string, string, string, string];
+  extras: string; extraHour: string; extraCustom: string;
 }> = {
   en: {
     minPeople: 'Group requests from {n} people',
@@ -33,6 +36,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Studio request', studioAsk: 'Request this space', start: 'Start time', hours: 'Hours', often: 'How often', once: 'One time', regular: 'Regularly', studioNotes: 'Special notes', studioNotesPh: 'What you’ll do there, materials, setup, anything special',
     where: 'Where should it take place?', atHost: 'At the host’s studio', atVenue: 'At our own venue', venue: 'Your venue', venuePh: 'Address or area, e.g. our office in Mitte',
     anyHost: 'Group booking, any host: we suggest options', anySpace: 'Studio, any space: we suggest options',
+    occasion: 'What’s the occasion?', occasions: ['Team event', 'Christmas party', 'Birthday', 'Hen party', 'Friends & family', 'Something else'],
+    extras: 'Extras', extraHour: 'A longer session (+1 h)', extraCustom: 'A custom design or motif',
   },
   de: {
     minPeople: 'Gruppenanfragen ab {n} Personen',
@@ -51,6 +56,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Raumanfrage', studioAsk: 'Diesen Raum anfragen', start: 'Beginn', hours: 'Stunden', often: 'Wie oft', once: 'Einmalig', regular: 'Regelmäßig', studioNotes: 'Besondere Hinweise', studioNotesPh: 'Was du vorhast, Materialien, Aufbau, besondere Wünsche',
     where: 'Wo soll es stattfinden?', atHost: 'Im Studio des Gastgebers', atVenue: 'Bei uns vor Ort', venue: 'Eure Location', venuePh: 'Adresse oder Gegend, z. B. unser Büro in Mitte',
     anyHost: 'Gruppenbuchung, beliebiger Gastgeber: wir machen Vorschläge', anySpace: 'Raum, beliebiges Studio: wir machen Vorschläge',
+    occasion: 'Was ist der Anlass?', occasions: ['Teamevent', 'Weihnachtsfeier', 'Geburtstag', 'JGA', 'Freunde & Familie', 'Etwas anderes'],
+    extras: 'Extras', extraHour: 'Länger machen (+1 Std.)', extraCustom: 'Eigenes Motiv oder Design',
   },
   fr: {
     minPeople: 'Demandes de groupe à partir de {n} personnes',
@@ -69,6 +76,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Demande d’espace', studioAsk: 'Demander cet espace', start: 'Heure de début', hours: 'Heures', often: 'Fréquence', once: 'Une fois', regular: 'Régulièrement', studioNotes: 'Remarques particulières', studioNotesPh: 'Ce que vous ferez, matériel, installation, demandes particulières',
     where: 'Où doit-il avoir lieu ?', atHost: 'À l’atelier de l’hôte', atVenue: 'Dans nos propres locaux', venue: 'Votre lieu', venuePh: 'Adresse ou quartier, p. ex. nos bureaux à Mitte',
     anyHost: 'Réservation de groupe, tout hôte : nous proposons des options', anySpace: 'Espace, tout atelier : nous proposons des options',
+    occasion: 'Quelle est l’occasion ?', occasions: ['Événement d’équipe', 'Fête de Noël', 'Anniversaire', 'EVJF', 'Amis & famille', 'Autre chose'],
+    extras: 'Options', extraHour: 'Une séance plus longue (+1 h)', extraCustom: 'Un motif ou design personnalisé',
   },
   es: {
     minPeople: 'Solicitudes de grupo desde {n} personas',
@@ -87,6 +96,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Solicitud de espacio', studioAsk: 'Solicitar este espacio', start: 'Hora de inicio', hours: 'Horas', often: 'Frecuencia', once: 'Una vez', regular: 'Con regularidad', studioNotes: 'Notas especiales', studioNotesPh: 'Qué harás, materiales, montaje, cualquier necesidad especial',
     where: '¿Dónde debe tener lugar?', atHost: 'En el estudio del anfitrión', atVenue: 'En nuestro propio espacio', venue: 'Vuestro espacio', venuePh: 'Dirección o zona, p. ej. nuestra oficina en Mitte',
     anyHost: 'Reserva de grupo, cualquier anfitrión: te proponemos opciones', anySpace: 'Espacio, cualquier estudio: te proponemos opciones',
+    occasion: '¿Cuál es la ocasión?', occasions: ['Evento de equipo', 'Fiesta de Navidad', 'Cumpleaños', 'Despedida de soltera', 'Amigos y familia', 'Otra cosa'],
+    extras: 'Extras', extraHour: 'Una sesión más larga (+1 h)', extraCustom: 'Un diseño o motivo propio',
   },
   it: {
     minPeople: 'Richieste di gruppo da {n} persone',
@@ -105,6 +116,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Richiesta spazio', studioAsk: 'Richiedi questo spazio', start: 'Ora di inizio', hours: 'Ore', often: 'Quanto spesso', once: 'Una volta', regular: 'Regolarmente', studioNotes: 'Note particolari', studioNotesPh: 'Cosa farai, materiali, allestimento, esigenze particolari',
     where: 'Dove deve svolgersi?', atHost: 'Nello studio dell’host', atVenue: 'Nella nostra sede', venue: 'La vostra sede', venuePh: 'Indirizzo o zona, ad es. il nostro ufficio a Mitte',
     anyHost: 'Prenotazione di gruppo, qualsiasi host: ti proponiamo opzioni', anySpace: 'Spazio, qualsiasi studio: ti proponiamo opzioni',
+    occasion: 'Qual è l’occasione?', occasions: ['Evento di team', 'Festa di Natale', 'Compleanno', 'Addio al nubilato', 'Amici e famiglia', 'Altro'],
+    extras: 'Extra', extraHour: 'Una sessione più lunga (+1 h)', extraCustom: 'Un motivo o design personalizzato',
   },
   nl: {
     minPeople: 'Groepsaanvragen vanaf {n} personen',
@@ -123,6 +136,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Ruimteaanvraag', studioAsk: 'Deze ruimte aanvragen', start: 'Begintijd', hours: 'Uren', often: 'Hoe vaak', once: 'Eenmalig', regular: 'Regelmatig', studioNotes: 'Bijzonderheden', studioNotesPh: 'Wat je gaat doen, materialen, opstelling, bijzondere wensen',
     where: 'Waar moet het plaatsvinden?', atHost: 'In de studio van de host', atVenue: 'Op onze eigen locatie', venue: 'Jullie locatie', venuePh: 'Adres of buurt, bijv. ons kantoor in Mitte',
     anyHost: 'Groepsboeking, elke host: wij doen voorstellen', anySpace: 'Ruimte, elke studio: wij doen voorstellen',
+    occasion: 'Wat is de gelegenheid?', occasions: ['Teamevent', 'Kerstborrel', 'Verjaardag', 'Vrijgezellenfeest', 'Vrienden & familie', 'Iets anders'],
+    extras: 'Extra’s', extraHour: 'Een langere sessie (+1 u)', extraCustom: 'Een eigen ontwerp of motief',
   },
   pl: {
     minPeople: 'Zapytania grupowe od {n} osób',
@@ -141,6 +156,8 @@ export const bookingCopy: Record<Lang, {
     studio: 'Zapytanie o salę', studioAsk: 'Zapytaj o tę salę', start: 'Godzina rozpoczęcia', hours: 'Godziny', often: 'Jak często', once: 'Jednorazowo', regular: 'Regularnie', studioNotes: 'Uwagi', studioNotesPh: 'Co planujesz, materiały, ustawienie, szczególne potrzeby',
     where: 'Gdzie ma się odbyć?', atHost: 'W pracowni gospodarza', atVenue: 'U nas, w naszym miejscu', venue: 'Wasze miejsce', venuePh: 'Adres lub okolica, np. nasze biuro w Mitte',
     anyHost: 'Rezerwacja grupowa, dowolny gospodarz: zaproponujemy opcje', anySpace: 'Sala, dowolna pracownia: zaproponujemy opcje',
+    occasion: 'Jaka to okazja?', occasions: ['Wydarzenie firmowe', 'Wigilia firmowa', 'Urodziny', 'Wieczór panieński', 'Przyjaciele i rodzina', 'Coś innego'],
+    extras: 'Dodatki', extraHour: 'Dłuższa sesja (+1 godz.)', extraCustom: 'Własny wzór lub motyw',
   },
   tr: {
     minPeople: 'Grup talepleri {n} kişiden itibaren',
@@ -159,5 +176,7 @@ export const bookingCopy: Record<Lang, {
     studio: 'Mekân talebi', studioAsk: 'Bu mekânı talep et', start: 'Başlangıç saati', hours: 'Saat', often: 'Ne sıklıkla', once: 'Bir kez', regular: 'Düzenli olarak', studioNotes: 'Özel notlar', studioNotesPh: 'Ne yapacağın, malzemeler, düzen, özel istekler',
     where: 'Nerede olsun?', atHost: 'Ev sahibinin stüdyosunda', atVenue: 'Kendi mekânımızda', venue: 'Mekânınız', venuePh: 'Adres ya da semt, ör. Mitte’deki ofisimiz',
     anyHost: 'Grup rezervasyonu, herhangi bir ev sahibi: seçenek öneririz', anySpace: 'Mekân, herhangi bir stüdyo: seçenek öneririz',
+    occasion: 'Vesile ne?', occasions: ['Takım etkinliği', 'Yılbaşı partisi', 'Doğum günü', 'Bekârlığa veda', 'Arkadaşlar ve aile', 'Başka bir şey'],
+    extras: 'Ekstralar', extraHour: 'Daha uzun seans (+1 sa)', extraCustom: 'Özel tasarım ya da motif',
   },
 };

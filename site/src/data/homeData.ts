@@ -104,6 +104,9 @@ export function getHomeData(lang: Lang) {
 
   const chips = [
     { label: find.today, href: calendarHref, icon: '⚡', tint: '#e6ddff' },
+    // Birthday and hen party pages exist in English and German only.
+    { label: find.birthday, href: href(lang === 'de' ? 'de' : 'en', '/birthday/'), icon: '🎂', tint: '#ffe9a8' },
+    { label: find.hen, href: href(lang === 'de' ? 'de' : 'en', '/jga/'), icon: '🥂', tint: '#ffd9e6' },
     { label: occ.weekend.short, href: occasionHref(lang, 'weekend'), icon: '🎉', tint: '#ffe1d3' },
     { label: occ.evenings.short, href: occasionHref(lang, 'evenings'), icon: '🌙', tint: '#dbe8ff' },
     { label: occ.kids.short, href: occasionHref(lang, 'kids'), icon: '🧸', tint: '#ffd9ee' },
