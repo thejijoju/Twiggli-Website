@@ -69,8 +69,16 @@ const e = bigEventsCopy[lang].dialog;
         <span>{c.when} <em>({c.optional})</em></span>
         <input name="when" type="date" />
       </label>
-      {/* A group request: at the host's studio or at the group's own venue. */}
+      {/* A group request: what it's for, at the host's studio or at the
+          group's own venue, and the extras a host can add (Ilinca, 26.10:
+          the questions she otherwise asks back by email). */}
       <div class="book-studio" data-book-group-place hidden>
+        <fieldset class="book-field book-field-wide book-often">
+          <legend>{c.occasion} <em>({c.optional})</em></legend>
+          <div class="book-often-chips">
+            {c.occasions.map((o) => <label><input type="radio" name="occasion" value={o} /><span>{o}</span></label>)}
+          </div>
+        </fieldset>
         <fieldset class="book-field book-field-wide book-often">
           <legend>{c.where}</legend>
           <div class="book-often-chips">
@@ -82,6 +90,13 @@ const e = bigEventsCopy[lang].dialog;
           <span>{c.venue} <em>({c.optional})</em></span>
           <input name="venue" type="text" autocomplete="street-address" placeholder={c.venuePh} />
         </label>
+        <fieldset class="book-field book-field-wide book-often">
+          <legend>{c.extras} <em>({c.optional})</em></legend>
+          <div class="book-often-chips">
+            <label><input type="checkbox" name="extras" value="Longer session (+1 h)" /><span>{c.extraHour}</span></label>
+            <label><input type="checkbox" name="extras" value="Custom design or motif" /><span>{c.extraCustom}</span></label>
+          </div>
+        </fieldset>
       </div>
       {/* An event with several hosts, or a special request: the hosts on
           the page to pick from, as many as wanted or none. The button
@@ -342,6 +357,8 @@ const e = bigEventsCopy[lang].dialog;
         ...(kind === 'group' || kind === 'event' || kind === 'special' ? {
           Where: data.get('place') === 'venue' ? 'At their own venue' : data.get('place') === 'host' ? 'At the host’s studio' : 'not said yet',
           ...(data.get('place') === 'venue' && data.get('venue') ? { Venue: String(data.get('venue')) } : {}),
+          Occasion: String(data.get('occasion') ?? '') || 'not said',
+          Extras: data.getAll('extras').map(String).join(', ') || 'none',
         } : {}),
         People: String(data.get('people') ?? ''),
         Name: String(data.get('name') ?? ''),

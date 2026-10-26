@@ -6,6 +6,7 @@ import { getSiteData } from '../data/site.ts';
 import { ui } from '../data/i18n.ts';
 import { href, LANGS, type Lang } from '../lib/url.ts';
 import { clubCopy } from '../data/club.ts';
+import { homeFindCopy } from '../data/homeFind.ts';
 
 interface Props {
   lang: Lang;
@@ -22,6 +23,13 @@ const cta = { title: t.appCta };
    to the English one. */
 const clubLang = lang === 'de' ? 'de' : 'en';
 const club = clubCopy[clubLang];
+/* The private occasions, linked from every page so people and crawlers
+   find them (English and German pages only). */
+const find = homeFindCopy[lang];
+const occasions = [
+  { label: find.birthday, href: href(clubLang, '/birthday/') },
+  { label: find.hen, href: href(clubLang, '/jga/') },
+];
 ---
 
 <footer id="footer" class="footer">
@@ -59,6 +67,7 @@ const club = clubCopy[clubLang];
         <p class="footer-col-title">{columnLabels.explore}</p>
         <div class="footer-links">
           {secondaryLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+          {occasions.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>
       </div>
       <div class="footer-col">
