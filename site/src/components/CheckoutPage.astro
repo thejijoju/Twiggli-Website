@@ -578,10 +578,9 @@ const config = {
         stripe = S(cfg.pk, { locale: lang === 'de' ? 'de' : 'en' });
         elements = stripe.elements({
           mode: 'payment', currency: 'eur', amount: Math.max(amount(), cfg.min) * 100, appearance,
-          // Card only in the form: no Stripe Link "save my info" box, which
-          // distracts from paying (Jirel, 25.10). Apple/Google Pay stay
-          // as express buttons above.
-          paymentMethodTypes: ['card'],
+          // Payment methods come from the Stripe dashboard, like the server's
+          // intent (automatic_payment_methods); naming them here too makes
+          // confirming fail. Link is switched off there (Jirel, 25.10).
           fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap' }],
         });
         // Apple Pay, Google Pay, PayPal (whatever is on in Stripe and in
