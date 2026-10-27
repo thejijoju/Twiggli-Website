@@ -733,18 +733,20 @@ const SOURCES = [
   // into spirits (€40-100) and cocktails (€50-60), and applies a
   // different per-group choice limit to each, so the split is kept.
   // The watcher reads the tasting page every scrape; if they ever publish
-  // dates, the default parsers report them.
+  // dates, the default parsers report them. Prices here are theirs plus our
+  // 15% on top (Nutsa, 27.10.26: "add 15% on top of it"), bookings by
+  // request only.
   { slug: 'redrum', name: 'Redrum Art Bar — drink tastings (watched)',
     url: 'https://www.redrumberlin.de/tasting-experience/',
     district: 'Kreuzberg',
     seedOnRequest: [
       { title: 'Spirituosen-Tasting',
         titleEn: 'Spirits Tasting Experience',
-        duration: '2 h', price: '€40–100', district: 'Kreuzberg', request: true,
+        duration: '2 h', price: '€46–115', district: 'Kreuzberg', request: true,
         url: 'https://www.redrumberlin.de/tasting-experience/' },
       { title: 'Cocktail-Tasting',
         titleEn: 'Cocktail Tasting Experience',
-        duration: '2 h', price: '€50–60', district: 'Kreuzberg', request: true,
+        duration: '2 h', price: '€58–69', district: 'Kreuzberg', request: true,
         url: 'https://www.redrumberlin.de/tasting-experience/' },
     ] },
 
