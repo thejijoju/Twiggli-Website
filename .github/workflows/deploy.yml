@@ -23,8 +23,30 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # commits the refreshed translations back
     steps:
       - uses: actions/checkout@v4
+      # French, Spanish, Italian, Dutch, Polish and Turkish host copy is
+      # translated from the English in content.ts: only hosts whose English
+      # changed since the last run (scripts/translate-hosts.mjs). Skipped
+      # without the ANTHROPIC_API_KEY secret, and never fails the deploy;
+      # a host not yet translated falls back to English on the site.
+      - name: Translate changed host copy
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then echo 'No ANTHROPIC_API_KEY secret, skipping'; exit 0; fi
+          npm ci --prefix site --no-audit --no-fund
+          npm install --no-save --no-audit --no-fund --prefix scripts @anthropic-ai/sdk
+          node scripts/translate-hosts.mjs
+          git add site/src/data/hosts/*.ts site/src/data/hosts/translation-state.json
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'Translate changed host copy'
+            git push
+          fi
       - uses: withastro/action@v3
         with:
           path: site

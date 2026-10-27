@@ -327,7 +327,7 @@ export type HostCopy = Omit<
    under ./hosts/, written from the English. Below, every language is
    re-ordered to the English list and any host a translation lacks falls
    back to the English entry, so a new host never breaks a language. */
-const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
+export const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
   en: [
     { slug: 'qian', name: 'Qian', specialty: 'Tea & pottery, jewellery and painting', studio: 'Clay Garden Pottery Studio',
       blurb: 'Team events from Qian’s pottery studio in Prenzlauer Berg, two hours each: tea and pottery, making your own ceramic jewellery, or painting pottery. Calm, creative and made for beginners, and everyone takes their own pieces home. From four people: up to 8 in her studio, 14 at a partner venue, and up to 25 in all.',
