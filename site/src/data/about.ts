@@ -19,12 +19,16 @@ export const aboutCopy: Record<'en' | 'de', AboutCopy> = {
     intro: 'Potters, candle makers, screen printers, sculptors, florists: in backyards and small studios all over the city, beautiful things are made every day. At the same time, so many of us spend our evenings in front of a screen, wondering where to actually meet people in this big city.',
     sections: [
       {
-        h2: 'Twiggli brings these two worlds together.',
-        body: 'I started Twiggli because I saw how much talent works quietly out of sight here. Many makers pour their hearts into their workshops, but they struggle with high rents and get lost in the noise of the big platforms. They deserve a stage. And all of us deserve places where we can put our phones away, make something with our own hands, and meet people who live just a few streets away.',
+        h2: 'Living from what you love',
+        body: 'I started Twiggli because I saw how much talent works quietly out of sight here. Many makers put their whole heart into their craft and want to pass it on, but high rents and the noise of the big platforms make it hard. I want a city where you can make a living by sharing what you love. Twiggli is here to give them a stage.',
+      },
+      {
+        h2: 'With our hands, no screen in between',
+        body: 'AI is taking more and more screen work off our plates, and that frees up time again: time to spend with each other, to learn someone else’s craft and passion and make it your own. I believe that is exactly why the real thing is becoming more valuable: sitting at one table, feeling clay under your fingers, learning from someone who loves what they do. Not through a screen, but person to person. And the jobs that don’t need a screen are the safest ones. So let’s grow Berlin’s in-person craft economy together.',
       },
       {
         h2: 'What we do',
-        body: 'We bring you to the makers, and the makers to you: for an evening with friends, a hen party, a team event or a Christmas party, in a studio or right in your office. Every booking through Twiggli supports a real person in Berlin, not a corporation.',
+        body: 'We bring you to the makers, and the makers to you: for an evening with friends, a birthday or hen party, a team event or a Christmas party, in a studio or right in your office. Every booking through Twiggli supports a real person in Berlin, not a corporation.',
       },
       {
         h2: 'Why “Twiggli”?',
@@ -46,12 +50,16 @@ export const aboutCopy: Record<'en' | 'de', AboutCopy> = {
     intro: 'Töpferinnen, Kerzenmacher, Siebdruckerinnen, Bildhauer, Floristinnen: In Hinterhöfen und kleinen Studios in der ganzen Stadt entstehen jeden Tag wunderschöne Dinge. Und gleichzeitig sitzen so viele von uns abends vor einem Bildschirm und fragen sich, wo man in dieser großen Stadt eigentlich Anschluss findet.',
     sections: [
       {
-        h2: 'Twiggli verbindet diese beiden Welten.',
-        body: 'Ich habe Twiggli gegründet, weil ich gesehen habe, wie viel Talent hier im Verborgenen arbeitet. Viele Maker*innen stecken ihr Herz in ihre Workshops, kämpfen aber mit hohen Mieten und gehen im Lärm der großen Plattformen unter. Sie verdienen eine Bühne. Und wir alle verdienen Orte, an denen wir das Handy weglegen, etwas mit den eigenen Händen schaffen und dabei Menschen kennenlernen, die nur ein paar Straßen weiter wohnen.',
+        h2: 'Von dem leben, was man liebt',
+        body: 'Ich habe Twiggli gegründet, weil ich gesehen habe, wie viel Talent hier im Verborgenen arbeitet. Viele Maker*innen stecken ihr ganzes Herz in ihr Handwerk und möchten es weitergeben, aber hohe Mieten und der Lärm der großen Plattformen machen es ihnen schwer. Ich wünsche mir eine Stadt, in der man davon leben kann, das zu teilen, was man liebt. Twiggli soll ihnen dafür eine Bühne geben.',
+      },
+      {
+        h2: 'Mit den Händen, ohne Bildschirm dazwischen',
+        body: 'KI nimmt uns immer mehr Bildschirmarbeit ab, und das schenkt uns wieder Zeit: Zeit füreinander, Zeit, das Handwerk und die Leidenschaft eines anderen Menschen kennenzulernen und zu etwas Eigenem zu machen. Ich glaube, genau deshalb wird das Echte wertvoller: zusammen an einem Tisch sitzen, Ton unter den Fingern spüren, von jemandem lernen, der sein Handwerk liebt. Nicht über einen Bildschirm, sondern von Mensch zu Mensch. Und die Berufe, die keinen Bildschirm brauchen, sind die sichersten. Lasst uns gemeinsam das Handwerk vor Ort in Berlin wachsen lassen.',
       },
       {
         h2: 'Was wir machen',
-        body: 'Wir bringen euch zu den Maker*innen, und die Maker*innen zu euch: als Abend unter Freund*innen, als Junggesellinnenabschied, als Teamevent oder Weihnachtsfeier, im Studio oder direkt bei euch im Büro. Jede Buchung über Twiggli unterstützt eine echte Person aus Berlin, keinen Konzern.',
+        body: 'Wir bringen euch zu den Maker*innen, und die Maker*innen zu euch: als Abend unter Freund*innen, zum Geburtstag oder JGA, als Teamevent oder Weihnachtsfeier, im Studio oder direkt bei euch im Büro. Jede Buchung über Twiggli unterstützt eine echte Person aus Berlin, keinen Konzern.',
       },
       {
         h2: 'Warum „Twiggli“?',
