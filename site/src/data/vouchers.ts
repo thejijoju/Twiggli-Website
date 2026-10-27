@@ -54,7 +54,7 @@ export const voucherHostsAgreed: string[] = [
   'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
   'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
-  'nicole', 'whittle', 'pia', 'studio32', 'munio',
+  'nicole', 'whittle', 'pia', 'munio',
 ];
 
 /** Live: only hosts who confirmed the voucher terms in writing by email
@@ -62,6 +62,7 @@ export const voucherHostsAgreed: string[] = [
  *  yes arrives (column I of 'Hosts & Emails'). */
 export const voucherHosts: string[] = [
   'anne', // Anna Martynenko, "Yes, I agree", 27.10.26
+  'studio32', // Fred, studio32 Berlin, "I agree", 27.10.26
 ];
 
 /**
