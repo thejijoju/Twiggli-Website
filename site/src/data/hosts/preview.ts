@@ -82,11 +82,16 @@ const en: HostCopy[] = [
     blurb: 'Eric Dodji’s dance school for adults in Neukölln teaches hip-hop and afro as freestyle: you learn the basics and how to find your own groove rather than memorise a routine, without pressure, whether you have danced before or not. The weekly classes run on Monday evenings in the big dance hall of the Musikfabrik. For teams there is a 90-minute dance workshop built around your own favourite songs, at your office or outdoors, where by the end the whole team dances together — or a weekly class as an employee benefit.',
     group: '14–40 for team workshops', duration: '1–2 h', place: 'Musikfabrik, Neuköllnische Allee 6–8 / your office', languages: 'DE · EN',
     priceNote: 'weekly class · team workshop from €690 for up to 14' },
-  // Luc, 23.10.26 (call from Monday). All formats by request on his
-  // Konfetti listings (23.10.26); studio at Seestraße 49.
+  // Luc, from our call on 26.10.26: he lost his studio in the summer, so he
+  // teaches only at the client's place (office, home, a venue), bringing
+  // everything. 5–15 people, 3–5 h, €15 per person per hour with materials,
+  // at least €45 per person. German and French. Saturdays; weekdays for
+  // companies. Also week-long courses for up to 10 when the client finds
+  // the venue. Photos from luc-demissy.de.
   { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Drawing, watercolour, pastel & egg tempera',
-    blurb: 'Born in Nancy, Luc Demissy is a painter who lives and works between Berlin and Strasbourg. In his studio in Wedding he teaches drawing and watercolour, pastel and egg tempera in groups of at most four, so every participant gets his full attention. A course starts with drawing from a still life and moves on to free drawing and painting, for beginners and the more experienced alike. Paper, paints, studio and a few drinks are included.',
-    group: '1–4', duration: '5–5.5 h', place: 'Seestraße 49, Wedding', languages: 'DE · FR' },
+    blurb: 'Born in Nancy, Luc Demissy is a painter who lives and works between Berlin and Strasbourg, and has been teaching for many years. He comes to you, to your office, your home or any room you choose, and brings everything along: paper, paints, brushes and his calm, patient eye. A course starts with drawing from a still life and moves on to free drawing and painting in watercolour, pastel or egg tempera, for complete beginners and the more experienced alike. For teams it is a quiet, focused afternoon away from the screen, where everyone goes home with a picture of their own. On request he also runs week-long courses for up to ten people.',
+    group: '5–15 · Saturdays, weekdays for companies', duration: '3–5 h', place: 'At your place: office, home or a venue in Berlin', languages: 'DE · FR',
+    priceNote: '€15 per person per hour, materials included' },
   // Constanze, 23.10.26. From concreare.de and her Konfetti listings
   // (23.10.26).
   { slug: 'concreare', name: 'Concreare', specialty: 'Pottery & ceramic painting', studio: 'Concreare',
@@ -150,8 +155,9 @@ const de: HostCopy[] = [
     group: '14–40 bei Teamworkshops', duration: '1–2 Std.', place: 'Musikfabrik, Neuköllnische Allee 6–8 / bei euch', languages: 'DE · EN',
     priceNote: 'Wochenkurs · Teamworkshop ab 690 € für bis zu 14' },
   { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Zeichnen, Aquarell, Pastell & Eitempera',
-    blurb: 'Luc Demissy, geboren in Nancy, ist Maler und lebt und arbeitet zwischen Berlin und Strasbourg. In seinem Atelier im Wedding unterrichtet er Zeichnen und Aquarell, Pastell und Eitempera in Gruppen von höchstens vier Personen, damit jede und jeder seine volle Aufmerksamkeit bekommt. Ein Kurs beginnt mit dem Zeichnen nach einem Stillleben und geht dann ins freie Zeichnen und Malen über, für Einsteiger wie Fortgeschrittene. Papier, Farben, Atelier und ein paar Getränke sind inklusive.',
-    group: '1–4', duration: '5–5,5 Std.', place: 'Seestraße 49, Wedding', languages: 'DE · FR' },
+    blurb: 'Luc Demissy, geboren in Nancy, ist Maler, lebt und arbeitet zwischen Berlin und Strasbourg und unterrichtet seit vielen Jahren. Er kommt zu euch, ins Büro, nach Hause oder in einen Raum eurer Wahl, und bringt alles mit: Papier, Farben, Pinsel und seinen ruhigen, geduldigen Blick. Ein Kurs beginnt mit dem Zeichnen nach einem Stillleben und geht dann ins freie Zeichnen und Malen mit Aquarell, Pastell oder Eitempera über, für komplette Anfänger wie für Fortgeschrittene. Für Teams ist es ein ruhiger, konzentrierter Nachmittag ohne Bildschirm, nach dem alle mit einem eigenen Bild nach Hause gehen. Auf Anfrage gibt er auch Wochenkurse für bis zu zehn Personen.',
+    group: '5–15 · samstags, für Firmen auch unter der Woche', duration: '3–5 Std.', place: 'Bei euch: Büro, Zuhause oder eine Location in Berlin', languages: 'DE · FR',
+    priceNote: '15 € pro Person und Stunde, Material inklusive' },
   { slug: 'concreare', name: 'Concreare', specialty: 'Töpfern & Keramik bemalen', studio: 'Concreare',
     blurb: 'Constanzes ruhiges Atelier in der Knobelsdorffstraße in Charlottenburg ist wie gemacht für kleine Gruppen. Im Töpferkurs ohne Drehscheibe formst du mit verschiedenen Aufbautechniken Schalen und Objekte aus Ton, im Keramik-Malkurs gestaltest du ein fertiges Stück. Beide dauern zwei Stunden, brauchen keine Vorkenntnisse, und dein Stück wird für dich gebrannt und glasiert. Für Geburtstage, JGAs und Teamevents kannst du das Atelier auch exklusiv buchen, für bis zu zwölf Personen.',
     group: '4–12', duration: '2 Std.', place: 'Knobelsdorffstraße 43, Charlottenburg', languages: 'DE' },
@@ -196,7 +202,7 @@ const facets: Record<string, Facets> = {
   yahelis:               { activity: 'food',        groupRange: [6, 15],   hourRange: [3.5, 4], groupPrice: 75 },
   // Team workshop 14–40; the weekly class is 1 h (2 with afro).
   'groove-in-focus':     { activity: 'music', alsoIn: ['wellbeing'], groupRange: [14, 40], hourRange: [1, 2] },
-  'luc-demissy':         { activity: 'art',         groupRange: [1, 4],    hourRange: [5, 5.5], groupPrice: 75 },
+  'luc-demissy':         { activity: 'art',         groupRange: [5, 15],   hourRange: [3, 5],   groupPrice: [45, 75] },
   concreare:             { activity: 'ceramics',    groupRange: [4, 12],   hourRange: [2, 2] },
   // PLACEHOLDER ranges — nothing published.
   'jeannette-tolksdorff': { activity: 'art',        groupRange: [1, 10],   hourRange: [1.5, 2] },
@@ -222,7 +228,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   rtmis: { area: 'Wedding', onSite: true }, strassenbraeu: { area: 'Kreuzberg' }, 'beavis-bar': { area: 'Mitte' },
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
-  'luc-demissy': { area: 'Wedding' }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Berlin' },
+  'luc-demissy': { area: 'Prenzlauer Berg', onSite: true }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Berlin' },
   paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg' },
 };
 
@@ -261,9 +267,9 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Tanzworkshop für Teams zu euren Lieblingssongs', titleEn: 'Team dance workshop to your favourite songs', duration: '1.5 h', price: '€690 / bis 14', url: 'https://grooveinfocus.com/firmen' },
   ],
   'luc-demissy': [
-    { title: 'Zeichnen & Aquarell in kleiner Gruppe', titleEn: 'Drawing & watercolour in a small group', duration: '5 h', price: '€75', url: 'https://gokonfetti.com/de-de/p/luc-demissy-z7rn2x/' },
-    { title: 'Pastell & Zeichnen in kleiner Gruppe', titleEn: 'Pastel & drawing in a small group', duration: '5.5 h', price: '€75', url: 'https://gokonfetti.com/de-de/p/luc-demissy-z7rn2x/' },
-    { title: 'Eitempera für Einsteiger und Fortgeschrittene', titleEn: 'Egg tempera for beginners and the more experienced', duration: '5.5 h', price: '€75', url: 'https://gokonfetti.com/de-de/p/luc-demissy-z7rn2x/' },
+    { title: 'Zeichnen & Aquarell bei euch (5–15 Personen)', titleEn: 'Drawing & watercolour at your place (5–15 people)', duration: '3–5 h', price: '€45–75', url: 'https://www.luc-demissy.de/' },
+    { title: 'Pastell oder Eitempera bei euch (5–15 Personen)', titleEn: 'Pastel or egg tempera at your place (5–15 people)', duration: '3–5 h', price: '€45–75', url: 'https://www.luc-demissy.de/' },
+    { title: 'Wochenkurs Zeichnen & Malen (bis 10 Personen, euer Raum)', titleEn: 'Week-long drawing & painting course (up to 10, your venue)', url: 'https://www.luc-demissy.de/' },
   ],
   concreare: [
     { title: 'Atelier exklusiv: Töpfern oder Keramik bemalen für eure Gruppe', titleEn: 'Studio to yourselves: pottery or ceramic painting for your group', duration: '2 h', url: 'https://www.concreare.de/' },
