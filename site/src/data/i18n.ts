@@ -117,7 +117,7 @@ const en = {
   },
   corporate: {
     title: 'Team-building & group workshops in Berlin — corporate bookings | Twiggli',
-    description: 'Team events, Christmas parties and large company events in Berlin for 6 to 1,000 people: hands-on workshops with independent makers, from pottery and candles to cooking. One host or many, one invoice.',
+    description: 'Team events, Christmas parties and large company events in Berlin for groups of up to 1,000 people: hands-on workshops with independent makers, from pottery and candles to cooking. One host or many, one invoice.',
     kicker: 'Corporate & group bookings', h1: 'Private workshops for teams and groups',
     lede: 'Book a private workshop on a date of your choice — for your company, a birthday, a bachelorette party or just your friends. Run by our vetted hosts at their studio, your office or a venue nearby; we handle the logistics for groups of any size.',
     cta: 'Request a group booking',
@@ -277,7 +277,7 @@ const de: UiCopy = {
   },
   corporate: {
     title: 'Teambuilding & Gruppen-Workshops in Berlin — Firmenbuchungen | Twiggli',
-    description: 'Teamevents, Weihnachtsfeiern und große Firmenevents in Berlin für 6 bis 1.000 Personen: Mitmach-Workshops mit Berliner Makern, von Töpfern und Kerzen bis Kochen. Ein Host oder viele, eine Rechnung.',
+    description: 'Teamevents, Weihnachtsfeiern und große Firmenevents in Berlin für Gruppen bis 1.000 Personen: Mitmach-Workshops mit Berliner Makern, von Töpfern und Kerzen bis Kochen. Ein Host oder viele, eine Rechnung.',
     kicker: 'Firmen- & Gruppenbuchungen', h1: 'Private Workshops für Teams und Gruppen',
     lede: 'Buche einen privaten Workshop an einem Termin deiner Wahl — für die Firma, einen Geburtstag, einen JGA oder einfach deine Freundesgruppe. Geleitet von unseren geprüften Gastgebern im Studio, in eurem Büro oder an einem Ort in deiner Nähe; wir kümmern uns um die Logistik, egal wie groß die Gruppe ist.',
     cta: 'Gruppenbuchung anfragen',
