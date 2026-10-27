@@ -61,11 +61,15 @@ const en: HostCopy[] = [
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wild herb walks', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit runs nature walks with a scientific background: biologist Manuel Larbig and his team of young naturalists check old plant lore against the studies rather than repeating it. On the classic three-hour wild herb walk you get to know at least twenty wild plants in a Berlin park or forest: which are edible, which have a healing effect, which poisonous look-alikes to avoid, and where their names come from. Groups stay small, twelve at most. The longer walk ends with a picnic and wild-herb butter, and for companies they design team days in nature around your group.',
     group: 'Up to 12 on public walks · teams on request', duration: '3–6 h', place: 'Parks and forests across Berlin', languages: 'DE · EN' },
-  // Máté, 23.10.26. Formats, prices and dates from their Konfetti store
-  // (23.10.26); the metal workshop runs at Weichselplatz 3–4.
+  // Máté, 23.10.26, and our call on 26.10.26. Formats, prices and dates
+  // from their Konfetti store (23.10.26); the metal workshop runs at
+  // Weichselplatz 3–4. New name, website and Instagram coming; he sends
+  // costs, December dates, photos and videos at the end of next week.
+  // Groups: printing 10–12, up to 20 in the space; one person only for a
+  // ticket from €100. Mostly 4 h.
   { slug: 'zoenoteka', name: 'ZÖNOTÉKA', specialty: 'Welding, tufting, sugar art & more', studio: 'ZÖNOTÉKA',
-    blurb: 'A non-profit project space in Neukölln, founded in 2014, that is part workshop, part gallery: a well-equipped workshop for wood and foam, a self-built CNC machine, and a changing cast of artists and instructors. That makes for workshops you will not find elsewhere: weld your own metal lampshade with MIG/MAG, make a silver ring, tuft a small rug over a weekend, shape lollipops in the Japanese sugar art of amezaiku, screen print, cyanotype, zines, or build and play your own MIDI instrument. Small groups, no experience needed.',
-    group: '1–8 depending on the workshop', duration: '2.5–8 h', place: 'Hobrechtstraße 54, Neukölln', languages: 'DE · EN' },
+    blurb: 'A non-profit project space in Neukölln, founded in 2014, that is part workshop, part gallery: a well-equipped workshop for wood and foam, a self-built CNC machine, and a changing cast of artists and instructors. That makes for workshops you will not find elsewhere: weld your own metal lampshade with MIG/MAG, make a silver ring, tuft a small rug over a weekend, shape lollipops in the Japanese sugar art of amezaiku, screen print, cyanotype, zines, or build and play your own MIDI instrument. About ten members run it together, and they work a lot with schools and institutions, at their space or on site. Their idea for each workshop: you learn about a theme, often from Berlin history, and make a small piece together that you take home as your own souvenir. No experience needed.',
+    group: 'Up to 20 · printing 10–12', duration: 'Mostly 4 h', place: 'Hobrechtstraße 54, Neukölln', languages: 'DE · EN' },
   // Micha, 23.10.26 ("Klingt erstmal gut"). Courses from hobbytischlerei.de;
   // dates and prices from their Konfetti listings (23.10.26).
   { slug: 'hobbytischlerei', name: 'Hobbytischlerei', specialty: 'Woodworking courses', studio: 'Hobbytischlerei',
@@ -154,8 +158,8 @@ const de: HostCopy[] = [
     blurb: 'Waldsamkeit macht Naturführungen mit naturwissenschaftlichem Hintergrund: Biologe Manuel Larbig und sein Team junger Naturexpert:innen prüfen altes Pflanzenwissen, statt es einfach zu übernehmen. Auf der klassischen dreistündigen Wildkräuterwanderung lernt ihr in einem Berliner Park oder Wald mindestens zwanzig Wildpflanzen kennen: was essbar ist, was heilend wirkt, welche giftigen Doppelgänger ihr meiden solltet und woher die Namen kommen. Die Gruppen bleiben klein, höchstens zwölf. Die lange Tour endet mit Picknick und Wildkräuterbutter, und für Firmen gestalten sie Teamtage in der Natur rund um eure Gruppe.',
     group: 'Bis 12 bei offenen Touren · Teams auf Anfrage', duration: '3–6 Std.', place: 'Parks und Wälder in ganz Berlin', languages: 'DE · EN' },
   { slug: 'zoenoteka', name: 'ZÖNOTÉKA', specialty: 'Schweißen, Tufting, Zuckerkunst & mehr', studio: 'ZÖNOTÉKA',
-    blurb: 'Ein gemeinnütziger Projektraum in Neukölln, 2014 gegründet, halb Werkstatt, halb Galerie: eine gut ausgestattete Werkstatt für Holz und Styropor, eine selbstgebaute CNC-Fräse und wechselnde Künstler:innen und Kursleiter:innen. Daraus entstehen Workshops, die es sonst kaum gibt: einen Metall-Lampenschirm per MIG/MAG selbst schweißen, einen Silberring fertigen, am Wochenende einen kleinen Teppich tuften, Lollis in der japanischen Zuckerkunst Amezaiku formen, Siebdruck, Cyanotypie, Zines oder ein eigenes MIDI-Instrument bauen und spielen. Kleine Gruppen, keine Vorkenntnisse nötig.',
-    group: '1–8 je nach Workshop', duration: '2,5–8 Std.', place: 'Hobrechtstraße 54, Neukölln', languages: 'DE · EN' },
+    blurb: 'Ein gemeinnütziger Projektraum in Neukölln, 2014 gegründet, halb Werkstatt, halb Galerie: eine gut ausgestattete Werkstatt für Holz und Styropor, eine selbstgebaute CNC-Fräse und wechselnde Künstler:innen und Kursleiter:innen. Daraus entstehen Workshops, die es sonst kaum gibt: einen Metall-Lampenschirm per MIG/MAG selbst schweißen, einen Silberring fertigen, am Wochenende einen kleinen Teppich tuften, Lollis in der japanischen Zuckerkunst Amezaiku formen, Siebdruck, Cyanotypie, Zines oder ein eigenes MIDI-Instrument bauen und spielen. Rund zehn Mitglieder machen das gemeinsam, und sie arbeiten viel mit Schulen und Institutionen, bei sich oder vor Ort. Ihre Idee für jeden Workshop: Man lernt etwas über ein Thema, oft aus der Berliner Geschichte, und macht zusammen ein kleines Stück, das man als eigenes Souvenir mit nach Hause nimmt. Keine Vorkenntnisse nötig.',
+    group: 'Bis 20 · Druck 10–12', duration: 'Meist 4 Std.', place: 'Hobrechtstraße 54, Neukölln', languages: 'DE · EN' },
   { slug: 'hobbytischlerei', name: 'Hobbytischlerei', specialty: 'Holzkurse', studio: 'Hobbytischlerei',
     blurb: 'Eine echte Tischlerwerkstatt in Kaulsdorf, in der du Holzbearbeitung in Theorie und Praxis lernst, vom Handwerkzeug bis zur Profimaschine. Am beliebtesten ist das Hirnholz-Schneidebrett: Aus edlen Hölzern wie Oliven- oder Zebranoholz verleimst, sägst, schleifst und ölst du ein Brett nach deinem eigenen Entwurf, mit Grifffalz, Saftrille oder Softkante. Weitere Kurse: Zinkungen von Hand, elektrische Handwerkzeuge, Profimaschinen, Oberflächenveredelung oder der Bau eines rustikalen Hockers. Kleine Gruppen bis vier Personen, Material inklusive; für eigene Projekte kannst du die Werkstatt auch mieten.',
     group: '1–4 pro Kurs', duration: '5–8 Std.', place: 'Alt-Kaulsdorf 52, Kaulsdorf', languages: 'DE' },
@@ -215,7 +219,7 @@ const facets: Record<string, Facets> = {
   'beavis-bar':          { activity: 'food',        groupRange: [4, 12],   hourRange: [1.5, 1.5] },
   // PLACEHOLDER team maximum — public walks take 12.
   waldsamkeit:           { activity: 'food', alsoIn: ['wellbeing'], groupRange: [1, 12], hourRange: [3, 6] },
-  zoenoteka:             { activity: 'craft',       groupRange: [1, 8],    hourRange: [2.5, 8] },
+  zoenoteka:             { activity: 'craft',       groupRange: [1, 20],   hourRange: [2.5, 8] },
   hobbytischlerei:       { activity: 'craft',       groupRange: [1, 4],    hourRange: [5, 8] },
   // Team formats on Konfetti: chocolate €75 (10–15 people), macarons €85
   // (6–10); public classes €75–85.
