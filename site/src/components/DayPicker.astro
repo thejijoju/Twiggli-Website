@@ -640,7 +640,7 @@ import Voucher from './Voucher.astro';
                           <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.firstName ?? s.host.name}</a> · {districtOf(s)}</span>
                           {s.partner && <span class="session-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
                           {s.salesEnd && <span class="session-deadline">{t.salesEnd} {formatDeadline(s.salesEnd)}</span>}
-                          <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
+                          <Voucher kind="tile" host={s.host} lang={lang} title={s.title} workshopKey={s.workshopKey} />
                         </span>
                         <span class="session-side">
                           {s.price && (
@@ -763,7 +763,7 @@ import Voucher from './Voucher.astro';
                           )}
                           {/* For a host who takes vouchers (data/vouchers.ts): a
                               lighter second button straight under Book. */}
-                          <Voucher kind="under" host={s.host} lang={lang} title={s.title} />
+                          <Voucher kind="under" host={s.host} lang={lang} title={s.title} workshopKey={s.workshopKey} />
                           {/* People send workshops to friends — the native
                               share sheet where the browser has one, copied
                               link elsewhere. */}

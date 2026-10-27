@@ -1,5 +1,5 @@
 import type { Host } from './content.ts';
-import { getHostPriceRanges } from './sessions.ts';
+import { getHostPriceRanges, getSessions } from './sessions.ts';
 import { withBase, type Lang } from '../lib/url.ts';
 
 /**
@@ -90,11 +90,39 @@ export const VOUCHER_MAX_PEOPLE = 2;
  *  sessions (a voucher is for a seat at one of those), otherwise the
  *  price they quoted per person. Anna: €35 (her open Malerlebnis), not the
  *  €57 she charges companies. */
+/** A host's general voucher price where their cheapest date would mislead
+ *  (Fred: a €64 wine tasting, cooking classes €119–127; Jirel 27.10). */
+const voucherPriceOverride: Record<string, number> = { studio32: 119 };
+
 export const voucherPrice = (host: Pick<Host, 'slug' | 'groupPrice'>): number | undefined => {
+  if (voucherPriceOverride[host.slug]) return voucherPriceOverride[host.slug];
   const dated = getHostPriceRanges().get(host.slug);
   if (dated && dated[0] > 0) return dated[0];
   if (host.groupPrice == null) return undefined;
   return Array.isArray(host.groupPrice) ? host.groupPrice[0] : host.groupPrice;
+};
+
+/** A voucher for one class: the class's own lowest price per person, from
+ *  its dated sessions (Fred's wine tasting is €64, his cooking classes
+ *  €119–127, so one host price would not fit, Jirel 27.10). */
+export const classVoucherPrice = (slug: string, key: string, lang: Lang): number | undefined => {
+  const prices = getSessions(lang)
+    .filter((s) => s.host.slug === slug && s.workshopKey === key && s.price)
+    .map((s) => Number(String(s.price).match(/\d+(?:[.,]\d+)?/)?.[0].replace(',', '.')))
+    .filter((n) => n > 0);
+  return prices.length ? Math.round(Math.min(...prices)) : undefined;
+};
+
+/** Every class of a host taking vouchers, for the payment page: key → title
+ *  and price per person. */
+export const classVouchers = (slug: string, lang: Lang): Record<string, { title: string; price: number }> => {
+  const out: Record<string, { title: string; price: number }> = {};
+  for (const s of getSessions(lang)) {
+    if (s.host.slug !== slug || out[s.workshopKey]) continue;
+    const price = classVoucherPrice(slug, s.workshopKey, lang);
+    if (price) out[s.workshopKey] = { title: s.title, price };
+  }
+  return out;
 };
 
 /**

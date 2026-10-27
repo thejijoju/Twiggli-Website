@@ -27,7 +27,7 @@ import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { checkoutCopy } from '../data/checkout.ts';
 import {
-  voucherHosts, voucherPrice, voucherPayment, voucherAmounts,
+  voucherHosts, voucherPrice, voucherPayment, voucherAmounts, classVouchers,
   VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST,
 } from '../data/vouchers.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
@@ -46,6 +46,7 @@ const hosts = Object.fromEntries(
     .map((h) => [h.slug, {
       name: h.name, title: h.specialty, price: voucherPrice(h) ?? 0, image: h.poster ?? h.photo ?? '',
       page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
+      classes: classVouchers(h.slug, lang),
     }]),
 );
 const voucherPage = href(lang, '/voucher/');
@@ -229,7 +230,7 @@ const config = {
   import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
-  type HostInfo = { name: string; title: string; price: number; image: string; page: string };
+  type HostInfo = { name: string; title: string; price: number; image: string; page: string; classes?: Record<string, { title: string; price: number }> };
   type Order = {
     ref: string; amount: number; people: number; slug: string;
     name: string; email: string; recipient: string; message: string;
@@ -274,7 +275,11 @@ const config = {
 
     // ── What is being bought.
     const slug = (q.get('host') || '').trim();
-    const host: HostInfo | null = slug ? hosts[slug] ?? null : null;
+    // A class of that host (?w=<key>): its own title and price.
+    const baseHost: HostInfo | null = slug ? hosts[slug] ?? null : null;
+    const wKey = (q.get('w') || '').trim();
+    const cls = baseHost && wKey ? baseHost.classes?.[wKey] : undefined;
+    const host: HostInfo | null = baseHost && cls ? { ...baseHost, title: cls.title, price: cls.price } : baseHost;
     const clampPeople = (n: number) => Math.max(1, Math.min(cfg.maxPeople || 10, Math.round(n) || 1));
     let people = clampPeople(Number(q.get('people')) || 1);
     const fixedPrice = host && host.price > 0 ? host.price : 0;
@@ -539,7 +544,7 @@ const config = {
         const order: Order = { ref, amount: a, people: host ? people : 1, slug: host ? slug : '', ...details, pi: intent.id };
         store(order);
         const back = new URLSearchParams();
-        if (host) { back.set('host', slug); back.set('people', String(people)); } else back.set('amount', String(a));
+        if (host) { back.set('host', slug); back.set('people', String(people)); if (cls) back.set('w', wKey); } else back.set('amount', String(a));
         back.set('done', '1');
         back.set('ref', ref);
         const returnUrl = `${location.origin}${location.pathname}?${back}`;

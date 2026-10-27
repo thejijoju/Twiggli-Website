@@ -17,7 +17,7 @@
  * without scripts it is a link to the voucher page.
  */
 import type { Host } from '../data/content.ts';
-import { isVoucherHost, voucherCopy, voucherPrice } from '../data/vouchers.ts';
+import { classVoucherPrice, isVoucherHost, voucherCopy, voucherPrice } from '../data/vouchers.ts';
 import { href, type Lang } from '../lib/url.ts';
 
 interface Props {
@@ -27,19 +27,24 @@ interface Props {
   /** The workshop, where the trigger belongs to one; the host's specialty
    *  otherwise. */
   title?: string;
+  /** The class (sessions.ts workshopKey): the voucher then carries that
+   *  class's own price instead of the host's lowest. */
+  workshopKey?: string;
   class?: string;
 }
-const { kind, host, lang, title, class: cls } = Astro.props;
+const { kind, host, lang, title, workshopKey, class: cls } = Astro.props;
 const on = isVoucherHost(host.slug);
 const c = voucherCopy[lang];
-const price = on ? voucherPrice(host) : undefined;
-const link = `${href(lang, '/voucher/')}?host=${encodeURIComponent(host.slug)}`;
+const classPrice = on && workshopKey ? classVoucherPrice(host.slug, workshopKey, lang) : undefined;
+const price = on ? classPrice ?? voucherPrice(host) : undefined;
+const link = `${href(lang, '/voucher/')}?host=${encodeURIComponent(host.slug)}${classPrice ? `&w=${encodeURIComponent(workshopKey!)}` : ''}`;
 const attrs = {
   'data-voucher': 'host',
   'data-voucher-slug': host.slug,
   'data-voucher-host': host.name,
   'data-voucher-title': title ?? host.specialty,
   'data-voucher-price': price,
+  ...(classPrice ? { 'data-voucher-workshop': workshopKey } : {}),
 };
 ---
 
