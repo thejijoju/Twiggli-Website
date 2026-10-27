@@ -32,6 +32,13 @@ export const hostDates: HostDate[] = [
     url: 'https://malerlebnisse-anna.de/termine/anna-malerlebnis/?date=2026-11-14', onHostSite: true },
 
   // ── Preview hosts (hosts/preview.ts) ──────────────────────────────────
+  // Jeannette (preview): her flyer, 27.10.26. Saturdays 10-12 "Im Turm",
+  // Busonistr. 136, Karow; €25 for her plus our 15% on top.
+  { slug: 'jeannette-tolksdorff', title: 'Aquarell-Malworkshop für Kinder und Erwachsene', titleEn: 'Watercolour workshop for children and adults', date: '2026-11-07', time: '10:00', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
+  { slug: 'jeannette-tolksdorff', title: 'Aquarell-Malworkshop für Kinder und Erwachsene', titleEn: 'Watercolour workshop for children and adults', date: '2026-11-28', time: '10:00', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
+  { slug: 'jeannette-tolksdorff', title: 'Aquarell-Malworkshop für Kinder und Erwachsene', titleEn: 'Watercolour workshop for children and adults', date: '2026-12-12', time: '10:00', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
+  { slug: 'jeannette-tolksdorff', title: 'Aquarell-Malworkshop für Kinder und Erwachsene', titleEn: 'Watercolour workshop for children and adults', date: '2027-01-09', time: '10:00', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
+  { slug: 'jeannette-tolksdorff', title: 'Aquarell-Malworkshop für Kinder und Erwachsene', titleEn: 'Watercolour workshop for children and adults', date: '2027-01-30', time: '10:00', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
   // Read from each host's own site or booking calendar. getSessions leaves
   // preview hosts out, so these show only on the host's hidden page until
   // the host goes live.
