@@ -13,10 +13,10 @@ export interface AboutCopy {
 export const aboutCopy: Record<'en' | 'de', AboutCopy> = {
   en: {
     title: 'About Twiggli: hands-on workshops with Berlin makers',
-    description: 'Twiggli brings people in Berlin together with the city’s makers: potters, candle makers, screen printers, florists. Why we started it, what we do, and where the name comes from.',
+    description: 'Twiggli is for people looking for community in Berlin. We bring them together with the city’s makers: potters, candle makers, screen printers, florists. Why we started it, what we do, and where the name comes from.',
     kicker: 'About Twiggli',
     lead: 'Berlin is full of people who can make things.',
-    intro: 'Potters, candle makers, screen printers, sculptors, florists: in backyards and small studios all over the city, beautiful things are made every day. At the same time, so many of us spend our evenings in front of a screen, wondering where to actually meet people in this big city.',
+    intro: 'Potters, candle makers, screen printers, sculptors, florists: in backyards and small studios all over the city, beautiful things are made every day. At the same time, so many of us spend our evenings in front of a screen, wondering where to actually meet people in this big city. Twiggli is for everyone looking for community.',
     sections: [
       {
         h2: 'Living from what you love',
@@ -44,10 +44,10 @@ export const aboutCopy: Record<'en' | 'de', AboutCopy> = {
   },
   de: {
     title: 'Über Twiggli: Workshops bei Berliner Maker*innen',
-    description: 'Twiggli bringt Menschen in Berlin mit den Maker*innen der Stadt zusammen: Töpferinnen, Kerzenmacher, Siebdruckerinnen, Floristinnen. Warum es Twiggli gibt, was wir machen und woher der Name kommt.',
+    description: 'Twiggli ist für alle, die in Berlin Community suchen. Wir bringen Menschen mit den Maker*innen der Stadt zusammen: Töpferinnen, Kerzenmacher, Siebdruckerinnen, Floristinnen. Warum es Twiggli gibt, was wir machen und woher der Name kommt.',
     kicker: 'Über Twiggli',
     lead: 'Berlin ist voller Menschen, die etwas können.',
-    intro: 'Töpferinnen, Kerzenmacher, Siebdruckerinnen, Bildhauer, Floristinnen: In Hinterhöfen und kleinen Studios in der ganzen Stadt entstehen jeden Tag wunderschöne Dinge. Und gleichzeitig sitzen so viele von uns abends vor einem Bildschirm und fragen sich, wo man in dieser großen Stadt eigentlich Anschluss findet.',
+    intro: 'Töpferinnen, Kerzenmacher, Siebdruckerinnen, Bildhauer, Floristinnen: In Hinterhöfen und kleinen Studios in der ganzen Stadt entstehen jeden Tag wunderschöne Dinge. Und gleichzeitig sitzen so viele von uns abends vor einem Bildschirm und fragen sich, wo man in dieser großen Stadt eigentlich Anschluss findet. Twiggli ist für alle, die Community suchen.',
     sections: [
       {
         h2: 'Von dem leben, was man liebt',
