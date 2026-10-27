@@ -9,7 +9,8 @@
  *   2. those fade away again,
  *   3. all of them are drawn in together, a little staggered,
  *   4. the brush shape fills in over each line, a single soft twinkle, and
- *      they stay, resting. Nothing loops and nothing flickers after.
+ *      they stay, resting. On the home page they then keep slowly fading
+ *      out and back in, each on its own offset; elsewhere nothing loops.
  *
  * Pure CSS (keyframes, fill-mode both) over inline SVG, so it plays once per
  * page load, on a phone as on a wide screen. A reader who asks for reduced
@@ -197,6 +198,24 @@ const id = brushId();
     68%  { opacity: 0.9; transform: scale(1.1); }
     86%, 100% { opacity: var(--rest); transform: scale(1); }
   }
+  /* On the home page, once the intro has settled, each star and dot keeps
+     slowly fading out and back in, on its own offset (--d) so they never
+     blink together. */
+  .sparkles-home .sparkle, .sparkles-home .sparkle-dot {
+    --breathe: 7s;
+    animation:
+      var(--intro, spark-wrap-a) var(--t) ease-in-out var(--delay) both,
+      spark-breathe var(--breathe) ease-in-out calc(var(--t) + var(--delay) + var(--d) * 2.6) infinite;
+  }
+  .sparkles-home .sparkle.is-b { --intro: spark-wrap-b; }
+  .sparkles-home .sparkle-dot { --intro: spark-dot-a; }
+  .sparkles-home .sparkle-dot.is-b { --intro: spark-dot-b; }
+  @keyframes spark-breathe {
+    0%, 100% { opacity: var(--rest); transform: none; }
+    40%      { opacity: 0; transform: scale(0.7) rotate(-8deg); }
+    55%      { opacity: 0; transform: scale(0.7) rotate(-8deg); }
+  }
+
   /* The shimmer: a faint rainbow band that crosses once, as they settle. */
   .sparkles-sweep {
     position: absolute; top: -20%; bottom: -20%; left: 0; width: 45%;
@@ -221,7 +240,8 @@ const id = brushId();
     .sparkle-dot { width: calc(var(--s) * 0.7); height: calc(var(--s) * 0.7); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .sparkle, .sparkle-dot, .sparkle-fill { animation: none; transform: none; }
+    .sparkle, .sparkle-dot, .sparkle-fill,
+    .sparkles-home .sparkle, .sparkles-home .sparkle-dot { animation: none; transform: none; }
     .sparkle, .sparkle-dot { opacity: var(--rest); }
     .sparkle-fill { opacity: 1; }
     .sparkle-ink { display: none; }
