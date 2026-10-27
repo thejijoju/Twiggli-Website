@@ -124,6 +124,12 @@ const en: HostCopy[] = [
     blurb: 'Lucille Guder is a self-taught French artist living in Berlin, who makes flower women out of acrylics, paper and dried flowers, their faces left blank so that any woman can relate to them. Together with Ātma Portrait she runs a workshop that helps women reconcile with their bodies and gain self-awareness through photography. After an introduction and a conversation about our relationship with our bodies, you photograph yourself for an hour, completely alone in the studio behind privacy curtains: you are the only one who sees your pictures. After a break with drinks and snacks, you turn your own body lines into a handmade flower collage, with an easy technique that needs no drawing experience. You take home about fifty high-quality black-and-white photos, your A4 collage and the technique. Bring a USB stick for your photos, as they are not stored, and a folder for the collage. She also teaches her signature dots painting technique, and runs a flower-crown workshop with a group photo session for birthdays and hen parties.',
     group: 'Takes place from 3 participants · max. 4, women only', duration: '3.5 h', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
     priceNote: 'dots painting class €49' },
+  // Marija, from our call on 26.10.26. No website on purpose and not to be
+  // found on Google for now: she stays a preview host (noindex, in no
+  // listing) and her page goes out by link only. Exact address left out.
+  { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making, fabric & wax seals',
+    blurb: 'Marija studied art history and comes from education, and she upcycles: fabric and materials left behind on the street are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper, scraps of coloured card and old bags, blended and poured with flowers or a little glitter; you seal it with wax, or fold paper Christmas stars. Calm, hands-on and good-looking, and she has run it with kindergarten children and older people alike. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
+    group: 'Groups and teams', duration: 'On request', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE' },
 ];
 
 const de: HostCopy[] = [
@@ -175,6 +181,9 @@ const de: HostCopy[] = [
     blurb: 'Lucille Guder ist eine französische Autodidaktin, die in Berlin lebt und Blumenfrauen aus Acryl, Papier und getrockneten Blumen macht – mit leeren Gesichtern, damit sich jede Frau in ihnen wiederfinden kann. Zusammen mit Ātma Portrait bietet sie einen Workshop an, der Frauen hilft, sich mit ihrem Körper zu versöhnen und sich durch Fotografie selbst besser wahrzunehmen. Nach einer Einführung und einem Gespräch über unsere Beziehung zu unserem Körper fotografierst du dich eine Stunde lang selbst, ganz allein im Studio hinter Sichtschutzvorhängen: Nur du siehst deine Bilder. Nach einer Pause mit Getränken und Snacks verwandelst du deine eigenen Körperlinien in eine handgemachte Blumencollage, mit einer einfachen Technik, für die du keine Zeichenerfahrung brauchst. Du nimmst rund fünfzig hochwertige Schwarz-Weiß-Fotos, deine A4-Collage und die Technik mit nach Hause. Bring einen USB-Stick für deine Fotos mit, denn sie werden nicht gespeichert, und eine Mappe für die Collage. Außerdem unterrichtet sie ihre typische Punkt-Maltechnik und bietet für Geburtstage und JGAs einen Blumenkranz-Workshop mit Gruppen-Fotosession an.',
     group: 'Findet ab 3 Teilnehmerinnen statt · max. 4, nur für Frauen', duration: '3,5 Std.', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
     priceNote: 'Punkt-Malkurs 49 €' },
+  { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen, Stoff & Wachssiegel',
+    blurb: 'Marija hat Kunstgeschichte studiert, kommt aus dem Erziehungsbereich und macht Upcycling: Stoffe und Material, die auf der Straße liegen gelassen wurden, werden gewaschen und zu Kissenbezügen und anderen Unikaten. In ihren Workshops schöpft ihr Papier aus Altpapier, Resten von farbigem Karton und alten Tüten, gemixt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs oder Weihnachtssterne aus Papier. Ruhig, handfest und schick, und sie hat es schon mit Kindergartenkindern wie mit älteren Menschen gemacht. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
+    group: 'Gruppen und Teams', duration: 'Auf Anfrage', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE' },
 ];
 
 /** French copy, for a host who writes in French (Lucille). Every other
@@ -220,12 +229,15 @@ const facets: Record<string, Facets> = {
   // in priceNote; flower crowns are booked through Ātma Portrait, no price
   // on her site).
   'lucille-guder':       { activity: 'photography', alsoIn: ['art'], groupRange: [3, 10], hourRange: [2, 3.5], groupPrice: 119 },
+  // PLACEHOLDER group size and length: Marija gave no numbers yet (asked
+  // in the confirmation email of 27.10.26). No price yet either.
+  marija:                { activity: 'craft',       alsoIn: ['art'], groupRange: [2, 15], hourRange: [2, 3] },
 };
 
 const firstNames: Record<string, string> = {
   rtmis: 'Diana', 'beavis-bar': 'Jon', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
-  'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille',
+  'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija',
 };
 
 const areas: Record<string, { area: string; onSite?: boolean }> = {
@@ -233,7 +245,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
   'luc-demissy': { area: 'Prenzlauer Berg', onSite: true }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Berlin' },
-  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg' },
+  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg' }, marija: { area: 'Lichtenberg', onSite: true },
 };
 
 /** Formats each preview host runs on request, with no public date. */
@@ -295,6 +307,10 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Selbstfotografie & Blumencollage (nur für Frauen, max. 4 – findet ab 3 Teilnehmerinnen statt)', titleEn: 'Self-photography & flower collage (women only, max. 4 – takes place from 3 participants)', duration: '3.5 h', price: '€119', url: 'https://www.lucilleguder.com/product/self-photography-and-flower-collage-workshop' },
     { title: 'Malkurs: Lucilles Punkt-Technik (nur für Frauen, max. 4)', titleEn: 'Painting class: Lucille’s dots technique (women only, max. 4)', duration: '2.5 h', price: '€49', district: 'U Bernauer Straße', url: 'https://www.lucilleguder.com/product/painting-class-learn-the-dots-technique-with-me' },
     { title: 'Blumenkranz-Workshop & Gruppen-Fotosession (bis 10)', titleEn: 'Flower-crown workshop & group photo session (up to 10)', duration: '2 h', district: 'Ātma Portrait', url: 'https://www.lucilleguder.com/self-photography-and-flower-collage-workshop' },
+  ],
+  marija: [
+    { title: 'Papierschöpfen aus Altpapier, mit Wachssiegel', titleEn: 'Paper making from waste paper, with wax seals', district: 'Lichtenberg', url: '' },
+    { title: 'Weihnachtssterne aus Papier', titleEn: 'Paper Christmas stars', district: 'Lichtenberg', url: '' },
   ],
 };
 
