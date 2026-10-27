@@ -11,6 +11,7 @@
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
+import { withHostSlots } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 import { hostDates } from './hostDates.ts';
 import { preview } from './hosts/preview.ts';
@@ -229,7 +230,7 @@ export function getHostPriceRanges(): Map<string, [number, number]> {
   const out = new Map<string, [number, number]>();
   const priced = [
     ...((liveData as { workshops?: { slug: string; price?: string }[] }).workshops ?? []),
-    ...((liveData as { recurring?: { slug: string; price?: string }[] }).recurring ?? []),
+    ...withHostSlots((liveData as { recurring?: { slug: string; price?: string }[] }).recurring ?? []),
     ...((liveData as { onRequest?: { slug: string; price?: string }[] }).onRequest ?? []),
     // Dates hosts sent us themselves (hostDates.ts) are priced dates too.
     ...hostDates,
@@ -401,7 +402,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   // Weekly-recurring classes: one session per matching weekday in the
   // window. berlinTodayMs is UTC midnight of the Berlin date, so getUTCDay
   // on it (plus whole days) is the Berlin weekday.
-  for (const r of ((liveData as { recurring?: LiveRecurring[] }).recurring ?? [])) {
+  for (const r of withHostSlots((liveData as { recurring?: LiveRecurring[] }).recurring ?? [])) {
     const host = bySlug.get(r.slug);
     if (!host) continue;
     const wanted = new Set(r.weekdays.map((d) => WEEKDAY_INDEX[d]));

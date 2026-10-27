@@ -27,6 +27,11 @@ jobs:
       contents: write # commits the refreshed translations back
     steps:
       - uses: actions/checkout@v4
+      # What hosts changed in their Twiggli account (texts, weekly schedule),
+      # laid over the site's own copy at build time. Never fails the deploy.
+      - name: Fetch host account edits
+        continue-on-error: true
+        run: node scripts/fetch-host-edits.mjs
       # French, Spanish, Italian, Dutch, Polish and Turkish host copy is
       # translated from the English in content.ts: only hosts whose English
       # changed since the last run (scripts/translate-hosts.mjs). Skipped
