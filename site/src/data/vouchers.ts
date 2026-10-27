@@ -51,10 +51,10 @@ import { withBase, type Lang } from '../lib/url.ts';
  */
 /** Agreed in principle (email or WhatsApp), waiting for a written yes. */
 export const voucherHostsAgreed: string[] = [
-  'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
+  'anna-malerlebnisse', 'himapan-berlin',
   'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
-  'nicole', 'whittle', 'pia', 'munio',
+  'nicole', 'whittle', 'munio',
 ];
 
 /** Live: only hosts who confirmed the voucher terms in writing by email
@@ -63,6 +63,8 @@ export const voucherHostsAgreed: string[] = [
 export const voucherHosts: string[] = [
   'anne', // Anna Martynenko, "Yes, I agree", 27.10.26
   'studio32', // Fred, studio32 Berlin, "I agree", 27.10.26
+  'pia', // Pia Simonsen, "Yes, I agree", 27.10.26
+  'lucille-guder', // Lucille Guder, "Ok pour moi", 27.10.26 (page still in preview)
 ];
 
 /**
