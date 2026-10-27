@@ -100,11 +100,12 @@ const en: HostCopy[] = [
   // Jeannette, 23.10.26 and our call on 26.10.26: art teacher at a primary
   // school, courses every three weeks (every two from now on, she hopes) in
   // the north of Berlin, children and parent-child courses above all. She
-  // wants €25 per person; our 15% goes on top, so €29 here. Dates on
-  // request until she sends them as text.
+  // wants €25 per person; our 15% goes on top, so €29 here. Her flyer
+  // (27.10.26): Saturdays 10-12 at "Im Turm", Busonistr. 136, 13125 Berlin,
+  // for children and adults, jtart.de; the dates are in hostDates.ts.
   { slug: 'jeannette-tolksdorff', name: 'Jeannette', specialty: 'Watercolour for parents & children', studio: 'JT & ArtDesign',
-    blurb: 'Jeannette has always painted, and she teaches art at a primary school. When more and more people asked her privately for watercolour lessons, she started her own courses, for children above all, and for parents and children painting side by side. She brings everything along in one big box: she shows you how to draw your motif, a plant, an animal or a face, and then how to bring it to life in watercolour. With her light pad you can trace a picture or work it out step by step with her, and those who want to paint freely do. Patient, warm and made for little ones and grown-ups alike.',
-    group: 'Small groups · children & parent-child', duration: 'On request', place: 'North Berlin (Pankow)', languages: 'DE',
+    blurb: 'Jeannette has always painted, and she teaches art at a primary school. When more and more people asked her privately for watercolour lessons, she started her own courses, for children above all, and for parents and children painting side by side. She brings everything along in one big box: she shows you how to draw your motif, a plant, an animal or a face, and then how to bring it to life in watercolour. With her light pad you can trace a picture or work it out step by step with her, and those who want to paint freely do. She paints natural motifs herself, plants, animals and portraits, with good colours on handmade paper, and leads you step by step to a finished picture, beginners and the more experienced alike. Patient, warm and made for little ones and grown-ups alike.',
+    group: 'Children & adults · parent-child welcome', duration: '2 h', place: 'Im Turm, Busonistr. 136, Karow (Pankow)', languages: 'DE',
     priceNote: '€29 per person, materials included' },
   // Ilinca, 21.–23.10.26 (call on Monday 26.10). From paintnow.de and their
   // Konfetti store (23.10.26).
@@ -170,8 +171,8 @@ const de: HostCopy[] = [
     blurb: 'Constanzes ruhiges Atelier in der Knobelsdorffstraße in Charlottenburg ist wie gemacht für kleine Gruppen. Im Töpferkurs ohne Drehscheibe formst du mit verschiedenen Aufbautechniken Schalen und Objekte aus Ton, im Keramik-Malkurs gestaltest du ein fertiges Stück. Beide dauern zwei Stunden, brauchen keine Vorkenntnisse, und dein Stück wird für dich gebrannt und glasiert. Für Geburtstage, JGAs und Teamevents kannst du das Atelier auch exklusiv buchen, für bis zu zwölf Personen.',
     group: '4–12', duration: '2 Std.', place: 'Knobelsdorffstraße 43, Charlottenburg', languages: 'DE' },
   { slug: 'jeannette-tolksdorff', name: 'Jeannette', specialty: 'Aquarell für Eltern & Kinder', studio: 'JT & ArtDesign',
-    blurb: 'Jeannette malt schon immer und ist Kunstlehrerin an einer Grundschule. Als sie immer öfter privat nach Aquarellkursen gefragt wurde, hat sie ihre eigenen Kurse gestartet, vor allem für Kinder und für Eltern und Kinder, die nebeneinander malen. Sie bringt alles in einer großen Kiste mit: Sie zeigt, wie man sein Motiv zeichnet, eine Pflanze, ein Tier oder ein Gesicht, und wie man es dann in Aquarell umsetzt. Mit ihrem Leuchttisch kann man ein Bild abpausen oder es Schritt für Schritt mit ihr erarbeiten, und wer frei malen möchte, malt frei. Geduldig, herzlich und für Kleine wie Große gemacht.',
-    group: 'Kleine Gruppen · Kinder & Eltern-Kind', duration: 'Auf Anfrage', place: 'Norden Berlins (Pankow)', languages: 'DE',
+    blurb: 'Jeannette malt schon immer und ist Kunstlehrerin an einer Grundschule. Als sie immer öfter privat nach Aquarellkursen gefragt wurde, hat sie ihre eigenen Kurse gestartet, vor allem für Kinder und für Eltern und Kinder, die nebeneinander malen. Sie bringt alles in einer großen Kiste mit: Sie zeigt, wie man sein Motiv zeichnet, eine Pflanze, ein Tier oder ein Gesicht, und wie man es dann in Aquarell umsetzt. Mit ihrem Leuchttisch kann man ein Bild abpausen oder es Schritt für Schritt mit ihr erarbeiten, und wer frei malen möchte, malt frei. Sie malt selbst natürliche Motive, Pflanzen, Tiere und Porträts, mit hochwertigen Farben auf Büttenpapier, und begleitet dich Schritt für Schritt bis zum fertigen Bild, ob Anfänger oder Fortgeschrittene. Geduldig, herzlich und für Kleine wie Große gemacht.',
+    group: 'Kinder & Erwachsene · gern Eltern-Kind', duration: '2 Std.', place: 'Im Turm, Busonistr. 136, Karow (Pankow)', languages: 'DE',
     priceNote: '29 € pro Person, Material inklusive' },
   { slug: 'paintnow', name: 'PaintNow', specialty: 'Mal-Workshops für Teams', studio: 'PaintNow',
     blurb: 'PaintNow bringt angeleitetes Malen in Unternehmen, in Berlin und ganz Deutschland, für Gruppen von zehn bis mehreren hundert Personen. Die Formate sind für alle gemacht, die schwören, nicht malen zu können: Sip & Paint, gemeinsam auf einer großen Leinwand malen, Speed-Painting-Porträts der Kolleg:innen, riesige Papierbuchstaben mit euren Teamwerten, Puzzle-Malerei auf Holz, T-Shirts mit Firmenlogo und ruhigere Formate mit Klangbad, Mandalas oder Ton. Ilinca hat damit angefangen, Klangheilung und Malen in Yogastudios zu verbinden, und macht PaintNow heute in Vollzeit. Sie kommt mit allem Nötigen zu euch ins Büro, in ein Restaurant, eine Bar oder einen Meetingraum, überall in Berlin; ein Studio kann gegen einen kleinen Aufpreis dazugebucht werden. Zwei Stunden, auf Wunsch mit einer Extrastunde, und auf Anfrage ein Motiv, das sie für euer Team entwirft.',
@@ -221,7 +222,7 @@ const facets: Record<string, Facets> = {
   'luc-demissy':         { activity: 'art',         groupRange: [5, 15],   hourRange: [3, 5],   groupPrice: [45, 75] },
   concreare:             { activity: 'ceramics',    groupRange: [4, 12],   hourRange: [2, 2] },
   // PLACEHOLDER ranges — nothing published.
-  'jeannette-tolksdorff': { activity: 'art',        groupRange: [1, 10],   hourRange: [1.5, 2], groupPrice: 29 },
+  'jeannette-tolksdorff': { activity: 'art',        groupRange: [1, 10],   hourRange: [2, 2],   groupPrice: 29 },
   // Ilinca, call 26.10.26: from €59 per person, minimum 10 (fewer pay for
   // 10), 2 h + optional hour at €15 pp; usually 20–30 people. Up to
   // 200 on their Konfetti listings.
@@ -294,7 +295,7 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Atelier exklusiv: Töpfern oder Keramik bemalen für eure Gruppe', titleEn: 'Studio to yourselves: pottery or ceramic painting for your group', duration: '2 h', url: 'https://www.concreare.de/' },
   ],
   'jeannette-tolksdorff': [
-    { title: 'Aquarell-Kurs für Kinder und für Eltern & Kinder', titleEn: 'Watercolour course for children, and for parents & children', price: '€29', district: 'Pankow', url: 'https://www.twiggli.com/contact/' },
+    { title: 'Aquarell-Kurs für Kinder und für Eltern & Kinder', titleEn: 'Watercolour course for children, and for parents & children', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
   ],
   paintnow: [
     { title: 'Sip & Paint fürs Team', titleEn: 'Sip & Paint for your team', url: 'https://www.paintnow.de/team-building' },
