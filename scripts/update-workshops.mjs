@@ -645,7 +645,12 @@ const SOURCES = [
     url: 'https://www.vulvas.berlin/',
     district: 'Friedrichshain',
     seedRecurring: [
-      { title: 'Vulva Painting Workshop', weekdays: ['thu'], time: '18:30',
+      // Her own schedule (email 27.10.26): Tue to Sat 18:30, Fri to Sun
+      // also 11:00 (Saturday 11:00 is the most popular slot).
+      { title: 'Vulva Painting Workshop', weekdays: ['tue', 'wed', 'thu', 'fri', 'sat'], time: '18:30',
+        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true,
+        url: 'https://www.vulvas.berlin/' },
+      { title: 'Vulva Painting Workshop', weekdays: ['fri', 'sat', 'sun'], time: '11:00',
         duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true,
         url: 'https://www.vulvas.berlin/' },
     ],
