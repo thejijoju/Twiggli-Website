@@ -577,9 +577,29 @@
       "sourceUrl": "https://www.vulvas.berlin/",
       "title": "Vulva Painting Workshop",
       "weekdays": [
-        "thu"
+        "tue",
+        "wed",
+        "thu",
+        "fri",
+        "sat"
       ],
       "time": "18:30",
+      "duration": "2.5 h",
+      "price": "€40",
+      "district": "Friedrichshain",
+      "request": true,
+      "url": "https://www.vulvas.berlin/"
+    },
+    {
+      "slug": "pia",
+      "sourceUrl": "https://www.vulvas.berlin/",
+      "title": "Vulva Painting Workshop",
+      "weekdays": [
+        "fri",
+        "sat",
+        "sun"
+      ],
+      "time": "11:00",
       "duration": "2.5 h",
       "price": "€40",
       "district": "Friedrichshain",
