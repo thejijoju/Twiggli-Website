@@ -49,11 +49,19 @@ import { withBase, type Lang } from '../lib/url.ts';
  *  - anne: Anna Martynenko, creative photography (slug kept as "anne").
  * Both agreed in the host WhatsApp group (Jirel, 24.10.26).
  */
-export const voucherHosts: string[] = [
+/** Agreed in principle (email or WhatsApp), waiting for a written yes. */
+export const voucherHostsAgreed: string[] = [
   'anna-malerlebnisse', 'himapan-berlin', 'lucille-guder',
   'sarah', 'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
-  'nicole', 'whittle', 'pia', 'studio32', 'anne', 'munio',
+  'nicole', 'whittle', 'pia', 'studio32', 'munio',
+];
+
+/** Live: only hosts who confirmed the voucher terms in writing by email
+ *  ("no confirmation, no proof", Jirel 27.10). Move a slug here when their
+ *  yes arrives (column I of 'Hosts & Emails'). */
+export const voucherHosts: string[] = [
+  'anne', // Anna Martynenko, "Yes, I agree", 27.10.26
 ];
 
 /**
@@ -63,7 +71,7 @@ export const voucherHosts: string[] = [
  * "🎁 Gutscheine" pill and the home teaser; /voucher/ itself still opens by
  * its address (no host list) for testing.
  */
-export const VOUCHERS_ON = false;
+export const VOUCHERS_ON = true;
 
 export const isVoucherHost = (slug: string): boolean => VOUCHERS_ON && voucherHosts.includes(slug);
 
@@ -139,7 +147,7 @@ export const voucherPayment = {
   // Live since 26.10 (STRIPE_SECRET_KEY in Supabase is sk_live). Test
   // key, if ever needed again with sk_test: pk_test_51Pyt7jRQ5Tx7BE7RseiZobyVTmVJM8n8aVl7jVmRokqKNdJdbfyrY6oCSBOmhOYZ0v0cLxoSsbr2IAEWZGkuEZNM00ZEG3bZT0
   publishableKey: 'pk_live_51Pyt7jRQ5Tx7BE7RD1fgKwJmYTYvPbmjjgMVDdUNZQwjxXTRN4rEyq2n4NgUD1MXZtMwP7GdB0qb79mrcI9jl77t000GDWu0V3',
-  live: false,
+  live: true,
 };
 /** The checkout page exists in English and German; the other languages
  *  use the English one for now. */
