@@ -183,6 +183,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       if (el.dataset.voucher === 'host' && el.dataset.voucherSlug) {
         u.searchParams.set('host', el.dataset.voucherSlug);
         u.searchParams.set('people', String(Math.min(10, Math.max(1, Number(el.dataset.voucherPeople) || 1))));
+        if (el.dataset.voucherWorkshop) u.searchParams.set('w', el.dataset.voucherWorkshop);
       } else {
         const a = Number(el.dataset.voucherAmount);
         u.searchParams.set('amount', a ? String(a) : 'wish');

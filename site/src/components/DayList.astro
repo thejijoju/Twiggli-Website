@@ -74,7 +74,7 @@ import Voucher from './Voucher.astro';
                   {[sameTimes > 0 ? c.moreTimes(sameTimes) : '', others > 0 ? c.moreWorkshops(others) : ''].filter(Boolean).join(' · ')}
                 </a>
               )}
-              <Voucher kind="tile" host={s.host} lang={lang} title={s.title} />
+              <Voucher kind="tile" host={s.host} lang={lang} title={s.title} workshopKey={s.workshopKey} />
             </div>
             <a class="dl-media" href={workshopHref(lang, s.host, s.workshopKey)} tabindex="-1" aria-hidden="true" style={lqipStyle(s.host.poster)}>
               {(s.host.poster ?? s.host.photo) && <img src={s.host.poster ?? s.host.photo} alt="" loading="lazy" decoding="async" />}

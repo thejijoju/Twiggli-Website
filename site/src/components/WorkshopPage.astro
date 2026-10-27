@@ -121,7 +121,7 @@ import Voucher from './Voucher.astro';
           <div><dt>{t.languages}</dt><dd>{spellLanguages(next.languages ?? host.languages, lang)}</dd></div>
           {next.price && <div><dt>{t.price}</dt><dd>{next.price} · {t.perPerson}</dd></div>}
         </dl>
-        <Voucher kind="pill" host={host} lang={lang} title={w.title} />
+        <Voucher kind="pill" host={host} lang={lang} title={w.title} workshopKey={key} />
         <p class="section-more"><a href={hostHref(lang, host)}>{x.backToHost} {host.name} →</a></p>
       </div>
     </section>
