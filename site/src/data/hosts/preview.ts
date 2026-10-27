@@ -107,12 +107,15 @@ const en: HostCopy[] = [
     blurb: 'Jeannette has always painted, and she teaches art at a primary school. When more and more people asked her privately for watercolour lessons, she started her own courses, for children above all, and for parents and children painting side by side. She brings everything along in one big box: she shows you how to draw your motif, a plant, an animal or a face, and then how to bring it to life in watercolour. With her light pad you can trace a picture or work it out step by step with her, and those who want to paint freely do. She paints natural motifs herself, plants, animals and portraits, with good colours on handmade paper, and leads you step by step to a finished picture, beginners and the more experienced alike. Patient, warm and made for little ones and grown-ups alike.',
     group: 'Children & adults · parent-child welcome', duration: '2 h', place: 'Im Turm, Busonistr. 136, Karow (Pankow)', languages: 'DE',
     priceNote: '€29 per person, materials included' },
-  // Ilinca, 21.–23.10.26 (call on Monday 26.10). From paintnow.de and their
-  // Konfetti store (23.10.26).
+  // Ilinca, 21.–23.10.26, and our call on 26.10.26: €59 pp, minimum 10
+  // (fewer pay for 10), 2 h plus an optional hour at €15 pp, studio €100 for
+  // 3 h, typical groups of 20–30. Wants 1–2 days to confirm, ideally 5 days
+  // ahead; paid on booking, rescheduling but no refunds. 15% from the first
+  // booking (she waived the free one). VAT from next year.
   { slug: 'paintnow', name: 'PaintNow', specialty: 'Painting workshops for teams', studio: 'PaintNow',
-    blurb: 'PaintNow brings guided painting to companies, in Berlin and across Germany, for groups from ten to several hundred. The formats are made for people who swear they cannot draw: Sip & Paint, painting together on one large canvas, speed-painting portraits of your colleagues, giant paper letters painted with your team values, puzzle painting on wood, T-shirts with your company logo, and calmer formats with a sound bath, mandalas or clay. Ilinca started out combining sound healing and painting in yoga studios, and now runs PaintNow full time. She comes with everything needed to your office, a restaurant, a bar or a meeting room, anywhere in Berlin; a studio can be booked for a small extra. Two hours, with an extra hour if you like, and a motif designed for your team on request.',
+    blurb: 'PaintNow brings guided painting to companies, in Berlin and across Germany, for groups from ten to several hundred. The formats are made for people who swear they cannot draw: Sip & Paint, painting together on one large canvas, speed-painting portraits of your colleagues, giant paper letters painted with your team values, puzzle painting on wood, T-shirts with your company logo, and calmer formats with a sound bath, mandalas or clay. Ilinca started out combining sound healing and painting in yoga studios, and now runs PaintNow full time. She comes with everything needed to your office, a restaurant, a bar or a meeting room, anywhere in Berlin; a studio can be added for €100 for three hours. Two hours, with an extra hour if you like, and a motif designed for your team on request. For one or two people there is also abstract painting. Book at least five days ahead if you can; Ilinca confirms within a day or two. Paid when booked, and a date can be moved, not refunded.',
     group: '10–200', duration: '2–3 h', place: 'Your office or venue, all over Berlin', languages: 'EN · DE',
-    priceNote: 'from 10 people · extra hour €15 pp' },
+    priceNote: 'from €59 per person · minimum 10 (a smaller group pays for 10) · extra hour €15 pp · studio +€100 for 3 h' },
   // Chris & Kora, 18.10.26: "können uns eine Zusammenarbeit gut
   // vorstellen". From atelier.korasinn.de (23.10.26).
   { slug: 'atelier-sinn', name: 'Atelier Sinn', specialty: 'Natural cosmetics, textile art, collage & more', studio: 'Atelier Kora Sinn',
@@ -175,9 +178,9 @@ const de: HostCopy[] = [
     group: 'Kinder & Erwachsene · gern Eltern-Kind', duration: '2 Std.', place: 'Im Turm, Busonistr. 136, Karow (Pankow)', languages: 'DE',
     priceNote: '29 € pro Person, Material inklusive' },
   { slug: 'paintnow', name: 'PaintNow', specialty: 'Mal-Workshops für Teams', studio: 'PaintNow',
-    blurb: 'PaintNow bringt angeleitetes Malen in Unternehmen, in Berlin und ganz Deutschland, für Gruppen von zehn bis mehreren hundert Personen. Die Formate sind für alle gemacht, die schwören, nicht malen zu können: Sip & Paint, gemeinsam auf einer großen Leinwand malen, Speed-Painting-Porträts der Kolleg:innen, riesige Papierbuchstaben mit euren Teamwerten, Puzzle-Malerei auf Holz, T-Shirts mit Firmenlogo und ruhigere Formate mit Klangbad, Mandalas oder Ton. Ilinca hat damit angefangen, Klangheilung und Malen in Yogastudios zu verbinden, und macht PaintNow heute in Vollzeit. Sie kommt mit allem Nötigen zu euch ins Büro, in ein Restaurant, eine Bar oder einen Meetingraum, überall in Berlin; ein Studio kann gegen einen kleinen Aufpreis dazugebucht werden. Zwei Stunden, auf Wunsch mit einer Extrastunde, und auf Anfrage ein Motiv, das sie für euer Team entwirft.',
+    blurb: 'PaintNow bringt angeleitetes Malen in Unternehmen, in Berlin und ganz Deutschland, für Gruppen von zehn bis mehreren hundert Personen. Die Formate sind für alle gemacht, die schwören, nicht malen zu können: Sip & Paint, gemeinsam auf einer großen Leinwand malen, Speed-Painting-Porträts der Kolleg:innen, riesige Papierbuchstaben mit euren Teamwerten, Puzzle-Malerei auf Holz, T-Shirts mit Firmenlogo und ruhigere Formate mit Klangbad, Mandalas oder Ton. Ilinca hat damit angefangen, Klangheilung und Malen in Yogastudios zu verbinden, und macht PaintNow heute in Vollzeit. Sie kommt mit allem Nötigen zu euch ins Büro, in ein Restaurant, eine Bar oder einen Meetingraum, überall in Berlin; ein Studio kann für 100 € für drei Stunden dazugebucht werden. Zwei Stunden, auf Wunsch mit einer Extrastunde, und auf Anfrage ein Motiv, das sie für euer Team entwirft. Für ein oder zwei Personen gibt es außerdem abstraktes Malen. Bucht wenn möglich mindestens fünf Tage vorher; Ilinca bestätigt innerhalb von ein bis zwei Tagen. Bezahlt wird bei der Buchung, ein Termin kann verschoben, aber nicht erstattet werden.',
     group: '10–200', duration: '2–3 Std.', place: 'Bei euch im Büro oder in der Location, überall in Berlin', languages: 'EN · DE',
-    priceNote: 'ab 10 Personen · Extrastunde 15 € p. P.' },
+    priceNote: 'ab 59 € pro Person · mindestens 10 (kleinere Gruppen zahlen für 10) · Extrastunde 15 € p. P. · Studio +100 € für 3 Std.' },
   { slug: 'atelier-sinn', name: 'Atelier Sinn', specialty: 'Naturkosmetik, Textile Art, Collage & mehr', studio: 'Atelier Kora Sinn',
     blurb: 'Ein kreativer Ort nahe Senefelderplatz, gegründet von Interior Designerin und Creative Director Kornelia Sinn: hohe Decken, ein sorgfältig gestaltetes Interior und zwei großzügige Räume. Für Teams gibt es acht dreistündige Formate – Collage & Mixed Media, Naturkosmetik mit eigener Verpackung, Textile Art, Duftkerzen, Duftsprays, Ton, Schmuck & Charms und Porzellandesign –, und auf Wunsch wird eines auf eure Markenfarben, euer Logo oder ein gemeinsames Thema zugeschnitten. Material, Anleitung, Snacks und Getränke sind inklusive, Catering auf Anfrage. Offene Workshops gibt es etwa zum Glow-Serum oder zum festlichen Weihnachts-Tablescaping.',
     group: '5–20', duration: '3 Std.', place: 'Saarbrücker Str. 15, Prenzlauer Berg', languages: 'DE · EN' },
@@ -298,10 +301,10 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Aquarell-Kurs für Kinder und für Eltern & Kinder', titleEn: 'Watercolour course for children, and for parents & children', duration: '2 h', price: '€29', district: 'Karow', url: 'https://www.jtart.de/' },
   ],
   paintnow: [
-    { title: 'Sip & Paint fürs Team', titleEn: 'Sip & Paint for your team', url: 'https://www.paintnow.de/team-building' },
-    { title: 'Gemeinsam auf Großleinwand malen', titleEn: 'Painting together on a large canvas', url: 'https://www.paintnow.de/team-building' },
-    { title: 'Speed-Painting: Kolleg:innen porträtieren', titleEn: 'Speed painting: portraits of your colleagues', url: 'https://www.paintnow.de/team-building' },
-    { title: 'T-Shirts mit Firmenlogo bemalen', titleEn: 'Paint T-shirts with your company logo', url: 'https://www.paintnow.de/team-building' },
+    { title: 'Sip & Paint fürs Team', titleEn: 'Sip & Paint for your team', duration: '2 h', price: '€59', url: 'https://www.paintnow.de/team-building' },
+    { title: 'Gemeinsam auf Großleinwand malen', titleEn: 'Painting together on a large canvas', duration: '2 h', price: '€59', url: 'https://www.paintnow.de/team-building' },
+    { title: 'Speed-Painting: Kolleg:innen porträtieren', titleEn: 'Speed painting: portraits of your colleagues', duration: '2 h', price: '€59', url: 'https://www.paintnow.de/team-building' },
+    { title: 'T-Shirts mit Firmenlogo bemalen', titleEn: 'Paint T-shirts with your company logo', duration: '2 h', price: '€59', url: 'https://www.paintnow.de/team-building' },
     { title: 'Abstraktes Malen für dich oder zu zweit', titleEn: 'Abstract painting for one or two', url: 'https://www.paintnow.de/' },
   ],
   'atelier-sinn': [
