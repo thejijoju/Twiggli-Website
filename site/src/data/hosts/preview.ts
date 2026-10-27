@@ -55,8 +55,8 @@ const en: HostCopy[] = [
   // Jon, 23.10.26 ("Sounds interesting"). Dates and price from their
   // Konfetti listing (23.10.26); the bar is at Veteranenstraße 11.
   { slug: 'beavis-bar', name: 'Beavis Bar', specialty: 'Craft spirits & whisky tastings', studio: 'Beavis Bar',
-    blurb: 'A small bar in Mitte with more than 1,400 craft spirits from small distilleries around the world, many of which you will not find anywhere else in Berlin. In their whisky tasting you nose and taste five or six craft whiskies, rarities among them, while the bartender tells the story behind each bottle — for newcomers and connoisseurs alike. Ninety minutes, up to twelve people, in German, English, French or Italian. For teams and Christmas parties the tasting runs privately, a far more memorable evening than the usual open bar.',
-    group: '4–12 · groups best Wed–Thu, one week\'s notice', duration: '1.5 h', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
+    blurb: 'A small bar in Mitte with more than 1,400 craft spirits from small distilleries around the world, many of which you will not find anywhere else in Berlin. In their whisky tasting you nose and taste five or six craft whiskies, rarities among them, while the bartender tells the story behind each bottle — for newcomers and connoisseurs alike. Ninety minutes, up to twelve people, in German, English, French or Italian. For teams and Christmas parties the tasting runs privately, a far more memorable evening than the usual open bar. Private tastings from four people, Wednesday to Saturday (the bar is closed Sunday to Tuesday).',
+    group: '4–12 · Wed–Thu evenings, Fri–Sat at 19:00 · one week\'s notice', duration: '1.5 h', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
   // Manuel, 23.10.26 ("ruf gerne durch"). From waldsamkeit.de (23.10.26).
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wild herb walks', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit runs nature walks with a scientific background: biologist Manuel Larbig and his team of young naturalists check old plant lore against the studies rather than repeating it. On the classic three-hour wild herb walk you get to know at least twenty wild plants in a Berlin park or forest: which are edible, which have a healing effect, which poisonous look-alikes to avoid, and where their names come from. Groups stay small, twelve at most. The longer walk ends with a picnic and wild-herb butter, and for companies they design team days in nature around your group.',
@@ -131,8 +131,8 @@ const de: HostCopy[] = [
     group: 'Ab 5', duration: '2–5 Std.', place: 'Ausschank 2, Görlitzer Str. 52, Kreuzberg', languages: 'DE · EN',
     priceNote: 'Biertasting · Braukurs 114 €' },
   { slug: 'beavis-bar', name: 'Beavis Bar', specialty: 'Craft-Spirituosen- & Whisky-Tastings', studio: 'Beavis Bar',
-    blurb: 'Eine kleine Bar in Mitte mit über 1.400 Craft-Spirituosen von kleinen Destillerien aus aller Welt, viele davon gibt es sonst nirgends in Berlin. Beim Whisky-Tasting probiert ihr fünf bis sechs Craft-Whiskys, darunter Raritäten, und hört die Geschichte hinter jeder Flasche – für Neulinge wie Kenner. Neunzig Minuten, bis zu zwölf Personen, auf Deutsch, Englisch, Französisch oder Italienisch. Für Teams und Weihnachtsfeiern läuft das Tasting auch privat – ein Abend, an den man sich länger erinnert als an die übliche Open Bar.',
-    group: '4–12 · Gruppen am liebsten Mi–Do, eine Woche Vorlauf', duration: '1,5 Std.', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
+    blurb: 'Eine kleine Bar in Mitte mit über 1.400 Craft-Spirituosen von kleinen Destillerien aus aller Welt, viele davon gibt es sonst nirgends in Berlin. Beim Whisky-Tasting probiert ihr fünf bis sechs Craft-Whiskys, darunter Raritäten, und hört die Geschichte hinter jeder Flasche – für Neulinge wie Kenner. Neunzig Minuten, bis zu zwölf Personen, auf Deutsch, Englisch, Französisch oder Italienisch. Für Teams und Weihnachtsfeiern läuft das Tasting auch privat – ein Abend, an den man sich länger erinnert als an die übliche Open Bar. Private Tastings ab vier Personen, Mittwoch bis Samstag (sonntags bis dienstags ist die Bar geschlossen).',
+    group: '4–12 · Mi–Do abends, Fr–Sa um 19:00 · eine Woche Vorlauf', duration: '1,5 Std.', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wildkräuterwanderungen', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit macht Naturführungen mit naturwissenschaftlichem Hintergrund: Biologe Manuel Larbig und sein Team junger Naturexpert:innen prüfen altes Pflanzenwissen, statt es einfach zu übernehmen. Auf der klassischen dreistündigen Wildkräuterwanderung lernt ihr in einem Berliner Park oder Wald mindestens zwanzig Wildpflanzen kennen: was essbar ist, was heilend wirkt, welche giftigen Doppelgänger ihr meiden solltet und woher die Namen kommen. Die Gruppen bleiben klein, höchstens zwölf. Die lange Tour endet mit Picknick und Wildkräuterbutter, und für Firmen gestalten sie Teamtage in der Natur rund um eure Gruppe.',
     group: 'Bis 12 bei offenen Touren · Teams auf Anfrage', duration: '3–6 Std.', place: 'Parks und Wälder in ganz Berlin', languages: 'DE · EN' },
@@ -237,7 +237,7 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Weihnachtsfeier oder Firmenevent mit Essen & Getränken', titleEn: 'Christmas party or company event with food & drinks', url: 'https://www.strassenbraeu.de/pages/ausschank-2' },
   ],
   'beavis-bar': [
-    { title: 'Privates Whisky-Tasting für eure Gruppe', titleEn: 'Private whisky tasting for your group', duration: '1.5 h', url: 'https://beavis.bar/' },
+    { title: 'Privates Whisky-Tasting für eure Gruppe', titleEn: 'Private whisky tasting for your group', duration: '1.5 h', price: '€99', url: 'https://beavis.bar/' },
   ],
   waldsamkeit: [
     { title: 'Teamevent: Kräuterwanderung für eure Firma', titleEn: 'Team event: herb walk for your company', duration: '3 h', url: 'https://waldsamkeit.de/' },
