@@ -13,6 +13,7 @@ import { hosts as hostsNl } from './hosts/nl.ts';
 import { hosts as hostsPl } from './hosts/pl.ts';
 import { hosts as hostsTr } from './hosts/tr.ts';
 import { preview, previewSlugs } from './hosts/preview.ts';
+import { withHostEdits } from './hostEdits.ts';
 
 /** The blank cream squares the design export dropped in for hosts whose
  *  photography had not been shot yet — byte-identical fillers, two sizes and
@@ -327,7 +328,7 @@ export type HostCopy = Omit<
    under ./hosts/, written from the English. Below, every language is
    re-ordered to the English list and any host a translation lacks falls
    back to the English entry, so a new host never breaks a language. */
-export const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
+const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
   en: [
     { slug: 'qian', name: 'Qian', specialty: 'Tea & pottery, jewellery and painting', studio: 'Clay Garden Pottery Studio',
       blurb: 'Team events from Qian’s pottery studio in Prenzlauer Berg, two hours each: tea and pottery, making your own ceramic jewellery, or painting pottery. Calm, creative and made for beginners, and everyone takes their own pieces home. From four people: up to 8 in her studio, 14 at a partner venue, and up to 25 in all.',
@@ -1521,6 +1522,13 @@ export const getWorkshopReel = (
     ? entry[((pick % entry.length) + entry.length) % entry.length]
     : entry;
   return { video: withBase(reel.video), poster: withBase(reel.poster) };
+};
+
+/** The copy as written above with each host's own account edits on top
+ *  (hostEdits.ts). Exported for scripts/translate-hosts.mjs. */
+export const hostsCopyBase: Record<'en' | 'de', HostCopy[]> = {
+  en: withHostEdits(hostsCopyWritten.en, 'en'),
+  de: withHostEdits(hostsCopyWritten.de, 'de'),
 };
 
 const hostsCopy: Record<Lang, HostCopy[]> = (() => {
