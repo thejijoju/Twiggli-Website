@@ -90,10 +90,11 @@ const en: HostCopy[] = [
   // teaches only at the client's place (office, home, a venue), bringing
   // everything. 5–15 people, 3–5 h, €15 per person per hour with materials,
   // at least €45 per person. German and French. Saturdays; weekdays for
-  // companies. Also week-long courses for up to 10 when the client finds
-  // the venue. Photos from luc-demissy.de.
-  { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Drawing, watercolour, pastel & egg tempera',
-    blurb: 'Born in Nancy, Luc Demissy is a painter who lives and works between Berlin and Strasbourg, and has been teaching for many years. He comes to you, to your office, your home or any room you choose, and brings everything along: paper, paints, brushes and his calm, patient eye. A course starts with drawing from a still life and moves on to free drawing and painting in watercolour, pastel or egg tempera, for complete beginners and the more experienced alike. For teams it is a quiet, focused afternoon away from the screen, where everyone goes home with a picture of their own. On request he also runs week-long courses for up to ten people.',
+  // companies. 28.10.26: charcoal instead of egg tempera at the client's
+  // (too much to carry); egg tempera only in his 5-day summer course in
+  // France (Grand Est, 6–8 people). Photos from luc-demissy.de.
+  { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Drawing, charcoal, watercolour & pastel',
+    blurb: 'Born in Nancy, Luc Demissy is a painter who lives and works between Berlin and Strasbourg, and has been teaching for many years. He comes to you, to your office, your home or any room you choose, and brings everything along: paper, paints, brushes and his calm, patient eye. A course starts with drawing from a still life and moves on to free drawing in charcoal and painting in watercolour or pastel, for complete beginners and the more experienced alike. For teams it is a quiet, focused afternoon away from the screen, where everyone goes home with a picture of their own. In summer he also runs a five-day egg tempera course in France (Grand Est) for six to eight people.',
     group: '5–15 · Saturdays, weekdays for companies', duration: '3–5 h', place: 'At your place: office, home or a venue in Berlin', languages: 'DE · FR',
     priceNote: '€15 per person per hour, materials included' },
   // Constanze, 23.10.26. From concreare.de and her Konfetti listings
@@ -170,8 +171,8 @@ const de: HostCopy[] = [
     blurb: 'Eric Dodjis Tanzschule für Erwachsene in Neukölln lehrt Hip-Hop und Afro als Freestyle: Du lernst die Basics und findest deinen eigenen Groove, statt eine Choreo auswendig zu lernen – ohne Leistungsdruck, ob du schon mal getanzt hast oder nicht. Die wöchentlichen Kurse laufen montagabends im großen Tanzsaal der Musikfabrik. Für Teams gibt es einen 90-minütigen Tanzworkshop zu euren eigenen Lieblingssongs, bei euch vor Ort oder draußen, an dessen Ende das ganze Team zusammen tanzt – oder einen wöchentlichen Kurs als Mitarbeiter-Benefit.',
     group: '14–40 bei Teamworkshops', duration: '1–2 Std.', place: 'Musikfabrik, Neuköllnische Allee 6–8 / bei euch', languages: 'DE · EN',
     priceNote: 'Wochenkurs · Teamworkshop ab 690 € für bis zu 14' },
-  { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Zeichnen, Aquarell, Pastell & Eitempera',
-    blurb: 'Luc Demissy, geboren in Nancy, ist Maler, lebt und arbeitet zwischen Berlin und Strasbourg und unterrichtet seit vielen Jahren. Er kommt zu euch, ins Büro, nach Hause oder in einen Raum eurer Wahl, und bringt alles mit: Papier, Farben, Pinsel und seinen ruhigen, geduldigen Blick. Ein Kurs beginnt mit dem Zeichnen nach einem Stillleben und geht dann ins freie Zeichnen und Malen mit Aquarell, Pastell oder Eitempera über, für komplette Anfänger wie für Fortgeschrittene. Für Teams ist es ein ruhiger, konzentrierter Nachmittag ohne Bildschirm, nach dem alle mit einem eigenen Bild nach Hause gehen. Auf Anfrage gibt er auch Wochenkurse für bis zu zehn Personen.',
+  { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Zeichnen, Kohle, Aquarell & Pastell',
+    blurb: 'Luc Demissy, geboren in Nancy, ist Maler, lebt und arbeitet zwischen Berlin und Strasbourg und unterrichtet seit vielen Jahren. Er kommt zu euch, ins Büro, nach Hause oder in einen Raum eurer Wahl, und bringt alles mit: Papier, Farben, Pinsel und seinen ruhigen, geduldigen Blick. Ein Kurs beginnt mit dem Zeichnen nach einem Stillleben und geht dann ins freie Zeichnen mit Kohle und Malen mit Aquarell oder Pastell über, für komplette Anfänger wie für Fortgeschrittene. Für Teams ist es ein ruhiger, konzentrierter Nachmittag ohne Bildschirm, nach dem alle mit einem eigenen Bild nach Hause gehen. Im Sommer gibt er außerdem einen fünftägigen Eitempera-Kurs in Frankreich (Grand Est) für sechs bis acht Personen.',
     group: '5–15 · samstags, für Firmen auch unter der Woche', duration: '3–5 Std.', place: 'Bei euch: Büro, Zuhause oder eine Location in Berlin', languages: 'DE · FR',
     priceNote: '15 € pro Person und Stunde, Material inklusive' },
   { slug: 'concreare', name: 'Concreare', specialty: 'Töpfern & Keramik bemalen', studio: 'Concreare',
@@ -200,8 +201,8 @@ const de: HostCopy[] = [
 /** French copy, for a host who writes in French (Lucille). Every other
  *  preview host falls back to English in French. */
 const fr: HostCopy[] = [
-  { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Dessin, aquarelle, pastel & tempera à l’œuf',
-    blurb: 'Né à Nancy, Luc Demissy est peintre ; il vit et travaille entre Berlin et Strasbourg et enseigne depuis de nombreuses années. Il vient chez vous, au bureau, à la maison ou dans le lieu de votre choix, et apporte tout le matériel : papier, couleurs, pinceaux. Un cours commence par le dessin d’après une nature morte, puis passe au dessin libre et à la peinture à l’aquarelle, au pastel ou à la tempera à l’œuf, pour les débutants comme pour les plus avancés. Pour une équipe, c’est un après-midi calme et concentré loin des écrans, et chacun repart avec son propre tableau. Sur demande, il propose aussi des stages d’une semaine jusqu’à dix personnes.',
+  { slug: 'luc-demissy', name: 'Luc Demissy', specialty: 'Dessin, fusain, aquarelle & pastel',
+    blurb: 'Né à Nancy, Luc Demissy est peintre ; il vit et travaille entre Berlin et Strasbourg et enseigne depuis de nombreuses années. Il vient chez vous, au bureau, à la maison ou dans le lieu de votre choix, et apporte tout le matériel : papier, couleurs, pinceaux. Un cours commence par le dessin d’après une nature morte, puis passe au dessin libre au fusain et à la peinture à l’aquarelle ou au pastel, pour les débutants comme pour les plus avancés. Pour une équipe, c’est un après-midi calme et concentré loin des écrans, et chacun repart avec son propre tableau. L’été, il propose aussi un stage de tempera à l’œuf de cinq jours en France (Grand Est), pour six à huit personnes.',
     group: '5–15 · le samedi, en semaine pour les entreprises', duration: '3–5 h', place: 'Chez vous : bureau, domicile ou un lieu à Berlin', languages: 'DE · FR',
     priceNote: '15 € par personne et par heure, matériel compris' },
   { slug: 'lucille-guder', name: 'Lucille Guder', specialty: 'Atelier d’autoportrait photo et de collage floral pour femmes',
@@ -295,8 +296,8 @@ const onRequest: Record<string, PreviewOffer[]> = {
   ],
   'luc-demissy': [
     { title: 'Zeichnen & Aquarell bei euch (5–15 Personen)', titleEn: 'Drawing & watercolour at your place (5–15 people)', duration: '3–5 h', price: '€45–75', url: 'https://www.luc-demissy.de/' },
-    { title: 'Pastell oder Eitempera bei euch (5–15 Personen)', titleEn: 'Pastel or egg tempera at your place (5–15 people)', duration: '3–5 h', price: '€45–75', url: 'https://www.luc-demissy.de/' },
-    { title: 'Wochenkurs Zeichnen & Malen (bis 10 Personen, euer Raum)', titleEn: 'Week-long drawing & painting course (up to 10, your venue)', url: 'https://www.luc-demissy.de/' },
+    { title: 'Kohle oder Pastell bei euch (5–15 Personen)', titleEn: 'Charcoal or pastel at your place (5–15 people)', duration: '3–5 h', price: '€45–75', url: 'https://www.luc-demissy.de/' },
+    { title: 'Sommerkurs: 5 Tage Eitempera in Frankreich (Grand Est, 6–8 Personen)', titleEn: 'Summer course: 5 days of egg tempera in France (Grand Est, 6–8 people)', duration: '5 days', url: 'https://www.luc-demissy.de/' },
   ],
   concreare: [
     { title: 'Atelier exklusiv: Töpfern oder Keramik bemalen für eure Gruppe', titleEn: 'Studio to yourselves: pottery or ceramic painting for your group', duration: '2 h', url: 'https://www.concreare.de/' },
