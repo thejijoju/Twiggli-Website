@@ -196,7 +196,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <div><dt>{t.languages}</dt><dd>{hostLanguagesText(host, lang)}</dd></div>
           <div><dt>{t.price}</dt><dd>{priceText}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
         </dl>
-        {confirmed && <p class="host-confirmed">✓ {confirmed}</p>}
+        {confirmed && <p class="host-confirmed">{confirmed}</p>}
         {guestReviews.length > 0 && (
           <div class="host-reviews">
             <p class="host-about-title">{lang === 'de' ? 'Was Gäste sagen' : 'What guests say'}</p>
