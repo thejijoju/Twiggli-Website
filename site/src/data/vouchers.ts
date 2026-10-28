@@ -54,7 +54,7 @@ export const voucherHostsAgreed: string[] = [
   'anna-malerlebnisse', 'himapan-berlin',
   'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
-  'nicole', 'whittle', 'munio',
+  'munio',
 ];
 
 /** Live: only hosts who confirmed the voucher terms in writing by email
@@ -66,6 +66,7 @@ export const voucherHosts: string[] = [
   'pia', // Pia Simonsen, "Yes, I agree", 27.10.26
   'lucille-guder', // Lucille Guder, "Ok pour moi", 27.10.26 (page still in preview)
   'sarah', // Sarah Niklowitz, "mit dem ich natürlich sehr einverstanden bin", 27.10.26
+  'nicole', 'whittle', // Nicole (Anybody Can Whittle), "ja, ich bin einverstanden", 28.10.26; Basis now €99, Whittle €165
 ];
 
 /**
