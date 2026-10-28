@@ -7,10 +7,8 @@ import LegalPage from '../layouts/LegalPage.astro';
  * from German law and is conventionally served in German even on an
  * English-language site.
  *
- * Every field is a placeholder — none of this data can be guessed. Which
- * fields are actually required depends on the legal form (a GmbH must give
- * its managing directors, register court and HRB number; a sole trader does
- * not have those).
+ * Filled in from Jirel's data of 28.10.26. No Umsatzsteuer-ID section:
+ * the UG is a Kleinunternehmerin under § 19 UStG (Steuerberater, 13.10.26).
  *
  * Deliberately NOT included: a link to the EU Online Dispute Resolution
  * platform. That platform was shut down on 20 July 2025 and the regulation
@@ -22,7 +20,6 @@ const toc = [
   { id: 'anbieter', label: 'Angaben gemäß § 5 DDG' },
   { id: 'kontakt', label: 'Kontakt' },
   { id: 'register', label: 'Registereintrag' },
-  { id: 'ust', label: 'Umsatzsteuer-ID' },
   { id: 'verantwortlich', label: 'Redaktionell verantwortlich' },
   { id: 'streitschlichtung', label: 'Verbraucherstreitbeilegung' },
   { id: 'haftung', label: 'Haftung für Inhalte und Links' },
@@ -40,72 +37,45 @@ const toc = [
   lang="de"
   translations={['de']}
 >
-  <div class="legal-notice" slot="notice">
-    <p><strong>Draft — every field below still needs your real company data.</strong></p>
-    <p>
-      An Impressum is a legal requirement in Germany and an incomplete one is
-      itself a liability (it is a common subject of Abmahnungen). None of this
-      information can be filled in for you. Which fields apply depends on your
-      legal form — a GmbH needs the managing directors, register court and HRB
-      number; a sole trader does not.
-    </p>
-  </div>
-
   <h2 id="anbieter">Angaben gemäß § 5 DDG</h2>
   <p>
-    <span class="fill-in">[Firmenname, z. B. Twiggli GmbH]</span><br />
-    <span class="fill-in">[Straße und Hausnummer]</span><br />
-    <span class="fill-in">[PLZ und Ort]</span><br />
+    Twiggli UG (haftungsbeschränkt)<br />
+    Rodenkirchener Str. 147<br />
+    50997 Köln<br />
     Deutschland
   </p>
   <p>
     <strong>Vertreten durch:</strong><br />
-    <span class="fill-in">[Name des Geschäftsführers / der Geschäftsführerin]</span>
+    Tamara Marie Jirel Kuenen
   </p>
 
   <h2 id="kontakt">Kontakt</h2>
   <dl>
     <dt>E-Mail</dt>
-    <dd><span class="fill-in">[E-Mail-Adresse]</span></dd>
-    <dt>Telefon</dt>
-    <dd><span class="fill-in">[Telefonnummer]</span></dd>
+    <dd><a href="mailto:hello@twiggli.com">hello@twiggli.com</a></dd>
+    <dt>Kontaktformular</dt>
+    <dd><a href="/contact/">twiggli.com/contact</a></dd>
   </dl>
-  <p>
-    Eine Telefonnummer ist nicht zwingend, es muss aber ein zweiter, unmittelbarer
-    Kommunikationsweg neben der E-Mail-Adresse bestehen — etwa ein
-    Kontaktformular mit zugesicherter Antwortzeit.
-  </p>
 
   <h2 id="register">Registereintrag</h2>
   <dl>
     <dt>Registergericht</dt>
-    <dd><span class="fill-in">[Amtsgericht, z. B. Amtsgericht Berlin-Charlottenburg]</span></dd>
+    <dd>Amtsgericht Köln</dd>
     <dt>Registernummer</dt>
-    <dd><span class="fill-in">[HRB-Nummer]</span></dd>
+    <dd>HRB 119837</dd>
   </dl>
-
-  <h2 id="ust">Umsatzsteuer-Identifikationsnummer</h2>
-  <p>
-    Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />
-    <span class="fill-in">[DE-Nummer]</span>
-  </p>
 
   <h2 id="verantwortlich">Redaktionell verantwortlich</h2>
   <p>
     Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br />
-    <span class="fill-in">[Name]</span><br />
-    <span class="fill-in">[Anschrift, sofern abweichend]</span>
+    Tamara Marie Jirel Kuenen<br />
+    Rodenkirchener Str. 147, 50997 Köln
   </p>
 
   <h2 id="streitschlichtung">Verbraucherstreitbeilegung</h2>
   <p>
     Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor
     einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG).
-  </p>
-  <p>
-    Hinweis: Die Europäische Online-Streitbeilegungsplattform (OS-Plattform) wurde
-    zum 20. Juli 2025 eingestellt. Ein Link darauf ist nicht mehr erforderlich und
-    sollte entfernt werden, falls er an anderer Stelle noch vorhanden ist.
   </p>
 
   <h2 id="haftung">Haftung für Inhalte und Links</h2>
@@ -135,6 +105,6 @@ const toc = [
     Gastgeberinnen und Gastgebern hochgeladene Videos und Fotos — sind als solche
     gekennzeichnet beziehungsweise dem jeweiligen Profil zugeordnet. Sollten Sie
     auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen
-    entsprechenden Hinweis an <span class="fill-in">[E-Mail-Adresse]</span>.
+    entsprechenden Hinweis an <a href="mailto:hello@twiggli.com">hello@twiggli.com</a>.
   </p>
 </LegalPage>
