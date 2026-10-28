@@ -9,7 +9,9 @@ import Base from '../layouts/Base.astro';
 import DayList from './DayList.astro';
 import HostMonogram from './HostMonogram.astro';
 import { inActivity, type ActivityKey } from '../data/content.ts';
-import { capPerHostPerDay, getSessions } from '../data/sessions.ts';
+import { capPerHostPerDay, getHostPriceRanges, getSessions } from '../data/sessions.ts';
+import { isVoucherHost } from '../data/vouchers.ts';
+import { answerHref } from '../data/answers.ts';
 import {
   ACTIVITY_ORDER, absolute, activityCopy, activityHref, formatWhen, hostHref, hostsIn, hubHref,
   nextSessionByHost, pageCopy, sessionsFor,
@@ -35,6 +37,37 @@ const upcoming = getSessions(lang).filter((s) => inActivity(s.host, activity));
 const shown = capPerHostPerDay(upcoming).slice(0, 24);
 const dateCounts = new Map(hosts.map((h) => [h.slug, sessionsFor(h.slug, lang).length]));
 
+// Questions people ask about the activity, answered from the live data —
+// for readers, and as FAQPage for search engines and assistants. English
+// and German only; the other languages show the page without it.
+const prices = getHostPriceRanges();
+const ranges = hosts.map((h) => prices.get(h.slug)).filter((r): r is [number, number] => Boolean(r));
+const lo = ranges.length ? Math.min(...ranges.map((r) => r[0])) : undefined;
+const hi = ranges.length ? Math.max(...ranges.map((r) => r[1])) : undefined;
+const where = [...new Set(hosts.flatMap((h) => (h.area ?? '').split(' / ')).filter((a) => a && a !== 'Berlin'))].slice(0, 8).join(', ');
+const english = hosts.filter((h) => /EN/.test(h.languages)).length;
+const groupHosts = hosts.filter((h) => h.groupRange[1] >= 8).length;
+const gifts = hosts.filter((h) => isVoucherHost(h.slug)).length;
+// Grown-ups' dates first: a kids' drop-in is rarely what the question means.
+const firstThree = [...upcoming.filter((s) => !s.kids), ...upcoming.filter((s) => s.kids)].slice(0, 3).map((s) => `${formatWhen(s, lang)}: ${s.title} (${s.host.firstName ?? s.host.name}${s.price ? `, ${s.price}` : ''})`).join('; ');
+const topic = copy.short;
+const faq: { q: string; a: string }[] = lang === 'de' ? [
+  { q: `Wo gibt es Workshops für ${topic} in Berlin?`, a: `Auf Twiggli bieten ${hosts.length} Gastgeber*innen ${topic} in Berlin an${where ? `, unter anderem in ${where}` : ''}. Jede*r hat eine eigene Seite mit Terminen, Preisen und Ort.` },
+  ...(lo !== undefined ? [{ q: `Was kostet ein Workshop für ${topic} in Berlin?`, a: `Die Preise liegen zwischen ${lo} € und ${hi} € pro Person, je nach Länge und Format. Der genaue Preis steht bei jedem Termin.` }] : []),
+  ...(upcoming.length ? [{ q: `Wann ist der nächste Termin?`, a: `Die nächsten Termine: ${firstThree}. Insgesamt stehen ${upcoming.length} Termine im Kalender.` }] : []),
+  ...(english ? [{ q: `Gibt es Workshops für ${topic} auf Englisch?`, a: `Ja, ${english === hosts.length ? `alle ${hosts.length}` : `${english} von ${hosts.length}`} Gastgeber*innen unterrichten (auch) auf Englisch. Die Sprache steht bei jedem Workshop.` }] : []),
+  ...(groupHosts ? [{ q: `Kann ich einen Workshop privat für eine Gruppe oder ein Team buchen?`, a: `Ja, ${groupHosts === hosts.length ? 'alle' : groupHosts} Gastgeber*innen nehmen private Gruppen, zum Beispiel für Teamevents, Weihnachtsfeiern, JGAs oder Geburtstage. Schick eine Gruppenanfrage, du bekommst Optionen und ein Angebot.` }] : []),
+  { q: `Kann ich einen Workshop für ${topic} verschenken?`, a: gifts ? `Ja, ${gifts === 1 ? 'für eine*n Gastgeber*in' : `für ${gifts} Gastgeber*innen`} gibt es Gutscheine für einen bestimmten Workshop, und der allgemeine Twiggli-Gutschein über einen freien Betrag gilt bei allen. Gutscheine sind 3 Jahre gültig.` : `Ja, mit dem allgemeinen Twiggli-Gutschein über einen freien Betrag, 3 Jahre gültig.` },
+] : [
+  { q: `Where can I do ${topic.toLowerCase()} in Berlin?`, a: `On Twiggli, ${hosts.length} hosts offer ${topic.toLowerCase()} in Berlin${where ? `, among them in ${where}` : ''}. Each has their own page with dates, prices and the address.` },
+  ...(lo !== undefined ? [{ q: `How much does a ${topic.toLowerCase()} workshop cost in Berlin?`, a: `Prices range from €${lo} to €${hi} per person, depending on length and format. The exact price is shown on every date.` }] : []),
+  ...(upcoming.length ? [{ q: `When is the next one?`, a: `The next dates: ${firstThree}. There are ${upcoming.length} dates on the calendar in total.` }] : []),
+  ...(english ? [{ q: `Are there ${topic.toLowerCase()} workshops in English?`, a: `Yes, ${english === hosts.length ? `all ${hosts.length}` : `${english} of ${hosts.length}`} hosts teach in English. The language is listed on every workshop.` }] : []),
+  ...(groupHosts ? [{ q: `Can I book it privately for a group or a team?`, a: `Yes, ${groupHosts === hosts.length ? 'all' : groupHosts} hosts take private groups, for team events, Christmas parties, hen parties or birthdays. Send a group request and you get options and a quote.` }] : []),
+  { q: `Can I give a ${topic.toLowerCase()} workshop as a gift?`, a: gifts ? `Yes: ${gifts === 1 ? 'one host has' : `${gifts} hosts have`} vouchers for a specific workshop, and the general Twiggli voucher for any amount works with all of them. Vouchers are valid for 3 years.` : `Yes, with the general Twiggli voucher for any amount, valid for 3 years.` },
+];
+const showFaq = lang === 'en' || lang === 'de';
+
 const pageUrl = absolute(activityHref(lang, activity));
 const schema = {
   '@context': 'https://schema.org',
@@ -49,6 +82,10 @@ const schema = {
         url: absolute(hostHref(lang, h)),
       })),
     },
+    ...(showFaq ? [{
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    }] : []),
     {
       '@type': 'BreadcrumbList',
       itemListElement: [
@@ -122,6 +159,27 @@ import Voucher from './Voucher.astro';
       </>
     )}
 
+    {showFaq && (
+      <>
+        <hr class="rule" />
+        <section class="section">
+          <h2 class="section-title">{lang === 'de' ? 'Häufige Fragen' : 'Questions people ask'}</h2>
+          <div class="answer-faq">
+            {faq.map((f) => (
+              <details>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+          <p class="section-more">
+            <a href={answerHref(lang, 'today')}>{lang === 'de' ? 'Was kann ich heute machen?' : 'What can I do today?'}</a> ·
+            <a href={answerHref(lang, 'weekend')}>{lang === 'de' ? 'Dieses Wochenende' : 'This weekend'}</a>
+          </p>
+        </section>
+      </>
+    )}
+
     <hr class="rule" />
 
     <section class="section">
@@ -135,3 +193,10 @@ import Voucher from './Voucher.astro';
   </div>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 </Base>
+
+<style>
+  .answer-faq { display: grid; gap: 10px; max-width: 820px; }
+  .answer-faq details { border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); border-radius: 14px; padding: 14px 18px; }
+  .answer-faq summary { cursor: pointer; font-weight: 700; }
+  .answer-faq p { margin: 10px 0 0; color: var(--color-text-muted); }
+</style>

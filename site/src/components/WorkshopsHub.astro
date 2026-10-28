@@ -16,6 +16,7 @@ import {
 import { href, type Lang } from '../lib/url.ts';
 import { hubShelvesCopy, HUB_PICK } from '../data/hubShelves.ts';
 import { formatDay } from '../data/seo.ts';
+import { ANSWERS, ANSWER_LANGS, answerCopy, answerHref } from '../data/answers.ts';
 import { lqipStyle } from '../lib/lqip.ts';
 
 interface Props {
@@ -166,6 +167,9 @@ import Voucher from './Voucher.astro';
       <ul class="activity-links">
         {OCCASIONS.map((o) => (
           <li><a href={occasionHref(lang, o)}>{occasionCopy[lang][o].h1}<span class="activity-links-count">{t.dates(occasionSessions(o, lang).length)}</span></a></li>
+        ))}
+        {ANSWER_LANGS.includes(lang) && ANSWERS.map((k) => (
+          <li><a href={answerHref(lang, k)}>{answerCopy(k, lang, []).h1}</a></li>
         ))}
       </ul>
     </section>
