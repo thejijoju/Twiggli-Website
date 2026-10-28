@@ -52,7 +52,7 @@ import { withBase, type Lang } from '../lib/url.ts';
 /** Agreed in principle (email or WhatsApp), waiting for a written yes. */
 export const voucherHostsAgreed: string[] = [
   'anna-malerlebnisse', 'himapan-berlin',
-  'ceramic-kingdom', 'petitejungle', 'sabine', 'druckrausch', 'rebeca',
+  'ceramic-kingdom', 'petitejungle', 'sabine', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
   'munio',
 ];
@@ -68,6 +68,7 @@ export const voucherHosts: string[] = [
   'sarah', // Sarah Niklowitz, "mit dem ich natürlich sehr einverstanden bin", 27.10.26
   'nicole', 'whittle', // Nicole (Anybody Can Whittle), "ja, ich bin einverstanden", 28.10.26; Basis now €99, Whittle €165
   'jeannette-tolksdorff', // Jeannette Tolksdorff, "Ich bestätige mit 'Ja'", 28.10.26 (page still in preview)
+  'druckrausch', // Deborah (Druckrausch), "ja, wir sind einverstanden!", 28.10.26
 ];
 
 /**
