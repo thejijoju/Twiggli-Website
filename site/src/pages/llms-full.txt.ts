@@ -11,6 +11,7 @@ import {
   absolute, hostHref, onRequestFor, sessionsFor, spellDuration, spellLanguages, workshopHref,
 } from '../data/seo.ts';
 import { isVoucherHost } from '../data/vouchers.ts';
+import { confirmedHosts, reviewsFor } from '../data/trust.ts';
 import { COMPANY_KINDS, companyHref, companyOffers, groupHosts, groupPriceFrom } from '../data/companyAnswers.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
 
@@ -54,7 +55,7 @@ export function GET() {
   const out: string[] = [
     '# Twiggli: every creative workshop in Berlin, with dates and prices',
     '',
-    `> Updated ${today} (Berlin time). This file is rebuilt every morning from the live calendar of twiggli.com. Twiggli is a Berlin platform for hands-on workshops with independent local makers: pottery, painting, printmaking, candle making, crafts, cooking and tastings, photography, wellbeing and music. Shorter overview: https://www.twiggli.com/llms.txt`,
+    `> Updated ${today} (Berlin time). ${hosts.length} hosts. This file is rebuilt every morning from the live calendar of twiggli.com. Twiggli is a Berlin platform for hands-on workshops with independent local makers: pottery, painting, printmaking, candle making, crafts, cooking and tastings, photography, wellbeing and music. Shorter overview: https://www.twiggli.com/llms.txt`,
     '',
     'How booking works: every date and workshop page has a Request button. It opens a short form; sending it costs nothing, and there is nothing to pay until the host confirms the place by email. Private groups (friends, teams, Christmas parties, hen parties, birthdays) can request a workshop on almost any day: https://www.twiggli.com/corporatebookings/ . Gift vouchers for a specific workshop or for any amount from €20, valid 3 years: https://www.twiggli.com/voucher/ . Contact: hello@twiggli.com',
     '',
@@ -98,6 +99,8 @@ export function GET() {
       `- Length: ${spellDuration(h.duration, lang)}`,
       `- Languages: ${spellLanguages(h.languages, lang)}`,
       `- Gift vouchers for this host: ${isVoucherHost(h.slug) ? 'yes' : 'no (the general Twiggli voucher works)'}`,
+      ...(confirmedHosts[h.slug] ? [`- Works with Twiggli directly: yes, agreed in writing (${confirmedHosts[h.slug]})`] : []),
+      ...reviewsFor(h.slug).map((r) => `- Guest review (${r.name}, ${r.month}): "${r.text}"`),
       `- Page: ${absolute(hostHref(lang, h))}`,
       ...(dates.length
         ? [`- Next dates (${dates.length} on the calendar):`, ...dates.slice(0, 5).map((s) => `  ${line(s)}`)]
