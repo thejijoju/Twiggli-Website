@@ -8,6 +8,7 @@ import DateRows from './DateRows.astro';
 import HostMonogram from './HostMonogram.astro';
 import PhotoFade from './PhotoFade.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
+import { confirmedLine, reviewMonth, reviewsFor } from '../data/trust.ts';
 import Voucher from './Voucher.astro';
 import { getHosts, isPreviewHost, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
@@ -40,6 +41,25 @@ const activity = activityCopy[lang][host.activity];
 // its dates come only from its own entries, and a date's title books
 // rather than leading to a per-workshop page that is not built for it.
 const preview = isPreviewHost(host.slug);
+// Trust, for readers and for assistants deciding whether to send people
+// here: the host's own written yes to working with Twiggli, and what
+// guests said afterwards (data/trust.ts). Only what is on record.
+const confirmed = confirmedLine(host.slug, host.firstName ?? host.name, lang);
+const guestReviews = reviewsFor(host.slug);
+const reviewSchema = guestReviews.length ? {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `${host.specialty} — ${host.name}`,
+  provider: { '@type': 'Person', name: host.firstName ?? host.name },
+  areaServed: { '@type': 'City', name: 'Berlin' },
+  review: guestReviews.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.name },
+    reviewBody: r.text,
+    datePublished: `${r.month}-01`,
+    inLanguage: r.lang,
+  })),
+} : undefined;
 const sessions = preview ? previewSessionsFor(host.slug, lang) : sessionsFor(host.slug, lang);
 const workshops = preview ? [] : workshopsFor(host.slug, lang);
 const onRequest = preview ? previewOnRequestFor(host.slug, lang) : onRequestFor(host.slug, lang);
@@ -176,6 +196,18 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <div><dt>{t.languages}</dt><dd>{hostLanguagesText(host, lang)}</dd></div>
           <div><dt>{t.price}</dt><dd>{priceText}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
         </dl>
+        {confirmed && <p class="host-confirmed">✓ {confirmed}</p>}
+        {guestReviews.length > 0 && (
+          <div class="host-reviews">
+            <p class="host-about-title">{lang === 'de' ? 'Was Gäste sagen' : 'What guests say'}</p>
+            {guestReviews.map((r) => (
+              <blockquote>
+                <p>“{r.text}”</p>
+                <footer>{r.name}{r.workshop ? `, ${r.workshop}` : ''} · {reviewMonth(r.month, lang)}</footer>
+              </blockquote>
+            ))}
+          </div>
+        )}
         <div class="host-actions">
         {/* Opens our booking form on the page as a group request, this host
             and their price filled in; without scripts, the contact form. */}
@@ -310,6 +342,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
     )}
   </div>
   {!preview && <WorkshopSchema host={host} sessions={sessions} lang={lang} />}
+  {!preview && reviewSchema && <script type="application/ld+json" set:html={JSON.stringify(reviewSchema)} is:inline />}
 </Base>
 
 <script>

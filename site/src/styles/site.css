@@ -6491,3 +6491,11 @@ h1, h2, h3, h4,
 /* A page without the site's chrome (Base `bare`, the checkout): no tab bar,
    so no room kept for one. */
 body.is-bare { padding-bottom: 0; }
+
+/* Trust on a host's page (data/trust.ts): their written yes to working
+   with Twiggli, and guests' own words. */
+.host-confirmed { margin: 12px 0 0; font-size: 14px; color: var(--color-text-muted); }
+.host-reviews { margin-top: 16px; display: grid; gap: 10px; }
+.host-reviews blockquote { margin: 0; padding: 12px 16px; border-radius: 14px; background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+.host-reviews blockquote p { margin: 0; }
+.host-reviews footer { margin-top: 6px; font-size: 13px; color: var(--color-text-muted); }
