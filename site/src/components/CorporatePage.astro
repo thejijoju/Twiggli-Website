@@ -10,6 +10,7 @@ import { ui } from '../data/i18n.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 import { christmasCopy } from '../data/christmasParty.ts';
 import { bigEventsCopy } from '../data/bigEvents.ts';
+import { COMPANY_KINDS, companyCopy, companyHref } from '../data/companyAnswers.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -98,6 +99,12 @@ const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${
       '@type': 'FAQPage',
       mainEntity: big.faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
     })} />
+
+    {(lang === 'en' || lang === 'de') && (
+      <ul class="activity-links">
+        {COMPANY_KINDS.map((k) => <li><a href={companyHref(lang, k)}>{companyCopy(k, lang).h1}</a></li>)}
+      </ul>
+    )}
 
     <hr class="rule" />
 

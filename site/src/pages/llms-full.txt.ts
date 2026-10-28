@@ -11,6 +11,7 @@ import {
   absolute, hostHref, onRequestFor, sessionsFor, spellDuration, spellLanguages, workshopHref,
 } from '../data/seo.ts';
 import { isVoucherHost } from '../data/vouchers.ts';
+import { COMPANY_KINDS, companyHref, companyOffers, groupHosts, groupPriceFrom } from '../data/companyAnswers.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
 
 const lang = 'en' as const;
@@ -61,6 +62,21 @@ export function GET() {
     ...block('Tonight (from 17:00)', answerSessions('tonight', lang), absolute(answerHref(lang, 'tonight'))),
     ...block('Tomorrow', answerSessions('tomorrow', lang), absolute(answerHref(lang, 'tomorrow'))),
     ...block('This weekend (Friday evening to Sunday)', answerSessions('weekend', lang), absolute(answerHref(lang, 'weekend')), 60),
+    '## For companies: team events, Christmas parties, team building and offsites',
+    '',
+    `Companies book private workshops for their teams through Twiggli: one request with date, group size and budget, and matching options with a quote within 24 hours. Hosts work in their own studios or come to the office or venue with all materials. Request form: ${absolute('/corporatebookings/')} . Guides: ${COMPANY_KINDS.map((k) => absolute(companyHref(lang, k))).join(' , ')}`,
+    '',
+    'Hosts who take private groups (group size, price per person for groups, whether they come to you):',
+    '',
+    ...groupHosts(lang).map((h) => {
+      const from = groupPriceFrom(h);
+      return `- ${h.name}: ${h.specialty}. ${h.groupRange[0]}–${h.groupRange[1]} people${from !== undefined ? `, from €${from} per person` : ''}${h.onSite ? ', comes to your office or venue' : ''}${h.area ? `, ${h.area}` : ''}. ${absolute(hostHref(lang, h))}`;
+    }),
+    '',
+    'Creative breaks of 60–90 minutes at your own office or venue, as quoted by the hosts (price per person unless stated):',
+    '',
+    ...companyOffers(lang).map((o) => `- ${o.title.replace(/^At your office: /, '')}, with ${o.host.name}${o.duration ? `, ${o.duration}` : ''}${o.price ? `, ${o.price}` : ''}`),
+    '',
     '## Every host',
     '',
   ];
@@ -78,7 +94,7 @@ export function GET() {
       `- Where: ${h.place}${h.area ? ` (${h.area})` : ''}${h.onSite ? '; also comes to your venue' : ''}`,
       ...(range ? [`- Price: ${range[0] === range[1] ? `€${range[0]}` : `€${range[0]}–${range[1]}`} per person`] : []),
       ...(h.priceNote ? [`- Price note: ${h.priceNote}`] : []),
-      `- Group: ${h.group} (private groups ${h.groupRange[0]}–${h.groupRange[1]} people)`,
+      `- Group: ${h.group} (private groups ${h.groupRange[0]}–${h.groupRange[1]} people${groupPriceFrom(h) !== undefined ? `, from €${groupPriceFrom(h)} per person` : ''})`,
       `- Length: ${spellDuration(h.duration, lang)}`,
       `- Languages: ${spellLanguages(h.languages, lang)}`,
       `- Gift vouchers for this host: ${isVoucherHost(h.slug) ? 'yes' : 'no (the general Twiggli voucher works)'}`,

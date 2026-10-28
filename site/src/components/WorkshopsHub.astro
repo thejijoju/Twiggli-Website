@@ -17,6 +17,7 @@ import { href, type Lang } from '../lib/url.ts';
 import { hubShelvesCopy, HUB_PICK } from '../data/hubShelves.ts';
 import { formatDay } from '../data/seo.ts';
 import { ANSWERS, ANSWER_LANGS, answerCopy, answerHref } from '../data/answers.ts';
+import { COMPANY_KINDS, companyCopy, companyHref } from '../data/companyAnswers.ts';
 import { lqipStyle } from '../lib/lqip.ts';
 
 interface Props {
@@ -170,6 +171,9 @@ import Voucher from './Voucher.astro';
         ))}
         {ANSWER_LANGS.includes(lang) && ANSWERS.map((k) => (
           <li><a href={answerHref(lang, k)}>{answerCopy(k, lang, []).h1}</a></li>
+        ))}
+        {ANSWER_LANGS.includes(lang) && COMPANY_KINDS.map((k) => (
+          <li><a href={companyHref(lang, k)}>{companyCopy(k, lang).h1}</a></li>
         ))}
       </ul>
     </section>
