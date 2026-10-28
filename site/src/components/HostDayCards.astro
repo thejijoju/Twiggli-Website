@@ -11,6 +11,8 @@ import { hostHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { hostDayCopy } from '../data/hubShelves.ts';
 import { partnerCopied } from '../data/partners.ts';
 import { lqipStyle } from '../lib/lqip.ts';
+import { fadePhotos } from '../data/content.ts';
+import PhotoFade from './PhotoFade.astro';
 import type { Lang } from '../lib/url.ts';
 
 interface Props { sessions: Session[]; lang: Lang }
@@ -66,7 +68,8 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
   {cards.map(({ host, workshops, count }) => (
     <li class="hd-card">
       <a class="hd-media" href={hostHref(lang, host)} tabindex="-1" aria-hidden="true" style={lqipStyle(host.poster)}>
-        {(host.poster ?? host.photo) && <img src={host.poster ?? host.photo} alt="" loading="lazy" decoding="async" />}
+        {fadePhotos(host).length > 1 ? <PhotoFade photos={fadePhotos(host)} alt="" />
+          : (host.poster ?? host.photo) && <img src={host.poster ?? host.photo} alt="" loading="lazy" decoding="async" />}
         {host.video && <video class="hd-video" src={host.video} muted loop playsinline preload="none"></video>}
         <span class="hd-count">{c.classes(count)}</span>
       </a>
