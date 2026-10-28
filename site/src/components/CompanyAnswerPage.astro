@@ -1,0 +1,158 @@
+---
+/** Answers what companies ask assistants ("team event ideas in Berlin",
+ *  "Christmas party ideas Berlin"…): the answer first, then the hosts who
+ *  take private groups, then the formats hosts quoted for companies, then
+ *  a FAQ marked up as FAQPage. See data/companyAnswers.ts. */
+import Base from '../layouts/Base.astro';
+import HostMonogram from './HostMonogram.astro';
+import {
+  COMPANY_KINDS, companyCopy, companyHref, companyOffers, groupHosts, groupPriceFrom, type CompanyKind,
+} from '../data/companyAnswers.ts';
+import { ANSWER_LANGS } from '../data/answers.ts';
+import { absolute, hostHref, hubHref, pageCopy } from '../data/seo.ts';
+import { href, type Lang } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  kind: CompanyKind;
+}
+const { lang, kind } = Astro.props;
+const de = lang === 'de';
+const t = pageCopy[lang];
+const copy = companyCopy(kind, lang);
+const hosts = groupHosts(lang);
+const offers = companyOffers(lang);
+const requestUrl = href(lang, '/corporatebookings/');
+const pageUrl = absolute(companyHref(lang, kind));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'FAQPage',
+      mainEntity: copy.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+    {
+      '@type': 'ItemList',
+      name: copy.h1,
+      itemListElement: hosts.map((h, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${h.specialty} — ${h.name}`,
+        url: absolute(hostHref(lang, h)),
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t.crumbsRoot, item: absolute(hubHref(lang)) },
+        { '@type': 'ListItem', position: 2, name: copy.short, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Base title={copy.title} description={copy.description} lang={lang} translations={ANSWER_LANGS}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={hubHref(lang)}>{t.crumbsRoot}</a>
+      <span aria-hidden="true">›</span>
+      <span>{copy.short}</span>
+    </nav>
+
+    <section class="page-head">
+      <span class="kicker kicker-tight">Berlin · {copy.short}</span>
+      <h1 class="page-title">{copy.h1}</h1>
+      <p class="page-lede">{copy.answer}</p>
+      <p><a class="btn btn-primary" href={requestUrl}>{de ? 'Gruppenanfrage senden' : 'Send a group request'} →</a></p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{de ? 'Gastgeber*innen für Gruppen' : 'Hosts for groups'}</h2>
+      <ul class="host-cards">
+        {hosts.map((h) => {
+          const from = groupPriceFrom(h);
+          return (
+            <li>
+              <a class="host-card" href={hostHref(lang, h)}>
+                <span class="host-card-media">
+                  {h.poster ? <img src={h.poster} alt="" loading="lazy" decoding="async" />
+                    : h.photo ? <img src={h.photo} alt="" loading="lazy" decoding="async" />
+                    : <HostMonogram name={h.name} />}
+                </span>
+                <span class="host-card-name">{h.name}</span>
+                <span class="host-card-spec">{h.specialty}</span>
+                <span class="host-card-next">
+                  {de ? `bis ${h.groupRange[1]} Personen` : `up to ${h.groupRange[1]} people`}
+                  {from !== undefined && (de ? ` · ab ${from} € p. P.` : ` · from €${from} pp`)}
+                  {h.onSite && (de ? ' · kommt zu euch' : ' · comes to you')}
+                </span>
+                {h.area && <span class="host-card-count">{h.area}</span>}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    {offers.length > 0 && (
+      <>
+        <hr class="rule" />
+        <section class="section">
+          <h2 class="section-title">{de ? 'Kreative Pausen bei euch vor Ort (60–90 Minuten)' : 'Creative breaks at your office (60–90 minutes)'}</h2>
+          <ul class="company-offers">
+            {offers.map((o) => (
+              <li>
+                <a href={hostHref(lang, o.host)}>{o.title}</a>
+                <span> · {o.host.firstName ?? o.host.name}{o.duration ? ` · ${o.duration}` : ''}{o.price ? ` · ${o.price}${de ? ' p. P.' : ' pp'}` : ''}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </>
+    )}
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{de ? 'Häufige Fragen' : 'Questions companies ask'}</h2>
+      <div class="answer-faq">
+        {copy.faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="section-more"><a href={requestUrl}>{de ? 'Gruppenanfrage senden' : 'Send a group request'} →</a></p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="section">
+      <h2 class="section-title">{de ? 'Mehr für Firmen' : 'More for companies'}</h2>
+      <ul class="activity-links">
+        {COMPANY_KINDS.filter((k) => k !== kind).map((k) => (
+          <li><a href={companyHref(lang, k)}>{companyCopy(k, lang).h1}</a></li>
+        ))}
+        <li><a href={href(lang, '/weihnachtsfeier/')}>{de ? 'Weihnachtsfeier anfragen' : 'Request a Christmas party'}</a></li>
+        <li><a href={requestUrl}>{de ? 'Firmenbuchungen' : 'Corporate bookings'}</a></li>
+      </ul>
+    </section>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+</Base>
+
+<style>
+  .answer-faq { display: grid; gap: 10px; max-width: 820px; }
+  .answer-faq details { border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); border-radius: 14px; padding: 14px 18px; }
+  .answer-faq summary { cursor: pointer; font-weight: 700; }
+  .answer-faq p { margin: 10px 0 0; color: var(--color-text-muted); }
+  .company-offers { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; max-width: 820px; }
+  .company-offers li { line-height: 1.5; }
+  .company-offers a { font-weight: 700; }
+  .company-offers span { color: var(--color-text-muted); }
+</style>

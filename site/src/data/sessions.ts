@@ -8,6 +8,7 @@
  *  Dates are converted to `dayOffset` (0 = today, Europe/Berlin) at build
  *  time; the deploy workflow rebuilds daily so they stay true.
  */
+import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
@@ -180,6 +181,22 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
       ...(getWorkshopUsp(o.slug, o.title, lang)
         ? { usp: getWorkshopUsp(o.slug, o.title, lang) }
         : {}),
+    });
+  }
+  // Group formats hosts quoted us by email (teamOffers.ts): request-only,
+  // at the company's own space.
+  for (const o of teamOffers) {
+    const host = bySlug.get(o.slug);
+    if (!host) continue;
+    out.push({
+      id: `req-${o.slug}-${hash(o.title)}`,
+      host,
+      title: lang !== 'de' ? o.titleEn : o.title,
+      district: lang === 'de' ? 'bei euch vor Ort' : 'at your venue',
+      bookUrl: 'https://www.twiggli.com/corporatebookings/',
+      ...(o.duration ? { duration: o.duration } : {}),
+      ...(o.price ? { price: o.price } : {}),
+      request: true,
     });
   }
   return out;
