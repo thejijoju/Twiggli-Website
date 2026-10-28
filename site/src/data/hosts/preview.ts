@@ -57,6 +57,14 @@ const en: HostCopy[] = [
   { slug: 'beavis-bar', name: 'Beavis Bar', specialty: 'Craft spirits & whisky tastings', studio: 'Beavis Bar',
     blurb: 'A small bar in Mitte with more than 1,400 craft spirits from small distilleries around the world, many of which you will not find anywhere else in Berlin. In their whisky tasting you nose and taste five or six craft whiskies, rarities among them, while the bartender tells the story behind each bottle — for newcomers and connoisseurs alike. Ninety minutes, up to twelve people, in German, English, French or Italian. For teams and Christmas parties the tasting runs privately, a far more memorable evening than the usual open bar. Private tastings from four people, Wednesday to Saturday (the bar is closed Sunday to Tuesday).',
     group: '4–12 · Wed–Thu evenings, Fri–Sat at 19:00 · one week\'s notice', duration: '1.5 h', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
+  // Thorsten, call 28.10.26: Brew Monday tasting every Monday at the
+  // taproom (BKK, Kreuzberg), tastings and tours at the brewery
+  // (Pfefferberg, Prenzlauer Berg), several times a week. Usually 8–10
+  // guests. Cancellation free up to 24 h before. Address and "8 beers in
+  // 90 minutes" from his emails and listing (March 2026). Price to confirm.
+  { slug: 'schoppe-braeu', name: 'Schoppe Bräu', specialty: 'Beer tastings & brewery tours', studio: 'Schoppe Bräu',
+    blurb: 'Thorsten Schoppe is a trained brewer (Dipl.-Ing. Brauwesen) and has been part of Berlin’s craft beer scene since its early days in 2001, with his own small brewery. Every Monday he hosts Brew Monday at his taproom in Kreuzberg: eight beers in 90 minutes, how the styles differ, how to taste them like a brewer, and stories from decades behind the kettle. At the brewery at the Pfefferberg in Prenzlauer Berg he also runs tastings and brewery tours. For teams and private groups he sets up tastings on other days too.',
+    group: 'Small groups, usually 8–10 · free cancellation up to 24 h before', duration: '1.5 h', place: 'Taproom BKK, Manteuffelstr. 53, Kreuzberg · Brauerei am Pfefferberg, Schönhauser Allee 176, Prenzlauer Berg', languages: 'DE' },
   // Manuel, 23.10.26 ("ruf gerne durch"). From waldsamkeit.de (23.10.26).
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wild herb walks', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit runs nature walks with a scientific background: biologist Manuel Larbig and his team of young naturalists check old plant lore against the studies rather than repeating it. On the classic three-hour wild herb walk you get to know at least twenty wild plants in a Berlin park or forest: which are edible, which have a healing effect, which poisonous look-alikes to avoid, and where their names come from. Groups stay small, twelve at most. The longer walk ends with a picnic and wild-herb butter, and for companies they design team days in nature around your group.',
@@ -155,6 +163,9 @@ const de: HostCopy[] = [
   { slug: 'beavis-bar', name: 'Beavis Bar', specialty: 'Craft-Spirituosen- & Whisky-Tastings', studio: 'Beavis Bar',
     blurb: 'Eine kleine Bar in Mitte mit über 1.400 Craft-Spirituosen von kleinen Destillerien aus aller Welt, viele davon gibt es sonst nirgends in Berlin. Beim Whisky-Tasting probiert ihr fünf bis sechs Craft-Whiskys, darunter Raritäten, und hört die Geschichte hinter jeder Flasche – für Neulinge wie Kenner. Neunzig Minuten, bis zu zwölf Personen, auf Deutsch, Englisch, Französisch oder Italienisch. Für Teams und Weihnachtsfeiern läuft das Tasting auch privat – ein Abend, an den man sich länger erinnert als an die übliche Open Bar. Private Tastings ab vier Personen, Mittwoch bis Samstag (sonntags bis dienstags ist die Bar geschlossen).',
     group: '4–12 · Mi–Do abends, Fr–Sa um 19:00 · eine Woche Vorlauf', duration: '1,5 Std.', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
+  { slug: 'schoppe-braeu', name: 'Schoppe Bräu', specialty: 'Biertastings & Brauereiführungen', studio: 'Schoppe Bräu',
+    blurb: 'Thorsten Schoppe ist Diplom-Braumeister (Dipl.-Ing. Brauwesen) und gehört seit 2001 zu den Pionieren der Berliner Craft-Beer-Szene, mit seiner eigenen kleinen Brauerei. Jeden Montag lädt er zum Brew Monday in seinen Taproom in Kreuzberg: acht Biere in 90 Minuten, wie sich die Bierstile unterscheiden, wie man Bier wie ein Brauer verkostet, und Geschichten aus Jahrzehnten am Sudkessel. In der Brauerei am Pfefferberg in Prenzlauer Berg macht er außerdem Verkostungen und Brauereiführungen. Für Teams und private Gruppen organisiert er Tastings auch an anderen Tagen.',
+    group: 'Kleine Gruppen, meist 8–10 · kostenlose Stornierung bis 24 Std. vorher', duration: '1,5 Std.', place: 'Taproom BKK, Manteuffelstr. 53, Kreuzberg · Brauerei am Pfefferberg, Schönhauser Allee 176, Prenzlauer Berg', languages: 'DE' },
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wildkräuterwanderungen', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit macht Naturführungen mit naturwissenschaftlichem Hintergrund: Biologe Manuel Larbig und sein Team junger Naturexpert:innen prüfen altes Pflanzenwissen, statt es einfach zu übernehmen. Auf der klassischen dreistündigen Wildkräuterwanderung lernt ihr in einem Berliner Park oder Wald mindestens zwanzig Wildpflanzen kennen: was essbar ist, was heilend wirkt, welche giftigen Doppelgänger ihr meiden solltet und woher die Namen kommen. Die Gruppen bleiben klein, höchstens zwölf. Die lange Tour endet mit Picknick und Wildkräuterbutter, und für Firmen gestalten sie Teamtage in der Natur rund um eure Gruppe.',
     group: 'Bis 12 bei offenen Touren · Teams auf Anfrage', duration: '3–6 Std.', place: 'Parks und Wälder in ganz Berlin', languages: 'DE · EN' },
@@ -218,6 +229,8 @@ const facets: Record<string, Facets> = {
   // (the product text still says €29).
   strassenbraeu:         { activity: 'food',        groupRange: [5, 30],   hourRange: [2, 5],   groupPrice: 34 },
   'beavis-bar':          { activity: 'food',        groupRange: [4, 12],   hourRange: [1.5, 1.5] },
+  // PLACEHOLDER maximum: Thorsten said usually 8–10 guests (call 28.10.26).
+  'schoppe-braeu':       { activity: 'food',        groupRange: [1, 12],   hourRange: [1.5, 1.5] },
   // PLACEHOLDER team maximum — public walks take 12.
   waldsamkeit:           { activity: 'food', alsoIn: ['wellbeing'], groupRange: [1, 12], hourRange: [3, 6] },
   zoenoteka:             { activity: 'craft',       groupRange: [1, 20],   hourRange: [2.5, 8] },
@@ -247,13 +260,13 @@ const facets: Record<string, Facets> = {
 };
 
 const firstNames: Record<string, string> = {
-  rtmis: 'Diana', 'beavis-bar': 'Jon', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
+  rtmis: 'Diana', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
   'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija',
 };
 
 const areas: Record<string, { area: string; onSite?: boolean }> = {
-  rtmis: { area: 'Wedding', onSite: true }, strassenbraeu: { area: 'Kreuzberg' }, 'beavis-bar': { area: 'Mitte' },
+  rtmis: { area: 'Wedding', onSite: true }, strassenbraeu: { area: 'Kreuzberg' }, 'beavis-bar': { area: 'Mitte' }, 'schoppe-braeu': { area: 'Kreuzberg' },
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
   'luc-demissy': { area: 'Prenzlauer Berg', onSite: true }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Pankow' },
@@ -272,6 +285,11 @@ const onRequest: Record<string, PreviewOffer[]> = {
   ],
   'beavis-bar': [
     { title: 'Privates Whisky-Tasting für eure Gruppe', titleEn: 'Private whisky tasting for your group', duration: '1.5 h', price: '€99', url: 'https://beavis.bar/' },
+  ],
+  'schoppe-braeu': [
+    { title: 'Brew Monday: 8 Biere in 90 Minuten (jeden Montag)', titleEn: 'Brew Monday: 8 beers in 90 minutes (every Monday)', duration: '1.5 h', district: 'Kreuzberg', url: 'https://www.schoppebraeutaproom.de/' },
+    { title: 'Verkostung & Brauereiführung am Pfefferberg', titleEn: 'Tasting & brewery tour at the Pfefferberg', district: 'Prenzlauer Berg', url: 'https://www.schoppebraeu.de/' },
+    { title: 'Privates Biertasting für Teams und Gruppen', titleEn: 'Private beer tasting for teams and groups', duration: '1.5 h', url: 'https://www.schoppebraeu.de/' },
   ],
   waldsamkeit: [
     { title: 'Teamevent: Kräuterwanderung für eure Firma', titleEn: 'Team event: herb walk for your company', duration: '3 h', url: 'https://waldsamkeit.de/' },
