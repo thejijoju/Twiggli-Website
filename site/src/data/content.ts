@@ -193,7 +193,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // venue, 25 at most.
   qian:         { activity: 'ceramics',    groupRange: [4, 25],   hourRange: [2, 2], groupPrice: 65 },
   rebeca:       { activity: 'art',         groupRange: [4, 24],   hourRange: [1, 3], groupPrice: 65 },
-  nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [85, 150] },
+  nicole:       { activity: 'craft',       groupRange: [1, 14],   hourRange: [2.5, 5], groupPrice: [99, 165] },
   // Celina, 14 Oct quote: mosaic for groups 70 pp (3 h, glass) or 89 pp
   // (4 h, ceramic); 5% off from 20 people, 10% from 50.
   celina:       { activity: 'craft',       groupRange: [1, 100],  hourRange: [2, 4], groupPrice: 70 },
