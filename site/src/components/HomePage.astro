@@ -18,6 +18,7 @@ import Newsletter from './Newsletter.astro';
 import HostCommunity from './HostCommunity.astro';
 import SiteSchema from './SiteSchema.astro';
 import HostMonogram from './HostMonogram.astro';
+import PhotoFade from './PhotoFade.astro';
 import HomeSearch from './HomeSearch.astro';
 import HeroSparkles from './HeroSparkles.astro';
 import Voucher from './Voucher.astro';
@@ -104,6 +105,8 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                       <img class="maker-still" src={cardMedia(s).poster} alt="" loading={ri === 0 ? undefined : 'lazy'} decoding="async" />
                       <video class="maker-video" src={cardMedia(s).video} muted loop playsinline preload="none" aria-hidden="true"></video>
                     </>
+                  ) : (cardMedia(s).stills?.length ?? 0) > 1 ? (
+                    <PhotoFade photos={cardMedia(s).stills!} alt="" />
                   ) : cardMedia(s).still ? (
                     <img src={cardMedia(s).still} alt="" loading="lazy" decoding="async" />
                   ) : (

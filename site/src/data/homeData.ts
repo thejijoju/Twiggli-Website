@@ -4,7 +4,7 @@
  *  the live home page (HomePage.astro) and the design options under
  *  /de/preview/ (HomeOption.astro), so every draft shows the same real
  *  dates and hosts. */
-import { activitiesOf, filterCopy, getHosts, hasMedia, inActivity, type ActivityKey, type Host } from './content.ts';
+import { activitiesOf, fadePhotos, filterCopy, getHosts, hasMedia, inActivity, type ActivityKey, type Host } from './content.ts';
 import { berlinTodayMs, capPerHostPerDay, getSessions, type Session } from './sessions.ts';
 import { ACTIVITY_ORDER, occasionCopy, occasionHref, occasionSessions } from './seo.ts';
 import { ui } from './i18n.ts';
@@ -125,11 +125,11 @@ export function getHomeData(lang: Lang) {
      cut where there is one), else their photo, else the picture from their
      booking page. */
   const mainBySlug = new Map(hosts.map((h) => [h.slug, h]));
-  const cardMedia = (s: Session): { video?: string; poster?: string; still?: string } => {
+  const cardMedia = (s: Session): { video?: string; poster?: string; still?: string; stills?: string[] } => {
     const reelHost = PREFER_MAIN_REEL.has(s.host.slug) ? mainBySlug.get(s.host.slug) ?? s.host : s.host;
     return reelHost.video
       ? { video: reelHost.video, poster: reelHost.poster }
-      : { still: s.host.photo ?? s.image ?? s.host.poster };
+      : { still: s.host.photo ?? s.image ?? s.host.poster, stills: fadePhotos(s.host) };
   };
 
   /* Ten makers with a picture we may use, those with dates coming up first,

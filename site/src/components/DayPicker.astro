@@ -1,8 +1,9 @@
 ---
 import { getSessions, getOnRequest, capPerHostPerDay, spreadByHost, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
-import { activitiesOf, filterCopy, type ActivityKey } from '../data/content.ts';
+import { activitiesOf, fadePhotos, filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
+import PhotoFade from './PhotoFade.astro';
 import DayMap from './DayMap.astro';
 import { mapCopy } from '../data/mapCopy.ts';
 import { DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
@@ -627,6 +628,8 @@ import Voucher from './Voucher.astro';
                                 {s.host.poster && <img class="session-still" src={s.host.poster} alt="" loading="lazy" decoding="async" />}
                                 <video class="session-video" src={s.host.video} muted loop playsinline preload="none"></video>
                               </>
+                            ) : !s.image && fadePhotos(s.host).length > 1 ? (
+                              <PhotoFade photos={fadePhotos(s.host)} alt="" />
                             ) : (s.image ?? s.host.photo) ? (
                               <img src={s.image ?? s.host.photo} alt="" loading="lazy" decoding="async" />
                             ) : (
@@ -707,6 +710,8 @@ import Voucher from './Voucher.astro';
                                 preload="none"
                               ></video>
                             </>
+                          ) : !s.image && fadePhotos(s.host).length > 1 ? (
+                            <PhotoFade photos={fadePhotos(s.host)} alt="" />
                           ) : (s.image ?? s.host.photo) ? (
                             <img src={s.image ?? s.host.photo} alt="" loading="lazy" decoding="async" />
                           ) : (
@@ -836,6 +841,8 @@ import Voucher from './Voucher.astro';
                     {o.host.poster && <img class="session-still" src={o.host.poster} alt="" loading="lazy" decoding="async" />}
                     <video class="session-video" src={o.host.video} muted loop playsinline preload="none"></video>
                   </>
+                ) : fadePhotos(o.host).length > 1 ? (
+                  <PhotoFade photos={fadePhotos(o.host)} alt="" />
                 ) : o.host.photo ? (
                   <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
                 ) : (
@@ -893,6 +900,8 @@ import Voucher from './Voucher.astro';
                     preload="none"
                   ></video>
                 </>
+              ) : fadePhotos(o.host).length > 1 ? (
+                <PhotoFade photos={fadePhotos(o.host)} alt="" />
               ) : o.host.photo ? (
                 <img src={o.host.photo} alt="" loading="lazy" decoding="async" />
               ) : (

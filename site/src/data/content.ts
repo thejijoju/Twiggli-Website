@@ -1630,6 +1630,13 @@ export const sameHostAs: Record<string, string> = {
   whittle: 'nicole',
 };
 
+/** The pictures a tile fades through where a host has no reel yet: their
+ *  card photo, then their gallery, so the tile moves almost like a video
+ *  (PhotoFade). Empty for a host with a reel, and a single picture means a
+ *  plain still. */
+export const fadePhotos = (h: Host): string[] =>
+  h.video ? [] : [...new Set([h.photo, ...(h.gallery ?? [])].filter((p): p is string => !!p))].slice(0, 6);
+
 /** Whether a host is a hidden preview — built at its usual URL for the
  *  host to look at before going live, but noindex and left out of every
  *  listing, the sitemap, the calendar and the counts (hosts/preview.ts). */
