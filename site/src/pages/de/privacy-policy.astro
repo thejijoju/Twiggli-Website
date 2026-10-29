@@ -3,16 +3,10 @@ import LegalPage from '../../layouts/LegalPage.astro';
 import { withBase } from '../../lib/url.ts';
 
 /**
- * DRAFT. German translation of privacy-policy.astro — keep the two in step
- * when the English source changes. Structured to the GDPR's (DSGVO)
- * disclosure duties (Art. 13/14) with the German specifics that apply to a
- * Berlin operator: § 25 TDDDG for cookies and device storage, and the
- * Berlin supervisory authority for complaints.
- *
- * A privacy policy has to describe what the product ACTUALLY does. The
- * processor list, retention periods and app permissions below are the
- * shape of the disclosure, not verified facts about Twiggli — confirm each
- * one against the real stack before publishing.
+ * German version of privacy-policy.astro — keep the two in step. The
+ * providers are the ones the website and app really use (29.10.26);
+ * Abschnitt 5a is the Google API Services User Data Policy disclosure for
+ * Sign in with Google.
  */
 const toc = [
   { id: 'controller', label: '1. Wer verantwortlich ist' },
@@ -20,6 +14,7 @@ const toc = [
   { id: 'purposes', label: '3. Warum, und auf welcher Rechtsgrundlage' },
   { id: 'cookies', label: '4. Cookies und Gerätespeicher' },
   { id: 'sharing', label: '5. Mit wem wir Daten teilen' },
+  { id: 'google', label: '5a. Anmeldung mit Google' },
   { id: 'hosts', label: '6. Zwischen Gastgebern und Teilnehmenden' },
   { id: 'transfers', label: '7. Übermittlung außerhalb des EWR' },
   { id: 'retention', label: '8. Wie lange wir Daten speichern' },
@@ -39,15 +34,6 @@ const toc = [
   toc={toc}
   lang="de"
 >
-  <div class="legal-notice" slot="notice">
-    <p><strong>Entwurf — muss mit der tatsächlichen Funktionsweise des Produkts abgeglichen werden.</strong></p>
-    <p>
-      Eine Datenschutzerklärung beschreibt reale Verarbeitungsvorgänge und kann daher nicht von
-      außen fertiggestellt werden. Gleiche jeden genannten Auftragsverarbeiter, jede
-      Aufbewahrungsfrist und jede App-Berechtigung mit eurem tatsächlichen Stack ab, fülle die
-      markierten Felder aus und lasse den Text vor der Veröffentlichung prüfen.
-    </p>
-  </div>
 
   <h2 id="controller">1. Wer verantwortlich ist</h2>
   <p>
@@ -58,28 +44,35 @@ const toc = [
     unserem <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
-    Kontakt für Datenschutzfragen: <span class="fill-in">[E-Mail-Adresse, oder Name und
-    Kontaktdaten eurer/eures Datenschutzbeauftragten, falls bestellt]</span>.
+    Kontakt für Datenschutzfragen: hello@twiggli.com. Wir sind nicht verpflichtet, eine:n
+    Datenschutzbeauftragte:n zu benennen; Fragen gehen direkt an die Gründerin.
   </p>
 
   <h2 id="data">2. Was wir erheben</h2>
   <h3>Daten, die du uns gibst</h3>
   <ul>
-    <li><strong>Konto:</strong> Name, E-Mail-Adresse, Passwort (gehasht gespeichert), optional ein
-      Foto, Stadt und kurze Bio.</li>
+    <li><strong>Konto:</strong> deine E-Mail-Adresse und, wenn du dich mit Google anmeldest, dein
+      Name und Profilbild (siehe Abschnitt 5a). Auf der Website meldest du dich mit einem
+      einmaligen E-Mail-Link oder mit Google an, ohne Passwort. In der App wird ein von dir
+      gewähltes Passwort von Firebase nur gehasht gespeichert. Optional ein Foto, Stadt und
+      kurze Bio.</li>
     <li><strong>Gastgeberprofil:</strong> was du anbietest, deine Einträge, sowie die Videos und
       Fotos, die du hochlädst.</li>
     <li><strong>Buchungen:</strong> welche Workshops du gebucht hast, wann, für wie viele Personen,
       und jede Notiz, die du dem Gastgeber schickst.</li>
-    <li><strong>Zahlungen:</strong> abgewickelt über unseren Zahlungsdienstleister. Wir erhalten
-      Bestätigung, Betrag und eine maskierte Referenz — nicht deine vollständige Kartennummer.</li>
+    <li><strong>Zahlungen und Gutscheine:</strong> abgewickelt über Stripe. Wir erhalten den
+      Betrag, deinen Namen und deine E-Mail, Empfänger:in und Nachricht des Gutscheins sowie eine
+      maskierte Zahlungsreferenz, nie deine vollständigen Kartendaten.</li>
+    <li><strong>Anfragen:</strong> was du in ein Buchungs-, Gruppen-, Raum- oder
+      Kontaktformular einträgst: Name, E-Mail, Telefon, Datum, Personenzahl und deine
+      Nachricht.</li>
     <li><strong>Nachrichten und Support:</strong> was du uns oder einem Gastgeber über die App
       schreibst.</li>
   </ul>
   <h3>Automatisch erhobene Daten</h3>
   <ul>
-    <li><strong>Nutzung:</strong> aufgerufene Seiten und Angebote, Suchanfragen, Taps, und
-      wann.</li>
+    <li><strong>Nutzung:</strong> auf der Website gezählte Seitenaufrufe und Klicks, ohne Cookies
+      und ohne Profile (Umami, Abschnitt 4). In der App aufgerufene Angebote und Suchanfragen.</li>
     <li><strong>Gerät und Verbindung:</strong> Gerätetyp, Betriebssystem, App-Version, Browser,
       Sprache und IP-Adresse.</li>
     <li><strong>Ungefährer Standort:</strong> um dir Workshops in deiner Nähe zu zeigen. Genauer
@@ -116,14 +109,16 @@ const toc = [
     benötigt keine Einwilligung nach § 25 Abs. 2 TDDDG.
   </p>
   <p>
-    Du kannst deine Auswahl jederzeit ändern oder widerrufen über
-    <span class="fill-in">[Link zu deinen Cookie-Einstellungen]</span>. Ein Widerruf hat keine
-    Auswirkung auf bereits erfolgte Verarbeitung.
+    Was die Website auf deinem Gerät speichert: ob du angemeldet bist (Firebase
+    Authentication), deine Cookie-Auswahl, die E-Mail-Adresse, an die ein Anmeldelink ging (bis
+    du ihn öffnest), und deine Sprache. All das ist technisch notwendig. Du kannst deine Auswahl
+    jederzeit ändern, indem du die Daten dieser Website in deinem Browser löschst; das Banner
+    fragt dann erneut. Ein Widerruf hat keine Auswirkung auf bereits erfolgte Verarbeitung.
   </p>
   <p>
-    Aktuell eingesetzte, nicht notwendige Tools: <span class="fill-in">[jedes Analyse- oder
-    Marketing-Tool auflisten, Anbieter und was gespeichert wird — oder angeben, dass keine
-    genutzt werden]</span>.
+    Analyse: Wir nutzen Umami Cloud. Umami zählt Besuche und Klicks ohne Cookies, ohne deine
+    IP-Adresse zu speichern und ohne Profile einzelner Besucher:innen. Werbe- oder
+    Tracking-Cookies setzen wir nicht ein.
   </p>
 
   <h2 id="sharing">5. Mit wem wir Daten teilen</h2>
@@ -133,24 +128,50 @@ const toc = [
   </p>
   <ul>
     <li><strong>Gastgeber</strong> — die Details deiner Buchung. Siehe Abschnitt 6.</li>
-    <li><strong>Zahlungsdienstleister</strong> —
-      <span class="fill-in">[Anbietername]</span>, für Zahlungsabwicklung und Auszahlungen an
-      Gastgeber.</li>
-    <li><strong>Hosting und Infrastruktur</strong> —
-      <span class="fill-in">[Anbietername und Region]</span>.</li>
-    <li><strong>E-Mail und Benachrichtigungen</strong> —
-      <span class="fill-in">[Anbietername]</span>.</li>
+    <li><strong>Zahlungen</strong> — Stripe Payments Europe, Ltd. (Irland), für Zahlungen für
+      Gutscheine und Buchungen.</li>
+    <li><strong>Konten, Datenbank und Serverfunktionen</strong> — Google Firebase (Google
+      Ireland Ltd.; Firestore und Cloud Functions in der Region Frankfurt), für die Anmeldung,
+      Gastgeber-Konten, Anfragen und Gutscheine.</li>
+    <li><strong>Website-Hosting</strong> — GitHub Pages (GitHub, Inc., USA), das die Seiten
+      ausliefert und dafür deine IP-Adresse verarbeitet.</li>
+    <li><strong>E-Mail</strong> — Google Gmail / Google Workspace (Google Ireland Ltd.), für
+      unsere Antworten und um deine Anfragen an uns weiterzuleiten. Anmeldelinks verschickt
+      Firebase.</li>
+    <li><strong>Schriften</strong> — Google Fonts (Google Ireland Ltd.), das die Schriftarten
+      lädt und dabei deine IP-Adresse sieht.</li>
     <li><strong>Buchungs- und Anfrageformular auf dieser Website</strong> — Google Firebase
       (Google Cloud, Region Frankfurt), das deine Eingaben (Name, E-Mail, Telefon, Personenzahl,
       Nachricht und den Workshop) speichert und per E-Mail (Gmail) an uns weiterleitet.</li>
-    <li><strong>Analyse</strong> — <span class="fill-in">[Anbietername, oder
-      „keine"]</span>.</li>
+    <li><strong>Analyse</strong> — Umami Cloud (Umami Software, Inc.), ohne Cookies und ohne
+      persönliche Profile.</li>
     <li><strong>Behörden</strong> — soweit wir gesetzlich dazu verpflichtet sind, oder zur
       Geltendmachung oder Verteidigung von Rechtsansprüchen.</li>
   </ul>
   <p>
     Anbieter, die in unserem Auftrag handeln, sind durch einen Auftragsverarbeitungsvertrag nach
     Art. 28 DSGVO gebunden.
+  </p>
+
+  <h2 id="google">5a. Anmeldung mit Google</h2>
+  <p>
+    Wenn du „Mit Google anmelden“ wählst, teilt Google uns deinen Namen, deine E-Mail-Adresse und
+    dein Profilbild mit, sonst nichts: Wir fragen keinen Zugriff auf dein Gmail, Drive, deine
+    Kontakte, deinen Kalender oder andere Google-Daten an.
+  </p>
+  <p>
+    Wir nutzen diese drei Angaben nur, um dich anzumelden, deinen Namen und dein Bild in deinem
+    Konto zu zeigen und dich mit deiner Gastgeber-Seite zu verbinden. Wir nutzen sie nicht für
+    Werbung, verkaufen sie nicht und geben sie an niemanden weiter außer an unsere
+    Auftragsverarbeiter aus Abschnitt 5. Unsere Nutzung und Weitergabe von Daten aus Google-APIs
+    hält sich an die
+    <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+    einschließlich der Anforderungen zur eingeschränkten Nutzung (Limited Use).
+  </p>
+  <p>
+    Du kannst Twiggli den Zugriff jederzeit unter
+    <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>
+    entziehen und uns unter hello@twiggli.com bitten, dein Konto zu löschen.
   </p>
 
   <h2 id="hosts">6. Zwischen Gastgebern und Teilnehmenden</h2>
@@ -173,21 +194,24 @@ const toc = [
     der Europäischen Kommission zusammen mit zusätzlichen Schutzmaßnahmen.
   </p>
   <p>
-    Anbieter, bei denen aktuell eine Übermittlung stattfindet: <span class="fill-in">[auflisten,
-    oder angeben, dass es keine gibt]</span>.
+    Anbieter, bei denen aktuell eine Übermittlung stattfindet: GitHub (Website-Hosting) und Umami
+    (Analyse), beide in den USA, sowie Google und Stripe, soweit sie ihre US-Konzerngesellschaften
+    einsetzen. Grundlage ist das EU-US Data Privacy Framework, wo der Anbieter zertifiziert ist,
+    sonst Standardvertragsklauseln.
   </p>
 
   <h2 id="retention">8. Wie lange wir Daten speichern</h2>
   <ul>
     <li><strong>Kontodaten:</strong> solange dein Konto besteht, danach Löschung innerhalb von
-      <span class="fill-in">[30]</span> Tagen nach Schließung.</li>
+      30 Tagen nach Schließung.</li>
     <li><strong>Buchungs- und Zahlungsunterlagen:</strong> bis zu 10 Jahre, wie es deutsches
       Steuer- und Handelsrecht vorschreibt.</li>
     <li><strong>Von dir veröffentlichte Inhalte:</strong> bis du sie löschst, oder dein Konto
       geschlossen wird.</li>
-    <li><strong>Nutzungs- und Analysedaten:</strong>
-      <span class="fill-in">[Zeitraum]</span>.</li>
-    <li><strong>Support-Nachrichten:</strong> <span class="fill-in">[Zeitraum]</span>.</li>
+    <li><strong>Nutzungs- und Analysedaten:</strong> anonym gezählt; Umami behält nur die Summen,
+      nichts, was dich identifiziert.</li>
+    <li><strong>Anfragen und Support-Nachrichten:</strong> 3 Jahre nach dem letzten Kontakt (die
+      regelmäßige Verjährungsfrist), sofern sie nicht Teil einer Buchung wurden.</li>
   </ul>
 
   <h2 id="permissions">9. App-Berechtigungen</h2>
