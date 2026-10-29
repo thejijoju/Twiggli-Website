@@ -58,7 +58,7 @@ const events = w.sessions.slice(0, 30).map((s) => {
     organizer: { '@type': 'Organization', name: host.studio ?? host.name, url: absolute(hostHref(lang, host)) },
     performer: { '@type': 'Organization', name: host.name },
     ...(price !== undefined
-      ? { offers: { '@type': 'Offer', price, priceCurrency: 'EUR', url: s.bookUrl, availability: s.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' } }
+      ? { offers: { '@type': 'Offer', price, priceCurrency: 'EUR', url: `${pageUrl}#${s.id}`, availability: s.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' } }
       : {}),
     url: pageUrl,
   };
