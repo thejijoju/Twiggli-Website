@@ -130,7 +130,8 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
             _captcha: 'false',
           }),
         });
-        if (!res.ok) throw new Error(String(res.status));
+        // FormSubmit can answer 200 and still refuse (success: "false").
+        if (!res.ok || String((await res.json().catch(() => ({}))).success) !== 'true') throw new Error(String(res.status));
         form.hidden = true;
         if (thanks) thanks.hidden = false;
       } catch {
