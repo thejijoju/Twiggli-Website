@@ -13,6 +13,9 @@ export interface HostAccountCopy {
   sending: string;
   linkSent: string;
   noHost: string;
+  notYetTitle: string;
+  notYetLede: string;
+  notYetCta: string;
   claimTitle: string;
   google: string;
   or: string;
@@ -151,7 +154,10 @@ const en: HostAccountCopy = {
   back: '← All messages',
   welcomeTitle: 'Welcome to Twiggli',
   welcomeLede: 'Sign in or create your host account.',
-  claimTitle: 'Claim your page',
+  notYetTitle: 'You’re not a Twiggli host yet',
+  notYetLede: 'Want to run your workshops with us? Tell us about them and we’ll get in touch.',
+  notYetCta: 'Become a host',
+  claimTitle: 'Already on Twiggli? Claim your page',
   claimLede: 'Pick your page on Twiggli. We check it’s really you and unlock it, usually the same day.',
   claimPage: 'Your page',
   claimPagePh: 'Choose your page…',
@@ -249,7 +255,10 @@ const de: HostAccountCopy = {
   back: '← Alle Nachrichten',
   welcomeTitle: 'Willkommen bei Twiggli',
   welcomeLede: 'Melde dich an oder leg dein Gastgeber-Konto an.',
-  claimTitle: 'Deine Seite übernehmen',
+  notYetTitle: 'Du bist noch kein Twiggli-Gastgeber',
+  notYetLede: 'Möchtest du deine Workshops mit uns anbieten? Erzähl uns davon, wir melden uns.',
+  notYetCta: 'Gastgeber werden',
+  claimTitle: 'Schon bei Twiggli? Übernimm deine Seite',
   claimLede: 'Wähl deine Seite auf Twiggli. Wir prüfen kurz, dass du es bist, und schalten sie frei, meist noch am selben Tag.',
   claimPage: 'Deine Seite',
   claimPagePh: 'Wähl deine Seite…',

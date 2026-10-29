@@ -34,6 +34,27 @@ const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
 const INBOX = 'jirel.kuenen@gmail.com';
 const SLUG = /^[a-z0-9-]{1,60}$/;
+// The hosts we already know live in Jirel's Google Sheet, tab "Hosts &
+// Emails": column D the email(s), column K the Twiggli page (slug). Read at
+// sign-in (never copied into this public repo), with the function's own
+// service account, which the sheet is shared with (view only).
+const HOST_SHEET = '1zS4UH_IHn2mPUsoGPLhID0C6ZdeAXnHof0YZJTjjVTo';
+const knownSlugs = async (email) => {
+  const tok = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token?scopes=https://www.googleapis.com/auth/spreadsheets.readonly', { headers: { 'Metadata-Flavor': 'Google' } });
+  if (!tok.ok) throw new Error(`token ${tok.status}`);
+  const { access_token: token } = await tok.json();
+  const range = encodeURIComponent("'Hosts & Emails'!D2:K400");
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${HOST_SHEET}/values/${range}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`sheet ${res.status}`);
+  const rows = (await res.json()).values ?? [];
+  const out = new Set();
+  for (const r of rows) {
+    const emails = String(r[0] ?? '').toLowerCase().split(/[\s,;]+/).filter(Boolean);
+    if (!emails.includes(email)) continue;
+    for (const s of String(r[7] ?? '').toLowerCase().split(/[\s,;]+/)) if (SLUG.test(s)) out.add(s);
+  }
+  return [...out];
+};
 // May open every host's account without approval, and approves the others.
 const ADMINS = ['jirel.kuenen@gmail.com', 'jirelkuenen@gmail.com', 'hello@twiggli.com'];
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
@@ -297,6 +318,12 @@ export const hostClaim = onRequest(
     if (!allow(req, res)) return;
     const email = await caller(req);
     if (!email) return res.status(401).json({ error: 'Not signed in' });
+    if (req.body?.auto) {
+      let slugs = [];
+      try { slugs = await knownSlugs(email); } catch (err) { console.error('host sheet', err?.message); }
+      for (const s of slugs) await grant(email, s);
+      return res.status(200).json({ status: slugs.length ? 'granted' : 'unknown', slugs });
+    }
     const slug = String(req.body?.slug ?? '');
     const name = text(req.body?.name, 120);
     const note = text(req.body?.note, 600);
