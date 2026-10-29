@@ -31,7 +31,6 @@ export const functionsBase = firebaseConfig.projectId
   ? `https://${FUNCTIONS_REGION}-${firebaseConfig.projectId}.cloudfunctions.net`
   : '';
 
-/** Flip to true once the voucher functions are deployed on Firebase and a
- *  test payment went through: the checkout then calls Firebase instead of
- *  Supabase. */
-export const VOUCHERS_ON_FIREBASE = false;
+/** The checkout calls the voucher functions on Firebase instead of
+ *  Supabase: deployed and answering with a live PaymentIntent on 29.10.26. */
+export const VOUCHERS_ON_FIREBASE = true;

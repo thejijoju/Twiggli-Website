@@ -203,7 +203,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
         try {
           const res = await fetch(checkout.url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', apikey: checkout.anonKey, Authorization: `Bearer ${checkout.anonKey}` },
+            headers: { 'Content-Type': 'application/json', ...(checkout.anonKey ? { apikey: checkout.anonKey, Authorization: `Bearer ${checkout.anonKey}` } : {}) },
             body: JSON.stringify({
               amount: value, ref, lang: dialog.dataset.lang ?? 'de',
               host: note.Host === dialog.dataset.generalHost ? '' : note.Host,

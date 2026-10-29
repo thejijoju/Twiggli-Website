@@ -161,11 +161,13 @@ export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed:
  * Checkout Session for the exact amount, host and places, so every voucher
  * is two clicks and the amount can't be changed at Stripe. When `url` is
  * set it replaces the Payment Links above; `live: false` keeps it to visits
- * with ?stripetest=1. The anon key is Supabase's public key, safe here.
+ * with ?stripetest=1. The anon key is Supabase's public key, safe here;
+ * Firebase needs none, so it is left empty (and not sent) once vouchers run
+ * there.
  */
 export const voucherCheckout = {
   url: VOUCHERS_ON_FIREBASE ? `${functionsBase}/voucherCheckout` : 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-checkout',
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3eW1wdndvdXpiaHNodHJwdGZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzUzNjYsImV4cCI6MjEwODQ1MTM2Nn0.hszNu1l3fJJsY9g47SAY4ZmKS0BP7OQwixQ_VMoxcYQ',
+  anonKey: VOUCHERS_ON_FIREBASE ? '' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3eW1wdndvdXpiaHNodHJwdGZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzUzNjYsImV4cCI6MjEwODQ1MTM2Nn0.hszNu1l3fJJsY9g47SAY4ZmKS0BP7OQwixQ_VMoxcYQ',
   live: false,
 };
 

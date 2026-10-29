@@ -488,7 +488,7 @@ const config = {
     const post = async (body: Record<string, unknown>) => {
       const res = await fetch(cfg.url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', apikey: cfg.anonKey, Authorization: `Bearer ${cfg.anonKey}` },
+        headers: { 'Content-Type': 'application/json', ...(cfg.anonKey ? { apikey: cfg.anonKey, Authorization: `Bearer ${cfg.anonKey}` } : {}) },
         body: JSON.stringify(body),
       });
       const out = await res.json().catch(() => ({}));
