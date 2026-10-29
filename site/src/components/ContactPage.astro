@@ -153,8 +153,9 @@ const mailCopy = {
             Name: v('name'), email: v('email'), Topic: topic, ...(host ? { Host: host } : {}),
             Message: v('message'), 'Sent from': location.href, _subject: subject, _template: 'table', _captcha: 'false',
           }),
-        }).then((res) => {
-          if (!res.ok) throw new Error(String(res.status));
+        }).then(async (res) => {
+          // FormSubmit can answer 200 and still refuse (success: "false").
+          if (!res.ok || String((await res.json().catch(() => ({}))).success) !== 'true') throw new Error(String(res.status));
           form.querySelectorAll('.field').forEach((el) => { el.hidden = true; });
           if (button) button.hidden = true;
           const note = form.querySelector('[data-request-note]');

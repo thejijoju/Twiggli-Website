@@ -384,7 +384,8 @@ const e = bigEventsCopy[lang].dialog;
             email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
           }),
         });
-        if (!res.ok) throw new Error(String(res.status));
+        // FormSubmit can answer 200 and still refuse (success: "false").
+        if (!res.ok || String((await res.json().catch(() => ({}))).success) !== 'true') throw new Error(String(res.status));
         track('request-sent', { kind, host: picked.bookHost ?? '', title: picked.bookTitle ?? '', lang: dialog.dataset.lang ?? '' });
         form.hidden = true;
         if (sent) sent.hidden = false;
