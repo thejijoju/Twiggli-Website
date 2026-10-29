@@ -7,7 +7,7 @@
       "source": "functions",
       "codebase": "website",
       "ignore": ["node_modules", ".git", "*.log"],
-      "runtime": "nodejs20"
+      "runtime": "nodejs22"
     }
   ]
 }
