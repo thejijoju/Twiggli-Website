@@ -34,3 +34,9 @@ export const functionsBase = firebaseConfig.projectId
 /** The checkout calls the voucher functions on Firebase instead of
  *  Supabase: deployed and answering with a live PaymentIntent on 29.10.26. */
 export const VOUCHERS_ON_FIREBASE = true;
+
+/** Where every form on the site sends its request (functions/index.js
+ *  formRequest): saved in Firestore, then emailed to Jirel. It answers like
+ *  FormSubmit did ({ success: 'true' }), which it replaced after FormSubmit
+ *  went down on 28.10.26. */
+export const formEndpoint = `${functionsBase}/formRequest`;

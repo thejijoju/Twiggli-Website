@@ -227,6 +227,7 @@ const config = {
 </Base>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
@@ -420,7 +421,7 @@ const config = {
         Language: lang,
       };
       try {
-        fetch(`https://formsubmit.co/ajax/${cfg.inbox}`, {
+        fetch(formEndpoint, {
           method: 'POST', keepalive: true,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({

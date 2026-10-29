@@ -88,6 +88,7 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
 )}
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
     const box = form.parentElement;
     const thanks = box?.querySelector<HTMLElement>('[data-newsletter-thanks]');
@@ -117,7 +118,7 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
           return;
         }
         const teams = form.dataset.audience === 'teams';
-        const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
+        const res = await fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({

@@ -2,6 +2,7 @@
  *  and the pop-up that invites people to it (ClubPopup.astro). Same route as
  *  the other request forms: FormSubmit to our inbox as "Club waitlist", or
  *  the visitor's mail app with the same message when that is unreachable. */
+import { formEndpoint } from '../data/firebase.ts';
 import { looksLikeBot } from './honey.ts';
 
 /** What the pop-up remembers, in this browser only: when it was last shown
@@ -42,7 +43,7 @@ export function wireClubForm(form: HTMLFormElement, sent: HTMLElement | null, so
     if (error) error.hidden = true;
     if (send) { send.disabled = true; send.textContent = copy.sending; }
     try {
-      const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+      const res = await fetch(formEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({

@@ -142,6 +142,7 @@ const formCopy = { sending: t.sending, send: t.send, error: t.error };
 </Base>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   import { looksLikeBot } from '../lib/honey.ts';
   // "Ask for this one" picks the workshop in the form on the way down.
   document.querySelectorAll<HTMLElement>('[data-xmas-pick]').forEach((link) => {
@@ -184,7 +185,7 @@ const formCopy = { sending: t.sending, send: t.send, error: t.error };
       const subject = `Christmas party request: ${fields.Company} — ${fields['Group size']} people${fields['Preferred date'] ? `, ${fields['Preferred date']}` : ''}`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
-        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+        const res = await fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({

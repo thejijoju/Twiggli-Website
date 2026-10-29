@@ -7,6 +7,11 @@
 //                    page, kept as the fallback)
 //   voucherPayment   creates or updates a PaymentIntent for our own
 //                    checkout page (/checkout/, /de/checkout/)
+//   formRequest      every form on the site (booking, group, studio,
+//                    contact, host application, voucher notes …): saves
+//                    the request in Firestore (formRequests) first, then
+//                    emails it to Jirel. Replaces FormSubmit, which went
+//                    down on 28.10.26 (error 521).
 //
 // The Stripe secret key lives in Firebase Secret Manager, never in this
 // file or in the repo:  firebase functions:secrets:set STRIPE_SECRET_KEY
@@ -14,8 +19,17 @@
 
 import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import nodemailer from 'nodemailer';
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
+// An app password of the Gmail account the requests go to (Google account →
+// Security → App passwords), so the function can mail Jirel from it.
+const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
+const INBOX = 'jirel.kuenen@gmail.com';
+
+initializeApp();
 
 const ALLOWED_ORIGINS = ['https://www.twiggli.com', 'https://twiggli.com', 'http://localhost:4321', 'http://localhost:4399'];
 const MIN_EUR = 20;
@@ -186,3 +200,50 @@ export const voucherPayment = onRequest(OPTS, async (req, res) => {
   if (!r.ok) return res.status(502).json({ error: out?.error?.message ?? 'Stripe error' });
   return res.status(200).json({ clientSecret: out.client_secret, ref, id: out.id });
 });
+
+/** HTML-escaped, for the email table. */
+const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+export const formRequest = onRequest(
+  { region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false },
+  async (req, res) => {
+    if (!allow(req, res)) return;
+    const body = req.body && typeof req.body === 'object' ? req.body : {};
+    if (body._honey) return res.status(200).json({ success: 'true' }); // bots fill the hidden field
+    const subject = text(body._subject, 300) || 'Message from twiggli.com';
+    const email = text(body.email, 200);
+    // The visitor's fields, as sent: FormSubmit's own keys (_subject, …) left out.
+    const fields = Object.fromEntries(
+      Object.entries(body)
+        .filter(([k, v]) => !k.startsWith('_') && v != null && String(v).trim() !== '')
+        .slice(0, 60)
+        .map(([k, v]) => [text(k, 80), String(v).slice(0, 4000)]),
+    );
+    if (!Object.keys(fields).length) return res.status(400).json({ success: 'false', message: 'Empty form' });
+
+    // Saved first, so a request is never lost even if the email fails.
+    const doc = await getFirestore().collection('formRequests').add({
+      subject, email, fields, origin: req.get('origin') ?? '', createdAt: FieldValue.serverTimestamp(), mailed: false,
+    });
+
+    try {
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      const rows = Object.entries(fields)
+        .map(([k, v]) => `<tr><th align="left" valign="top" style="padding:6px 12px;background:#f4f4f4">${esc(k)}</th><td style="padding:6px 12px;white-space:pre-wrap">${esc(v)}</td></tr>`)
+        .join('');
+      await mail.sendMail({
+        from: { name: 'Twiggli Formular', address: INBOX },
+        to: INBOX,
+        ...(isEmail(email) ? { replyTo: email } : {}),
+        subject,
+        text: Object.entries(fields).map(([k, v]) => `${k}: ${v}`).join('\n'),
+        html: `<table style="font-family:Tahoma,sans-serif;font-size:14px;border-collapse:collapse">${rows}</table>`,
+      });
+      await doc.update({ mailed: true });
+    } catch (err) {
+      // Still saved in Firestore (formRequests, mailed: false).
+      console.error('formRequest mail failed', doc.id, err?.message);
+    }
+    return res.status(200).json({ success: 'true', id: doc.id });
+  },
+);

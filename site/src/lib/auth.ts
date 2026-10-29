@@ -8,6 +8,8 @@
  *  the bodies below change: the dialog and the header pill already call
  *  these two functions and nothing else. */
 
+import { formEndpoint } from '../data/firebase.ts';
+
 /** A signed-in visitor, as much as the header needs to show their avatar
  *  or initial (Luma shows the initial in a round chip). */
 export interface TwiggliUser {
@@ -44,7 +46,7 @@ export async function startEmailSignIn(email: string, { lang, page, inbox }: Sig
   // ── Firebase: sendSignInLinkToEmail goes here (see above) ──
   let cameFrom = 'unknown';
   try { cameFrom = sessionStorage.getItem('twiggli-came-from') || 'unknown'; } catch { /* blocked */ }
-  const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+  const res = await fetch(formEndpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     // "email" (lower case) is the field FormSubmit replies to.

@@ -144,6 +144,7 @@ const e = bigEventsCopy[lang].dialog;
 </dialog>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
@@ -189,7 +190,7 @@ const e = bigEventsCopy[lang].dialog;
     if (!inbox) return;
     const host = d.partnerHost ?? '';
     const name = d.partnerName || host.charAt(0).toUpperCase() + host.slice(1);
-    fetch(`https://formsubmit.co/ajax/${inbox}`, {
+    fetch(formEndpoint, {
       method: 'POST',
       keepalive: true,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -374,7 +375,7 @@ const e = bigEventsCopy[lang].dialog;
       const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''}${studioWhen ? ` ${studioWhen}` : ''}${fields.Where && fields.Where !== 'not said yet' ? `, ${fields.Where === 'At their own venue' ? 'at their venue' : 'at the studio'}` : ''} (${fields.People})`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
-        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+        const res = await fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           // "email" (lower case) is the field FormSubmit replies to; the

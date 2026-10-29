@@ -116,6 +116,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
 </dialog>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
@@ -225,7 +226,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
       url.searchParams.set('client_reference_id', ref);
       // A background note, so the inbox knows what is coming.
       try {
-        fetch(`https://formsubmit.co/ajax/${inbox}`, {
+        fetch(formEndpoint, {
           method: 'POST', keepalive: true,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({ ...note, 'Payment ref': ref, _subject: `Voucher checkout started: ${note.Host} — €${value}`, _template: 'table', _captcha: 'false' }),
@@ -376,7 +377,7 @@ const people = Array.from({ length: VOUCHER_MAX_PEOPLE }, (_, i) => i + 1);
         // FormSubmit can hang for a long time; give up after 12 s.
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 12000);
-        return fetch(`https://formsubmit.co/ajax/${inbox}`, {
+        return fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           // "email" (lower case) is the field FormSubmit replies to.

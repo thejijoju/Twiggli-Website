@@ -102,6 +102,7 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
 </Base>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   import { looksLikeBot } from '../lib/honey.ts';
   // Same route as the booking form (BookingDialog.astro): FormSubmit mails
   // it to our inbox; if that is unreachable, the visitor's mail app opens
@@ -134,7 +135,7 @@ const formCopy = { sending: b.sending, send: t.send, error: b.error };
       const subject = `Host application: ${fields.Teaches} — ${fields.Name}`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
-        const res = await fetch(`https://formsubmit.co/ajax/${inbox}`, {
+        const res = await fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({

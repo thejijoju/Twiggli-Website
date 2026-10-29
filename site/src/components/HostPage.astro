@@ -346,6 +346,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
 </Base>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   // Follow (data/follow.ts): an email field with the button inside it. A
   // follow reaches our inbox as "Follow host"; this device keeps the email
   // (filled in next time) and the hosts it follows. Storage may be blocked —
@@ -377,7 +378,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
       if (submit) { submit.disabled = true; submit.textContent = form.dataset.sending ?? ''; }
       if (error) error.hidden = true;
       try {
-        const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.inbox}`, {
+        const res = await fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({

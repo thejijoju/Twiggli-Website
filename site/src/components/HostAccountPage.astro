@@ -168,6 +168,7 @@ const fields = [
 </Base>
 
 <script>
+  import { formEndpoint } from '../data/firebase.ts';
   import { initializeApp } from 'firebase/app';
   import {
     getAuth, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink, signOut,
@@ -353,7 +354,7 @@ const fields = [
 
       /** A note to our inbox, so Jirel sees every change a host makes. */
       const tellUs = (what: string) => {
-        fetch(`https://formsubmit.co/ajax/${cfg.inbox}`, {
+        fetch(formEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
