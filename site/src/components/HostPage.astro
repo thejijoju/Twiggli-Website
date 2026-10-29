@@ -91,6 +91,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
   'data-book': 'request',
   'data-book-title': o.title,
   'data-book-host': host.name,
+  'data-book-slug': host.slug,
   'data-book-price': o.price,
   'data-book-link': o.bookUrl,
 });
@@ -217,6 +218,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           data-book="group"
           data-book-title={host.specialty}
           data-book-host={host.name}
+          data-book-slug={host.slug}
           data-book-price={priceRange ? priceText : undefined}
           data-book-group={host.groupRange[0] <= 1 ? `≤ ${host.groupRange[1]}` : host.groupRange[0] === host.groupRange[1] ? String(host.groupRange[1]) : `${host.groupRange[0]}–${host.groupRange[1]}`}
           data-book-min={requestMin(host)}

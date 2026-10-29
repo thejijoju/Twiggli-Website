@@ -383,6 +383,8 @@ const e = bigEventsCopy[lang].dialog;
           body: JSON.stringify({
             ...Object.fromEntries(Object.entries(fields).filter(([k]) => k !== 'Email')),
             email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
+            // Which host's dashboard the request lands in (functions/index.js formRequest).
+            ...(picked.bookSlug ? { _hostSlug: picked.bookSlug } : {}),
           }),
         });
         // FormSubmit can answer 200 and still refuse (success: "false").

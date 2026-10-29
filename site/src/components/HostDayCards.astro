@@ -57,6 +57,7 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
     'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
     'data-book-title': s.title,
     'data-book-host': s.host.name,
+    'data-book-slug': s.host.slug,
     'data-book-date': new Date(berlinTodayMs() + s.dayOffset * 86400000).toISOString().slice(0, 10),
     'data-book-time': s.time,
     'data-book-price': showPrice(s.price),

@@ -189,6 +189,7 @@ const searchText = (host: Host) => [
           data-book="group"
           data-book-title={host.specialty}
           data-book-host={host.firstName}
+          data-book-slug={host.slug}
           data-book-price={hasFigure(rangeFor(host)) ? `${priceFigure(rangeFor(host))} · ${priceCopy.priceMeta}` : undefined}
           data-book-group={groupText(host)}
           data-book-min={requestMin(host)}

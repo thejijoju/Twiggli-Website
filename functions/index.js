@@ -33,6 +33,7 @@ const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 // Security → App passwords), so the function can mail Jirel from it.
 const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
 const INBOX = 'jirel.kuenen@gmail.com';
+const SLUG = /^[a-z0-9-]{1,60}$/;
 // May open every host's account without approval, and approves the others.
 const ADMINS = ['jirel.kuenen@gmail.com', 'jirelkuenen@gmail.com', 'hello@twiggli.com'];
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
@@ -236,8 +237,11 @@ export const formRequest = onRequest(
     if (!Object.keys(fields).length) return res.status(400).json({ success: 'false', message: 'Empty form' });
 
     // Saved first, so a request is never lost even if the email fails.
+    const hostSlug = SLUG.test(String(body._hostSlug ?? '')) ? String(body._hostSlug) : '';
     const doc = await getFirestore().collection('formRequests').add({
       subject, email, fields, origin: req.get('origin') ?? '', createdAt: FieldValue.serverTimestamp(), mailed: false,
+      // A request for one host lands in their Messages (hostInbox).
+      ...(hostSlug ? { hostSlug, status: 'pending', thread: [] } : {}),
     });
 
     try {
@@ -273,7 +277,6 @@ const approveKey = async () => {
   return key;
 };
 const sign = (key, email, slug) => createHmac('sha256', key).update(`${email}\n${slug}`).digest('hex');
-const SLUG = /^[a-z0-9-]{1,60}$/;
 
 /** Who is calling, from the Firebase sign-in token the page sends. */
 const caller = async (req) => {
@@ -303,6 +306,23 @@ export const hostClaim = onRequest(
       return res.status(200).json({ status: 'granted' });
     }
     const db = getFirestore();
+    // A personal invite link Jirel emailed to the host: the page is theirs at
+    // once, the first time it is used.
+    const invite = String(req.body?.invite ?? '');
+    if (invite) {
+      const want = Buffer.from(sign(await approveKey(), 'invite', slug), 'hex');
+      const got = /^[0-9a-f]{64}$/.test(invite) ? Buffer.from(invite, 'hex') : Buffer.alloc(0);
+      if (got.length !== want.length || !timingSafeEqual(want, got)) return res.status(403).json({ error: 'Bad invite' });
+      const owner = db.doc(`pageOwners/${slug}`);
+      const taken = await owner.get();
+      if (taken.exists && taken.data().email !== email) return res.status(409).json({ status: 'taken' });
+      await owner.set({ email, claimedAt: FieldValue.serverTimestamp() });
+      await grant(email, slug);
+      try {
+        await mailJirel({ subject: `Host account: ${slug} claimed by ${email}`, text: `${name || email} (${email}) opened their invite link and now manages "${slug}".` });
+      } catch (err) { console.error('invite note failed', err?.message); }
+      return res.status(200).json({ status: 'granted' });
+    }
     const claimRef = db.doc(`hostClaims/${email}__${slug}`);
     const old = await claimRef.get();
     if (old.exists && old.data().status === 'pending') return res.status(200).json({ status: 'pending' });
@@ -337,4 +357,64 @@ export const hostApprove = onRequest({ region: 'europe-west3', maxInstances: 5 }
   await grant(email, slug);
   await getFirestore().doc(`hostClaims/${email}__${slug}`).set({ status: 'approved', approvedAt: FieldValue.serverTimestamp() }, { merge: true });
   return page(`Approved: <b>${esc(email)}</b> can now edit <b>${esc(slug)}</b>. They see it the next time they open their account (twiggli.com/host/account/). Let them know it's ready.`);
+});
+
+/** Requests for the pages the caller manages (Jirel: any page she asks for). */
+const mySlugs = async (email) => ((await getFirestore().doc(`hostMembers/${email}`).get()).data()?.slugs ?? []);
+
+export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const slug = String(req.body?.slug ?? '');
+  if (!SLUG.test(slug) || !(ADMINS.includes(email) || (await mySlugs(email)).includes(slug))) return res.status(403).json({ error: 'Not your page' });
+  // Sorted here rather than in the query, which would need a composite index.
+  const snap = await getFirestore().collection('formRequests').where('hostSlug', '==', slug).get();
+  const items = snap.docs.map((d) => {
+    const x = d.data();
+    return { id: d.id, subject: x.subject, fields: x.fields, status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0 };
+  }).sort((a, b) => b.createdAt - a.createdAt).slice(0, 200);
+  return res.status(200).json({ items });
+});
+
+const ACTIONS = { accept: 'accepted', decline: 'declined', suggest: 'suggested' };
+
+export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const id = String(req.body?.id ?? '');
+  const action = String(req.body?.action ?? '');
+  const message = text(req.body?.message, 2000);
+  const when = text(req.body?.when, 120);
+  if (!/^[A-Za-z0-9]{10,40}$/.test(id) || !ACTIONS[action]) return res.status(400).json({ error: 'Bad request' });
+  const ref = getFirestore().doc(`formRequests/${id}`);
+  const snap = await ref.get();
+  const x = snap.data();
+  if (!x?.hostSlug || !(ADMINS.includes(email) || (await mySlugs(email)).includes(x.hostSlug))) return res.status(403).json({ error: 'Not your request' });
+  const entry = { by: email, action, message, when, at: Date.now() };
+  await ref.update({ status: ACTIONS[action], thread: FieldValue.arrayUnion(entry) });
+  // Jirel sees every answer; the guest is NOT emailed automatically (she
+  // decides about that), so she passes it on until then.
+  try {
+    const guest = x.fields?.Name || x.email || 'the guest';
+    await mailJirel({
+      subject: `Host ${ACTIONS[action]}: ${x.subject}`,
+      replyTo: isEmail(x.email) ? x.email : undefined,
+      text: `${email} ${ACTIONS[action]} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}`,
+    });
+  } catch (err) { console.error('hostReply note failed', err?.message); }
+  return res.status(200).json({ status: ACTIONS[action] });
+});
+
+/** Jirel only: every page's personal invite link, to email to the hosts. */
+export const hostInviteLinks = onRequest({ region: 'europe-west3', maxInstances: 2, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email || !ADMINS.includes(email)) return res.status(403).json({ error: 'Admins only' });
+  const slugs = (Array.isArray(req.body?.slugs) ? req.body.slugs : []).map(String).filter((s) => SLUG.test(s)).slice(0, 300);
+  const key = await approveKey();
+  const owners = await getFirestore().collection('pageOwners').get();
+  const claimed = Object.fromEntries(owners.docs.map((d) => [d.id, d.data().email]));
+  return res.status(200).json({ links: slugs.map((s) => ({ slug: s, invite: sign(key, 'invite', s), claimedBy: claimed[s] ?? '' })) });
 });

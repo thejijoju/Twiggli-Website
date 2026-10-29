@@ -14,6 +14,45 @@ export interface HostAccountCopy {
   linkSent: string;
   noHost: string;
   claimTitle: string;
+  google: string;
+  or: string;
+  tabToday: string;
+  tabCalendar: string;
+  tabListings: string;
+  tabMessages: string;
+  tabInvites: string;
+  fAll: string;
+  fPending: string;
+  fConfirmed: string;
+  msgsEmpty: string;
+  wToday: string;
+  wUpcoming: string;
+  todayEmpty: string;
+  invitesLede: string;
+  invitesLoad: string;
+  inviteCopy: string;
+  inviteCopied: string;
+  inviteClaimed: string;
+  inviteNote: string;
+  stPending: string;
+  stAccepted: string;
+  stDeclined: string;
+  stSuggested: string;
+  review: string;
+  accept: string;
+  decline: string;
+  suggest: string;
+  suggestWhen: string;
+  replyMsg: string;
+  replyMsgPh: string;
+  sendReply: string;
+  replied: string;
+  guest: string;
+  people: string;
+  phone: string;
+  back: string;
+  welcomeTitle: string;
+  welcomeLede: string;
   claimLede: string;
   claimPage: string;
   claimPagePh: string;
@@ -73,6 +112,45 @@ const en: HostAccountCopy = {
   sending: 'Sending…',
   linkSent: 'Check your inbox: we sent you a sign-in link. No password needed.',
   noHost: 'We couldn’t find a host page for this email yet. Write to {email} and we’ll connect it.',
+  google: 'Sign in with Google',
+  or: 'or',
+  tabToday: 'Today',
+  tabCalendar: 'Calendar',
+  tabListings: 'Listings',
+  tabMessages: 'Messages',
+  tabInvites: 'Invites',
+  fAll: 'All',
+  fPending: 'Waiting for you',
+  fConfirmed: 'Confirmed',
+  msgsEmpty: 'No requests yet. When someone asks for a date, it shows up here.',
+  wToday: 'Today',
+  wUpcoming: 'Upcoming',
+  todayEmpty: 'You don’t have any bookings',
+  invitesLede: 'Each host’s personal link. Whoever opens it and signs in gets that page straight away, so send each link only to its host.',
+  invitesLoad: 'Show invite links',
+  inviteCopy: 'Copy link',
+  inviteCopied: 'Copied',
+  inviteClaimed: 'claimed by {email}',
+  inviteNote: 'You’re claiming the page “{name}”. Sign in and it’s yours.',
+  stPending: 'Request pending',
+  stAccepted: 'Confirmed',
+  stDeclined: 'Declined',
+  stSuggested: 'New time suggested',
+  review: 'Review',
+  accept: 'Accept',
+  decline: 'Decline',
+  suggest: 'Suggest another time',
+  suggestWhen: 'Which date and time instead?',
+  replyMsg: 'Message to the guest (optional)',
+  replyMsgPh: 'e.g. Looking forward to it! Bring an apron.',
+  sendReply: 'Send',
+  replied: 'Done. We pass your answer on to the guest.',
+  guest: 'Guest',
+  people: 'People',
+  phone: 'Phone',
+  back: '← All messages',
+  welcomeTitle: 'Welcome to Twiggli',
+  welcomeLede: 'Sign in or create your host account.',
   claimTitle: 'Claim your page',
   claimLede: 'Pick your page on Twiggli. We check it’s really you and unlock it, usually the same day.',
   claimPage: 'Your page',
@@ -132,6 +210,45 @@ const de: HostAccountCopy = {
   sending: 'Wird gesendet…',
   linkSent: 'Schau in dein Postfach: Wir haben dir einen Anmeldelink geschickt. Kein Passwort nötig.',
   noHost: 'Zu dieser E-Mail haben wir noch keine Gastgeber-Seite gefunden. Schreib uns an {email}, dann verbinden wir sie.',
+  google: 'Mit Google anmelden',
+  or: 'oder',
+  tabToday: 'Heute',
+  tabCalendar: 'Kalender',
+  tabListings: 'Angebote',
+  tabMessages: 'Nachrichten',
+  tabInvites: 'Einladungen',
+  fAll: 'Alle',
+  fPending: 'Warten auf dich',
+  fConfirmed: 'Bestätigt',
+  msgsEmpty: 'Noch keine Anfragen. Sobald jemand einen Termin anfragt, erscheint er hier.',
+  wToday: 'Heute',
+  wUpcoming: 'Demnächst',
+  todayEmpty: 'Du hast keine Buchungen',
+  invitesLede: 'Der persönliche Link jedes Gastgebers. Wer ihn öffnet und sich anmeldet, bekommt die Seite sofort, also schick jeden Link nur an seinen Gastgeber.',
+  invitesLoad: 'Einladungslinks anzeigen',
+  inviteCopy: 'Link kopieren',
+  inviteCopied: 'Kopiert',
+  inviteClaimed: 'übernommen von {email}',
+  inviteNote: 'Du übernimmst die Seite „{name}“. Melde dich an, dann gehört sie dir.',
+  stPending: 'Anfrage offen',
+  stAccepted: 'Bestätigt',
+  stDeclined: 'Abgelehnt',
+  stSuggested: 'Neuer Termin vorgeschlagen',
+  review: 'Ansehen',
+  accept: 'Annehmen',
+  decline: 'Ablehnen',
+  suggest: 'Anderen Termin vorschlagen',
+  suggestWhen: 'Welcher Tag und welche Uhrzeit stattdessen?',
+  replyMsg: 'Nachricht an den Gast (optional)',
+  replyMsgPh: 'z. B. Ich freu mich! Bring eine Schürze mit.',
+  sendReply: 'Senden',
+  replied: 'Erledigt. Wir geben deine Antwort an den Gast weiter.',
+  guest: 'Gast',
+  people: 'Personen',
+  phone: 'Telefon',
+  back: '← Alle Nachrichten',
+  welcomeTitle: 'Willkommen bei Twiggli',
+  welcomeLede: 'Melde dich an oder leg dein Gastgeber-Konto an.',
   claimTitle: 'Deine Seite übernehmen',
   claimLede: 'Wähl deine Seite auf Twiggli. Wir prüfen kurz, dass du es bist, und schalten sie frei, meist noch am selben Tag.',
   claimPage: 'Deine Seite',
