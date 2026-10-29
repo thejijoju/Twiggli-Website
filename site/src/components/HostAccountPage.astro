@@ -85,7 +85,12 @@ const fields = [
     <p class="ha-card ha-note" data-ha-soon hidden></p>
 
     <!-- Signed out: one field, one button. -->
-    <form class="ha-card ha-signin" data-ha-signin hidden>
+    <form class="ha-signin" data-ha-signin hidden>
+      <span class="ha-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+      </span>
+      <h2>{t.welcomeTitle}</h2>
+      <p class="ha-sub">{t.welcomeLede}</p>
       <p class="ha-invite" data-ha-invite-note hidden></p>
       <label>
         <span>{t.email}</span>
@@ -230,7 +235,8 @@ const fields = [
   import { formEndpoint } from '../data/firebase.ts';
   import { initializeApp } from 'firebase/app';
   import {
-    getAuth, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink, signOut,
+    getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink,
+    signInWithPopup, signOut,
   } from 'firebase/auth';
   import {
     collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where, writeBatch,
@@ -299,6 +305,27 @@ const fields = [
         await signOut(auth);
         location.reload();
       });
+      $('[data-ha-google]').addEventListener('click', async () => {
+        try { await signInWithPopup(auth, new GoogleAuthProvider()); location.reload(); }
+        catch (err) { if ((err as { code?: string }).code !== 'auth/popup-closed-by-user') note(signin, fill(t.error, cfg.contact), false); }
+      });
+
+      // ── A personal invite link (?invite=…&page=slug) Jirel emailed: kept
+      //    through the sign-in (the email link comes back without it).
+      const INVITE = 'twiggli-host-invite';
+      const params = new URLSearchParams(location.search);
+      if (params.get('invite') && params.get('page')) {
+        try { localStorage.setItem(INVITE, JSON.stringify({ slug: params.get('page'), invite: params.get('invite') })); } catch { /* private mode */ }
+      }
+      const pendingInvite = (): { slug: string; invite: string } | null => {
+        try { return JSON.parse(localStorage.getItem(INVITE) || 'null'); } catch { return null; }
+      };
+      const inv = pendingInvite();
+      if (inv && hosts[inv.slug]) {
+        const p = $('[data-ha-invite-note]');
+        p.textContent = t.inviteNote.replace('{name}', hosts[inv.slug].name);
+        p.hidden = false;
+      }
 
       // Coming back from the link in the email.
       const finishSignIn = async () => {
@@ -448,16 +475,146 @@ const fields = [
         for (const sl of (slots.length ? slots : h?.slots ?? [])) addSlot(sl);
         emptyHint();
         editor.hidden = false;
+        loadInbox();
       };
+
+      // ── Messages and Today: the requests for this host (functions hostInbox) ──
+      type Req = { id: string; subject: string; fields: Record<string, string>; status: string; thread: { action: string; when?: string; message?: string; at: number }[]; createdAt: number };
+      let reqs: Req[] = [];
+      let filter = 'all';
+      let when = 'today';
+      const api = async (name: string, body: Record<string, unknown>) => {
+        const token = await auth.currentUser?.getIdToken();
+        const res = await fetch(`${cfg.functions}/${name}`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        return res.json();
+      };
+      const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested };
+      const dateOf = (r: Req) => (r.fields.Date || '').slice(0, 10);
+      const el = (tag: string, cls = '', text = '') => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
+      const row = (r: Req, withReview: boolean) => {
+        const li = el('li', 'ha-msg');
+        const av = el('span', 'ha-av', (r.fields.Name || '?').trim().charAt(0).toUpperCase());
+        const body = el('div', 'ha-msg-body');
+        const top = el('div', 'ha-msg-top');
+        top.append(el('strong', '', r.fields.Name || r.fields.Email || t.guest), el('time', '', new Date(r.createdAt).toLocaleDateString(document.documentElement.lang || 'de', { day: 'numeric', month: 'short' })));
+        const line = el('p', 'ha-msg-line', r.fields.Workshop || r.subject);
+        const meta = el('p', 'ha-msg-meta');
+        const dot = el('i', `ha-st ha-st-${r.status}`);
+        meta.append(dot, `${statusText[r.status] ?? r.status} · ${r.fields.Date || ''}${r.fields.Time ? ` ${r.fields.Time}` : ''} · ${r.fields.People || '?'} ${t.people}`);
+        body.append(top, line, meta);
+        if (withReview && r.status === 'pending') {
+          const b = el('button', 'ha-pill-btn', t.review) as HTMLButtonElement;
+          b.type = 'button';
+          b.addEventListener('click', () => openDetail(r));
+          body.append(b);
+        } else body.addEventListener('click', () => openDetail(r));
+        li.append(av, body);
+        return li;
+      };
+      const renderMsgs = () => {
+        const list = $('[data-ha-msgs]');
+        const shown = reqs.filter((r) => filter === 'all' || r.status === filter);
+        list.replaceChildren(...shown.map((r) => row(r, true)));
+        $('[data-ha-msgs-empty]').hidden = shown.length > 0;
+        $('[data-ha-dot]').hidden = !reqs.some((r) => r.status === 'pending');
+        const today = new Date().toISOString().slice(0, 10);
+        const mine = reqs.filter((r) => r.status === 'accepted' && (when === 'today' ? dateOf(r) === today : dateOf(r) > today))
+          .sort((a, b) => dateOf(a).localeCompare(dateOf(b)));
+        $('[data-ha-today]').replaceChildren(...mine.map((r) => row(r, false)));
+        $('[data-ha-today-empty]').hidden = mine.length > 0;
+      };
+      const loadInbox = async () => {
+        try { reqs = (await api('hostInbox', { slug })).items ?? []; } catch { reqs = []; }
+        $('[data-ha-detail]').hidden = true;
+        $('[data-ha-msgs]').hidden = false;
+        renderMsgs();
+      };
+      const openDetail = (r: Req) => {
+        const box = $('[data-ha-detail]');
+        const back = el('button', 'ha-link', t.back) as HTMLButtonElement;
+        back.type = 'button';
+        back.addEventListener('click', () => { box.hidden = true; $('[data-ha-msgs]').hidden = false; });
+        const dl = el('dl', 'ha-dl');
+        const show = ['Workshop', 'Date', 'Time', 'People', 'Name', 'Email', 'Phone', 'Message', 'Occasion', 'Where', 'Extras'];
+        for (const k of show) if (r.fields[k]) dl.append(el('dt', '', k), el('dd', '', r.fields[k]));
+        box.replaceChildren(back, el('h3', '', r.fields.Workshop || r.subject), dl);
+        for (const h of r.thread) box.append(el('p', 'ha-thread', `${statusText[{ accept: 'accepted', decline: 'declined', suggest: 'suggested' }[h.action] ?? ''] ?? h.action}${h.when ? ` · ${h.when}` : ''}${h.message ? ` · “${h.message}”` : ''}`));
+        if (r.status === 'pending' || r.status === 'suggested') {
+          const f = el('form', 'ha-reply') as HTMLFormElement;
+          f.innerHTML = `<label class="ha-field"><span></span><input name="when" hidden></label><label class="ha-field"><span></span><textarea name="message" rows="3"></textarea></label><div class="ha-actions"></div><p class="ha-note" role="status"></p>`;
+          const [whenLab, msgLab] = Array.from(f.querySelectorAll('label'));
+          whenLab.querySelector('span')!.textContent = t.suggestWhen; whenLab.hidden = true;
+          msgLab.querySelector('span')!.textContent = t.replyMsg;
+          (f.elements.namedItem('message') as HTMLTextAreaElement).placeholder = t.replyMsgPh;
+          const acts = f.querySelector('.ha-actions')!;
+          const send = async (action: string) => {
+            const w = (f.elements.namedItem('when') as HTMLInputElement).value.trim();
+            if (action === 'suggest' && !w) { whenLab.hidden = false; (f.elements.namedItem('when') as HTMLInputElement).hidden = false; (f.elements.namedItem('when') as HTMLInputElement).focus(); return; }
+            acts.querySelectorAll('button').forEach((b) => { (b as HTMLButtonElement).disabled = true; });
+            try {
+              await api('hostReply', { id: r.id, action, when: w, message: (f.elements.namedItem('message') as HTMLTextAreaElement).value });
+              f.querySelector('.ha-note')!.textContent = t.replied;
+              await loadInbox();
+            } catch {
+              f.querySelector('.ha-note')!.textContent = fill(t.error, cfg.contact);
+              acts.querySelectorAll('button').forEach((b) => { (b as HTMLButtonElement).disabled = false; });
+            }
+          };
+          for (const [a, label, cls] of [['accept', t.accept, 'ha-btn'], ['suggest', t.suggest, 'ha-btn ha-btn-soft'], ['decline', t.decline, 'ha-btn ha-btn-soft']]) {
+            const b = el('button', cls, label) as HTMLButtonElement;
+            b.type = 'button';
+            b.addEventListener('click', () => send(a));
+            acts.append(b);
+          }
+          box.append(f);
+        }
+        $('[data-ha-msgs]').hidden = true;
+        box.hidden = false;
+      };
+      root.querySelectorAll<HTMLButtonElement>('[data-ha-filter] button').forEach((b) => b.addEventListener('click', () => {
+        filter = b.dataset.f!;
+        root.querySelectorAll('[data-ha-filter] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        renderMsgs();
+      }));
+      root.querySelectorAll<HTMLButtonElement>('[data-ha-when] button').forEach((b) => b.addEventListener('click', () => {
+        when = b.dataset.w!;
+        root.querySelectorAll('[data-ha-when] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        renderMsgs();
+      }));
+
+      // ── Admin: every host's invite link ──
+      $('[data-ha-invites-load]').addEventListener('click', async () => {
+        const table = $('[data-ha-invites]');
+        try {
+          const { links } = await api('hostInviteLinks', { slugs: Object.keys(hosts) });
+          const base = `${location.origin}${location.pathname}`;
+          table.replaceChildren(...(links as { slug: string; invite: string; claimedBy: string }[])
+            .sort((a, b) => hosts[a.slug].name.localeCompare(hosts[b.slug].name))
+            .map((l) => {
+              const tr = el('tr');
+              const url = `${base}?page=${l.slug}&invite=${l.invite}`;
+              const copy = el('button', 'ha-link', t.inviteCopy) as HTMLButtonElement;
+              copy.type = 'button';
+              copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(url); copy.textContent = t.inviteCopied; } catch { window.prompt('', url); } });
+              const c3 = el('td');
+              if (l.claimedBy) c3.textContent = t.inviteClaimed.replace('{email}', l.claimedBy); else c3.append(copy);
+              tr.append(el('td', '', hosts[l.slug].name), el('td', 'ha-mono', url), c3);
+              return tr;
+            }));
+        } catch { table.replaceChildren(el('tr', '', fill(t.error, cfg.contact))); }
+      });
 
       /** Asks for a page (functions/index.js hostClaim): 'granted' for
        *  admins, 'pending' for everyone else until Jirel approves. */
-      const claim = async (s: string, name: string, note: string): Promise<string> => {
+      const claim = async (s: string, name: string, note: string, invite = ''): Promise<string> => {
         const token = await auth.currentUser?.getIdToken();
         const res = await fetch(`${cfg.functions}/hostClaim`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ slug: s, name, note }),
+          body: JSON.stringify({ slug: s, name, note, ...(invite ? { invite } : {}) }),
         });
         if (!res.ok) throw new Error(String(res.status));
         return (await res.json()).status;
@@ -485,6 +642,14 @@ const fields = [
         signin.hidden = true;
         app.hidden = false;
         $('[data-ha-who]').textContent = fill(t.signedInAs, email);
+        root.classList.add('is-in');
+        const invited = pendingInvite();
+        if (invited) {
+          try { await claim(invited.slug, '', '', invited.invite); } catch { /* bad or used link: the claim form is still there */ }
+          try { localStorage.removeItem(INVITE); } catch { /* private mode */ }
+          history.replaceState(null, '', location.pathname);
+        }
+        if ((cfg.admins as string[]).includes(email)) $('[data-ha-admin-only]').hidden = false;
         let slugs: string[] = [];
         try {
           const m = await getDoc(doc(db, 'hostMembers', email));
@@ -537,7 +702,29 @@ const fields = [
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.06);
     margin-bottom: 20px;
   }
-  .ha-signin { display: grid; gap: 14px; max-width: 460px; }
+  /* Signed out: Luma's layout in Twiggli colours, a frosted card on cream
+     with a purple and a yellow glow behind it. */
+  .ha:not(.is-in) .ha-head { display: none; }
+  .ha:not(.is-in) { position: relative; min-height: 72vh; display: grid; place-items: center; }
+  .ha:not(.is-in)::before, .ha:not(.is-in)::after {
+    content: ''; position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0;
+  }
+  .ha:not(.is-in)::before { width: min(460px, 70vw); aspect-ratio: 1; background: var(--color-accent); opacity: 0.38; left: 50%; top: 18%; translate: -95% 0; }
+  .ha:not(.is-in)::after { width: min(420px, 65vw); aspect-ratio: 1; background: #ffc94d; opacity: 0.55; left: 50%; top: 30%; translate: -5% 0; }
+  .ha-signin {
+    position: relative; z-index: 1; width: 100%; max-width: 360px; box-sizing: border-box;
+    display: grid; gap: 12px; padding: 26px 24px; border-radius: 24px;
+    background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 20px 60px rgba(60, 30, 120, 0.15);
+  }
+  .ha-signin h2 { margin: 4px 0 0; font-size: 1.35rem; }
+  .ha-sub { margin: -4px 0 6px; color: var(--color-text-muted); font-size: 0.9rem; }
+  .ha-ico { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+  .ha-invite { margin: 0; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, #ffc94d 35%, #fff); font-size: 0.88rem; }
+  .ha-signin label { display: grid; gap: 6px; }
+  .ha-signin .ha-btn { width: 100%; border-radius: 12px; background: var(--color-accent); }
+  .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px -24px; }
+  .ha-signin .ha-google { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(36, 39, 46, 0.12); }
   .ha-field { display: grid; gap: 6px; margin-bottom: 16px; }
   .ha-field > span, .ha-signin label > span { font-weight: 600; font-size: 0.92rem; }
   .ha-field small { color: var(--color-text-muted); font-size: 0.82rem; }
@@ -571,6 +758,45 @@ const fields = [
   .ha-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   .ha-remove { font-size: 0.88rem; }
   .ha-soon p { margin: 0; color: var(--color-text-muted); }
+  .ha-tabs button span { margin-right: 6px; }
+  .ha-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e0457b; margin-left: 4px; vertical-align: top; }
+  .ha-h { margin: 6px 0 12px; font-size: 1.6rem; }
+  .ha-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ha-pills button { font: inherit; font-size: 0.9rem; border: 0; background: rgba(36, 39, 46, 0.07); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+  .ha-pills button[aria-pressed='true'] { background: var(--color-text); color: #fff; }
+  .ha-msgs { list-style: none; margin: 0; padding: 0; }
+  .ha-msg { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(36, 39, 46, 0.08); cursor: pointer; }
+  .ha-av { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-weight: 600; color: #fff; background: var(--color-accent); }
+  .ha-msg-body { flex: 1; min-width: 0; }
+  .ha-msg-top { display: flex; justify-content: space-between; gap: 10px; }
+  .ha-msg-top time { color: var(--color-text-muted); font-size: 0.82rem; }
+  .ha-msg-line { margin: 2px 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ha-msg-meta { margin: 0; color: var(--color-text-muted); font-size: 0.86rem; }
+  .ha-st { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; background: #9aa0a6; }
+  .ha-st-pending { background: #e0457b; } .ha-st-accepted { background: #1f9d55; } .ha-st-suggested { background: #f2a516; }
+  .ha-pill-btn { margin-top: 8px; font: inherit; font-size: 0.86rem; font-weight: 600; border: 0; border-radius: 10px; padding: 7px 14px; background: rgba(36, 39, 46, 0.07); cursor: pointer; }
+  .ha-empty { color: var(--color-text-muted); }
+  .ha-empty-big { text-align: center; padding: 50px 0; }
+  .ha-empty-big span { font-size: 64px; }
+  .ha-empty-big h2 { margin: 10px 0 0; font-size: 1.6rem; }
+  .ha-detail h3 { margin: 12px 0; }
+  .ha-dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 16px; }
+  .ha-dl dt { font-weight: 600; } .ha-dl dd { margin: 0; white-space: pre-wrap; }
+  .ha-thread { margin: 0 0 8px; padding: 8px 12px; border-radius: 10px; background: rgba(36, 39, 46, 0.05); font-size: 0.9rem; }
+  .ha-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .ha-btn-soft { background: rgba(36, 39, 46, 0.08); color: var(--color-text); }
+  .ha-invites { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.88rem; }
+  .ha-invites td { padding: 8px 6px; border-bottom: 1px solid rgba(36, 39, 46, 0.08); vertical-align: top; }
+  .ha-mono { font-family: ui-monospace, monospace; font-size: 0.75rem; word-break: break-all; color: var(--color-text-muted); }
+  /* Phones: the site already has its own bar at the bottom, so the tabs
+     stay at the top, as one scrollable row that sticks while scrolling. */
+  @media (max-width: 720px) {
+    .ha-tabs {
+      position: sticky; top: 0; z-index: 20; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+      margin-inline: -16px; padding: 8px 16px; background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(12px);
+    }
+    .ha-tabs button { flex: none; }
+  }
   @media (max-width: 560px) {
     .ha-row { grid-template-columns: 1fr; }
     .ha-card { padding: 18px; }
