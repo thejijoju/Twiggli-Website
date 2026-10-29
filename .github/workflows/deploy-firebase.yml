@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.project.outputs.id != ''
         with:
-          node-version: 20
+          node-version: 22
       - name: Install function dependencies
         if: steps.project.outputs.id != ''
         run: npm ci --prefix functions --no-audit --no-fund
