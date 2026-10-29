@@ -1112,13 +1112,11 @@ const reels: Record<string, { video: string; poster: string }> = {
   // wide to paint out, so the clip now stops just before the first one
   // does — on a canvas being painted, which is what it is about.
   techno: { video: '/video/techno.mp4', poster: '/video/techno-poster.jpg' },
-  // Two finished canvases from her vulva-painting workshop, held up and set
-  // on the table. Hers, audio stripped. It replaces reel-3, an unattributed
-  // painting clip that was standing in for her — this is her own work, so
-  // the carousel and the directory now draw her with it.
-  //
-  // Short at 4.4s: it is the whole clip, and it loops. Her workshop copy
-  // still describes the collective-painting format rather than this one.
+  // Pia's own reel, sent 29.10.26 to replace her earlier one: four finished
+  // canvases from a workshop held up by the group, ending on all four
+  // together (the poster). No caption, so it ships whole (7s, loops);
+  // audio stripped. Her photos (card, strip, gallery) are from the same
+  // batch: the group painting at her table, and a canvas being finished.
   pia: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
   // Senlë Studio's incense bench: the ground blend mixed and weighed, the
   // labelled jars of botanicals, then the trail pressed into the wooden
