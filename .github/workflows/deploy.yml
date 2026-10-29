@@ -52,6 +52,24 @@ jobs:
               commit -m 'Translate changed host copy'
             git push
           fi
+      # Google sign-in runs through twiggli.com (authDomain in
+      # site/src/data/firebase.ts), so Google's consent screen names our
+      # domain, not twiggli-production.firebaseapp.com. GitHub Pages cannot
+      # proxy, so Firebase's sign-in helper is copied in on every build
+      # (Firebase docs, "host the sign-in helper code in your domain"). The
+      # pages are saved as .html: GitHub Pages serves /__/auth/handler from
+      # handler.html. Fails the build rather than ship a broken sign-in.
+      - name: Copy Firebase's sign-in helper to /__/auth/
+        run: |
+          base=https://twiggli-production.firebaseapp.com
+          mkdir -p site/public/__/auth site/public/__/firebase
+          curl -fsSL "$base/__/auth/handler" -o site/public/__/auth/handler.html
+          curl -fsSL "$base/__/auth/handler.js" -o site/public/__/auth/handler.js
+          curl -fsSL "$base/__/auth/experiments.js" -o site/public/__/auth/experiments.js
+          curl -fsSL "$base/__/auth/iframe" -o site/public/__/auth/iframe.html
+          curl -fsSL "$base/__/auth/iframe.js" -o site/public/__/auth/iframe.js
+          curl -fsSL "$base/__/firebase/init.json" -o site/public/__/firebase/init.json
+          ls -la site/public/__/auth site/public/__/firebase
       - uses: withastro/action@v3
         with:
           path: site

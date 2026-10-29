@@ -12,7 +12,9 @@
  *  ever deploys its own functions codebase and never the app's rules. */
 export const firebaseConfig = {
   apiKey: 'AIzaSyCu6S-EbH8VFkQjKWe3teVXqYhyD6RT3VY',
-  authDomain: 'twiggli-production.firebaseapp.com',
+  // Our own domain, so Google's sign-in screen says twiggli.com. Works
+  // because the deploy copies Firebase's helper to /__/auth/ (deploy.yml).
+  authDomain: 'www.twiggli.com',
   projectId: 'twiggli-production',
   appId: '1:496068250761:web:b6bf4daace44dab40a4a58',
 };
