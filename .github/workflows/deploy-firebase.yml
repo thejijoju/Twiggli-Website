@@ -8,7 +8,9 @@ name: Deploy Firebase (functions and Firestore rules)
 # Runs when the functions change on the live branch, or by hand. Needs one repository secret, FIREBASE_SERVICE_ACCOUNT:
 # the JSON key of a service account with the roles "Firebase Admin" and
 # "Cloud Functions Admin" (functions/README.md). The Stripe key is not
-# needed here: it lives in Firebase Secret Manager.
+# needed here: it lives in Firebase Secret Manager. --force lets the CLI set
+# the cleanup policy for old function images (it only ever touches the
+# "website" codebase, never the app's functions).
 
 on:
   push:
@@ -47,4 +49,4 @@ jobs:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       - name: Deploy
         if: steps.project.outputs.id != ''
-        run: npx --yes firebase-tools@15.34.2 deploy --only functions:website --project "${{ steps.project.outputs.id }}" --non-interactive
+        run: npx --yes firebase-tools@15.34.2 deploy --only functions:website --project "${{ steps.project.outputs.id }}" --non-interactive --force
