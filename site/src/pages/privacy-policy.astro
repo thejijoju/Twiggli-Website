@@ -3,14 +3,13 @@ import LegalPage from '../layouts/LegalPage.astro';
 import { withBase } from '../lib/url.ts';
 
 /**
- * DRAFT. Structured to the GDPR's disclosure duties (Art. 13/14) with the
- * German specifics that apply to a Berlin operator: § 25 TDDDG for cookies
- * and device storage, and the Berlin supervisory authority for complaints.
- *
- * A privacy policy has to describe what the product ACTUALLY does. The
- * processor list, retention periods and app permissions below are the
- * shape of the disclosure, not verified facts about Twiggli — confirm each
- * one against the real stack before publishing.
+ * Structured to the GDPR's disclosure duties (Art. 13/14) with the German
+ * specifics: § 25 TDDDG for cookies and device storage. The providers listed
+ * are the ones the website and app really use (29.10.26): GitHub Pages,
+ * Google Firebase (Auth, Firestore, Cloud Functions in Frankfurt), Gmail,
+ * Stripe, Umami Cloud and Google Fonts. Section 5a is the Google API
+ * Services User Data Policy disclosure Google asks for on Sign in with
+ * Google. Keep it in step with the German version (de/privacy-policy.astro).
  */
 const toc = [
   { id: 'controller', label: '1. Who is responsible' },
@@ -18,6 +17,7 @@ const toc = [
   { id: 'purposes', label: '3. Why, and on what legal basis' },
   { id: 'cookies', label: '4. Cookies and device storage' },
   { id: 'sharing', label: '5. Who we share data with' },
+  { id: 'google', label: '5a. Signing in with Google' },
   { id: 'hosts', label: '6. Between hosts and participants' },
   { id: 'transfers', label: '7. Transfers outside the EEA' },
   { id: 'retention', label: '8. How long we keep it' },
@@ -37,48 +37,46 @@ const toc = [
   toc={toc}
   lang="en"
 >
-  <div class="legal-notice" slot="notice">
-    <p><strong>Draft — must be checked against what the product actually does.</strong></p>
-    <p>
-      A privacy policy is a description of real processing, so it cannot be
-      finished from the outside. Confirm every processor, retention period and
-      app permission listed here against your actual stack, fill in the
-      highlighted fields, and have it reviewed before publishing.
-    </p>
-  </div>
 
   <h2 id="controller">1. Who is responsible</h2>
   <p>
     The controller for the personal data described here is
     Twiggli UG (haftungsbeschränkt),
-    Rodenkirchener Str. 147, 50997 Köln, Germany, Germany —
+    Rodenkirchener Str. 147, 50997 Köln, Germany —
     hello@twiggli.com. Company details are in our
     <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
-    Data protection contact: <span class="fill-in">[email address, or the name
-    and contact details of your Datenschutzbeauftragte(r) if you have appointed
-    one]</span>.
+    Data protection contact: hello@twiggli.com. We are not required to appoint
+    a data protection officer; questions go straight to the founder.
   </p>
 
   <h2 id="data">2. What we collect</h2>
   <h3>Data you give us</h3>
   <ul>
-    <li><strong>Account:</strong> name, email address, password (stored hashed),
-      and optionally a photo, city and short bio.</li>
+    <li><strong>Account:</strong> your email address and, if you sign in with
+      Google, your name and profile picture (see section 5a). Signing in on the
+      website works with a one-time email link or Google, without a password. In
+      the app, a password you choose is stored by Firebase only in hashed form.
+      Optionally a photo, city and short bio.</li>
     <li><strong>Host profile:</strong> what you teach, your listings, and the
       videos and photos you upload.</li>
     <li><strong>Bookings:</strong> which workshops you booked, when, for how many
       people, and any note you send the host.</li>
-    <li><strong>Payments:</strong> handled by our payment provider. We receive
-      confirmation, amount and a masked reference — not your full card number.</li>
+    <li><strong>Payments and vouchers:</strong> handled by Stripe. We receive
+      the amount, your name and email, the voucher recipient and message you
+      enter, and a masked payment reference, never your full card details.</li>
+    <li><strong>Requests:</strong> what you enter in a booking, group, studio or
+      contact form: name, email, phone, date, number of people and your
+      message.</li>
     <li><strong>Messages and support:</strong> what you write to us or to a host
       through the app.</li>
   </ul>
   <h3>Data collected automatically</h3>
   <ul>
-    <li><strong>Usage:</strong> pages and listings viewed, searches, taps, and
-      when.</li>
+    <li><strong>Usage:</strong> on the website, page views and clicks counted
+      without cookies and without profiles (Umami, section 4). In the app,
+      listings viewed and searches.</li>
     <li><strong>Device and connection:</strong> device type, operating system, app
       version, browser, language, and IP address.</li>
     <li><strong>Approximate location:</strong> to show workshops near you. Precise
@@ -114,14 +112,17 @@ const toc = [
     needs no consent under § 25(2) TDDDG.
   </p>
   <p>
-    You can change or withdraw your choice at any time via
-    <span class="fill-in">[link to your cookie settings]</span>. Withdrawing does
-    not affect processing that already happened.
+    What the website stores on your device: whether you are signed in (Firebase
+    Authentication), your cookie choice, the email address a sign-in link was
+    sent to (until you open it), and your language. All of these are strictly
+    necessary. You can change your choice at any time by clearing this site's
+    data in your browser; the banner then asks again. Withdrawing does not affect
+    processing that already happened.
   </p>
   <p>
-    Current non-essential tools: <span class="fill-in">[list each analytics or
-    marketing tool, its provider, and what it stores — or state that none are
-    used]</span>.
+    Analytics: we use Umami Cloud, which counts visits and clicks without
+    cookies, without storing your IP address and without building profiles of
+    individual visitors. We use no advertising or tracking cookies.
   </p>
 
   <h2 id="sharing">5. Who we share data with</h2>
@@ -131,24 +132,50 @@ const toc = [
   </p>
   <ul>
     <li><strong>Hosts</strong> — the details of your booking. See section 6.</li>
-    <li><strong>Payment provider</strong> —
-      <span class="fill-in">[provider name]</span>, to take payments and pay
-      out hosts.</li>
-    <li><strong>Hosting and infrastructure</strong> —
-      <span class="fill-in">[provider name and region]</span>.</li>
-    <li><strong>Email and notifications</strong> —
-      <span class="fill-in">[provider name]</span>.</li>
+    <li><strong>Payments</strong> — Stripe Payments Europe, Ltd. (Ireland), to
+      take payments for vouchers and bookings.</li>
+    <li><strong>Accounts, database and server functions</strong> — Google Firebase
+      (Google Ireland Ltd.; Firestore and Cloud Functions in the Frankfurt region),
+      for sign-in, host accounts, requests and vouchers.</li>
+    <li><strong>Website hosting</strong> — GitHub Pages (GitHub, Inc., USA), which
+      serves the pages and processes your IP address to deliver them.</li>
+    <li><strong>Email</strong> — Google Gmail / Google Workspace (Google Ireland
+      Ltd.), for our replies and for forwarding your requests to us. Sign-in links
+      are sent by Firebase.</li>
+    <li><strong>Fonts</strong> — Google Fonts (Google Ireland Ltd.), which loads
+      the typefaces and sees your IP address when it does.</li>
     <li><strong>Booking and enquiry form on this website</strong> — Google Firebase (Google
       Cloud, Frankfurt region), which stores what you enter (name, email, phone, number of
       people, message and the workshop) and passes it on to us by email (Gmail).</li>
-    <li><strong>Analytics</strong> — <span class="fill-in">[provider name, or
-      "none"]</span>.</li>
+    <li><strong>Analytics</strong> — Umami Cloud (Umami Software, Inc.), cookieless
+      and without personal profiles.</li>
     <li><strong>Authorities</strong> — where we are legally required to, or to
       establish or defend legal claims.</li>
   </ul>
   <p>
     Providers acting on our instructions are bound by a data processing agreement
     under Art. 28 GDPR.
+  </p>
+
+  <h2 id="google">5a. Signing in with Google</h2>
+  <p>
+    If you choose “Sign in with Google”, Google shares with us your name, your
+    email address and your profile picture, and nothing else: we do not request
+    access to your Gmail, Drive, contacts, calendar or any other Google data.
+  </p>
+  <p>
+    We use these three things only to sign you in, to show your name and picture
+    in your account, and to connect you to your host page. We do not use them for
+    advertising, we do not sell them, and we do not share them with anyone except
+    our processors listed in section 5. Our use and transfer of information
+    received from Google APIs adheres to the
+    <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+    including the Limited Use requirements.
+  </p>
+  <p>
+    You can remove Twiggli's access at any time at
+    <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>,
+    and ask us to delete your account by writing to hello@twiggli.com.
   </p>
 
   <h2 id="hosts">6. Between hosts and participants</h2>
@@ -171,21 +198,26 @@ const toc = [
     Contractual Clauses together with additional safeguards.
   </p>
   <p>
-    Providers that currently involve a transfer: <span class="fill-in">[list, or
-    state that there are none]</span>.
+    Providers that currently involve a transfer: GitHub (website hosting) and
+    Umami (analytics), both in the USA, and Google and Stripe where they use
+    their US group companies. These rely on the EU-US Data Privacy Framework
+    where the provider is certified, otherwise on Standard Contractual
+    Clauses.
   </p>
 
   <h2 id="retention">8. How long we keep it</h2>
   <ul>
     <li><strong>Account data:</strong> while your account is open, then deleted
-      within <span class="fill-in">[30]</span> days of closure.</li>
+      within 30 days of closure.</li>
     <li><strong>Booking and payment records:</strong> up to 10 years, as German
       tax and commercial law requires.</li>
     <li><strong>Content you posted:</strong> until you delete it, or your account
       closes.</li>
-    <li><strong>Usage and analytics data:</strong>
-      <span class="fill-in">[period]</span>.</li>
-    <li><strong>Support messages:</strong> <span class="fill-in">[period]</span>.</li>
+    <li><strong>Usage and analytics data:</strong> counted anonymously; Umami keeps
+      the totals, nothing that identifies you.</li>
+    <li><strong>Requests and support messages:</strong> 3 years after the last
+      contact (the general limitation period), unless they became part of a
+      booking.</li>
   </ul>
 
   <h2 id="permissions">9. App permissions</h2>
