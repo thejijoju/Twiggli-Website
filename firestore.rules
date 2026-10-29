@@ -1,0 +1,66 @@
+rules_version = '2';
+// Host accounts on Firestore (replacing supabase/migrations/20261027_host_accounts.sql).
+//
+//   hostMembers/{email}      { slugs: ['nicole', 'whittle'] }  who may edit which host page.
+//                            Jirel adds these by hand in the Firebase console; the
+//                            document id is the host's email in lower case.
+//   hostProfiles/{slug_lang} a host's own words for their page (en or de).
+//   hostSlots/{id}           a host's weekly schedule, one document per repeating slot.
+//
+// Profiles and slots are public to read: they are what the site shows, and the
+// deploy reads them before every build (scripts/fetch-host-edits.mjs). Only a
+// signed-in host with a verified email listed in hostMembers may write their own.
+// Everything else is closed.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function email() {
+      return request.auth.token.email.lower();
+    }
+    function signedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    function member(slug) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/hostMembers/$(email()))
+        && slug in get(/databases/$(database)/documents/hostMembers/$(email())).data.slugs;
+    }
+    function short(field, max) {
+      return !(field in request.resource.data)
+        || request.resource.data[field] == null
+        || (request.resource.data[field] is string && request.resource.data[field].size() <= max);
+    }
+
+    match /hostMembers/{memberEmail} {
+      allow read: if signedIn() && memberEmail == email();
+      allow write: if false;
+    }
+
+    match /hostProfiles/{id} {
+      allow read: if true;
+      allow write: if member(request.resource.data.slug)
+        && id == request.resource.data.slug + '_' + request.resource.data.lang
+        && request.resource.data.lang in ['en', 'de']
+        && short('specialty', 80) && short('studio', 80) && short('blurb', 1500)
+        && short('group_size', 80) && short('duration', 40) && short('place', 120)
+        && short('languages', 40) && short('price_note', 120);
+    }
+
+    match /hostSlots/{id} {
+      allow read: if true;
+      allow create, update: if member(request.resource.data.slug)
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 1 && request.resource.data.title.size() <= 120
+        && request.resource.data.weekdays is list
+        && request.resource.data.weekdays.size() >= 1 && request.resource.data.weekdays.size() <= 7
+        && request.resource.data.weekdays.hasOnly(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'])
+        && request.resource.data.time is string && request.resource.data.time.matches('^([01][0-9]|2[0-3]):[0-5][0-9]$')
+        && (!('price' in request.resource.data) || request.resource.data.price == null
+            || (request.resource.data.price is int && request.resource.data.price >= 0 && request.resource.data.price <= 2000));
+      allow delete: if member(resource.data.slug);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

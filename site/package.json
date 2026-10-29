@@ -14,8 +14,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "@protomaps/basemaps": "^5.7.2",
-    "@supabase/supabase-js": "2.118.0",
     "astro": "^5.14.10",
+    "firebase": "13.1.0",
     "maplibre-gl": "^6.12.0",
     "pmtiles": "^4.5.0"
   },

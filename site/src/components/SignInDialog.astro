@@ -6,7 +6,7 @@
  *
  * Accounts are not live yet, so the submit goes through lib/auth.ts's
  * startEmailSignIn(), which today posts "Login interest" to our inbox via
- * FormSubmit and later becomes Supabase's signInWithOtp. The dialog only
+ * FormSubmit and later becomes Firebase's email link. The dialog only
  * ever talks to lib/auth.ts.
  *
  * A native <dialog> opened with showModal(): the page behind is inert, Esc

@@ -1,4 +1,5 @@
 import type { Host } from './content.ts';
+import { VOUCHERS_ON_FIREBASE, functionsBase } from './firebase.ts';
 import { getHostPriceRanges, getSessions } from './sessions.ts';
 import { withBase, type Lang } from '../lib/url.ts';
 
@@ -155,14 +156,15 @@ export const stripeVoucherLink: Record<'test' | 'live', { custom: string; fixed:
 };
 
 /**
- * Our own checkout (supabase/functions/voucher-checkout): creates a Stripe
+ * Our own checkout (functions/index.js voucherCheckout on Firebase once
+ * VOUCHERS_ON_FIREBASE is on; supabase/functions/voucher-checkout until then): creates a Stripe
  * Checkout Session for the exact amount, host and places, so every voucher
  * is two clicks and the amount can't be changed at Stripe. When `url` is
  * set it replaces the Payment Links above; `live: false` keeps it to visits
  * with ?stripetest=1. The anon key is Supabase's public key, safe here.
  */
 export const voucherCheckout = {
-  url: 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-checkout',
+  url: VOUCHERS_ON_FIREBASE ? `${functionsBase}/voucherCheckout` : 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-checkout',
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3eW1wdndvdXpiaHNodHJwdGZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzUzNjYsImV4cCI6MjEwODQ1MTM2Nn0.hszNu1l3fJJsY9g47SAY4ZmKS0BP7OQwixQ_VMoxcYQ',
   live: false,
 };
@@ -177,7 +179,7 @@ export const voucherCheckout = {
  * The publishable key is Stripe's public key, safe here.
  */
 export const voucherPayment = {
-  url: 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-payment',
+  url: VOUCHERS_ON_FIREBASE ? `${functionsBase}/voucherPayment` : 'https://kwympvwouzbhshtrptfp.supabase.co/functions/v1/voucher-payment',
   anonKey: voucherCheckout.anonKey,
   // Live since 26.10 (STRIPE_SECRET_KEY in Supabase is sk_live). Test
   // key, if ever needed again with sk_test: pk_test_51Pyt7jRQ5Tx7BE7RseiZobyVTmVJM8n8aVl7jVmRokqKNdJdbfyrY6oCSBOmhOYZ0v0cLxoSsbr2IAEWZGkuEZNM00ZEG3bZT0

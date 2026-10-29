@@ -3,7 +3,7 @@ import type { Lang } from '../lib/url.ts';
 /** The sign-in pill in the dark strip (SocialBar.astro) and the dialog it
  *  opens (SignInDialog.astro). Accounts are not live yet: the dialog takes
  *  an email and tells the visitor we will write once they can sign in (see
- *  lib/auth.ts). When Supabase's magic link goes in, only `sentTitle` and
+ *  lib/auth.ts). When Firebase's email link goes in, only `sentTitle` and
  *  `sentBody` need new words ("Check your inbox"). */
 export interface AuthCopy {
   /** The pill's label. */
