@@ -1,10 +1,8 @@
 import type { Lang } from '../lib/url.ts';
 
 /** The sign-in pill in the dark strip (SocialBar.astro) and the dialog it
- *  opens (SignInDialog.astro). Accounts are not live yet: the dialog takes
- *  an email and tells the visitor we will write once they can sign in (see
- *  lib/auth.ts). When Firebase's email link goes in, only `sentTitle` and
- *  `sentBody` need new words ("Check your inbox"). */
+ *  opens (SignInDialog.astro): Firebase sign-in by email link or Google
+ *  (lib/auth.ts), which lands on the host account. */
 export interface AuthCopy {
   /** The pill's label. */
   signIn: string;
@@ -26,6 +24,8 @@ export interface AuthCopy {
   hostLink: string;
   sentTitle: string;
   sentBody: string;
+  /** "Sign in with Google", under the email form. */
+  google: string;
   close: string;
   /** {email} is the contact address. */
   error: string;
@@ -46,8 +46,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'We’ll send you a sign-in link, no password needed.',
     hostQ: 'Are you a host?',
     hostLink: 'This way for hosts',
-    sentTitle: 'Thank you!',
-    sentBody: 'Accounts are launching soon, we’ll email you as soon as you can sign in. 💛',
+    sentTitle: 'Check your inbox',
+    sentBody: 'We’ve sent you a sign-in link. Open it on this device and you’re in.',
+    google: 'Sign in with Google',
     close: 'Close',
     error: 'That didn’t go through. Please try again, or write to us at {email}.',
   },
@@ -65,8 +66,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'Wir schicken dir einen Anmeldelink, kein Passwort nötig.',
     hostQ: 'Du bist Gastgeber*in?',
     hostLink: 'Hier für Hosts',
-    sentTitle: 'Danke!',
-    sentBody: 'Konten starten in Kürze, wir schicken dir eine E-Mail, sobald du dich anmelden kannst. 💛',
+    sentTitle: 'Schau in dein Postfach',
+    sentBody: 'Wir haben dir einen Anmeldelink geschickt. Öffne ihn auf diesem Gerät, dann bist du drin.',
+    google: 'Mit Google anmelden',
     close: 'Schließen',
     error: 'Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib uns an {email}.',
   },
@@ -84,8 +86,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'On t’envoie un lien de connexion, pas besoin de mot de passe.',
     hostQ: 'Tu es hôte ?',
     hostLink: 'Par ici pour les hôtes',
-    sentTitle: 'Merci !',
-    sentBody: 'Les comptes arrivent bientôt, on t’écrit dès que tu peux te connecter. 💛',
+    sentTitle: 'Regarde ta boîte mail',
+    sentBody: 'On t’a envoyé un lien de connexion. Ouvre-le sur cet appareil et c’est fait.',
+    google: 'Se connecter avec Google',
     close: 'Fermer',
     error: 'Ça n’a pas marché. Réessaie, ou écris-nous à {email}.',
   },
@@ -103,8 +106,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'Te enviamos un enlace de acceso, sin contraseña.',
     hostQ: '¿Eres anfitrión?',
     hostLink: 'Por aquí para anfitriones',
-    sentTitle: '¡Gracias!',
-    sentBody: 'Las cuentas llegan pronto, te escribiremos en cuanto puedas iniciar sesión. 💛',
+    sentTitle: 'Revisa tu correo',
+    sentBody: 'Te hemos enviado un enlace para iniciar sesión. Ábrelo en este dispositivo y listo.',
+    google: 'Iniciar sesión con Google',
     close: 'Cerrar',
     error: 'No se ha enviado. Inténtalo de nuevo o escríbenos a {email}.',
   },
@@ -122,8 +126,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'Ti mandiamo un link di accesso, nessuna password.',
     hostQ: 'Sei un host?',
     hostLink: 'Di qua per gli host',
-    sentTitle: 'Grazie!',
-    sentBody: 'Gli account arrivano presto, ti scriviamo appena potrai accedere. 💛',
+    sentTitle: 'Controlla la tua email',
+    sentBody: 'Ti abbiamo inviato un link di accesso. Aprilo su questo dispositivo e sei dentro.',
+    google: 'Accedi con Google',
     close: 'Chiudi',
     error: 'Non è andato a buon fine. Riprova o scrivici a {email}.',
   },
@@ -141,8 +146,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'We sturen je een inloglink, geen wachtwoord nodig.',
     hostQ: 'Ben je host?',
     hostLink: 'Hierheen voor hosts',
-    sentTitle: 'Dankjewel!',
-    sentBody: 'Accounts komen binnenkort, we mailen je zodra je kunt inloggen. 💛',
+    sentTitle: 'Kijk in je inbox',
+    sentBody: 'We hebben je een inloglink gestuurd. Open hem op dit apparaat en je bent binnen.',
+    google: 'Inloggen met Google',
     close: 'Sluiten',
     error: 'Dat lukte niet. Probeer het opnieuw of mail ons op {email}.',
   },
@@ -160,8 +166,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'Wyślemy ci link do logowania, bez hasła.',
     hostQ: 'Jesteś gospodarzem?',
     hostLink: 'Tędy dla gospodarzy',
-    sentTitle: 'Dziękujemy!',
-    sentBody: 'Konta ruszają wkrótce, napiszemy, gdy tylko będzie można się zalogować. 💛',
+    sentTitle: 'Sprawdź skrzynkę',
+    sentBody: 'Wysłaliśmy ci link do logowania. Otwórz go na tym urządzeniu i gotowe.',
+    google: 'Zaloguj się przez Google',
     close: 'Zamknij',
     error: 'Nie udało się. Spróbuj ponownie lub napisz do nas na {email}.',
   },
@@ -179,8 +186,9 @@ export const authCopy: Record<Lang, AuthCopy> = {
     hint: 'Sana bir giriş bağlantısı göndereceğiz, şifre gerekmez.',
     hostQ: 'Ev sahibi misin?',
     hostLink: 'Ev sahipleri için buradan',
-    sentTitle: 'Teşekkürler!',
-    sentBody: 'Hesaplar çok yakında, giriş yapabildiğin anda sana e-posta göndereceğiz. 💛',
+    sentTitle: 'Gelen kutunu kontrol et',
+    sentBody: 'Sana bir giriş bağlantısı gönderdik. Bu cihazda aç, hemen giriş yap.',
+    google: 'Google ile giriş yap',
     close: 'Kapat',
     error: 'Gönderilemedi. Lütfen tekrar dene ya da {email} adresine yaz.',
   },

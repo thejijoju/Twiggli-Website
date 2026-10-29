@@ -43,6 +43,7 @@ const hosts = Object.fromEntries(
   }]),
 );
 /** Every page a host could claim, by name (the test page included). */
+const becomeHost = `${href(lang, '/host/')}#apply`;
 const claimList = getHosts('en', { withPreview: true })
   .map((h) => ({ slug: h.slug, label: `${h.name} · ${h.specialty}` }))
   .sort((a, b) => a.label.localeCompare(b.label));
@@ -117,6 +118,13 @@ const fields = [
         <button type="button" class="ha-link" data-ha-signout>{t.signOut}</button>
       </div>
       <p class="ha-card ha-note" data-ha-nohost hidden></p>
+
+      <!-- Signed in, but not a host (yet). -->
+      <div class="ha-card ha-notyet" data-ha-notyet hidden>
+        <h2>{t.notYetTitle}</h2>
+        <p>{t.notYetLede}</p>
+        <a class="ha-btn" href={becomeHost}>{t.notYetCta} →</a>
+      </div>
 
       <!-- No page yet: ask for one. Jirel approves by email (functions/index.js hostClaim). -->
       <form class="ha-card ha-claim" data-ha-claim hidden>
@@ -233,6 +241,7 @@ const fields = [
 
 <script>
   import { formEndpoint } from '../data/firebase.ts';
+  import { rememberSignedIn } from '../lib/auth.ts';
   import { initializeApp } from 'firebase/app';
   import {
     getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink,
@@ -303,6 +312,7 @@ const fields = [
       });
       $('[data-ha-signout]').addEventListener('click', async () => {
         await signOut(auth);
+        rememberSignedIn(false);
         location.reload();
       });
       $('[data-ha-google]').addEventListener('click', async () => {
@@ -643,6 +653,7 @@ const fields = [
         app.hidden = false;
         $('[data-ha-who]').textContent = fill(t.signedInAs, email);
         root.classList.add('is-in');
+        rememberSignedIn(true);
         const invited = pendingInvite();
         if (invited) {
           try { await claim(invited.slug, '', '', invited.invite); } catch { /* bad or used link: the claim form is still there */ }
@@ -674,6 +685,15 @@ const fields = [
           return;
         }
         if (!slugs.length) {
+          // A host we already know by email (functions/hostEmails.json) gets
+          // their page straight away.
+          try {
+            const r = await api('hostClaim', { auto: true });
+            slugs = ((r.slugs as string[] | undefined) ?? []).filter((x) => hosts[x]);
+          } catch { /* not a known host */ }
+        }
+        if (!slugs.length) {
+          $('[data-ha-notyet]').hidden = false;
           claimForm.hidden = false;
           return;
         }
