@@ -183,6 +183,25 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
         : {}),
     });
   }
+  // Formats of hosts who started as previews (hosts/preview.ts) and are
+  // live now: getHosts only knows them once their slug is out of
+  // preview-slugs.json, so this adds nothing for a host still in preview.
+  for (const [slug, offers] of Object.entries(preview.onRequest)) {
+    const host = bySlug.get(slug);
+    if (!host) continue;
+    for (const o of offers) {
+      out.push({
+        id: `req-${slug}-${hash(o.title)}`,
+        host,
+        title: lang === 'de' || !o.titleEn ? o.title : o.titleEn,
+        district: o.district ?? host.area ?? host.place,
+        bookUrl: o.url,
+        ...(o.duration ? { duration: o.duration } : {}),
+        ...(o.price ? { price: o.price } : {}),
+        request: true,
+      });
+    }
+  }
   // Group formats hosts quoted us by email (teamOffers.ts): request-only,
   // at the company's own space.
   for (const o of teamOffers) {
