@@ -1,18 +1,146 @@
+// Firestore rules for twiggli-production: the app's rules (FlutterFlow, as
+// published in the console on 29.10.26) with the website's host-account
+// rules added before the final catch-all. The Firebase console is where
+// these are published, by hand: this copy is what to paste there. Never
+// deploy it with the CLI without checking the console first, in case the
+// app's rules changed since.
 rules_version = '2';
-// Host accounts on Firestore (replacing supabase/migrations/20261027_host_accounts.sql).
-//
-//   hostMembers/{email}      { slugs: ['nicole', 'whittle'] }  who may edit which host page.
-//                            Jirel adds these by hand in the Firebase console; the
-//                            document id is the host's email in lower case.
-//   hostProfiles/{slug_lang} a host's own words for their page (en or de).
-//   hostSlots/{id}           a host's weekly schedule, one document per repeating slot.
-//
-// Profiles and slots are public to read: they are what the site shows, and the
-// deploy reads them before every build (scripts/fetch-host-edits.mjs). Only a
-// signed-in host with a verified email listed in hostMembers may write their own.
-// Everything else is closed.
+
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /Users/{parent}/event_ratings/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/event_ratings/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /{document=**} {
+      allow read, write: if request.auth.token.email.matches("firebase@flutterflow.io");
+    }
+
+    match /APIKeys/{document} {
+      allow create: if false;
+      allow read: if false;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /Events/{document} {
+      allow create: if request.auth != null;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if resource.data.created_by == /databases/$(database)/documents/Users/$(request.auth.uid);
+    }
+
+    match /ReportedEvents/{document} {
+      allow create: if request.auth != null;
+      allow read: if resource.data.reporterId == /databases/$(database)/documents/Users/$(request.auth.uid);
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /UserKeys/{document} {
+      allow create: if false;
+      allow read: if false;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /Users/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /category/{document} {
+      allow create: if false;
+      allow read: if false;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /chats/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if /databases/$(database)/documents/Users/$(request.auth.uid) in resource.data.users;
+    }
+
+    match /comments/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if resource.data.created_by == /databases/$(database)/documents/Users/$(request.auth.uid);
+    }
+
+    match /ff_user_push_notifications/{document} {
+      allow create: if /databases/$(database)/documents/Users/$(request.auth.uid) == request.resource.data.sender;
+      allow read: if false;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /chats/{parent}/messages/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if resource.data.message_sent_by == /databases/$(database)/documents/Users/$(request.auth.uid);
+    }
+
+    match /{path=**}/messages/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /notifications/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /payments/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /stripeaccounts/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth.uid == resource.data.id;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /comments/{parent}/sub_comments/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if resource.data.created_by == /databases/$(database)/documents/Users/$(request.auth.uid);
+    }
+
+    match /{path=**}/sub_comments/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /transactions/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ── Website (twiggli.com): host accounts. Added 29.10.26; see
+    //    functions/README.md in the website repo. Touches nothing the app uses. ──
     function email() {
       return request.auth.token.email.lower();
     }
