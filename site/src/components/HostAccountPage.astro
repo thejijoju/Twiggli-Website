@@ -86,12 +86,18 @@ const fields = [
 
     <!-- Signed out: one field, one button. -->
     <form class="ha-card ha-signin" data-ha-signin hidden>
+      <p class="ha-invite" data-ha-invite-note hidden></p>
       <label>
         <span>{t.email}</span>
         <input type="email" name="email" required autocomplete="email" placeholder={t.emailPh} />
       </label>
       <button type="submit" class="ha-btn">{t.sendLink}</button>
       <p class="ha-note" data-ha-signin-note role="status"></p>
+      <hr class="ha-sep" />
+      <button type="button" class="ha-btn ha-google" data-ha-google>
+        <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+        {t.google}
+      </button>
     </form>
 
     <!-- Signed in. -->
@@ -125,13 +131,45 @@ const fields = [
 
       <div data-ha-editor hidden>
         <nav class="ha-tabs" role="tablist">
-          <button type="button" role="tab" aria-selected="true" data-ha-tab="page">{t.tabPage}</button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="schedule">{t.tabSchedule}</button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="vouchers">{t.tabVouchers}</button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="requests">{t.tabRequests}</button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="today"><span aria-hidden="true">📖</span>{t.tabToday}</button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="calendar"><span aria-hidden="true">📅</span>{t.tabCalendar}</button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="listings"><span aria-hidden="true">🏷️</span>{t.tabListings}</button>
+          <button type="button" role="tab" aria-selected="true" data-ha-tab="messages"><span aria-hidden="true">💬</span>{t.tabMessages}<i class="ha-dot" data-ha-dot hidden></i></button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="invites" data-ha-admin-only hidden><span aria-hidden="true">✉️</span>{t.tabInvites}</button>
         </nav>
 
-        <form class="ha-card" data-ha-panel="page">
+        <!-- Messages: every request for this host, newest first (functions hostInbox). -->
+        <section data-ha-panel="messages">
+          <h2 class="ha-h">{t.tabMessages}</h2>
+          <div class="ha-pills" data-ha-filter>
+            <button type="button" aria-pressed="true" data-f="all">{t.fAll}</button>
+            <button type="button" aria-pressed="false" data-f="pending">{t.fPending}</button>
+            <button type="button" aria-pressed="false" data-f="accepted">{t.fConfirmed}</button>
+          </div>
+          <ul class="ha-msgs" data-ha-msgs></ul>
+          <p class="ha-empty" data-ha-msgs-empty hidden>{t.msgsEmpty}</p>
+          <div class="ha-card ha-detail" data-ha-detail hidden></div>
+        </section>
+
+        <!-- Today: what happens today and next. -->
+        <section data-ha-panel="today" hidden>
+          <div class="ha-pills" data-ha-when>
+            <button type="button" aria-pressed="true" data-w="today">{t.wToday}</button>
+            <button type="button" aria-pressed="false" data-w="upcoming">{t.wUpcoming}</button>
+          </div>
+          <ul class="ha-msgs" data-ha-today></ul>
+          <div class="ha-empty-big" data-ha-today-empty hidden><span aria-hidden="true">📖</span><h2>{t.todayEmpty}</h2></div>
+        </section>
+
+        <!-- Admin: personal invite links to email to the hosts. -->
+        <section data-ha-panel="invites" hidden>
+          <h2 class="ha-h">{t.tabInvites}</h2>
+          <p class="ha-lede">{t.invitesLede}</p>
+          <button type="button" class="ha-btn" data-ha-invites-load>{t.invitesLoad}</button>
+          <table class="ha-invites" data-ha-invites></table>
+        </section>
+
+        <form class="ha-card" data-ha-panel="listings" hidden>
           <div class="ha-langs" role="radiogroup" aria-label={t.textIn}>
             <span>{t.textIn}</span>
             <label><input type="radio" name="textlang" value="en" checked /> English</label>
@@ -152,7 +190,7 @@ const fields = [
           </div>
         </form>
 
-        <form class="ha-card" data-ha-panel="schedule" hidden>
+        <form class="ha-card" data-ha-panel="calendar" hidden>
           <p class="ha-lede">{t.scheduleLede}</p>
           <div data-ha-slots></div>
           <p class="ha-note" data-ha-noslots hidden>{t.noSlots}</p>
@@ -163,8 +201,6 @@ const fields = [
           </div>
         </form>
 
-        <div class="ha-card ha-soon" data-ha-panel="vouchers" hidden><p>🎁 {t.soonVouchers}</p></div>
-        <div class="ha-card ha-soon" data-ha-panel="requests" hidden><p>📬 {t.soonRequests}</p></div>
       </div>
     </div>
 
@@ -227,8 +263,8 @@ const fields = [
       const app = $('[data-ha-app]');
       const editor = $('[data-ha-editor]');
       const pick = $<HTMLSelectElement>('[data-ha-pick]');
-      const pageForm = $<HTMLFormElement>('[data-ha-panel="page"]');
-      const slotForm = $<HTMLFormElement>('[data-ha-panel="schedule"]');
+      const pageForm = $<HTMLFormElement>('[data-ha-panel="listings"]');
+      const slotForm = $<HTMLFormElement>('[data-ha-panel="calendar"]');
       const slotsBox = $('[data-ha-slots]');
       const tpl = $<HTMLTemplateElement>('[data-ha-slot-tpl]');
       let email = '';

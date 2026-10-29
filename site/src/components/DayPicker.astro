@@ -131,6 +131,7 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
     'data-book': s.soldOut ? 'notify' : s.request ? 'request' : 'book',
     'data-book-title': s.title,
     'data-book-host': s.host.name,
+    'data-book-slug': s.host.slug,
     'data-book-date': isoDate(s.dayOffset),
     'data-book-time': s.time,
     'data-book-price': showPrice(s.price),
@@ -140,6 +141,7 @@ const inquireAttrs = (o: OnRequestWorkshop) => ({
   'data-book': 'request',
   'data-book-title': o.title,
   'data-book-host': o.host.name,
+  'data-book-slug': o.host.slug,
   'data-book-price': showPrice(o.price),
   'data-book-link': o.bookUrl,
 });
@@ -582,7 +584,7 @@ import Voucher from './Voucher.astro';
                       return (
                         <li class="promo" data-promo-host={s.host.slug} data-seen={`m:${s.host.slug}`}>
                           <button type="button" class="promo-card" data-book="membership"
-                            data-book-title={`${mc.formTitle} · ${m.studio}`} data-book-host={s.host.name} data-book-price={price}>
+                            data-book-title={`${mc.formTitle} · ${m.studio}`} data-book-host={s.host.name} data-book-slug={s.host.slug} data-book-price={price}>
                             <span class="promo-media">
                               <img src={s.host.poster ?? m.image} alt="" loading="lazy" decoding="async" />
                               <span class="promo-kicker">{mc.kicker}</span>
