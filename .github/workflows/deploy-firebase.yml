@@ -1,8 +1,11 @@
 name: Deploy Firebase (functions and Firestore rules)
 
-# The voucher payment functions (functions/index.js) and the host-account
-# security rules (firestore.rules). Runs when either changes on the live
-# branch, or by hand. Needs one repository secret, FIREBASE_SERVICE_ACCOUNT:
+# The website's functions (functions/index.js, codebase "website"). The
+# project is twiggli-production, which the app uses too: deploying only the
+# "website" codebase never touches the app's own functions, and Firestore
+# rules are NOT deployed from here, because the app's database shares them
+# (firestore.rules must first be merged with the app's rules by hand).
+# Runs when the functions change on the live branch, or by hand. Needs one repository secret, FIREBASE_SERVICE_ACCOUNT:
 # the JSON key of a service account with the roles "Firebase Admin" and
 # "Cloud Functions Admin" (functions/README.md). The Stripe key is not
 # needed here: it lives in Firebase Secret Manager.
@@ -10,7 +13,7 @@ name: Deploy Firebase (functions and Firestore rules)
 on:
   push:
     branches: [claude/new-session-c5222r]
-    paths: [functions/**, firestore.rules, firebase.json, .github/workflows/deploy-firebase.yml]
+    paths: [functions/**, firebase.json, .github/workflows/deploy-firebase.yml]
   workflow_dispatch:
 
 permissions:
@@ -44,4 +47,4 @@ jobs:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       - name: Deploy
         if: steps.project.outputs.id != ''
-        run: npx --yes firebase-tools@15.34.2 deploy --only functions,firestore:rules --project "${{ steps.project.outputs.id }}" --non-interactive --force
+        run: npx --yes firebase-tools@15.34.2 deploy --only functions:website --project "${{ steps.project.outputs.id }}" --non-interactive
