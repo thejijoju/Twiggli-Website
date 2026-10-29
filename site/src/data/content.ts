@@ -1117,6 +1117,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   // together (the poster). No caption, so it ships whole (7s, loops);
   // audio stripped. Her photos (card, strip, gallery) are from the same
   // batch: the group painting at her table, and a canvas being finished.
+  // Her second batch (pia-3..8): the living room laid for a workshop, a
+  // wall of finished canvases, guests painting, a canvas up close, the
+  // materials, and Pia at her table.
   pia: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
   // Senlë Studio's incense bench: the ground blend mixed and weighed, the
   // labelled jars of botanicals, then the trail pressed into the wooden
