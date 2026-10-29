@@ -49,6 +49,8 @@ export interface HostAccountCopy {
   soonVouchers: string;
   soonRequests: string;
   viewPage: string;
+  /** Shown while accounts are not open yet; {email} is the contact address. */
+  soon: string;
 }
 
 const en: HostAccountCopy = {
@@ -97,6 +99,7 @@ const en: HostAccountCopy = {
   soonVouchers: 'Coming soon: see every voucher sold for your workshops, and mark a guest’s code as redeemed in one click.',
   soonRequests: 'Coming soon: booking requests land here, and you accept or reply right away.',
   viewPage: 'See your page',
+  soon: 'Host accounts open very soon. Until then, send any change to your page to {email} and we update it the same day.',
 };
 
 const de: HostAccountCopy = {
@@ -145,6 +148,7 @@ const de: HostAccountCopy = {
   soonVouchers: 'Bald hier: alle Gutscheine für deine Workshops auf einen Blick, und den Code eines Gastes mit einem Klick einlösen.',
   soonRequests: 'Bald hier: Buchungsanfragen landen direkt hier, und du nimmst sie an oder antwortest sofort.',
   viewPage: 'Deine Seite ansehen',
+  soon: 'Gastgeber-Konten öffnen in Kürze. Bis dahin schick jede Änderung an deiner Seite an {email}, wir aktualisieren sie noch am selben Tag.',
 };
 
 export const hostAccountCopy = (lang: Lang): HostAccountCopy => (lang === 'de' ? de : en);

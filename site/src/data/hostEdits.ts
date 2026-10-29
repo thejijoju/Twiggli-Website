@@ -1,5 +1,5 @@
 /** What hosts changed themselves in their Twiggli account (HostAccountPage,
- *  Supabase tables host_profiles and host_slots), laid over the copy and the
+ *  Firestore collections hostProfiles and hostSlots), laid over the copy and the
  *  schedule written in this repo. host-edits.json is refreshed before every
  *  deploy by scripts/fetch-host-edits.mjs; the copy in git stays empty, so a
  *  local build shows the site as written. */

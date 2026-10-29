@@ -9,3 +9,10 @@ reopened-events.json
 # to the repo root so they can be opened from the app, and are throwaway —
 # the site never serves them.
 /*-compare.png
+
+# Firebase: the functions install their own packages on deploy, and the
+# CLI leaves debug logs behind.
+functions/node_modules/
+firebase-debug.log
+firestore-debug.log
+.firebase/

@@ -1,0 +1,47 @@
+name: Deploy Firebase (functions and Firestore rules)
+
+# The voucher payment functions (functions/index.js) and the host-account
+# security rules (firestore.rules). Runs when either changes on the live
+# branch, or by hand. Needs one repository secret, FIREBASE_SERVICE_ACCOUNT:
+# the JSON key of a service account with the roles "Firebase Admin" and
+# "Cloud Functions Admin" (functions/README.md). The Stripe key is not
+# needed here: it lives in Firebase Secret Manager.
+
+on:
+  push:
+    branches: [claude/new-session-c5222r]
+    paths: [functions/**, firestore.rules, firebase.json, .github/workflows/deploy-firebase.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the project from site/src/data/firebase.ts
+        id: project
+        run: |
+          id=$(grep -oP "projectId: '\K[^']*" site/src/data/firebase.ts || true)
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          if [ -z "$id" ]; then echo 'Firebase is not set up yet (projectId empty), nothing to deploy'; fi
+      - uses: actions/setup-node@v4
+        if: steps.project.outputs.id != ''
+        with:
+          node-version: 20
+      - name: Install function dependencies
+        if: steps.project.outputs.id != ''
+        run: npm ci --prefix functions --no-audit --no-fund
+      - uses: google-github-actions/auth@v2
+        if: steps.project.outputs.id != ''
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Deploy
+        if: steps.project.outputs.id != ''
+        run: npx --yes firebase-tools@15.34.2 deploy --only functions,firestore:rules --project "${{ steps.project.outputs.id }}" --non-interactive --force

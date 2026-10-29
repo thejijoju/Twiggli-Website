@@ -1,10 +1,10 @@
 ---
 /**
  * The host account (/host/account/, /de/host/account/), step 1: a host signs
- * in with an email link (Supabase Auth, no password), then edits their page
- * text in English and German and their weekly schedule. Saves go to
- * Supabase (host_profiles, host_slots; who may edit which page is
- * host_members, see supabase/migrations/20261027_host_accounts.sql). The
+ * in with an email link (Firebase Authentication, no password), then edits
+ * their page text in English and German and their weekly schedule. Saves go
+ * to Firestore (hostProfiles, hostSlots; who may edit which page is
+ * hostMembers, see firestore.rules at the repo root). The
  * site is static: the next deploy fetches the edits and lays them over the
  * copy (hostEdits.ts), at the latest with the daily morning build.
  *
@@ -13,7 +13,7 @@
 import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { hostAccountCopy } from '../data/hostAccount.ts';
-import { voucherPayment } from '../data/vouchers.ts';
+import { firebaseConfig, firebaseReady } from '../data/firebase.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
 import { href, type Lang } from '../lib/url.ts';
@@ -43,8 +43,8 @@ const hosts = Object.fromEntries(
   }]),
 );
 const config = {
-  url: voucherPayment.url.replace(/\/functions\/.*$/, ''),
-  anonKey: voucherPayment.anonKey,
+  firebase: firebaseConfig,
+  ready: firebaseReady,
   contact: contactEmail,
   inbox: requestEmail,
 };
@@ -73,6 +73,9 @@ const fields = [
       <h1>{t.title}</h1>
       <p class="ha-lede">{t.lede}</p>
     </header>
+
+    <!-- Before Firebase is set up (data/firebase.ts). -->
+    <p class="ha-card ha-note" data-ha-soon hidden></p>
 
     <!-- Signed out: one field, one button. -->
     <form class="ha-card ha-signin" data-ha-signin hidden>
@@ -165,7 +168,13 @@ const fields = [
 </Base>
 
 <script>
-  import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+  import { initializeApp } from 'firebase/app';
+  import {
+    getAuth, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink, signOut,
+  } from 'firebase/auth';
+  import {
+    collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where, writeBatch,
+  } from 'firebase/firestore';
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
@@ -178,191 +187,239 @@ const fields = [
     const t: Record<string, string> = JSON.parse(root.dataset.copy || '{}');
     const $ = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
     const fill = (s: string, email: string) => s.replace('{email}', email);
-    const supabase: SupabaseClient = createClient(cfg.url, cfg.anonKey, {
-      auth: { persistSession: true, detectSessionInUrl: true, flowType: 'implicit' },
-    });
-
     const signin = $<HTMLFormElement>('[data-ha-signin]');
-    const app = $('[data-ha-app]');
-    const editor = $('[data-ha-editor]');
-    const pick = $<HTMLSelectElement>('[data-ha-pick]');
-    const pageForm = $<HTMLFormElement>('[data-ha-panel="page"]');
-    const slotForm = $<HTMLFormElement>('[data-ha-panel="schedule"]');
-    const slotsBox = $('[data-ha-slots]');
-    const tpl = $<HTMLTemplateElement>('[data-ha-slot-tpl]');
-    let email = '';
-    let slug = '';
-    // Saved texts per language for the current host (from Supabase, else the site).
-    let texts: Record<'en' | 'de', Profile> = { en: {}, de: {} };
-    let textLang: 'en' | 'de' = 'en';
 
-    const note = (form: HTMLElement, msg: string, ok = true) => {
-      const p = form.querySelector<HTMLElement>('.ha-save .ha-note, [data-ha-signin-note]');
-      if (p) { p.textContent = msg; p.dataset.ok = String(ok); }
-    };
+    if (!cfg.ready) {
+      // Accounts open once Firebase is set up; until then, say so.
+      const p = $('[data-ha-soon]');
+      p.textContent = fill(t.soon, cfg.contact);
+      p.hidden = false;
+    } else {
+      const app0 = initializeApp(cfg.firebase);
+      const auth = getAuth(app0);
+      const db = getFirestore(app0);
+      const STORE = 'twiggli-host-signin-email';
 
-    // ── Signing in ──
-    signin.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = signin.querySelector('button')!;
-      const addr = (signin.elements.namedItem('email') as HTMLInputElement).value.trim();
-      btn.disabled = true; btn.textContent = t.sending;
-      const { error } = await supabase.auth.signInWithOtp({
-        email: addr,
-        options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true },
-      });
-      btn.disabled = false; btn.textContent = t.sendLink;
-      note(signin, error ? fill(t.error, cfg.contact) : t.linkSent, !error);
-    });
-    $('[data-ha-signout]').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      location.reload();
-    });
+      const app = $('[data-ha-app]');
+      const editor = $('[data-ha-editor]');
+      const pick = $<HTMLSelectElement>('[data-ha-pick]');
+      const pageForm = $<HTMLFormElement>('[data-ha-panel="page"]');
+      const slotForm = $<HTMLFormElement>('[data-ha-panel="schedule"]');
+      const slotsBox = $('[data-ha-slots]');
+      const tpl = $<HTMLTemplateElement>('[data-ha-slot-tpl]');
+      let email = '';
+      let slug = '';
+      // Saved texts per language for the current host (from Firestore, else the site).
+      let texts: Record<'en' | 'de', Profile> = { en: {}, de: {} };
+      let textLang: 'en' | 'de' = 'en';
 
-    // ── Tabs ──
-    root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => {
-      tab.addEventListener('click', () => {
-        root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((b) => b.setAttribute('aria-selected', String(b === tab)));
-        root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== tab.dataset.haTab; });
-      });
-    });
-
-    // ── Page text ──
-    const showText = () => {
-      for (const [k, v] of Object.entries(texts[textLang])) {
-        const el = pageForm.elements.namedItem(k) as HTMLInputElement | HTMLTextAreaElement | null;
-        if (el) el.value = v ?? '';
-      }
-    };
-    const readText = (): Profile => {
-      const out: Profile = {};
-      for (const k of Object.keys(hosts[slug].en)) {
-        out[k] = ((pageForm.elements.namedItem(k) as HTMLInputElement | null)?.value ?? '').trim();
-      }
-      return out;
-    };
-    pageForm.querySelectorAll<HTMLInputElement>('input[name="textlang"]').forEach((r) => {
-      r.addEventListener('change', () => {
-        texts[textLang] = readText(); // keep what was typed when switching
-        textLang = r.value as 'en' | 'de';
-        showText();
-      });
-    });
-    pageForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      texts[textLang] = readText();
-      const btn = pageForm.querySelector<HTMLButtonElement>('.ha-save button')!;
-      btn.disabled = true; btn.textContent = t.saving;
-      const { error } = await supabase.from('host_profiles').upsert(
-        { slug, lang: textLang, ...texts[textLang], updated_at: new Date().toISOString(), updated_by: email },
-        { onConflict: 'slug,lang' },
-      );
-      btn.disabled = false; btn.textContent = t.save;
-      note(pageForm, error ? fill(t.error, cfg.contact) : t.saved, !error);
-      if (!error) tellUs(`page text (${textLang})`);
-    });
-
-    // ── Weekly schedule ──
-    const addSlot = (s?: Slot) => {
-      const node = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
-      const q = <T extends HTMLInputElement>(n: string) => node.querySelector<T>(`[name="${n}"]`)!;
-      if (s) {
-        q('title').value = s.title;
-        q('time').value = s.time;
-        q('duration').value = s.duration ?? '';
-        q('price').value = s.price ? String(s.price) : '';
-        node.querySelectorAll<HTMLInputElement>('[name="day"]').forEach((d) => { d.checked = s.weekdays.includes(d.value); });
-      } else {
-        q('title').value = hosts[slug]?.en.specialty ?? '';
-      }
-      node.querySelector('[data-ha-remove]')!.addEventListener('click', () => { node.remove(); emptyHint(); });
-      slotsBox.append(node);
-      emptyHint();
-    };
-    const emptyHint = () => { $('[data-ha-noslots]').hidden = slotsBox.children.length > 0; };
-    $('[data-ha-addslot]').addEventListener('click', () => addSlot());
-    slotForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const rows = Array.from(slotsBox.querySelectorAll<HTMLElement>('.ha-slot')).map((n) => {
-        const v = (k: string) => n.querySelector<HTMLInputElement>(`[name="${k}"]`)!.value.trim();
-        return {
-          slug,
-          title: v('title'),
-          weekdays: Array.from(n.querySelectorAll<HTMLInputElement>('[name="day"]:checked')).map((d) => d.value),
-          time: v('time').slice(0, 5),
-          duration: v('duration') || null,
-          price: v('price') ? Math.round(Number(v('price'))) : null,
-        };
-      });
-      const bad = rows.find((r) => !r.title || !r.weekdays.length || !/^\d\d:\d\d$/.test(r.time));
-      if (bad) { note(slotForm, fill(t.error, cfg.contact), false); return; }
-      const btn = slotForm.querySelector<HTMLButtonElement>('.ha-save button')!;
-      btn.disabled = true; btn.textContent = t.saving;
-      // Replace the whole schedule: delete what was there, insert what is here.
-      let { error } = await supabase.from('host_slots').delete().eq('slug', slug);
-      if (!error && rows.length) ({ error } = await supabase.from('host_slots').insert(rows));
-      btn.disabled = false; btn.textContent = t.save;
-      note(slotForm, error ? fill(t.error, cfg.contact) : t.saved, !error);
-      if (!error) tellUs('weekly schedule');
-    });
-
-    /** A note to our inbox, so Jirel sees every change a host makes. */
-    const tellUs = (what: string) => {
-      fetch(`https://formsubmit.co/ajax/${cfg.inbox}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          Type: 'Host account edit', Host: slug, Changed: what, By: email,
-          _subject: `Host account edit: ${hosts[slug]?.name ?? slug} (${what})`, _template: 'table', _captcha: 'false',
-        }),
-      }).catch(() => {});
-    };
-
-    // ── Loading a host ──
-    const openHost = async (s: string) => {
-      slug = s;
-      const h = hosts[s];
-      $<HTMLAnchorElement>('[data-ha-view]').href = h?.page ?? '#';
-      const [{ data: prof }, { data: slots }] = await Promise.all([
-        supabase.from('host_profiles').select('*').eq('slug', s),
-        supabase.from('host_slots').select('title,weekdays,time,duration,price').eq('slug', s).order('time'),
-      ]);
-      const saved = (l: 'en' | 'de') => {
-        const row = prof?.find((p: { lang: string }) => p.lang === l) as Profile | undefined;
-        const base = { ...(h?.[l] ?? {}) };
-        if (row) for (const k of Object.keys(base)) if (row[k]) base[k] = row[k];
-        return base;
+      const note = (form: HTMLElement, msg: string, ok = true) => {
+        const p = form.querySelector<HTMLElement>('.ha-save .ha-note, [data-ha-signin-note]');
+        if (p) { p.textContent = msg; p.dataset.ok = String(ok); }
       };
-      texts = { en: saved('en'), de: saved('de') };
-      showText();
-      slotsBox.replaceChildren();
-      for (const sl of (slots?.length ? slots : h?.slots ?? []) as Slot[]) addSlot(sl);
-      emptyHint();
-      editor.hidden = false;
-    };
+      const remember = (v: string) => { try { localStorage.setItem(STORE, v); } catch { /* private mode */ } };
+      const recall = () => { try { return localStorage.getItem(STORE) ?? ''; } catch { return ''; } };
 
-    const start = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { signin.hidden = false; return; }
-      email = session.user.email ?? '';
-      app.hidden = false;
-      $('[data-ha-who]').textContent = fill(t.signedInAs, email);
-      const { data: members } = await supabase.from('host_members').select('slug');
-      const slugs = (members ?? []).map((m: { slug: string }) => m.slug).filter((s: string) => hosts[s]);
-      if (!slugs.length) {
-        const p = $('[data-ha-nohost]');
-        p.textContent = fill(t.noHost, cfg.contact);
-        p.hidden = false;
-        return;
-      }
-      if (slugs.length > 1) {
-        pick.replaceChildren(...slugs.map((s: string) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
-        pick.addEventListener('change', () => openHost(pick.value));
-        $('[data-ha-pick-wrap]').hidden = false;
-      }
-      await openHost(slugs[0]);
-    };
-    start();
+      // ── Signing in: an email link, no password ──
+      signin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = signin.querySelector('button')!;
+        const addr = (signin.elements.namedItem('email') as HTMLInputElement).value.trim();
+        btn.disabled = true; btn.textContent = t.sending;
+        try {
+          await sendSignInLinkToEmail(auth, addr, { url: location.origin + location.pathname, handleCodeInApp: true });
+          remember(addr);
+          note(signin, t.linkSent, true);
+        } catch {
+          note(signin, fill(t.error, cfg.contact), false);
+        }
+        btn.disabled = false; btn.textContent = t.sendLink;
+      });
+      $('[data-ha-signout]').addEventListener('click', async () => {
+        await signOut(auth);
+        location.reload();
+      });
+
+      // Coming back from the link in the email.
+      const finishSignIn = async () => {
+        if (!isSignInWithEmailLink(auth, location.href)) return;
+        // Opened on another device: ask which email the link went to.
+        const addr = recall() || window.prompt(t.email) || '';
+        try {
+          await signInWithEmailLink(auth, addr, location.href);
+          try { localStorage.removeItem(STORE); } catch { /* private mode */ }
+        } catch {
+          signin.hidden = false;
+          note(signin, fill(t.error, cfg.contact), false);
+        }
+        history.replaceState(null, '', location.pathname);
+      };
+
+      // ── Tabs ──
+      root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => {
+        tab.addEventListener('click', () => {
+          root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((b) => b.setAttribute('aria-selected', String(b === tab)));
+          root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== tab.dataset.haTab; });
+        });
+      });
+
+      // ── Page text ──
+      const showText = () => {
+        for (const [k, v] of Object.entries(texts[textLang])) {
+          const el = pageForm.elements.namedItem(k) as HTMLInputElement | HTMLTextAreaElement | null;
+          if (el) el.value = v ?? '';
+        }
+      };
+      const readText = (): Profile => {
+        const out: Profile = {};
+        for (const k of Object.keys(hosts[slug].en)) {
+          out[k] = ((pageForm.elements.namedItem(k) as HTMLInputElement | null)?.value ?? '').trim();
+        }
+        return out;
+      };
+      pageForm.querySelectorAll<HTMLInputElement>('input[name="textlang"]').forEach((r) => {
+        r.addEventListener('change', () => {
+          texts[textLang] = readText(); // keep what was typed when switching
+          textLang = r.value as 'en' | 'de';
+          showText();
+        });
+      });
+      pageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        texts[textLang] = readText();
+        const btn = pageForm.querySelector<HTMLButtonElement>('.ha-save button')!;
+        btn.disabled = true; btn.textContent = t.saving;
+        let ok = true;
+        try {
+          await setDoc(doc(db, 'hostProfiles', `${slug}_${textLang}`), {
+            slug, lang: textLang, ...texts[textLang], updated_at: new Date().toISOString(), updated_by: email,
+          });
+        } catch { ok = false; }
+        btn.disabled = false; btn.textContent = t.save;
+        note(pageForm, ok ? t.saved : fill(t.error, cfg.contact), ok);
+        if (ok) tellUs(`page text (${textLang})`);
+      });
+
+      // ── Weekly schedule ──
+      const addSlot = (s?: Slot) => {
+        const node = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+        const q = <T extends HTMLInputElement>(n: string) => node.querySelector<T>(`[name="${n}"]`)!;
+        if (s) {
+          q('title').value = s.title;
+          q('time').value = s.time;
+          q('duration').value = s.duration ?? '';
+          q('price').value = s.price ? String(s.price) : '';
+          node.querySelectorAll<HTMLInputElement>('[name="day"]').forEach((d) => { d.checked = s.weekdays.includes(d.value); });
+        } else {
+          q('title').value = hosts[slug]?.en.specialty ?? '';
+        }
+        node.querySelector('[data-ha-remove]')!.addEventListener('click', () => { node.remove(); emptyHint(); });
+        slotsBox.append(node);
+        emptyHint();
+      };
+      const emptyHint = () => { $('[data-ha-noslots]').hidden = slotsBox.children.length > 0; };
+      $('[data-ha-addslot]').addEventListener('click', () => addSlot());
+      slotForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const rows = Array.from(slotsBox.querySelectorAll<HTMLElement>('.ha-slot')).map((n) => {
+          const v = (k: string) => n.querySelector<HTMLInputElement>(`[name="${k}"]`)!.value.trim();
+          return {
+            slug,
+            title: v('title'),
+            weekdays: Array.from(n.querySelectorAll<HTMLInputElement>('[name="day"]:checked')).map((d) => d.value),
+            time: v('time').slice(0, 5),
+            duration: v('duration') || null,
+            price: v('price') ? Math.round(Number(v('price'))) : null,
+            active: true,
+          };
+        });
+        const bad = rows.find((r) => !r.title || !r.weekdays.length || !/^\d\d:\d\d$/.test(r.time));
+        if (bad) { note(slotForm, fill(t.error, cfg.contact), false); return; }
+        const btn = slotForm.querySelector<HTMLButtonElement>('.ha-save button')!;
+        btn.disabled = true; btn.textContent = t.saving;
+        // Replace the whole schedule in one go: delete what was there, add what is here.
+        let ok = true;
+        try {
+          const old = await getDocs(query(collection(db, 'hostSlots'), where('slug', '==', slug)));
+          const batch = writeBatch(db);
+          old.forEach((d) => batch.delete(d.ref));
+          for (const r of rows) batch.set(doc(collection(db, 'hostSlots')), r);
+          await batch.commit();
+        } catch { ok = false; }
+        btn.disabled = false; btn.textContent = t.save;
+        note(slotForm, ok ? t.saved : fill(t.error, cfg.contact), ok);
+        if (ok) tellUs('weekly schedule');
+      });
+
+      /** A note to our inbox, so Jirel sees every change a host makes. */
+      const tellUs = (what: string) => {
+        fetch(`https://formsubmit.co/ajax/${cfg.inbox}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            Type: 'Host account edit', Host: slug, Changed: what, By: email,
+            _subject: `Host account edit: ${hosts[slug]?.name ?? slug} (${what})`, _template: 'table', _captcha: 'false',
+          }),
+        }).catch(() => {});
+      };
+
+      // ── Loading a host ──
+      const openHost = async (s: string) => {
+        slug = s;
+        const h = hosts[s];
+        $<HTMLAnchorElement>('[data-ha-view]').href = h?.page ?? '#';
+        const [prof, slotSnap] = await Promise.all([
+          getDocs(query(collection(db, 'hostProfiles'), where('slug', '==', s))),
+          getDocs(query(collection(db, 'hostSlots'), where('slug', '==', s))),
+        ]);
+        const rows = prof.docs.map((d) => d.data() as Profile);
+        const saved = (l: 'en' | 'de') => {
+          const row = rows.find((p) => p.lang === l);
+          const base = { ...(h?.[l] ?? {}) };
+          if (row) for (const k of Object.keys(base)) if (row[k]) base[k] = row[k];
+          return base;
+        };
+        texts = { en: saved('en'), de: saved('de') };
+        showText();
+        slotsBox.replaceChildren();
+        const slots = slotSnap.docs.map((d) => d.data() as Slot & { active?: boolean })
+          .filter((x) => x.active !== false)
+          .sort((a, b) => a.time.localeCompare(b.time));
+        for (const sl of (slots.length ? slots : h?.slots ?? [])) addSlot(sl);
+        emptyHint();
+        editor.hidden = false;
+      };
+
+      const start = async (user: { email: string | null } | null) => {
+        if (!user?.email) { signin.hidden = false; return; }
+        email = user.email.toLowerCase();
+        signin.hidden = true;
+        app.hidden = false;
+        $('[data-ha-who]').textContent = fill(t.signedInAs, email);
+        let slugs: string[] = [];
+        try {
+          const m = await getDoc(doc(db, 'hostMembers', email));
+          slugs = ((m.data()?.slugs as string[] | undefined) ?? []).filter((s) => hosts[s]);
+        } catch { /* not a member: no read access */ }
+        if (!slugs.length) {
+          const p = $('[data-ha-nohost]');
+          p.textContent = fill(t.noHost, cfg.contact);
+          p.hidden = false;
+          return;
+        }
+        if (slugs.length > 1) {
+          pick.replaceChildren(...slugs.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
+          pick.addEventListener('change', () => openHost(pick.value));
+          $('[data-ha-pick-wrap]').hidden = false;
+        }
+        await openHost(slugs[0]);
+      };
+
+      finishSignIn().finally(() => {
+        let once = false;
+        onAuthStateChanged(auth, (user) => { if (!once) { once = true; start(user); } });
+      });
+    }
   }
 </script>
 
