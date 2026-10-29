@@ -16,3 +16,6 @@ functions/node_modules/
 firebase-debug.log
 firestore-debug.log
 .firebase/
+
+# Firebase sign-in helper, copied in by the deploy (deploy.yml)
+site/public/__/
