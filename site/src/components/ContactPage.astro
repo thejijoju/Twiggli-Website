@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import SocialIcon from './SocialIcon.astro';
 import { contactEmail, getSiteData, requestEmail } from '../data/site.ts';
+import { formEndpoint } from '../data/firebase.ts';
 import { ui } from '../data/i18n.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -52,7 +53,7 @@ const mailCopy = {
           action="#"
           data-request-form
           data-request-email={contactEmail}
-          data-inbox={requestEmail}
+          data-inbox={requestEmail} data-endpoint={formEndpoint}
           data-sending={f.sending}
           data-error={f.error}
           data-mail-copy={JSON.stringify(mailCopy)}
@@ -146,7 +147,7 @@ const mailCopy = {
         const label = button ? button.textContent : '';
         if (button) { button.disabled = true; button.textContent = form.dataset.sending || label; }
         const show = (sel) => { const el = form.querySelector(sel); if (el) el.hidden = false; };
-        fetch('https://formsubmit.co/ajax/' + form.dataset.inbox, {
+        fetch(form.dataset.endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
