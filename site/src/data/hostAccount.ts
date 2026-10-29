@@ -13,6 +13,16 @@ export interface HostAccountCopy {
   sending: string;
   linkSent: string;
   noHost: string;
+  claimTitle: string;
+  claimLede: string;
+  claimPage: string;
+  claimPagePh: string;
+  claimName: string;
+  claimNote: string;
+  claimNotePh: string;
+  claimSend: string;
+  claimSent: string;
+  adminPick: string;
   signOut: string;
   signedInAs: string;
   hostPick: string;
@@ -63,6 +73,16 @@ const en: HostAccountCopy = {
   sending: 'Sending…',
   linkSent: 'Check your inbox: we sent you a sign-in link. No password needed.',
   noHost: 'We couldn’t find a host page for this email yet. Write to {email} and we’ll connect it.',
+  claimTitle: 'Claim your page',
+  claimLede: 'Pick your page on Twiggli. We check it’s really you and unlock it, usually the same day.',
+  claimPage: 'Your page',
+  claimPagePh: 'Choose your page…',
+  claimName: 'Your name',
+  claimNote: 'Anything we should know? (optional)',
+  claimNotePh: 'e.g. I run the studio together with Anna',
+  claimSend: 'Request access',
+  claimSent: 'Thanks! We’ve got your request and will unlock your page soon. You’ll see it here as soon as it’s done.',
+  adminPick: 'Open any host (admin)',
   signOut: 'Sign out',
   signedInAs: 'Signed in as {email}',
   hostPick: 'Page',
@@ -112,6 +132,16 @@ const de: HostAccountCopy = {
   sending: 'Wird gesendet…',
   linkSent: 'Schau in dein Postfach: Wir haben dir einen Anmeldelink geschickt. Kein Passwort nötig.',
   noHost: 'Zu dieser E-Mail haben wir noch keine Gastgeber-Seite gefunden. Schreib uns an {email}, dann verbinden wir sie.',
+  claimTitle: 'Deine Seite übernehmen',
+  claimLede: 'Wähl deine Seite auf Twiggli. Wir prüfen kurz, dass du es bist, und schalten sie frei, meist noch am selben Tag.',
+  claimPage: 'Deine Seite',
+  claimPagePh: 'Wähl deine Seite…',
+  claimName: 'Dein Name',
+  claimNote: 'Sollen wir noch etwas wissen? (optional)',
+  claimNotePh: 'z. B. Ich leite das Studio zusammen mit Anna',
+  claimSend: 'Zugang anfragen',
+  claimSent: 'Danke! Deine Anfrage ist da, wir schalten deine Seite bald frei. Sobald es soweit ist, siehst du sie hier.',
+  adminPick: 'Jeden Gastgeber öffnen (Admin)',
   signOut: 'Abmelden',
   signedInAs: 'Angemeldet als {email}',
   hostPick: 'Seite',

@@ -13,7 +13,7 @@
 import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { hostAccountCopy } from '../data/hostAccount.ts';
-import { firebaseConfig, firebaseReady } from '../data/firebase.ts';
+import { firebaseConfig, firebaseReady, functionsBase } from '../data/firebase.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
 import { href, type Lang } from '../lib/url.ts';
@@ -42,11 +42,18 @@ const hosts = Object.fromEntries(
     })),
   }]),
 );
+/** Every page a host could claim, by name (the test page included). */
+const claimList = getHosts('en', { withPreview: true })
+  .map((h) => ({ slug: h.slug, label: `${h.name} · ${h.specialty}` }))
+  .sort((a, b) => a.label.localeCompare(b.label));
 const config = {
   firebase: firebaseConfig,
   ready: firebaseReady,
   contact: contactEmail,
   inbox: requestEmail,
+  functions: functionsBase,
+  // May open every host (functions/index.js ADMINS checks it again).
+  admins: ['jirel.kuenen@gmail.com', 'jirelkuenen@gmail.com', 'hello@twiggli.com'],
 };
 const fields = [
   ['specialty', t.fSpecialty, t.fSpecialtyHint, 'input', 80],
@@ -99,6 +106,22 @@ const fields = [
         <button type="button" class="ha-link" data-ha-signout>{t.signOut}</button>
       </div>
       <p class="ha-card ha-note" data-ha-nohost hidden></p>
+
+      <!-- No page yet: ask for one. Jirel approves by email (functions/index.js hostClaim). -->
+      <form class="ha-card ha-claim" data-ha-claim hidden>
+        <h2>{t.claimTitle}</h2>
+        <p class="ha-lede">{t.claimLede}</p>
+        <label>
+          <span>{t.claimPage}</span>
+          <select name="slug" required>
+            <option value="">{t.claimPagePh}</option>
+            {claimList.map((h) => <option value={h.slug}>{h.label}</option>)}
+          </select>
+        </label>
+        <label><span>{t.claimName}</span><input name="name" required autocomplete="name" /></label>
+        <label><span>{t.claimNote}</span><textarea name="note" rows="2" placeholder={t.claimNotePh}></textarea></label>
+        <div class="ha-save"><button type="submit" class="ha-btn">{t.claimSend}</button><p class="ha-note" role="status"></p></div>
+      </form>
 
       <div data-ha-editor hidden>
         <nav class="ha-tabs" role="tablist">
@@ -391,6 +414,35 @@ const fields = [
         editor.hidden = false;
       };
 
+      /** Asks for a page (functions/index.js hostClaim): 'granted' for
+       *  admins, 'pending' for everyone else until Jirel approves. */
+      const claim = async (s: string, name: string, note: string): Promise<string> => {
+        const token = await auth.currentUser?.getIdToken();
+        const res = await fetch(`${cfg.functions}/hostClaim`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ slug: s, name, note }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        return (await res.json()).status;
+      };
+      const claimForm = $<HTMLFormElement>('[data-ha-claim]');
+      claimForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = new FormData(claimForm);
+        const btn = claimForm.querySelector<HTMLButtonElement>('button')!;
+        btn.disabled = true; btn.textContent = t.saving;
+        try {
+          await claim(String(f.get('slug')), String(f.get('name') ?? ''), String(f.get('note') ?? ''));
+          claimForm.querySelectorAll('label').forEach((l) => { l.hidden = true; });
+          btn.hidden = true;
+          note(claimForm, t.claimSent, true);
+        } catch {
+          btn.disabled = false; btn.textContent = t.claimSend;
+          note(claimForm, fill(t.error, cfg.contact), false);
+        }
+      });
+
       const start = async (user: { email: string | null } | null) => {
         if (!user?.email) { signin.hidden = false; return; }
         email = user.email.toLowerCase();
@@ -402,10 +454,26 @@ const fields = [
           const m = await getDoc(doc(db, 'hostMembers', email));
           slugs = ((m.data()?.slugs as string[] | undefined) ?? []).filter((s) => hosts[s]);
         } catch { /* not a member: no read access */ }
+        const admin = (cfg.admins as string[]).includes(email);
+        if (admin) {
+          // Jirel: every host in the picker; opening one asks the server to
+          // add it to her hostMembers first, so the rules let her save.
+          const all = Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name));
+          pick.replaceChildren(...all.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
+          $('[data-ha-pick-wrap] span').textContent = t.adminPick;
+          pick.addEventListener('change', async () => {
+            if (!slugs.includes(pick.value) && (await claim(pick.value, '', '')) === 'granted') slugs.push(pick.value);
+            openHost(pick.value);
+          });
+          $('[data-ha-pick-wrap]').hidden = false;
+          const first = slugs[0] ?? all.find((s) => s === 'test-jirel') ?? all[0];
+          pick.value = first;
+          if (!slugs.includes(first) && (await claim(first, '', '')) === 'granted') slugs.push(first);
+          await openHost(first);
+          return;
+        }
         if (!slugs.length) {
-          const p = $('[data-ha-nohost]');
-          p.textContent = fill(t.noHost, cfg.contact);
-          p.hidden = false;
+          claimForm.hidden = false;
           return;
         }
         if (slugs.length > 1) {

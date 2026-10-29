@@ -20,7 +20,7 @@ export const firebaseConfig = {
 /** The host account page opens once sign-in by email link is enabled and
  *  the website's rules are merged into the app's Firestore rules
  *  (functions/README.md). Until then it says accounts are coming soon. */
-export const HOST_ACCOUNTS_OPEN = false;
+export const HOST_ACCOUNTS_OPEN = true;
 
 export const firebaseReady = Boolean(firebaseConfig.projectId && firebaseConfig.apiKey) && HOST_ACCOUNTS_OPEN;
 

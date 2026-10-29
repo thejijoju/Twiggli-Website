@@ -38,6 +38,11 @@ export type PreviewOffer = {
 export const previewSlugs = new Set<string>(slugs);
 
 const en: HostCopy[] = [
+  // Jirel's own test page (29.10.26): hidden for good, never goes live. She
+  // signs in to the host account with it to try everything as a host would.
+  { slug: 'test-jirel', name: 'Jirels Testworkshop', specialty: 'Test page (not public)', studio: 'Twiggli test studio',
+    blurb: 'This is a test page for trying out the Twiggli host account. It is hidden from search engines, listings and the calendar.',
+    group: '1–10', duration: '2 h', place: 'Berlin', languages: 'DE · EN', priceNote: '€45 per person' },
   // Diana, emails of 23.10.26: groups from 5 at €65 pp, up to 15 in her
   // studio, or at the company's (travel and set-up extra); terrazzo ~2.5 h,
   // marble effect ~2 h; tea, coffee and snacks included, wine on request.
@@ -152,6 +157,9 @@ const en: HostCopy[] = [
 ];
 
 const de: HostCopy[] = [
+  { slug: 'test-jirel', name: 'Jirels Testworkshop', specialty: 'Testseite (nicht öffentlich)', studio: 'Twiggli Teststudio',
+    blurb: 'Das ist eine Testseite zum Ausprobieren des Twiggli-Gastgeberkontos. Sie ist für Suchmaschinen, Listen und den Kalender unsichtbar.',
+    group: '1–10', duration: '2 Std.', place: 'Berlin', languages: 'DE · EN', priceNote: '45 € pro Person' },
   { slug: 'rtmis', name: 'RtmiS', specialty: 'Terrazzo- & Marmoreffekt-Workshops', studio: 'RtmiS [ár.te.mis]',
     blurb: 'Diana kam über Musik und Design zum Terrazzo: Sie ist in Griechenland als klassische Musikerin aufgewachsen, hat experimentelles Design studiert, danach in Berlin einen Master in Textil- und Flächendesign gemacht und später Innenarchitektur studiert. Sie unterrichtet seit vielen Jahren, unter anderem an der Universität Kassel. Ihr Atelier liegt in einer 150 Jahre alten ehemaligen Feuerwache im Wedding, und in ihren Workshops geht es darum zu zeigen, wie viel Arbeit in einem kleinen handgemachten Objekt steckt, und für ein paar Stunden vom Schreibtisch wegzukommen. Im Terrazzo-Workshop mischst du deine eigenen Pigmente, stellst deine Farbpalette zusammen und gießt sie in umweltfreundliches Gipsharz – heraus kommt ein Objekt, zum Beispiel ein Untersetzer, das es kein zweites Mal gibt. Wer schon ein kleines Stück gemacht hat, kann danach einen größeren Terrazzo-Teller oder sogar einen Beistelltisch machen. Im Marmoreffekt-Workshop gießt, schwenkst und mischst du Farben zu einem marmorierten Tablett und versiegelst es. Diana mischt die Formate in einer Session, und so gehen Fremde oft als Freunde nach Hause. Keine Vorkenntnisse nötig, alle Materialien inklusive, dazu Tee, Kaffee und Snacks (Wein auf Wunsch). Für Teams bietet sie beide Formate privat an, im Atelier oder bei euch im Büro.',
     group: 'Offene Termine: bis 8 für kleine Objekte, 2 für den großen Teller · Gruppen 5–15 im Atelier, größer bei euch vor Ort', duration: '2–2,5 Std.', place: 'Stockholmer Str. 4, Wedding / bei euch', languages: 'DE · EN',
@@ -223,6 +231,7 @@ const fr: HostCopy[] = [
 ];
 
 const facets: Record<string, Facets> = {
+  'test-jirel':          { activity: 'craft',       groupRange: [1, 10],   hourRange: [2, 2],   groupPrice: 45 },
   // Corporate price from Diana's email; public classes are €79.
   rtmis:                 { activity: 'craft',       groupRange: [5, 15],   hourRange: [2, 2.5], groupPrice: 65 },
   // PLACEHOLDER maximum — the bar names no cap. Tasting €34 in their shop
@@ -260,12 +269,14 @@ const facets: Record<string, Facets> = {
 };
 
 const firstNames: Record<string, string> = {
+  'test-jirel': 'Jirel',
   rtmis: 'Diana', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
   'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija',
 };
 
 const areas: Record<string, { area: string; onSite?: boolean }> = {
+  'test-jirel': { area: 'Berlin' },
   rtmis: { area: 'Wedding', onSite: true }, strassenbraeu: { area: 'Kreuzberg' }, 'beavis-bar': { area: 'Mitte' }, 'schoppe-braeu': { area: 'Kreuzberg' },
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },

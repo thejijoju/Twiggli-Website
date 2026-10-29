@@ -12,6 +12,9 @@
 //                    the request in Firestore (formRequests) first, then
 //                    emails it to Jirel. Replaces FormSubmit, which went
 //                    down on 28.10.26 (error 521).
+//   hostClaim        a signed-in host asks to edit a page: Jirel (ADMIN)
+//                    gets access at once, anyone else waits for her Approve
+//   hostApprove      the one-click Approve link in Jirel's email
 //
 // The Stripe secret key lives in Firebase Secret Manager, never in this
 // file or in the repo:  firebase functions:secrets:set STRIPE_SECRET_KEY
@@ -21,6 +24,8 @@ import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
@@ -28,6 +33,9 @@ const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 // Security → App passwords), so the function can mail Jirel from it.
 const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
 const INBOX = 'jirel.kuenen@gmail.com';
+// May open every host's account without approval, and approves the others.
+const ADMINS = ['jirel.kuenen@gmail.com', 'jirelkuenen@gmail.com', 'hello@twiggli.com'];
+const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
 
 initializeApp();
 
@@ -201,6 +209,12 @@ export const voucherPayment = onRequest(OPTS, async (req, res) => {
   return res.status(200).json({ clientSecret: out.client_secret, ref, id: out.id });
 });
 
+/** Sends a plain notification to Jirel's own inbox (never to anyone else). */
+const mailJirel = async ({ subject, text: body, html, replyTo }) => {
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, ...(replyTo ? { replyTo } : {}), subject, text: body, html });
+};
+
 /** HTML-escaped, for the email table. */
 const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -247,3 +261,80 @@ export const formRequest = onRequest(
     return res.status(200).json({ success: 'true', id: doc.id });
   },
 );
+
+/** The key that signs Approve links: made once, kept in Firestore
+ *  (_config/hostAccess), which no browser can read (firestore.rules). */
+const approveKey = async () => {
+  const ref = getFirestore().doc('_config/hostAccess');
+  const snap = await ref.get();
+  if (snap.exists && snap.data().key) return snap.data().key;
+  const key = randomBytes(32).toString('hex');
+  await ref.set({ key }, { merge: true });
+  return key;
+};
+const sign = (key, email, slug) => createHmac('sha256', key).update(`${email}\n${slug}`).digest('hex');
+const SLUG = /^[a-z0-9-]{1,60}$/;
+
+/** Who is calling, from the Firebase sign-in token the page sends. */
+const caller = async (req) => {
+  const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
+  if (!m) return null;
+  try {
+    const t = await getAuth().verifyIdToken(m[1]);
+    return t.email && t.email_verified ? t.email.toLowerCase() : null;
+  } catch { return null; }
+};
+
+const grant = (email, slug) =>
+  getFirestore().doc(`hostMembers/${email}`).set({ slugs: FieldValue.arrayUnion(slug), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+
+export const hostClaim = onRequest(
+  { region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false },
+  async (req, res) => {
+    if (!allow(req, res)) return;
+    const email = await caller(req);
+    if (!email) return res.status(401).json({ error: 'Not signed in' });
+    const slug = String(req.body?.slug ?? '');
+    const name = text(req.body?.name, 120);
+    const note = text(req.body?.note, 600);
+    if (!SLUG.test(slug)) return res.status(400).json({ error: 'Bad page' });
+    if (ADMINS.includes(email)) {
+      await grant(email, slug);
+      return res.status(200).json({ status: 'granted' });
+    }
+    const db = getFirestore();
+    const claimRef = db.doc(`hostClaims/${email}__${slug}`);
+    const old = await claimRef.get();
+    if (old.exists && old.data().status === 'pending') return res.status(200).json({ status: 'pending' });
+    await claimRef.set({ email, slug, name, note, status: 'pending', createdAt: FieldValue.serverTimestamp() });
+    const link = `${FUNCTIONS_URL}/hostApprove?e=${encodeURIComponent(email)}&s=${slug}&k=${sign(await approveKey(), email, slug)}`;
+    try {
+      await mailJirel({
+        subject: `Host account: ${name || email} wants to edit "${slug}"`,
+        replyTo: email,
+        text: `${name || email} (${email}) wants to edit the page "${slug}".${note ? `\n\nNote: ${note}` : ''}\n\nApprove: ${link}\n\nIgnore this email to say no.`,
+        html: `<div style="font-family:Tahoma,sans-serif;font-size:15px"><p><b>${esc(name || email)}</b> (${esc(email)}) wants to edit the page <b>${esc(slug)}</b> on twiggli.com.</p>${note ? `<p>Note: ${esc(note)}</p>` : ''}<p><a href="${link}" style="display:inline-block;background:#1f6f43;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Approve</a></p><p style="color:#777">Not them? Just ignore this email: nothing happens.</p></div>`,
+      });
+    } catch (err) { console.error('hostClaim mail failed', err?.message); }
+    return res.status(200).json({ status: 'pending' });
+  },
+);
+
+export const hostApprove = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (req, res) => {
+  const email = String(req.query.e ?? '').toLowerCase();
+  const slug = String(req.query.s ?? '');
+  const k = String(req.query.k ?? '');
+  const page = (msg) => res.status(200).set('Content-Type', 'text/html; charset=utf-8')
+    .send(`<!doctype html><meta name="viewport" content="width=device-width"><body style="font-family:Tahoma,sans-serif;max-width:520px;margin:60px auto;padding:0 16px"><h2>Twiggli host accounts</h2><p>${msg}</p></body>`);
+  if (!SLUG.test(slug) || !isEmail(email) || !/^[0-9a-f]{64}$/.test(k)) return page('This link is not valid.');
+  const want = Buffer.from(sign(await approveKey(), email, slug), 'hex');
+  if (!timingSafeEqual(want, Buffer.from(k, 'hex'))) return page('This link is not valid.');
+  // Opening the link only asks: mail scanners open links on their own, so
+  // access is given by the button (a POST), never by the visit.
+  if (req.method !== 'POST') {
+    return page(`Give <b>${esc(email)}</b> access to edit <b>${esc(slug)}</b>?<form method="post"><button style="font-size:16px;background:#1f6f43;color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer">Approve</button></form>`);
+  }
+  await grant(email, slug);
+  await getFirestore().doc(`hostClaims/${email}__${slug}`).set({ status: 'approved', approvedAt: FieldValue.serverTimestamp() }, { merge: true });
+  return page(`Approved: <b>${esc(email)}</b> can now edit <b>${esc(slug)}</b>. They see it the next time they open their account (twiggli.com/host/account/). Let them know it's ready.`);
+});
