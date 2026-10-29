@@ -5,7 +5,7 @@ Replaces Supabase. Everything runs in the Firebase project the Twiggli app alrea
 - `index.js` holds the voucher payment functions: `voucherCheckout` and `voucherPayment`, in region europe-west3 (Frankfurt).
 - `../firestore.rules` holds the host-account security rules for the collections `hostMembers`, `hostProfiles` and `hostSlots`.
 - `../site/src/data/firebase.ts` holds the public web settings and the switch that moves vouchers over.
-- `../.github/workflows/deploy-firebase.yml` deploys both the functions and the rules.
+- `../.github/workflows/deploy-firebase.yml` deploys only the website's functions (codebase `website`), never the app's functions or rules.
 
 ## One-time setup (Firebase console)
 
@@ -15,7 +15,11 @@ Replaces Supabase. Everything runs in the Firebase project the Twiggli app alrea
 2. **Sign-in.** Go to Authentication → Sign-in method.
    - Enable Email/Password, then tick "Email link (passwordless sign-in)".
    - Under Settings → Authorized domains, add `www.twiggli.com` and `twiggli.com`.
-3. **Firestore.** Go to Firestore Database → Create database, in production mode, location `europe-west3`.
+3. **Firestore rules.** The project `twiggli-production` is the app's project, and Firestore has one set of rules per project.
+   - Open Firestore Database → Rules, copy what is there today and send it to Claude.
+   - Claude merges the website's rules (`../firestore.rules`) into the app's rules so that nothing the app does changes.
+   - Paste the merged result back and publish.
+   - Never deploy `firestore.rules` from this repo on its own: it would replace the app's rules.
 4. **Plan.** Cloud Functions need the Blaze plan, which is pay-as-you-go. At Twiggli's volume it costs cents a month.
 5. **Stripe key.** Store the key in Secret Manager, never in the repo or in a chat. On your own computer, run:
    `npx firebase-tools functions:secrets:set STRIPE_SECRET_KEY --project <projectId>`

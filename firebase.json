@@ -5,7 +5,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "website",
       "ignore": ["node_modules", ".git", "*.log"],
       "runtime": "nodejs20"
     }

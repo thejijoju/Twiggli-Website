@@ -8,16 +8,21 @@
  *  the data is firestore.rules, not secrecy. The Stripe secret key never
  *  goes here — it lives in Firebase Secret Manager (functions/README.md).
  *
- *  Until projectId is filled in, the host account page says accounts are
- *  coming soon and vouchers keep using the Supabase functions. */
+ *  Project: twiggli-production, the one the app uses — so the website only
+ *  ever deploys its own functions codebase and never the app's rules. */
 export const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  appId: '',
+  apiKey: 'AIzaSyCu6S-EbH8VFkQjKWe3teVXqYhyD6RT3VY',
+  authDomain: 'twiggli-production.firebaseapp.com',
+  projectId: 'twiggli-production',
+  appId: '1:496068250761:web:b6bf4daace44dab40a4a58',
 };
 
-export const firebaseReady = Boolean(firebaseConfig.projectId && firebaseConfig.apiKey);
+/** The host account page opens once sign-in by email link is enabled and
+ *  the website's rules are merged into the app's Firestore rules
+ *  (functions/README.md). Until then it says accounts are coming soon. */
+export const HOST_ACCOUNTS_OPEN = false;
+
+export const firebaseReady = Boolean(firebaseConfig.projectId && firebaseConfig.apiKey) && HOST_ACCOUNTS_OPEN;
 
 /** Where the Cloud Functions answer (functions/index.js, region
  *  europe-west3 / Frankfurt). */
