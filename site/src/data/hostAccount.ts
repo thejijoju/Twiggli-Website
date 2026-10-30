@@ -84,6 +84,7 @@ export interface HostAccountCopy {
   stripeDone: string;
   stripePending: string;
   stripeFail: string;
+  stripeNeeded: string;
   published: string;
   yourDates: string;
   newDate: string;
@@ -302,6 +303,7 @@ const en: HostAccountCopy = {
   stripeDone: 'Stripe connected: you can take payments.',
   stripePending: 'Stripe still needs a few details from you before you can take payments.',
   stripeFail: 'Stripe could not be opened. Please try again in a moment.',
+  stripeNeeded: 'To publish a date with a price, connect Stripe first (or set the price to 0).',
   published: 'Published! It shows on your page within the hour.',
   yourDates: 'Your dates',
   newDate: 'New date',
@@ -483,6 +485,7 @@ const de: HostAccountCopy = {
   stripeDone: 'Stripe ist verbunden: du kannst Zahlungen annehmen.',
   stripePending: 'Stripe braucht noch ein paar Angaben von dir, bevor du Zahlungen annehmen kannst.',
   stripeFail: 'Stripe ließ sich nicht öffnen. Bitte versuch es gleich noch einmal.',
+  stripeNeeded: 'Um einen Termin mit Preis zu veröffentlichen, verbinde zuerst Stripe (oder setz den Preis auf 0).',
   published: 'Veröffentlicht! Erscheint innerhalb einer Stunde auf deiner Seite.',
   yourDates: 'Deine Termine',
   newDate: 'Neuer Termin',

@@ -963,6 +963,12 @@ const fields = [
           visibility: fld<HTMLSelectElement>('visibility').value, media,
         };
         const note = $('[data-ha-create-note]');
+        if ((body.price ?? 0) > 0 && stripeReady !== true) {
+          showStripe();
+          note.textContent = t.stripeNeeded;
+          stripeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
         if (!body.title || !body.date || !body.start) { note.textContent = t.titlePh; note.dataset.ok = 'false'; fld('title').focus(); return; }
         const btn = createForm.querySelector<HTMLButtonElement>('.hd-publish')!;
         btn.disabled = true;

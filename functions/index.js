@@ -576,6 +576,10 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
   const ev = cleanEvent(req.body ?? {});
   if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
   if (!(await mayEdit(email, ev.slug))) return res.status(403).json({ error: 'Not your page' });
+  // As on Luma: no money without a connected Stripe account (hostStripe).
+  if (ev.price > 0 && !(await getFirestore().doc(`hostMembers/${email}`).get()).data()?.stripe?.chargesEnabled) {
+    return res.status(409).json({ error: 'stripe', message: 'Connect Stripe before you set a price' });
+  }
   const col = getFirestore().collection('hostEvents');
   const id = String(req.body?.id ?? '');
   if (id) {
