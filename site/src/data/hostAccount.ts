@@ -77,6 +77,13 @@ export interface HostAccountCopy {
   publish: string;
   saveChanges: string;
   publishNote: string;
+  stripeTitle: string;
+  stripeBody: string;
+  stripeBtn: string;
+  stripeWait: string;
+  stripeDone: string;
+  stripePending: string;
+  stripeFail: string;
   published: string;
   yourDates: string;
   newDate: string;
@@ -288,6 +295,13 @@ const en: HostAccountCopy = {
   publish: 'Publish date',
   saveChanges: 'Save changes',
   publishNote: 'Shows on your page and in the Twiggli calendar within the hour.',
+  stripeTitle: 'Get paid with Stripe',
+  stripeBody: 'To take money for this date, connect a Stripe account. Create a new one in a few minutes or sign in to the one you already have. Guests pay through Twiggli and the money goes straight to you.',
+  stripeBtn: 'Connect Stripe',
+  stripeWait: 'Opening Stripe…',
+  stripeDone: 'Stripe connected: you can take payments.',
+  stripePending: 'Stripe still needs a few details from you before you can take payments.',
+  stripeFail: 'Stripe could not be opened. Please try again in a moment.',
   published: 'Published! It shows on your page within the hour.',
   yourDates: 'Your dates',
   newDate: 'New date',
@@ -462,6 +476,13 @@ const de: HostAccountCopy = {
   publish: 'Termin veröffentlichen',
   saveChanges: 'Änderungen speichern',
   publishNote: 'Erscheint innerhalb einer Stunde auf deiner Seite und im Twiggli-Kalender.',
+  stripeTitle: 'Bezahlung über Stripe',
+  stripeBody: 'Damit du für diesen Termin Geld nehmen kannst, verbinde ein Stripe-Konto. Leg in wenigen Minuten ein neues an oder melde dich mit deinem bestehenden an. Die Gäste zahlen über Twiggli, das Geld geht direkt an dich.',
+  stripeBtn: 'Mit Stripe verbinden',
+  stripeWait: 'Stripe wird geöffnet…',
+  stripeDone: 'Stripe ist verbunden: du kannst Zahlungen annehmen.',
+  stripePending: 'Stripe braucht noch ein paar Angaben von dir, bevor du Zahlungen annehmen kannst.',
+  stripeFail: 'Stripe ließ sich nicht öffnen. Bitte versuch es gleich noch einmal.',
   published: 'Veröffentlicht! Erscheint innerhalb einer Stunde auf deiner Seite.',
   yourDates: 'Deine Termine',
   newDate: 'Neuer Termin',

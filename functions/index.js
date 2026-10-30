@@ -629,3 +629,64 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   });
   res.set('Cache-Control', 'no-store').status(200).json({ updated, items });
 });
+
+// ── Payouts: Stripe Connect, as Luma does it ──
+// A host who charges money connects a Stripe account: Stripe's own
+// onboarding either creates a new one or signs them into the one they
+// have ("standard" accounts, the same kind the app creates). The account
+// id is kept on hostMembers/{email}; a host who already connected in the
+// app (Users/{uid}.stripe.accountId) keeps that account.
+
+/** The signed-in caller's email and uid, from the Firebase token. */
+const callerIds = async (req) => {
+  const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
+  if (!m) return null;
+  try {
+    const t = await getAuth().verifyIdToken(m[1]);
+    return t.email && t.email_verified ? { email: t.email.toLowerCase(), uid: t.uid } : null;
+  } catch { return null; }
+};
+
+export const hostStripe = onRequest(OPTS, async (req, res) => {
+  if (!allow(req, res)) return;
+  const who = await callerIds(req);
+  if (!who) return res.status(401).json({ error: 'Not signed in' });
+  const { email, uid } = who;
+  if (!ADMINS.includes(email) && !(await mySlugs(email)).length) return res.status(403).json({ error: 'Hosts only' });
+  const key = STRIPE_SECRET_KEY.value();
+  if (!key) return res.status(500).json({ error: 'Stripe key missing' });
+  const db = getFirestore();
+  const memberRef = db.doc(`hostMembers/${email}`);
+  let accountId = (await memberRef.get()).data()?.stripe?.accountId;
+  if (!accountId) {
+    const app = (await db.doc(`Users/${uid}`).get()).data()?.stripe?.accountId;
+    if (typeof app === 'string' && /^acct_\w+$/.test(app)) accountId = app;
+  }
+  const action = String(req.body?.action ?? 'status');
+  if (action === 'status') {
+    if (!accountId) return res.status(200).json({ connected: false, chargesEnabled: false });
+    const r = await stripe(key, `accounts/${accountId}`);
+    const a = await r.json();
+    if (!r.ok) return res.status(502).json({ error: a?.error?.message ?? 'Stripe error' });
+    const state = { accountId, chargesEnabled: !!a.charges_enabled, detailsSubmitted: !!a.details_submitted };
+    await memberRef.set({ stripe: { ...state, checkedAt: FieldValue.serverTimestamp() } }, { merge: true });
+    return res.status(200).json({ connected: true, chargesEnabled: state.chargesEnabled, detailsSubmitted: state.detailsSubmitted });
+  }
+  if (action !== 'connect') return res.status(400).json({ error: 'Bad request' });
+  if (!accountId) {
+    const p = new URLSearchParams({ type: 'standard', country: 'DE', email });
+    p.set('metadata[twiggli_email]', email);
+    const r = await stripe(key, 'accounts', p);
+    const a = await r.json();
+    if (!r.ok) return res.status(502).json({ error: a?.error?.message ?? 'Stripe error' });
+    accountId = a.id;
+    await memberRef.set({ stripe: { accountId, chargesEnabled: false, createdAt: FieldValue.serverTimestamp() } }, { merge: true });
+  }
+  // The dashboard exists in English and German only.
+  const back = `${SITE}${req.body?.lang === 'en' ? '' : '/de'}/host/account/`;
+  const p = new URLSearchParams({ account: accountId, type: 'account_onboarding', return_url: `${back}?stripe=return`, refresh_url: `${back}?stripe=refresh` });
+  const r = await stripe(key, 'account_links', p);
+  const link = await r.json();
+  if (!r.ok) return res.status(502).json({ error: link?.error?.message ?? 'Stripe error' });
+  return res.status(200).json({ url: link.url });
+});
