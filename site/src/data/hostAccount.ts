@@ -16,6 +16,30 @@ export interface HostAccountCopy {
   notYetTitle: string;
   notYetLede: string;
   notYetCta: string;
+  tabOverview: string;
+  addDate: string;
+  notifications: string;
+  profile: string;
+  pickEmoji: string;
+  hello: string;
+  helloSub: string;
+  wPast: string;
+  stOpen: string;
+  stOpenNote: string;
+  stOpenNone: string;
+  stBookings: string;
+  stBookingsNote: string;
+  stEarnings: string;
+  stEarningsNote: string;
+  stNext: string;
+  stNextNone: string;
+  nextDates: string;
+  pastDates: string;
+  today: string;
+  alertOne: string;
+  alertMany: string;
+  bookedN: string;
+  noBookingYet: string;
   claimTitle: string;
   google: string;
   or: string;
@@ -154,6 +178,30 @@ const en: HostAccountCopy = {
   back: '← All messages',
   welcomeTitle: 'Welcome to Twiggli',
   welcomeLede: 'Sign in or create your host account.',
+  tabOverview: 'Overview',
+  addDate: 'Date',
+  notifications: 'Notifications',
+  profile: 'Your profile',
+  pickEmoji: 'Your profile emoji',
+  hello: 'Hi',
+  helloSub: 'Your week at a glance',
+  wPast: 'Past',
+  stOpen: 'Waiting for you',
+  stOpenNote: 'to answer',
+  stOpenNone: 'all answered',
+  stBookings: 'Bookings',
+  stBookingsNote: '{n} guests this month',
+  stEarnings: 'Earnings',
+  stEarningsNote: 'this month, after 15%',
+  stNext: 'Next date',
+  stNextNone: 'nothing planned yet',
+  nextDates: 'Your next dates',
+  pastDates: 'Past bookings',
+  today: 'Today',
+  alertOne: '1 new request is waiting for you',
+  alertMany: '{n} new requests are waiting for you',
+  bookedN: '{n} booked',
+  noBookingYet: 'no bookings yet',
   notYetTitle: 'You’re not a Twiggli host yet',
   notYetLede: 'Want to run your workshops with us? Tell us about them and we’ll get in touch.',
   notYetCta: 'Become a host',
@@ -255,6 +303,30 @@ const de: HostAccountCopy = {
   back: '← Alle Nachrichten',
   welcomeTitle: 'Willkommen bei Twiggli',
   welcomeLede: 'Melde dich an oder leg dein Gastgeber-Konto an.',
+  tabOverview: 'Übersicht',
+  addDate: 'Termin',
+  notifications: 'Benachrichtigungen',
+  profile: 'Dein Profil',
+  pickEmoji: 'Dein Profil-Emoji',
+  hello: 'Hallo',
+  helloSub: 'Deine Woche auf einen Blick',
+  wPast: 'Vergangen',
+  stOpen: 'Warten auf dich',
+  stOpenNote: 'zu beantworten',
+  stOpenNone: 'alles beantwortet',
+  stBookings: 'Buchungen',
+  stBookingsNote: '{n} Gäste diesen Monat',
+  stEarnings: 'Einnahmen',
+  stEarningsNote: 'diesen Monat, nach 15 %',
+  stNext: 'Nächster Termin',
+  stNextNone: 'noch nichts geplant',
+  nextDates: 'Deine nächsten Termine',
+  pastDates: 'Vergangene Buchungen',
+  today: 'Heute',
+  alertOne: '1 neue Anfrage wartet auf dich',
+  alertMany: '{n} neue Anfragen warten auf dich',
+  bookedN: '{n} gebucht',
+  noBookingYet: 'noch keine Buchung',
   notYetTitle: 'Du bist noch kein Twiggli-Gastgeber',
   notYetLede: 'Möchtest du deine Workshops mit uns anbieten? Erzähl uns davon, wir melden uns.',
   notYetCta: 'Gastgeber werden',

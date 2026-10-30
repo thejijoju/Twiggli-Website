@@ -16,7 +16,7 @@ import { hostAccountCopy } from '../data/hostAccount.ts';
 import { firebaseConfig, firebaseReady, functionsBase } from '../data/firebase.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
-import { href, type Lang } from '../lib/url.ts';
+import { href, withBase, type Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -68,7 +68,9 @@ const fields = [
 ] as const;
 ---
 
-<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="ha-page" noindex translations={['en', 'de']}>
+<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="ha-page" noindex translations={['en', 'de']} bare>
+  <!-- Its own slim bar instead of the site menu (a full-screen app, like Luma). -->
+  <a class="ha-home" href={href(lang, '/')} aria-label="Twiggli"><img src={withBase('/img/logo.png')} alt="" width="34" height="34" /></a>
   <section
     class="ha container"
     data-ha
@@ -108,15 +110,35 @@ const fields = [
 
     <!-- Signed in. -->
     <div class="ha-app" data-ha-app hidden>
-      <div class="ha-bar">
-        <span data-ha-who></span>
-        <label class="ha-pick" data-ha-pick-wrap hidden>
-          <span>{t.hostPick}</span>
-          <select data-ha-pick></select>
-        </label>
-        <a class="ha-link" data-ha-view target="_blank" rel="noopener">{t.viewPage} ↗</a>
-        <button type="button" class="ha-link" data-ha-signout>{t.signOut}</button>
-      </div>
+      <header class="hd-top">
+        <nav class="ha-tabs" role="tablist" data-ha-tabs hidden>
+          <button type="button" role="tab" aria-selected="true" data-ha-tab="overview"><span aria-hidden="true">🏠</span>{t.tabOverview}</button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="calendar"><span aria-hidden="true">📅</span>{t.tabCalendar}</button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="messages"><span aria-hidden="true">💬</span>{t.tabMessages}<i class="ha-count" data-ha-count hidden></i></button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="listings"><span aria-hidden="true">🏷️</span>{t.tabListings}</button>
+          <button type="button" role="tab" aria-selected="false" data-ha-tab="invites" data-ha-admin-only hidden><span aria-hidden="true">✉️</span>{t.tabInvites}</button>
+        </nav>
+        <div class="hd-right">
+          <button type="button" class="hd-add" data-ha-go="calendar" data-ha-hostonly hidden>+ {t.addDate}</button>
+          <button type="button" class="hd-bell" data-ha-go="messages" aria-label={t.notifications}>🔔<i data-ha-dot hidden></i></button>
+          <div class="hd-me">
+            <button type="button" class="hd-avatar" data-ha-avatar aria-haspopup="true" aria-label={t.profile}>🙂</button>
+            <div class="hd-menu" data-ha-menu hidden>
+              <p class="hd-who" data-ha-who></p>
+              <p class="hd-label">{t.pickEmoji}</p>
+              <div class="hd-emojis" data-ha-emojis>
+                {['🏺', '🎨', '🕯️', '🧵', '🌿', '🍳', '🍺', '🥃', '📷', '🪵', '💍', '📚', '🌸', '🥁', '✨', '🙂'].map((e) => <button type="button">{e}</button>)}
+              </div>
+              <label class="ha-pick" data-ha-pick-wrap hidden>
+                <span>{t.hostPick}</span>
+                <select data-ha-pick></select>
+              </label>
+              <a class="hd-item" data-ha-view target="_blank" rel="noopener">{t.viewPage} ↗</a>
+              <button type="button" class="hd-item" data-ha-signout>{t.signOut}</button>
+            </div>
+          </div>
+        </div>
+      </header>
       <p class="ha-card ha-note" data-ha-nohost hidden></p>
 
       <!-- Signed in, but not a host (yet). -->
@@ -143,16 +165,9 @@ const fields = [
       </form>
 
       <div data-ha-editor hidden>
-        <nav class="ha-tabs" role="tablist">
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="today"><span aria-hidden="true">📖</span>{t.tabToday}</button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="calendar"><span aria-hidden="true">📅</span>{t.tabCalendar}</button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="listings"><span aria-hidden="true">🏷️</span>{t.tabListings}</button>
-          <button type="button" role="tab" aria-selected="true" data-ha-tab="messages"><span aria-hidden="true">💬</span>{t.tabMessages}<i class="ha-dot" data-ha-dot hidden></i></button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="invites" data-ha-admin-only hidden><span aria-hidden="true">✉️</span>{t.tabInvites}</button>
-        </nav>
 
         <!-- Messages: every request for this host, newest first (functions hostInbox). -->
-        <section data-ha-panel="messages">
+        <section data-ha-panel="messages" hidden>
           <h2 class="ha-h">{t.tabMessages}</h2>
           <div class="ha-pills" data-ha-filter>
             <button type="button" aria-pressed="true" data-f="all">{t.fAll}</button>
@@ -164,13 +179,28 @@ const fields = [
           <div class="ha-card ha-detail" data-ha-detail hidden></div>
         </section>
 
-        <!-- Today: what happens today and next. -->
-        <section data-ha-panel="today" hidden>
-          <div class="ha-pills" data-ha-when>
-            <button type="button" aria-pressed="true" data-w="today">{t.wToday}</button>
-            <button type="button" aria-pressed="false" data-w="upcoming">{t.wUpcoming}</button>
+        <!-- Overview: the host's week at a glance (the first thing they see). -->
+        <section data-ha-panel="overview" class="hd-overview">
+          <div class="hd-hi">
+            <div><h1 data-ha-hello></h1><p class="ha-sub">{t.helloSub}</p></div>
+            <div class="hd-seg" data-ha-when>
+              <button type="button" aria-pressed="true" data-w="upcoming">{t.wUpcoming}</button>
+              <button type="button" aria-pressed="false" data-w="past">{t.wPast}</button>
+            </div>
           </div>
-          <ul class="ha-msgs" data-ha-today></ul>
+          <button type="button" class="hd-alert" data-ha-alert data-ha-go="messages" hidden>
+            <span class="hd-alert-ic" aria-hidden="true">✉️</span>
+            <span class="hd-alert-t"><b data-ha-alert-title></b><span data-ha-alert-sub></span></span>
+            <span class="hd-pill">{t.review}</span>
+          </button>
+          <div class="hd-stats">
+            <div class="hd-st"><small>{t.stOpen}</small><b data-ha-st="open">0</b><em data-ha-st-note="open"></em></div>
+            <div class="hd-st"><small>{t.stBookings}</small><b data-ha-st="bookings">0</b><em data-ha-st-note="bookings"></em></div>
+            <div class="hd-st"><small>{t.stEarnings}</small><b data-ha-st="earnings">€ 0</b><em>{t.stEarningsNote}</em></div>
+            <div class="hd-st"><small>{t.stNext}</small><b data-ha-st="next">–</b><em data-ha-st-note="next"></em></div>
+          </div>
+          <h2 class="hd-h2" data-ha-list-title>{t.nextDates}</h2>
+          <div data-ha-days></div>
           <div class="ha-empty-big" data-ha-today-empty hidden><span aria-hidden="true">📖</span><h2>{t.todayEmpty}</h2></div>
         </section>
 
@@ -353,12 +383,27 @@ const fields = [
       };
 
       // ── Tabs ──
-      root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => {
-        tab.addEventListener('click', () => {
-          root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((b) => b.setAttribute('aria-selected', String(b === tab)));
-          root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== tab.dataset.haTab; });
-        });
-      });
+      const showTab = (name: string) => {
+        root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.haTab === name)));
+        root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== name; });
+        window.scrollTo({ top: 0 });
+      };
+      root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => tab.addEventListener('click', () => showTab(tab.dataset.haTab!)));
+      // The bell, "+ Date" and the waiting-requests notice jump to their tab.
+      root.querySelectorAll<HTMLElement>('[data-ha-go]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.haGo!)));
+
+      // ── Profile: an emoji as the avatar, and the menu behind it ──
+      const menu = $('[data-ha-menu]');
+      const avatar = $<HTMLButtonElement>('[data-ha-avatar]');
+      avatar.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden = !menu.hidden; });
+      document.addEventListener('click', (e) => { if (!menu.contains(e.target as Node)) menu.hidden = true; });
+      const EMOJI_KEY = 'twiggli-host-emoji';
+      const hdEmoji = () => { try { return localStorage.getItem(`${EMOJI_KEY}:${email}`) || '🙂'; } catch { return '🙂'; } };
+      root.querySelectorAll<HTMLButtonElement>('[data-ha-emojis] button').forEach((b) => b.addEventListener('click', () => {
+        try { localStorage.setItem(`${EMOJI_KEY}:${email}`, b.textContent || '🙂'); } catch { /* private mode */ }
+        avatar.textContent = b.textContent;
+        menu.hidden = true;
+      }));
 
       // ── Page text ──
       const showText = () => {
@@ -485,6 +530,11 @@ const fields = [
         for (const sl of (slots.length ? slots : h?.slots ?? [])) addSlot(sl);
         emptyHint();
         editor.hidden = false;
+        $('[data-ha-tabs]').hidden = false;
+        root.querySelectorAll<HTMLElement>('[data-ha-hostonly]').forEach((x) => { x.hidden = false; });
+        const first = (auth.currentUser?.displayName || '').split(' ')[0] || (h?.name ?? '').split(' ')[0];
+        $('[data-ha-hello]').textContent = `${t.hello} ${first} 👋`;
+        avatar.textContent = hdEmoji();
         loadInbox();
       };
 
@@ -492,7 +542,7 @@ const fields = [
       type Req = { id: string; subject: string; fields: Record<string, string>; status: string; thread: { action: string; when?: string; message?: string; at: number }[]; createdAt: number };
       let reqs: Req[] = [];
       let filter = 'all';
-      let when = 'today';
+      let when = 'upcoming';
       const api = async (name: string, body: Record<string, unknown>) => {
         const token = await auth.currentUser?.getIdToken();
         const res = await fetch(`${cfg.functions}/${name}`, {
@@ -530,11 +580,92 @@ const fields = [
         list.replaceChildren(...shown.map((r) => row(r, true)));
         $('[data-ha-msgs-empty]').hidden = shown.length > 0;
         $('[data-ha-dot]').hidden = !reqs.some((r) => r.status === 'pending');
-        const today = new Date().toISOString().slice(0, 10);
-        const mine = reqs.filter((r) => r.status === 'accepted' && (when === 'today' ? dateOf(r) === today : dateOf(r) > today))
-          .sort((a, b) => dateOf(a).localeCompare(dateOf(b)));
-        $('[data-ha-today]').replaceChildren(...mine.map((r) => row(r, false)));
-        $('[data-ha-today-empty]').hidden = mine.length > 0;
+        const pending = reqs.filter((r) => r.status === 'pending');
+        $('[data-ha-dot]').hidden = !pending.length;
+        const count = $('[data-ha-count]');
+        count.textContent = String(pending.length);
+        count.hidden = !pending.length;
+        renderOverview(pending);
+      };
+
+      // ── Overview: greeting, waiting requests, four numbers, dates by day ──
+      const locale = document.documentElement.lang === 'de' ? 'de-DE' : 'en-GB';
+      const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const euro = (n: number) => `€ ${Math.round(n).toLocaleString(locale)}`;
+      const priceOf = (r: Req) => Number(String(r.fields.Price ?? '').replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+      const peopleOf = (r: Req) => Number(r.fields.People) || 1;
+      const WD = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+      const renderOverview = (pending: Req[]) => {
+        const today = iso(new Date());
+        const month = today.slice(0, 7);
+        const booked = reqs.filter((r) => r.status === 'accepted');
+        // Waiting requests, right at the top.
+        const alert = $('[data-ha-alert]');
+        alert.hidden = !pending.length;
+        $('[data-ha-alert-title]').textContent = (pending.length === 1 ? t.alertOne : t.alertMany).replace('{n}', String(pending.length));
+        $('[data-ha-alert-sub]').textContent = pending.slice(0, 2)
+          .map((r) => `${(r.fields.Name || t.guest).split(' ')[0]} · ${r.fields.Date ? new Date(dateOf(r)).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'numeric' }) : ''} · ${peopleOf(r)} ${t.people}`)
+          .join('   ·   ');
+        // Four numbers.
+        const thisMonth = booked.filter((r) => dateOf(r).startsWith(month));
+        const set = (k: string, v: string, note = '') => {
+          $(`[data-ha-st="${k}"]`).textContent = v;
+          const n = root.querySelector<HTMLElement>(`[data-ha-st-note="${k}"]`);
+          if (n) n.textContent = note;
+        };
+        set('open', String(pending.length), pending.length ? t.stOpenNote : t.stOpenNone);
+        set('bookings', String(thisMonth.length), t.stBookingsNote.replace('{n}', String(thisMonth.reduce((a, r) => a + peopleOf(r), 0))));
+        set('earnings', euro(thisMonth.reduce((a, r) => a + priceOf(r) * peopleOf(r) * 0.85, 0)));
+        // Dates: the weekly schedule for the next two weeks, plus confirmed bookings.
+        const slots = Array.from(slotsBox.querySelectorAll('.ha-slot')).map((n) => ({
+          title: (n.querySelector('[name="title"]') as HTMLInputElement).value,
+          time: (n.querySelector('[name="time"]') as HTMLInputElement).value,
+          duration: (n.querySelector('[name="duration"]') as HTMLInputElement).value,
+          days: Array.from(n.querySelectorAll<HTMLInputElement>('[name="day"]:checked')).map((d) => d.value),
+        }));
+        type Item = { date: string; time: string; title: string; sub: string; people: number };
+        const items: Item[] = [];
+        if (when === 'upcoming') {
+          for (let i = 0; i < 14; i++) {
+            const d = new Date(); d.setDate(d.getDate() + i);
+            for (const sl of slots) if (sl.days.includes(WD[d.getDay()])) {
+              const date = iso(d);
+              const ppl = booked.filter((r) => dateOf(r) === date).reduce((a, r) => a + peopleOf(r), 0);
+              items.push({ date, time: sl.time, title: sl.title, sub: [sl.time, sl.duration].filter(Boolean).join(' · '), people: ppl });
+            }
+          }
+          for (const r of booked) if (dateOf(r) >= today && !items.some((x) => x.date === dateOf(r))) {
+            items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Time, r.fields.Name].filter(Boolean).join(' · '), people: peopleOf(r) });
+          }
+        } else {
+          for (const r of booked) if (dateOf(r) && dateOf(r) < today) {
+            items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Time, r.fields.Name].filter(Boolean).join(' · '), people: peopleOf(r) });
+          }
+        }
+        items.sort((a, b) => (when === 'past' ? -1 : 1) * `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`));
+        const next = items.find(() => when === 'upcoming');
+        set('next', next ? new Date(next.date).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '–', next ? `${next.time} · ${next.title}` : t.stNextNone);
+        $('[data-ha-list-title]').textContent = when === 'past' ? t.pastDates : t.nextDates;
+        const box = $('[data-ha-days]');
+        box.replaceChildren();
+        let last = '';
+        for (const it of items) {
+          if (it.date !== last) {
+            last = it.date;
+            const d = new Date(it.date);
+            box.append(el('p', 'hd-day', `${it.date === today ? `${t.today} · ` : ''}${d.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}`));
+          }
+          const card = el('div', 'hd-ev');
+          const img = document.createElement('img');
+          img.src = `/img/hosts/${slug}.jpg`; img.alt = ''; img.loading = 'lazy';
+          img.addEventListener('error', () => { img.replaceWith(el('span', 'hd-ph', hdEmoji())); });
+          const txt = el('div', 'hd-ev-t');
+          txt.append(el('b', '', it.title), el('span', '', it.sub));
+          const seats = el('div', 'hd-seats', it.people ? t.bookedN.replace('{n}', String(it.people)) : t.noBookingYet);
+          card.append(img, txt, seats);
+          box.append(card);
+        }
+        $('[data-ha-today-empty]').hidden = items.length > 0;
       };
       const loadInbox = async () => {
         try { reqs = (await api('hostInbox', { slug })).items ?? []; } catch { reqs = []; }
@@ -713,7 +844,10 @@ const fields = [
   }
 </script>
 
-<style>
+<style is:global>
+  /* Global, not scoped: the messages, days and cards are built in the
+     script, and scoped styles would miss them. Every class starts ha-/hd-. */
+  .ha [hidden], .ha-home[hidden] { display: none !important; }
   .ha { max-width: 760px; margin: 0 auto; padding-block: 40px 80px; }
   .ha-head h1 { margin: 0 0 8px; }
   .ha-lede { color: var(--color-text-muted); margin: 0 0 24px; }
@@ -724,7 +858,7 @@ const fields = [
   }
   /* Signed out: Luma's layout in Twiggli colours, a frosted card on cream
      with a purple and a yellow glow behind it. */
-  .ha:not(.is-in) .ha-head { display: none; }
+  .ha-head { display: none; }
   .ha:not(.is-in) { position: relative; min-height: 72vh; display: grid; place-items: center; }
   .ha:not(.is-in)::before, .ha:not(.is-in)::after {
     content: ''; position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0;
@@ -764,12 +898,6 @@ const fields = [
   .ha-bar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 18px; color: var(--color-text-muted); font-size: 0.92rem; }
   .ha-pick { display: flex; gap: 8px; align-items: center; }
   .ha-pick select { width: auto; }
-  .ha-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-  .ha-tabs button {
-    font: inherit; font-size: 0.92rem; border: 1px solid rgba(0, 0, 0, 0.14); background: #fff;
-    border-radius: 999px; padding: 7px 14px; cursor: pointer;
-  }
-  .ha-tabs button[aria-selected='true'] { background: var(--color-text); color: #fff; border-color: var(--color-text); }
   .ha-langs { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; font-size: 0.92rem; }
   .ha-langs > span { font-weight: 600; }
   .ha-save { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
@@ -778,7 +906,6 @@ const fields = [
   .ha-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   .ha-remove { font-size: 0.88rem; }
   .ha-soon p { margin: 0; color: var(--color-text-muted); }
-  .ha-tabs button span { margin-right: 6px; }
   .ha-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e0457b; margin-left: 4px; vertical-align: top; }
   .ha-h { margin: 6px 0 12px; font-size: 1.6rem; }
   .ha-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -808,17 +935,85 @@ const fields = [
   .ha-invites { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.88rem; }
   .ha-invites td { padding: 8px 6px; border-bottom: 1px solid rgba(36, 39, 46, 0.08); vertical-align: top; }
   .ha-mono { font-family: ui-monospace, monospace; font-size: 0.75rem; word-break: break-all; color: var(--color-text-muted); }
-  /* Phones: the site already has its own bar at the bottom, so the tabs
-     stay at the top, as one scrollable row that sticks while scrolling. */
-  @media (max-width: 720px) {
-    .ha-tabs {
-      position: sticky; top: 0; z-index: 20; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
-      margin-inline: -16px; padding: 8px 16px; background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(12px);
-    }
-    .ha-tabs button { flex: none; }
-  }
   @media (max-width: 560px) {
     .ha-row { grid-template-columns: 1fr; }
     .ha-card { padding: 18px; }
+  }
+
+  /* ── The dashboard: a full-screen app (bare layout), Luma's structure in
+     Twiggli colours. A soft purple-to-light-yellow wash at the top, cards
+     with a shadow underneath only. ── */
+  body.is-bare { background: #fdf9f3; }
+  body.is-bare::before {
+    content: ''; position: fixed; inset: 0 0 auto 0; height: 300px; z-index: -1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(106, 62, 236, 0.13), rgba(255, 214, 120, 0.07) 60%, rgba(253, 249, 243, 0));
+  }
+  .ha-home { position: absolute; top: 16px; left: 24px; z-index: 30; }
+  .ha-home img { display: block; border-radius: 10px; }
+  .ha { max-width: 860px; }
+  .ha.is-in { padding-top: 84px; }
+  /* Across the whole page, on the logo's line. */
+  .hd-top { position: absolute; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 66px; padding: 0 24px 0 84px; }
+  .ha-tabs { display: flex; gap: 22px; margin: 0; }
+  .ha-tabs button { display: flex; align-items: center; gap: 7px; font: inherit; font-size: 0.95rem; color: var(--color-text-muted); background: none; border: 0; padding: 6px 0; cursor: pointer; }
+  .ha-tabs button span { font-size: 1rem; }
+  .ha-tabs button[aria-selected='true'] { color: var(--color-text); font-weight: 600; }
+  .ha-count { font-style: normal; font-size: 0.7rem; font-weight: 600; color: #fff; background: #e0457b; border-radius: 999px; padding: 1px 7px; }
+  .hd-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+  .hd-add { font: inherit; font-weight: 600; font-size: 0.9rem; color: #fff; background: var(--color-accent); border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; white-space: nowrap; }
+  .hd-bell { position: relative; font-size: 1.2rem; background: none; border: 0; cursor: pointer; padding: 4px; }
+  .hd-bell i { position: absolute; top: 2px; right: 0; width: 8px; height: 8px; border-radius: 50%; background: #e0457b; }
+  .hd-me { position: relative; }
+  .hd-avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 1.3rem; background: #ffeec2; border: 2px solid #fff; cursor: pointer; box-shadow: 0 5px 6px -4px rgba(0, 0, 0, 0.2); }
+  .hd-menu { position: absolute; right: 0; top: 46px; z-index: 40; width: 260px; padding: 14px; border-radius: 16px; background: #fff; box-shadow: 0 14px 18px -10px rgba(36, 39, 46, 0.28); display: grid; gap: 8px; }
+  .hd-who { margin: 0; font-size: 0.82rem; color: var(--color-text-muted); word-break: break-all; }
+  .hd-label { margin: 4px 0 0; font-size: 0.82rem; font-weight: 600; }
+  .hd-emojis { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
+  .hd-emojis button { font-size: 1.15rem; background: none; border: 0; border-radius: 8px; padding: 4px 0; cursor: pointer; }
+  .hd-emojis button:hover { background: rgba(36, 39, 46, 0.06); }
+  .hd-item { font: inherit; font-size: 0.92rem; text-align: left; background: none; border: 0; padding: 6px 0; color: var(--color-text); cursor: pointer; text-decoration: none; }
+  .hd-menu .ha-pick { display: grid; gap: 4px; font-size: 0.82rem; }
+  .hd-hi { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
+  .hd-hi h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
+  .hd-hi .ha-sub { margin: 4px 0 0; }
+  .hd-seg { display: flex; background: rgba(36, 39, 46, 0.06); border-radius: 12px; padding: 4px; }
+  .hd-seg button { font: inherit; font-size: 0.88rem; border: 0; background: none; border-radius: 9px; padding: 7px 16px; color: var(--color-text-muted); cursor: pointer; }
+  .hd-seg button[aria-pressed='true'] { background: #fff; color: var(--color-text); font-weight: 600; box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.2); }
+  .hd-alert { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; font: inherit; color: inherit; background: #fff; border: 0; border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; cursor: pointer; box-shadow: 0 8px 10px -8px rgba(224, 69, 123, 0.3); }
+  .hd-alert-ic { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; background: #ffe3ec; }
+  .hd-alert-t { flex: 1; min-width: 0; display: grid; }
+  .hd-alert-t span { color: var(--color-text-muted); font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hd-pill { flex: none; font-size: 0.82rem; font-weight: 600; color: #fff; background: var(--color-text); border-radius: 999px; padding: 8px 14px; }
+  .hd-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .hd-st { display: grid; gap: 2px; background: rgba(255, 255, 255, 0.8); border-radius: 16px; padding: 14px 16px; box-shadow: 0 8px 10px -8px rgba(60, 30, 120, 0.22); }
+  .hd-st small { font-size: 0.75rem; color: var(--color-text-muted); }
+  .hd-st b { font-size: 1.35rem; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hd-st em { font-style: normal; font-size: 0.75rem; color: #1f9d55; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hd-h2 { font-size: 1.05rem; margin: 4px 0 6px; }
+  .hd-day { margin: 16px 0 6px; font-size: 0.82rem; color: var(--color-text-muted); }
+  .hd-ev { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 10px; box-shadow: 0 8px 10px -8px rgba(0, 0, 0, 0.18); }
+  .hd-ev img, .hd-ph { flex: none; width: 60px; height: 60px; border-radius: 12px; object-fit: cover; display: grid; place-items: center; font-size: 1.6rem; background: #f4efe6; }
+  .hd-ev-t { flex: 1; min-width: 0; display: grid; }
+  .hd-ev-t span { color: var(--color-text-muted); font-size: 0.86rem; }
+  .hd-seats { flex: none; font-size: 0.82rem; font-weight: 600; text-align: right; color: var(--color-text-muted); }
+  /* Phones: the tabs become a bar at the bottom, like an app (this page has
+     no site menu, so nothing else sits there). */
+  @media (max-width: 760px) {
+    .ha-home { left: 16px; }
+    .hd-top { justify-content: flex-end; padding: 0 16px; }
+    .ha.is-in { padding-top: 74px; }
+    .hd-add { display: none; }
+    .ha-tabs {
+      position: fixed; z-index: 50; left: 0; right: 0; bottom: 0; margin: 0; gap: 0; justify-content: space-around;
+      padding: 8px 4px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(14px); border-top: 1px solid rgba(36, 39, 46, 0.08);
+    }
+    .ha-tabs button { flex-direction: column; gap: 2px; font-size: 0.68rem; padding: 2px 4px; position: relative; }
+    .ha-tabs button span { font-size: 1.3rem; }
+    .ha-tabs button[aria-selected='true'] { color: var(--color-accent); }
+    .ha-count { position: absolute; top: -2px; right: -4px; }
+    .ha.is-in { padding-bottom: 100px; }
+    .hd-hi { flex-direction: column; align-items: flex-start; }
+    .hd-stats { grid-template-columns: 1fr 1fr; }
   }
 </style>
