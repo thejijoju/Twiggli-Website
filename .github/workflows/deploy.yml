@@ -63,12 +63,14 @@ jobs:
         run: |
           base=https://twiggli-production.firebaseapp.com
           mkdir -p site/public/__/auth site/public/__/firebase
-          curl -fsSL "$base/__/auth/handler" -o site/public/__/auth/handler.html
-          curl -fsSL "$base/__/auth/handler.js" -o site/public/__/auth/handler.js
-          curl -fsSL "$base/__/auth/experiments.js" -o site/public/__/auth/experiments.js
-          curl -fsSL "$base/__/auth/iframe" -o site/public/__/auth/iframe.html
-          curl -fsSL "$base/__/auth/iframe.js" -o site/public/__/auth/iframe.js
-          curl -fsSL "$base/__/firebase/init.json" -o site/public/__/firebase/init.json
+          # The four the sign-in needs; the build stops if one is missing.
+          for f in handler:handler.html handler.js:handler.js iframe:iframe.html iframe.js:iframe.js; do
+            echo "$base/__/auth/${f%%:*}"
+            curl -fsSL "$base/__/auth/${f%%:*}" -o "site/public/__/auth/${f#*:}"
+          done
+          # Optional extras: copied when Firebase serves them.
+          curl -fsSL "$base/__/auth/experiments.js" -o site/public/__/auth/experiments.js || echo 'no experiments.js (optional)'
+          curl -fsSL "$base/__/firebase/init.json" -o site/public/__/firebase/init.json || echo 'no init.json (optional)'
           ls -la site/public/__/auth site/public/__/firebase
       - uses: withastro/action@v3
         with:
