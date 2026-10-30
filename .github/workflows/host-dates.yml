@@ -1,0 +1,32 @@
+name: Publish new host dates
+
+# Hosts create dates in their dashboard ("Neuer Termin"). Every hour this
+# checks the newest change (functions/index.js publicEvents, "updated") and,
+# when it is newer than the last site deploy, starts the deploy, so a new
+# date is on the host's page within the hour. Nothing changed: nothing runs.
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy when a host changed a date
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          updated=$(curl -fsS https://europe-west3-twiggli-production.cloudfunctions.net/publicEvents | jq -r '.updated // 0')
+          last=$(gh run list -R "$GITHUB_REPOSITORY" --workflow deploy.yml --branch claude/new-session-c5222r --status success --limit 1 --json createdAt -q '.[0].createdAt')
+          lastms=$(( $(date -d "${last:-1970-01-01T00:00:00Z}" +%s) * 1000 ))
+          echo "newest host change: $updated, last deploy: $lastms"
+          if [ "$updated" -gt "$lastms" ]; then
+            gh workflow run deploy.yml -R "$GITHUB_REPOSITORY" --ref claude/new-session-c5222r
+            echo 'deploy started'
+          fi

@@ -276,9 +276,13 @@ const confirmGuest = async (to, f) => {
   const intro = de
     ? `Hallo${name ? ` ${esc(name)}` : ''},<br><br>danke für deine Anfrage bei <b>Twiggli</b>! Sie ist gut bei uns angekommen:`
     : `Hi${name ? ` ${esc(name)}` : ''},<br><br>thank you for your request on <b>Twiggli</b>! It has reached us:`;
-  const outro = de
+  const runs = String(f['Runs from'] ?? '').match(/\d+/)?.[0];
+  const runsNote = !runs ? '' : de
+    ? `Dieser Kurs findet ab ${runs} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald ${runs} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.<br><br>`
+    : `This class runs from ${runs} participants. Your request is confirmed as soon as ${runs} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.<br><br>`;
+  const outro = runsNote + (de
     ? 'Wir geben sie direkt an den Gastgeber weiter. Er oder sie meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>'
-    : 'We pass it straight on to the host, who will get back to you by email, usually within 1–2 days. There is nothing else you need to do.<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>';
+    : 'We pass it straight on to the host, who will get back to you by email, usually within 1–2 days. There is nothing else you need to do.<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>');
   const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
@@ -515,4 +519,113 @@ export const hostInviteLinks = onRequest({ region: 'europe-west3', maxInstances:
   const owners = await getFirestore().collection('pageOwners').get();
   const claimed = Object.fromEntries(owners.docs.map((d) => [d.id, d.data().email]));
   return res.status(200).json({ links: slugs.map((s) => ({ slug: s, invite: sign(key, 'invite', s), claimedBy: claimed[s] ?? '' })) });
+});
+
+// ── Dates hosts create in their dashboard ("Neuer Termin") ──────────────
+// Saved in Firestore hostEvents; publicEvents hands the upcoming ones to the
+// website build (scripts/fetch-host-edits.mjs), which turns them into
+// bookable request dates on the host's page and in the calendar.
+
+const REPEATS = ['once', 'weekly', 'biweekly', 'monthly'];
+const CANCELS = ['24h', '7d', '14d', 'none'];
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+const YMD = /^\d{4}-\d\d-\d\d$/;
+
+/** The caller may edit this host page (or is Jirel). */
+const mayEdit = async (email, slug) => ADMINS.includes(email) || (await mySlugs(email)).includes(slug);
+
+/** A host's date, checked and trimmed; null when something is off. */
+const cleanEvent = (b) => {
+  const slug = String(b.slug ?? '');
+  const date = String(b.date ?? '');
+  const start = String(b.start ?? '');
+  const end = String(b.end ?? '');
+  const title = text(b.title, 120);
+  if (!SLUG.test(slug) || !YMD.test(date) || !HHMM.test(start) || (end && !HHMM.test(end)) || !title) return null;
+  const num = (v, max) => { const n = Math.round(Number(v)); return Number.isFinite(n) && n >= 0 && n <= max ? n : null; };
+  const until = String(b.until ?? '');
+  return {
+    slug, title, date, start, end,
+    repeat: REPEATS.includes(b.repeat) ? b.repeat : 'once',
+    until: YMD.test(until) ? until : '',
+    // A video and/or photos: their page's own pictures, or files they
+    // uploaded to Firebase Storage (hostMedia/<slug>/…).
+    media: (Array.isArray(b.media) ? b.media : []).slice(0, 12)
+      .map((m) => ({ type: m?.type === 'video' ? 'video' : 'photo', url: String(m?.url ?? '') }))
+      .filter((m) => /^\/img\/hosts\/[a-z0-9-]+\.(jpg|png|webp)$/.test(m.url)
+        || m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`hostMedia%2F${slug}%2F`)),
+    location: text(b.location, 160),
+    description: String(b.description ?? '').slice(0, 3000),
+    price: num(b.price, 5000),
+    seats: num(b.seats, 500),
+    // "Runs from X participants": below that the class is cancelled and
+    // nobody pays (shown to guests on the date and in the request form).
+    minGuests: num(b.minGuests, 500) || null,
+    decideHours: num(b.decideHours, 336) ?? 48,
+    approve: b.approve !== false,
+    languages: text(b.languages, 60),
+    cancel: CANCELS.includes(b.cancel) ? b.cancel : '7d',
+    visibility: b.visibility === 'private' ? 'private' : 'public',
+  };
+};
+
+export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const ev = cleanEvent(req.body ?? {});
+  if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
+  if (!(await mayEdit(email, ev.slug))) return res.status(403).json({ error: 'Not your page' });
+  const col = getFirestore().collection('hostEvents');
+  const id = String(req.body?.id ?? '');
+  if (id) {
+    if (!/^[A-Za-z0-9]{10,40}$/.test(id)) return res.status(400).json({ error: 'Bad id' });
+    const old = await col.doc(id).get();
+    if (!old.exists || old.data().slug !== ev.slug) return res.status(404).json({ error: 'Not found' });
+    await col.doc(id).set({ ...ev, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    return res.status(200).json({ id });
+  }
+  const doc = await col.add({ ...ev, by: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+  try {
+    await mailJirel({ subject: `New date from ${ev.slug}: ${ev.title}, ${ev.date} ${ev.start}`, text: `${email} added "${ev.title}" on ${ev.date} at ${ev.start} (${ev.repeat}), ${ev.seats ?? '?'} seats, €${ev.price ?? '?'}${ev.minGuests ? `, runs from ${ev.minGuests}` : ''}.` });
+  } catch (err) { console.error('event note failed', err?.message); }
+  return res.status(200).json({ id: doc.id });
+});
+
+export const hostEventDelete = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const id = String(req.body?.id ?? '');
+  if (!/^[A-Za-z0-9]{10,40}$/.test(id)) return res.status(400).json({ error: 'Bad id' });
+  const ref = getFirestore().doc(`hostEvents/${id}`);
+  const snap = await ref.get();
+  if (!snap.exists || !(await mayEdit(email, snap.data().slug))) return res.status(403).json({ error: 'Not your date' });
+  await ref.delete();
+  return res.status(200).json({ ok: true });
+});
+
+export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const slug = String(req.body?.slug ?? '');
+  if (!SLUG.test(slug) || !(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
+  const snap = await getFirestore().collection('hostEvents').where('slug', '==', slug).get();
+  const items = snap.docs.map((d) => ({ id: d.id, ...d.data(), createdAt: undefined, updatedAt: undefined }))
+    .sort((a, b) => `${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`));
+  return res.status(200).json({ items });
+});
+
+/** Public: every public date (no personal data), for the website build. */
+export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (_req, res) => {
+  const snap = await getFirestore().collection('hostEvents').where('visibility', '==', 'public').get();
+  let updated = 0;
+  const items = snap.docs.map((d) => {
+    const x = d.data();
+    updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0);
+    const { by: _by, createdAt: _c, updatedAt: _u, ...pub } = x;
+    return { id: d.id, ...pub };
+  });
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items });
 });

@@ -8,6 +8,8 @@ export const bookingCopy: Record<Lang, {
   book: string; request: string; notify: string; retreat: string;
   /** '{n}' stands for the number: the copy travels to the page as JSON. */
   minPeople: string;
+  /** A date that only runs from '{n}' participants (host dashboard). */
+  runsFrom: string;
   lede: string; notifyLede: string; groupLede: string; studioLede: string; membershipLede: string; retreatLede: string; when: string;
   name: string; email: string; phone: string; people: string; message: string; messagePh: string;
   optional: string; send: string; sending: string;
@@ -21,6 +23,7 @@ export const bookingCopy: Record<Lang, {
 }> = {
   en: {
     minPeople: 'Group requests from {n} people',
+    runsFrom: 'This class runs from {n} participants. Your request is confirmed as soon as {n} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.',
     book: 'Booking request', request: 'Booking request', notify: 'Join the waiting list', retreat: 'Request information',
     lede: 'Tell us who’s coming and we’ll confirm your place by email. Nothing to pay yet.',
     notifyLede: 'This date is full. Leave your details and we’ll let you know as soon as a place opens.',
@@ -41,6 +44,7 @@ export const bookingCopy: Record<Lang, {
   },
   de: {
     minPeople: 'Gruppenanfragen ab {n} Personen',
+    runsFrom: 'Dieser Kurs findet ab {n} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald {n} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.',
     book: 'Buchungsanfrage', request: 'Buchungsanfrage', notify: 'Auf die Warteliste', retreat: 'Informationen anfragen',
     lede: 'Sag uns, wer kommt — wir bestätigen deinen Platz per E-Mail. Du zahlst noch nichts.',
     notifyLede: 'Dieser Termin ist voll. Hinterlass deine Daten, und wir melden uns, sobald ein Platz frei wird.',
@@ -61,6 +65,7 @@ export const bookingCopy: Record<Lang, {
   },
   fr: {
     minPeople: 'Demandes de groupe à partir de {n} personnes',
+    runsFrom: 'Cet atelier a lieu à partir de {n} participants. Ta demande est confirmée dès que {n} places sont réservées, et tu ne paies qu’à ce moment-là. S’il n’a pas lieu, rien n’est débité.',
     book: 'Demande de réservation', request: 'Demande de réservation', notify: 'Liste d’attente', retreat: 'Demander des informations',
     lede: 'Dites-nous qui vient : nous confirmons votre place par e-mail. Rien à payer pour l’instant.',
     notifyLede: 'Cette date est complète. Laissez vos coordonnées et nous vous prévenons dès qu’une place se libère.',
@@ -81,6 +86,7 @@ export const bookingCopy: Record<Lang, {
   },
   es: {
     minPeople: 'Solicitudes de grupo desde {n} personas',
+    runsFrom: 'Este taller se celebra a partir de {n} participantes. Tu solicitud se confirma en cuanto haya {n} plazas reservadas, y solo entonces pagas. Si no se llena, no se cobra nada.',
     book: 'Solicitud de reserva', request: 'Solicitud de reserva', notify: 'Lista de espera', retreat: 'Solicitar información',
     lede: 'Dinos quién viene y te confirmamos la plaza por email. Todavía no pagas nada.',
     notifyLede: 'Esta fecha está completa. Déjanos tus datos y te avisamos en cuanto se libere una plaza.',
@@ -101,6 +107,7 @@ export const bookingCopy: Record<Lang, {
   },
   it: {
     minPeople: 'Richieste di gruppo da {n} persone',
+    runsFrom: 'Questo corso si tiene a partire da {n} partecipanti. La tua richiesta viene confermata appena ci sono {n} posti prenotati, e solo allora paghi. Se non si raggiunge, non paghi nulla.',
     book: 'Richiesta di prenotazione', request: 'Richiesta di prenotazione', notify: 'Lista d’attesa', retreat: 'Richiedi informazioni',
     lede: 'Dicci chi viene: ti confermiamo il posto via email. Per ora non paghi nulla.',
     notifyLede: 'Questa data è al completo. Lasciaci i tuoi dati e ti avvisiamo appena si libera un posto.',
@@ -121,6 +128,7 @@ export const bookingCopy: Record<Lang, {
   },
   nl: {
     minPeople: 'Groepsaanvragen vanaf {n} personen',
+    runsFrom: 'Deze workshop gaat door vanaf {n} deelnemers. Je aanvraag wordt bevestigd zodra er {n} plekken geboekt zijn, en pas dan betaal je. Gaat hij niet door, dan wordt er niets afgeschreven.',
     book: 'Boekingsaanvraag', request: 'Boekingsaanvraag', notify: 'Op de wachtlijst', retreat: 'Informatie aanvragen',
     lede: 'Laat ons weten wie er komt, dan bevestigen we je plek per e-mail. Je betaalt nog niets.',
     notifyLede: 'Deze datum is vol. Laat je gegevens achter en we laten het weten zodra er een plek vrijkomt.',
@@ -141,6 +149,7 @@ export const bookingCopy: Record<Lang, {
   },
   pl: {
     minPeople: 'Zapytania grupowe od {n} osób',
+    runsFrom: 'Te zajęcia odbywają się od {n} uczestników. Twoja prośba zostanie potwierdzona, gdy zarezerwowanych będzie {n} miejsc, i dopiero wtedy płacisz. Jeśli się nie odbędą, nic nie zostanie pobrane.',
     book: 'Prośba o rezerwację', request: 'Prośba o rezerwację', notify: 'Lista oczekujących', retreat: 'Poproś o informacje',
     lede: 'Napisz, kto przyjdzie — potwierdzimy miejsce mailowo. Na razie nic nie płacisz.',
     notifyLede: 'Ten termin jest pełny. Zostaw dane, a damy znać, gdy zwolni się miejsce.',
@@ -161,6 +170,7 @@ export const bookingCopy: Record<Lang, {
   },
   tr: {
     minPeople: 'Grup talepleri {n} kişiden itibaren',
+    runsFrom: 'Bu atölye {n} katılımcıdan itibaren yapılır. {n} yer dolduğunda talebin onaylanır ve ancak o zaman ödeme yaparsın. Dolmazsa hiçbir ücret alınmaz.',
     book: 'Rezervasyon talebi', request: 'Rezervasyon talebi', notify: 'Bekleme listesi', retreat: 'Bilgi iste',
     lede: 'Kimlerin geleceğini yaz, yerini e-postayla onaylayalım. Şimdilik bir şey ödemiyorsun.',
     notifyLede: 'Bu tarih dolu. Bilgilerini bırak, yer açılınca haber verelim.',

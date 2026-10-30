@@ -40,6 +40,55 @@ export interface HostAccountCopy {
   alertMany: string;
   bookedN: string;
   noBookingYet: string;
+  mediaNone: string;
+  mediaTip: string;
+  uploadVideo: string;
+  uploadPhotos: string;
+  mediaFromPage: string;
+  uploading: string;
+  uploadDone: string;
+  uploadFail: string;
+  vPublic: string;
+  vPrivate: string;
+  titlePh: string;
+  startLabel: string;
+  endLabel: string;
+  repeat: string;
+  rOnce: string;
+  rWeekly: string;
+  rBiweekly: string;
+  rMonthly: string;
+  untilLabel: string;
+  untilHint: string;
+  locationPh: string;
+  descPh: string;
+  bookingSec: string;
+  priceLabel: string;
+  seatsLabel: string;
+  minLabel: string;
+  minHint: string;
+  approveLabel: string;
+  langLabel: string;
+  cancelLabel: string;
+  c24: string;
+  c7: string;
+  c14: string;
+  cNone: string;
+  publish: string;
+  saveChanges: string;
+  publishNote: string;
+  published: string;
+  yourDates: string;
+  newDate: string;
+  noOwnDates: string;
+  editDate: string;
+  deleteDate: string;
+  confirmDelete: string;
+  seatsN: string;
+  runsFromN: string;
+  repeatsWeekly: string;
+  repeatsBiweekly: string;
+  repeatsMonthly: string;
   claimTitle: string;
   google: string;
   or: string;
@@ -202,6 +251,55 @@ const en: HostAccountCopy = {
   alertMany: '{n} new requests are waiting for you',
   bookedN: '{n} booked',
   noBookingYet: 'no bookings yet',
+  mediaNone: 'Your video or photo',
+  mediaTip: 'Videos get the most bookings: 10–30 seconds, filmed upright on your phone, is perfect. No video? Then 3–8 photos. Or both.',
+  uploadVideo: 'Upload video',
+  uploadPhotos: 'Upload photos',
+  mediaFromPage: 'Or pick from the photos on your page:',
+  uploading: 'Uploading…',
+  uploadDone: 'Uploaded.',
+  uploadFail: 'Upload isn’t switched on yet. Pick a photo from your page for now, or send the video to {email}.',
+  vPublic: 'Public',
+  vPrivate: 'Only with the link',
+  titlePh: 'What’s your workshop called?',
+  startLabel: 'Start',
+  endLabel: 'End',
+  repeat: 'Repeat',
+  rOnce: 'Once',
+  rWeekly: 'Every week',
+  rBiweekly: 'Every 2 weeks',
+  rMonthly: 'Every month',
+  untilLabel: 'Until',
+  untilHint: 'empty = 12 weeks',
+  locationPh: 'Where? (your studio, or the address)',
+  descPh: 'What will people do? (taken from your page if you leave it empty)',
+  bookingSec: 'Booking',
+  priceLabel: 'Price per person (€)',
+  seatsLabel: 'Seats',
+  minLabel: 'Runs from',
+  minHint: 'participants, otherwise it’s cancelled and nobody pays',
+  approveLabel: 'Confirm requests first',
+  langLabel: 'Language',
+  cancelLabel: 'Cancellation',
+  c24: 'free up to 24 h before',
+  c7: 'free up to 7 days before',
+  c14: 'free up to 14 days before',
+  cNone: 'no refunds',
+  publish: 'Publish date',
+  saveChanges: 'Save changes',
+  publishNote: 'Shows on your page and in the Twiggli calendar within the hour.',
+  published: 'Published! It shows on your page within the hour.',
+  yourDates: 'Your dates',
+  newDate: 'New date',
+  noOwnDates: 'No dates yet. Create your first one with “New date”.',
+  editDate: 'Edit',
+  deleteDate: 'Delete',
+  confirmDelete: 'Delete this date?',
+  seatsN: '{n} seats',
+  runsFromN: 'runs from {n}',
+  repeatsWeekly: 'every week',
+  repeatsBiweekly: 'every 2 weeks',
+  repeatsMonthly: 'every month',
   notYetTitle: 'You’re not a Twiggli host yet',
   notYetLede: 'Want to run your workshops with us? Tell us about them and we’ll get in touch.',
   notYetCta: 'Become a host',
@@ -327,6 +425,55 @@ const de: HostAccountCopy = {
   alertMany: '{n} neue Anfragen warten auf dich',
   bookedN: '{n} gebucht',
   noBookingYet: 'noch keine Buchung',
+  mediaNone: 'Dein Video oder Foto',
+  mediaTip: 'Videos bringen die meisten Buchungen: 10–30 Sekunden, hochkant mit dem Handy gefilmt, sind perfekt. Kein Video? Dann 3–8 Fotos. Oder beides.',
+  uploadVideo: 'Video hochladen',
+  uploadPhotos: 'Fotos hochladen',
+  mediaFromPage: 'Oder wähl aus den Fotos deiner Seite:',
+  uploading: 'Lädt hoch…',
+  uploadDone: 'Hochgeladen.',
+  uploadFail: 'Hochladen ist noch nicht freigeschaltet. Wähl solange ein Foto deiner Seite, oder schick das Video an {email}.',
+  vPublic: 'Öffentlich',
+  vPrivate: 'Nur mit Link',
+  titlePh: 'Wie heißt dein Workshop?',
+  startLabel: 'Beginn',
+  endLabel: 'Ende',
+  repeat: 'Wiederholen',
+  rOnce: 'Einmalig',
+  rWeekly: 'Jede Woche',
+  rBiweekly: 'Alle 2 Wochen',
+  rMonthly: 'Jeden Monat',
+  untilLabel: 'Bis',
+  untilHint: 'leer = 12 Wochen',
+  locationPh: 'Wo? (dein Studio oder die Adresse)',
+  descPh: 'Was machen die Leute? (leer = Text von deiner Seite)',
+  bookingSec: 'Buchung',
+  priceLabel: 'Preis pro Person (€)',
+  seatsLabel: 'Plätze',
+  minLabel: 'Findet statt ab',
+  minHint: 'Teilnehmenden, sonst fällt er aus und niemand zahlt',
+  approveLabel: 'Anfragen erst bestätigen',
+  langLabel: 'Sprache',
+  cancelLabel: 'Stornierung',
+  c24: 'bis 24 Std. vorher kostenlos',
+  c7: 'bis 7 Tage vorher kostenlos',
+  c14: 'bis 14 Tage vorher kostenlos',
+  cNone: 'keine Erstattung',
+  publish: 'Termin veröffentlichen',
+  saveChanges: 'Änderungen speichern',
+  publishNote: 'Erscheint innerhalb einer Stunde auf deiner Seite und im Twiggli-Kalender.',
+  published: 'Veröffentlicht! Erscheint innerhalb einer Stunde auf deiner Seite.',
+  yourDates: 'Deine Termine',
+  newDate: 'Neuer Termin',
+  noOwnDates: 'Noch keine Termine. Leg deinen ersten mit „Neuer Termin“ an.',
+  editDate: 'Bearbeiten',
+  deleteDate: 'Löschen',
+  confirmDelete: 'Diesen Termin löschen?',
+  seatsN: '{n} Plätze',
+  runsFromN: 'ab {n}',
+  repeatsWeekly: 'jede Woche',
+  repeatsBiweekly: 'alle 2 Wochen',
+  repeatsMonthly: 'jeden Monat',
   notYetTitle: 'Du bist noch kein Twiggli-Gastgeber',
   notYetLede: 'Möchtest du deine Workshops mit uns anbieten? Erzähl uns davon, wir melden uns.',
   notYetCta: 'Gastgeber werden',

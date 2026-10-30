@@ -34,6 +34,8 @@ const hosts = Object.fromEntries(
   getHosts('en', { withPreview: true }).map((h) => [h.slug, {
     name: h.name,
     page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
+    // Their own pictures, to pick a cover for a new date without uploading.
+    photos: [...new Set([h.photo, ...(h.gallery ?? [])].filter((x): x is string => !!x))].slice(0, 8),
     en: pick(h as unknown as Record<string, unknown>),
     de: pick((de.get(h.slug) ?? h) as unknown as Record<string, unknown>),
     slots: recurring.filter((r) => r.slug === h.slug).map((r) => ({
@@ -119,7 +121,7 @@ const fields = [
           <button type="button" role="tab" aria-selected="false" data-ha-tab="invites" data-ha-admin-only hidden><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>{t.tabInvites}</button>
         </nav>
         <div class="hd-right">
-          <button type="button" class="hd-add" data-ha-go="calendar" data-ha-hostonly hidden>+ {t.addDate}</button>
+          <button type="button" class="hd-add" data-ha-new data-ha-hostonly hidden>+ {t.addDate}</button>
           <button type="button" class="hd-bell" data-ha-go="messages" aria-label={t.notifications}><svg class="hd-i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><i data-ha-dot hidden></i></button>
           <div class="hd-me">
             <button type="button" class="hd-avatar" data-ha-avatar aria-haspopup="true" aria-label={t.profile}>🙂</button>
@@ -188,6 +190,7 @@ const fields = [
               <button type="button" aria-pressed="false" data-w="past">{t.wPast}</button>
             </div>
           </div>
+          <button type="button" class="hd-add-big hd-add-phone" data-ha-new>+ {t.newDate}</button>
           <button type="button" class="hd-alert" data-ha-alert data-ha-go="messages" hidden>
             <span class="hd-alert-ic" aria-hidden="true">✉️</span>
             <span class="hd-alert-t"><b data-ha-alert-title></b><span data-ha-alert-sub></span></span>
@@ -233,6 +236,66 @@ const fields = [
           </div>
         </form>
 
+
+        <!-- New date ("Neuer Termin"): the quickest thing in the dashboard. -->
+        <form class="hd-create" data-ha-panel="create" hidden novalidate>
+          <input type="hidden" name="id" />
+          <div class="hd-create-media">
+            <div class="hd-cover" data-ha-cover><span class="hd-ph" data-ha-cover-ph>{t.mediaNone}</span></div>
+            <p class="hd-media-tip">{t.mediaTip}</p>
+            <div class="hd-media-btns">
+              <label class="hd-media-btn"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/></svg><span>{t.uploadVideo}</span><input type="file" accept="video/*" data-ha-up-video hidden /></label>
+              <label class="hd-media-btn"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5.5-5 4 3.5 3-2.5 4 4"/></svg><span>{t.uploadPhotos}</span><input type="file" accept="image/*" multiple data-ha-up-photos hidden /></label>
+            </div>
+            <p class="hd-media-hint">{t.mediaFromPage}</p>
+            <div class="hd-thumbs" data-ha-thumbs></div>
+            <p class="ha-note" data-ha-up-note role="status"></p>
+          </div>
+          <div class="hd-create-main">
+            <div class="hd-create-chips">
+              <span class="hd-chip" data-ha-create-host></span>
+              <label class="hd-chip"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5z"/></svg><select name="visibility"><option value="public">{t.vPublic}</option><option value="private">{t.vPrivate}</option></select></label>
+            </div>
+            <input class="hd-title" name="title" maxlength="120" placeholder={t.titlePh} required />
+            <div class="hd-when">
+              <div class="hd-box">
+                <div class="hd-dt"><span>{t.startLabel}</span><input type="date" name="date" required /><input type="time" name="start" required /></div>
+                <div class="hd-dt"><span>{t.endLabel}</span><span class="hd-dt-same" data-ha-same-day></span><input type="time" name="end" /></div>
+                <div class="hd-repeat" role="radiogroup" aria-label={t.repeat}>
+                  <span>{t.repeat}</span>
+                  <label><input type="radio" name="repeat" value="once" checked /><i>{t.rOnce}</i></label>
+                  <label><input type="radio" name="repeat" value="weekly" /><i>{t.rWeekly}</i></label>
+                  <label><input type="radio" name="repeat" value="biweekly" /><i>{t.rBiweekly}</i></label>
+                  <label><input type="radio" name="repeat" value="monthly" /><i>{t.rMonthly}</i></label>
+                </div>
+                <div class="hd-dt" data-ha-until hidden><span>{t.untilLabel}</span><input type="date" name="until" /><small>{t.untilHint}</small></div>
+              </div>
+              <div class="hd-box hd-tz">Berlin<br />GMT+1</div>
+            </div>
+            <div class="hd-box">
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><input name="location" maxlength="160" placeholder={t.locationPh} /></label>
+              <label class="hd-row hd-row-top"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 10h14M5 14h10M5 18h7"/></svg><textarea name="description" rows="3" placeholder={t.descPh}></textarea></label>
+            </div>
+            <p class="hd-sec">{t.bookingSec}</p>
+            <div class="hd-box">
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 6.5A6.5 6.5 0 1 0 17 17.5M4 10h9M4 14h9"/></svg><span class="hd-k">{t.priceLabel}</span><input class="hd-num" type="number" name="price" min="0" max="5000" step="1" placeholder="65" /></label>
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.8c1.6.8 2.7 2.6 3 5.2"/></svg><span class="hd-k">{t.seatsLabel}</span><input class="hd-num" type="number" name="seats" min="1" max="500" step="1" placeholder="10" /></label>
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span class="hd-k">{t.minLabel}<small>{t.minHint}</small></span><input class="hd-num" type="number" name="minGuests" min="0" max="500" step="1" placeholder="–" /></label>
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="hd-k">{t.approveLabel}</span><input class="hd-switch" type="checkbox" name="approve" checked /></label>
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg><span class="hd-k">{t.langLabel}</span><input class="hd-short" name="languages" maxlength="60" placeholder="DE · EN" /></label>
+              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="m8 5-4 4 4 4"/></svg><span class="hd-k">{t.cancelLabel}</span><select name="cancel"><option value="24h">{t.c24}</option><option value="7d" selected>{t.c7}</option><option value="14d">{t.c14}</option><option value="none">{t.cNone}</option></select></label>
+            </div>
+            <button type="submit" class="hd-publish">{t.publish}</button>
+            <p class="hd-publish-note" data-ha-create-note role="status">{t.publishNote}</p>
+          </div>
+        </form>
+
+        <!-- Calendar: the host's own dates, then their weekly schedule. -->
+        <section class="hd-dates" data-ha-panel="calendar" hidden>
+          <div class="hd-dates-head"><h2 class="hd-h2">{t.yourDates}</h2><button type="button" class="hd-add-big" data-ha-new>+ {t.newDate}</button></div>
+          <div data-ha-own-dates></div>
+          <p class="ha-empty" data-ha-own-empty hidden>{t.noOwnDates}</p>
+        </section>
         <form class="ha-card" data-ha-panel="calendar" hidden>
           <p class="ha-lede">{t.scheduleLede}</p>
           <div data-ha-slots></div>
@@ -280,10 +343,11 @@ const fields = [
   import {
     collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where, writeBatch,
   } from 'firebase/firestore';
+  import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
-  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[] };
+  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[] };
 
   const root = document.querySelector<HTMLElement>('[data-ha]');
   if (root) {
@@ -626,6 +690,10 @@ const fields = [
         type Item = { date: string; time: string; title: string; sub: string; people: number };
         const items: Item[] = [];
         if (when === 'upcoming') {
+          for (const ev of ownEvents) for (const date of occurrences(ev, 14)) {
+            const ppl = booked.filter((r) => dateOf(r) === date).reduce((a, r) => a + peopleOf(r), 0);
+            items.push({ date, time: ev.start, title: ev.title, sub: [ev.end ? `${ev.start}–${ev.end}` : ev.start, ev.seats ? t.seatsN.replace('{n}', String(ev.seats)) : ''].filter(Boolean).join(' · '), people: ppl });
+          }
           for (let i = 0; i < 14; i++) {
             const d = new Date(); d.setDate(d.getDate() + i);
             for (const sl of slots) if (sl.days.includes(WD[d.getDay()])) {
@@ -668,6 +736,8 @@ const fields = [
         $('[data-ha-today-empty]').hidden = items.length > 0;
       };
       const loadInbox = async () => {
+        try { ownEvents = (await api('hostEvents', { slug })).items ?? []; } catch { ownEvents = []; }
+        renderOwnDates();
         try { reqs = (await api('hostInbox', { slug })).items ?? []; } catch { reqs = []; }
         $('[data-ha-detail]').hidden = true;
         $('[data-ha-msgs]').hidden = false;
@@ -725,6 +795,172 @@ const fields = [
         root.querySelectorAll('[data-ha-when] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
         renderMsgs();
       }));
+
+
+      // ── New date ("Neuer Termin") and the host's own dates ──
+      type Ev = {
+        id?: string; slug: string; title: string; date: string; start: string; end?: string; repeat?: string; until?: string;
+        price?: number | null; seats?: number | null; minGuests?: number | null; approve?: boolean; languages?: string;
+        cancel?: string; location?: string; description?: string; visibility?: string; media?: { type: string; url: string }[];
+      };
+      let ownEvents: Ev[] = [];
+      let media: { type: string; url: string }[] = [];
+      const createForm = $<HTMLFormElement>('[data-ha-panel="create"]');
+      const fld = <T extends HTMLElement = HTMLInputElement>(n: string) => createForm.elements.namedItem(n) as unknown as T;
+      /** The dates a date falls on within the next `days` days. */
+      const occurrences = (ev: Ev, days: number): string[] => {
+        const out: string[] = [];
+        const today = iso(new Date());
+        const last = new Date(); last.setDate(last.getDate() + days);
+        const until = ev.until || iso(new Date(new Date(ev.date).getTime() + 84 * 86400000));
+        for (let d = new Date(`${ev.date}T12:00:00`); iso(d) <= until && d <= last;) {
+          if (iso(d) >= today) out.push(iso(d));
+          if (ev.repeat === 'weekly') d.setDate(d.getDate() + 7);
+          else if (ev.repeat === 'biweekly') d.setDate(d.getDate() + 14);
+          else if (ev.repeat === 'monthly') d.setMonth(d.getMonth() + 1);
+          else break;
+        }
+        return out;
+      };
+      const cover = $('[data-ha-cover]');
+      const showMedia = () => {
+        const first = media[0];
+        cover.replaceChildren();
+        if (!first) { cover.append(el('span', 'hd-ph', t.mediaNone)); }
+        else if (first.type === 'video') {
+          const v = document.createElement('video');
+          Object.assign(v, { src: first.url, muted: true, autoplay: true, loop: true, playsInline: true });
+          cover.append(v);
+        } else {
+          const i = document.createElement('img'); i.src = first.url; i.alt = ''; cover.append(i);
+        }
+        const thumbs = $('[data-ha-thumbs]');
+        const pagePhotos = hosts[slug]?.photos ?? [];
+        const all = [...media.filter((m) => !pagePhotos.includes(m.url)), ...pagePhotos.map((url) => ({ type: 'photo', url }))];
+        thumbs.replaceChildren(...all.map((m) => {
+          const b = el('button', 'hd-thumb') as HTMLButtonElement;
+          b.type = 'button';
+          const on = media.some((x) => x.url === m.url);
+          b.setAttribute('aria-pressed', String(on));
+          if (m.type === 'video') b.append(el('span', 'hd-thumb-v', '▶'));
+          else { const i = document.createElement('img'); i.src = m.url; i.alt = ''; b.append(i); }
+          b.addEventListener('click', () => {
+            media = on ? media.filter((x) => x.url !== m.url) : [...media, m];
+            showMedia();
+          });
+          return b;
+        }));
+      };
+      const upload = async (files: FileList | null, type: string) => {
+        if (!files?.length) return;
+        const note = $('[data-ha-up-note]');
+        note.textContent = t.uploading; note.dataset.ok = 'true';
+        try {
+          if (!cfg.firebase.storageBucket) throw new Error('no bucket');
+          const store = getStorage(app0);
+          for (const f of Array.from(files).slice(0, 8)) {
+            const r = storageRef(store, `hostMedia/${slug}/${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`);
+            await uploadBytes(r, f, { contentType: f.type });
+            media.push({ type, url: await getDownloadURL(r) });
+          }
+          note.textContent = t.uploadDone;
+          showMedia();
+        } catch {
+          note.textContent = fill(t.uploadFail, cfg.contact); note.dataset.ok = 'false';
+        }
+      };
+      $<HTMLInputElement>('[data-ha-up-video]').addEventListener('change', (e) => upload((e.target as HTMLInputElement).files, 'video'));
+      $<HTMLInputElement>('[data-ha-up-photos]').addEventListener('change', (e) => upload((e.target as HTMLInputElement).files, 'photo'));
+      createForm.querySelectorAll<HTMLInputElement>('[name="repeat"]').forEach((r) => r.addEventListener('change', () => {
+        $('[data-ha-until]').hidden = fld<HTMLInputElement>('repeat') && (createForm.querySelector<HTMLInputElement>('[name="repeat"]:checked')?.value ?? 'once') === 'once';
+      }));
+      const sameDay = () => {
+        const v = fld('date').value;
+        $('[data-ha-same-day]').textContent = v ? new Date(`${v}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+      };
+      fld('date').addEventListener('change', sameDay);
+      const openCreate = (ev?: Ev) => {
+        createForm.reset();
+        const h = hosts[slug];
+        const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+        fld('id').value = ev?.id ?? '';
+        fld('title').value = ev?.title ?? '';
+        fld('date').value = ev?.date ?? iso(tomorrow);
+        fld('start').value = ev?.start ?? '18:00';
+        fld('end').value = ev?.end ?? '';
+        fld('until').value = ev?.until ?? '';
+        (createForm.querySelector<HTMLInputElement>(`[name="repeat"][value="${ev?.repeat ?? 'once'}"]`) ?? createForm.querySelector<HTMLInputElement>('[name="repeat"]'))!.checked = true;
+        $('[data-ha-until]').hidden = (ev?.repeat ?? 'once') === 'once';
+        fld('location').value = ev?.location ?? h?.en.place ?? '';
+        fld<HTMLTextAreaElement>('description').value = ev?.description ?? '';
+        fld('price').value = ev?.price != null ? String(ev.price) : '';
+        fld('seats').value = ev?.seats != null ? String(ev.seats) : '';
+        fld('minGuests').value = ev?.minGuests != null ? String(ev.minGuests) : '';
+        fld('approve').checked = ev?.approve !== false;
+        fld('languages').value = ev?.languages ?? h?.en.languages ?? '';
+        fld<HTMLSelectElement>('cancel').value = ev?.cancel ?? '7d';
+        fld<HTMLSelectElement>('visibility').value = ev?.visibility ?? 'public';
+        media = ev?.media?.length ? [...ev.media] : (h?.photos?.[0] ? [{ type: 'photo', url: h.photos[0] }] : []);
+        $('[data-ha-create-host]').textContent = h?.name ?? slug;
+        createForm.querySelector<HTMLButtonElement>('.hd-publish')!.textContent = ev?.id ? t.saveChanges : t.publish;
+        $('[data-ha-create-note]').textContent = t.publishNote;
+        sameDay();
+        showMedia();
+        showTab('create');
+        fld('title').focus();
+      };
+      root.querySelectorAll<HTMLElement>('[data-ha-new]').forEach((b) => b.addEventListener('click', () => openCreate()));
+      createForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const num = (n: string) => (fld(n).value === '' ? null : Number(fld(n).value));
+        const body = {
+          id: fld('id').value || undefined, slug,
+          title: fld('title').value.trim(), date: fld('date').value, start: fld('start').value, end: fld('end').value,
+          repeat: createForm.querySelector<HTMLInputElement>('[name="repeat"]:checked')?.value ?? 'once', until: fld('until').value,
+          location: fld('location').value.trim(), description: fld<HTMLTextAreaElement>('description').value.trim(),
+          price: num('price'), seats: num('seats'), minGuests: num('minGuests'), approve: fld('approve').checked,
+          languages: fld('languages').value.trim(), cancel: fld<HTMLSelectElement>('cancel').value,
+          visibility: fld<HTMLSelectElement>('visibility').value, media,
+        };
+        const note = $('[data-ha-create-note]');
+        if (!body.title || !body.date || !body.start) { note.textContent = t.titlePh; note.dataset.ok = 'false'; fld('title').focus(); return; }
+        const btn = createForm.querySelector<HTMLButtonElement>('.hd-publish')!;
+        btn.disabled = true;
+        try {
+          await api('hostEventSave', body);
+          note.textContent = t.published; note.dataset.ok = 'true';
+          await loadInbox();
+          showTab('calendar');
+        } catch {
+          note.textContent = fill(t.error, cfg.contact); note.dataset.ok = 'false';
+        }
+        btn.disabled = false;
+      });
+      const repeatText: Record<string, string> = { weekly: t.repeatsWeekly, biweekly: t.repeatsBiweekly, monthly: t.repeatsMonthly };
+      const renderOwnDates = () => {
+        const box = $('[data-ha-own-dates]');
+        box.replaceChildren(...ownEvents.map((ev) => {
+          const card = el('div', 'hd-ev');
+          const m = ev.media?.[0];
+          if (m && m.type !== 'video') { const i = document.createElement('img'); i.src = m.url; i.alt = ''; card.append(i); }
+          else card.append(el('span', 'hd-ph', m ? '▶' : hdEmoji()));
+          const d = new Date(`${ev.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+          const txt = el('div', 'hd-ev-t');
+          txt.append(el('b', '', ev.title), el('span', '', [`${d} · ${ev.start}${ev.end ? `–${ev.end}` : ''}`, repeatText[ev.repeat ?? ''] ?? '', ev.seats ? t.seatsN.replace('{n}', String(ev.seats)) : '', ev.minGuests ? t.runsFromN.replace('{n}', String(ev.minGuests)) : '', ev.price ? `€${ev.price}` : ''].filter(Boolean).join(' · ')));
+          const acts = el('div', 'hd-ev-acts');
+          const edit = el('button', 'ha-link', t.editDate) as HTMLButtonElement; edit.type = 'button';
+          edit.addEventListener('click', () => openCreate(ev));
+          const del = el('button', 'ha-link', t.deleteDate) as HTMLButtonElement; del.type = 'button';
+          del.addEventListener('click', async () => {
+            if (!window.confirm(t.confirmDelete)) return;
+            try { await api('hostEventDelete', { id: ev.id }); await loadInbox(); } catch { /* shown on next load */ }
+          });
+          acts.append(edit, del);
+          card.append(txt, acts);
+          return card;
+        }));
+        $('[data-ha-own-empty]').hidden = ownEvents.length > 0;
+      };
 
       // ── Admin: every host's invite link ──
       $('[data-ha-invites-load]').addEventListener('click', async () => {
@@ -1023,4 +1259,95 @@ const fields = [
     .hd-hi { flex-direction: column; align-items: flex-start; }
     .hd-stats { grid-template-columns: 1fr 1fr; }
   }
+
+  /* ── New date ("Neuer Termin") ── */
+  .hd-create { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .hd-cover { aspect-ratio: 1; border-radius: 20px; overflow: hidden; display: grid; place-items: center; background: #f1ebe2; box-shadow: 0 10px 12px -10px rgba(0, 0, 0, 0.35); }
+  .hd-cover img, .hd-cover video { width: 100%; height: 100%; object-fit: cover; }
+  .hd-cover .hd-ph { width: auto; height: auto; background: none; font-size: 0.9rem; color: var(--color-text-muted); }
+  .hd-media-tip { margin: 12px 0 10px; font-size: 0.82rem; color: var(--color-text-muted); }
+  .hd-media-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hd-media-btn { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px; border-radius: 12px; background: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer; box-shadow: 0 6px 8px -6px rgba(0, 0, 0, 0.2); }
+  .hd-media-hint { margin: 14px 0 6px; font-size: 0.78rem; color: var(--color-text-muted); }
+  .hd-thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hd-thumb { width: 56px; height: 56px; padding: 0; border: 0; border-radius: 12px; overflow: hidden; cursor: pointer; background: #f1ebe2; opacity: 0.75; display: grid; place-items: center; }
+  .hd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .hd-thumb[aria-pressed='true'] { opacity: 1; outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .hd-create-chips { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .hd-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.8); font-size: 0.88rem; color: #454950; }
+  .hd-chip select { border: 0; background: none; font: inherit; padding: 0; width: auto; }
+  .ha .hd-title { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 600; border: 0; background: none; padding: 4px 0; margin: 2px 0 12px; border-radius: 0; }
+  .ha .hd-title::placeholder { color: #bdb6cc; }
+  .hd-when { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 10px; }
+  .hd-box { background: #fff; border-radius: 14px; box-shadow: 0 8px 10px -8px rgba(0, 0, 0, 0.15); margin-bottom: 10px; }
+  .hd-when .hd-box { margin: 0; }
+  .hd-tz { padding: 12px 16px; font-size: 0.8rem; color: var(--color-text-muted); display: grid; align-content: center; }
+  .hd-dt { display: grid; grid-template-columns: 70px minmax(0, 1fr) 96px; gap: 8px; align-items: center; padding: 8px 12px; }
+  .hd-dt > span:first-child { font-size: 0.85rem; color: var(--color-text-muted); }
+  .ha .hd-dt input { background: #f6f2ec; border: 0; border-radius: 9px; padding: 7px 10px; }
+  .hd-dt small { grid-column: 2 / -1; font-size: 0.75rem; color: var(--color-text-muted); }
+  .hd-dt-same { font-size: 0.9rem; color: var(--color-text-muted); padding-left: 10px; }
+  .hd-repeat { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 12px; border-top: 1px solid #f1ede6; font-size: 0.8rem; color: var(--color-text-muted); }
+  .hd-repeat label { cursor: pointer; }
+  .hd-repeat input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .hd-repeat i { font-style: normal; display: inline-block; border-radius: 999px; padding: 4px 11px; background: #f6f2ec; color: #454950; }
+  .hd-repeat input:checked + i { background: var(--color-accent); color: #fff; }
+  .hd-repeat input:focus-visible + i { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .hd-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #f1ede6; font-size: 0.95rem; }
+  .hd-row:last-child { border-bottom: 0; }
+  .hd-row .hd-i { color: #8a8e95; }
+  .hd-row-top { align-items: flex-start; }
+  .ha .hd-row input:not([type='checkbox']), .ha .hd-row textarea, .ha .hd-row select { border: 0; background: none; padding: 4px 0; border-radius: 0; }
+  .hd-k { flex: 1; display: grid; }
+  .hd-k small { font-size: 0.75rem; color: var(--color-text-muted); }
+  .ha .hd-row .hd-num { width: 80px; text-align: right; }
+  .ha .hd-row .hd-short { width: 140px; text-align: right; }
+  .ha .hd-row select { width: auto; text-align: right; color: #454950; }
+  .hd-switch { appearance: none; width: 42px; height: 24px; border-radius: 999px; background: #e4e0da; position: relative; cursor: pointer; flex: none; }
+  .hd-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left 0.15s; }
+  .hd-switch:checked { background: var(--color-accent); }
+  .hd-switch:checked::after { left: 21px; }
+  .hd-sec { margin: 16px 0 8px; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); }
+  .hd-publish { width: 100%; margin-top: 14px; padding: 15px; border: 0; border-radius: 14px; font: inherit; font-weight: 600; font-size: 1rem; color: #fff; background: var(--color-accent); cursor: pointer; box-shadow: 0 10px 12px -10px rgba(106, 62, 236, 0.7); }
+  .hd-publish:disabled { opacity: 0.6; }
+  .hd-publish-note { margin: 8px 0 0; text-align: center; font-size: 0.8rem; color: var(--color-text-muted); }
+  .hd-publish-note[data-ok='false'] { color: #b42318; }
+  .hd-dates-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .hd-add-big { font: inherit; font-weight: 600; font-size: 0.92rem; color: #fff; background: var(--color-accent); border: 0; border-radius: 999px; padding: 10px 18px; cursor: pointer; white-space: nowrap; box-shadow: 0 8px 10px -8px rgba(106, 62, 236, 0.7); }
+  .hd-add-phone { display: none; }
+  .hd-ev-acts { display: grid; gap: 4px; justify-items: end; font-size: 0.85rem; }
+  .hd-dates { margin-bottom: 24px; }
+  @media (max-width: 760px) {
+    .hd-create { grid-template-columns: 1fr; gap: 18px; }
+    .hd-cover { aspect-ratio: 4 / 3; }
+    .hd-add-phone { display: block; width: 100%; margin-bottom: 16px; padding: 14px; border-radius: 14px; }
+    .hd-dt { grid-template-columns: 56px minmax(0, 1fr) 86px; }
+  }
+
+  /* Beat the general .ha input rule (width 100 %, border) inside the new-date form. */
+  .ha .hd-create input.hd-title:not([type='checkbox']) { border: 0; background: none; padding: 4px 0; font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 600; }
+  .ha .hd-create .hd-row input:not([type='checkbox']):not([type='radio']), .ha .hd-create .hd-row textarea, .ha .hd-create .hd-row select { border: 0; background: none; padding: 4px 0; }
+  .ha .hd-create .hd-row input.hd-num:not([type='checkbox']) { width: 72px; flex: none; text-align: right; }
+  .ha .hd-create .hd-row input.hd-short:not([type='checkbox']) { width: 130px; flex: none; text-align: right; }
+  .ha .hd-create .hd-row select { width: auto; flex: none; }
+  .ha .hd-create .hd-chip select { border: 0; background: none; padding: 0; width: auto; }
+  .ha .hd-create .hd-dt input:not([type='checkbox']) { border: 0; background: #f6f2ec; padding: 7px 10px; min-width: 0; }
+  .hd-create > * { min-width: 0; }
+  .hd-dt { grid-template-columns: 62px minmax(130px, 1fr) 104px; }
+  .hd-when { grid-template-columns: minmax(0, 1fr) 84px; }
+  @media (max-width: 760px) {
+    .hd-when { grid-template-columns: 1fr; }
+    .hd-tz { display: none; }
+    .hd-dt { grid-template-columns: 56px minmax(0, 1fr) 96px; }
+    .ha .hd-create .hd-row input.hd-short:not([type='checkbox']) { width: 100px; }
+  }
+
+  .hd-tz { display: none; }
+  .hd-when { grid-template-columns: 1fr; }
+  .hd-dt { grid-template-columns: 62px minmax(0, 1fr) 118px; }
+  .ha .hd-create input.hd-title:not([type='checkbox']) { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+
+  .ha .hd-create input.hd-title:not([type='checkbox']) { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+  .hd-create { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
+  .ha.is-in { max-width: 940px; }
 </style>

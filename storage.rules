@@ -1,0 +1,18 @@
+rules_version = '2';
+// Firebase Storage rules for twiggli-production. Pasted by hand in the
+// console (Storage → Rules), merged with whatever the app already has there:
+// the website block below only lets a signed-in host upload videos and
+// photos for their own pages (hostMembers in Firestore), up to 200 MB.
+service firebase.storage {
+  match /b/{bucket}/o {
+    // ── Website: host media for new dates ──
+    match /hostMedia/{slug}/{file} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.token.email_verified == true
+        && request.resource.size < 200 * 1024 * 1024
+        && (request.resource.contentType.matches('video/.*') || request.resource.contentType.matches('image/.*'))
+        && slug in firestore.get(/databases/(default)/documents/hostMembers/$(request.auth.token.email.lower())).data.slugs;
+    }
+  }
+}
