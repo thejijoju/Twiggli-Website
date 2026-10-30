@@ -45,6 +45,7 @@ const e = bigEventsCopy[lang].dialog;
       <p class="book-when" data-book-when></p>
     </div>
     <p class="book-lede" data-book-lede>{c.lede}</p>
+    <p class="book-runs-from" data-book-runs-from hidden></p>
     <div class="book-fields">
       <label class="book-field book-field-wide">
         <span>{c.name}</span>
@@ -262,6 +263,13 @@ const e = bigEventsCopy[lang].dialog;
       const event = kind === 'event' || kind === 'special';
       if (lede) lede.textContent = kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : copy.lede;
       if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat';
+      // A date that only runs from a set number of participants says so,
+      // and that nobody pays unless it does.
+      const runsFrom = dialog.querySelector<HTMLElement>('[data-book-runs-from]');
+      if (runsFrom) {
+        runsFrom.hidden = !picked.bookMinGuests;
+        runsFrom.textContent = picked.bookMinGuests ? String(copy.runsFrom).replaceAll('{n}', picked.bookMinGuests) : '';
+      }
       // A studio request asks when it starts, how long and how often, and
       // its message box is for special notes.
       const studio = kind === 'studio';
@@ -366,6 +374,7 @@ const e = bigEventsCopy[lang].dialog;
         Email: String(data.get('email') ?? ''),
         Phone: String(data.get('phone') ?? ''),
         [kind === 'studio' ? 'Special notes' : 'Message']: String(data.get('message') ?? ''),
+        ...(picked.bookMinGuests ? { 'Runs from': `${picked.bookMinGuests} participants` } : {}),
         'Host booking page': picked.bookLink ?? '',
         'Sent from': location.href,
         'Came from': cameFrom(),

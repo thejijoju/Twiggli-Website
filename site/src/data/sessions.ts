@@ -12,7 +12,7 @@ import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
-import { withHostSlots } from './hostEdits.ts';
+import { withHostSlots, accountDates } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 import { hostDates } from './hostDates.ts';
 import { preview } from './hosts/preview.ts';
@@ -50,6 +50,9 @@ export type Session = {
   salesEnd?: string;
   /** Unknown for scraped sessions — the card then omits the line. */
   spots?: number;
+  /** The class only runs from this many participants (set by the host in
+   *  their dashboard); guests are told, and pay only once it is reached. */
+  minGuests?: number;
   price?: string;
   /** The price before the reduction, where the host is running one. Shown
    *  struck through beside the price, so a sale reads as a sale rather than
@@ -108,6 +111,8 @@ type LiveWorkshop = {
   district?: string;
   /** Live spots left, where the host's booking API reports it. */
   spots?: number;
+  /** Runs only from this many participants (dates from host dashboards). */
+  minGuests?: number;
   /** The workshop's own picture from the host's site, where the scrape
    *  found one. */
   image?: string;
@@ -392,6 +397,14 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         if (!d.onHostSite) offSite.add(w);
         return w;
       }),
+    // Dates hosts created in their dashboard: always our request form.
+    ...accountDates(DAYS_AHEAD)
+      .filter((d) => !inFeed.has(`${d.slug}|${d.date}|${d.time}`))
+      .map((d) => {
+        const w = { ...d, sourceUrl: '' } as LiveWorkshop;
+        offSite.add(w);
+        return w;
+      }),
   ];
   const ordinals = dateOrdinals(workshops);
 
@@ -423,6 +436,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         : typeof availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.spots === 'number' ? { spots: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].spots }
         : {}),
       ...(w.image ? { image: w.image } : {}),
+      ...(w.minGuests ? { minGuests: w.minGuests } : {}),
       ...(w.request ? { request: true } : {}),
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut ? { soldOut: true } : {}),
