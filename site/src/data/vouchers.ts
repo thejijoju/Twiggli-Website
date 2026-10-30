@@ -70,6 +70,7 @@ export const voucherHosts: string[] = [
   'nicole', 'whittle', // Nicole (Anybody Can Whittle), "ja, ich bin einverstanden", 28.10.26; Basis now €99, Whittle €165
   'jeannette-tolksdorff', // Jeannette Tolksdorff, "Ich bestätige mit 'Ja'", 28.10.26 (page still in preview)
   'druckrausch', // Deborah (Druckrausch), "ja, wir sind einverstanden!", 28.10.26
+  'strassenbraeu', // William (Straßenbräu), "Gutscheine: Könnt ihr gerne verkaufen, kein Problem!", 30.10.26
 ];
 
 /**
@@ -96,8 +97,10 @@ export const VOUCHER_MAX_PEOPLE = 2;
  *  price they quoted per person. Anna: €35 (her open Malerlebnis), not the
  *  €57 she charges companies. */
 /** A host's general voucher price where their cheapest date would mislead
- *  (Fred: a €64 wine tasting, cooking classes €119–127; Jirel 27.10). */
-const voucherPriceOverride: Record<string, number> = { studio32: 119 };
+ *  (Fred: a €64 wine tasting, cooking classes €119–127; Jirel 27.10).
+ *  Straßenbräu: €29 is their group price from 5, a voucher is for one or
+ *  two, so it takes the shop's €34 tasting. */
+const voucherPriceOverride: Record<string, number> = { studio32: 119, strassenbraeu: 34 };
 
 export const voucherPrice = (host: Pick<Host, 'slug' | 'groupPrice'>): number | undefined => {
   if (voucherPriceOverride[host.slug]) return voucherPriceOverride[host.slug];
