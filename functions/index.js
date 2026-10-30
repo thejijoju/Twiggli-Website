@@ -239,13 +239,36 @@ const mailJirel = async ({ subject, text: body, html, replyTo }) => {
 
 /** "We've got your request": one short email to the guest, in German or
  *  English, from hello@twiggli.com (a send-as address of Jirel's Gmail). */
+/** An emoji for the kind of workshop, from words in its title. */
+const EMOJI = [
+  [/töpfer|pottery|ceramic|keramik|clay|ton\b|wheel|drehscheibe|handbuild|aufbau/i, '🏺'],
+  [/kerze|candle|wachs|wax/i, '🕯️'],
+  [/parfum|perfume|duft|fragrance|incense|räucher/i, '🌸'],
+  [/bier|beer|brew|brau/i, '🍺'],
+  [/whisk|rum|mezcal|gin|cocktail|tasting|verkostung|spirit|wein|wine/i, '🥃'],
+  [/koch|cook|pasta|sushi|kimchi|back|bak|brot|bread|food|schokolade|chocolate|macaron|kaffee|coffee/i, '🍳'],
+  [/schnitz|whittl|wood|holz|tischler|spoon|löffel/i, '🪵'],
+  [/schmuck|jewel|silber|silver|ring\b|schmied|forg|blacksmith|messer|knife/i, '💍'],
+  [/stick|embroider|knit|strick|tuft|quilt|näh|sew|textil|leder|leather|weav/i, '🧵'],
+  [/foto|photo|cyanotyp|dunkelkammer|darkroom/i, '📷'],
+  [/druck|print|linol|siebdruck/i, '🖨️'],
+  [/buch|book|binding|papier|paper/i, '📚'],
+  [/mosai|terrazzo|marmor|marble/i, '🧩'],
+  [/kräuter|herb|forag|wild|terrari|pflanz|plant|blume|flower/i, '🌿'],
+  [/honig|honey|imker|bee/i, '🐝'],
+  [/trommel|drum|percussion|music|musik|sing|voice|dance|tanz/i, '🥁'],
+  [/mal|paint|acryl|aquarell|watercolou?r|zeichn|draw|sketch|art|kunst|graffiti/i, '🎨'],
+];
+const emojiFor = (title) => EMOJI.find(([re]) => re.test(String(title ?? '')))?.[1] ?? '✨';
+
 const confirmGuest = async (to, f) => {
   const de = String(f.Language ?? '').startsWith('de');
   const name = String(f.Name ?? '').trim().split(/\s+/)[0];
   const what = f.Workshop || f.Studio || f.Type;
+  const icon = f.Studio ? '🏠' : emojiFor(what);
   const when = [String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1'), f.Time].filter(Boolean).join(', ');
   const rows = [
-    [de ? 'Workshop' : 'Workshop', what],
+    [de ? 'Workshop' : 'Workshop', `${what} ${icon}`],
     [de ? 'Gastgeber' : 'Host', f.Host],
     [de ? 'Wann' : 'When', when],
     [de ? 'Personen' : 'People', f.People],
@@ -254,16 +277,16 @@ const confirmGuest = async (to, f) => {
     ? `Hallo${name ? ` ${esc(name)}` : ''},<br><br>danke für deine Anfrage bei <b>Twiggli</b>! Sie ist gut bei uns angekommen:`
     : `Hi${name ? ` ${esc(name)}` : ''},<br><br>thank you for your request on <b>Twiggli</b>! It has reached us:`;
   const outro = de
-    ? 'Wir geben sie direkt an den Gastgeber weiter. Er oder sie meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße<br>Jirel von <b>Twiggli</b>'
-    : 'We pass it straight on to the host, who will get back to you by email, usually within 1–2 days. There is nothing else you need to do.<br><br>Questions? Just reply to this email.<br><br>Warm regards<br>Jirel from <b>Twiggli</b>';
+    ? 'Wir geben sie direkt an den Gastgeber weiter. Er oder sie meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>'
+    : 'We pass it straight on to the host, who will get back to you by email, usually within 1–2 days. There is nothing else you need to do.<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>';
   const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
     from: { name: 'Twiggli', address: 'hello@twiggli.com' },
     replyTo: 'hello@twiggli.com',
     to,
-    subject: de ? `Deine Anfrage bei Twiggli: ${what}` : `Your Twiggli request: ${what}`,
-    text: `${de ? 'Danke für deine Anfrage bei Twiggli' : 'Thank you for your request on Twiggli'}.\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${de ? 'Der Gastgeber meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen.' : 'The host will get back to you by email, usually within 1–2 days.'}\n\nJirel, Twiggli`,
+    subject: de ? `Deine Anfrage bei Twiggli: ${what} ${icon}` : `Your Twiggli request: ${what} ${icon}`,
+    text: `${de ? 'Danke für deine Anfrage bei Twiggli' : 'Thank you for your request on Twiggli'}.\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${de ? 'Der Gastgeber meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen.' : 'The host will get back to you by email, usually within 1–2 days.'}\n\n💛 Jirel, Twiggli`,
     html: `<div style="font-family:Tahoma,sans-serif;font-size:14px;line-height:1.5">${intro}<table style="margin:14px 0;font-size:14px">${table}</table>${outro}</div>`,
   });
 };
