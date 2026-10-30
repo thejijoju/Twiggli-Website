@@ -52,11 +52,12 @@ const en: HostCopy[] = [
     priceNote: '€65 per person for groups from 5 · public classes €79' },
   // William, 23.10.26: new bar Ausschank 2 by Görlitzer Park, with a
   // kitchen, for tastings, brewing classes, private parties and company
-  // events. Prices and formats from strassenbraeu.de (shop, 23.10.26).
+  // events. Prices and formats from strassenbraeu.de (shop, 23.10.26); group
+  // prices, sizes and the freshly tapped litre from William, 30.10.26.
   { slug: 'strassenbraeu', name: 'Straßenbräu', specialty: 'Beer tastings & brewing classes', studio: 'Straßenbräu',
-    blurb: 'Berlin craft brewery that has brewed at Ostkreuz since 2015 and in its own brewery in Marzahn since 2021. Its new bar, Ausschank 2, opened right by Görlitzer Park in Kreuzberg: 14 taps, high ceilings, old-Berlin charm and a kitchen. In the beer tasting (2 hours, from five people) you taste seven beers straight from the tap and learn how beer is brewed, where its colours come from and what malt and hops taste like. The brewing class runs five hours with one of their brewers, with a tasting of all their beers, lunch and a litre of your own beer to take home. For Christmas parties and team events they put together full packages with food and drinks.',
-    group: 'From 5', duration: '2–5 h', place: 'Ausschank 2, Görlitzer Str. 52, Kreuzberg', languages: 'DE · EN',
-    priceNote: 'beer tasting · brewing class €114' },
+    blurb: 'Berlin craft brewery that has brewed at Ostkreuz since 2015 and in its own brewery in Marzahn since 2021. Its new bar, Ausschank 2, opened right by Görlitzer Park in Kreuzberg: 14 taps, high ceilings, old-Berlin charm and a kitchen. In the beer tasting (2 hours, from five people) you taste seven beers straight from the tap and learn how beer is brewed, where its colours come from and what malt and hops taste like. The brewing class runs five hours with one of their brewers, with a tasting of all their beers, lunch and a litre of freshly tapped beer to take home. Tastings also run in English, and for groups of 20 or more they can bring the tasting to you. For Christmas parties and team events they put together full packages with food and drinks.',
+    group: '5–20 tasting · up to 80 events', duration: '2–5 h', place: 'Ausschank 2, Görlitzer Str. 52, Kreuzberg', languages: 'DE · EN',
+    priceNote: 'groups: beer tasting €29 · brewing class €99 per person' },
   // Jon, 23.10.26 ("Sounds interesting"). Dates and price from their
   // Konfetti listing (23.10.26); the bar is at Veteranenstraße 11.
   { slug: 'beavis-bar', name: 'Beavis Bar', specialty: 'Craft spirits & whisky tastings', studio: 'Beavis Bar',
@@ -165,9 +166,9 @@ const de: HostCopy[] = [
     group: 'Offene Termine: bis 8 für kleine Objekte, 2 für den großen Teller · Gruppen 5–15 im Atelier, größer bei euch vor Ort', duration: '2–2,5 Std.', place: 'Stockholmer Str. 4, Wedding / bei euch', languages: 'DE · EN',
     priceNote: '65 € pro Person für Gruppen ab 5 · offene Kurse 79 €' },
   { slug: 'strassenbraeu', name: 'Straßenbräu', specialty: 'Biertastings & Braukurse', studio: 'Straßenbräu',
-    blurb: 'Berliner Craft-Brauerei, die seit 2015 am Ostkreuz braut und seit 2021 in der eigenen Brauerei in Marzahn. Ihre neue Bar, der Ausschank 2, hat direkt am Görlitzer Park in Kreuzberg eröffnet: 14 Zapfhähne, hohe Decken, Altbau-Charme und eine eigene Küche. Beim Biertasting (2 Stunden, ab fünf Personen) verkostet ihr sieben Biere frisch vom Hahn und erfahrt, wie Bier gebraut wird, woher die Farben kommen und wie Malz und Hopfen schmecken. Der Braukurs dauert fünf Stunden mit einem der Brauer, mit Verkostung aller Biere, Mittagessen und einem Liter selbst gebrautem Bier zum Mitnehmen. Für Weihnachtsfeiern und Teamevents stellen sie komplette Pakete mit Essen und Getränken zusammen.',
-    group: 'Ab 5', duration: '2–5 Std.', place: 'Ausschank 2, Görlitzer Str. 52, Kreuzberg', languages: 'DE · EN',
-    priceNote: 'Biertasting · Braukurs 114 €' },
+    blurb: 'Berliner Craft-Brauerei, die seit 2015 am Ostkreuz braut und seit 2021 in der eigenen Brauerei in Marzahn. Ihre neue Bar, der Ausschank 2, hat direkt am Görlitzer Park in Kreuzberg eröffnet: 14 Zapfhähne, hohe Decken, Altbau-Charme und eine eigene Küche. Beim Biertasting (2 Stunden, ab fünf Personen) verkostet ihr sieben Biere frisch vom Hahn und erfahrt, wie Bier gebraut wird, woher die Farben kommen und wie Malz und Hopfen schmecken. Der Braukurs dauert fünf Stunden mit einem der Brauer, mit Verkostung aller Biere, Mittagessen und einem Liter frisch gezapftem Bier zum Mitnehmen. Tastings gehen auch auf Englisch, und ab 20 Personen kommen sie mit dem Tasting auch zu euch. Für Weihnachtsfeiern und Teamevents stellen sie komplette Pakete mit Essen und Getränken zusammen.',
+    group: '5–20 Tasting · bis 80 Events', duration: '2–5 Std.', place: 'Ausschank 2, Görlitzer Str. 52, Kreuzberg', languages: 'DE · EN',
+    priceNote: 'Gruppen: Biertasting 29 € · Braukurs 99 € pro Person' },
   { slug: 'beavis-bar', name: 'Beavis Bar', specialty: 'Craft-Spirituosen- & Whisky-Tastings', studio: 'Beavis Bar',
     blurb: 'Eine kleine Bar in Mitte mit über 1.400 Craft-Spirituosen von kleinen Destillerien aus aller Welt, viele davon gibt es sonst nirgends in Berlin. Beim Whisky-Tasting probiert ihr fünf bis sechs Craft-Whiskys, darunter Raritäten, und hört die Geschichte hinter jeder Flasche – für Neulinge wie Kenner. Neunzig Minuten, bis zu zwölf Personen, auf Deutsch, Englisch, Französisch oder Italienisch. Für Teams und Weihnachtsfeiern läuft das Tasting auch privat – ein Abend, an den man sich länger erinnert als an die übliche Open Bar. Private Tastings ab vier Personen, Mittwoch bis Samstag (sonntags bis dienstags ist die Bar geschlossen).',
     group: '4–12 · Mi–Do abends, Fr–Sa um 19:00 · eine Woche Vorlauf', duration: '1,5 Std.', place: 'Veteranenstraße 11, Mitte', languages: 'DE · EN · FR · IT' },
@@ -236,7 +237,7 @@ const facets: Record<string, Facets> = {
   rtmis:                 { activity: 'craft',       groupRange: [5, 15],   hourRange: [2, 2.5], groupPrice: 65 },
   // PLACEHOLDER maximum — the bar names no cap. Tasting €34 in their shop
   // (the product text still says €29).
-  strassenbraeu:         { activity: 'food',        groupRange: [5, 30],   hourRange: [2, 5],   groupPrice: 34 },
+  strassenbraeu:         { activity: 'food',        groupRange: [5, 80],   hourRange: [2, 5],   groupPrice: 29 },
   'beavis-bar':          { activity: 'food',        groupRange: [4, 12],   hourRange: [1.5, 1.5] },
   // PLACEHOLDER maximum: Thorsten said usually 8–10 guests (call 28.10.26).
   'schoppe-braeu':       { activity: 'food',        groupRange: [1, 12],   hourRange: [1.5, 1.5] },
@@ -293,8 +294,8 @@ const onRequest: Record<string, PreviewOffer[]> = {
   ],
   strassenbraeu: [
     { title: 'Biertasting im Ausschank 2 (ab 5 Personen)', titleEn: 'Beer tasting at Ausschank 2 (from 5 people)', duration: '2 h', price: '€34', url: 'https://www.strassenbraeu.de/products/biertasting' },
-    { title: 'Braukurs mit Mittagessen und 1 Liter Bier', titleEn: 'Brewing class with lunch and a litre of beer', duration: '5 h', price: '€114', url: 'https://www.strassenbraeu.de/products/strassenbrau-braukurs' },
-    { title: 'Weihnachtsfeier oder Firmenevent mit Essen & Getränken', titleEn: 'Christmas party or company event with food & drinks', url: 'https://www.strassenbraeu.de/pages/ausschank-2' },
+    { title: 'Braukurs mit Mittagessen und 1 Liter frisch gezapftem Bier', titleEn: 'Brewing class with lunch and a litre of freshly tapped beer', duration: '5 h', price: '€114', url: 'https://www.strassenbraeu.de/products/strassenbrau-braukurs' },
+    { title: 'Weihnachtsfeier oder Firmenevent mit Essen & Getränken (bis 80 Personen)', titleEn: 'Christmas party or company event with food & drinks (up to 80 people)', url: 'https://www.strassenbraeu.de/pages/ausschank-2' },
   ],
   'beavis-bar': [
     { title: 'Privates Whisky-Tasting für eure Gruppe', titleEn: 'Private whisky tasting for your group', duration: '1.5 h', price: '€99', url: 'https://beavis.bar/' },
