@@ -152,6 +152,14 @@ const en: HostCopy[] = [
   // Marija, from our call on 26.10.26. No website on purpose and not to be
   // found on Google for now: she stays a preview host (noindex, in no
   // listing) and her page goes out by link only. Exact address left out.
+  // fave studio (Elena & Giulia, interior designers, Neukölln): host
+  // application 27.10.26 and their email 28.10.26: €50 per person, first
+  // date 12.11., private groups up to 10, taught in English. Photos from
+  // their Instagram OK ("Yes", 28.10). Time and length of the 12.11. asked.
+  { slug: 'fave-studio', name: 'fave studio', specialty: 'Paper lampshade workshops', studio: 'fave studio',
+    blurb: 'Elena and Giulia are interior designers with their own studio in Neukölln. In their workshop you make your own lampshade from coloured papers of different kinds: they help with colours, patterns and composition, bring all the tools and the lamp fitting, and you go home with a lampshade that is ready to hang. Small groups of up to ten, taught in English, with questions also answered in German, Italian, French and Spanish. Teams, birthdays and private groups can book their own date.',
+    group: 'Up to 10', duration: 'On request', place: 'Their studio in Neukölln', languages: 'EN · DE · IT · FR · ES',
+    priceNote: '€50 per person, lamp fitting included' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making, fabric & wax seals',
     blurb: 'Marija studied art history and comes from education, and she upcycles: fabric and materials left behind on the street are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper, scraps of coloured card and old bags, blended and poured with flowers or a little glitter; you seal it with wax, or fold paper Christmas stars. Calm, hands-on and good-looking, and she has run it with kindergarten children and older people alike. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
     group: 'Groups and teams', duration: 'On request', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE' },
@@ -213,6 +221,10 @@ const de: HostCopy[] = [
     blurb: 'Lucille Guder ist eine französische Autodidaktin, die in Berlin lebt und Blumenfrauen aus Acryl, Papier und getrockneten Blumen macht – mit leeren Gesichtern, damit sich jede Frau in ihnen wiederfinden kann. Zusammen mit Ātma Portrait bietet sie einen Workshop an, der Frauen hilft, sich mit ihrem Körper zu versöhnen und sich durch Fotografie selbst besser wahrzunehmen. Nach einer Einführung und einem Gespräch über unsere Beziehung zu unserem Körper fotografierst du dich eine Stunde lang selbst, ganz allein im Studio hinter Sichtschutzvorhängen: Nur du siehst deine Bilder. Nach einer Pause mit Getränken und Snacks verwandelst du deine eigenen Körperlinien in eine handgemachte Blumencollage, mit einer einfachen Technik, für die du keine Zeichenerfahrung brauchst. Du nimmst rund fünfzig hochwertige Schwarz-Weiß-Fotos, deine A4-Collage und die Technik mit nach Hause. Bring einen USB-Stick für deine Fotos mit, denn sie werden nicht gespeichert, und eine Mappe für die Collage. Außerdem unterrichtet sie ihre typische Punkt-Maltechnik bei sich zu Hause in Prenzlauer Berg, und für JGAs und Geburtstage kommt sie mit ihrem Blumenkranz-Workshop in euer Restaurant, Hotel oder eure Location, auch für größere Gruppen.',
     group: 'Selbstfotografie: 2–4, nur für Frauen · Blumenkränze: auch größere Gruppen', duration: '3,5 Std.', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
     priceNote: 'Punkt-Malkurs 49 € · Blumenkränze 50 € pro Person' },
+  { slug: 'fave-studio', name: 'fave studio', specialty: 'Workshops für Papier-Lampenschirme', studio: 'fave studio',
+    blurb: 'Elena und Giulia sind Interior-Designerinnen mit eigenem Studio in Neukölln. In ihrem Workshop gestaltet ihr euren eigenen Lampenschirm aus farbigen Papieren verschiedener Art: Die beiden helfen bei Farben, Mustern und Komposition, bringen alle Werkzeuge und die Lampenfassung mit, und ihr geht mit einem Lampenschirm nach Hause, der direkt aufgehängt werden kann. Kleine Gruppen bis zehn Personen, auf Englisch, Fragen beantworten sie auch auf Deutsch, Italienisch, Französisch und Spanisch. Teams, Geburtstage und private Gruppen können einen eigenen Termin buchen.',
+    group: 'Bis 10', duration: 'Auf Anfrage', place: 'Ihr Studio in Neukölln', languages: 'EN · DE · IT · FR · ES',
+    priceNote: '50 € pro Person, Lampenfassung inklusive' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen, Stoff & Wachssiegel',
     blurb: 'Marija hat Kunstgeschichte studiert, kommt aus dem Erziehungsbereich und macht Upcycling: Stoffe und Material, die auf der Straße liegen gelassen wurden, werden gewaschen und zu Kissenbezügen und anderen Unikaten. In ihren Workshops schöpft ihr Papier aus Altpapier, Resten von farbigem Karton und alten Tüten, gemixt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs oder Weihnachtssterne aus Papier. Ruhig, handfest und schick, und sie hat es schon mit Kindergartenkindern wie mit älteren Menschen gemacht. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
     group: 'Gruppen und Teams', duration: 'Auf Anfrage', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE' },
@@ -267,13 +279,14 @@ const facets: Record<string, Facets> = {
   // PLACEHOLDER group size and length: Marija gave no numbers yet (asked
   // in the confirmation email of 27.10.26). No price yet either.
   marija:                { activity: 'craft',       alsoIn: ['art'], groupRange: [2, 15], hourRange: [2, 3] },
+  'fave-studio':         { activity: 'craft',       groupRange: [2, 10],   hourRange: [2, 3],   groupPrice: 50 }, // hours: a guess for the directory filter until they send the length
 };
 
 const firstNames: Record<string, string> = {
   'test-jirel': 'Jirel',
   rtmis: 'Diana', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
-  'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija',
+  'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija', 'fave-studio': 'Elena & Giulia',
 };
 
 const areas: Record<string, { area: string; onSite?: boolean }> = {
@@ -282,7 +295,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
   'luc-demissy': { area: 'Prenzlauer Berg', onSite: true }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Pankow' },
-  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg', onSite: true }, marija: { area: 'Lichtenberg', onSite: true },
+  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg', onSite: true }, marija: { area: 'Lichtenberg', onSite: true }, 'fave-studio': { area: 'Neukölln' },
 };
 
 /** Formats each preview host runs on request, with no public date. */
@@ -355,6 +368,9 @@ const onRequest: Record<string, PreviewOffer[]> = {
   marija: [
     { title: 'Papierschöpfen aus Altpapier, mit Wachssiegel', titleEn: 'Paper making from waste paper, with wax seals', district: 'Lichtenberg', url: '' },
     { title: 'Weihnachtssterne aus Papier', titleEn: 'Paper Christmas stars', district: 'Lichtenberg', url: '' },
+  ],
+  'fave-studio': [
+    { title: 'Papier-Lampenschirm für eure Gruppe (bis 10 Personen)', titleEn: 'Paper lampshade for your group (up to 10 people)', price: '€50', district: 'Neukölln', url: '' },
   ],
 };
 
