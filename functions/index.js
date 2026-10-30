@@ -237,6 +237,37 @@ const mailJirel = async ({ subject, text: body, html, replyTo }) => {
   await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, ...(replyTo ? { replyTo } : {}), subject, text: body, html });
 };
 
+/** "We've got your request": one short email to the guest, in German or
+ *  English, from hello@twiggli.com (a send-as address of Jirel's Gmail). */
+const confirmGuest = async (to, f) => {
+  const de = String(f.Language ?? '').startsWith('de');
+  const name = String(f.Name ?? '').trim().split(/\s+/)[0];
+  const what = f.Workshop || f.Studio || f.Type;
+  const when = [String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1'), f.Time].filter(Boolean).join(', ');
+  const rows = [
+    [de ? 'Workshop' : 'Workshop', what],
+    [de ? 'Gastgeber' : 'Host', f.Host],
+    [de ? 'Wann' : 'When', when],
+    [de ? 'Personen' : 'People', f.People],
+  ].filter(([, v]) => v);
+  const intro = de
+    ? `Hallo${name ? ` ${esc(name)}` : ''},<br><br>danke für deine Anfrage bei <b>Twiggli</b>! Sie ist gut bei uns angekommen:`
+    : `Hi${name ? ` ${esc(name)}` : ''},<br><br>thank you for your request on <b>Twiggli</b>! It has reached us:`;
+  const outro = de
+    ? 'Wir geben sie direkt an den Gastgeber weiter. Er oder sie meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße<br>Jirel von <b>Twiggli</b>'
+    : 'We pass it straight on to the host, who will get back to you by email, usually within 1–2 days. There is nothing else you need to do.<br><br>Questions? Just reply to this email.<br><br>Warm regards<br>Jirel from <b>Twiggli</b>';
+  const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: 'hello@twiggli.com' },
+    replyTo: 'hello@twiggli.com',
+    to,
+    subject: de ? `Deine Anfrage bei Twiggli: ${what}` : `Your Twiggli request: ${what}`,
+    text: `${de ? 'Danke für deine Anfrage bei Twiggli' : 'Thank you for your request on Twiggli'}.\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${de ? 'Der Gastgeber meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen.' : 'The host will get back to you by email, usually within 1–2 days.'}\n\nJirel, Twiggli`,
+    html: `<div style="font-family:Tahoma,sans-serif;font-size:14px;line-height:1.5">${intro}<table style="margin:14px 0;font-size:14px">${table}</table>${outro}</div>`,
+  });
+};
+
 /** HTML-escaped, for the email table. */
 const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -257,13 +288,30 @@ export const formRequest = onRequest(
     );
     if (!Object.keys(fields).length) return res.status(400).json({ success: 'false', message: 'Empty form' });
 
+    // The same person sending the same request again within a day (people
+    // resend when unsure it went through): saved, but nobody is emailed twice.
+    let duplicateOf = '';
+    if (isEmail(email)) {
+      const since = Date.now() - 24 * 3600 * 1000;
+      const same = await getFirestore().collection('formRequests').where('email', '==', email).get();
+      duplicateOf = same.docs.find((d) => d.data().subject === subject && (d.data().createdAt?.toMillis?.() ?? 0) > since)?.id ?? '';
+    }
+
     // Saved first, so a request is never lost even if the email fails.
     const hostSlug = SLUG.test(String(body._hostSlug ?? '')) ? String(body._hostSlug) : '';
     const doc = await getFirestore().collection('formRequests').add({
       subject, email, fields, origin: req.get('origin') ?? '', createdAt: FieldValue.serverTimestamp(), mailed: false,
+      ...(duplicateOf ? { duplicateOf } : {}),
       // A request for one host lands in their Messages (hostInbox).
-      ...(hostSlug ? { hostSlug, status: 'pending', thread: [] } : {}),
+      ...(hostSlug && !duplicateOf ? { hostSlug, status: 'pending', thread: [] } : {}),
     });
+    if (duplicateOf) return res.status(200).json({ success: 'true', id: doc.id, duplicate: true });
+
+    // The guest hears that their request arrived (Jirel, 30.10.26), so they
+    // don't send it twice. Only for requests, not for notes like vouchers.
+    if (isEmail(email) && /request/i.test(String(fields.Type ?? '')) && !/voucher/i.test(String(fields.Type ?? ''))) {
+      try { await confirmGuest(email, fields); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
+    }
 
     try {
       const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
