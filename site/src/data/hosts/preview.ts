@@ -155,11 +155,12 @@ const en: HostCopy[] = [
   // fave studio (Elena & Giulia, interior designers, Neukölln): host
   // application 27.10.26 and their email 28.10.26: €50 per person, first
   // date 12.11., private groups up to 10, taught in English. Photos from
-  // their Instagram OK ("Yes", 28.10). Time and length of the 12.11. asked.
+  // their website and Instagram OK ("Yes", 28.10); details and photos from
+  // fagniveronese.com/workshops (Paper Light Night, 30.10.26).
   { slug: 'fave-studio', name: 'fave studio', specialty: 'Paper lampshade workshops', studio: 'fave studio',
-    blurb: 'Elena and Giulia are interior designers with their own studio in Neukölln. In their workshop you make your own lampshade from coloured papers of different kinds: they help with colours, patterns and composition, bring all the tools and the lamp fitting, and you go home with a lampshade that is ready to hang. Small groups of up to ten, taught in English, with questions also answered in German, Italian, French and Spanish. Teams, birthdays and private groups can book their own date.',
-    group: 'Up to 10', duration: 'On request', place: 'Their studio in Neukölln', languages: 'EN · DE · IT · FR · ES',
-    priceNote: '€50 per person, lamp fitting included' },
+    blurb: 'Elena and Giulia are interior designers with their own studio in Neukölln. In their Paper Light Night you decorate your own paper lamp in three hours: after a short introduction to the techniques you choose your colour palette, cut, tear and lay out the pieces, then glue them, playing with layering, transparency and pattern, and finish with a drink while you look at the lamps together. The lamp frame, decorative papers in many textures and colours, glue, tools and the ready-wired fitting are included, plus tea and drinks, and you go home with a lamp that is ready to hang. Small groups of up to ten, taught in English, with questions also answered in German, Italian, French and Spanish. Teams, birthdays and private groups can book their own date.',
+    group: 'Up to 10', duration: '3 h', place: 'fave studio, Fuldastraße 34, Neukölln', languages: 'EN · DE · IT · FR · ES',
+    priceNote: '€50 per person, all materials and the lamp included' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making, fabric & wax seals',
     blurb: 'Marija studied art history and comes from education, and she upcycles: fabric and materials left behind on the street are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper, scraps of coloured card and old bags, blended and poured with flowers or a little glitter; you seal it with wax, or fold paper Christmas stars. Calm, hands-on and good-looking, and she has run it with kindergarten children and older people alike. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
     group: 'Groups and teams', duration: 'On request', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE' },
@@ -222,9 +223,9 @@ const de: HostCopy[] = [
     group: 'Selbstfotografie: 2–4, nur für Frauen · Blumenkränze: auch größere Gruppen', duration: '3,5 Std.', place: 'Ātma Self-Portrait Photo Studio, Reichenberger Str. 109, Kreuzberg', languages: 'EN · FR',
     priceNote: 'Punkt-Malkurs 49 € · Blumenkränze 50 € pro Person' },
   { slug: 'fave-studio', name: 'fave studio', specialty: 'Workshops für Papier-Lampenschirme', studio: 'fave studio',
-    blurb: 'Elena und Giulia sind Interior-Designerinnen mit eigenem Studio in Neukölln. In ihrem Workshop gestaltet ihr euren eigenen Lampenschirm aus farbigen Papieren verschiedener Art: Die beiden helfen bei Farben, Mustern und Komposition, bringen alle Werkzeuge und die Lampenfassung mit, und ihr geht mit einem Lampenschirm nach Hause, der direkt aufgehängt werden kann. Kleine Gruppen bis zehn Personen, auf Englisch, Fragen beantworten sie auch auf Deutsch, Italienisch, Französisch und Spanisch. Teams, Geburtstage und private Gruppen können einen eigenen Termin buchen.',
-    group: 'Bis 10', duration: 'Auf Anfrage', place: 'Ihr Studio in Neukölln', languages: 'EN · DE · IT · FR · ES',
-    priceNote: '50 € pro Person, Lampenfassung inklusive' },
+    blurb: 'Elena und Giulia sind Interior-Designerinnen mit eigenem Studio in Neukölln. In ihrer Paper Light Night gestaltet ihr in drei Stunden eure eigene Papierlampe: Nach einer kurzen Einführung in die Techniken wählt ihr eure Farbpalette, schneidet, reißt und legt die Stücke aus und klebt sie dann auf, mit Schichten, Transparenz und Mustern, und zum Schluss gibt es einen Drink, während ihr die Lampen gemeinsam anschaut. Lampengestell, Dekopapiere in vielen Strukturen und Farben, Kleber, Werkzeug und die fertig verkabelte Fassung sind dabei, dazu Tee und Getränke, und ihr geht mit einer Lampe nach Hause, die direkt aufgehängt werden kann. Kleine Gruppen bis zehn Personen, auf Englisch, Fragen beantworten sie auch auf Deutsch, Italienisch, Französisch und Spanisch. Teams, Geburtstage und private Gruppen können einen eigenen Termin buchen.',
+    group: 'Bis 10', duration: '3 Std.', place: 'fave studio, Fuldastraße 34, Neukölln', languages: 'EN · DE · IT · FR · ES',
+    priceNote: '50 € pro Person, alles Material und die Lampe inklusive' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen, Stoff & Wachssiegel',
     blurb: 'Marija hat Kunstgeschichte studiert, kommt aus dem Erziehungsbereich und macht Upcycling: Stoffe und Material, die auf der Straße liegen gelassen wurden, werden gewaschen und zu Kissenbezügen und anderen Unikaten. In ihren Workshops schöpft ihr Papier aus Altpapier, Resten von farbigem Karton und alten Tüten, gemixt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs oder Weihnachtssterne aus Papier. Ruhig, handfest und schick, und sie hat es schon mit Kindergartenkindern wie mit älteren Menschen gemacht. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
     group: 'Gruppen und Teams', duration: 'Auf Anfrage', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE' },
@@ -279,7 +280,7 @@ const facets: Record<string, Facets> = {
   // PLACEHOLDER group size and length: Marija gave no numbers yet (asked
   // in the confirmation email of 27.10.26). No price yet either.
   marija:                { activity: 'craft',       alsoIn: ['art'], groupRange: [2, 15], hourRange: [2, 3] },
-  'fave-studio':         { activity: 'craft',       groupRange: [2, 10],   hourRange: [2, 3],   groupPrice: 50 }, // hours: a guess for the directory filter until they send the length
+  'fave-studio':         { activity: 'craft',       groupRange: [2, 10],   hourRange: [3, 3],   groupPrice: 50 },
 };
 
 const firstNames: Record<string, string> = {
@@ -370,7 +371,7 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Weihnachtssterne aus Papier', titleEn: 'Paper Christmas stars', district: 'Lichtenberg', url: '' },
   ],
   'fave-studio': [
-    { title: 'Papier-Lampenschirm für eure Gruppe (bis 10 Personen)', titleEn: 'Paper lampshade for your group (up to 10 people)', price: '€50', district: 'Neukölln', url: '' },
+    { title: 'Paper Light Night für eure Gruppe (bis 10 Personen)', titleEn: 'Paper Light Night for your group (up to 10 people)', duration: '3 h', price: '€50', district: 'Neukölln', url: '' },
   ],
 };
 

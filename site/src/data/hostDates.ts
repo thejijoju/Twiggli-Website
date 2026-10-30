@@ -97,6 +97,9 @@ export const hostDates: HostDate[] = [
 
   // ZÖNOTÉKA (preview): their Konfetti calendar, read 23.10.26.
   { slug: 'zoenoteka', title: 'Amezaiku: Lollis aus japanischer Zuckerkunst', titleEn: 'Amezaiku: Japanese sugar-art lollipops', date: '2026-11-07', time: '09:00', duration: '3.5 h', price: '€60', district: 'Neukölln', url: 'https://zoenoteka.gokonfetti.com/de-de/p/zonoteka-w298kx/' },
+  // fave studio's first Paper Light Night (fagniveronese.com/workshops,
+  // 30.10.26); booked by email with them, so it keeps our request form.
+  { slug: 'fave-studio', title: 'Paper Light Night: eure eigene Papierlampe', titleEn: 'Paper Light Night: decorate your own paper lamp', date: '2026-11-12', time: '18:30', duration: '3 h', price: '€50', district: 'Neukölln', url: 'https://fagniveronese.com/workshops/' },
   { slug: 'zoenoteka', title: 'MIG/MAG-Schweißen: Metall-Lampenschirm bauen', titleEn: 'MIG/MAG welding: build a metal lampshade', date: '2026-11-21', time: '10:00', duration: '5 h', price: '€150', district: 'Neukölln', url: 'https://zoenoteka.gokonfetti.com/de-de/p/zonoteka-w298kx/' },
 
   // Hobbytischlerei (preview): their Konfetti calendar, read 23.10.26.
