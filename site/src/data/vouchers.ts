@@ -32,7 +32,7 @@ import { withBase, type Lang } from '../lib/url.ts';
  *  - sarah: Sarah, mindfulness & creative writing.
  *  - ceramic-kingdom: Madeline, Ceramic Kingdom.
  *  - petitejungle: Aurélie, Petite Jungle.
- *  - sabine: Sabine & Alex, Mobile Dunkelkammer.
+ *  - sabine: Sabine & Alex, Mobile Dunkelkammer (left Twiggli 30.10.26).
  *  - druckrausch: Deborah, Druckrausch.
  *  - qian: NOT yet. Listed on 24.10.26, but her reply the same day asks
  *    how tracking, payout and the 3 years work before she decides. Taken
@@ -53,7 +53,7 @@ import { withBase, type Lang } from '../lib/url.ts';
 /** Agreed in principle (email or WhatsApp), waiting for a written yes. */
 export const voucherHostsAgreed: string[] = [
   'anna-malerlebnisse', 'himapan-berlin',
-  'ceramic-kingdom', 'petitejungle', 'sabine', 'rebeca',
+  'ceramic-kingdom', 'petitejungle', 'rebeca',
   'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
   'munio',
 ];
