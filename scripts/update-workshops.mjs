@@ -4772,7 +4772,11 @@ const workshops = [];
 const recurringOut = [];
 const onRequestOut = [];
 const statuses = [];
+// Hosts who left Twiggli (site/src/data/hosts/archived.ts): their feeds
+// are no longer read.
+const ARCHIVED = new Set(['sabine']);
 for (const source of SOURCES) {
+  if (ARCHIVED.has(source.slug)) continue;
   try {
     const found = await scrape(source);
     const total = found.workshops.length + found.recurring.length + (found.onRequest?.length ?? 0);

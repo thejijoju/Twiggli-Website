@@ -13,6 +13,7 @@ import { hosts as hostsNl } from './hosts/nl.ts';
 import { hosts as hostsPl } from './hosts/pl.ts';
 import { hosts as hostsTr } from './hosts/tr.ts';
 import { preview, previewSlugs } from './hosts/preview.ts';
+import { archivedSlugs } from './hosts/archived.ts';
 import { withHostEdits } from './hostEdits.ts';
 
 /** The blank cream squares the design export dropped in for hosts whose
@@ -1646,7 +1647,7 @@ export const isPreviewHost = (slug: string): boolean => previewSlugs.has(slug);
 /** Every live host, in this language. `withPreview` adds the hidden preview
  *  hosts — only the host pages themselves ask for them. */
 export const getHosts = (lang: Lang, opts: { withPreview?: boolean } = {}): Host[] =>
-  allHosts(lang).filter((h) => opts.withPreview || !previewSlugs.has(h.slug));
+  allHosts(lang).filter((h) => !archivedSlugs.has(h.slug) && (opts.withPreview || !previewSlugs.has(h.slug)));
 
 const allHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
