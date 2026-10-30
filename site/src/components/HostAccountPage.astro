@@ -285,13 +285,15 @@ const fields = [
               <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg><span class="hd-k">{t.langLabel}</span><input class="hd-short" name="languages" maxlength="60" placeholder="DE · EN" /></label>
               <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="m8 5-4 4 4 4"/></svg><span class="hd-k">{t.cancelLabel}</span><select name="cancel"><option value="24h">{t.c24}</option><option value="7d" selected>{t.c7}</option><option value="14d">{t.c14}</option><option value="none">{t.cNone}</option></select></label>
             </div>
-            {/* Luma's way: a price asks for a connected Stripe account, made
-                or signed into on Stripe's own pages (functions hostStripe). */}
-            <div class="hd-box hd-stripe" data-ha-stripe hidden>
-              <p class="hd-stripe-title">{t.stripeTitle}</p>
-              <p class="hd-stripe-body" data-ha-stripe-body>{t.stripeBody}</p>
-              <button type="button" class="hd-stripe-btn" data-ha-stripe-go>{t.stripeBtn}</button>
-            </div>
+            {/* Luma's way: touching the price, when Stripe isn't connected yet,
+                opens this; Stripe's own pages make a new account or sign
+                into an existing one (functions hostStripe). */}
+            <dialog class="hd-pay" data-ha-stripe aria-labelledby="hd-pay-title">
+              <span class="hd-pay-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z"/><path d="M12 9.2c-.6-.5-2.4-.6-2.4.7 0 1.5 2.8.9 2.8 2.4 0 1.3-1.9 1.3-2.7.6M11.2 8v1M11.2 13.6v1"/></svg></span>
+              <h3 class="hd-pay-title" id="hd-pay-title">{t.stripeTitle}</h3>
+              <p class="hd-pay-body" data-ha-stripe-body>{t.stripeBody}</p>
+              <button type="button" class="hd-pay-btn" data-ha-stripe-go>{t.stripeBtn}</button>
+            </dialog>
             <button type="submit" class="hd-publish">{t.publish}</button>
             <p class="hd-publish-note" data-ha-create-note role="status">{t.publishNote}</p>
           </div>
@@ -821,21 +823,27 @@ const fields = [
       let media: { type: string; url: string }[] = [];
       const createForm = $<HTMLFormElement>('[data-ha-panel="create"]');
       const fld = <T extends HTMLElement = HTMLInputElement>(n: string) => createForm.elements.namedItem(n) as unknown as T;
-      // Payouts: a price needs a connected Stripe account (functions hostStripe).
+      // Payouts, as on Luma: touching the price without a connected Stripe
+      // account opens the "accept payments" dialog (functions hostStripe).
       let stripeReady: boolean | null = null;
-      const stripeBox = $('[data-ha-stripe]');
+      const stripeBox = $<HTMLDialogElement>('[data-ha-stripe]');
       const stripeBody = $('[data-ha-stripe-body]');
       const stripeGo = $<HTMLButtonElement>('[data-ha-stripe-go]');
-      const showStripe = () => { stripeBox.hidden = stripeReady === true || !(Number(fld('price').value) > 0); };
+      const showStripe = () => {
+        if (stripeReady === true || stripeBox.open) return;
+        fld('price').blur();
+        stripeBox.showModal();
+      };
+      stripeBox.addEventListener('click', (e) => { if (e.target === stripeBox) stripeBox.close(); });
       const loadStripe = async () => {
         try {
           const s = await api('hostStripe', { action: 'status' });
           stripeReady = !!s.chargesEnabled;
           if (s.connected && !s.chargesEnabled) stripeBody.textContent = t.stripePending;
         } catch { stripeReady = null; }
-        showStripe();
       };
-      fld('price').addEventListener('input', showStripe);
+      fld('price').addEventListener('focus', showStripe);
+      fld('price').addEventListener('pointerdown', (e) => { if (stripeReady !== true) { e.preventDefault(); showStripe(); } });
       stripeGo.addEventListener('click', async () => {
         stripeGo.disabled = true; stripeGo.textContent = t.stripeWait;
         try {
@@ -933,7 +941,6 @@ const fields = [
         fld('location').value = ev?.location ?? h?.en.place ?? '';
         fld<HTMLTextAreaElement>('description').value = ev?.description ?? '';
         fld('price').value = ev?.price != null ? String(ev.price) : '';
-        showStripe();
         fld('seats').value = ev?.seats != null ? String(ev.seats) : '';
         fld('minGuests').value = ev?.minGuests != null ? String(ev.minGuests) : '';
         fld('approve').checked = ev?.approve !== false;
@@ -964,9 +971,8 @@ const fields = [
         };
         const note = $('[data-ha-create-note]');
         if ((body.price ?? 0) > 0 && stripeReady !== true) {
-          showStripe();
           note.textContent = t.stripeNeeded;
-          stripeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          showStripe();
           return;
         }
         if (!body.title || !body.date || !body.start) { note.textContent = t.titlePh; note.dataset.ok = 'false'; fld('title').focus(); return; }
@@ -1354,11 +1360,13 @@ const fields = [
   .hd-switch:checked { background: var(--color-accent); }
   .hd-switch:checked::after { left: 21px; }
   .hd-sec { margin: 16px 0 8px; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); }
-  .hd-stripe { padding: 14px 16px; }
-  .hd-stripe-title { margin: 0 0 4px; font-weight: 600; }
-  .hd-stripe-body { margin: 0 0 12px; font-size: 0.88rem; color: var(--color-text-muted); }
-  .hd-stripe-btn { padding: 10px 18px; border: 0; border-radius: 999px; font: inherit; font-weight: 600; font-size: 0.92rem; color: #fff; background: #635bff; cursor: pointer; }
-  .hd-stripe-btn:disabled { opacity: 0.7; cursor: default; }
+  .hd-pay { width: min(400px, calc(100vw - 32px)); padding: 24px; border: 0; border-radius: 18px; background: #fbfaf9; color: var(--color-text); box-shadow: 0 24px 40px -16px rgba(0, 0, 0, 0.35); }
+  .hd-pay::backdrop { background: rgba(60, 50, 60, 0.32); }
+  .hd-pay-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: #ece9e6; color: #3a3a3a; margin-bottom: 16px; }
+  .hd-pay-title { margin: 0 0 8px; font-size: 1.3rem; font-weight: 700; }
+  .hd-pay-body { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted); }
+  .hd-pay-btn { width: 100%; padding: 13px; border: 0; border-radius: 10px; font: inherit; font-weight: 600; color: #fff; background: #2f2f2f; cursor: pointer; }
+  .hd-pay-btn:disabled { opacity: 0.7; cursor: default; }
   .hd-publish { width: 100%; margin-top: 14px; padding: 15px; border: 0; border-radius: 14px; font: inherit; font-weight: 600; font-size: 1rem; color: #fff; background: var(--color-accent); cursor: pointer; box-shadow: 0 10px 12px -10px rgba(106, 62, 236, 0.7); }
   .hd-publish:disabled { opacity: 0.6; }
   .hd-publish-note { margin: 8px 0 0; text-align: center; font-size: 0.8rem; color: var(--color-text-muted); }
