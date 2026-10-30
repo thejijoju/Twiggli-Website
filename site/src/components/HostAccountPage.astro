@@ -826,7 +826,7 @@ const fields = [
       const stripeBox = $('[data-ha-stripe]');
       const stripeBody = $('[data-ha-stripe-body]');
       const stripeGo = $<HTMLButtonElement>('[data-ha-stripe-go]');
-      const showStripe = () => { stripeBox.hidden = stripeReady !== false || !(Number(fld('price').value) > 0); };
+      const showStripe = () => { stripeBox.hidden = stripeReady === true || !(Number(fld('price').value) > 0); };
       const loadStripe = async () => {
         try {
           const s = await api('hostStripe', { action: 'status' });
