@@ -27,8 +27,8 @@ const e = bigEventsCopy[lang].dialog;
 // Redeeming a Twiggli voucher in the form, at hosts that take them
 // (functions voucherCheck). English wherever German isn't the language.
 const vc = lang === 'de'
-  ? { voucherAdd: 'Gutschein einlösen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet ✓', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.' }
-  : { voucherAdd: 'Redeem a voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Redeem', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted ✓', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.' };
+  ? { voucherAdd: 'Gutschein hinzufügen', voucherSubtotal: 'Zwischensumme', voucherDiscount: 'Gutschein', voucherTotal: 'Gesamt', voucherRemove: 'Gutschein entfernen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.' }
+  : { voucherAdd: 'Add a voucher', voucherSubtotal: 'Subtotal', voucherDiscount: 'Voucher', voucherTotal: 'Total', voucherRemove: 'Remove voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Apply', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.' };
 ---
 
 <dialog
@@ -139,13 +139,21 @@ const vc = lang === 'de'
       </label>
       {/* "Redeem a voucher", as Luma's "Add a coupon": only at hosts that
           take Twiggli vouchers; checked by functions voucherCheck. */}
-      <div class="book-field book-field-wide book-voucher" data-book-voucher hidden>
-        <button type="button" class="book-voucher-toggle" data-book-voucher-toggle>🎁 {vc.voucherAdd}</button>
-        <div class="book-voucher-row" data-book-voucher-row hidden>
+      <div class="book-field book-field-wide bv" data-book-voucher hidden>
+        <div class="bv-line bv-muted" data-bv-sub hidden><span>{vc.voucherSubtotal}</span><span data-bv-subtotal></span></div>
+        <button type="button" class="bv-add" data-book-voucher-toggle>{vc.voucherAdd}</button>
+        <div class="bv-row" data-book-voucher-row hidden>
           <input name="voucher" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder={vc.voucherPh} aria-label={vc.voucherAdd} />
-          <button type="button" class="book-voucher-apply" data-book-voucher-apply>{vc.voucherApply}</button>
+          <button type="button" class="bv-apply" data-book-voucher-apply disabled>{vc.voucherApply}</button>
         </div>
-        <p class="book-voucher-note" data-book-voucher-note role="status" hidden></p>
+        <p class="bv-err" data-book-voucher-note role="status" hidden></p>
+        <div class="bv-chip" data-bv-chip hidden>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z"/></svg>
+          <span class="bv-code" data-bv-code></span>
+          <span class="bv-minus" data-bv-minus></span>
+          <button type="button" class="bv-remove" data-bv-remove aria-label={vc.voucherRemove}>×</button>
+        </div>
+        <div class="bv-line bv-total" data-bv-tot-line hidden><span>{vc.voucherTotal}</span><b data-bv-total></b></div>
       </div>
       {/* Left empty by people; a bot that fills it is ignored. */}
       <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
@@ -265,35 +273,75 @@ const vc = lang === 'de'
     const messageLabel = dialog.querySelector<HTMLElement>('[data-book-message-label]');
     const message = dialog.querySelector<HTMLTextAreaElement>('[data-book-message]');
     let picked: DOMStringMap = {};
-    // Redeeming a voucher (functions voucherCheck).
+    // Redeeming a voucher (functions voucherCheck), as Luma's "Add a coupon".
     const voucherHostList: string[] = JSON.parse(dialog.dataset.voucherHosts || '[]');
-    const voucherBox = dialog.querySelector<HTMLElement>('[data-book-voucher]');
-    const voucherRow = dialog.querySelector<HTMLElement>('[data-book-voucher-row]');
-    const voucherNote = dialog.querySelector<HTMLElement>('[data-book-voucher-note]');
+    const q = <T extends HTMLElement = HTMLElement>(sel: string) => dialog.querySelector<T>(sel);
+    const voucherBox = q('[data-book-voucher]');
+    const voucherRow = q('[data-book-voucher-row]');
+    const voucherNote = q('[data-book-voucher-note]');
+    const voucherAddBtn = q('[data-book-voucher-toggle]');
+    const voucherChip = q('[data-bv-chip]');
+    const applyBtn = q<HTMLButtonElement>('[data-book-voucher-apply]');
     const voucherIn = form.querySelector<HTMLInputElement>('input[name="voucher"]');
     let voucherOk: { code: string; balance: number } | null = null;
-    const note = (msg: string, ok: boolean) => { if (voucherNote) { voucherNote.textContent = msg; voucherNote.hidden = !msg; voucherNote.dataset.ok = String(ok); } };
-    dialog.querySelector('[data-book-voucher-toggle]')?.addEventListener('click', () => {
+    const eur = (n: number) => new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' }).format(n);
+    const unitPrice = () => Number(String(picked.bookPrice ?? '').replace(',', '.').match(/\d+(\.\d+)?/)?.[0] ?? NaN);
+    /** Subtotal, the voucher and the total, where the price is known. */
+    const totals = () => {
+      const unit = unitPrice();
+      const n = Math.max(1, Number(people?.value) || 1);
+      const known = Number.isFinite(unit) && unit > 0;
+      const sub = known ? unit * n : 0;
+      q('[data-bv-sub]')!.hidden = !known;
+      q('[data-bv-subtotal]')!.textContent = known ? eur(sub) : '';
+      q('[data-bv-tot-line]')!.hidden = !(known && voucherOk);
+      if (known && voucherOk) q('[data-bv-total]')!.textContent = eur(Math.max(0, sub - voucherOk.balance));
+    };
+    const note = (msg: string) => { if (voucherNote) { voucherNote.textContent = msg; voucherNote.hidden = !msg; } };
+    const showApplied = () => {
+      const on = !!voucherOk;
+      if (voucherChip) voucherChip.hidden = !on;
+      if (voucherRow) voucherRow.hidden = on || voucherRow.hidden;
+      if (voucherAddBtn) voucherAddBtn.hidden = on;
+      if (on) {
+        q('[data-bv-code]')!.textContent = voucherOk!.code;
+        q('[data-bv-minus]')!.textContent = `−${eur(voucherOk!.balance)}`;
+      }
+      totals();
+    };
+    const syncApply = () => { if (applyBtn) applyBtn.disabled = !(voucherIn?.value.trim()); };
+    voucherAddBtn?.addEventListener('click', () => {
       if (voucherRow) voucherRow.hidden = !voucherRow.hidden;
       if (voucherRow && !voucherRow.hidden) voucherIn?.focus();
     });
     const checkVoucher = async () => {
       const code = (voucherIn?.value ?? '').trim().toUpperCase();
       voucherOk = null;
-      if (!code) { note('', false); return; }
-      note(copy.voucherChecking, true);
+      if (!code) return;
+      note('');
+      if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = copy.voucherChecking; }
       try {
         const res = await fetch(voucherEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, hostSlug: picked.bookSlug ?? '' }) });
         const out = await res.json();
-        if (out.ok) { voucherOk = { code, balance: out.balance }; note(String(copy.voucherOk).replace('{amount}', String(out.balance)), true); }
-        else note(({ expired: copy.voucherExpired, used: copy.voucherUsed, host: copy.voucherHost } as Record<string, string>)[out.error] ?? copy.voucherInvalid, false);
-      } catch { note(copy.voucherError, false); }
+        if (out.ok) voucherOk = { code, balance: out.balance };
+        else note(({ expired: copy.voucherExpired, used: copy.voucherUsed, host: copy.voucherHost } as Record<string, string>)[out.error] ?? copy.voucherInvalid);
+      } catch { note(copy.voucherError); }
+      if (applyBtn) applyBtn.textContent = copy.voucherApply;
+      syncApply();
+      showApplied();
     };
-    dialog.querySelector('[data-book-voucher-apply]')?.addEventListener('click', checkVoucher);
-    // As on Luma: "Redeem" stays grey until there is something to check.
-    const applyBtn = dialog.querySelector<HTMLButtonElement>('[data-book-voucher-apply]');
-    const syncApply = () => { if (applyBtn) applyBtn.disabled = !(voucherIn?.value.trim()); };
-    voucherIn?.addEventListener('input', () => { syncApply(); if (voucherOk) { voucherOk = null; note('', false); } });
+    applyBtn?.addEventListener('click', checkVoucher);
+    voucherIn?.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); checkVoucher(); } });
+    voucherIn?.addEventListener('input', () => { syncApply(); note(''); });
+    q('[data-bv-remove]')?.addEventListener('click', () => {
+      voucherOk = null;
+      if (voucherIn) voucherIn.value = '';
+      syncApply();
+      showApplied();
+      if (voucherRow) voucherRow.hidden = false;
+      voucherIn?.focus();
+    });
+    people?.addEventListener('input', totals);
     voucherIn?.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); checkVoucher(); } });
 
     const dateText = (iso?: string) => {
@@ -366,8 +414,9 @@ const vc = lang === 'de'
       if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'group'].includes(kind));
       if (voucherRow) voucherRow.hidden = true;
       if (voucherIn) voucherIn.value = '';
-      voucherOk = null; note('', false);
+      voucherOk = null; note('');
       if (applyBtn) applyBtn.disabled = true;
+      showApplied();
       if (error) error.hidden = true;
       form.hidden = false;
       if (sent) sent.hidden = true;
