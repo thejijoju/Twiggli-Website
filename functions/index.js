@@ -336,7 +336,11 @@ const confirmVoucherBuyer = async (piId) => {
   // The voucher itself: its code, its PDF and the email that carries it.
   // Sent to the buyer, that email is their order confirmation too.
   let sentTo = '';
-  try { sentTo = await issueVoucher(pi, m, to); } catch (err) { console.error('voucher issue failed', pi.id, err?.message); }
+  // Off until Jirel has seen the test emails and says yes (31.10.26):
+  // VOUCHER_AUTO=on in functions/.env switches it on.
+  if (process.env.VOUCHER_AUTO === 'on') {
+    try { sentTo = await issueVoucher(pi, m, to); } catch (err) { console.error('voucher issue failed', pi.id, err?.message); }
+  }
   if (sentTo) return; // the voucher emails confirm the order; the plain note below only if they failed
   const de = String(m.lang ?? '').startsWith('de');
   const name = String(m.buyer_name ?? '').trim().split(/\s+/)[0];
