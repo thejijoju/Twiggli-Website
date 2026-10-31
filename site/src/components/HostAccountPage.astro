@@ -56,7 +56,6 @@ const config = {
   inbox: requestEmail,
   functions: functionsBase,
   // May open every host (functions/index.js ADMINS checks it again).
-  admins: ['jirel.kuenen@gmail.com', 'hello@twiggli.com'],
 };
 const fields = [
   ['specialty', t.fSpecialty, t.fSpecialtyHint, 'input', 80],
@@ -118,7 +117,6 @@ const fields = [
           <button type="button" role="tab" aria-selected="false" data-ha-tab="calendar"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>{t.tabCalendar}</button>
           <button type="button" role="tab" aria-selected="false" data-ha-tab="messages"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/></svg>{t.tabMessages}<i class="ha-count" data-ha-count hidden></i></button>
           <button type="button" role="tab" aria-selected="false" data-ha-tab="listings"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-6.3 6.3a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.4"/></svg>{t.tabListings}</button>
-          <button type="button" role="tab" aria-selected="false" data-ha-tab="invites" data-ha-admin-only hidden><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>{t.tabInvites}</button>
         </nav>
         <div class="hd-right">
           <button type="button" class="hd-add" data-ha-new data-ha-hostonly hidden>+ {t.addDate}</button>
@@ -208,27 +206,6 @@ const fields = [
         </section>
 
         <!-- Admin: personal invite links to email to the hosts. -->
-        <section data-ha-panel="invites" hidden>
-          <h2 class="ha-h">{t.tabInvites}</h2>
-          <p class="ha-lede">{t.invitesLede}</p>
-          <button type="button" class="ha-btn" data-ha-invites-load>{t.invitesLoad}</button>
-          <table class="ha-invites" data-ha-invites></table>
-          {/* Admin only: a voucher sold by hand goes in here, so its code
-              can be redeemed in the booking form (functions voucherCreate). */}
-          <form class="ha-card ha-vc" data-ha-vc>
-            <h3 class="ha-h">Gutschein anlegen</h3>
-            <p class="ha-lede">Für Gutscheine, deren PDF wir selbst verschickt haben. Danach kann der Code im Buchungsformular eingelöst werden. Der Code wird nur verschlüsselt gespeichert.</p>
-            <div class="ha-vc-grid">
-              <label>Code<input name="vcCode" required placeholder="TW-AB12-CD34" autocomplete="off" /></label>
-              <label>Betrag (€)<input name="vcAmount" type="number" min="1" max="2000" required /></label>
-              <label>Gültig bis<input name="vcUntil" type="date" required /></label>
-              <label>Nur bei Host (leer = alle)<input name="vcHost" placeholder="z. B. druckrausch" autocomplete="off" /></label>
-              <label>Bestellnummer<input name="vcRef" placeholder="VC-…" autocomplete="off" /></label>
-            </div>
-            <button type="submit" class="ha-btn">Anlegen</button>
-            <p class="ha-note" data-ha-vc-note role="status"></p>
-          </form>
-        </section>
 
         <form class="ha-card" data-ha-panel="listings" hidden>
           <div class="ha-langs" role="radiogroup" aria-label={t.textIn}>
@@ -672,21 +649,6 @@ const fields = [
         if (!res.ok) throw new Error(String(res.status));
         return res.json();
       };
-      const vcForm = $<HTMLFormElement>('[data-ha-vc]');
-      const vcField = (n: string) => vcForm.elements.namedItem(n) as HTMLInputElement;
-      { const d = new Date(); d.setFullYear(d.getFullYear() + 3); vcField('vcUntil').value = d.toISOString().slice(0, 10); }
-      vcForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const vcNote = $('[data-ha-vc-note]');
-        vcNote.textContent = '…';
-        try {
-          await api('voucherCreate', { code: vcField('vcCode').value, amount: Number(vcField('vcAmount').value), validUntil: vcField('vcUntil').value, hostSlug: vcField('vcHost').value.trim(), ref: vcField('vcRef').value.trim() });
-          vcNote.textContent = `Angelegt: ${vcField('vcCode').value.toUpperCase()} über ${vcField('vcAmount').value} €. Er kann jetzt eingelöst werden.`;
-          vcField('vcCode').value = ''; vcField('vcAmount').value = ''; vcField('vcRef').value = '';
-        } catch (err) {
-          vcNote.textContent = String(err).includes('409') ? 'Diesen Code gibt es schon.' : 'Hat nicht geklappt. Code, Betrag und Datum prüfen.';
-        }
-      });
       const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested };
       const dateOf = (r: Req) => (r.fields.Date || '').slice(0, 10);
       const el = (tag: string, cls = '', text = '') => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
@@ -1208,28 +1170,6 @@ const fields = [
         $('[data-ha-own-empty]').hidden = ownEvents.length > 0;
       };
 
-      // ── Admin: every host's invite link ──
-      $('[data-ha-invites-load]').addEventListener('click', async () => {
-        const table = $('[data-ha-invites]');
-        try {
-          const { links } = await api('hostInviteLinks', { slugs: Object.keys(hosts) });
-          const base = `${location.origin}${location.pathname}`;
-          table.replaceChildren(...(links as { slug: string; invite: string; claimedBy: string }[])
-            .sort((a, b) => hosts[a.slug].name.localeCompare(hosts[b.slug].name))
-            .map((l) => {
-              const tr = el('tr');
-              const url = `${base}?page=${l.slug}&invite=${l.invite}`;
-              const copy = el('button', 'ha-link', t.inviteCopy) as HTMLButtonElement;
-              copy.type = 'button';
-              copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(url); copy.textContent = t.inviteCopied; } catch { window.prompt('', url); } });
-              const c3 = el('td');
-              if (l.claimedBy) c3.textContent = t.inviteClaimed.replace('{email}', l.claimedBy); else c3.append(copy);
-              tr.append(el('td', '', hosts[l.slug].name), el('td', 'ha-mono', url), c3);
-              return tr;
-            }));
-        } catch { table.replaceChildren(el('tr', '', fill(t.error, cfg.contact))); }
-      });
-
       /** Asks for a page (functions/index.js hostClaim): 'granted' for
        *  admins, 'pending' for everyone else until Jirel approves. */
       const claim = async (s: string, name: string, note: string, invite = ''): Promise<string> => {
@@ -1273,13 +1213,18 @@ const fields = [
           try { localStorage.removeItem(INVITE); } catch { /* private mode */ }
           history.replaceState(null, '', location.pathname);
         }
-        if ((cfg.admins as string[]).includes(email)) $('[data-ha-admin-only]').hidden = false;
         let slugs: string[] = [];
         try {
           const m = await getDoc(doc(db, 'hostMembers', email));
           slugs = ((m.data()?.slugs as string[] | undefined) ?? []).filter((s) => hosts[s]);
         } catch { /* not a member: no read access */ }
-        const admin = (cfg.admins as string[]).includes(email);
+        // Whether this is Jirel: the server says, so no address is in the page.
+        let admin = false;
+        try {
+          const token = await auth.currentUser?.getIdToken();
+          const r = await fetch(`${cfg.functions}/hostClaim`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ whoami: true }) });
+          admin = !!(await r.json()).admin;
+        } catch { admin = false; }
         if (admin) {
           // Jirel: every host in the picker; opening one asks the server to
           // add it to her hostMembers first, so the rules let her save.
@@ -1657,7 +1602,4 @@ const fields = [
     .hd-create { grid-template-columns: minmax(0, 1fr); }
     .hd-cal { width: min(300px, calc(100vw - 48px)); }
   }
-  .ha-vc { margin-top: 22px; }
-  .ha-vc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 10px 0 14px; }
-  .ha-vc-grid label { display: grid; gap: 4px; font-size: 0.85rem; color: var(--color-text-muted); }
 </style>
