@@ -257,10 +257,24 @@ const fields = [
               <label class="hd-chip"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5z"/></svg><select name="visibility"><option value="public">{t.vPublic}</option><option value="private">{t.vPrivate}</option></select></label>
             </div>
             <input class="hd-title" name="title" maxlength="120" placeholder={t.titlePh} required />
-            <div class="hd-when">
-              <div class="hd-box">
-                <div class="hd-dt"><span>{t.startLabel}</span><input type="date" name="date" required /><input type="time" name="start" required /></div>
-                <div class="hd-dt"><span>{t.endLabel}</span><span class="hd-dt-same" data-ha-same-day></span><input type="time" name="end" /></div>
+            {/* When, as on Luma: a start and an end row with a date chip and a
+                time chip each, our own calendar and time list as popovers.
+                The values live in the hidden inputs below, as before. */}
+            <div class="hd-when" data-ha-whenbox>
+              <div class="hd-box hd-se">
+                <input type="hidden" name="date" /><input type="hidden" name="start" /><input type="hidden" name="end" /><input type="hidden" name="until" />
+                <div class="hd-se-row">
+                  <span class="hd-se-dot" aria-hidden="true"></span>
+                  <span class="hd-se-k">{t.startLabel}</span>
+                  <button type="button" class="hd-pill hd-pill-date" data-dp="date" aria-haspopup="dialog"></button>
+                  <input type="text" class="hd-pill hd-pill-time" data-tp="start" inputmode="numeric" maxlength="5" autocomplete="off" aria-label={t.startLabel} />
+                </div>
+                <div class="hd-se-row">
+                  <span class="hd-se-dot hd-se-dot-end" aria-hidden="true"></span>
+                  <span class="hd-se-k">{t.endLabel}</span>
+                  <span class="hd-pill hd-pill-date hd-pill-static" data-ha-end-date></span>
+                  <input type="text" class="hd-pill hd-pill-time" data-tp="end" inputmode="numeric" maxlength="5" autocomplete="off" aria-label={t.endLabel} />
+                </div>
                 <div class="hd-repeat" role="radiogroup" aria-label={t.repeat}>
                   <span>{t.repeat}</span>
                   <label><input type="radio" name="repeat" value="once" checked /><i>{t.rOnce}</i></label>
@@ -268,9 +282,21 @@ const fields = [
                   <label><input type="radio" name="repeat" value="biweekly" /><i>{t.rBiweekly}</i></label>
                   <label><input type="radio" name="repeat" value="monthly" /><i>{t.rMonthly}</i></label>
                 </div>
-                <div class="hd-dt" data-ha-until hidden><span>{t.untilLabel}</span><input type="date" name="until" /><small>{t.untilHint}</small></div>
+                <div class="hd-se-row hd-se-until" data-ha-until hidden>
+                  <span class="hd-se-dot hd-se-dot-none" aria-hidden="true"></span>
+                  <span class="hd-se-k">{t.untilLabel}</span>
+                  <button type="button" class="hd-pill hd-pill-date" data-dp="until" aria-haspopup="dialog"></button>
+                  <small>{t.untilHint}</small>
+                </div>
               </div>
-              <div class="hd-box hd-tz">Berlin<br />GMT+1</div>
+              <div class="hd-box hd-tz"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5z"/></svg><b data-ha-tz-off>GMT+01:00</b><span>Berlin</span></div>
+              <div class="hd-pop hd-cal" data-ha-cal role="dialog" hidden>
+                <div class="hd-cal-head"><b data-ha-cal-title></b><span>
+                  <button type="button" data-cal-step="-1" aria-label="‹">‹</button><button type="button" data-cal-today aria-label="•" class="hd-cal-dot"></button><button type="button" data-cal-step="1" aria-label="›">›</button>
+                </span></div>
+                <div class="hd-cal-grid" data-ha-cal-grid></div>
+              </div>
+              <div class="hd-pop hd-times" data-ha-times role="listbox" hidden></div>
             </div>
             <div class="hd-box">
               <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><input name="location" maxlength="160" placeholder={t.locationPh} /></label>
@@ -921,20 +947,157 @@ const fields = [
       createForm.querySelectorAll<HTMLInputElement>('[name="repeat"]').forEach((r) => r.addEventListener('change', () => {
         $('[data-ha-until]').hidden = fld<HTMLInputElement>('repeat') && (createForm.querySelector<HTMLInputElement>('[name="repeat"]:checked')?.value ?? 'once') === 'once';
       }));
-      const sameDay = () => {
-        const v = fld('date').value;
-        $('[data-ha-same-day]').textContent = v ? new Date(`${v}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+      // ── When: Luma-style date and time chips (hidden inputs keep the values) ──
+      const whenBox = $('[data-ha-whenbox]');
+      const cal = $('[data-ha-cal]');
+      const calGrid = $('[data-ha-cal-grid]');
+      const times = $('[data-ha-times]');
+      const startIn = $<HTMLInputElement>('[data-tp="start"]');
+      const endIn = $<HTMLInputElement>('[data-tp="end"]');
+      const mins = (hm: string) => { const m = /^(\d{1,2}):(\d{2})$/.exec(hm); return m ? Number(m[1]) * 60 + Number(m[2]) : NaN; };
+      const hm = (n: number) => { const v = ((n % 1440) + 1440) % 1440; return `${String(Math.floor(v / 60)).padStart(2, '0')}:${String(v % 60).padStart(2, '0')}`; };
+      const dayLabel = (v: string) => v ? new Date(`${v}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '–';
+      const addDays = (v: string, n: number) => { const d = new Date(`${v}T12:00:00`); d.setDate(d.getDate() + n); return iso(d); };
+      /** Whole and half hours as "2 Std." / "1,5 h": shown next to each end time. */
+      const durLabel = (m: number) => { const h = m / 60; const n = Number.isInteger(h) ? String(h) : h.toLocaleString(locale, { maximumFractionDigits: 2 }); return m < 60 ? `${m} min` : `${n} ${locale.startsWith('de') ? 'Std.' : 'h'}`; };
+      const renderWhen = () => {
+        const date = fld('date').value;
+        $('[data-dp="date"]').textContent = dayLabel(date);
+        startIn.value = fld('start').value;
+        endIn.value = fld('end').value;
+        const overnight = fld('end').value && mins(fld('end').value) <= mins(fld('start').value);
+        $('[data-ha-end-date]').textContent = dayLabel(date && overnight ? addDays(date, 1) : date);
+        $('[data-dp="until"]').textContent = fld('until').value ? dayLabel(fld('until').value) : '–';
+        // Berlin's offset on that day (summer or winter time).
+        const off = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', timeZoneName: 'shortOffset' }).formatToParts(new Date(`${date || iso(new Date())}T12:00:00`)).find((x) => x.type === 'timeZoneName')?.value ?? 'GMT+1';
+        const m = /GMT([+-])(\d+)/.exec(off);
+        $('[data-ha-tz-off]').textContent = m ? `GMT${m[1]}${m[2].padStart(2, '0')}:00` : 'GMT+01:00';
       };
-      fld('date').addEventListener('change', sameDay);
+      const closePops = () => { cal.hidden = true; times.hidden = true; };
+      const place = (pop: HTMLElement, anchor: HTMLElement) => {
+        const b = whenBox.getBoundingClientRect(), r = anchor.getBoundingClientRect();
+        pop.style.top = `${r.bottom - b.top + 8}px`;
+        pop.style.left = `${Math.max(0, Math.min(r.left - b.left, b.width - pop.offsetWidth))}px`;
+      };
+      // Calendar
+      let calField = 'date';
+      let calMonth = new Date();
+      const drawCal = () => {
+        const y = calMonth.getFullYear(), mo = calMonth.getMonth();
+        $('[data-ha-cal-title]').textContent = new Date(y, mo, 1).toLocaleDateString(locale, { month: 'long', year: y === new Date().getFullYear() ? undefined : 'numeric' });
+        const first = new Date(y, mo, 1);
+        const lead = (first.getDay() + 6) % 7; // Monday first
+        const start = new Date(y, mo, 1 - lead);
+        const today = iso(new Date());
+        const chosen = fld(calField).value;
+        const min = calField === 'until' ? fld('date').value : today;
+        const cells: HTMLElement[] = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(2024, 0, 1 + i); // a Monday
+          cells.push(el('span', 'hd-cal-wd', d.toLocaleDateString(locale, { weekday: 'narrow' })));
+        }
+        for (let i = 0; i < 42; i++) {
+          const d = new Date(start); d.setDate(start.getDate() + i);
+          const v = iso(d);
+          const b = el('button', 'hd-cal-day', String(d.getDate())) as HTMLButtonElement;
+          b.type = 'button';
+          if (d.getMonth() !== mo) b.classList.add('is-out');
+          if (v === today) b.classList.add('is-today');
+          if (v === chosen) { b.classList.add('is-on'); b.setAttribute('aria-pressed', 'true'); }
+          if (v < min) b.disabled = true;
+          b.addEventListener('click', () => { fld(calField).value = v; closePops(); renderWhen(); });
+          cells.push(b);
+        }
+        calGrid.replaceChildren(...cells);
+      };
+      const openCal = (field: string, anchor: HTMLElement) => {
+        const open = !cal.hidden && calField === field;
+        closePops();
+        if (open) return;
+        calField = field;
+        const v = fld(field).value || fld('date').value || iso(new Date());
+        calMonth = new Date(`${v}T12:00:00`); calMonth.setDate(1);
+        drawCal();
+        cal.hidden = false;
+        place(cal, anchor);
+        cal.querySelector<HTMLButtonElement>('.is-on, .is-today:not(:disabled)')?.focus({ preventScroll: true });
+      };
+      root.querySelectorAll<HTMLElement>('[data-dp]').forEach((b) => b.addEventListener('click', () => openCal(b.dataset.dp!, b)));
+      cal.querySelectorAll<HTMLElement>('[data-cal-step]').forEach((b) => b.addEventListener('click', () => { calMonth.setMonth(calMonth.getMonth() + Number(b.dataset.calStep)); drawCal(); }));
+      $('[data-cal-today]').addEventListener('click', () => { calMonth = new Date(); calMonth.setDate(1); drawCal(); });
+      // Time lists: every half hour; the end list starts after the start and shows the length.
+      let timeField: 'start' | 'end' = 'start';
+      const drawTimes = () => {
+        const cur = fld(timeField).value;
+        const s0 = mins(fld('start').value);
+        const opts: HTMLElement[] = [];
+        for (let i = 0; i < 48; i++) {
+          const m = timeField === 'end' && !Number.isNaN(s0) ? s0 + 30 * (i + 1) : i * 30;
+          const v = hm(m);
+          const o = el('button', 'hd-time', v) as HTMLButtonElement;
+          o.type = 'button'; o.setAttribute('role', 'option');
+          if (timeField === 'end' && !Number.isNaN(s0)) o.append(el('small', '', durLabel(m - s0)));
+          if (v === cur) { o.classList.add('is-on'); o.setAttribute('aria-selected', 'true'); }
+          o.addEventListener('mousedown', (e) => e.preventDefault());
+          o.addEventListener('click', () => { setTime(timeField, v); closePops(); });
+          opts.push(o);
+        }
+        times.replaceChildren(...opts);
+      };
+      /** A new start keeps the length; a new end keeps the start. */
+      const setTime = (field: 'start' | 'end', v: string) => {
+        if (field === 'start') {
+          const len = mins(fld('end').value) - mins(fld('start').value);
+          fld('start').value = v;
+          fld('end').value = hm(mins(v) + (Number.isNaN(len) || len <= 0 ? 120 : len));
+        } else fld('end').value = v;
+        renderWhen();
+      };
+      const openTimes = (input: HTMLInputElement) => {
+        cal.hidden = true;
+        timeField = input.dataset.tp as 'start' | 'end';
+        drawTimes();
+        times.hidden = false;
+        place(times, input);
+        const on = times.querySelector<HTMLElement>('.is-on') ?? times.children[timeField === 'end' ? 3 : 36] as HTMLElement | undefined;
+        if (on) times.scrollTop = on.offsetTop - times.clientHeight / 2 + on.offsetHeight / 2;
+        input.select();
+      };
+      [startIn, endIn].forEach((input) => {
+        input.addEventListener('focus', () => openTimes(input));
+        input.addEventListener('click', () => { if (times.hidden) openTimes(input); });
+        input.addEventListener('input', () => { input.value = input.value.replace(/[^\d:]/g, ''); if (/^\d{3,4}$/.test(input.value)) input.value = `${input.value.slice(0, -2)}:${input.value.slice(-2)}`; });
+        // Typed times: "9", "930", "9:30" all become 09:30-style values.
+        input.addEventListener('blur', () => {
+          const raw = input.value.trim();
+          const m = /^(\d{1,2})(?::?(\d{2}))?$/.exec(raw);
+          if (m && Number(m[1]) < 24 && Number(m[2] ?? 0) < 60) setTime(input.dataset.tp as 'start' | 'end', `${m[1].padStart(2, '0')}:${m[2] ?? '00'}`);
+          else renderWhen();
+          times.hidden = true;
+        });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+          if (e.key === 'Escape') { renderWhen(); input.blur(); }
+        });
+      });
+      document.addEventListener('pointerdown', (e) => { if (!whenBox.contains(e.target as Node)) closePops(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePops(); });
+      createForm.querySelectorAll<HTMLInputElement>('[name="repeat"]').forEach((r) => r.addEventListener('change', () => {
+        if (r.checked && r.value !== 'once' && !fld('until').value) renderWhen();
+      }));
       const openCreate = (ev?: Ev) => {
         createForm.reset();
         const h = hosts[slug];
         const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
         fld('id').value = ev?.id ?? '';
         fld('title').value = ev?.title ?? '';
-        fld('date').value = ev?.date ?? iso(tomorrow);
-        fld('start').value = ev?.start ?? '18:00';
-        fld('end').value = ev?.end ?? '';
+        // As on Luma: today at the next full hour (tomorrow 18:00 once it is
+        // late), two hours long, so no field ever shows --:--.
+        const now = new Date();
+        const nextHour = now.getHours() + 1;
+        fld('date').value = ev?.date ?? (nextHour <= 21 ? iso(now) : iso(tomorrow));
+        fld('start').value = ev?.start ?? (nextHour <= 21 ? hm(nextHour * 60) : '18:00');
+        fld('end').value = ev?.end || hm(mins(fld('start').value) + 120);
         fld('until').value = ev?.until ?? '';
         (createForm.querySelector<HTMLInputElement>(`[name="repeat"][value="${ev?.repeat ?? 'once'}"]`) ?? createForm.querySelector<HTMLInputElement>('[name="repeat"]'))!.checked = true;
         $('[data-ha-until]').hidden = (ev?.repeat ?? 'once') === 'once';
@@ -951,7 +1114,8 @@ const fields = [
         $('[data-ha-create-host]').textContent = h?.name ?? slug;
         createForm.querySelector<HTMLButtonElement>('.hd-publish')!.textContent = ev?.id ? t.saveChanges : t.publish;
         $('[data-ha-create-note]').textContent = t.publishNote;
-        sameDay();
+        closePops();
+        renderWhen();
         showMedia();
         showTab('create');
         fld('title').focus();
@@ -1409,4 +1573,58 @@ const fields = [
   .ha .hd-create input.hd-title:not([type='checkbox']) { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
   .hd-create { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
   .ha.is-in { max-width: 940px; }
+
+  /* ── When (Luma-style), last so it wins over the older .hd-dt rules ── */
+  .hd-when { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 118px; gap: 10px; margin-bottom: 10px; }
+  .hd-when .hd-box { margin: 0; }
+  .hd-se { padding: 8px 8px 8px 12px; }
+  .hd-se-row { position: relative; display: grid; grid-template-columns: 12px 56px minmax(118px, 1fr) 70px; gap: 6px; align-items: center; padding: 3px 0; }
+  .hd-se-dot { width: 9px; height: 9px; border-radius: 50%; background: #cbbfd6; justify-self: center; }
+  .hd-se-dot-end { background: none; border: 1.5px solid #cbbfd6; }
+  .hd-se-row:first-of-type .hd-se-dot::after { content: ''; position: absolute; left: 6px; top: calc(50% + 7px); height: calc(100% - 8px); border-left: 1.5px dashed #d9cfe2; }
+  .hd-se-dot-none { visibility: hidden; }
+  .hd-se-k { font-size: 0.95rem; color: var(--color-text-muted); }
+  .ha .hd-create .hd-pill, .hd-pill { display: block; width: 100%; min-width: 0; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: rgba(106, 62, 236, 0.07); color: var(--color-text); font: inherit; font-size: 0.95rem; text-align: left; line-height: 40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: background 0.15s ease; }
+  .ha .hd-create input.hd-pill-time:not([type='checkbox']) { padding: 0 6px; border: 0; background: rgba(106, 62, 236, 0.07); text-align: center; font-variant-numeric: tabular-nums; caret-color: var(--color-accent); }
+  .hd-pill:hover, .ha .hd-create input.hd-pill-time:hover { background: rgba(106, 62, 236, 0.12); }
+  .ha .hd-create input.hd-pill-time:focus, .hd-pill:focus-visible { outline: 2px solid rgba(106, 62, 236, 0.35); outline-offset: 0; background: rgba(106, 62, 236, 0.12); }
+  .hd-pill-static { cursor: default; color: var(--color-text-muted); }
+  .hd-pill-static:hover { background: rgba(106, 62, 236, 0.07); }
+  .hd-se-until small { grid-column: 3 / -1; font-size: 0.75rem; color: var(--color-text-muted); }
+  .hd-se .hd-repeat { margin: 6px 0 2px 20px; }
+  .hd-tz { display: grid; align-content: center; gap: 2px; padding: 14px 14px; font-size: 0.85rem; color: var(--color-text-muted); }
+  .hd-tz svg { margin-bottom: 8px; opacity: 0.7; }
+  .hd-tz b { font-weight: 600; color: var(--color-text); font-size: 0.95rem; }
+  .hd-pop { position: absolute; z-index: 30; background: #fff; border-radius: 14px; box-shadow: 0 18px 30px -12px rgba(40, 20, 60, 0.28), 0 2px 6px rgba(40, 20, 60, 0.06); animation: hdPop 0.14s ease-out; }
+  .hd-pop[hidden] { display: none !important; }
+  @keyframes hdPop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .hd-cal { width: 300px; padding: 14px 14px 10px; }
+  .hd-cal-head { display: flex; align-items: center; justify-content: space-between; margin: 2px 4px 10px; }
+  .hd-cal-head b { font-size: 1.15rem; font-weight: 700; text-transform: capitalize; }
+  .hd-cal-head span { display: flex; align-items: center; gap: 2px; }
+  .hd-cal-head button { width: 30px; height: 30px; border: 0; border-radius: 8px; background: none; color: var(--color-text-muted); font-size: 1.25rem; line-height: 1; cursor: pointer; }
+  .hd-cal-head button:hover { background: rgba(106, 62, 236, 0.08); color: var(--color-text); }
+  .hd-cal-dot::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #a7a2ad; vertical-align: middle; }
+  .hd-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+  .hd-cal-wd { display: grid; place-items: center; height: 28px; font-size: 0.78rem; font-weight: 600; color: var(--color-text); text-transform: uppercase; }
+  .hd-cal-wd:nth-child(6), .hd-cal-wd:nth-child(7) { color: var(--color-text-muted); }
+  .hd-cal-day { height: 36px; border: 0; border-radius: 9px; background: none; font: inherit; font-size: 0.95rem; color: var(--color-text); cursor: pointer; font-variant-numeric: tabular-nums; transition: background 0.12s ease; }
+  .hd-cal-day:hover:not(:disabled) { background: rgba(106, 62, 236, 0.09); }
+  .hd-cal-day.is-out { color: #b9b4bd; }
+  .hd-cal-day.is-today { color: var(--color-accent); font-weight: 700; }
+  .hd-cal-day.is-on { background: var(--color-accent); color: #fff; font-weight: 700; }
+  .hd-cal-day:disabled { color: #d6d2d9; cursor: default; }
+  .hd-times { width: 150px; max-height: 280px; overflow-y: auto; padding: 6px; scrollbar-width: thin; }
+  .hd-time { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 12px; border: 0; border-radius: 9px; background: none; font: inherit; font-size: 0.98rem; color: var(--color-text); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .hd-time small { font-size: 0.75rem; color: var(--color-text-muted); }
+  .hd-time:hover { background: rgba(106, 62, 236, 0.08); }
+  .hd-time.is-on { background: var(--color-accent); color: #fff; font-weight: 600; }
+  .hd-time.is-on small { color: rgba(255, 255, 255, 0.8); }
+  @media (max-width: 760px) {
+    .hd-when { grid-template-columns: 1fr; }
+    .hd-tz { display: none; }
+    .hd-se-row { grid-template-columns: 12px 50px minmax(0, 1fr) 70px; }
+    .hd-create { grid-template-columns: minmax(0, 1fr); }
+    .hd-cal { width: min(300px, calc(100vw - 48px)); }
+  }
 </style>
