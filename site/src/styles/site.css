@@ -4809,6 +4809,14 @@ html.map-locked { overflow: hidden; }
 .book-often-chips input:focus-visible + span { outline: 2px solid #6a3eec; outline-offset: 2px; }
 .book-honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .book-error { margin: 14px 0 0; font-size: 14px; color: #b42318; }
+.book-voucher-toggle { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--color-accent); cursor: pointer; text-align: left; }
+.book-voucher-toggle:hover { text-decoration: underline; }
+.book-voucher-row { display: flex; gap: 8px; margin-top: 8px; }
+.book-voucher-row input { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: 0.04em; }
+.book-voucher-apply { flex: none; padding: 0 18px; border: 0; border-radius: 10px; background: #4a4a4a; color: #fff; font: inherit; font-weight: 600; cursor: pointer; transition: background 0.15s ease; }
+.book-voucher-apply:disabled { background: #a8a8a8; cursor: default; }
+.book-voucher-note { margin: 6px 0 0; font-size: 13.5px; color: #b42318; }
+.book-voucher-note[data-ok='true'] { color: #1f7a45; }
 .book-send { width: 100%; justify-content: center; margin-top: 18px; }
 .book-send:disabled { opacity: 0.6; cursor: wait; }
 .book-sent .book-lede { margin-bottom: 20px; }

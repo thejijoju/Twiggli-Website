@@ -25,7 +25,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
@@ -364,6 +364,61 @@ const confirmVoucherBuyer = async (piId) => {
   });
 };
 
+// ── Redeeming a voucher ──
+// Codes are kept only as an HMAC with a server-side key (_config/vouchers,
+// which no browser can read), so neither the repo nor the database holds
+// a usable code. New codes are entered by an admin (voucherCreate) or,
+// later, made by the purchase itself.
+const voucherKey = async () => {
+  const ref = getFirestore().doc('_config/vouchers');
+  const snap = await ref.get();
+  if (snap.exists && snap.data().key) return snap.data().key;
+  const key = randomBytes(32).toString('hex');
+  await ref.set({ key }, { merge: true });
+  return key;
+};
+const cleanCode = (code) => String(code ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const codeHash = async (raw) => createHmac('sha256', await voucherKey()).update(raw).digest('hex');
+/** The voucher behind a code, or why it can't be used at this host. */
+const lookupVoucher = async (code, hostSlug) => {
+  const raw = cleanCode(code);
+  if (raw.length < 8 || raw.length > 20) return { error: 'invalid' };
+  const hash = await codeHash(raw);
+  const snap = await getFirestore().doc(`voucherCodes/${hash}`).get();
+  if (!snap.exists) return { error: 'invalid' };
+  const v = snap.data();
+  if (v.validUntil && v.validUntil < new Date().toISOString().slice(0, 10)) return { error: 'expired' };
+  if (!(v.balance > 0)) return { error: 'used' };
+  if (v.hostSlug && hostSlug && v.hostSlug !== hostSlug) return { error: 'host', host: v.hostSlug };
+  return { ok: true, hash, balance: v.balance, validUntil: v.validUntil ?? '', hostSlug: v.hostSlug ?? '', ref: v.ref ?? '' };
+};
+
+/** An admin enters a voucher sold by hand (its PDF made outside the site). */
+export const voucherCreate = onRequest({ region: 'europe-west3', maxInstances: 2, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email || !ADMINS.includes(email)) return res.status(403).json({ error: 'Admins only' });
+  const raw = cleanCode(req.body?.code);
+  const amount = Math.round(Number(req.body?.amount));
+  const validUntil = String(req.body?.validUntil ?? '');
+  if (raw.length < 8 || raw.length > 20 || !(amount > 0 && amount <= 2000) || !/^\d{4}-\d\d-\d\d$/.test(validUntil)) return res.status(400).json({ error: 'Bad voucher' });
+  try {
+    await getFirestore().doc(`voucherCodes/${await codeHash(raw)}`).create({
+      amount, balance: amount, validUntil, hostSlug: text(req.body?.hostSlug, 80), ref: text(req.body?.ref, 40),
+      last4: raw.slice(-4), createdBy: email, createdAt: FieldValue.serverTimestamp(), redemptions: [],
+    });
+  } catch { return res.status(409).json({ error: 'exists' }); }
+  return res.status(200).json({ ok: true });
+});
+
+/** The booking form's "Redeem voucher": is this code good here? */
+export const voucherCheck = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const out = await lookupVoucher(req.body?.code, text(req.body?.hostSlug, 80));
+  if (!out.ok) return res.status(200).json({ ok: false, error: out.error });
+  return res.status(200).json({ ok: true, balance: out.balance, validUntil: out.validUntil });
+});
+
 export const formRequest = onRequest(
   { region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD, STRIPE_SECRET_KEY], maxInstances: 10, cors: false },
   async (req, res) => {
@@ -380,6 +435,17 @@ export const formRequest = onRequest(
         .map(([k, v]) => [text(k, 80), String(v).slice(0, 4000)]),
     );
     if (!Object.keys(fields).length) return res.status(400).json({ success: 'false', message: 'Empty form' });
+
+    // A voucher code in a booking: checked again here, so the email says
+    // whether it is good, and the request is noted on the voucher.
+    let voucherHash = '';
+    if (fields['Voucher code']) {
+      const v = await lookupVoucher(fields['Voucher code'], text(body._hostSlug, 80));
+      fields['Voucher check'] = v.ok
+        ? `VALID: €${v.balance} left, valid until ${v.validUntil}${v.ref ? `, order ${v.ref}` : ''}. Deduct it from the price and note it on the voucher.`
+        : `NOT VALID (${v.error}). Do not accept it.`;
+      if (v.ok) voucherHash = v.hash;
+    }
 
     // The same person sending the same request again within a day (people
     // resend when unsure it went through): saved, but nobody is emailed twice.
@@ -399,6 +465,11 @@ export const formRequest = onRequest(
       ...(hostSlug && !duplicateOf ? { hostSlug, status: 'pending', thread: [] } : {}),
     });
     if (duplicateOf) return res.status(200).json({ success: 'true', id: doc.id, duplicate: true });
+    if (voucherHash) {
+      await getFirestore().doc(`voucherCodes/${voucherHash}`).update({
+        redemptions: FieldValue.arrayUnion({ requestId: doc.id, hostSlug: text(body._hostSlug, 80), at: Date.now(), status: 'requested' }),
+      }).catch(() => {});
+    }
 
     // The guest hears that their request arrived (Jirel, 30.10.26), so they
     // don't send it twice. Only for requests, not for notes like vouchers.
