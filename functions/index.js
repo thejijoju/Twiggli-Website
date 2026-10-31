@@ -56,7 +56,7 @@ const knownSlugs = async (email) => {
   return [...out];
 };
 // May open every host's account without approval, and approves the others.
-const ADMINS = ['jirel.kuenen@gmail.com', 'jirelkuenen@gmail.com', 'hello@twiggli.com'];
+const ADMINS = ['jirel.kuenen@gmail.com', 'hello@twiggli.com'];
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
 
 initializeApp();
