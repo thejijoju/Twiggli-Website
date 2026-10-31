@@ -4,6 +4,7 @@
  *  filter by (district, price, group size, language, gift vouchers) and
  *  their next dates. Built with the site, so it is rebuilt every morning
  *  (deploy.yml) and "today" is always today. llms.txt points here. */
+import { contactEmail } from '../data/site.ts';
 import { answerHref, answerSessions } from '../data/answers.ts';
 import { getHosts } from '../data/content.ts';
 import { getHostPriceRanges, type Session } from '../data/sessions.ts';
@@ -57,7 +58,7 @@ export function GET() {
     '',
     `> Updated ${today} (Berlin time). ${hosts.length} hosts. This file is rebuilt every morning from the live calendar of twiggli.com. Twiggli is a Berlin platform for hands-on workshops with independent local makers: pottery, painting, printmaking, candle making, crafts, cooking and tastings, photography, wellbeing and music. Shorter overview: https://www.twiggli.com/llms.txt`,
     '',
-    'How booking works: every date and workshop page has a Request button. It opens a short form; sending it costs nothing, and there is nothing to pay until the host confirms the place by email. Private groups (friends, teams, Christmas parties, hen parties, birthdays) can request a workshop on almost any day: https://www.twiggli.com/corporatebookings/ . Gift vouchers for a specific workshop or for any amount from €20, valid 3 years: https://www.twiggli.com/voucher/ . Contact: hello@twiggli.com',
+    'How booking works: every date and workshop page has a Request button. It opens a short form; sending it costs nothing, and there is nothing to pay until the host confirms the place by email. Private groups (friends, teams, Christmas parties, hen parties, birthdays) can request a workshop on almost any day: https://www.twiggli.com/corporatebookings/ . Gift vouchers for a specific workshop or for any amount from €20, valid 3 years: https://www.twiggli.com/voucher/ . Contact: ' + contactEmail + '',
     '',
     ...block('Today', answerSessions('today', lang), absolute(answerHref(lang, 'today'))),
     ...block('Tonight (from 17:00)', answerSessions('tonight', lang), absolute(answerHref(lang, 'tonight'))),

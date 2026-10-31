@@ -12,16 +12,20 @@ export type NavLink = { label: string; href: string; external?: boolean };
 /** The booking/host web app. Every "Get Started" on the site points here. */
 export const appUrl = 'https://app.twiggli.com/';
 
-/** Where every request the site sends lands: corporate and group enquiries
+/** No address is written in this repo (Jirel, 31.10.26): both come from
+ *  the CONTACT_EMAIL secret at build time (deploy.yml, PUBLIC_CONTACT_EMAIL),
+ *  and forms land in the same inbox through it.
+ *
+ *  Where every request the site sends lands: corporate and group enquiries
  *  from the contact form, and the calendar's "Request to book" mails. The
  *  site is static, so a request is a prefilled email the visitor sends
  *  from their own mail app — there is no server to post a form to. */
-export const requestEmail = 'jirel.kuenen@gmail.com';
+export const requestEmail: string = import.meta.env.PUBLIC_CONTACT_EMAIL ?? '';
 
 /** The address visitors see and write to: on the contact page and in every
  *  form's "write to us at" fallback. requestEmail above only receives the
  *  forms through FormSubmit and is never shown. */
-export const contactEmail = 'hello@twiggli.com';
+export const contactEmail: string = import.meta.env.PUBLIC_CONTACT_EMAIL ?? '';
 
 /** The Brevo subscription form (Contacts → Forms → Share → the form's own
  *  URL, …sibforms.com/serve/…) with double opt-in switched on. While it is

@@ -1,4 +1,5 @@
 ---
+import { contactEmail } from '../../data/site.ts';
 import LegalPage from '../../layouts/LegalPage.astro';
 import { withBase } from '../../lib/url.ts';
 
@@ -52,7 +53,7 @@ const toc = [
   <p>
     Twiggli wird betrieben von Twiggli UG (haftungsbeschränkt),
     Rodenkirchener Str. 147, 50997 Köln, Deutschland. Du erreichst uns unter
-    hello@twiggli.com. Die vollständigen Angaben findest du in
+    {contactEmail}. Die vollständigen Angaben findest du in
     unserem <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
@@ -183,7 +184,7 @@ const toc = [
   <p>
     Poste nur, wozu du das Recht hast. Filmst du Teilnehmende, hol vorher ihre Zustimmung ein.
     Wir entfernen Inhalte, die Rechte Dritter verletzen — schreib an
-    hello@twiggli.com, um etwas zu melden.
+    {contactEmail}, um etwas zu melden.
   </p>
 
   <h2 id="conduct">9. Was du nicht tun darfst</h2>
@@ -267,6 +268,6 @@ const toc = [
     Verbraucherschlichtungsstelle teilzunehmen, und tun dies derzeit auch nicht.
   </p>
   <p>
-    Fragen zu diesen Bedingungen: hello@twiggli.com.
+    Fragen zu diesen Bedingungen: {contactEmail}.
   </p>
 </LegalPage>

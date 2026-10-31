@@ -19,3 +19,7 @@ firestore-debug.log
 
 # Firebase sign-in helper, copied in by the deploy (deploy.yml)
 site/public/__/
+
+# Written by deploy-firebase.yml from secrets; never commit
+functions/.env
+functions/.env.*

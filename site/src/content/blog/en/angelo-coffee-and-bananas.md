@@ -51,8 +51,7 @@ depending on the grind and the water.
 
 Tea tastings run separately.
 
-To book a tasting, go straight to Angelo: **+49 176 765 064 56** (DM works too) or
-**cafe@coffeeandbananas.com**.
+To book a tasting, go straight to Angelo: **+49 176 765 064 56** (DM works too).
 
 <div class="post-callout">
   <p class="post-callout-label">Room for hire</p>

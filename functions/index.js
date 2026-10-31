@@ -32,7 +32,11 @@ const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 // An app password of the Gmail account the requests go to (Google account →
 // Security → App passwords), so the function can mail Jirel from it.
 const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
-const INBOX = 'jirel.kuenen@gmail.com';
+// No address is written in this repo (Jirel, 31.10.26): they come from
+// functions/.env, which deploy-firebase.yml writes from encrypted GitHub
+// secrets (INBOX_EMAIL, SENDER_EMAIL, ADMIN_EMAILS) and never commits.
+const INBOX = process.env.INBOX_EMAIL ?? '';
+const SENDER = process.env.SENDER_EMAIL || INBOX;
 const SLUG = /^[a-z0-9-]{1,60}$/;
 // The hosts we already know live in Jirel's Google Sheet, tab "Hosts &
 // Emails": column D the email(s), column K the Twiggli page (slug). Read at
@@ -56,7 +60,7 @@ const knownSlugs = async (email) => {
   return [...out];
 };
 // May open every host's account without approval, and approves the others.
-const ADMINS = ['jirel.kuenen@gmail.com', 'hello@twiggli.com'];
+const ADMINS = String(process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
 
 initializeApp();
@@ -245,7 +249,7 @@ const mailJirel = async ({ subject, text: body, html, replyTo }) => {
 };
 
 /** "We've got your request": one short email to the guest, in German or
- *  English, from hello@twiggli.com (a send-as address of Jirel's Gmail). */
+ *  English, from our public address (SENDER, a send-as address of Jirel's Gmail). */
 /** An emoji for the kind of workshop, from words in its title. */
 const EMOJI = [
   [/töpfer|pottery|ceramic|keramik|clay|ton\b|wheel|drehscheibe|handbuild|aufbau/i, '🏺'],
@@ -293,8 +297,8 @@ const confirmGuest = async (to, f) => {
   const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
-    from: { name: 'Twiggli', address: 'hello@twiggli.com' },
-    replyTo: 'hello@twiggli.com',
+    from: { name: 'Twiggli', address: SENDER },
+    replyTo: SENDER,
     to,
     subject: de ? `Deine Anfrage bei Twiggli: ${what} ${icon}` : `Your Twiggli request: ${what} ${icon}`,
     text: `${de ? 'Danke für deine Anfrage bei Twiggli' : 'Thank you for your request on Twiggli'}.\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${de ? 'Der Gastgeber meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen.' : 'The host will get back to you by email, usually within 1–2 days.'}\n\n💛 Jirel, Twiggli`,
@@ -355,8 +359,8 @@ const confirmVoucherBuyer = async (piId) => {
     : `${next}<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`;
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
-    from: { name: 'Twiggli', address: 'hello@twiggli.com' },
-    replyTo: 'hello@twiggli.com',
+    from: { name: 'Twiggli', address: SENDER },
+    replyTo: SENDER,
     to,
     subject: de ? `Danke für deinen Twiggli-Gutschein (${amount}) 🎁` : `Thank you for your Twiggli voucher (${amount}) 🎁`,
     text: `${de ? 'Danke für deinen Gutscheinkauf bei Twiggli.' : 'Thank you for buying a Twiggli voucher.'}\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${next.replace(/<[^>]+>/g, '')}\n\n💛 Jirel, Twiggli`,
@@ -384,7 +388,23 @@ const lookupVoucher = async (code, hostSlug) => {
   const raw = cleanCode(code);
   if (raw.length < 8 || raw.length > 20) return { error: 'invalid' };
   const hash = await codeHash(raw);
-  const snap = await getFirestore().doc(`voucherCodes/${hash}`).get();
+  const ref = getFirestore().doc(`voucherCodes/${hash}`);
+  let snap = await ref.get();
+  if (!snap.exists) {
+    // Vouchers sold by hand are listed in the encrypted VOUCHER_SEEDS
+    // secret ("CODE|amount|valid until|order", one per line or ";"), never
+    // in the repo; the first use puts the code in the database.
+    const seed = String(process.env.VOUCHER_SEEDS ?? '').split(/[;\n]/).map((l) => l.split('|').map((x) => x.trim()))
+      .find(([c]) => cleanCode(c) === raw);
+    if (seed) {
+      const [, amount, validUntil, order, host] = seed;
+      await ref.create({
+        amount: Number(amount), balance: Number(amount), validUntil: validUntil ?? '', ref: order ?? '', hostSlug: host ?? '',
+        last4: raw.slice(-4), createdBy: 'seed', createdAt: FieldValue.serverTimestamp(), redemptions: [],
+      }).catch(() => {});
+      snap = await ref.get();
+    }
+  }
   if (!snap.exists) return { error: 'invalid' };
   const v = snap.data();
   if (v.validUntil && v.validUntil < new Date().toISOString().slice(0, 10)) return { error: 'expired' };
