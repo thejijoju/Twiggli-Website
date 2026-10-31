@@ -16,6 +16,7 @@ import { bookingCopy } from '../data/bookingCopy.ts';
 import { bigEventsCopy } from '../data/bigEvents.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import { LANG_META, type Lang } from '../lib/url.ts';
+import { VOUCHERS_ON, voucherHosts } from '../data/vouchers.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -23,6 +24,11 @@ const c = bookingCopy[lang];
 // A big event with several hosts, or something not listed at all
 // (bigEvents.ts): the same form, with the hosts to pick from.
 const e = bigEventsCopy[lang].dialog;
+// Redeeming a Twiggli voucher in the form, at hosts that take them
+// (functions voucherCheck). English wherever German isn't the language.
+const vc = lang === 'de'
+  ? { voucherAdd: 'Gutschein einlösen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet ✓', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.' }
+  : { voucherAdd: 'Redeem a voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Redeem', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted ✓', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.' };
 ---
 
 <dialog
@@ -32,7 +38,8 @@ const e = bigEventsCopy[lang].dialog;
   data-contact={contactEmail}
   data-locale={LANG_META[lang].locale}
   data-lang={lang}
-  data-copy={JSON.stringify({ ...c, ...e })}
+  data-copy={JSON.stringify({ ...c, ...e, ...vc })}
+  data-voucher-hosts={JSON.stringify(VOUCHERS_ON ? voucherHosts : [])}
 >
   <button type="button" class="book-close" data-book-close aria-label={c.close}>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -130,6 +137,16 @@ const e = bigEventsCopy[lang].dialog;
         <span><span data-book-message-label>{c.message}</span> <em>({c.optional})</em></span>
         <textarea name="message" rows="3" placeholder={c.messagePh} data-book-message></textarea>
       </label>
+      {/* "Redeem a voucher", as Luma's "Add a coupon": only at hosts that
+          take Twiggli vouchers; checked by functions voucherCheck. */}
+      <div class="book-field book-field-wide book-voucher" data-book-voucher hidden>
+        <button type="button" class="book-voucher-toggle" data-book-voucher-toggle>🎁 {vc.voucherAdd}</button>
+        <div class="book-voucher-row" data-book-voucher-row hidden>
+          <input name="voucher" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder={vc.voucherPh} aria-label={vc.voucherAdd} />
+          <button type="button" class="book-voucher-apply" data-book-voucher-apply>{vc.voucherApply}</button>
+        </div>
+        <p class="book-voucher-note" data-book-voucher-note role="status" hidden></p>
+      </div>
       {/* Left empty by people; a bot that fills it is ignored. */}
       <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
     </div>
@@ -146,6 +163,7 @@ const e = bigEventsCopy[lang].dialog;
 
 <script>
   import { formEndpoint } from '../data/firebase.ts';
+  const voucherEndpoint = formEndpoint.replace(/formRequest$/, 'voucherCheck');
   import { looksLikeBot } from '../lib/honey.ts';
   import { track } from '../lib/track.ts';
 
@@ -247,6 +265,36 @@ const e = bigEventsCopy[lang].dialog;
     const messageLabel = dialog.querySelector<HTMLElement>('[data-book-message-label]');
     const message = dialog.querySelector<HTMLTextAreaElement>('[data-book-message]');
     let picked: DOMStringMap = {};
+    // Redeeming a voucher (functions voucherCheck).
+    const voucherHostList: string[] = JSON.parse(dialog.dataset.voucherHosts || '[]');
+    const voucherBox = dialog.querySelector<HTMLElement>('[data-book-voucher]');
+    const voucherRow = dialog.querySelector<HTMLElement>('[data-book-voucher-row]');
+    const voucherNote = dialog.querySelector<HTMLElement>('[data-book-voucher-note]');
+    const voucherIn = form.querySelector<HTMLInputElement>('input[name="voucher"]');
+    let voucherOk: { code: string; balance: number } | null = null;
+    const note = (msg: string, ok: boolean) => { if (voucherNote) { voucherNote.textContent = msg; voucherNote.hidden = !msg; voucherNote.dataset.ok = String(ok); } };
+    dialog.querySelector('[data-book-voucher-toggle]')?.addEventListener('click', () => {
+      if (voucherRow) voucherRow.hidden = !voucherRow.hidden;
+      if (voucherRow && !voucherRow.hidden) voucherIn?.focus();
+    });
+    const checkVoucher = async () => {
+      const code = (voucherIn?.value ?? '').trim().toUpperCase();
+      voucherOk = null;
+      if (!code) { note('', false); return; }
+      note(copy.voucherChecking, true);
+      try {
+        const res = await fetch(voucherEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, hostSlug: picked.bookSlug ?? '' }) });
+        const out = await res.json();
+        if (out.ok) { voucherOk = { code, balance: out.balance }; note(String(copy.voucherOk).replace('{amount}', String(out.balance)), true); }
+        else note(({ expired: copy.voucherExpired, used: copy.voucherUsed, host: copy.voucherHost } as Record<string, string>)[out.error] ?? copy.voucherInvalid, false);
+      } catch { note(copy.voucherError, false); }
+    };
+    dialog.querySelector('[data-book-voucher-apply]')?.addEventListener('click', checkVoucher);
+    // As on Luma: "Redeem" stays grey until there is something to check.
+    const applyBtn = dialog.querySelector<HTMLButtonElement>('[data-book-voucher-apply]');
+    const syncApply = () => { if (applyBtn) applyBtn.disabled = !(voucherIn?.value.trim()); };
+    voucherIn?.addEventListener('input', () => { syncApply(); if (voucherOk) { voucherOk = null; note('', false); } });
+    voucherIn?.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); checkVoucher(); } });
 
     const dateText = (iso?: string) => {
       if (!iso) return '';
@@ -314,6 +362,12 @@ const e = bigEventsCopy[lang].dialog;
         when.textContent = [dateText(picked.bookDate), picked.bookTime, picked.bookPrice].filter(Boolean).join(' · ');
         when.hidden = !when.textContent;
       }
+      // The voucher field, at hosts that take Twiggli vouchers.
+      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'group'].includes(kind));
+      if (voucherRow) voucherRow.hidden = true;
+      if (voucherIn) voucherIn.value = '';
+      voucherOk = null; note('', false);
+      if (applyBtn) applyBtn.disabled = true;
       if (error) error.hidden = true;
       form.hidden = false;
       if (sent) sent.hidden = true;
@@ -375,6 +429,10 @@ const e = bigEventsCopy[lang].dialog;
         Phone: String(data.get('phone') ?? ''),
         [kind === 'studio' ? 'Special notes' : 'Message']: String(data.get('message') ?? ''),
         ...(picked.bookMinGuests ? { 'Runs from': `${picked.bookMinGuests} participants` } : {}),
+        ...((voucherOk || voucherIn?.value.trim()) ? {
+          'Voucher code': voucherOk?.code ?? (voucherIn?.value.trim().toUpperCase() ?? ''),
+          'Voucher value': voucherOk ? `€${voucherOk.balance}` : 'not checked on the page',
+        } : {}),
         'Host booking page': picked.bookLink ?? '',
         'Sent from': location.href,
         'Came from': cameFrom(),

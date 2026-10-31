@@ -213,6 +213,21 @@ const fields = [
           <p class="ha-lede">{t.invitesLede}</p>
           <button type="button" class="ha-btn" data-ha-invites-load>{t.invitesLoad}</button>
           <table class="ha-invites" data-ha-invites></table>
+          {/* Admin only: a voucher sold by hand goes in here, so its code
+              can be redeemed in the booking form (functions voucherCreate). */}
+          <form class="ha-card ha-vc" data-ha-vc>
+            <h3 class="ha-h">Gutschein anlegen</h3>
+            <p class="ha-lede">Für Gutscheine, deren PDF wir selbst verschickt haben. Danach kann der Code im Buchungsformular eingelöst werden. Der Code wird nur verschlüsselt gespeichert.</p>
+            <div class="ha-vc-grid">
+              <label>Code<input name="vcCode" required placeholder="TW-AB12-CD34" autocomplete="off" /></label>
+              <label>Betrag (€)<input name="vcAmount" type="number" min="1" max="2000" required /></label>
+              <label>Gültig bis<input name="vcUntil" type="date" required /></label>
+              <label>Nur bei Host (leer = alle)<input name="vcHost" placeholder="z. B. druckrausch" autocomplete="off" /></label>
+              <label>Bestellnummer<input name="vcRef" placeholder="VC-…" autocomplete="off" /></label>
+            </div>
+            <button type="submit" class="ha-btn">Anlegen</button>
+            <p class="ha-note" data-ha-vc-note role="status"></p>
+          </form>
         </section>
 
         <form class="ha-card" data-ha-panel="listings" hidden>
@@ -657,6 +672,21 @@ const fields = [
         if (!res.ok) throw new Error(String(res.status));
         return res.json();
       };
+      const vcForm = $<HTMLFormElement>('[data-ha-vc]');
+      const vcField = (n: string) => vcForm.elements.namedItem(n) as HTMLInputElement;
+      { const d = new Date(); d.setFullYear(d.getFullYear() + 3); vcField('vcUntil').value = d.toISOString().slice(0, 10); }
+      vcForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const vcNote = $('[data-ha-vc-note]');
+        vcNote.textContent = '…';
+        try {
+          await api('voucherCreate', { code: vcField('vcCode').value, amount: Number(vcField('vcAmount').value), validUntil: vcField('vcUntil').value, hostSlug: vcField('vcHost').value.trim(), ref: vcField('vcRef').value.trim() });
+          vcNote.textContent = `Angelegt: ${vcField('vcCode').value.toUpperCase()} über ${vcField('vcAmount').value} €. Er kann jetzt eingelöst werden.`;
+          vcField('vcCode').value = ''; vcField('vcAmount').value = ''; vcField('vcRef').value = '';
+        } catch (err) {
+          vcNote.textContent = String(err).includes('409') ? 'Diesen Code gibt es schon.' : 'Hat nicht geklappt. Code, Betrag und Datum prüfen.';
+        }
+      });
       const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested };
       const dateOf = (r: Req) => (r.fields.Date || '').slice(0, 10);
       const el = (tag: string, cls = '', text = '') => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
@@ -1627,4 +1657,7 @@ const fields = [
     .hd-create { grid-template-columns: minmax(0, 1fr); }
     .hd-cal { width: min(300px, calc(100vw - 48px)); }
   }
+  .ha-vc { margin-top: 22px; }
+  .ha-vc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 10px 0 14px; }
+  .ha-vc-grid label { display: grid; gap: 4px; font-size: 0.85rem; color: var(--color-text-muted); }
 </style>
