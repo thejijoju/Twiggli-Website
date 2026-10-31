@@ -98,7 +98,10 @@ const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<
  * The voucher email, with the PDF attached and our icon inline. `gift`:
  * written to the person it is for (from the buyer), else to the buyer.
  */
-export const voucherMail = ({ lang, gift, firstName, buyerName, amount, code, validUntil, order, date, payment, host, message, site, company, test }) => {
+export const voucherMail = ({ lang, gift, firstName, buyerName, amount, code, validUntil, order, date, payment, host, message, site, company, test, sentTo }) => {
+  // sentTo: the buyer's copy of a gift sent straight to someone else:
+  // the order, but no code and no PDF, so the code exists only once.
+  const copyOnly = !gift && !!sentTo;
   const de = String(lang).startsWith('de');
   const money = de ? `${amount},00 €` : `€${amount}.00`;
   const what = host ? (de ? `Twiggli-Gutschein · ${host}` : `Twiggli voucher · ${host}`) : (de ? 'Twiggli-Gutschein · alle teilnehmenden Hosts' : 'Twiggli voucher · any workshop at participating hosts');
@@ -106,8 +109,11 @@ export const voucherMail = ({ lang, gift, firstName, buyerName, amount, code, va
   const intro = gift
     ? (de ? `${esc(buyerName || 'Jemand')} schenkt dir einen <b>Twiggli</b>-Gutschein über ${money}! 🎁 Du findest ihn als PDF im Anhang. Such dir einfach einen Workshop bei einer Berliner Maker*in aus.`
           : `${esc(buyerName || 'Someone')} is giving you a <b>Twiggli</b> voucher worth ${money}! 🎁 You'll find it attached as a PDF. Just pick a workshop with a Berlin maker.`)
-    : (de ? 'vielen Dank für deinen Gutscheinkauf bei <b>Twiggli</b>! Dein Gutschein ist als PDF angehängt, zum Ausdrucken oder Weiterschenken.'
-          : 'thank you for buying a <b>Twiggli</b> voucher! Your voucher is attached as a PDF, ready to print or pass on.');
+    : copyOnly
+      ? (de ? `vielen Dank für deinen Gutscheinkauf bei <b>Twiggli</b>! Wir haben den Gutschein als PDF direkt an <b>${esc(sentTo)}</b> geschickt${message ? ', mit deiner Nachricht' : ''}. Den Gutscheincode findet nur die beschenkte Person darin, damit er nicht zweimal eingelöst werden kann.`
+            : `thank you for buying a <b>Twiggli</b> voucher! We've sent it as a PDF straight to <b>${esc(sentTo)}</b>${message ? ', with your message' : ''}. Only the person receiving it will find the voucher code inside, so it can't be used twice.`)
+      : (de ? 'vielen Dank für deinen Gutscheinkauf bei <b>Twiggli</b>! Dein Gutschein ist als PDF angehängt, zum Ausdrucken oder Weiterschenken.'
+            : 'thank you for buying a <b>Twiggli</b> voucher! Your voucher is attached as a PDF, ready to print or pass on.');
   const title = gift ? (de ? 'Ein Geschenk für dich' : 'A gift for you') : `${de ? 'Bestellbestätigung' : 'Order confirmation'} ${order}`;
   const row = (k, val) => `<tr><td style="padding:6px 0;border-bottom:1px solid #eee;color:#555">${k}</td><td align="right" style="padding:6px 0;border-bottom:1px solid #eee;color:#555">${val}</td></tr>`;
   const html = `<div style="background:#f3eee8;padding:24px 0;font-family:Tahoma,Arial,sans-serif;color:#24272e">
@@ -119,18 +125,22 @@ ${test ? `<p style="margin:0 0 12px;padding:8px 12px;border-radius:8px;backgroun
 <p style="font-size:14px;line-height:1.6;color:#454a50;margin:0 0 14px">${hi}<br><br>${intro}</p>
 ${gift && message ? `<p style="font-size:15px;line-height:1.6;margin:0 0 16px;padding:12px 16px;border-left:3px solid #6a3eec;background:#f7f4ff;font-style:italic">„${esc(message)}“</p>` : ''}
 ${gift ? '' : `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;border-collapse:collapse"><tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(what)}</td><td align="right" style="padding:8px 0;border-bottom:1px solid #eee">1 × ${money}</td></tr><tr><td style="padding:10px 0;font-weight:bold">${de ? 'Gesamt' : 'Total'}</td><td align="right" style="padding:10px 0;font-weight:bold">${money}</td></tr></table>`}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;border:1.5px dashed #6a3eec;border-radius:12px"><tr><td style="padding:14px 16px">
+${copyOnly ? '' : `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;border:1.5px dashed #6a3eec;border-radius:12px"><tr><td style="padding:14px 16px">
 <div style="font-size:11px;color:#777;text-transform:uppercase;letter-spacing:1px">${de ? 'Gutscheincode · gültig bis' : 'Voucher code · valid until'} ${esc(day(validUntil, de))}</div>
-<div style="font-family:'Courier New',monospace;font-size:20px;font-weight:bold;letter-spacing:1px;margin-top:4px">${esc(code)}</div></td></tr></table>
-${gift ? '' : `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13.5px;border-collapse:collapse">${row(de ? 'Bestellnr.' : 'Order no.', esc(order))}${row(de ? 'Datum' : 'Date', esc(day(date, de)))}${row(de ? 'Zahlung' : 'Payment', esc(payment))}<tr><td style="padding:6px 0;color:#555">${de ? 'Versand' : 'Delivery'}</td><td align="right" style="padding:6px 0;color:#555">${de ? 'PDF per E-Mail' : 'PDF by email'}</td></tr></table>`}
-<p style="font-size:14px;line-height:1.6;color:#454a50;margin:18px 0 14px"><b>${de ? 'So löst du ihn ein:' : 'How to redeem:'}</b> ${de ? `Such dir auf <a href="${site}/de/voucher/" style="color:#6a3eec">twiggli.com/voucher</a> einen Workshop aus, klick auf „Anfragen“ und gib unter „Gutschein hinzufügen“ den Code ein. Oder antworte einfach auf diese E-Mail.` : `pick a workshop at <a href="${site}/voucher/" style="color:#6a3eec">twiggli.com/voucher</a>, click “Request” and enter the code under “Add a voucher”. Or simply reply to this email.`}</p>
-<p style="font-size:14px;line-height:1.6;color:#454a50;margin:0 0 22px">${de ? 'Viel Freude beim Selbermachen! 💛' : 'Have fun making something! 💛'}<br>Jirel ${de ? 'von' : 'from'} <b>Twiggli</b></p>
+<div style="font-family:'Courier New',monospace;font-size:20px;font-weight:bold;letter-spacing:1px;margin-top:4px">${esc(code)}</div></td></tr></table>`}
+${gift ? '' : `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13.5px;border-collapse:collapse">${row(de ? 'Bestellnr.' : 'Order no.', esc(order))}${row(de ? 'Datum' : 'Date', esc(day(date, de)))}${row(de ? 'Zahlung' : 'Payment', esc(payment))}${copyOnly ? row(de ? 'Gültig bis' : 'Valid until', esc(day(validUntil, de))) : ''}<tr><td style="padding:6px 0;color:#555">${de ? 'Versand' : 'Delivery'}</td><td align="right" style="padding:6px 0;color:#555">${copyOnly ? (de ? `PDF an ${esc(sentTo)}` : `PDF to ${esc(sentTo)}`) : (de ? 'PDF per E-Mail' : 'PDF by email')}</td></tr></table>`}
+${copyOnly ? '' : `<p style="font-size:14px;line-height:1.6;color:#454a50;margin:18px 0 14px"><b>${de ? 'So löst du ihn ein:' : 'How to redeem:'}</b> ${de ? `Such dir auf <a href="${site}/de/voucher/" style="color:#6a3eec">twiggli.com/voucher</a> einen Workshop aus, klick auf „Anfragen“ und gib unter „Gutschein hinzufügen“ den Code ein. Oder antworte einfach auf diese E-Mail.` : `pick a workshop at <a href="${site}/voucher/" style="color:#6a3eec">twiggli.com/voucher</a>, click “Request” and enter the code under “Add a voucher”. Or simply reply to this email.`}</p>`}
+<p style="font-size:14px;line-height:1.6;color:#454a50;margin:18px 0 22px">${de ? 'Viel Freude beim Selbermachen! 💛' : 'Have fun making something! 💛'}<br>Jirel ${de ? 'von' : 'from'} <b>Twiggli</b></p>
 </td></tr>
 <tr><td style="background:#faf6f1;padding:16px 30px;font-size:11px;color:#888;line-height:1.6">${esc(company)} · <a href="${site}" style="color:#888">www.twiggli.com</a><br>${de ? 'Keine Barauszahlung. Ein Restwert bleibt auf dem Code.' : 'No cash payout. Any remaining value stays on the code.'}</td></tr>
 </table></div>`;
-  const subject = gift
+  const subject = copyOnly
+    ? (de ? `Bestellbestätigung ${order}: dein Twiggli-Gutschein als Geschenk 🎁` : `Order confirmation ${order}: your Twiggli voucher gift 🎁`)
+    : gift
     ? (de ? `${buyerName || 'Jemand'} schenkt dir einen Twiggli-Gutschein 🎁` : `${buyerName || 'Someone'} sent you a Twiggli voucher 🎁`)
     : (de ? `Bestellbestätigung ${order}: dein Twiggli-Gutschein 🎁` : `Order confirmation ${order}: your Twiggli voucher 🎁`);
-  const text = `${title}\n\n${de ? 'Gutscheincode' : 'Voucher code'}: ${code}\n${de ? 'Wert' : 'Value'}: ${money}\n${de ? 'Gültig bis' : 'Valid until'}: ${day(validUntil, de)}\n\n${de ? 'Der Gutschein ist als PDF angehängt.' : 'The voucher is attached as a PDF.'}\n\nJirel, Twiggli`;
+  const text = copyOnly
+    ? `${title}\n\n${de ? `Der Gutschein (${money}) ist als PDF an ${sentTo} unterwegs.` : `The voucher (${money}) is on its way to ${sentTo} as a PDF.`}\n\nJirel, Twiggli`
+    : `${title}\n\n${de ? 'Gutscheincode' : 'Voucher code'}: ${code}\n${de ? 'Wert' : 'Value'}: ${money}\n${de ? 'Gültig bis' : 'Valid until'}: ${day(validUntil, de)}\n\n${de ? 'Der Gutschein ist als PDF angehängt.' : 'The voucher is attached as a PDF.'}\n\nJirel, Twiggli`;
   return { subject, html, text, icon: asset('icon.png') };
 };

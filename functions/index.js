@@ -337,7 +337,7 @@ const confirmVoucherBuyer = async (piId) => {
   // Sent to the buyer, that email is their order confirmation too.
   let sentTo = '';
   try { sentTo = await issueVoucher(pi, m, to); } catch (err) { console.error('voucher issue failed', pi.id, err?.message); }
-  if (sentTo === 'buyer') return;
+  if (sentTo) return; // the voucher emails confirm the order; the plain note below only if they failed
   const de = String(m.lang ?? '').startsWith('de');
   const name = String(m.buyer_name ?? '').trim().split(/\s+/)[0];
   const general = !m.host_slug;
@@ -423,14 +423,14 @@ const COMPANY = 'Twiggli UG (haftungsbeschränkt) · Rodenkirchener Str. 147 · 
 const isoDay = (d) => d.toISOString().slice(0, 10);
 
 /** The voucher email, with its PDF and our icon, from our public address. */
-const sendVoucherMail = async (to, parts, pdf, code) => {
+const sendVoucherMail = async (to, parts, pdf, code) => { // pdf null: no attachment
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
     from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to,
     subject: parts.subject, text: parts.text, html: parts.html,
     attachments: [
       { filename: 'twiggli.png', content: parts.icon, cid: 'twiggli-icon' },
-      { filename: `Twiggli-${code}.pdf`, content: pdf, contentType: 'application/pdf' },
+      ...(pdf ? [{ filename: `Twiggli-${code}.pdf`, content: pdf, contentType: 'application/pdf' }] : []),
     ],
   });
 };
@@ -475,6 +475,8 @@ const issueVoucher = async (pi, m, buyer) => {
   const common = { lang: m.lang, buyerName: m.buyer_name, amount, code, validUntil, order: String(m.ref ?? '').toUpperCase(), date: isoDay(today), payment, host, site: SITE, company: COMPANY };
   if (toThem) {
     await sendVoucherMail(m.recipient_email, voucherMail({ ...common, gift: true, firstName: String(m.recipient ?? '').trim().split(/\s+/)[0], message: m.message }), pdf, code);
+    // The buyer's copy: the order, without the code or the PDF.
+    await sendVoucherMail(buyer, voucherMail({ ...common, gift: false, sentTo: m.recipient_email, message: m.message, firstName: String(m.buyer_name ?? '').trim().split(/\s+/)[0] }), null, code);
   } else {
     await sendVoucherMail(buyer, voucherMail({ ...common, gift: false, firstName: String(m.buyer_name ?? '').trim().split(/\s+/)[0] }), pdf, code);
   }
@@ -501,11 +503,18 @@ export const voucherPreview = onRequest({ region: 'europe-west3', secrets: [GMAI
     recipient: gift ? 'Lena' : '', message: gift ? (lang === 'de' ? 'Alles Liebe zum Geburtstag! Such dir was Schönes aus.' : 'Happy birthday! Pick something lovely.') : '',
   };
   const pdf = await voucherPdf({ ...v, test: true });
-  const parts = voucherMail({
-    ...v, gift, test: true, firstName: gift ? 'Lena' : 'Jirel', buyerName: 'Jirel', payment: 'Visa •••• 4242', site: SITE,
-  });
-  await sendVoucherMail(INBOX, parts, pdf, code);
-  return page(lang === 'de' ? `Gesendet: die ${gift ? 'Geschenk' : 'Käufer'}-Variante ist unterwegs in dein Postfach.` : `Sent: the ${gift ? 'gift' : 'buyer'} version is on its way to your inbox.`);
+  const base = { ...v, test: true, buyerName: 'Jirel', payment: 'Visa •••• 4242', site: SITE };
+  if (gift) {
+    // As if Jirel had paid with Lena as the recipient: Lena's voucher, and
+    // Jirel's order confirmation without the code. Both to Jirel's inbox.
+    await sendVoucherMail(INBOX, voucherMail({ ...base, gift: true, firstName: 'Lena' }), pdf, code);
+    await sendVoucherMail(INBOX, voucherMail({ ...base, gift: false, firstName: 'Jirel', sentTo: 'lena@example.com' }), null, code);
+  } else {
+    await sendVoucherMail(INBOX, voucherMail({ ...base, gift: false, firstName: 'Jirel' }), pdf, code);
+  }
+  return page(gift
+    ? (lang === 'de' ? 'Gesendet: zwei E-Mails sind unterwegs in dein Postfach, Lenas Gutschein und deine Bestellbestätigung ohne Code.' : 'Sent: two emails are on their way to your inbox, Lena’s voucher and your order confirmation without the code.')
+    : (lang === 'de' ? 'Gesendet: deine Bestellbestätigung mit dem Gutschein ist unterwegs in dein Postfach.' : 'Sent: your order confirmation with the voucher is on its way to your inbox.'));
 });
 
 /** An admin enters a voucher sold by hand (its PDF made outside the site). */
