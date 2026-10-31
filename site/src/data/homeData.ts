@@ -43,6 +43,11 @@ const PREFER_MAIN_REEL = new Set(['galleria-lucia']);
 export const makerPic = (h: Host): string | undefined =>
   makerPictures[h.slug] === 'photo' ? h.photo : makerPictures[h.slug] === 'reel' ? h.poster : undefined;
 
+/** One-of-a-kind workshops for their own row on the home page, in this
+ *  order (Jirel, 31.10.26: "if they are unique, they deserve that spot").
+ *  Hosts without a picture, or no longer live, drop out by themselves. */
+export const UNIQUE = ['himapan-berlin', 'pia', 'bumerang', 'loom-lab', 'techno', 'kohfink', 'simone', 'maximiliana'];
+
 export function getHomeData(lang: Lang) {
   const d = homeDiscoverCopy[lang];
   const find = homeFindCopy[lang];
@@ -114,6 +119,14 @@ export function getHomeData(lang: Lang) {
     { label: find.solo, href: calendarHref, icon: '🙋', tint: '#ffe9a8' },
   ];
 
+  /* ── One of a kind ─────────────────────────────────────────────────
+     Hosts, not dates: most of these run on request. Their reel, else
+     their photos fading, else their photo. */
+  const bySlug = new Map(hosts.map((h) => [h.slug, h]));
+  const unique = UNIQUE.map((slug) => bySlug.get(slug)).filter((h): h is Host => !!h && hasMedia(h));
+  const hostMedia = (h: Host): { video?: string; poster?: string; still?: string; stills?: string[] } =>
+    h.video ? { video: h.video, poster: h.poster } : { still: h.photo ?? h.poster, stills: fadePhotos(h) };
+
   /* ── Activities and makers ───────────────────────────────────────── */
   const counts = new Map<string, number>();
   for (const h of hosts) for (const a of activitiesOf(h)) counts.set(a, (counts.get(a) ?? 0) + 1);
@@ -154,6 +167,6 @@ export function getHomeData(lang: Lang) {
   return {
     hosts, all, rows, calendarHref, dayOf,
     whatOptions, whenOptions, whereOptions, priceOptions, chips,
-    counts, activityFace, makers, listed, cardMedia,
+    counts, activityFace, makers, listed, cardMedia, unique, hostMedia,
   };
 }

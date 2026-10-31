@@ -23,6 +23,8 @@ export interface HomeDiscoverCopy {
   weekTitle: string; weekHand: string; weekSub: string;
   catsTitle: string; catsHand: string;
   makersTitle: string; makersHand: string; makersSub: string;
+  /** The row of one-of-a-kind workshops (homeData UNIQUE). */
+  uniqueTitle: string; uniqueHand: string; uniqueSub: string;
   seeAll: string;
   /** Under a category circle: the maker in the photo and how many more
    *  teach it — "Qian & 7 more", or the name alone when there are none. */
@@ -42,6 +44,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'What’s on', weekHand: 'this week', weekSub: 'Real dates from our hosts, one per maker.',
     catsTitle: 'What are you', catsHand: 'in the mood for?',
     makersTitle: 'The hands', makersHand: 'behind it', makersSub: 'Independent makers from all over Berlin, each with a craft of their own.',
+    uniqueTitle: 'One of a', uniqueHand: 'kind', uniqueSub: 'Workshops you won’t find anywhere else in Berlin.',
     seeAll: 'See all', faceMore: (name, n) => (n > 0 ? `${name} & ${n} more` : name),
   },
   de: {
@@ -56,6 +59,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'Was diese Woche', weekHand: 'läuft', weekSub: 'Echte Termine unserer Gastgeber, einer pro Maker*in.',
     catsTitle: 'Worauf hast du', catsHand: 'Lust?',
     makersTitle: 'Die Hände', makersHand: 'dahinter', makersSub: 'Unabhängige Maker*innen aus ganz Berlin, jede*r mit einem eigenen Handwerk.',
+    uniqueTitle: 'Einzigartig', uniqueHand: 'in Berlin', uniqueSub: 'Workshops, die es so nirgendwo sonst gibt.',
     seeAll: 'Alle ansehen', faceMore: (name, n) => (n > 0 ? `${name} & ${n} weitere` : name),
   },
   fr: {
@@ -70,6 +74,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'Au programme', weekHand: 'cette semaine', weekSub: 'De vraies dates de nos hôtes, une par artisan.',
     catsTitle: 'De quoi avez-vous', catsHand: 'envie ?',
     makersTitle: 'Les mains', makersHand: 'derrière', makersSub: 'Des artisans indépendants de tout Berlin, chacun avec son propre savoir-faire.',
+    uniqueTitle: 'Uniques', uniqueHand: 'à Berlin', uniqueSub: 'Des ateliers qu’on ne trouve nulle part ailleurs.',
     seeAll: 'Tout voir', faceMore: (name, n) => (n > 0 ? `${name} et ${n} autre${n > 1 ? 's' : ''}` : name),
   },
   es: {
@@ -84,6 +89,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'Lo que hay', weekHand: 'esta semana', weekSub: 'Fechas reales de nuestros anfitriones, una por creador.',
     catsTitle: '¿Qué te', catsHand: 'apetece?',
     makersTitle: 'Las manos', makersHand: 'detrás', makersSub: 'Creadores independientes de todo Berlín, cada uno con su propio oficio.',
+    uniqueTitle: 'Únicos', uniqueHand: 'en Berlín', uniqueSub: 'Talleres que no encontrarás en ningún otro sitio.',
     seeAll: 'Ver todo', faceMore: (name, n) => (n > 0 ? `${name} y ${n} más` : name),
   },
   it: {
@@ -98,6 +104,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'In programma', weekHand: 'questa settimana', weekSub: 'Date vere dei nostri host, una per artigiano.',
     catsTitle: 'Cosa ti va', catsHand: 'di fare?',
     makersTitle: 'Le mani', makersHand: 'dietro', makersSub: 'Artigiani indipendenti da tutta Berlino, ognuno con il proprio mestiere.',
+    uniqueTitle: 'Unici', uniqueHand: 'a Berlino', uniqueSub: 'Workshop che non trovi da nessun’altra parte.',
     seeAll: 'Vedi tutto', faceMore: (name, n) => (n > 0 ? `${name} e altri ${n}` : name),
   },
   nl: {
@@ -112,6 +119,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'Op het programma', weekHand: 'deze week', weekSub: 'Echte data van onze hosts, één per maker.',
     catsTitle: 'Waar heb je', catsHand: 'zin in?',
     makersTitle: 'De handen', makersHand: 'erachter', makersSub: 'Onafhankelijke makers uit heel Berlijn, ieder met een eigen ambacht.',
+    uniqueTitle: 'Uniek', uniqueHand: 'in Berlijn', uniqueSub: 'Workshops die je nergens anders vindt.',
     seeAll: 'Alles bekijken', faceMore: (name, n) => (n > 0 ? `${name} & ${n} anderen` : name),
   },
   pl: {
@@ -126,6 +134,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'Co się dzieje', weekHand: 'w tym tygodniu', weekSub: 'Prawdziwe terminy naszych prowadzących, jeden na twórcę.',
     catsTitle: 'Na co masz', catsHand: 'ochotę?',
     makersTitle: 'Ręce', makersHand: 'za tym', makersSub: 'Niezależni twórcy z całego Berlina, każdy z własnym rzemiosłem.',
+    uniqueTitle: 'Wyjątkowe', uniqueHand: 'w Berlinie', uniqueSub: 'Warsztaty, których nie znajdziesz nigdzie indziej.',
     seeAll: 'Zobacz wszystko', faceMore: (name, n) => (n > 0 ? `${name} i ${n} innych` : name),
   },
   tr: {
@@ -140,6 +149,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
     weekTitle: 'Bu hafta', weekHand: 'neler var', weekSub: 'Eğitmenlerimizden gerçek tarihler, her üreticiden bir tane.',
     catsTitle: 'Canın ne', catsHand: 'istiyor?',
     makersTitle: 'İşin arkasındaki', makersHand: 'eller', makersSub: 'Berlin’in her yerinden bağımsız üreticiler, her birinin kendi zanaatı var.',
+    uniqueTitle: 'Eşsiz', uniqueHand: 'Berlin’de', uniqueSub: 'Başka hiçbir yerde bulamayacağın atölyeler.',
     seeAll: 'Tümünü gör', faceMore: (name, n) => (n > 0 ? `${name} ve ${n} kişi daha` : name),
   },
 };
