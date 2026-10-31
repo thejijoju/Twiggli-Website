@@ -1,4 +1,5 @@
 ---
+import { contactEmail } from '../../data/site.ts';
 import LegalPage from '../../layouts/LegalPage.astro';
 import { withBase } from '../../lib/url.ts';
 
@@ -40,11 +41,11 @@ const toc = [
     Verantwortlicher für die hier beschriebenen personenbezogenen Daten ist
     Twiggli UG (haftungsbeschränkt),
     Rodenkirchener Str. 147, 50997 Köln, Deutschland —
-    hello@twiggli.com. Die vollständigen Angaben findest du in
+    {contactEmail}. Die vollständigen Angaben findest du in
     unserem <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
-    Kontakt für Datenschutzfragen: hello@twiggli.com. Wir sind nicht verpflichtet, eine:n
+    Kontakt für Datenschutzfragen: {contactEmail}. Wir sind nicht verpflichtet, eine:n
     Datenschutzbeauftragte:n zu benennen; Fragen gehen direkt an die Gründerin.
   </p>
 
@@ -171,7 +172,7 @@ const toc = [
   <p>
     Du kannst Twiggli den Zugriff jederzeit unter
     <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>
-    entziehen und uns unter hello@twiggli.com bitten, dein Konto zu löschen.
+    entziehen und uns unter {contactEmail} bitten, dein Konto zu löschen.
   </p>
 
   <h2 id="hosts">6. Zwischen Gastgebern und Teilnehmenden</h2>
@@ -243,7 +244,7 @@ const toc = [
     widerrufen.
   </p>
   <p>
-    Schreib an hello@twiggli.com und wir antworten innerhalb eines
+    Schreib an {contactEmail} und wir antworten innerhalb eines
     Monats. Du kannst dich auch bei einer Aufsichtsbehörde beschweren. Für uns zuständig ist die
     Berliner Beauftragte für Datenschutz und Informationsfreiheit, du kannst dich aber auch an
     die Behörde an deinem Wohn- oder Arbeitsort wenden.

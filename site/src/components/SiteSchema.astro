@@ -1,4 +1,5 @@
 ---
+import { contactEmail } from '../data/site.ts';
 /** Who the site is, for the home page: an Organization with its logo and
  *  its social profiles, and the WebSite it publishes. What a brand result
  *  is built from. */
@@ -21,7 +22,7 @@ const schema = {
       url: `${SITE}/`,
       logo: absolute(brand.logo),
       legalName: 'Twiggli UG (haftungsbeschränkt)',
-      email: 'hello@twiggli.com',
+      email: contactEmail,
       founder: { '@type': 'Person', name: 'Jirel Kuenen' },
       address: { '@type': 'PostalAddress', streetAddress: 'Rodenkirchener Str. 147', postalCode: '50997', addressLocality: 'Köln', addressCountry: 'DE' },
       sameAs: socialLinks.map((s) => s.href),

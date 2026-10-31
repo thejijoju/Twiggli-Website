@@ -72,7 +72,17 @@ jobs:
           curl -fsSL "$base/__/auth/experiments.js" -o site/public/__/auth/experiments.js || echo 'no experiments.js (optional)'
           curl -fsSL "$base/__/firebase/init.json" -o site/public/__/firebase/init.json || echo 'no init.json (optional)'
           ls -la site/public/__/auth site/public/__/firebase
+      # The contact address shown on the site (Impressum, forms) is not in
+      # the repo: it comes from the encrypted CONTACT_EMAIL secret. Without
+      # it the build stops rather than ship pages with no address.
+      - name: Check the contact address secret
+        env:
+          PUBLIC_CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+        run: |
+          if [ -z "$PUBLIC_CONTACT_EMAIL" ]; then echo '::error::Repository secret CONTACT_EMAIL is missing (Settings → Secrets and variables → Actions)'; exit 1; fi
       - uses: withastro/action@v3
+        env:
+          PUBLIC_CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
         with:
           path: site
 

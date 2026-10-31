@@ -47,6 +47,20 @@ jobs:
         if: steps.project.outputs.id != ''
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      # The functions' addresses are not in the repo: functions/.env is
+      # written here from encrypted secrets and never committed.
+      - name: Write functions/.env from secrets
+        if: steps.project.outputs.id != ''
+        env:
+          INBOX_EMAIL: ${{ secrets.INBOX_EMAIL }}
+          SENDER_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+          ADMIN_EMAILS: ${{ secrets.ADMIN_EMAILS }}
+          VOUCHER_SEEDS: ${{ secrets.VOUCHER_SEEDS }}
+        run: |
+          if [ -z "$INBOX_EMAIL" ] || [ -z "$SENDER_EMAIL" ] || [ -z "$ADMIN_EMAILS" ]; then
+            echo '::error::Secrets INBOX_EMAIL, CONTACT_EMAIL and ADMIN_EMAILS are all needed (Settings → Secrets and variables → Actions)'; exit 1
+          fi
+          printf 'INBOX_EMAIL=%s\nSENDER_EMAIL=%s\nADMIN_EMAILS=%s\nVOUCHER_SEEDS="%s"\n' "$INBOX_EMAIL" "$SENDER_EMAIL" "$ADMIN_EMAILS" "$(printf '%s' "$VOUCHER_SEEDS" | tr '\n' ';')" > functions/.env
       - name: Deploy
         if: steps.project.outputs.id != ''
         run: npx --yes firebase-tools@15.34.2 deploy --only functions:website --project "${{ steps.project.outputs.id }}" --non-interactive --force

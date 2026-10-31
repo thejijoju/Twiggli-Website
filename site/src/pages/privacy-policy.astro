@@ -1,4 +1,5 @@
 ---
+import { contactEmail } from '../data/site.ts';
 import LegalPage from '../layouts/LegalPage.astro';
 import { withBase } from '../lib/url.ts';
 
@@ -43,11 +44,11 @@ const toc = [
     The controller for the personal data described here is
     Twiggli UG (haftungsbeschränkt),
     Rodenkirchener Str. 147, 50997 Köln, Germany —
-    hello@twiggli.com. Company details are in our
+    {contactEmail}. Company details are in our
     <a href={withBase('/impressum/')}>Impressum</a>.
   </p>
   <p>
-    Data protection contact: hello@twiggli.com. We are not required to appoint
+    Data protection contact: {contactEmail}. We are not required to appoint
     a data protection officer; questions go straight to the founder.
   </p>
 
@@ -175,7 +176,7 @@ const toc = [
   <p>
     You can remove Twiggli's access at any time at
     <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>,
-    and ask us to delete your account by writing to hello@twiggli.com.
+    and ask us to delete your account by writing to {contactEmail}.
   </p>
 
   <h2 id="hosts">6. Between hosts and participants</h2>
@@ -248,7 +249,7 @@ const toc = [
     effect from that point onwards.
   </p>
   <p>
-    Write to hello@twiggli.com and we will respond
+    Write to {contactEmail} and we will respond
     within one month. You can also complain to a supervisory authority. Ours is
     the Berliner Beauftragte für Datenschutz und Informationsfreiheit, though you
     may complain to the authority where you live or work instead.

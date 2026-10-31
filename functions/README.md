@@ -34,7 +34,7 @@ Replaces Supabase. Everything runs in the Firebase project the Twiggli app alrea
 
 In Firestore, add one document per host email to the `hostMembers` collection:
 
-- **Document id:** the email in lower case, e.g. `whittle@posteo.de`.
+- **Document id:** the email in lower case, e.g. `host@example.com`.
 - **Field:** `slugs` (array), e.g. `["nicole", "whittle"]`.
 
 ## Switching vouchers over
