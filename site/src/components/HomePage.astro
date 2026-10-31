@@ -43,7 +43,7 @@ const d = homeDiscoverCopy[lang];
 const find = homeFindCopy[lang];
 const split = homeSplits[lang];
 const f = filterCopy[lang];
-const { rows, calendarHref, chips, counts, activityFace, makers, listed, cardMedia } = getHomeData(lang);
+const { rows, calendarHref, chips, counts, activityFace, makers, listed, cardMedia, unique, hostMedia } = getHomeData(lang);
 
 /* Polaroids beside the headline on a wide screen, captioned by hand; a
    small strip of them above it on anything narrower. */
@@ -81,7 +81,49 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
     </div>
   </section>
 
+  {/* One of a kind (homeData UNIQUE): hosts rather than dates, in the
+      same tiles, right after the first row of dates. */}
   {rows.map((row, ri) => (
+    <Fragment>
+    {ri === 1 && unique.length >= 3 && (
+      <section class="hd-row hd-unique" id="unique">
+        <div class="container">
+          <div class="hd-row-head">
+            <div>
+              <h2 class="hd-h2">{d.uniqueTitle} <em>{d.uniqueHand}</em></h2>
+              <p class="hd-sub">{d.uniqueSub}</p>
+            </div>
+          </div>
+          <ul class="hd-track">
+            {unique.map((h) => (
+              <li>
+                <a class="maker hd-tile" href={hostHref(lang, h)}>
+                  <span class="hd-frame">
+                  <span class="maker-media" style={lqipStyle(hostMedia(h).poster ?? hostMedia(h).still)}>
+                    {hostMedia(h).video ? (
+                      <>
+                        <img class="maker-still" src={hostMedia(h).poster} alt="" loading="lazy" decoding="async" />
+                        <video class="maker-video" src={hostMedia(h).video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                      </>
+                    ) : (hostMedia(h).stills?.length ?? 0) > 1 ? (
+                      <PhotoFade photos={hostMedia(h).stills!} alt="" />
+                    ) : hostMedia(h).still ? (
+                      <img src={hostMedia(h).still} alt="" loading="lazy" decoding="async" />
+                    ) : (
+                      <HostMonogram name={h.name} />
+                    )}
+                  </span>
+                  <Voucher kind="badge" host={h} lang={lang} />
+                  </span>
+                  <span class="maker-line"><span class="maker-title">{h.specialty}</span></span>
+                  <span class="maker-sub">{h.firstName ?? h.name}{h.area ? ` · ${h.area}` : ''}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
     <section class="hd-row" id={row.id}>
       <div class="container">
         <div class="hd-row-head">
@@ -126,7 +168,47 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
         </ul>
       </div>
     </section>
+    </Fragment>
   ))}
+  {rows.length < 2 && unique.length >= 3 && (
+      <section class="hd-row hd-unique" id="unique">
+        <div class="container">
+          <div class="hd-row-head">
+            <div>
+              <h2 class="hd-h2">{d.uniqueTitle} <em>{d.uniqueHand}</em></h2>
+              <p class="hd-sub">{d.uniqueSub}</p>
+            </div>
+          </div>
+          <ul class="hd-track">
+            {unique.map((h) => (
+              <li>
+                <a class="maker hd-tile" href={hostHref(lang, h)}>
+                  <span class="hd-frame">
+                  <span class="maker-media" style={lqipStyle(hostMedia(h).poster ?? hostMedia(h).still)}>
+                    {hostMedia(h).video ? (
+                      <>
+                        <img class="maker-still" src={hostMedia(h).poster} alt="" loading="lazy" decoding="async" />
+                        <video class="maker-video" src={hostMedia(h).video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                      </>
+                    ) : (hostMedia(h).stills?.length ?? 0) > 1 ? (
+                      <PhotoFade photos={hostMedia(h).stills!} alt="" />
+                    ) : hostMedia(h).still ? (
+                      <img src={hostMedia(h).still} alt="" loading="lazy" decoding="async" />
+                    ) : (
+                      <HostMonogram name={h.name} />
+                    )}
+                  </span>
+                  <Voucher kind="badge" host={h} lang={lang} />
+                  </span>
+                  <span class="maker-line"><span class="maker-title">{h.specialty}</span></span>
+                  <span class="maker-sub">{h.firstName ?? h.name}{h.area ? ` · ${h.area}` : ''}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+  )}
 
   {/* Gift vouchers, with Christmas coming (VoucherPage.astro). */}
   {VOUCHERS_ON && (  <div class="container">
