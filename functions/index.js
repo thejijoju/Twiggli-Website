@@ -27,6 +27,7 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import nodemailer from 'nodemailer';
+import { newVoucherCode, voucherMail, voucherPdf } from './voucher.js';
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 // An app password of the Gmail account the requests go to (Google account →
@@ -332,6 +333,11 @@ const confirmVoucherBuyer = async (piId) => {
       pdfSent: false, buyerConfirmedAt: FieldValue.serverTimestamp(),
     });
   } catch { return; } // already confirmed
+  // The voucher itself: its code, its PDF and the email that carries it.
+  // Sent to the buyer, that email is their order confirmation too.
+  let sentTo = '';
+  try { sentTo = await issueVoucher(pi, m, to); } catch (err) { console.error('voucher issue failed', pi.id, err?.message); }
+  if (sentTo === 'buyer') return;
   const de = String(m.lang ?? '').startsWith('de');
   const name = String(m.buyer_name ?? '').trim().split(/\s+/)[0];
   const general = !m.host_slug;
@@ -412,6 +418,95 @@ const lookupVoucher = async (code, hostSlug) => {
   if (v.hostSlug && hostSlug && v.hostSlug !== hostSlug) return { error: 'host', host: v.hostSlug };
   return { ok: true, hash, balance: v.balance, validUntil: v.validUntil ?? '', hostSlug: v.hostSlug ?? '', ref: v.ref ?? '' };
 };
+
+const COMPANY = 'Twiggli UG (haftungsbeschränkt) · Rodenkirchener Str. 147 · 50997 Köln';
+const isoDay = (d) => d.toISOString().slice(0, 10);
+
+/** The voucher email, with its PDF and our icon, from our public address. */
+const sendVoucherMail = async (to, parts, pdf, code) => {
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to,
+    subject: parts.subject, text: parts.text, html: parts.html,
+    attachments: [
+      { filename: 'twiggli.png', content: parts.icon, cid: 'twiggli-icon' },
+      { filename: `Twiggli-${code}.pdf`, content: pdf, contentType: 'application/pdf' },
+    ],
+  });
+};
+
+/** A paid voucher: a new code (kept only as its HMAC), its PDF, and the
+ *  email to the buyer, or straight to the person it is for. Returns who
+ *  got it: 'buyer' or 'recipient'. */
+const issueVoucher = async (pi, m, buyer) => {
+  const amount = pi.amount / 100;
+  const today = new Date();
+  const until = new Date(today); until.setFullYear(until.getFullYear() + 3);
+  const validUntil = isoDay(until);
+  let code = '';
+  for (let i = 0; i < 5 && !code; i++) {
+    const c = newVoucherCode();
+    try {
+      await getFirestore().doc(`voucherCodes/${await codeHash(cleanCode(c))}`).create({
+        amount, balance: amount, validUntil, ref: m.ref ?? '', hostSlug: m.host_slug ?? '',
+        last4: cleanCode(c).slice(-4), paymentIntent: pi.id, createdBy: 'purchase', createdAt: FieldValue.serverTimestamp(), redemptions: [],
+      });
+      code = c;
+    } catch { /* taken: draw again */ }
+  }
+  if (!code) throw new Error('no free code');
+  const de = String(m.lang ?? '').startsWith('de');
+  // How it was paid, as the buyer will recognise it.
+  let payment = de ? 'Online bezahlt (Stripe)' : 'Paid online (Stripe)';
+  try {
+    if (pi.payment_method) {
+      const r = await stripe(STRIPE_SECRET_KEY.value(), `payment_methods/${pi.payment_method}`);
+      const pm = await r.json();
+      if (r.ok && pm.card) payment = `${String(pm.card.brand).replace(/^\w/, (x) => x.toUpperCase())} •••• ${pm.card.last4}${pm.card.wallet?.type ? ` (${pm.card.wallet.type.replace('_', ' ')})` : ''}`;
+      else if (r.ok && pm.type) payment = pm.type.replace(/_/g, ' ').replace(/^\w/, (x) => x.toUpperCase());
+    }
+  } catch { /* keep the plain label */ }
+  const host = m.host_slug ? m.host : '';
+  const pdf = await voucherPdf({
+    lang: m.lang, amount, code, validUntil, date: isoDay(today), order: String(m.ref ?? '').toUpperCase(),
+    host, workshop: m.workshop, recipient: m.recipient, message: m.message, company: COMPANY,
+  });
+  const toThem = m.deliver_to === 'recipient' && isEmail(m.recipient_email);
+  const common = { lang: m.lang, buyerName: m.buyer_name, amount, code, validUntil, order: String(m.ref ?? '').toUpperCase(), date: isoDay(today), payment, host, site: SITE, company: COMPANY };
+  if (toThem) {
+    await sendVoucherMail(m.recipient_email, voucherMail({ ...common, gift: true, firstName: String(m.recipient ?? '').trim().split(/\s+/)[0], message: m.message }), pdf, code);
+  } else {
+    await sendVoucherMail(buyer, voucherMail({ ...common, gift: false, firstName: String(m.buyer_name ?? '').trim().split(/\s+/)[0] }), pdf, code);
+  }
+  await getFirestore().doc(`vouchers/${pi.id}`).update({ pdfSent: true, codeLast4: cleanCode(code).slice(-4), sentTo: toThem ? m.recipient_email : buyer });
+  return toThem ? 'recipient' : 'buyer';
+};
+
+/** A test voucher email to Jirel's own inbox only, to see what buyers
+ *  get: ?lang=de|en and &kind=buyer|gift. The code in it is not stored,
+ *  so it can't be redeemed. At most one a minute. */
+export const voucherPreview = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 1 }, async (req, res) => {
+  const page = (msg) => res.status(200).set('Content-Type', 'text/html; charset=utf-8')
+    .send(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><body style="font-family:system-ui;padding:40px;max-width:520px;margin:auto"><h2>Twiggli</h2><p>${msg}</p></body>`);
+  const ref = getFirestore().doc('_config/voucherPreview');
+  const last = (await ref.get()).data()?.at ?? 0;
+  if (Date.now() - last < 60000) return page('Bitte eine Minute warten, dann noch einmal.');
+  await ref.set({ at: Date.now() });
+  const lang = req.query.lang === 'en' ? 'en' : 'de';
+  const gift = req.query.kind === 'gift';
+  const today = new Date(); const until = new Date(today); until.setFullYear(until.getFullYear() + 3);
+  const code = 'TW-TEST-0000';
+  const v = {
+    lang, amount: 50, code, validUntil: isoDay(until), date: isoDay(today), order: 'VC-TEST', company: COMPANY,
+    recipient: gift ? 'Lena' : '', message: gift ? (lang === 'de' ? 'Alles Liebe zum Geburtstag! Such dir was Schönes aus.' : 'Happy birthday! Pick something lovely.') : '',
+  };
+  const pdf = await voucherPdf({ ...v, test: true });
+  const parts = voucherMail({
+    ...v, gift, test: true, firstName: gift ? 'Lena' : 'Jirel', buyerName: 'Jirel', payment: 'Visa •••• 4242', site: SITE,
+  });
+  await sendVoucherMail(INBOX, parts, pdf, code);
+  return page(lang === 'de' ? `Gesendet: die ${gift ? 'Geschenk' : 'Käufer'}-Variante ist unterwegs in dein Postfach.` : `Sent: the ${gift ? 'gift' : 'buyer'} version is on its way to your inbox.`);
+});
 
 /** An admin enters a voucher sold by hand (its PDF made outside the site). */
 export const voucherCreate = onRequest({ region: 'europe-west3', maxInstances: 2, cors: false }, async (req, res) => {
