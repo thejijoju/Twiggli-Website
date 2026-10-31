@@ -534,6 +534,8 @@ export const hostClaim = onRequest(
     if (!allow(req, res)) return;
     const email = await caller(req);
     if (!email) return res.status(401).json({ error: 'Not signed in' });
+    // The dashboard asks this instead of carrying the admin list in the page.
+    if (req.body?.whoami) return res.status(200).json({ admin: ADMINS.includes(email) });
     if (req.body?.auto) {
       let slugs = [];
       try { slugs = await knownSlugs(email); } catch (err) { console.error('host sheet', err?.message); }
