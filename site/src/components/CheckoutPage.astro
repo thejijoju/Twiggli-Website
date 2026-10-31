@@ -185,6 +185,19 @@ const config = {
                   <span>{t.recipient}</span>
                   <input name="recipient" type="text" autocomplete="off" placeholder={t.recipientPh} maxlength="200" />
                 </label>
+                {/* Who gets the PDF: the buyer, or the person it is for. */}
+                <fieldset class="co-field co-deliver">
+                  <legend>{t.deliver}</legend>
+                  <div class="co-deliver-opts">
+                    <label><input type="radio" name="deliver" value="me" checked /><span>{t.toMe}</span></label>
+                    <label><input type="radio" name="deliver" value="them" /><span>{t.toThem}</span></label>
+                  </div>
+                </fieldset>
+                <label class="co-field" data-co-their-email hidden>
+                  <span>{t.recipientEmail}</span>
+                  <input name="recipientEmail" type="email" autocomplete="off" placeholder={t.recipientEmailPh} maxlength="200" />
+                  <small class="co-field-error" data-co-err="recipientEmail" hidden>{t.needRecipientEmail}</small>
+                </label>
                 <label class="co-field">
                   <span>{t.message}</span>
                   <textarea name="message" rows="2" placeholder={t.messagePh} maxlength="480"></textarea>
@@ -235,6 +248,7 @@ const config = {
   type Order = {
     ref: string; amount: number; people: number; slug: string;
     name: string; email: string; recipient: string; message: string;
+    recipientEmail?: string; deliver?: string;
     pi?: string; paid?: boolean; noted?: boolean;
   };
   type StripeLike = any; // js.stripe.com/v3 — no types bundled
@@ -253,6 +267,15 @@ const config = {
     const emailIn = form.querySelector<HTMLInputElement>('input[name="email"]')!;
     const recipientIn = form.querySelector<HTMLInputElement>('input[name="recipient"]')!;
     const messageIn = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]')!;
+    const theirEmailIn = form.querySelector<HTMLInputElement>('input[name="recipientEmail"]')!;
+    const deliverTo = () => form.querySelector<HTMLInputElement>('input[name="deliver"]:checked')?.value ?? 'me';
+    const showTheirEmail = () => {
+      const them = deliverTo() === 'them';
+      $('[data-co-their-email]').hidden = !them;
+      theirEmailIn.required = them;
+      if (!them) $('[data-co-err="recipientEmail"]').hidden = true;
+    };
+    form.querySelectorAll<HTMLInputElement>('input[name="deliver"]').forEach((r) => r.addEventListener('change', () => { showTheirEmail(); if (deliverTo() === 'them') theirEmailIn.focus(); }));
     const wishIn = root.querySelector<HTMLInputElement>('input[name="wish"]')!;
     const picks = Array.from(root.querySelectorAll<HTMLInputElement>('input[name="pick"]'));
     const side = $('[data-co-side]');
@@ -411,6 +434,8 @@ const config = {
         Amount: euro(o.amount),
         Name: o.name,
         Recipient: o.recipient,
+        'Recipient email': o.recipientEmail ?? '',
+        'Send PDF to': o.deliver === 'them' ? `the recipient (${o.recipientEmail ?? ''})` : 'the buyer',
         'Personal message': o.message,
         Valid: `${cfg.years} years`,
         'Payment ref': o.ref,
@@ -452,7 +477,12 @@ const config = {
       } else if (before) {
         nameIn.value = before.name; emailIn.value = before.email;
         recipientIn.value = before.recipient; messageIn.value = before.message;
-        if (before.recipient || before.message) $<HTMLDetailsElement>('[data-co-more]').open = true;
+        if (before.deliver === 'them') {
+          form.querySelector<HTMLInputElement>('input[name="deliver"][value="them"]')!.checked = true;
+          theirEmailIn.value = before.recipientEmail ?? '';
+          showTheirEmail();
+        }
+        if (before.recipient || before.message || before.deliver === 'them') $<HTMLDetailsElement>('[data-co-more]').open = true;
         showError(t.failed);
       }
     }
@@ -524,12 +554,16 @@ const config = {
         if (!okName) { nameIn.focus(); return false; }
         if (!okEmail) { emailIn.focus(); return false; }
       }
+      const okTheirs = deliverTo() !== 'them' || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(theirEmailIn.value.trim());
+      fieldError('recipientEmail', !okTheirs);
+      if (!okTheirs) { $<HTMLDetailsElement>('[data-co-more]').open = true; theirEmailIn.focus(); return false; }
       if (looksLikeBot(new FormData(form))) return false;
       setBusy(true);
       try {
         const { error: submitError } = await elements.submit();
         if (submitError) { setBusy(false); if (submitError.type !== 'validation_error') showError(friendly(submitError)); return false; }
-        const details = { name, email, recipient: recipientIn.value.trim(), message: messageIn.value.trim() };
+        const them = deliverTo() === 'them';
+        const details = { name, email, recipient: recipientIn.value.trim(), message: messageIn.value.trim(), deliver: them ? 'them' : 'me', recipientEmail: them ? theirEmailIn.value.trim() : '' };
         if (intent && intent.amount === a) {
           // A retry: same intent, with what may have changed meanwhile.
           await post({ update: true, paymentIntentId: intent.id, clientSecret: intent.clientSecret, ...details }).catch(() => {});

@@ -13,6 +13,7 @@ export type CheckoutCopy = {
   places: string; perPerson: string; less: string; more: string;
   details: string; name: string; email: string;
   forWhom: string; recipient: string; recipientPh: string; message: string; messagePh: string;
+  deliver: string; toMe: string; toThem: string; recipientEmail: string; recipientEmailPh: string; needRecipientEmail: string;
   payment: string; orCard: string; payNow: string; paying: string; secure: string;
   together: string; summary: string; valid: string; total: string;
   generalName: string; redeem: string;
@@ -30,6 +31,7 @@ const en: CheckoutCopy = {
   places: 'Places', perPerson: 'per person', less: 'One place fewer', more: 'One place more',
   details: 'Your info', name: 'Name', email: 'Email',
   forWhom: 'Who is the voucher for?', recipient: 'For whom?', recipientPh: 'e.g. Lena', message: 'Message', messagePh: 'A few words for the voucher',
+  deliver: 'Where should we send it?', toMe: 'To me', toThem: 'Straight to them', recipientEmail: 'Their email', recipientEmailPh: 'lena@example.com', needRecipientEmail: 'Please enter the recipient’s email address.',
   payment: 'Payment', orCard: 'or by card', payNow: 'Pay now · {amount}', paying: 'Processing…',
   secure: 'Secure payment with Stripe',
   together: 'For 2 people: one voucher, redeemed together.', summary: 'Your order', valid: 'Valid for 3 years', total: 'Total',
@@ -51,6 +53,7 @@ const de: CheckoutCopy = {
   places: 'Plätze', perPerson: 'pro Person', less: 'Ein Platz weniger', more: 'Ein Platz mehr',
   details: 'Deine Angaben', name: 'Name', email: 'E-Mail',
   forWhom: 'Für wen ist der Gutschein?', recipient: 'Für wen?', recipientPh: 'z. B. Lena', message: 'Nachricht', messagePh: 'Ein paar Worte für den Gutschein',
+  deliver: 'Wohin sollen wir ihn schicken?', toMe: 'An mich', toThem: 'An die beschenkte Person', recipientEmail: 'E-Mail der beschenkten Person', recipientEmailPh: 'lena@beispiel.de', needRecipientEmail: 'Bitte gib die E-Mail-Adresse der beschenkten Person ein.',
   payment: 'Zahlung', orCard: 'oder mit Karte', payNow: 'Jetzt bezahlen · {amount}', paying: 'Zahlung läuft…',
   secure: 'Sicher bezahlt mit Stripe',
   together: 'Für 2 Personen: ein Gutschein, gemeinsam einzulösen.', summary: 'Deine Bestellung', valid: '3 Jahre gültig', total: 'Gesamt',

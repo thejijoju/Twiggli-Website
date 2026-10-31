@@ -174,6 +174,9 @@ export const voucherPayment = onRequest(OPTS, async (req, res) => {
   const email = text(body.email, 200);
   const recipient = text(body.recipient, 200);
   const message = text(body.message, 480);
+  // Who gets the PDF: the buyer, or straight to the person it is for.
+  const deliver = body.deliver === 'them' ? 'them' : 'me';
+  const recipientEmail = deliver === 'them' && isEmail(text(body.recipientEmail, 200)) ? text(body.recipientEmail, 200) : '';
 
   // ── update: refresh the buyer's details on an intent made earlier ──
   if (body.update) {
@@ -191,6 +194,8 @@ export const voucherPayment = onRequest(OPTS, async (req, res) => {
     const p = new URLSearchParams();
     p.set('metadata[recipient]', recipient);
     p.set('metadata[message]', message);
+    p.set('metadata[deliver_to]', recipientEmail ? 'recipient' : 'buyer');
+    p.set('metadata[recipient_email]', recipientEmail);
     p.set('metadata[buyer_name]', name);
     if (isEmail(email)) p.set('receipt_email', email);
     const r = await stripe(key, `payment_intents/${id}`, p);
@@ -221,6 +226,8 @@ export const voucherPayment = onRequest(OPTS, async (req, res) => {
     people: host ? String(people) : '',
     amount_eur: String(amount),
     ref, lang, recipient, message,
+    deliver_to: recipientEmail ? 'recipient' : 'buyer',
+    recipient_email: recipientEmail,
     buyer_name: name,
   };
   for (const [k, v] of Object.entries(meta)) p.set(`metadata[${k}]`, v);
@@ -298,8 +305,67 @@ const confirmGuest = async (to, f) => {
 /** HTML-escaped, for the email table. */
 const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
+/** "You just bought a voucher": one email to the buyer, from the payment
+ *  as Stripe holds it (never from what the page sent), and on purpose
+ *  WITHOUT the code: the code travels only in the voucher PDF, to whoever
+ *  is to receive it, so it can't be used twice (Jirel, 31.10.26). Sent
+ *  once per payment (vouchers/{paymentIntent}). */
+const confirmVoucherBuyer = async (piId) => {
+  if (!/^pi_[A-Za-z0-9]+$/.test(piId)) return;
+  const key = STRIPE_SECRET_KEY.value();
+  if (!key) return;
+  const got = await stripe(key, `payment_intents/${piId}`);
+  const pi = await got.json();
+  if (!got.ok || !['succeeded', 'processing'].includes(pi.status)) return;
+  const to = pi.receipt_email;
+  if (!isEmail(to)) return;
+  const m = pi.metadata ?? {};
+  try {
+    await getFirestore().doc(`vouchers/${pi.id}`).create({
+      ref: m.ref ?? '', amount: pi.amount / 100, buyer: to, buyerName: m.buyer_name ?? '',
+      recipient: m.recipient ?? '', recipientEmail: m.recipient_email ?? '', deliverTo: m.deliver_to ?? 'buyer',
+      host: m.host ?? '', hostSlug: m.host_slug ?? '', message: m.message ?? '', lang: m.lang ?? '',
+      pdfSent: false, buyerConfirmedAt: FieldValue.serverTimestamp(),
+    });
+  } catch { return; } // already confirmed
+  const de = String(m.lang ?? '').startsWith('de');
+  const name = String(m.buyer_name ?? '').trim().split(/\s+/)[0];
+  const general = !m.host_slug;
+  const amount = `${pi.amount / 100} €`;
+  const forWhom = m.recipient ? String(m.recipient) : '';
+  const toThem = m.deliver_to === 'recipient' && isEmail(m.recipient_email);
+  const rows = [
+    [de ? 'Gutschein' : 'Voucher', general ? (de ? 'Twiggli-Gutschein, bei allen teilnehmenden Hosts' : 'Twiggli voucher, at all participating hosts') : `${m.host}${m.workshop ? ` · ${m.workshop}` : ''}`],
+    [de ? 'Betrag' : 'Amount', amount],
+    ...(forWhom ? [[de ? 'Für' : 'For', forWhom]] : []),
+    [de ? 'Gültig' : 'Valid', de ? '3 Jahre' : '3 years'],
+    [de ? 'Wohin' : 'Sent to', toThem ? m.recipient_email : to],
+  ];
+  const next = toThem
+    ? (de ? `Wir schicken den Gutschein als PDF direkt an ${esc(m.recipient_email)}${m.message ? ', mit deiner Nachricht' : ''}. Den Gutscheincode findet nur die beschenkte Person darin, damit er nicht zweimal eingelöst werden kann.`
+          : `We'll send the voucher as a PDF straight to ${esc(m.recipient_email)}${m.message ? ', with your message' : ''}. Only the person receiving it will find the voucher code inside, so it can't be used twice.`)
+    : (de ? 'Deinen Gutschein mit dem Code bekommst du in Kürze in einer eigenen E-Mail als PDF, zum Ausdrucken oder Weiterschicken.'
+          : 'Your voucher with its code follows shortly in a separate email as a PDF, ready to print or pass on.');
+  const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
+  const intro = de
+    ? `Hallo${name ? ` ${esc(name)}` : ''},<br><br>vielen Dank für deinen Gutscheinkauf bei <b>Twiggli</b>! Deine Zahlung ist angekommen 🎁`
+    : `Hi${name ? ` ${esc(name)}` : ''},<br><br>thank you for buying a <b>Twiggli</b> voucher! Your payment has arrived 🎁`;
+  const outro = de
+    ? `${next}<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>`
+    : `${next}<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`;
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: 'hello@twiggli.com' },
+    replyTo: 'hello@twiggli.com',
+    to,
+    subject: de ? `Danke für deinen Twiggli-Gutschein (${amount}) 🎁` : `Thank you for your Twiggli voucher (${amount}) 🎁`,
+    text: `${de ? 'Danke für deinen Gutscheinkauf bei Twiggli.' : 'Thank you for buying a Twiggli voucher.'}\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${next.replace(/<[^>]+>/g, '')}\n\n💛 Jirel, Twiggli`,
+    html: `<div style="font-family:Tahoma,sans-serif;font-size:14px;line-height:1.5">${intro}<table style="margin:14px 0;font-size:14px">${table}</table>${outro}</div>`,
+  });
+};
+
 export const formRequest = onRequest(
-  { region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false },
+  { region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD, STRIPE_SECRET_KEY], maxInstances: 10, cors: false },
   async (req, res) => {
     if (!allow(req, res)) return;
     const body = req.body && typeof req.body === 'object' ? req.body : {};
@@ -338,6 +404,10 @@ export const formRequest = onRequest(
     // don't send it twice. Only for requests, not for notes like vouchers.
     if (isEmail(email) && /request/i.test(String(fields.Type ?? '')) && !/voucher/i.test(String(fields.Type ?? ''))) {
       try { await confirmGuest(email, fields); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
+    }
+    // A paid voucher: the buyer's confirmation, checked against Stripe.
+    if (/voucher paid/i.test(String(fields.Type ?? ''))) {
+      try { await confirmVoucherBuyer(String(fields['Stripe PaymentIntent'] ?? '')); } catch (err) { console.error('voucher confirmation failed', doc.id, err?.message); }
     }
 
     try {

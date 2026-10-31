@@ -160,6 +160,14 @@
 .co-more > summary:focus-visible { outline: 2px solid var(--co-purple); outline-offset: 2px; border-radius: 4px; }
 .co-more[open] > summary { margin-bottom: 10px; }
 .co-more-body { display: grid; gap: 10px; }
+.co-deliver { border: 0; margin: 0; padding: 0; }
+.co-deliver legend { padding: 0; margin-bottom: 5px; }
+.co-deliver-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.co-deliver-opts label { position: relative; cursor: pointer; }
+.co-deliver-opts input { position: absolute; opacity: 0; pointer-events: none; }
+.co-deliver-opts span { display: block; padding: 11px 12px; border: 1.5px solid var(--co-line); border-radius: 12px; background: #fff; font: 500 14px/1.3 var(--font-body); color: var(--co-ink); text-align: center; transition: border-color 0.15s ease, background 0.15s ease; }
+.co-deliver-opts input:checked + span { border-color: var(--co-purple); background: rgba(106, 62, 236, 0.07); color: var(--co-purple-deep); }
+.co-deliver-opts input:focus-visible + span { box-shadow: 0 0 0 3px rgba(106, 62, 236, 0.18); }
 
 /* Stripe's fields mount here; until they do, a quiet skeleton. */
 .co-express:empty { display: none; }
