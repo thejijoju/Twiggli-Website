@@ -95,6 +95,17 @@ export const spaces: Space[] = [
       pl: 'Spokojna pracownia, w której Celina uczy swoich dziewięciu rzemiosł — oprawy książek, malowania na jedwabiu, lutowania szkła, mozaiki, betonu, stempli. Długie stoły, narzędzia pod ręką i wszystko, czego wymaga popołudnie z klejem i farbą, przy cichej ulicy w Gesundbrunnen. Przy stołach zmieści się dwadzieścia osób.',
       tr: 'Celina’nın dokuz zanaatını öğrettiği sakin atölye odası — ciltleme, ipek boyama, cam lehimleme, mozaik, beton, mühür. Uzun masalar, elinin altında aletler ve dağınık bir öğleden sonranın gerektirdiği her şey, Gesundbrunnen’de sessiz bir sokakta. Masada yirmi kişiye kadar yer var.',
     },
+    // Ground floor, wheelchair accessible (Jirel, 2 Nov 2026).
+    badge: {
+      en: 'Wheelchair accessible',
+      de: 'Rollstuhlgerecht',
+      fr: 'Accessible en fauteuil roulant',
+      es: 'Accesible en silla de ruedas',
+      it: 'Accessibile in sedia a rotelle',
+      nl: 'Rolstoeltoegankelijk',
+      pl: 'Dostępne dla wózków',
+      tr: 'Tekerlekli sandalyeye uygun',
+    },
     terms: {
       en: 'A written usage agreement can be drawn up for regular or longer-term use, setting out dates, access and terms.',
       de: 'Für regelmäßige oder längerfristige Nutzung kann eine schriftliche Nutzungsvereinbarung getroffen werden, die Termine, Zugang und Konditionen festhält.',
