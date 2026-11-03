@@ -856,6 +856,9 @@ const reels: Record<string, { video: string; poster: string }> = {
   /* Pigi's own video, sent by WhatsApp 03.11.26: koulouri and pitas, the
      cooking at her table in Kreuzberg, and Pigi herself. Poster: the koulouri. */
   pigi: { video: '/video/pigi.mp4', poster: '/video/pigi-poster.jpg' },
+  // Jeannette's frog, drawn and painted in watercolour, as a time-lapse (one of
+  // the six videos she sent via Google Drive, 28.10.26; black bars cropped).
+  'jeannette-tolksdorff': { video: '/video/jeannette-tolksdorff.mp4', poster: '/video/jeannette-tolksdorff-poster.jpg' },
   // Pia's Christmas painting: the finished canvases, Glühwein and the table (WhatsApp, 03.11.26).
   'pia-christmas': { video: '/video/pia-christmas.mp4', poster: '/video/pia-christmas-poster.jpg' },
   /* Anna's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
