@@ -18,6 +18,11 @@ on:
         required: false
         type: boolean
         default: false
+      resize:
+        description: 'Optional longest side in px: big photos are shrunk to it (JPEG, quality 82) before they are committed'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -37,6 +42,7 @@ jobs:
         env:
           FILES: ${{ inputs.files }}
           OVERWRITE: ${{ inputs.overwrite }}
+          RESIZE: ${{ inputs.resize }}
         run: |
           fetched=0
           while IFS= read -r line; do
@@ -53,6 +59,7 @@ jobs:
             if [ "${code%% *}" != "200" ] || [ "${type#image/}" = "$type" ]; then
               echo "FAILED ($code): $url"; rm -f "$tmp"; continue
             fi
+            if [ -n "$RESIZE" ]; then convert "$tmp" -auto-orient -resize "${RESIZE}x${RESIZE}>" -strip -quality 82 "jpg:$tmp"; fi
             mv "$tmp" "$dest"; fetched=$((fetched + 1))
             echo "OK $(stat -c %s "$dest") bytes ($type): $url -> $dest"
           done < <(printf '%s\n' "$FILES" | tr ';' '\n')

@@ -62,6 +62,7 @@ jobs:
         env:
           PROBE_URL: ${{ inputs.url }}
         run: |
+          command -v pdftotext >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils >/dev/null; }
           curl -sSL -m 60 -o /tmp/p.pdf "${PROBE_URL#pdf:}" && pdftotext -layout /tmp/p.pdf - | head -c 40000
       - name: Fetch and describe
         if: ${{ !startsWith(inputs.url, 'dav:') && !startsWith(inputs.url, 'pdf:') && !startsWith(inputs.url, 'scrape:') && !startsWith(inputs.url, 'emails:') && !startsWith(inputs.url, 'insta:') && !startsWith(inputs.url, 'bios:') }}
