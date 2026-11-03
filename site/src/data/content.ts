@@ -220,6 +220,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // room seats a dozen or so. Sina's hours are the real spread of her
   // listed sessions (a weeknight mend to most of a Saturday).
   sina:         { activity: 'craft',       groupRange: [1, 12],   hourRange: [2, 6] },
+  celia:        { activity: 'craft',       groupRange: [1, 12],   hourRange: [2, 4] },
   olivia:       { activity: 'craft',       groupRange: [1, 12],   hourRange: [2, 4] },
   jem:          { activity: 'food',        groupRange: [1, 40],   hourRange: [3, 4], groupPrice: 55 },
   'loom-lab':   { activity: 'ceramics',    groupRange: [4, 6],    hourRange: [4, 4] },
@@ -370,6 +371,9 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'sina', name: 'Sina', specialty: 'Quilting, mending & embroidery', studio: 'Ohma Studio',
       blurb: 'A quilt maker and fibre artist working with recycled materials and reimagining what we already have. Beginner-friendly sessions in patchwork and improv quilting, visible mending by weave darning, and embroidery — all materials provided, tea and cookies included.',
       group: 'Small group', duration: '2–6 h', place: 'Ohma Studio, Friedrichshain', languages: 'EN · DE' },
+    { slug: 'celia', name: 'Cèlia', specialty: 'Hand knitting', studio: 'La HoCo',
+      blurb: 'A designer and crafter whose project HOCO is dedicated to hand knitting and to valuing the slow, mindful creative process. Intro sessions and a longer beginners course, guiding people into the world of yarn and into making with their hands.',
+      group: 'Small group', duration: '2–4 h', place: 'Ohma Studio, Friedrichshain', languages: 'EN' },
     { slug: 'olivia', name: 'Olivia', specialty: 'Alcohol ink & beaded jewellery', studio: 'Ohma Studio',
       blurb: 'The maker behind Ohma Beads, and the host of Ohma Studio itself. Playful sessions in alcohol ink — on paper, on ceramics and on oyster shells — alongside beaded necklaces and circle earrings.',
       group: 'Small group', duration: '2–4 h', place: 'Ohma Studio, Friedrichshain', languages: 'EN' },
@@ -599,6 +603,9 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'sina', name: 'Sina', specialty: 'Quilten, Reparieren & Sticken', studio: 'Ohma Studio',
       blurb: 'Quiltmacherin und Textilkünstlerin, die mit recycelten Materialien arbeitet. Patchwork und Improv-Quilting für Einsteiger, sichtbares Reparieren per Webstopfen und Sticken — Material ist gestellt, Tee und Kekse inklusive.',
       group: 'Kleine Gruppe', duration: '2–6 Std.', place: 'Ohma Studio, Friedrichshain', languages: 'EN · DE' },
+    { slug: 'celia', name: 'Cèlia', specialty: 'Handstricken', studio: 'La HoCo',
+      blurb: 'Designerin und Handwerkerin; ihr Projekt HOCO widmet sich dem Handstricken und dem langsamen, achtsamen Gestalten. Einführungen und ein längerer Einsteigerkurs rund um Wolle und das Machen mit den Händen.',
+      group: 'Kleine Gruppe', duration: '2–4 Std.', place: 'Ohma Studio, Friedrichshain', languages: 'EN' },
     { slug: 'olivia', name: 'Olivia', specialty: 'Alkoholtinte & Perlenschmuck', studio: 'Ohma Studio',
       blurb: 'Die Macherin hinter Ohma Beads — und Gastgeberin des Ohma Studios. Verspielte Sessions mit Alkoholtinte auf Papier, Keramik und Austernschalen, dazu Perlenketten und Creolen.',
       group: 'Kleine Gruppe', duration: '2–4 Std.', place: 'Ohma Studio, Friedrichshain', languages: 'EN' },
@@ -797,6 +804,7 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Cèlia's own, cut to lead with the knitting itself: her at the mirror
   // working the needles, then the stitches close up, the finished beige
   // square held out, and the red one beside it. Audio stripped.
+  celia: { video: '/video/celia.mp4', poster: '/video/celia-poster.jpg' },
   // LAMA's own sandal-workshop reel, picked up after its caption ends at
   // six seconds: drawing the pattern, cutting the leather, a foot traced on
   // paper on the studio floor, straps laid onto soles, and the finished
@@ -1568,7 +1576,7 @@ const hostsCopy: Record<Lang, HostCopy[]> = (() => {
 const firstNames: Record<string, string> = {
   qian: 'Qian', rebeca: 'Rebeca', nicole: 'Nicole', celina: 'Celina', evelyn: 'Evelyn',
   drawingwalks: 'Ditte', violaine: 'Violaine', tania: 'Tania', simone: 'Simone',
-  alessia: 'Alessia', sina: 'Sina', olivia: 'Olivia',
+  alessia: 'Alessia', sina: 'Sina', celia: 'Cèlia', olivia: 'Olivia',
   nina: 'Nina', helka: 'Helka', jem: 'Jem', maximiliana: 'Maximiliana', pia: 'Pia',
   sarah: 'Sarah', anne: 'Anna', sabine: 'Sabine', angelo: 'Angelo', faye: 'Faye',
   dominik: 'Dominik', ana: 'Ana', 'karen-rose': 'Karen-Rose',
@@ -1601,7 +1609,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   tania: { area: 'Charlottenburg' }, simone: { area: 'Lichtenberg' },
   tufttuft: { area: 'Prenzlauer Berg' }, alessia: { area: 'Prenzlauer Berg' },
   sina: { area: 'Friedrichshain' },
-  olivia: { area: 'Friedrichshain' },
+  celia: { area: 'Friedrichshain' }, olivia: { area: 'Friedrichshain' },
   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
   maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },
   faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Prenzlauer Berg' },

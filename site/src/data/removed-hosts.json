@@ -3,7 +3,6 @@
   "hosts": [
     { "slug": "mijita", "activity": "craft", "removed": "2026-10-11", "workshops": [] },
     { "slug": "tessia", "activity": "craft", "removed": "2026-10-18", "workshops": ["wax-carving-ring-workshop-halber-tag", "sandguss-wax-carving-workshop-ganzer-tag"] },
-    { "slug": "celia", "activity": "craft", "removed": "2026-10-18", "workshops": ["knit-club", "knitting-course-the-jumper", "knitting-course-beanie-edition"] },
     { "slug": "haki", "activity": "ceramics", "removed": "2026-10-19", "workshops": ["handbuilding-workshop", "offener-platz-an-der-drehscheibe-fortgeschrittene"] }
   ]
 }
