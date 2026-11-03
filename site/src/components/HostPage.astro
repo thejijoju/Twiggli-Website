@@ -23,6 +23,7 @@ import {
   sessionsFor, workshopHref, workshopsFor,
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
+import { photoCredit } from '../data/photoCredit.ts';
 
 interface Props {
   lang: Lang;
@@ -169,6 +170,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           )}
         </div>
       )}
+      {(host.video || host.photo || host.gallery?.length) && <p class="photo-credit">{photoCredit(lang, host.photoCredit ?? host.studio ?? host.name)}</p>}
       </div>
       <div class="host-facts">
         {tags.length > 0 && <ul class="host-tags">{tags.map((t) => <li>{t}</li>)}</ul>}

@@ -29,6 +29,9 @@ export type Space = {
    *  the card where the host has no reel; otherwise they sit in a row under
    *  it. */
   photos?: string[];
+  /** Who the photos are credited to, where not the space itself — the
+   *  photographer, as the space asks us to name them. */
+  credit?: string;
   /** Floor area, as the space states it — plain where it is only a number,
    *  per language where it says more ("3 rooms"). */
   size?: string | Record<Lang, string>;
@@ -342,6 +345,63 @@ export const spaces: Space[] = [
       nl: 'De ruimte wordt per uur of per dag verhuurd — een avondsessie, een hele maakdag of een vast moment elke week.',
       pl: 'Pracownię wynajmuje się na godziny lub na cały dzień — wieczór, pełny dzień pracy albo stały termin co tydzień.',
       tr: 'Mekân saatlik ya da günlük kiralanıyor — bir akşam seansı, tam bir üretim günü ya da her hafta tekrarlayan bir saat dilimi.',
+    },
+  },
+  {
+    // K26, Lettrétage's event space. Katharina Deloglu, 3 Nov 2026: photos
+    // and website info may be used, with copyright named. Size, capacity
+    // and terms are from their AGB; no public rate, so "on request".
+    manager: 'Katharina',
+    name: 'K26 – Raum für Ideen',
+    address: 'Kolonnenstraße 26, 10829 Berlin',
+    district: 'Schöneberg',
+    at: [13.36617, 52.48492],
+    capacity: 99,
+    photos: ['/img/spaces/k26-1.jpg', '/img/spaces/k26-2.jpg', '/img/spaces/k26-3.jpg', '/img/spaces/k26-4.jpg'],
+    credit: 'Lettrétage e.V.',
+    size: {
+      en: 'about 205 m² in 3 rooms', de: 'ca. 205 m² in 3 Räumen', fr: 'environ 205 m² en 3 pièces', es: 'unos 205 m² en 3 salas',
+      it: 'circa 205 m² in 3 stanze', nl: 'ca. 205 m² in 3 ruimtes', pl: 'ok. 205 m² w 3 pomieszczeniach', tr: '3 odada yaklaşık 205 m²',
+    },
+    suits: {
+      en: 'Team days · trainings · retreats · company events',
+      de: 'Teamtage · Schulungen · Retreats · Firmenveranstaltungen',
+      fr: 'Journées d’équipe · formations · retraites · événements d’entreprise',
+      es: 'Jornadas de equipo · formaciones · retiros · eventos de empresa',
+      it: 'Giornate di team · formazioni · ritiri · eventi aziendali',
+      nl: 'Teamdagen · trainingen · retreats · bedrijfsevenementen',
+      pl: 'Dni zespołowe · szkolenia · wyjazdy integracyjne · wydarzenia firmowe',
+      tr: 'Ekip günleri · eğitimler · inziva günleri · şirket etkinlikleri',
+    },
+    copy: {
+      en: 'The new event space of Lettrétage, the literature house of Berlin’s independent literary scene, in Schöneberg. Three rooms that work together: a main room of about 125 m², a seminar room of 34 m² and a lounge with a bar of 46 m², with furniture and tech in place. Made for team days, trainings and retreats of up to 99 people, and our makers can come in with a hands-on creative break between sessions.',
+      de: 'Der neue Veranstaltungsraum der Lettrétage, des Literaturhauses der freien Literaturszene Berlins, in Schöneberg. Drei Räume, die zusammenspielen: ein Hauptraum mit ca. 125 m², ein Seminarraum mit 34 m² und eine Lounge mit Bar mit 46 m², Mobiliar und Technik inklusive. Gemacht für Teamtage, Schulungen und Retreats mit bis zu 99 Personen, und unsere Maker:innen kommen gern mit einer kreativen Pause zum Selbermachen dazu.',
+      fr: 'Le nouvel espace événementiel de la Lettrétage, la maison de la littérature de la scène littéraire indépendante de Berlin, à Schöneberg. Trois pièces qui fonctionnent ensemble : une salle principale d’environ 125 m², une salle de séminaire de 34 m² et un lounge avec bar de 46 m², mobilier et technique compris. Pensé pour les journées d’équipe, formations et retraites jusqu’à 99 personnes, et nos créateurs peuvent venir animer une pause créative entre deux sessions.',
+      es: 'El nuevo espacio para eventos de la Lettrétage, la casa de la literatura de la escena literaria independiente de Berlín, en Schöneberg. Tres salas que funcionan juntas: una sala principal de unos 125 m², una sala de seminarios de 34 m² y un lounge con barra de 46 m², con mobiliario y técnica incluidos. Pensado para jornadas de equipo, formaciones y retiros de hasta 99 personas, y nuestros creadores pueden venir con una pausa creativa entre sesiones.',
+      it: 'Il nuovo spazio eventi della Lettrétage, la casa della letteratura della scena letteraria indipendente di Berlino, a Schöneberg. Tre stanze che lavorano insieme: una sala principale di circa 125 m², una sala seminari di 34 m² e una lounge con bar di 46 m², arredi e tecnica inclusi. Pensato per giornate di team, formazioni e ritiri fino a 99 persone, e i nostri maker possono venire con una pausa creativa tra una sessione e l’altra.',
+      nl: 'De nieuwe evenementenruimte van Lettrétage, het literatuurhuis van Berlijns onafhankelijke literaire scene, in Schöneberg. Drie ruimtes die samenwerken: een hoofdzaal van ca. 125 m², een seminarruimte van 34 m² en een lounge met bar van 46 m², met meubilair en techniek. Gemaakt voor teamdagen, trainingen en retreats tot 99 personen, en onze makers komen graag langs met een creatieve pauze tussen de sessies.',
+      pl: 'Nowa przestrzeń eventowa Lettrétage, domu literatury niezależnej sceny literackiej Berlina, w Schöneberg. Trzy pomieszczenia, które działają razem: sala główna ok. 125 m², sala seminaryjna 34 m² i lounge z barem 46 m², z meblami i sprzętem. Stworzona na dni zespołowe, szkolenia i wyjazdy do 99 osób, a nasi twórcy mogą wpaść z kreatywną przerwą między sesjami.',
+      tr: 'Berlin’in bağımsız edebiyat sahnesinin edebiyat evi Lettrétage’ın Schöneberg’deki yeni etkinlik mekânı. Birlikte çalışan üç oda: yaklaşık 125 m²’lik ana salon, 34 m²’lik seminer odası ve 46 m²’lik barlı lounge; mobilya ve teknik donanım dahil. 99 kişiye kadar ekip günleri, eğitimler ve inziva günleri için; üreticilerimiz oturumlar arasında elle yapılan yaratıcı bir mola getirebilir.',
+    },
+    included: {
+      en: 'Furniture and tech · cleaning afterwards',
+      de: 'Mobiliar und Technik · Reinigung danach',
+      fr: 'Mobilier et technique · ménage après l’événement',
+      es: 'Mobiliario y técnica · limpieza posterior',
+      it: 'Arredi e tecnica · pulizia dopo l’evento',
+      nl: 'Meubilair en techniek · schoonmaak achteraf',
+      pl: 'Meble i sprzęt · sprzątanie po wydarzeniu',
+      tr: 'Mobilya ve teknik donanım · sonrasında temizlik',
+    },
+    terms: {
+      en: 'For business events only, between 8:00 and 21:30. Drinks come from the house (guests may bring up to 1 litre each for themselves); catering is your choice. Free cancellation up to 30 days before.',
+      de: 'Nur für Firmenveranstaltungen (B2B), zwischen 8:00 und 21:30 Uhr. Getränke kommen vom Haus (bis zu 1 Liter pro Person für den Eigenbedarf darf mitgebracht werden); das Catering wählt ihr frei. Kostenlose Stornierung bis 30 Tage vorher.',
+      fr: 'Uniquement pour des événements d’entreprise, entre 8 h et 21 h 30. Les boissons viennent de la maison (jusqu’à 1 litre par personne pour soi est permis) ; le traiteur est au choix. Annulation gratuite jusqu’à 30 jours avant.',
+      es: 'Solo para eventos de empresa, entre las 8:00 y las 21:30. Las bebidas las pone la casa (cada persona puede traer hasta 1 litro para sí); el catering lo eliges tú. Cancelación gratuita hasta 30 días antes.',
+      it: 'Solo per eventi aziendali, tra le 8:00 e le 21:30. Le bevande sono della casa (ognuno può portarne fino a 1 litro per sé); il catering lo scegli tu. Cancellazione gratuita fino a 30 giorni prima.',
+      nl: 'Alleen voor zakelijke evenementen, tussen 8:00 en 21:30. Drankjes komen van het huis (gasten mogen tot 1 liter per persoon voor zichzelf meenemen); de catering kies je zelf. Gratis annuleren tot 30 dagen vooraf.',
+      pl: 'Tylko na wydarzenia firmowe, między 8:00 a 21:30. Napoje zapewnia gospodarz (każdy może przynieść do 1 litra dla siebie); catering wybierasz sam. Bezpłatne anulowanie do 30 dni przed.',
+      tr: 'Yalnızca şirket etkinlikleri için, 08:00 ile 21:30 arası. İçecekler mekândan (herkes kendisi için en fazla 1 litre getirebilir); catering’i siz seçersiniz. 30 gün öncesine kadar ücretsiz iptal.',
     },
   },
 ];

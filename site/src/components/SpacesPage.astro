@@ -16,6 +16,7 @@ import { ui } from '../data/i18n.ts';
 import { hostHref } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 import { slugify } from '../data/sessions.ts';
+import { photoCredit } from '../data/photoCredit.ts';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -156,6 +157,7 @@ const marks = spaces.map((space) => ({
                 {space.access && <div><dt>{t.labelAccess}</dt><dd>{space.access[lang]}</dd></div>}
               </dl>
               {space.terms && <p class="space-terms">{space.terms[lang]}</p>}
+              {(space.photos?.length || host?.video) && <p class="photo-credit">{photoCredit(lang, space.credit ?? space.name)}</p>}
               {/* Opens the booking form (BookingDialog.astro) on the page with
                   this space, its district, address and rate filled in, as
                   the group page's cards do. Without scripts the link still
