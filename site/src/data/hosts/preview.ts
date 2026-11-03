@@ -169,6 +169,12 @@ const en: HostCopy[] = [
     blurb: 'Pigi grew up in Athens, where homemade bread, cakes and savoury pitas were part of everyday life; her grandmother taught her to bake bread and tsoureki and all the sweet and savoury classics of Greek cooking. She taught them in workshops in Athens, and now cooks with guests in the big kitchen of her Altbau flat in Kreuzberg. You are welcomed with Greek mountain tea and a short introduction to the menu, then everyone cooks together: koulouri Thessalonikis (vegan sesame rings), spanakopita (vegetarian), moussaka, tzatziki and a Greek salad, and a sweet surprise for dessert, with tips and tricks to take home. Greek red and white wine is poured while you cook, and there is ouzo and tsipouro too. Then everyone sits down at one long table and eats together, so plan about five hours: three of cooking, and a long, generous meal. Small groups of up to ten; teams, birthdays and private groups can also book their own weekday evening.',
     group: 'Up to 10', duration: 'about 5 h (3 h cooking, then dinner together)', place: 'At Pigi’s home, Kreuzberg', languages: 'DE · EN',
     priceNote: 'the whole menu, wine, ouzo and tsipouro included' },
+  // Pia's second concept, a card of its own beside her Vulva Painting one
+  // (slug 'pia'): her text for the group offer, 03.11.26, and her video.
+  { slug: 'pia-christmas', name: 'Pia', specialty: 'Christmas painting & Glühwein',
+    blurb: 'A relaxed Christmas painting session with Glühwein, tea and time together. Join with your team, friends or family: everyone paints with acrylics on their own 15 × 15 cm canvas and adds decorative extras, for a personal Christmas gift or a festive touch on a shelf or desk. You brainstorm together first, then everyone picks an idea: the Grinch, your favourite Christmas food, a decorated TV tower, your favourite saying of the year, or Santa on holiday. A snowflake, Rudolph or something all your own works too. No experience needed.',
+    group: '4–10', duration: '2 h', place: 'Friedrichshain', languages: 'EN · DE',
+    priceNote: 'canvas, paint, extras, Glühwein and tea included' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making, fabric & wax seals',
     blurb: 'Marija studied art history and comes from education, and she upcycles: fabric and materials left behind on the street are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper, scraps of coloured card and old bags, blended and poured with flowers or a little glitter; you seal it with wax, or fold paper Christmas stars. Calm, hands-on and good-looking, and she has run it with kindergarten children and older people alike. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
     group: 'Groups and teams', duration: 'On request', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE' },
@@ -238,6 +244,10 @@ const de: HostCopy[] = [
     blurb: 'Pigi ist in Athen aufgewachsen, wo selbstgebackenes Brot, Kuchen und herzhafte Pitas zum Alltag gehören; ihre Großmutter hat ihr beigebracht, Brot und Tsoureki zu backen und all die süßen und herzhaften Klassiker der griechischen Küche. Sie hat sie schon in Workshops in Athen weitergegeben und kocht jetzt mit ihren Gästen in der großen Küche ihrer Altbauwohnung in Kreuzberg. Zur Begrüßung gibt es griechischen Bergtee und eine kurze Einführung ins Menü, dann kocht ihr gemeinsam: Koulouri Thessalonikis (vegane Sesamringe), Spanakopita (vegetarisch), Moussaka, Tzatziki und griechischen Salat, und als Dessert eine süße Überraschung, mit Tipps und Tricks für zu Hause. Beim Kochen gibt es griechischen Rot- und Weißwein, dazu Ouzo und Tsipouro. Danach sitzen alle an einer langen Tafel und essen gemeinsam, plant also etwa fünf Stunden ein: drei zum Kochen und ein langes, großzügiges Essen. Kleine Gruppen bis zehn Personen; Teams, Geburtstage und private Gruppen können auch einen eigenen Abend unter der Woche buchen.',
     group: 'Bis 10', duration: 'ca. 5 Std. (3 Std. Kochen, dann gemeinsames Essen)', place: 'Bei Pigi zu Hause, Kreuzberg', languages: 'DE · EN',
     priceNote: 'das ganze Menü, Wein, Ouzo und Tsipouro inklusive' },
+  { slug: 'pia-christmas', name: 'Pia', specialty: 'Weihnachtsmalen & Glühwein',
+    blurb: 'Ein entspannter Weihnachts-Malabend mit Glühwein, Tee und Zeit miteinander. Kommt mit eurem Team, Freund:innen oder Familie: Alle malen mit Acryl auf ihrer eigenen 15 × 15 cm Leinwand und ergänzen dekorative Extras, als persönliches Weihnachtsgeschenk oder festlichen Akzent fürs Regal oder den Schreibtisch. Zuerst sammelt ihr gemeinsam Ideen, dann sucht sich jede:r eine aus: der Grinch, euer liebstes Weihnachtsessen, ein geschmückter Fernsehturm, euer Lieblingsspruch des Jahres oder der Weihnachtsmann im Urlaub. Eine Schneeflocke, Rudolph oder etwas ganz Eigenes geht natürlich auch. Keine Vorkenntnisse nötig.',
+    group: '4–10', duration: '2 Std.', place: 'Friedrichshain', languages: 'EN · DE',
+    priceNote: 'Leinwand, Farben, Extras, Glühwein und Tee inklusive' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen, Stoff & Wachssiegel',
     blurb: 'Marija hat Kunstgeschichte studiert, kommt aus dem Erziehungsbereich und macht Upcycling: Stoffe und Material, die auf der Straße liegen gelassen wurden, werden gewaschen und zu Kissenbezügen und anderen Unikaten. In ihren Workshops schöpft ihr Papier aus Altpapier, Resten von farbigem Karton und alten Tüten, gemixt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs oder Weihnachtssterne aus Papier. Ruhig, handfest und schick, und sie hat es schon mit Kindergartenkindern wie mit älteren Menschen gemacht. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
     group: 'Gruppen und Teams', duration: 'Auf Anfrage', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE' },
@@ -294,13 +304,14 @@ const facets: Record<string, Facets> = {
   marija:                { activity: 'craft',       alsoIn: ['art'], groupRange: [2, 15], hourRange: [2, 3] },
   'fave-studio':         { activity: 'craft',       groupRange: [2, 10],   hourRange: [3, 3],   groupPrice: 50 },
   pigi:                  { activity: 'food',        groupRange: [1, 10],   hourRange: [5, 5],   groupPrice: 80 },
+  'pia-christmas':       { activity: 'art',         groupRange: [4, 10],   hourRange: [2, 2],   groupPrice: 45 },
 };
 
 const firstNames: Record<string, string> = {
   'test-jirel': 'Jirel',
   rtmis: 'Diana', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
-  'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija', 'fave-studio': 'Elena & Giulia', pigi: 'Pigi',
+  'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija', 'fave-studio': 'Elena & Giulia', pigi: 'Pigi', 'pia-christmas': 'Pia',
 };
 
 const areas: Record<string, { area: string; onSite?: boolean }> = {
@@ -309,7 +320,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
   'luc-demissy': { area: 'Prenzlauer Berg', onSite: true }, concreare: { area: 'Charlottenburg' }, 'jeannette-tolksdorff': { area: 'Pankow' },
-  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg', onSite: true }, marija: { area: 'Lichtenberg', onSite: true }, 'fave-studio': { area: 'Neukölln' }, pigi: { area: 'Kreuzberg' },
+  paintnow: { area: 'Berlin', onSite: true }, 'atelier-sinn': { area: 'Prenzlauer Berg' }, 'lucille-guder': { area: 'Kreuzberg', onSite: true }, marija: { area: 'Lichtenberg', onSite: true }, 'fave-studio': { area: 'Neukölln' }, pigi: { area: 'Kreuzberg' }, 'pia-christmas': { area: 'Friedrichshain' },
 };
 
 /** Formats each preview host runs on request, with no public date. */
@@ -385,6 +396,9 @@ const onRequest: Record<string, PreviewOffer[]> = {
   ],
   'fave-studio': [
     { title: 'Paper Light Night für eure Gruppe (bis 10 Personen)', titleEn: 'Paper Light Night for your group (up to 10 people)', duration: '3 h', price: '€50', district: 'Neukölln', url: '' },
+  ],
+  'pia-christmas': [
+    { title: 'Weihnachtsmalen & Glühwein für eure Gruppe (4–10 Personen)', titleEn: 'Christmas painting & Glühwein for your group (4–10 people)', duration: '2 h', price: '€45', district: 'Friedrichshain', url: '' },
   ],
   pigi: [
     { title: 'Griechischer Kochabend für eure Gruppe (bis 10 Personen, unter der Woche ab 18 Uhr)', titleEn: 'Greek cooking evening for your group (up to 10 people, weekdays from 18:00)', duration: '5 h', price: '€80', district: 'Kreuzberg', url: '' },
