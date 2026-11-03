@@ -103,6 +103,9 @@ export type Host = {
   specialty: string;
   /** The maker's studio or brand, where they trade under one. */
   studio?: string;
+  /** Who the photos and reel are credited to, where that is not the studio
+   *  (or the host's name) — a photographer someone asked us to name. */
+  photoCredit?: string;
   /** One paragraph, for the hosts directory. */
   blurb: string;
   /** Group size, session length, where it runs, and languages — the
