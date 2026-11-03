@@ -115,14 +115,14 @@ jobs:
             if [ "$MODE" = "encode" ]; then
               mkdir -p site/public/video
               cut=(); [ -n "$START" ] && cut+=(-ss "$START"); [ -n "$LENGTH" ] && cut+=(-t "$LENGTH")
-              ffmpeg -v error -y "${cut[@]}" -i "$src" -an -vf "scale=540:-2" -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart "site/public/video/$name.mp4"
+              ffmpeg -v error -y "${cut[@]}" -i "$src" -an -vf "scale=540:-2" -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart "site/public/video/$name.mp4" || { echo "  encode FAILED: $name"; rm -f "$src"; continue; }
               ffmpeg -v error -y -ss "${POSTER_AT:-1}" -i "site/public/video/$name.mp4" -frames:v 1 -q:v 4 "site/public/video/$name-poster.jpg"
               echo "  -> site/public/video/$name.mp4 ($(stat -c %s "site/public/video/$name.mp4") bytes)"
             else
-              mkdir -p tmp-video
-              # One frame per second, labelled with its second, 6 to a row.
-              ffmpeg -v error -y -i "$src" -vf "fps=1,scale=240:-2,drawtext=text='%{pts\:hms}':x=4:y=4:fontsize=18:fontcolor=yellow:box=1:boxcolor=black@0.5,tile=6x5" -frames:v 1 -q:v 5 "tmp-video/$name.jpg"
-              echo "  -> tmp-video/$name.jpg"
+              mkdir -p "tmp-video/$name"
+              # One small frame per second, to look through and pick a cut.
+              ffmpeg -v error -y -i "$src" -vf "fps=1,scale=240:-2" -q:v 6 "tmp-video/$name/%02d.jpg" || echo "  frames FAILED: $name"
+              echo "  -> tmp-video/$name/ ($(ls "tmp-video/$name" | wc -l) frames)"
             fi
             rm -f "$src"; done=$((done + 1))
           done < <(printf '%s\n' "$VIDEOS" | tr ';' '\n')
