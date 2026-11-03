@@ -251,7 +251,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   bumerang:      { activity: 'craft',      groupRange: [1, 10],   hourRange: [7, 7] },
   'ceramic-kingdom': { activity: 'ceramics', groupRange: [1, 7],  hourRange: [2, 4] },
   // PLACEHOLDER group range — no published cap on the course pages.
-  druckrausch:      { activity: 'art',       groupRange: [1, 10], hourRange: [1.5, 4] },
+  druckrausch:      { activity: 'art',       groupRange: [1, 30], hourRange: [1.5, 4] },
   schmiede:         { activity: 'craft',     groupRange: [1, 6],  hourRange: [3, 7] },
   daisuki:          { activity: 'food',      groupRange: [5, 20], hourRange: [3, 5] },
   whittle:          { activity: 'craft',     groupRange: [1, 12], hourRange: [2.5, 5] },
@@ -454,10 +454,10 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'ceramic-kingdom', name: 'Ceramic Kingdom', specialty: 'Pottery school & open studio', studio: 'Ceramic Kingdom',
       blurb: 'Madeline’s ceramics school in the Reuterkiez. Wheel-throwing from taster to intermediate, handbuilding, mold making and slip casting, glaze chemistry, sgraffito — even 3D printing in clay. Small classes of about seven, taught in English and German, with open studio time and kiln firing for those who keep going.',
       group: 'Up to 7', duration: '2–4 h', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
-    // Copy from druckrausch.com; photos to follow.
+    // Copy from druckrausch.com; group details from Deborah's email, 02.11.26.
     { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Screen printing', studio: 'Druckrausch — mobile Druckwerkstatt',
-      blurb: 'A screen-printing workshop in Friedenau — and a mobile print studio for events. Learn the basics on shirts, totes and paper, squeeze in an after-work express session, print from your own photo stencil, or go big with "Print like Warhol". Also runs live printing at parties, team events and kids’ birthdays.',
-      group: 'Small groups', duration: '1.5–4 h', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
+      blurb: 'A screen-printing workshop in Friedenau and a mobile print studio. Learn the basics on shirts, totes and paper, squeeze in an after-work express session, print from your own photo stencil, or go big with "Print like Warhol". For teams: up to about 12 in the studio; bigger groups of up to 30 at your office or a rented room, all printing at once, split into rounds, or as a print station people drop by while there is a buffet or other programme. Print on textiles they bring (or you bring your own) or on paper goods, with their motifs or a screen made from your logo or motto. Taught in German or English. No catering.',
+      group: 'Up to 12 in the studio · up to 30 at your venue', duration: '1.5–4 h', place: 'Hackerstr. 6, Friedenau / your venue', languages: 'DE · EN' },
     // Copy from schmiedekurse-berlin.de.
     { slug: 'schmiede', name: 'Schmiedekurse Berlin', specialty: 'Blacksmithing & knife forging', studio: 'Schmiede im Hof',
       blurb: 'A working forge in an old leather-factory yard in Blankenburg. Learn the classic techniques over a weekend, forge your own kitchen or outdoor knife — up to Japanese Damascus steel with a hand-fitted wooden handle — and take everything you make home. Small groups of five or six around the fire, plus three-day forging introductions for kids aged 10–14 in the school holidays.',
@@ -676,8 +676,8 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
       blurb: 'Madelines Keramikschule im Reuterkiez. Drehscheibe vom Schnupperkurs bis zur Mittelstufe, Aufbautechnik, Formenbau und Schlickerguss, Glasurchemie, Sgraffito — sogar 3D-Druck mit Ton. Kleine Kurse mit etwa sieben Plätzen auf Englisch und Deutsch, dazu offene Werkstatt und Brennservice für alle, die dranbleiben.',
       group: 'Bis 7', duration: '2–4 Std.', place: 'Reuterstr. 20, Berlin', languages: 'EN · DE' },
     { slug: 'druckrausch', name: 'Druckrausch', specialty: 'Siebdruck', studio: 'Druckrausch — mobile Druckwerkstatt',
-      blurb: 'Siebdruck-Werkstatt in Friedenau — und mobiles Druckstudio für Events. Grundlagen auf Shirts, Beuteln und Papier lernen, ein Express-Kurs nach Feierabend, Drucken von der eigenen Fotoschablone oder groß rauskommen mit "Drucken wie Warhol". Dazu Live-Siebdruck auf Partys, Team-Events und Kindergeburtstagen.',
-      group: 'Kleine Gruppen', duration: '1,5–4 Std.', place: 'Hackerstr. 6, Berlin', languages: 'DE' },
+      blurb: 'Siebdruck-Werkstatt in Friedenau und mobiles Druckstudio. Grundlagen auf Shirts, Beuteln und Papier lernen, ein Express-Kurs nach Feierabend, Drucken von der eigenen Fotoschablone oder groß rauskommen mit "Drucken wie Warhol". Für Teams: bis ca. 12 Personen in der Werkstatt; größere Gruppen bis 30 bei euch im Büro oder in einem gemieteten Raum, alle gleichzeitig, in Runden oder als Druckstand, an den immer eine kleine Gruppe kommt, etwa neben einem Buffet. Gedruckt wird auf Textilien, die sie mitbringen (oder ihr bringt eure eigenen), oder auf Papierartikel, mit ihren Motiven oder einem Sieb mit eurem Logo oder Motto. Auf Deutsch oder Englisch. Kein Catering.',
+      group: 'Bis 12 in der Werkstatt · bis 30 bei euch', duration: '1,5–4 Std.', place: 'Hackerstr. 6, Friedenau / bei euch', languages: 'DE · EN' },
     { slug: 'schmiede', name: 'Schmiedekurse Berlin', specialty: 'Schmieden & Messerschmieden', studio: 'Schmiede im Hof',
       blurb: 'Eine Schmiede im Hof einer alten Lederfabrik in Blankenburg. Am Wochenende die Grundtechniken lernen, das eigene Küchen- oder Outdoormesser schmieden — bis hin zum japanischen Damaszenerstahl mit selbst angepasstem Holzgriff — und alles Geschmiedete mit nach Hause nehmen. Kleine Gruppen mit fünf bis sechs Plätzen am Feuer, dazu dreitägige Schmiede-Einführungen für Kinder von 10–14 in den Ferien.',
       group: 'Bis 6', duration: '1–2 Tage', place: 'Pankstraße 13, Berlin', languages: 'DE' },
@@ -1617,7 +1617,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Prenzlauer Berg' },
   kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg', onSite: true },
   'beat-etage': { area: 'Treptow' }, bumerang: { area: 'Lichtenberg' },
-  'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau' },
+  'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau', onSite: true },
   schmiede: { area: 'Blankenburg' }, daisuki: { area: 'Charlottenburg' },
   whittle: { area: 'Charlottenburg' }, dirt: { area: 'Kreuzberg' }, rose: { area: 'Wedding' },
   arcoiris: { area: 'Neukölln' }, redrum: { area: 'Kreuzberg' }, mampe: { area: 'Kreuzberg' },
