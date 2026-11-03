@@ -23,6 +23,26 @@ on:
         required: false
         type: string
         default: ''
+      video_mode:
+        description: 'Videos instead of images: "sheet" (contact sheets to tmp-video/) or "encode" (site/public/video/<name>.mp4 + -poster.jpg); lines are then "URL or Drive id -> name"'
+        required: false
+        type: string
+        default: ''
+      video_start:
+        description: 'encode: start second'
+        required: false
+        type: string
+        default: ''
+      video_length:
+        description: 'encode: length in seconds'
+        required: false
+        type: string
+        default: ''
+      video_poster_at:
+        description: 'encode: poster frame second, from the cut start'
+        required: false
+        type: string
+        default: '1'
 
 permissions:
   contents: write
@@ -39,6 +59,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Download
+        if: inputs.video_mode == ''
         env:
           FILES: ${{ inputs.files }}
           OVERWRITE: ${{ inputs.overwrite }}
@@ -65,11 +86,52 @@ jobs:
             echo "OK $(stat -c %s "$dest") bytes ($type): $url -> $dest"
           done < <(printf '%s\n' "$FILES" | tr ';' '\n')
           echo "fetched=$fetched" >> "$GITHUB_ENV"
+      - name: Download and process videos
+        if: inputs.video_mode != ''
+        env:
+          VIDEOS: ${{ inputs.files }}
+          MODE: ${{ inputs.video_mode }}
+          START: ${{ inputs.video_start }}
+          LENGTH: ${{ inputs.video_length }}
+          POSTER_AT: ${{ inputs.video_poster_at }}
+        run: |
+          command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null; }
+          done=0
+          while IFS= read -r line; do
+            line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+            [ -z "$line" ] && continue
+            url="${line%% -> *}"; name="${line##* -> }"
+            case "$name" in */*|*..*|"") echo "SKIP (bad name): $name"; continue;; esac
+            id="$(echo "$url" | sed -nE 's#.*/d/([A-Za-z0-9_-]+).*#\1#p')"
+            [ -z "$id" ] && echo "$url" | grep -qE '^[A-Za-z0-9_-]{20,}$' && id="$url"
+            [ -n "$id" ] && url="https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t"
+            src="$(mktemp)"
+            code=$(curl -sSL -m 300 -o "$src" -w '%{http_code}' "$url" || echo 000)
+            if [ "$code" != "200" ] || ! ffprobe -v error -show_entries format=duration -of csv=p=0 "$src" >/dev/null 2>&1; then
+              echo "FAILED ($code, $(stat -c %s "$src") bytes, $(file -b "$src" | cut -c1-60)): $name"; rm -f "$src"; continue
+            fi
+            dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$src")
+            echo "OK $(stat -c %s "$src") bytes, ${dur}s: $name"
+            if [ "$MODE" = "encode" ]; then
+              mkdir -p site/public/video
+              cut=(); [ -n "$START" ] && cut+=(-ss "$START"); [ -n "$LENGTH" ] && cut+=(-t "$LENGTH")
+              ffmpeg -v error -y "${cut[@]}" -i "$src" -an -vf "scale=540:-2" -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart "site/public/video/$name.mp4"
+              ffmpeg -v error -y -ss "${POSTER_AT:-1}" -i "site/public/video/$name.mp4" -frames:v 1 -q:v 4 "site/public/video/$name-poster.jpg"
+              echo "  -> site/public/video/$name.mp4 ($(stat -c %s "site/public/video/$name.mp4") bytes)"
+            else
+              mkdir -p tmp-video
+              # One frame per second, labelled with its second, 6 to a row.
+              ffmpeg -v error -y -i "$src" -vf "fps=1,scale=240:-2,drawtext=text='%{pts\:hms}':x=4:y=4:fontsize=18:fontcolor=yellow:box=1:boxcolor=black@0.5,tile=6x5" -frames:v 1 -q:v 5 "tmp-video/$name.jpg"
+              echo "  -> tmp-video/$name.jpg"
+            fi
+            rm -f "$src"; done=$((done + 1))
+          done < <(printf '%s\n' "$VIDEOS" | tr ';' '\n')
+          echo "fetched=$done" >> "$GITHUB_ENV"
       - name: Commit
         if: env.fetched != '0'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m "Fetch ${fetched} asset(s)" -m "Downloaded by the fetch-assets workflow."
+          git commit -m "Fetch ${fetched} asset(s)${{ inputs.video_mode && format(' (video {0})', inputs.video_mode) || '' }}" -m "Downloaded by the fetch-assets workflow."
           git push origin HEAD:${{ github.ref_name }}
