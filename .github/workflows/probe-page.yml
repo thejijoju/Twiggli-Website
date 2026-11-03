@@ -47,8 +47,24 @@ jobs:
       - name: Read Instagram bios
         if: startsWith(inputs.url, 'bios:')
         run: node scripts/ig-bios.mjs
+      # "dav:<url>" lists a public Nextcloud share (a WebDAV folder the share
+      # page only shows with JavaScript); "pdf:<url>" prints a PDF as text.
+      - name: List a Nextcloud share
+        if: startsWith(inputs.url, 'dav:')
+        env:
+          PROBE_URL: ${{ inputs.url }}
+        run: |
+          u="${PROBE_URL#dav:}"; base="${u%%/s/*}"; token="${u##*/s/}"; token="${token%%/*}"
+          curl -sS -m 60 -X PROPFIND -H 'Depth: 1' "$base/public.php/dav/files/$token/" \
+            | grep -oE '<d:href>[^<]+</d:href>|<d:getcontentlength>[0-9]+' | sed 's/<d:href>//;s#</d:href>##;s/<d:getcontentlength>/  bytes: /'
+      - name: Read a PDF
+        if: startsWith(inputs.url, 'pdf:')
+        env:
+          PROBE_URL: ${{ inputs.url }}
+        run: |
+          curl -sSL -m 60 -o /tmp/p.pdf "${PROBE_URL#pdf:}" && pdftotext -layout /tmp/p.pdf - | head -c 40000
       - name: Fetch and describe
-        if: ${{ !startsWith(inputs.url, 'scrape:') && !startsWith(inputs.url, 'emails:') && !startsWith(inputs.url, 'insta:') && !startsWith(inputs.url, 'bios:') }}
+        if: ${{ !startsWith(inputs.url, 'dav:') && !startsWith(inputs.url, 'pdf:') && !startsWith(inputs.url, 'scrape:') && !startsWith(inputs.url, 'emails:') && !startsWith(inputs.url, 'insta:') && !startsWith(inputs.url, 'bios:') }}
         run: |
           node - <<'EOF'
           // One run can describe several pages — reading a host who splits
