@@ -301,6 +301,18 @@ export const spaces: Space[] = [
     address: 'Boxhagener Str. 110',
     district: 'Friedrichshain',
     at: [13.45705, 52.51322],
+    // Olivia, 3 Nov 2026: up to ten people, €25 per hour.
+    capacity: 10,
+    price: {
+      en: '€25 per hour',
+      de: '25 € pro Stunde',
+      fr: '25 € de l’heure',
+      es: '25 € por hora',
+      it: '25 € l’ora',
+      nl: '€ 25 per uur',
+      pl: '25 € za godzinę',
+      tr: 'Saatlik 25 €',
+    },
     suits: {
       en: 'Workshops · courses · co-working days · small groups',
       de: 'Workshops · Kurse · Co-Working-Tage · kleine Gruppen',
