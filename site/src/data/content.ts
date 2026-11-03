@@ -842,6 +842,9 @@ const reels: Record<string, { video: string; poster: string }> = {
      petite jungle, berlin") and its closing card ("book today",
      petitejungle.de) are cut off. Audio stripped. */
   petitejungle: { video: '/video/petitejungle.mp4', poster: '/video/petitejungle-poster.jpg' },
+  /* Pigi's own video, sent by WhatsApp 03.11.26: koulouri and pitas, the
+     cooking at her table in Kreuzberg, and Pigi herself. Poster: the koulouri. */
+  pigi: { video: '/video/pigi.mp4', poster: '/video/pigi-poster.jpg' },
   /* Anna's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
      where her public dates run (22.10.26): the empty room laid out with
      easels, the group at work, everyone holding up their canvases, then
