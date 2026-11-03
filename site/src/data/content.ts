@@ -856,6 +856,8 @@ const reels: Record<string, { video: string; poster: string }> = {
   /* Pigi's own video, sent by WhatsApp 03.11.26: koulouri and pitas, the
      cooking at her table in Kreuzberg, and Pigi herself. Poster: the koulouri. */
   pigi: { video: '/video/pigi.mp4', poster: '/video/pigi-poster.jpg' },
+  // Pia's Christmas painting: the finished canvases, Glühwein and the table (WhatsApp, 03.11.26).
+  'pia-christmas': { video: '/video/pia-christmas.mp4', poster: '/video/pia-christmas-poster.jpg' },
   /* Anna's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
      where her public dates run (22.10.26): the empty room laid out with
      easels, the group at work, everyone holding up their canvases, then

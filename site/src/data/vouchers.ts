@@ -64,7 +64,7 @@ export const voucherHostsAgreed: string[] = [
 export const voucherHosts: string[] = [
   'anne', // Anna Martynenko, "Yes, I agree", 27.10.26
   'studio32', // Fred, studio32 Berlin, "I agree", 27.10.26
-  'pia', // Pia Simonsen, "Yes, I agree", 27.10.26
+  'pia', 'pia-christmas', // Pia Simonsen, "Yes, I agree", 27.10.26 (both her concepts)
   'lucille-guder', // Lucille Guder, "Ok pour moi", 27.10.26 (page still in preview)
   'sarah', // Sarah Niklowitz, "mit dem ich natürlich sehr einverstanden bin", 27.10.26
   'nicole', 'whittle', // Nicole (Anybody Can Whittle), "ja, ich bin einverstanden", 28.10.26; Basis now €99, Whittle €165
