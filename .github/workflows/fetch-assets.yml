@@ -38,6 +38,11 @@ on:
         required: false
         type: string
         default: ''
+      video_crop:
+        description: 'encode: optional ffmpeg crop before scaling, e.g. iw:ih*0.72:0:ih*0.14 (cuts black bars)'
+        required: false
+        type: string
+        default: ''
       video_poster_at:
         description: 'encode: poster frame second, from the cut start'
         required: false
@@ -94,6 +99,7 @@ jobs:
           START: ${{ inputs.video_start }}
           LENGTH: ${{ inputs.video_length }}
           POSTER_AT: ${{ inputs.video_poster_at }}
+          CROP: ${{ inputs.video_crop }}
         run: |
           command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null; }
           done=0
@@ -115,7 +121,7 @@ jobs:
             if [ "$MODE" = "encode" ]; then
               mkdir -p site/public/video
               cut=(); [ -n "$START" ] && cut+=(-ss "$START"); [ -n "$LENGTH" ] && cut+=(-t "$LENGTH")
-              ffmpeg -v error -y "${cut[@]}" -i "$src" -an -vf "scale=540:-2" -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart "site/public/video/$name.mp4" || { echo "  encode FAILED: $name"; rm -f "$src"; continue; }
+              ffmpeg -v error -y "${cut[@]}" -i "$src" -an -vf "${CROP:+crop=$CROP,}scale=540:-2" -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart "site/public/video/$name.mp4" || { echo "  encode FAILED: $name"; rm -f "$src"; continue; }
               ffmpeg -v error -y -ss "${POSTER_AT:-1}" -i "site/public/video/$name.mp4" -frames:v 1 -q:v 4 "site/public/video/$name-poster.jpg"
               echo "  -> site/public/video/$name.mp4 ($(stat -c %s "site/public/video/$name.mp4") bytes)"
             else
