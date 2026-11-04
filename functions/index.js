@@ -564,6 +564,17 @@ export const formRequest = onRequest(
     );
     if (!Object.keys(fields).length) return res.status(400).json({ success: 'false', message: 'Empty form' });
 
+    // Spam bots fill every text field with a random run of letters
+    // ("IhXiQPtVBBnIVtJwlowtCm", host application of 01.11.26): no spaces,
+    // 10+ letters, case flipping back and forth. Two or more such fields
+    // and it is a bot: kept in Firestore (marked spam), but nobody is mailed.
+    const gibberish = (v) => /^[A-Za-z]{10,}$/.test(v) && (v.match(/[a-z][A-Z]|[A-Z][a-z]/g) ?? []).length >= 5;
+    const spam = Object.entries(fields).filter(([k, v]) => !/^(Type|Sent from|Language|Came from|Interested in)$/.test(k) && gibberish(String(v).trim())).length >= 2;
+    if (spam) {
+      await getFirestore().collection('formRequests').add({ subject, email, fields, origin: req.get('origin') ?? '', createdAt: FieldValue.serverTimestamp(), mailed: false, spam: true }).catch(() => {});
+      return res.status(200).json({ success: 'true' });
+    }
+
     // A voucher code in a booking: checked again here, so the email says
     // whether it is good, and the request is noted on the voucher.
     let voucherHash = '';
