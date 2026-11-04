@@ -420,11 +420,12 @@ const vc = lang === 'de'
       // A group request names at least the host's own minimum, or four where
       // they have not told us one (GROUP_MIN in content.ts).
       if (people) {
-        const min = group ? Math.max(1, Number(picked.bookMin) || 4) : 1;
+        const groupWish = kind === 'wish' && !!picked.bookMin;
+        const min = group ? Math.max(1, Number(picked.bookMin) || 4) : groupWish ? Math.max(1, Number(picked.bookMin)) : 1;
         people.min = String(min);
-        people.value = group || event ? '' : people.value || '1';
+        people.value = group || event || groupWish ? '' : people.value || '1';
         people.placeholder = picked.bookGroup ?? (group ? `${min}+` : event ? '60' : '');
-        if (minHint) { minHint.hidden = !group; minHint.textContent = group ? String(copy.minPeople ?? '').replace('{n}', String(min)) : ''; }
+        if (minHint) { minHint.hidden = !(group || groupWish); minHint.textContent = group || groupWish ? String(copy.minPeople ?? '').replace('{n}', String(min)) : ''; }
       }
       if (workshop) workshop.textContent = [picked.bookTitle, picked.bookHost].filter(Boolean).join(' · ');
       if (when) {
