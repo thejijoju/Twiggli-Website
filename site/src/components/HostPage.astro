@@ -72,11 +72,11 @@ const about = hostAbout[host.slug]?.[lang];
 const logo = hostLogos[host.slug];
 const f = followCopy[lang];
 const bc = bookingCopy[lang];
-/* Asking for a date (BookingDialog kind "wish"): for anyone who would come
-   on their own or as two, where no date is open or none suits. Hosts open
-   a date or answer with another one (hosts asked for this, 04.11.26). A
-   group-only host has the group request instead. */
-const wishOn = takesIndividuals(host.slug);
+/* Asking for a date (BookingDialog kind "wish"), where no date is open or
+   none suits: hosts open a date or answer with another one (hosts asked
+   for this, 04.11.26). Every host has it (Jirel, 04.11.26); a group-only
+   host's form asks for their usual group size, as the group request does. */
+const wishOn = true;
 const tags = tagsFor(host.slug, lang);
 
 // The price the host gave for groups, as the group page shows it; otherwise
@@ -98,6 +98,7 @@ const wishAttrs = {
   'data-book-host': host.name,
   'data-book-slug': host.slug,
   'data-book-price': priceRange ? priceText : undefined,
+  ...(takesIndividuals(host.slug) ? {} : { 'data-book-min': requestMin(host), 'data-book-group': `${host.groupRange[0]}–${host.groupRange[1]}` }),
 };
 
 /** An on-request workshop's Inquire hands the booking form its name, host,
