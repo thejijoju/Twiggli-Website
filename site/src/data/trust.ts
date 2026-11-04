@@ -23,6 +23,7 @@ export const confirmedHosts: Record<string, string> = {
   'jeannette-tolksdorff': '2026-10', // "Ich bestätige mit 'Ja'", 28.10.26
   druckrausch: '2026-10', // "ja, wir sind einverstanden!", 28.10.26
   'luc-demissy': '2026-10', // "Oui je suis d'accord", 28.10.26
+  'fave-studio': '2026-11', // Giulia: "Yes we agree" (15%, first booking free, vouchers), 04.11.26
 };
 
 export const isConfirmedHost = (slug: string): boolean => slug in confirmedHosts;

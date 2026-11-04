@@ -71,7 +71,7 @@ export const voucherHosts: string[] = [
   'jeannette-tolksdorff', // Jeannette Tolksdorff, "Ich bestätige mit 'Ja'", 28.10.26 (page still in preview)
   'druckrausch', // Deborah (Druckrausch), "ja, wir sind einverstanden!", 28.10.26
   'strassenbraeu', // William (Straßenbräu), "Gutscheine: Könnt ihr gerne verkaufen, kein Problem!", 30.10.26
-  'fave-studio', // Elena & Giulia (fave studio), yes to vouchers on the call of 04.11.26 (Jirel); written yes still to ask
+  'fave-studio', // Elena & Giulia (fave studio), "Yes we agree", 04.11.26 (email, Giulia)
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
