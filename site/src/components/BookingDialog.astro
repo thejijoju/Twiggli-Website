@@ -433,7 +433,7 @@ const vc = lang === 'de'
         when.hidden = !when.textContent;
       }
       // The voucher field, at hosts that take Twiggli vouchers.
-      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind));
+      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind) && !(kind === 'wish' && picked.bookMin));
       if (voucherRow) voucherRow.hidden = true;
       if (voucherIn) voucherIn.value = '';
       voucherOk = null; note('');
