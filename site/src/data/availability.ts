@@ -16,6 +16,12 @@ export interface AvailabilityNote {
   going?: number;
   /** Places left, where the host told us and the feed has no count. */
   spots?: number;
+  /** Places booked through Twiggli and confirmed by the host. Taken off
+   *  the date's places (the feed's count, `spots` here, or the host's
+   *  hostDates.ts entry); at none left the date shows "Sold out" with the
+   *  waiting list. Until host accounts and Stripe count bookings
+   *  themselves, Jirel's morning check keeps this up to date. */
+  booked?: number;
 }
 export const availabilityNotes: Record<string, AvailabilityNote> = {
   // Deborah, 12 Oct: nine of the places taken, two more fit.

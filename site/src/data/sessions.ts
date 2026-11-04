@@ -14,6 +14,17 @@ import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
 import { withHostSlots, accountDates } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
+
+/** Places left on a date: the feed's or the host's count (or one the host
+ *  told us), less the places booked through Twiggli and confirmed
+ *  (availability.ts `booked`). Never below none; undefined where nobody
+ *  has given a count. */
+const placesLeft = (w: { slug: string; date: string; time?: string; spots?: number }): number | undefined => {
+  const note = availabilityNotes[`${w.slug}|${w.date}|${w.time}`];
+  const base = typeof w.spots === 'number' ? w.spots : note?.spots;
+  if (typeof base !== 'number') return undefined;
+  return Math.max(0, base - (note?.booked ?? 0));
+};
 import { hostDates } from './hostDates.ts';
 import { preview } from './hosts/preview.ts';
 import { partnerCodes, type PartnerCode } from './partners.ts';
@@ -432,17 +443,15 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.salesEnd ? { salesEnd: w.salesEnd } : {}),
       ...(w.price ? { price: w.price } : {}),
       ...(w.priceWas ? { priceWas: w.priceWas } : {}),
-      ...(typeof w.spots === 'number' ? { spots: w.spots }
-        : typeof availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.spots === 'number' ? { spots: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].spots }
-        : {}),
+      ...(placesLeft(w) !== undefined ? { spots: placesLeft(w) } : {}),
       ...(w.image ? { image: w.image } : {}),
       ...(w.minGuests ? { minGuests: w.minGuests } : {}),
       ...(w.request ? { request: true } : {}),
       ...(w.kids ? { kids: true } : {}),
-      ...(w.soldOut ? { soldOut: true } : {}),
-      ...(w.waitingList ? { waitingList: true } : {}),
-      ...(!w.soldOut && availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.almostFull ? { almostFull: true } : {}),
-      ...(availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going } : {}),
+      ...(w.soldOut || placesLeft(w) === 0 ? { soldOut: true } : {}),
+      ...(w.waitingList || (!w.soldOut && placesLeft(w) === 0) ? { waitingList: true } : {}),
+      ...(!w.soldOut && placesLeft(w) !== 0 && availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.almostFull ? { almostFull: true } : {}),
+      ...((availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ?? availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.booked) ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going ?? availabilityNotes[`${w.slug}|${w.date}|${w.time}`].booked } : {}),
       ...(partnerCodes[w.slug] && !offSite.has(w) && !w.request ? { partner: partnerCodes[w.slug] } : {}),
       ...((w as { openStudio?: boolean }).openStudio ? { usp: EXPERIENCED[lang], openStudio: true }
         : usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),

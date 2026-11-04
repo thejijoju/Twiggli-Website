@@ -379,7 +379,7 @@ const vc = lang === 'de'
       const event = kind === 'event' || kind === 'special';
       if (lede) lede.textContent = kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : kind === 'wish' ? copy.wishLede : copy.lede;
       if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat' || kind === 'wish';
-      if (wishBox) wishBox.hidden = kind !== 'wish';
+      if (wishBox) wishBox.hidden = kind !== 'wish' && kind !== 'notify';
       // A date that only runs from a set number of participants says so,
       // and that nobody pays unless it does.
       const runsFrom = dialog.querySelector<HTMLElement>('[data-book-runs-from]');
@@ -468,8 +468,8 @@ const vc = lang === 'de'
       const kind = picked.book || 'book';
       const label = kind === 'event' ? 'Multi-host event request' : kind === 'special' ? 'Special request' : kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : kind === 'wish' ? 'Date request' : 'Booking request';
       const wish = String(data.get('when') ?? '');
-      const wishDates = kind === 'wish' ? ['wish1', 'wish2', 'wish3'].map((k) => String(data.get(k) ?? '')).filter(Boolean) : [];
-      const wishRough = kind === 'wish' ? [...data.getAll('wishDays'), ...data.getAll('wishTimes')].map(String).join(', ') : '';
+      const wishDates = kind === 'wish' || kind === 'notify' ? ['wish1', 'wish2', 'wish3'].map((k) => String(data.get(k) ?? '')).filter(Boolean) : [];
+      const wishRough = kind === 'wish' || kind === 'notify' ? [...data.getAll('wishDays'), ...data.getAll('wishTimes')].map(String).join(', ') : '';
       const fields: Record<string, string> = {
         Type: label,
         [kind === 'studio' ? 'Studio' : 'Workshop']: picked.bookTitle ?? '',
@@ -481,6 +481,7 @@ const vc = lang === 'de'
           : wishDates.length ? `preferred: ${wishDates.map((d) => `${d} (${dateText(d)})`).join('; ')}`
           : wish ? `preferred: ${wish} (${dateText(wish)})` : wishRough ? `flexible: ${wishRough}` : 'no date yet',
         ...(kind === 'wish' ? { 'Roughly when': wishRough || 'not said', 'For the host': 'No date open (or none suits): open one, or suggest another date' } : {}),
+        ...(kind === 'notify' && (wishDates.length || wishRough) ? { 'Other dates that would suit': [wishDates.map((d) => `${d} (${dateText(d)})`).join('; '), wishRough].filter(Boolean).join(' · '), 'For the host': 'Sold out: a place if one frees up, or open an extra date' } : {}),
         Time: picked.bookTime ?? '',
         Price: picked.bookPrice ?? '',
         ...(picked.bookGroup ? { 'Group size (host)': picked.bookGroup } : {}),
