@@ -74,6 +74,8 @@ export interface HostAccountCopy {
   c7: string;
   c14: string;
   cNone: string;
+  /** No refund, but the guest can move the ticket to a later date (fave studio, 04.11.26). */
+  cMove: string;
   publish: string;
   saveChanges: string;
   publishNote: string;
@@ -293,6 +295,7 @@ const en: HostAccountCopy = {
   c7: 'free up to 7 days before',
   c14: 'free up to 14 days before',
   cNone: 'no refunds',
+  cMove: 'no refund, but can be moved to a later date',
   publish: 'Publish date',
   saveChanges: 'Save changes',
   publishNote: 'Shows on your page and in the Twiggli calendar within the hour.',
@@ -475,6 +478,7 @@ const de: HostAccountCopy = {
   c7: 'bis 7 Tage vorher kostenlos',
   c14: 'bis 14 Tage vorher kostenlos',
   cNone: 'keine Erstattung',
+  cMove: 'keine Erstattung, aber auf einen späteren Termin übertragbar',
   publish: 'Termin veröffentlichen',
   saveChanges: 'Änderungen speichern',
   publishNote: 'Erscheint innerhalb einer Stunde auf deiner Seite und im Twiggli-Kalender.',

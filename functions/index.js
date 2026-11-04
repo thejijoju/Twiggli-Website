@@ -809,7 +809,7 @@ export const hostInviteLinks = onRequest({ region: 'europe-west3', maxInstances:
 // bookable request dates on the host's page and in the calendar.
 
 const REPEATS = ['once', 'weekly', 'biweekly', 'monthly'];
-const CANCELS = ['24h', '7d', '14d', 'none'];
+const CANCELS = ['24h', '7d', '14d', 'none', 'move']; // move: no refund, but can be moved to a later date
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 const YMD = /^\d{4}-\d\d-\d\d$/;
 
