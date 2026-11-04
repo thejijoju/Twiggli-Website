@@ -15,7 +15,8 @@ import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { followCopy } from '../data/follow.ts';
 import { tagsFor } from '../data/hostTags.ts';
 import { requestEmail } from '../data/site.ts';
-import { isVoucherHost } from '../data/vouchers.ts';
+import { isVoucherHost, takesIndividuals } from '../data/vouchers.ts';
+import { bookingCopy } from '../data/bookingCopy.ts';
 import { getHostPriceRanges, previewOnRequestFor, previewSessionsFor } from '../data/sessions.ts';
 import {
   activityCopy, activityHref, formatWhen, hostDescription, hostDurationText, hostGroupText, hostH1, hostHref, hostImage,
@@ -70,6 +71,12 @@ const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 const about = hostAbout[host.slug]?.[lang];
 const logo = hostLogos[host.slug];
 const f = followCopy[lang];
+const bc = bookingCopy[lang];
+/* Asking for a date (BookingDialog kind "wish"): for anyone who would come
+   on their own or as two, where no date is open or none suits. Hosts open
+   a date or answer with another one (hosts asked for this, 04.11.26). A
+   group-only host has the group request instead. */
+const wishOn = takesIndividuals(host.slug);
 const tags = tagsFor(host.slug, lang);
 
 // The price the host gave for groups, as the group page shows it; otherwise
@@ -85,6 +92,13 @@ const priceText = !priceRange
   : priceRange[0] === 0 && priceRange[1] === 0 ? t.free
   : priceRange[0] === priceRange[1] ? `${money(priceRange[0])} · ${t.perPerson}`
   : `${money(priceRange[0])}–${money(priceRange[1])} · ${t.perPerson}`;
+const wishAttrs = {
+  'data-book': 'wish',
+  'data-book-title': sessions[0]?.title ?? host.specialty,
+  'data-book-host': host.name,
+  'data-book-slug': host.slug,
+  'data-book-price': priceRange ? priceText : undefined,
+};
 
 /** An on-request workshop's Inquire hands the booking form its name, host,
  *  price and the host's page (BookingDialog.astro). */
@@ -228,6 +242,12 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4Z" /></svg>
           {t.request}
         </a>
+        {wishOn && (
+          <a class="maker-wish" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`} {...wishAttrs}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>
+            {bc.wishAsk}
+          </a>
+        )}
         {/* A · the second button, for a host who takes vouchers. */}
         <Voucher kind="pill" host={host} lang={lang} title={sessions[0]?.title} />
         </div>
@@ -279,7 +299,13 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
       {sessions.length ? (
         <DateRows sessions={sessions} lang={lang} linkTitlesTo={preview ? 'booking' : 'workshop'} />
       ) : (
-        <p class="section-lede">{t.noDates}</p>
+        !wishOn && <p class="section-lede">{t.noDates}</p>
+      )}
+      {wishOn && (
+        <div class="wish-row">
+          <p>{sessions.length ? bc.wishOther : bc.wishNone}</p>
+          <a class="maker-wish" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`} {...wishAttrs}>{bc.wishAsk}</a>
+        </div>
       )}
 
       {onRequest.length > 0 && (

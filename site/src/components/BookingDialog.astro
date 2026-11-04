@@ -77,6 +77,25 @@ const vc = lang === 'de'
         <span>{c.when} <em>({c.optional})</em></span>
         <input name="when" type="date" />
       </label>
+      {/* Asking for a date (kind "wish"): up to three dates that would
+          suit, or roughly when, so the host can open one or counter. */}
+      <div class="book-studio" data-book-wish hidden>
+        <fieldset class="book-field book-field-wide book-often">
+          <legend>{c.wishDates} <em>({c.optional})</em></legend>
+          <div class="book-wish-dates">
+            <input name="wish1" type="date" aria-label={`${c.wishDates} 1`} />
+            <input name="wish2" type="date" aria-label={`${c.wishDates} 2`} />
+            <input name="wish3" type="date" aria-label={`${c.wishDates} 3`} />
+          </div>
+        </fieldset>
+        <fieldset class="book-field book-field-wide book-often">
+          <legend>{c.wishRough} <em>({c.optional})</em></legend>
+          <div class="book-often-chips">
+            {c.wishDays.map((d, i) => <label><input type="checkbox" name="wishDays" value={['Weekdays', 'Weekends'][i]} /><span>{d}</span></label>)}
+            {c.wishTimes.map((t, i) => <label><input type="checkbox" name="wishTimes" value={['Mornings', 'Afternoons', 'Evenings'][i]} /><span>{t}</span></label>)}
+          </div>
+        </fieldset>
+      </div>
       {/* A group request: what it's for, at the host's studio or at the
           group's own venue, and the extras a host can add (Ilinca, 26.10:
           the questions she otherwise asks back by email). */}
@@ -268,6 +287,7 @@ const vc = lang === 'de'
     placeInputs.forEach((r) => r.addEventListener('change', () => {
       if (venueField) venueField.hidden = !(r.checked && r.value === 'venue');
     }));
+    const wishBox = dialog.querySelector<HTMLElement>('[data-book-wish]');
     const hostsBox = dialog.querySelector<HTMLElement>('[data-book-hosts-box]');
     const hostsList = dialog.querySelector<HTMLElement>('[data-book-hosts-list]');
     const messageLabel = dialog.querySelector<HTMLElement>('[data-book-message-label]');
@@ -357,8 +377,9 @@ const vc = lang === 'de'
       // An event with several hosts and a special request are group
       // requests too: who, how many, when and where, plus the hosts.
       const event = kind === 'event' || kind === 'special';
-      if (lede) lede.textContent = kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : copy.lede;
-      if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat';
+      if (lede) lede.textContent = kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : kind === 'wish' ? copy.wishLede : copy.lede;
+      if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat' || kind === 'wish';
+      if (wishBox) wishBox.hidden = kind !== 'wish';
       // A date that only runs from a set number of participants says so,
       // and that nobody pays unless it does.
       const runsFrom = dialog.querySelector<HTMLElement>('[data-book-runs-from]');
@@ -411,7 +432,7 @@ const vc = lang === 'de'
         when.hidden = !when.textContent;
       }
       // The voucher field, at hosts that take Twiggli vouchers.
-      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'group'].includes(kind));
+      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind));
       if (voucherRow) voucherRow.hidden = true;
       if (voucherIn) voucherIn.value = '';
       voucherOk = null; note('');
@@ -444,8 +465,10 @@ const vc = lang === 'de'
       const data = new FormData(form);
       if (looksLikeBot(data)) return;
       const kind = picked.book || 'book';
-      const label = kind === 'event' ? 'Multi-host event request' : kind === 'special' ? 'Special request' : kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : 'Booking request';
+      const label = kind === 'event' ? 'Multi-host event request' : kind === 'special' ? 'Special request' : kind === 'notify' ? 'Waiting list' : kind === 'group' ? 'Group booking request' : kind === 'studio' ? 'Studio rental request' : kind === 'membership' ? 'Membership request' : kind === 'retreat' ? 'Retreat information request' : kind === 'wish' ? 'Date request' : 'Booking request';
       const wish = String(data.get('when') ?? '');
+      const wishDates = kind === 'wish' ? ['wish1', 'wish2', 'wish3'].map((k) => String(data.get(k) ?? '')).filter(Boolean) : [];
+      const wishRough = kind === 'wish' ? [...data.getAll('wishDays'), ...data.getAll('wishTimes')].map(String).join(', ') : '';
       const fields: Record<string, string> = {
         Type: label,
         [kind === 'studio' ? 'Studio' : 'Workshop']: picked.bookTitle ?? '',
@@ -454,7 +477,9 @@ const vc = lang === 'de'
         ...(picked.bookKeeper ? { 'Studio host': picked.bookKeeper } : {}),
         Date: picked.bookDate
           ? `${picked.bookDate} (${dateText(picked.bookDate)})`
-          : wish ? `preferred: ${wish} (${dateText(wish)})` : 'no date yet',
+          : wishDates.length ? `preferred: ${wishDates.map((d) => `${d} (${dateText(d)})`).join('; ')}`
+          : wish ? `preferred: ${wish} (${dateText(wish)})` : wishRough ? `flexible: ${wishRough}` : 'no date yet',
+        ...(kind === 'wish' ? { 'Roughly when': wishRough || 'not said', 'For the host': 'No date open (or none suits): open one, or suggest another date' } : {}),
         Time: picked.bookTime ?? '',
         Price: picked.bookPrice ?? '',
         ...(picked.bookGroup ? { 'Group size (host)': picked.bookGroup } : {}),
@@ -488,7 +513,7 @@ const vc = lang === 'de'
         Language: dialog.dataset.lang ?? '',
       };
       const studioWhen = kind === 'studio' ? [fields['Start time'], fields.Hours && `${fields.Hours} h`, fields['How often'] === 'Regularly' ? 'regularly' : ''].filter(Boolean).join(', ') : '';
-      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : ''}${studioWhen ? ` ${studioWhen}` : ''}${fields.Where && fields.Where !== 'not said yet' ? `, ${fields.Where === 'At their own venue' ? 'at their venue' : 'at the studio'}` : ''} (${fields.People})`;
+      const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : wishDates.length ? ` — ${wishDates.join(', ')}` : wishRough ? ` — ${wishRough}` : ''}${studioWhen ? ` ${studioWhen}` : ''}${fields.Where && fields.Where !== 'not said yet' ? `, ${fields.Where === 'At their own venue' ? 'at their venue' : 'at the studio'}` : ''} (${fields.People})`;
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(formEndpoint, {
