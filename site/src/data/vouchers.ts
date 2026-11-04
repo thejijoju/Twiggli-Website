@@ -1,4 +1,4 @@
-import type { Host } from './content.ts';
+import { getHosts, type Host } from './content.ts';
 import { VOUCHERS_ON_FIREBASE, functionsBase } from './firebase.ts';
 import { getHostPriceRanges, getSessions } from './sessions.ts';
 import { withBase, type Lang } from '../lib/url.ts';
@@ -64,7 +64,7 @@ export const voucherHostsAgreed: string[] = [
 export const voucherHosts: string[] = [
   'anne', // Anna Martynenko, "Yes, I agree", 27.10.26
   'studio32', // Fred, studio32 Berlin, "I agree", 27.10.26
-  'pia', 'pia-christmas', // Pia Simonsen, "Yes, I agree", 27.10.26 (both her concepts)
+  'pia', // Pia Simonsen, "Yes, I agree", 27.10.26 (not her Christmas group card: group only)
   'lucille-guder', // Lucille Guder, "Ok pour moi", 27.10.26 (page still in preview)
   'sarah', // Sarah Niklowitz, "mit dem ich natürlich sehr einverstanden bin", 27.10.26
   'nicole', 'whittle', // Nicole (Anybody Can Whittle), "ja, ich bin einverstanden", 28.10.26; Basis now €99, Whittle €165
@@ -83,7 +83,24 @@ export const voucherHosts: string[] = [
  */
 export const VOUCHERS_ON = true;
 
-export const isVoucherHost = (slug: string): boolean => VOUCHERS_ON && voucherHosts.includes(slug);
+/**
+ * A voucher is for one or two people, so it only makes sense where one
+ * person can book: a host with public dates, or one who takes a booking
+ * from one or two people. Group-only formats (a team event from six, a
+ * Christmas painting for 4–10) carry no voucher even when the host agreed
+ * to vouchers — Pia, 04.11.26: "vouchers for group bookings make no sense".
+ */
+let individualSlugs: Set<string> | undefined;
+export const takesIndividuals = (slug: string): boolean => {
+  if (!individualSlugs) {
+    individualSlugs = new Set(getSessions('en').map((s) => s.host.slug));
+    for (const h of getHosts('en', { withPreview: true })) if (h.groupRange && h.groupRange[0] <= 2) individualSlugs.add(h.slug);
+  }
+  return individualSlugs.has(slug);
+};
+
+export const isVoucherHost = (slug: string): boolean =>
+  VOUCHERS_ON && voucherHosts.includes(slug) && takesIndividuals(slug);
 
 /** How long a voucher is valid, in years. */
 export const VOUCHER_YEARS = 3;

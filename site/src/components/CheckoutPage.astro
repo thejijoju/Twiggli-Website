@@ -27,7 +27,7 @@ import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { checkoutCopy } from '../data/checkout.ts';
 import {
-  voucherHosts, voucherPrice, voucherPayment, voucherAmounts, classVouchers,
+  voucherHosts, voucherPrice, voucherPayment, voucherAmounts, classVouchers, takesIndividuals,
   VOUCHER_MIN, VOUCHER_MAX_PEOPLE, VOUCHER_YEARS, GENERAL_VOUCHER_HOST,
 } from '../data/vouchers.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
@@ -42,7 +42,7 @@ const t = checkoutCopy(lang);
    site-wide, so the page can be tried before they are. */
 const hosts = Object.fromEntries(
   getHosts(lang, { withPreview: true })
-    .filter((h) => voucherHosts.includes(h.slug))
+    .filter((h) => voucherHosts.includes(h.slug) && takesIndividuals(h.slug))
     .map((h) => [h.slug, {
       name: h.name, title: h.specialty, price: voucherPrice(h) ?? 0, image: h.poster ?? h.photo ?? '',
       page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
