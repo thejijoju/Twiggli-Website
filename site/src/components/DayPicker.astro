@@ -771,7 +771,7 @@ import Voucher from './Voucher.astro';
                           )}
                           {/* For a host who takes vouchers (data/vouchers.ts): a
                               lighter second button straight under Book. */}
-                          <Voucher kind="under" host={s.host} lang={lang} title={s.title} workshopKey={s.workshopKey} />
+                          {!s.soldOut && <Voucher kind="under" host={s.host} lang={lang} title={s.title} workshopKey={s.workshopKey} />}
                           {/* People send workshops to friends — the native
                               share sheet where the browser has one, copied
                               link elsewhere. */}
