@@ -79,6 +79,17 @@ const schema = {
   ],
 };
 import Voucher from './Voucher.astro';
+import { bookingCopy } from '../data/bookingCopy.ts';
+import { href } from '../lib/url.ts';
+const bc = bookingCopy[lang];
+// None of this class's dates suits: ask for one (BookingDialog kind "wish").
+const wishAttrs = {
+  'data-book': 'wish',
+  'data-book-title': w.title,
+  'data-book-host': host.name,
+  'data-book-slug': host.slug,
+  'data-book-price': next.price || undefined,
+};
 ---
 
 <Base title={workshopTitle(w, lang)} description={clip(lede)} lang={lang} image={image}>
@@ -131,6 +142,10 @@ import Voucher from './Voucher.astro';
     <section class="section" id="dates">
       <h2 class="section-title">{t.upcoming}</h2>
       <DateRows sessions={w.sessions} lang={lang} linkTitlesTo="booking" />
+      <div class="wish-row">
+        <p>{bc.wishOther}</p>
+        <a class="maker-wish" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`} {...wishAttrs}>{bc.wishAsk}</a>
+      </div>
       <p class="section-more"><a href={activityHref(lang, host.activity)}>{t.moreIn(activity.short)} →</a></p>
     </section>
 

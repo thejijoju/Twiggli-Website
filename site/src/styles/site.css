@@ -6530,3 +6530,23 @@ body.is-bare { padding-bottom: 0; }
   color: var(--color-text-muted);
 }
 .space-body .photo-credit { margin: -12px 0 16px; }
+
+/* Asking for a date (BookingDialog kind "wish"): an outlined pill beside
+   the request button, and a row under the dates. */
+.maker-wish {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 18px; border-radius: 999px;
+  border: 2px solid var(--color-text); color: var(--color-text);
+  font-weight: 700; font-size: 14px; text-decoration: none; background: transparent;
+}
+.maker-wish:hover { background: color-mix(in srgb, var(--color-text) 8%, transparent); color: var(--color-text); }
+.maker-wish svg { width: 15px; height: 15px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wish-row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 20px; padding: 16px 20px; border-radius: 16px;
+  background: color-mix(in srgb, var(--color-accent, #6a3eec) 7%, transparent);
+}
+.wish-row p { margin: 0; font-weight: 600; }
+.book-wish-dates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.book-wish-dates input { width: 100%; min-width: 0; }
+@media (max-width: 560px) { .book-wish-dates { grid-template-columns: 1fr; } }

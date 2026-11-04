@@ -20,8 +20,13 @@ export const bookingCopy: Record<Lang, {
   /** A group request: what it's for, and extras the host can add. */
   occasion: string; occasions: [string, string, string, string, string, string];
   extras: string; extraHour: string; extraCustom: string;
+  /** Asking for a date when none is open, or none suits (kind "wish"): the
+   *  host can open one, or come back with another date or a counter-offer. */
+  wish: string; wishLede: string; wishAsk: string; wishOther: string; wishNone: string;
+  wishDates: string; wishRough: string; wishDays: [string, string]; wishTimes: [string, string, string];
 }> = {
   en: {
+    wish: "Ask for a date", wishLede: "Tell us when would suit you. We pass it on to the host, who can open a date for you or suggest another one. Not binding, nothing to pay yet.", wishAsk: "Ask for a date", wishOther: "None of these dates work for you?", wishNone: "No dates open right now, but you can ask for one.", wishDates: "Dates that would suit you", wishRough: "Or roughly when?", wishDays: ["Weekdays", "Weekends"], wishTimes: ["Mornings", "Afternoons", "Evenings"],
     minPeople: 'Group requests from {n} people',
     runsFrom: 'This class runs from {n} participants. Your request is confirmed as soon as {n} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.',
     book: 'Booking request', request: 'Booking request', notify: 'Join the waiting list', retreat: 'Request information',
@@ -43,6 +48,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Extras', extraHour: 'A longer session (+1 h)', extraCustom: 'A custom design or motif',
   },
   de: {
+    wish: "Wunschtermin anfragen", wishLede: "Sag uns, wann es dir passt. Wir geben es an den Host weiter, der dir einen Termin eröffnen oder einen anderen vorschlagen kann. Unverbindlich, du zahlst noch nichts.", wishAsk: "Wunschtermin anfragen", wishOther: "Keiner dieser Termine passt dir?", wishNone: "Gerade sind keine Termine offen, aber du kannst einen anfragen.", wishDates: "Termine, die dir passen würden", wishRough: "Oder ungefähr wann?", wishDays: ["Unter der Woche", "Am Wochenende"], wishTimes: ["Vormittags", "Nachmittags", "Abends"],
     minPeople: 'Gruppenanfragen ab {n} Personen',
     runsFrom: 'Dieser Kurs findet ab {n} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald {n} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.',
     book: 'Buchungsanfrage', request: 'Buchungsanfrage', notify: 'Auf die Warteliste', retreat: 'Informationen anfragen',
@@ -64,6 +70,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Extras', extraHour: 'Länger machen (+1 Std.)', extraCustom: 'Eigenes Motiv oder Design',
   },
   fr: {
+    wish: "Demander une date", wishLede: "Dites-nous ce qui vous conviendrait. Nous transmettons à l’hôte, qui peut ouvrir une date pour vous ou en proposer une autre. Sans engagement, rien à payer pour l’instant.", wishAsk: "Demander une date", wishOther: "Aucune de ces dates ne vous convient ?", wishNone: "Aucune date ouverte pour le moment, mais vous pouvez en demander une.", wishDates: "Dates qui vous conviendraient", wishRough: "Ou à peu près quand ?", wishDays: ["En semaine", "Le week-end"], wishTimes: ["Le matin", "L’après-midi", "Le soir"],
     minPeople: 'Demandes de groupe à partir de {n} personnes',
     runsFrom: 'Cet atelier a lieu à partir de {n} participants. Ta demande est confirmée dès que {n} places sont réservées, et tu ne paies qu’à ce moment-là. S’il n’a pas lieu, rien n’est débité.',
     book: 'Demande de réservation', request: 'Demande de réservation', notify: 'Liste d’attente', retreat: 'Demander des informations',
@@ -85,6 +92,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Options', extraHour: 'Une séance plus longue (+1 h)', extraCustom: 'Un motif ou design personnalisé',
   },
   es: {
+    wish: "Pedir una fecha", wishLede: "Dinos cuándo te vendría bien. Se lo pasamos al anfitrión, que puede abrir una fecha para ti o proponer otra. Sin compromiso, aún no pagas nada.", wishAsk: "Pedir una fecha", wishOther: "¿Ninguna de estas fechas te va bien?", wishNone: "Ahora no hay fechas abiertas, pero puedes pedir una.", wishDates: "Fechas que te vendrían bien", wishRough: "¿O más o menos cuándo?", wishDays: ["Entre semana", "Fines de semana"], wishTimes: ["Mañanas", "Tardes", "Noches"],
     minPeople: 'Solicitudes de grupo desde {n} personas',
     runsFrom: 'Este taller se celebra a partir de {n} participantes. Tu solicitud se confirma en cuanto haya {n} plazas reservadas, y solo entonces pagas. Si no se llena, no se cobra nada.',
     book: 'Solicitud de reserva', request: 'Solicitud de reserva', notify: 'Lista de espera', retreat: 'Solicitar información',
@@ -106,6 +114,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Extras', extraHour: 'Una sesión más larga (+1 h)', extraCustom: 'Un diseño o motivo propio',
   },
   it: {
+    wish: "Chiedi una data", wishLede: "Dicci quando ti andrebbe bene. Lo giriamo all’host, che può aprire una data per te o proporne un’altra. Senza impegno, non paghi ancora nulla.", wishAsk: "Chiedi una data", wishOther: "Nessuna di queste date fa per te?", wishNone: "Al momento non ci sono date aperte, ma puoi chiederne una.", wishDates: "Date che ti andrebbero bene", wishRough: "O più o meno quando?", wishDays: ["In settimana", "Nel weekend"], wishTimes: ["Mattina", "Pomeriggio", "Sera"],
     minPeople: 'Richieste di gruppo da {n} persone',
     runsFrom: 'Questo corso si tiene a partire da {n} partecipanti. La tua richiesta viene confermata appena ci sono {n} posti prenotati, e solo allora paghi. Se non si raggiunge, non paghi nulla.',
     book: 'Richiesta di prenotazione', request: 'Richiesta di prenotazione', notify: 'Lista d’attesa', retreat: 'Richiedi informazioni',
@@ -127,6 +136,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Extra', extraHour: 'Una sessione più lunga (+1 h)', extraCustom: 'Un motivo o design personalizzato',
   },
   nl: {
+    wish: "Vraag een datum aan", wishLede: "Laat ons weten wanneer het jou past. We geven het door aan de host, die een datum voor je kan openen of een andere kan voorstellen. Vrijblijvend, je betaalt nog niets.", wishAsk: "Vraag een datum aan", wishOther: "Past geen van deze data?", wishNone: "Er staan nu geen data open, maar je kunt er een aanvragen.", wishDates: "Data die jou zouden passen", wishRough: "Of ongeveer wanneer?", wishDays: ["Doordeweeks", "In het weekend"], wishTimes: ["’s Ochtends", "’s Middags", "’s Avonds"],
     minPeople: 'Groepsaanvragen vanaf {n} personen',
     runsFrom: 'Deze workshop gaat door vanaf {n} deelnemers. Je aanvraag wordt bevestigd zodra er {n} plekken geboekt zijn, en pas dan betaal je. Gaat hij niet door, dan wordt er niets afgeschreven.',
     book: 'Boekingsaanvraag', request: 'Boekingsaanvraag', notify: 'Op de wachtlijst', retreat: 'Informatie aanvragen',
@@ -148,6 +158,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Extra’s', extraHour: 'Een langere sessie (+1 u)', extraCustom: 'Een eigen ontwerp of motief',
   },
   pl: {
+    wish: "Zapytaj o termin", wishLede: "Napisz, kiedy by ci pasowało. Przekażemy to gospodarzowi, który może otworzyć dla ciebie termin albo zaproponować inny. Niezobowiązująco, jeszcze nic nie płacisz.", wishAsk: "Zapytaj o termin", wishOther: "Żaden z tych terminów ci nie pasuje?", wishNone: "Teraz nie ma otwartych terminów, ale możesz o jakiś zapytać.", wishDates: "Terminy, które by ci pasowały", wishRough: "Albo mniej więcej kiedy?", wishDays: ["W tygodniu", "W weekendy"], wishTimes: ["Rano", "Po południu", "Wieczorem"],
     minPeople: 'Zapytania grupowe od {n} osób',
     runsFrom: 'Te zajęcia odbywają się od {n} uczestników. Twoja prośba zostanie potwierdzona, gdy zarezerwowanych będzie {n} miejsc, i dopiero wtedy płacisz. Jeśli się nie odbędą, nic nie zostanie pobrane.',
     book: 'Prośba o rezerwację', request: 'Prośba o rezerwację', notify: 'Lista oczekujących', retreat: 'Poproś o informacje',
@@ -169,6 +180,7 @@ export const bookingCopy: Record<Lang, {
     extras: 'Dodatki', extraHour: 'Dłuższa sesja (+1 godz.)', extraCustom: 'Własny wzór lub motyw',
   },
   tr: {
+    wish: "Tarih iste", wishLede: "Sana ne zaman uyacağını yaz. Ev sahibine iletiyoruz; senin için bir tarih açabilir ya da başka bir tarih önerebilir. Bağlayıcı değil, henüz bir şey ödemiyorsun.", wishAsk: "Tarih iste", wishOther: "Bu tarihlerin hiçbiri uymuyor mu?", wishNone: "Şu an açık tarih yok, ama bir tane isteyebilirsin.", wishDates: "Sana uyacak tarihler", wishRough: "Ya da aşağı yukarı ne zaman?", wishDays: ["Hafta içi", "Hafta sonu"], wishTimes: ["Sabah", "Öğleden sonra", "Akşam"],
     minPeople: 'Grup talepleri {n} kişiden itibaren',
     runsFrom: 'Bu atölye {n} katılımcıdan itibaren yapılır. {n} yer dolduğunda talebin onaylanır ve ancak o zaman ödeme yaparsın. Dolmazsa hiçbir ücret alınmaz.',
     book: 'Rezervasyon talebi', request: 'Rezervasyon talebi', notify: 'Bekleme listesi', retreat: 'Bilgi iste',
