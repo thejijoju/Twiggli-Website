@@ -15,6 +15,8 @@ export interface HostDate {
   duration?: string;
   price?: string;
   spots?: number;
+  /** The date only runs from this many participants (the booking form says so). */
+  minGuests?: number;
   district?: string;
   /** The host's booking page for it. */
   url: string;
@@ -114,7 +116,9 @@ export const hostDates: HostDate[] = [
   { slug: 'pigi', title: 'Griechischer Kochkurs: Moussaka & Co.', titleEn: 'Greek cooking class: moussaka & co.', date: '2027-02-27', time: '15:00', duration: '5 h', price: '€80', spots: 5, district: 'Kreuzberg', url: 'https://gokonfetti.com/de-de/e/griechischer-kochkurs-in-berlin-wepr6z/' },
   // fave studio's first Paper Light Night (fagniveronese.com/workshops,
   // 30.10.26); booked by email with them, so it keeps our request form.
-  { slug: 'fave-studio', title: 'Paper Light Night: eure eigene Papierlampe', titleEn: 'Paper Light Night: decorate your own paper lamp', date: '2026-11-12', time: '18:30', duration: '3 h', price: '€50', district: 'Neukölln', url: 'https://fagniveronese.com/workshops/' },
+  // 12.11. and 12.12. (call 04.11.26): 10 places (a lamp needs about 40 cm each), runs from 5.
+  { slug: 'fave-studio', title: 'Paper Light Night: eure eigene Papierlampe', titleEn: 'Paper Light Night: decorate your own paper lamp', date: '2026-11-12', time: '18:30', duration: '3 h', price: '€50', spots: 10, minGuests: 5, district: 'Neukölln', url: 'https://fagniveronese.com/workshops/' },
+  { slug: 'fave-studio', title: 'Paper Light Night: eure eigene Papierlampe', titleEn: 'Paper Light Night: decorate your own paper lamp', date: '2026-12-12', time: '18:30', duration: '3 h', price: '€50', spots: 10, minGuests: 5, district: 'Neukölln', url: 'https://fagniveronese.com/workshops/' },
   { slug: 'zoenoteka', title: 'MIG/MAG-Schweißen: Metall-Lampenschirm bauen', titleEn: 'MIG/MAG welding: build a metal lampshade', date: '2026-11-21', time: '10:00', duration: '5 h', price: '€150', district: 'Neukölln', url: 'https://zoenoteka.gokonfetti.com/de-de/p/zonoteka-w298kx/' },
 
   // Hobbytischlerei (preview): their Konfetti calendar, read 23.10.26.
