@@ -1,0 +1,679 @@
+diff --git a/scripts/update-workshops.mjs b/scripts/update-workshops.mjs
+index 19fb001..67afaa8 100644
+--- a/scripts/update-workshops.mjs
++++ b/scripts/update-workshops.mjs
+@@ -92,19 +92,6 @@ const SOURCES = [
+     title: 'Lese- & Fokus-Session', titleEn: 'Co-reading & focus session',
+     district: 'Moabit' },
+ 
+-  // Loam. — Jana Marlene Lippert's ceramics studio in Moabit. Every class
+-  // sells from one Squarespace products collection, where a session lives in
+-  // a variant's date option ("Sat 26th Sept l 11:00 - 14:00 l Deutsch &
+-  // English") and the seats left are the variant's stock. The six-week
+-  // course names only its first and last evening, so the reader expands the
+-  // weekly range into the six meetings it stands for. The gift card carries
+-  // amounts rather than dates and drops out on its own. The shop page
+-  // (/classes-workshops) only embeds the collection; /pottery-classes-berlin
+-  // is the collection itself, and the one that answers ?format=json.
+-  { slug: 'loam', name: 'Loam. — pottery classes & workshops', mode: 'squarespace',
+-    url: 'https://www.loamberlin.com/pottery-classes-berlin',
+-    district: 'Moabit' },
+-
+   // LAMA Leather Goods — one WooCommerce product per workshop, each with a
+   // DATE dropdown of its real dates. Prices and durations come from the
+   // catalogue page; the dropdown supplies the dates and the hours.
+diff --git a/site/src/data/content.ts b/site/src/data/content.ts
+index 38524c6..00e0514 100644
+--- a/site/src/data/content.ts
++++ b/site/src/data/content.ts
+@@ -306,9 +306,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
+   // PLACEHOLDER group range — the studio publishes no cap; its own reviews
+   // call it a small group.
+   blauhaus:         { activity: 'photography', groupRange: [1, 10], hourRange: [2.5, 2.5] },
+-  // Eight seats per class on the shop's own stock counts; the courses run
+-  // 2.5 h, the plate and vase workshops 3.
+-  loam:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [2.5, 3] },
+   // Thirty is the cap their own ticket line names; every session runs
+   // 11:00–13:30.
+   pausify:          { activity: 'wellbeing', groupRange: [1, 30], hourRange: [2.5, 2.5] },
+@@ -550,9 +547,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
+     { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cyanotype printing', studio: 'Blauhaus',
+       blurb: 'The oldest photographic process still in daily use, and the one that needs no darkroom: you brush a light-sensitive coating onto paper, lay leaves, flowers or finds from your last walk on top, and let the sun do the rest. What lifts out of the water tray is Prussian blue — a print, a postcard or a folded card to take home. Benedikt works with complete beginners as readily as with people who already draw or photograph; no experience is needed, every material is provided, and the moment the paper turns in the water is the one everyone remembers.',
+       group: 'Small group', duration: '2.5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-    { slug: 'loam', name: 'Loam Berlin', specialty: 'Handbuilding pottery & courses', studio: 'Loam.',
+-      blurb: 'Jana’s ceramics studio in Moabit — workshop, learning place and shop in one. Everything is built by hand rather than thrown: slab building, pinching and coiling, then surface decoration, and the studio glazes and fires your pieces for you to collect later. Classes take eight at most and run two and a half to three hours — an introduction to handbuilding, cups and mugs, plates and trays, candle holders, illustrated bowls, larger vases and carafes — alongside a six-week evening course, private one-to-one sessions, team events and open studio time. Every class is taught in English and German.',
+-      group: 'Up to 8', duration: '2.5–3 h · 6-week course', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+     { slug: 'pausify', name: 'Pausify', specialty: 'Co-reading & focus sessions', studio: 'Pausify',
+       blurb: 'Ksenia and Barbara’s reading and focus community — a book club where nobody assigns the reading. You bring whatever you are in the middle of: a novel, a sketchbook, a laptop, a half-finished project. Twenty minutes of hellos, then an hour of silence with everyone working side by side, then coffee and the conversation that comes out of it. It runs every weekend in a glass-walled space by Hauptbahnhof, in English and German, drinks and snacks included — single ticket or membership, and people often stay on for lunch. Book swaps, talks and writing workshops come round as special editions.',
+       group: 'Up to 30', duration: '2.5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+@@ -744,9 +738,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
+     { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cyanotypie', studio: 'Blauhaus',
+       blurb: 'Eines der ältesten fotografischen Verfahren — und eines, das keine Dunkelkammer braucht: Du streichst eine lichtempfindliche Schicht auf Papier, legst Blätter, Blüten oder Fundstücke vom letzten Spaziergang darauf und lässt die Sonne den Rest machen. Was aus der Wasserschale kommt, ist Preußischblau: ein Druck, eine Postkarte oder eine Klappkarte zum Mitnehmen. Benedikt arbeitet mit absoluten Anfängerinnen genauso wie mit Leuten, die schon zeichnen oder fotografieren; Vorkenntnisse braucht es keine, alle Materialien sind da, und der Moment, in dem das Papier im Wasser umschlägt, bleibt allen im Kopf.',
+       group: 'Kleine Gruppe', duration: '2,5 Std.', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-    { slug: 'loam', name: 'Loam Berlin', specialty: 'Aufbaukeramik & Kurse', studio: 'Loam.',
+-      blurb: 'Das Keramikstudio von Jana in Moabit — Werkstatt, Lernort und Laden in einem. Gearbeitet wird von Hand statt an der Scheibe: Plattentechnik, Pinchen und Wulstaufbau, dazu Oberflächengestaltung; glasiert und gebrannt wird im Studio, abgeholt wird später. Die Kurse nehmen höchstens acht Leute und dauern zweieinhalb bis drei Stunden — Einführung in die Aufbaukeramik, Tassen und Becher, Teller und Schalen, Kerzenhalter, illustrierte Schüsseln, größere Vasen und Karaffen — dazu ein sechswöchiger Abendkurs, Einzelstunden, Team-Events und offene Studiozeit. Unterrichtet wird auf Deutsch und Englisch.',
+-      group: 'Bis 8', duration: '2,5–3 Std. · 6-Wochen-Kurs', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+     { slug: 'pausify', name: 'Pausify', specialty: 'Gemeinsam lesen & fokussiert arbeiten', studio: 'Pausify',
+       blurb: 'Die Lese- und Fokus-Community von Ksenia und Barbara — ein Buchclub, in dem niemand vorgibt, was gelesen wird. Du bringst mit, woran du gerade bist: einen Roman, ein Skizzenbuch, einen Laptop, ein halbfertiges Projekt. Zwanzig Minuten Ankommen, dann eine Stunde Stille, in der alle nebeneinander arbeiten, danach Kaffee und die Gespräche, die daraus entstehen. Jedes Wochenende in einem verglasten Raum am Hauptbahnhof, auf Deutsch und Englisch, Getränke und Snacks inklusive — Einzelticket oder Mitgliedschaft, und viele bleiben danach noch zum Mittagessen. Book Swaps, Talks und Schreibwerkstätten kommen als Sonderausgaben dazu.',
+       group: 'Bis 30', duration: '2,5 Std.', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+@@ -816,10 +807,6 @@ const reels: Record<string, { video: string; poster: string }> = {
+   // light. No captions; audio stripped. The end card with their logo is left
+   // off — it reads as a caption on a card this size.
+   blauhaus: { video: '/video/blauhaus.mp4', poster: '/video/blauhaus-poster.jpg' },
+-  // Loam's own, a class in progress: hands pinching and scoring clay at the
+-  // bench, a horse built up mane and all on its board, and the finished
+-  // pieces drying beside the glazed ones. No captions; audio stripped.
+-  loam: { video: '/video/loam.mp4', poster: '/video/loam-poster.jpg' },
+   // Pausify's own, cut between their caption and their end card: the
+   // booths full of readers over the street, the staircase people read on,
+   // the bean bags mid-conversation and the room before a session. Audio
+@@ -1594,7 +1581,7 @@ const firstNames: Record<string, string> = {
+   'norbert-bildhauerei': 'Norbert',
+   'himapan-berlin': 'Kirsten',
+   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
+-  loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
++  pausify: 'Ksenia & Barbara', lomu: 'Monique',
+   tinkery: 'Astrid', yurika: 'Yurika',
+ };
+ 
+@@ -1635,7 +1622,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
+   chelti: { area: 'Friedenau' },
+   // Based in the north of Berlin; she always comes to the group.
+   'himapan-berlin': { area: 'Berlin', onSite: true },
+-  lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
++  lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' },
+   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
+   landsinn: { area: 'Potsdam-Babelsberg' },
+ tinkery: { area: 'Marzahn-Hellersdorf / Mitte' },
+diff --git a/site/src/data/hosts/es.ts b/site/src/data/hosts/es.ts
+index f30a7c9..19a406e 100644
+--- a/site/src/data/hosts/es.ts
++++ b/site/src/data/hosts/es.ts
+@@ -163,9 +163,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cianotipia', studio: 'Blauhaus',
+     blurb: 'Uno de los procesos fotográficos más antiguos, y el que no necesita cuarto oscuro: extiendes con pincel una capa sensible a la luz sobre el papel, colocas encima hojas, flores o hallazgos de tu último paseo y dejas que el sol haga el resto. Lo que sale de la bandeja de agua es azul de Prusia: una copia, una postal o una tarjeta doblada para llevarte. Benedikt trabaja igual de bien con principiantes absolutos que con gente que ya dibuja o hace fotos; no hace falta experiencia, todo el material está incluido, y el instante en que el papel vira dentro del agua es el que todo el mundo recuerda.',
+     group: 'Grupo pequeño', duration: '2,5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-  { slug: 'loam', name: 'Loam Berlin', specialty: 'Cerámica modelada a mano & cursos', studio: 'Loam.',
+-    blurb: 'El estudio de cerámica de Jana en Moabit: taller, escuela y tienda a la vez. Aquí todo se levanta a mano en lugar de tornearse — placa, pellizco y churro, más la decoración de la superficie; el estudio esmalta y cuece tus piezas y las recoges más tarde. Las clases son de ocho personas como máximo y duran de dos horas y media a tres: introducción al modelado, tazas y jarras, platos y bandejas, portavelas, cuencos ilustrados, jarrones y jarras grandes. A ello se suman un curso de tarde de seis semanas, clases particulares, eventos de equipo y horas de estudio abierto. Todas las clases se imparten en inglés y alemán.',
+-    group: 'Hasta 8', duration: '2,5–3 h · curso de 6 semanas', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+   { slug: 'pausify', name: 'Pausify', specialty: 'Lectura compartida y sesiones de concentración', studio: 'Pausify',
+     blurb: 'La comunidad de lectura y concentración de Ksenia y Barbara: un club de lectura en el que nadie asigna el libro. Traes lo que tengas entre manos — una novela, un cuaderno de dibujo, un portátil, un proyecto a medias. Veinte minutos para saludarse, luego una hora de silencio con todo el mundo trabajando codo con codo, y después café y las conversaciones que salen de ahí. Cada fin de semana en un espacio acristalado junto a la estación central, en inglés y alemán, con bebidas y snacks incluidos: entrada suelta o membresía, y mucha gente se queda a comer. Intercambios de libros, charlas y talleres de escritura vuelven como ediciones especiales.',
+     group: 'Hasta 30', duration: '2,5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+diff --git a/site/src/data/hosts/fr.ts b/site/src/data/hosts/fr.ts
+index 73d8a20..dfee81d 100644
+--- a/site/src/data/hosts/fr.ts
++++ b/site/src/data/hosts/fr.ts
+@@ -163,9 +163,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'blauhaus', name: 'Benedikt', specialty: 'Tirages cyanotype', studio: 'Blauhaus',
+     blurb: 'L’un des plus anciens procédés photographiques, et celui qui ne demande pas de chambre noire : vous appliquez au pinceau une couche sensible à la lumière sur le papier, posez dessus des feuilles, des fleurs ou des trouvailles de votre dernière promenade, et laissez le soleil faire le reste. Ce qui sort du bac d’eau est bleu de Prusse — un tirage, une carte postale ou une carte pliée à emporter. Benedikt travaille aussi bien avec de grands débutants qu’avec des gens qui dessinent ou photographient déjà ; aucune expérience n’est requise, tout le matériel est fourni, et le moment où le papier bascule dans l’eau est celui dont tout le monde se souvient.',
+     group: 'Petit groupe', duration: '2,5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-  { slug: 'loam', name: 'Loam Berlin', specialty: 'Céramique modelée & cours', studio: 'Loam.',
+-    blurb: 'L’atelier de céramique de Jana à Moabit — atelier, lieu d’apprentissage et boutique à la fois. Tout se façonne à la main plutôt qu’au tour : travail à la plaque, pincé et colombin, puis décor de surface ; l’atelier émaille et cuit vos pièces, que vous récupérez ensuite. Les cours accueillent huit personnes au maximum et durent de deux heures et demie à trois heures — initiation au modelage, tasses et mugs, assiettes et plats, bougeoirs, bols illustrés, vases et carafes plus grands — auxquels s’ajoutent un cours du soir de six semaines, des séances particulières, des événements d’équipe et des plages d’atelier libre. Tous les cours sont donnés en anglais et en allemand.',
+-    group: 'Jusqu’à 8', duration: '2,5–3 h · cours de 6 semaines', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+   { slug: 'pausify', name: 'Pausify', specialty: 'Lecture partagée & temps de concentration', studio: 'Pausify',
+     blurb: 'La communauté de lecture et de concentration de Ksenia et Barbara — un club de lecture où personne n’impose le livre. Vous apportez ce que vous avez en cours : un roman, un carnet de croquis, un ordinateur, un projet à moitié fini. Vingt minutes pour se dire bonjour, puis une heure de silence où chacun travaille côte à côte, puis le café et les conversations qui en naissent. Chaque week-end dans un espace vitré près de la gare centrale, en anglais et en allemand, boissons et en-cas compris — billet à l’unité ou abonnement, et beaucoup restent déjeuner. Échanges de livres, rencontres et ateliers d’écriture reviennent en éditions spéciales.',
+     group: 'Jusqu’à 30', duration: '2,5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+diff --git a/site/src/data/hosts/it.ts b/site/src/data/hosts/it.ts
+index 916f8b0..9fedb03 100644
+--- a/site/src/data/hosts/it.ts
++++ b/site/src/data/hosts/it.ts
+@@ -163,9 +163,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'blauhaus', name: 'Benedikt', specialty: 'Stampa in cianotipia', studio: 'Blauhaus',
+     blurb: 'Uno dei processi fotografici più antichi, e quello che non richiede camera oscura: stendi a pennello un\'emulsione sensibile alla luce sulla carta, ci appoggi foglie, fiori o quello che hai raccolto nell\'ultima passeggiata e lasci fare al sole. Quello che esce dalla bacinella è blu di Prussia: una stampa, una cartolina o un biglietto piegato da portare a casa. Benedikt lavora con principianti assoluti come con chi già disegna o fotografa; non serve esperienza, tutti i materiali ci sono, e il momento in cui la carta vira nell\'acqua è quello che resta a tutti.',
+     group: 'Piccolo gruppo', duration: '2,5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-  { slug: 'loam', name: 'Loam Berlin', specialty: 'Ceramica a mano & corsi', studio: 'Loam.',
+-    blurb: 'Lo studio di ceramica di Jana a Moabit: laboratorio, scuola e negozio insieme. Qui si costruisce a mano invece di tornire — lastra, pizzicato e colombino, più la decorazione della superficie; lo studio smalta e cuoce i tuoi pezzi, che ritiri più avanti. I corsi accolgono al massimo otto persone e durano dalle due ore e mezza alle tre: introduzione alla ceramica a mano, tazze e mug, piatti e vassoi, portacandele, ciotole illustrate, vasi e caraffe più grandi. Ci sono poi un corso serale di sei settimane, lezioni private, eventi per team e ore di studio aperto. Tutti i corsi sono in inglese e tedesco.',
+-    group: 'Fino a 8', duration: '2,5–3 h · corso di 6 settimane', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+   { slug: 'pausify', name: 'Pausify', specialty: 'Lettura condivisa & sessioni di concentrazione', studio: 'Pausify',
+     blurb: 'La comunità di lettura e concentrazione di Ksenia e Barbara: un club del libro in cui nessuno assegna le letture. Porti quello che hai per le mani — un romanzo, un taccuino, un portatile, un progetto a metà. Venti minuti per salutarsi, poi un’ora di silenzio con tutti al lavoro fianco a fianco, poi il caffè e le conversazioni che ne nascono. Ogni fine settimana in uno spazio vetrato vicino alla stazione centrale, in inglese e tedesco, bevande e snack inclusi: biglietto singolo o abbonamento, e molti restano a pranzo. Scambi di libri, incontri e laboratori di scrittura tornano come edizioni speciali.',
+     group: 'Fino a 30', duration: '2,5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+diff --git a/site/src/data/hosts/nl.ts b/site/src/data/hosts/nl.ts
+index 2b7e3e3..97e5d38 100644
+--- a/site/src/data/hosts/nl.ts
++++ b/site/src/data/hosts/nl.ts
+@@ -163,9 +163,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cyanotypie', studio: 'Blauhaus',
+     blurb: 'Een van de oudste fotografische processen, en het enige dat geen donkere kamer nodig heeft: je kwast een lichtgevoelige laag op papier, legt er bladeren, bloemen of vondsten van je laatste wandeling op en laat de zon de rest doen. Wat uit de waterbak komt is Pruisisch blauw: een print, een ansichtkaart of een dubbele kaart om mee te nemen. Benedikt werkt net zo makkelijk met complete beginners als met mensen die al tekenen of fotograferen; ervaring is niet nodig, alle materialen liggen klaar, en het moment waarop het papier in het water omslaat is wat iedereen bijblijft.',
+     group: 'Kleine groep', duration: '2,5 u', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-  { slug: 'loam', name: 'Loam Berlin', specialty: 'Handopbouw keramiek & cursussen', studio: 'Loam.',
+-    blurb: 'Het keramiekatelier van Jana in Moabit — werkplaats, leerplek en winkel in één. Alles wordt met de hand opgebouwd in plaats van gedraaid: plaattechniek, knijpen en rollen, plus decoratie van het oppervlak; het atelier glazuurt en stookt je werk, dat je later ophaalt. De cursussen tellen hoogstens acht mensen en duren tweeënhalf tot drie uur — kennismaking met handopbouw, kopjes en mokken, borden en schalen, kandelaars, geïllustreerde schalen, grotere vazen en karaffen — daarnaast een avondcursus van zes weken, privélessen, teamevents en open atelieruren. Alle lessen zijn in het Engels en Duits.',
+-    group: 'Tot 8', duration: '2,5–3 u · cursus van 6 weken', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+   { slug: 'pausify', name: 'Pausify', specialty: 'Samen lezen & geconcentreerd werken', studio: 'Pausify',
+     blurb: 'De lees- en focusgemeenschap van Ksenia en Barbara — een boekenclub waarin niemand voorschrijft wat je leest. Je neemt mee waar je mee bezig bent: een roman, een schetsboek, een laptop, een half afgemaakt project. Twintig minuten kennismaken, dan een uur stilte waarin iedereen naast elkaar werkt, daarna koffie en de gesprekken die daaruit voortkomen. Elk weekend in een glazen ruimte bij het centraal station, in het Engels en Duits, drankjes en snacks inbegrepen — los kaartje of lidmaatschap, en veel mensen blijven nog voor de lunch. Boekenruil, talks en schrijfworkshops komen langs als speciale edities.',
+     group: 'Tot 30', duration: '2,5 u', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+diff --git a/site/src/data/hosts/pl.ts b/site/src/data/hosts/pl.ts
+index 449d1c3..64d88bf 100644
+--- a/site/src/data/hosts/pl.ts
++++ b/site/src/data/hosts/pl.ts
+@@ -163,9 +163,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cyjanotypia', studio: 'Blauhaus',
+     blurb: 'Jeden z najstarszych procesów fotograficznych — i jedyny, który nie potrzebuje ciemni: nanosisz pędzlem światłoczułą warstwę na papier, układasz na niej liście, kwiaty albo znaleziska z ostatniego spaceru i resztę zostawiasz słońcu. To, co wyjmujesz z kuwety z wodą, jest błękitem pruskim: odbitka, pocztówka albo składana kartka do zabrania. Benedikt pracuje równie swobodnie z zupełnie początkującymi, jak z osobami, które już rysują albo fotografują; doświadczenie nie jest potrzebne, wszystkie materiały czekają, a moment, w którym papier zmienia się w wodzie, zapada w pamięć każdemu.',
+     group: 'Mała grupa', duration: '2,5 godz.', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-  { slug: 'loam', name: 'Loam Berlin', specialty: 'Ceramika ręcznie lepiona i kursy', studio: 'Loam.',
+-    blurb: 'Pracownia ceramiki Jany w Moabicie — warsztat, miejsce nauki i sklep w jednym. Wszystko powstaje tu w rękach, nie na kole: z płata, przez wyszczypywanie i wałeczki, plus zdobienie powierzchni; pracownia szkliwi i wypala twoje prace, odbierasz je później. Zajęcia liczą najwyżej osiem osób i trwają od dwóch i pół do trzech godzin — wprowadzenie do lepienia, kubki i filiżanki, talerze i tace, świeczniki, ilustrowane miski, większe wazony i karafki. Do tego sześciotygodniowy kurs wieczorowy, lekcje indywidualne, wydarzenia dla zespołów i godziny otwartej pracowni. Wszystkie zajęcia prowadzone są po angielsku i niemiecku.',
+-    group: 'Do 8', duration: '2,5–3 godz. · kurs 6-tygodniowy', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+   { slug: 'pausify', name: 'Pausify', specialty: 'Wspólne czytanie i czas skupienia', studio: 'Pausify',
+     blurb: 'Społeczność czytania i skupienia Kseni i Barbary — klub książki, w którym nikt nie narzuca lektury. Przynosisz to, przy czym jesteś: powieść, szkicownik, laptop, na wpół skończony projekt. Dwadzieścia minut na przywitanie, potem godzina ciszy, w której wszyscy pracują obok siebie, a później kawa i rozmowy, które z tego wynikają. W każdy weekend w przeszklonej przestrzeni przy dworcu głównym, po angielsku i niemiecku, napoje i przekąski w cenie — pojedynczy bilet albo członkostwo, a wiele osób zostaje jeszcze na lunch. Wymiany książek, spotkania i warsztaty pisarskie wracają jako wydania specjalne.',
+     group: 'Do 30', duration: '2,5 godz.', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+diff --git a/site/src/data/hosts/tr.ts b/site/src/data/hosts/tr.ts
+index 1a524a1..5145509 100644
+--- a/site/src/data/hosts/tr.ts
++++ b/site/src/data/hosts/tr.ts
+@@ -163,9 +163,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'blauhaus', name: 'Benedikt', specialty: 'Siyanotipi baskı', studio: 'Blauhaus',
+     blurb: 'Hâlâ kullanılan en eski fotoğraf yöntemlerinden biri ve karanlık oda istemeyen tek yöntem: kâğıda fırçayla ışığa duyarlı bir kat sürüyorsun, üstüne yaprak, çiçek ya da son yürüyüşünden topladıklarını diziyorsun, gerisini güneşe bırakıyorsun. Su küvetinden çıkan şey Prusya mavisi: bir baskı, bir kartpostal ya da katlanır bir kart, evine götürmek üzere. Benedikt hiç deneyimi olmayanlarla da, zaten çizen ya da fotoğraf çekenlerle de aynı rahatlıkla çalışıyor; ön bilgi gerekmiyor, tüm malzemeler hazır ve kâğıdın suda döndüğü an herkesin aklında kalıyor.',
+     group: 'Küçük grup', duration: '2,5 sa', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
+-  { slug: 'loam', name: 'Loam Berlin', specialty: 'Elle şekillendirme seramik & kurslar', studio: 'Loam.',
+-    blurb: 'Jana’in Moabit’teki seramik stüdyosu — atölye, öğrenme yeri ve dükkân bir arada. Burada çark yerine elle çalışılıyor: plaka, sıkıştırma ve sucuk tekniği, üstüne yüzey bezemesi; sırlama ve pişirim stüdyoda yapılıyor, işlerini sonra alıyorsun. Dersler en fazla sekiz kişilik ve iki buçuk ila üç saat sürüyor — elle şekillendirmeye giriş, fincan ve kupalar, tabak ve tepsiler, şamdanlar, çizimli kâseler, daha büyük vazolar ve sürahiler. Ayrıca altı haftalık akşam kursu, birebir dersler, ekip etkinlikleri ve açık stüdyo saatleri var. Tüm dersler İngilizce ve Almanca veriliyor.',
+-    group: 'En fazla 8', duration: '2,5–3 sa · 6 haftalık kurs', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
+   { slug: 'pausify', name: 'Pausify', specialty: 'Birlikte okuma & odak seansları', studio: 'Pausify',
+     blurb: 'Ksenia ile Barbara’nın okuma ve odak topluluğu — kimsenin ne okuyacağını söylemediği bir kitap kulübü. Elinde ne varsa onu getiriyorsun: bir roman, bir eskiz defteri, bir dizüstü, yarım kalmış bir proje. Yirmi dakika tanışma, ardından herkesin yan yana çalıştığı bir saatlik sessizlik, sonra kahve ve ondan doğan sohbetler. Her hafta sonu merkez garın yanındaki cam duvarlı bir mekânda, İngilizce ve Almanca, içecek ve atıştırmalıklar dâhil — tek bilet ya da üyelik, ve çoğu kişi sonrasında öğle yemeğine kalıyor. Kitap takasları, söyleşiler ve yazı atölyeleri özel etkinlikler olarak belirli aralıklarla geri geliyor.',
+     group: 'En fazla 30', duration: '2,5 sa', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
+diff --git a/site/src/data/hosts/translation-state.json b/site/src/data/hosts/translation-state.json
+index c0df7f7..852aeba 100644
+--- a/site/src/data/hosts/translation-state.json
++++ b/site/src/data/hosts/translation-state.json
+@@ -56,7 +56,6 @@
+     "himapan-berlin": "4a43038e82a6185d",
+     "lama": "4145017261919d82",
+     "blauhaus": "c125dd6e9cedd45a",
+-    "loam": "fa2074bb5fb50a9d",
+     "pausify": "8165349d5bbbd245",
+     "lomu": "934fda1ef6c0930e",
+     "landsinn": "c42b515c8885e0d4",
+@@ -119,7 +118,6 @@
+     "himapan-berlin": "4a43038e82a6185d",
+     "lama": "4145017261919d82",
+     "blauhaus": "c125dd6e9cedd45a",
+-    "loam": "fa2074bb5fb50a9d",
+     "pausify": "8165349d5bbbd245",
+     "lomu": "934fda1ef6c0930e",
+     "landsinn": "c42b515c8885e0d4",
+@@ -182,7 +180,6 @@
+     "himapan-berlin": "4a43038e82a6185d",
+     "lama": "4145017261919d82",
+     "blauhaus": "c125dd6e9cedd45a",
+-    "loam": "fa2074bb5fb50a9d",
+     "pausify": "8165349d5bbbd245",
+     "lomu": "934fda1ef6c0930e",
+     "landsinn": "c42b515c8885e0d4",
+@@ -245,7 +242,6 @@
+     "himapan-berlin": "4a43038e82a6185d",
+     "lama": "4145017261919d82",
+     "blauhaus": "c125dd6e9cedd45a",
+-    "loam": "fa2074bb5fb50a9d",
+     "pausify": "8165349d5bbbd245",
+     "lomu": "934fda1ef6c0930e",
+     "landsinn": "c42b515c8885e0d4",
+@@ -308,7 +304,6 @@
+     "himapan-berlin": "4a43038e82a6185d",
+     "lama": "4145017261919d82",
+     "blauhaus": "c125dd6e9cedd45a",
+-    "loam": "fa2074bb5fb50a9d",
+     "pausify": "8165349d5bbbd245",
+     "lomu": "934fda1ef6c0930e",
+     "landsinn": "c42b515c8885e0d4",
+@@ -371,7 +366,6 @@
+     "himapan-berlin": "4a43038e82a6185d",
+     "lama": "4145017261919d82",
+     "blauhaus": "c125dd6e9cedd45a",
+-    "loam": "fa2074bb5fb50a9d",
+     "pausify": "8165349d5bbbd245",
+     "lomu": "934fda1ef6c0930e",
+     "landsinn": "c42b515c8885e0d4",
+diff --git a/site/src/data/live-workshops.json b/site/src/data/live-workshops.json
+index c655607..2728eff 100644
+--- a/site/src/data/live-workshops.json
++++ b/site/src/data/live-workshops.json
+@@ -25,12 +25,6 @@
+       "status": "ok",
+       "count": 6
+     },
+-    {
+-      "slug": "loam",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "status": "ok",
+-      "count": 20
+-    },
+     {
+       "slug": "lama",
+       "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+@@ -1099,19 +1093,6 @@
+       "district": "Moabit",
+       "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Plates, Trays & Bowls Workshop",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "duration": "3 h",
+-      "spots": 3,
+-      "price": "€99",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -1448,19 +1429,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Kakejiku-1789382077973.png?v=1789382102",
+       "url": "https://craftkai.com/workshop/kakejiku"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Cups & Mugs Pottery Class",
+-      "date": "2026-10-17",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 4,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -2930,19 +2898,6 @@
+       "district": "Moabit",
+       "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Introduction to Hand-Building Pottery",
+-      "date": "2026-10-24",
+-      "time": "11:00",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -3070,19 +3025,6 @@
+       "url": "https://www.ariahart.de/",
+       "district": "Friedrichshagen"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Vases & Carafes - build larger ceramic vessels",
+-      "date": "2026-10-24",
+-      "time": "14:00",
+-      "duration": "3 h",
+-      "spots": 8,
+-      "price": "€119",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/fce52dc9-052c-44a7-b800-1eb45e774b98/IMG_8159.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/vases-carafes-build-larger-ceramic-vessels"
+-    },
+     {
+       "slug": "qian",
+       "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+@@ -3457,20 +3399,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramics Hand-Building 6-week Course – 6 Termine",
+-      "titleEn": "Ceramics Hand-Building 6-week Course – 6 dates",
+-      "date": "2026-10-27",
+-      "time": "18:30",
+-      "duration": "6 × 2.5 h",
+-      "spots": 2,
+-      "price": "€319",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/1639062913634-9FWZU64RL2J312N583I8/edit+Jana+coil9647.jpg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/ceramics-hand-building-6-week-course"
+-    },
+     {
+       "slug": "rebeca",
+       "sourceUrl": "https://www.tickettailor.com/events/learnlino",
+@@ -4118,19 +4046,6 @@
+       "image": "https://static.wixstatic.com/media/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg/v1/fit/w_10667,h_6000,al_c,q_90/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg",
+       "district": "Friedenau"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Plates, Trays & Bowls Workshop",
+-      "date": "2026-10-31",
+-      "time": "11:00",
+-      "duration": "3 h",
+-      "spots": 8,
+-      "price": "€99",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+-    },
+     {
+       "slug": "karen-rose",
+       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=227019",
+@@ -4270,19 +4185,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Cups & Mugs Pottery Class",
+-      "date": "2026-10-31",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 6,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -5304,19 +5206,6 @@
+       "image": "https://static.wixstatic.com/media/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg/v1/fit/w_1134,h_756,al_c,q_85/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg",
+       "district": "Friedenau"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Introduction to Hand-Building Pottery",
+-      "date": "2026-11-07",
+-      "time": "11:00",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -5503,19 +5392,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Candle Holder Pottery Workshop",
+-      "date": "2026-11-07",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://static1.squarespace.com/static/6161890ad6b5a65d83380589/61712c321285743673936f29/635bfbf20e079e070a5a48f1/1791545843466/",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/candle-holder-workshop"
+-    },
+     {
+       "slug": "karen-rose",
+       "sourceUrl": "https://karen-rose.com/events-2/?re-product-id=263590&rwstep=product",
+@@ -6572,19 +6448,6 @@
+       "url": "https://www.eventbrite.de/e/intro-to-patchwork-quilting-tickets-2002291655241",
+       "duration": "3.5 h"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Plates, Trays & Bowls Workshop",
+-      "date": "2026-11-14",
+-      "time": "11:00",
+-      "duration": "3 h",
+-      "spots": 8,
+-      "price": "€99",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -6686,19 +6549,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Cups & Mugs Pottery Class",
+-      "date": "2026-11-14",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 6,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -7705,19 +7555,6 @@
+       "district": "Blankenburg",
+       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Introduction to Hand-Building Pottery",
+-      "date": "2026-11-21",
+-      "time": "11:00",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -8878,19 +8715,6 @@
+       "image": "https://static.wixstatic.com/media/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg/v1/fit/w_10667,h_6000,al_c,q_90/daf795_dee1b40745794a16bb764180a8c5f359~mv2.jpg",
+       "district": "Friedenau"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Plates, Trays & Bowls Workshop",
+-      "date": "2026-11-28",
+-      "time": "11:00",
+-      "duration": "3 h",
+-      "spots": 8,
+-      "price": "€99",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -9015,19 +8839,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Cups & Mugs Pottery Class",
+-      "date": "2026-11-28",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -9578,19 +9389,6 @@
+       "district": "Blankenburg",
+       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Introduction to Hand-Building Pottery",
+-      "date": "2026-12-05",
+-      "time": "11:00",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -9640,19 +9438,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Candle Holder Pottery Workshop",
+-      "date": "2026-12-05",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://static1.squarespace.com/static/6161890ad6b5a65d83380589/61712c321285743673936f29/635bfbf20e079e070a5a48f1/1791545843466/",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/candle-holder-workshop"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -10024,19 +9809,6 @@
+       "image": "https://static.wixstatic.com/media/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg/v1/fit/w_1134,h_756,al_c,q_85/daf795_78aa6ed7f58a4e9f81175e37e9486a11~mv2.jpg",
+       "district": "Friedenau"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Ceramic Plates, Trays & Bowls Workshop",
+-      "date": "2026-12-12",
+-      "time": "11:00",
+-      "duration": "3 h",
+-      "spots": 8,
+-      "price": "€99",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/3a370f6c-ae0e-4c5a-93b9-686a721c9b73/IMG_6554.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/plates-trays-bowls"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -10101,19 +9873,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Cups & Mugs Pottery Class",
+-      "date": "2026-12-12",
+-      "time": "14:30",
+-      "duration": "2.5 h",
+-      "spots": 6,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/8779133a-7562-4578-97db-9637d14af760/IMG_8175.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/cups-mugs-pottery-class"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -10481,19 +10240,6 @@
+       "district": "Blankenburg",
+       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Introduction to Hand-Building Pottery",
+-      "date": "2026-12-19",
+-      "time": "11:00",
+-      "duration": "2.5 h",
+-      "spots": 8,
+-      "price": "€89",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/f8aa8f77-6485-4acb-a395-84df97af229c/IMG_2183.jpg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/introduction-handbuilding"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -10569,19 +10315,6 @@
+       "district": "Treptow",
+       "image": "https://beat-etage.de/wp-content/uploads/2026/04/Logo-black-blocks-transp-back-250x103x72.png"
+     },
+-    {
+-      "slug": "loam",
+-      "sourceUrl": "https://www.loamberlin.com/pottery-classes-berlin",
+-      "title": "Vases & Carafes - build larger ceramic vessels",
+-      "date": "2026-12-19",
+-      "time": "14:00",
+-      "duration": "3 h",
+-      "spots": 8,
+-      "price": "€119",
+-      "district": "Moabit",
+-      "image": "https://images.squarespace-cdn.com/content/v1/6161890ad6b5a65d83380589/fce52dc9-052c-44a7-b800-1eb45e774b98/IMG_8159.jpeg",
+-      "url": "https://www.loamberlin.com/pottery-classes-berlin/p/vases-carafes-build-larger-ceramic-vessels"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+diff --git a/site/src/data/makerPictures.ts b/site/src/data/makerPictures.ts
+index 32a52d0..deaed0e 100644
+--- a/site/src/data/makerPictures.ts
++++ b/site/src/data/makerPictures.ts
+@@ -17,7 +17,7 @@ export const makerPictures: Record<string, 'photo' | 'reel'> = {
+   'norbert-bildhauerei': 'photo', // "Photos from his site cyclop-art.de, with his consent"
+   // Reels noted as the host's own footage.
+   alessia: 'reel', olivia: 'reel', helka: 'reel', lama: 'reel', blauhaus: 'reel',
+-  loam: 'reel', pausify: 'reel', lomu: 'reel', pastamadre: 'reel', munio: 'reel',
++  pausify: 'reel', lomu: 'reel', pastamadre: 'reel', munio: 'reel',
+   petitejungle: 'reel', 'anna-malerlebnisse': 'reel', chelti: 'reel', 'beat-etage': 'reel',
+   'monk-garden': 'reel', bumerang: 'reel', druckrausch: 'reel', daisuki: 'reel', dirt: 'reel',
+   arcoiris: 'reel', mampe: 'reel', 'smell-lab': 'reel', yurika: 'reel', sabine: 'reel',
+diff --git a/site/src/data/posterLqip.json b/site/src/data/posterLqip.json
+index db473db..e565d76 100644
+--- a/site/src/data/posterLqip.json
++++ b/site/src/data/posterLqip.json
+@@ -40,7 +40,6 @@
+  "/video/kohfink-poster.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAIQAgAAD//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABrAAEBAQAAAAAAAAAAAAAAAAAGBwIBAQEBAAAAAAAAAAAAAAAAAAQBAhAAAgAEAgcJAQAAAAAAAAAAAQIABAMREiJhNIExMhMhBaNzcjPw0UFRUhEAAwEBAQAAAAAAAAAAAAAAAAEREqEh/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8A3TrzPMKN2iGYfSI5A7uGVOvMBdakX0szKdosIJVKWCu2Q0nZGUfzitxBhvBtoMOZSZpTNFKjcvFazbjmHu8C005esQwLMiqJsIXLBc12JOUjqov+xLq8wea+AWUGwHDbYOkVub14+H8xE6nqP5jGJ6Q//9k=",
+  "/video/lama-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABsAAADAQAAAAAAAAAAAAAAAAAEBgUHAQADAQAAAAAAAAAAAAAAAAACBAMFEAACAQMDAwUBAQAAAAAAAAABAgMABBExIRJRQYFyIrGhBTNxEQEAAgICAwEAAAAAAAAAAAABEQIDACGxoUEiMf/AABEIABYADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AF1/1Jb2FgOSOAeJAJVm6AjRsaUy2slwsMY4ufaMkqCckAnXfWoFjbNYwu0z8XBDxJgMeecZJOcDqK26C5WSGN3aJS6hiOQ7+aArJMSTGtWyPAvMeNyuGzeIRy5jd9iwkBdf9HcH6NFS2sUrs7l+THOxAAzvgDGlWV/kvpFCNr4HxWfiy3F+n33tctKoSD+db//Z",
+  "/video/landsinn-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABgAAEBAQAAAAAAAAAAAAAAAAADAQUBAQEAAAAAAAAAAAAAAAAAAAEEEAABAwQCAgMBAAAAAAAAAAABEQIDYSEAEkEEMVETBZHwEQADAQEAAAAAAAAAAAAAAAAAARICgf/AABEIABAADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/ADZP8s8up8E3UEFoN7nn0KYkn2E0Z1BcUo0/xTzXK6GOAvLXG7tgEULyAoS3r9zQb3OrBsx0aEHhtnVsuFcKZej/2Q==",
+- "/video/loam-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABkAAEBAQEAAAAAAAAAAAAAAAAFBwMGAQEBAAAAAAAAAAAAAAAAAAADBBAAAQMCBQIHAQAAAAAAAAAAAQIDEQAScUEhBQTBMYFhQvAzEyIUEQEBAQAAAAAAAAAAAAAAAAABAAL/wAARCAAWAAwDASIAAhEAAxEA/9oADAMBAAIRAxEAPwBRCk8lNqz9ajkFJAI8OtFObWtStJTlqAe2czrNdCeE28QSVNqI9MAqxrN59xtVjZ/KRbJzj3FTs4sNxt3W+Q3Ym5WiV9o8yBIJwinP5wQNewipntvztY9Kr9DtZsF//9k=",
+  "/video/lomu-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABxAAEBAQEBAAAAAAAAAAAAAAAGAwEFBwEBAQEAAAAAAAAAAAAAAAAAAwIEEAABAgUCBQUBAQAAAAAAAAABEQIhMQAEAxMSUXFBIgVyMzRhgYJSEQACAQIHAQAAAAAAAAAAAAAAEQECcVExIqGREiFB/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AnrYXNBcigCKoo/mf6Ko3yOFoTfASjIcIpAVvkBbWqvDGEvajcfRphFP8pP7FERhx5xqOOmXR2hE4KISM6Onrm55NOpJw8FudK5GvkG+O6K9aEXl0/Wc1vaGdoHKnT/cx8jXmN18jL6zR0/LEz47n/9k=",
+  "/video/loom-lab-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABoAAEBAQEAAAAAAAAAAAAAAAAGBAMHAQEBAQAAAAAAAAAAAAAAAAAEAAUQAAEDBAICAwEAAAAAAAAAAAERAwISACEEIjFRcZGhsTIRAAICAgMBAQAAAAAAAAAAAAECABESA0ExYSEy/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AYmTGnCp6EKj0InJQ9obIOHf3pl1ltyLa0xEOkH6fJuF7YltvibqExFMaeIT78309tx+LcKWFFESKcBCPdhZGJ+nFeK7v2bGvaiAELm57y/IHkPx1tHaEEi5CgnGMr2DKpSLUncg3x5oBjEevmyuj0fd7u/1dkagqE//Z",
+  "/video/mampe-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABoAAEBAQAAAAAAAAAAAAAAAAAFAgYBAQEAAAAAAAAAAAAAAAAAAAUGEAACAAQFBQEBAAAAAAAAAAABAgARIQMxIlFBEoJxsZEEMhMRAQACAAcBAAAAAAAAAAAAAAEAAkEhURNhEQMx/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AIsqjDM3EYqdiIu+ptMAooVVqz3jM/wB7VxW4T5KhOZqSE6CQxA13iR911wGeyrzFG1Vco9SlAT43XsUNGUG7UAyeZmUoWGqlT1AwcCZYmEl/R7jwYMEN4sGfhP/Z",
+diff --git a/site/src/data/removed-hosts.json b/site/src/data/removed-hosts.json
+index b210498..babb2fa 100644
+--- a/site/src/data/removed-hosts.json
++++ b/site/src/data/removed-hosts.json
+@@ -3,6 +3,7 @@
+   "hosts": [
+     { "slug": "mijita", "activity": "craft", "removed": "2026-10-11", "workshops": [] },
+     { "slug": "tessia", "activity": "craft", "removed": "2026-10-18", "workshops": ["wax-carving-ring-workshop-halber-tag", "sandguss-wax-carving-workshop-ganzer-tag"] },
+-    { "slug": "haki", "activity": "ceramics", "removed": "2026-10-19", "workshops": ["handbuilding-workshop", "offener-platz-an-der-drehscheibe-fortgeschrittene"] }
++    { "slug": "haki", "activity": "ceramics", "removed": "2026-10-19", "workshops": ["handbuilding-workshop", "offener-platz-an-der-drehscheibe-fortgeschrittene"] },
++    { "slug": "loam", "activity": "ceramics", "removed": "2026-11-05", "workshops": ["ceramic-candle-holder-pottery-workshop", "ceramic-plates-trays-and-bowls-workshop", "ceramics-hand-building-6-week-course-6-termine", "cups-and-mugs-pottery-class", "introduction-to-hand-building-pottery", "vases-and-carafes-build-larger-ceramic-vessels"] }
+   ]
+ }
