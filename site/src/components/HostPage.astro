@@ -9,7 +9,7 @@ import HostMonogram from './HostMonogram.astro';
 import PhotoFade from './PhotoFade.astro';
 import WorkshopSchema from './WorkshopSchema.astro';
 import { confirmedLine, reviewMonth, reviewsFor } from '../data/trust.ts';
-import { functionsBase } from '../data/firebase.ts';
+import LiveReviews from './LiveReviews.astro';
 import Voucher from './Voucher.astro';
 import { getHosts, isPreviewHost, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
@@ -227,9 +227,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
             ))}
           </div>
         )}
-        {/* Reviews Jirel published from her review emails (functions publicReviews):
-            fetched in the browser, so a review shows the moment she clicks Publish. */}
-        <div class="host-reviews-live" data-live-reviews={host.slug} data-endpoint={`${functionsBase}/publicReviews`} data-lang={lang} data-title={guestReviews.length ? '' : (lang === 'de' ? 'Was Gäste sagen' : 'What guests say')} hidden></div>
+        <LiveReviews slug={host.slug} lang={lang} title={!guestReviews.length} />
         <div class="host-actions">
         {/* Opens our booking form on the page as a group request, this host
             and their price filled in; without scripts, the contact form. */}
@@ -463,29 +461,3 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
     }
   });
 </script>
-
-<script is:inline>
-  (() => {
-    const box = document.querySelector('[data-live-reviews]');
-    if (!box) return;
-    const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    const de = box.dataset.lang === 'de';
-    fetch(`${box.dataset.endpoint}?h=${encodeURIComponent(box.dataset.liveReviews)}`)
-      .then((r) => (r.ok ? r.json() : { items: [] }))
-      .then(({ items }) => {
-        if (!items || !items.length) return;
-        const month = (ym) => new Date(`${ym}-01T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
-        const guest = de ? 'Twiggli-Gast' : 'Twiggli guest';
-        box.innerHTML = (box.dataset.title ? `<p class="host-about-title">${esc(box.dataset.title)}</p>` : '') + items.map((r) => `
-          <blockquote class="host-review-card">
-            <div class="hr-head"><span class="hr-avatar"><span>${esc((r.name || '★')[0].toUpperCase())}</span></span>
-              <div><div class="hr-name">${esc(r.name || guest)}</div><div class="hr-stars" aria-label="${r.stars} / 5">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div></div></div>
-            <p>“${esc(r.text)}”</p>
-            <div class="hr-meta">${[r.workshop, r.month && month(r.month)].filter(Boolean).map(esc).join(' · ')}</div>
-          </blockquote>`).join('');
-        box.hidden = false;
-      })
-      .catch(() => {});
-  })();
-</script>
-
