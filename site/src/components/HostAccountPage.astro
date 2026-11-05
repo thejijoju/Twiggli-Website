@@ -311,6 +311,7 @@ const fields = [
               <h3 class="hd-pay-title" id="hd-pay-title">{t.stripeTitle}</h3>
               <p class="hd-pay-body" data-ha-stripe-body>{t.stripeBody}</p>
               <button type="button" class="hd-pay-btn" data-ha-stripe-go>{t.stripeBtn}</button>
+              <button type="button" class="hd-pay-link" data-ha-stripe-link>{t.stripeLinkBtn}</button>
             </dialog>
             <button type="submit" class="hd-publish">{t.publish}</button>
             <p class="hd-publish-note" data-ha-create-note role="status">{t.publishNote}</p>
@@ -632,7 +633,8 @@ const fields = [
           const back = new URLSearchParams(location.search).get('stripe');
           if (!back) return;
           history.replaceState(null, '', location.pathname);
-          if (back === 'return') alert(stripeReady ? t.stripeDone : t.stripePending);
+          if (back === 'return' || back === 'linked') alert(stripeReady ? (back === 'linked' ? `${t.stripeLinked} ${t.stripeDone}` : t.stripeDone) : t.stripePending);
+          else if (back === 'failed') alert(t.stripeFail);
         });
       };
 
@@ -865,6 +867,17 @@ const fields = [
       };
       fld('price').addEventListener('focus', showStripe);
       fld('price').addEventListener('pointerdown', (e) => { if (stripeReady !== true) { e.preventDefault(); showStripe(); } });
+      const stripeLink = $<HTMLButtonElement>('[data-ha-stripe-link]');
+      stripeLink.addEventListener('click', async () => {
+        stripeLink.disabled = true;
+        try {
+          const { url } = await api('hostStripe', { action: 'link', lang: document.documentElement.lang === 'en' ? 'en' : 'de' });
+          location.href = url;
+        } catch (err) {
+          stripeBody.textContent = /link-not-configured/.test((err as Error).message) ? t.stripeLinkOff : `${t.stripeFail} (${(err as Error).message})`;
+          stripeLink.disabled = false;
+        }
+      });
       stripeGo.addEventListener('click', async () => {
         stripeGo.disabled = true; stripeGo.textContent = t.stripeWait;
         try {

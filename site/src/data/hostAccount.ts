@@ -82,6 +82,9 @@ export interface HostAccountCopy {
   stripeTitle: string;
   stripeBody: string;
   stripeBtn: string;
+  stripeLinkBtn: string;
+  stripeLinkOff: string;
+  stripeLinked: string;
   stripeWait: string;
   stripeDone: string;
   stripePending: string;
@@ -301,7 +304,10 @@ const en: HostAccountCopy = {
   publishNote: 'Shows on your page and in the Twiggli calendar within the hour.',
   stripeTitle: 'Accept payments',
   stripeBody: 'Your account is not set up to accept payments yet. We use Stripe to process payments: connect your Stripe account or set up a new one. It usually takes less than 5 minutes.',
-  stripeBtn: 'Connect Stripe',
+  stripeBtn: 'Create a Stripe account',
+  stripeLinkBtn: 'I already have a Stripe account',
+  stripeLinkOff: 'Linking an existing Stripe account is not switched on yet. Please create one with the button above.',
+  stripeLinked: 'Your Stripe account is linked.',
   stripeWait: 'Opening Stripe…',
   stripeDone: 'Stripe connected: you can take payments.',
   stripePending: 'Stripe still needs a few details from you before you can take payments.',
@@ -484,7 +490,10 @@ const de: HostAccountCopy = {
   publishNote: 'Erscheint innerhalb einer Stunde auf deiner Seite und im Twiggli-Kalender.',
   stripeTitle: 'Zahlungen annehmen',
   stripeBody: 'Dein Konto ist noch nicht für Zahlungen eingerichtet. Wir nutzen Stripe für die Zahlungen: Verbinde dein Stripe-Konto oder leg ein neues an. Das dauert meist keine 5 Minuten.',
-  stripeBtn: 'Mit Stripe verbinden',
+  stripeBtn: 'Neues Stripe-Konto erstellen',
+  stripeLinkBtn: 'Ich habe schon ein Stripe-Konto',
+  stripeLinkOff: 'Das Verknüpfen eines bestehenden Stripe-Kontos ist noch nicht freigeschaltet. Bitte erstelle eines über den Button oben.',
+  stripeLinked: 'Dein Stripe-Konto ist verknüpft.',
   stripeWait: 'Stripe wird geöffnet…',
   stripeDone: 'Stripe ist verbunden: du kannst Zahlungen annehmen.',
   stripePending: 'Stripe braucht noch ein paar Angaben von dir, bevor du Zahlungen annehmen kannst.',
