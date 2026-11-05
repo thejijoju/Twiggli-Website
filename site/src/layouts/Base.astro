@@ -190,6 +190,11 @@ const clubPopup = !chromeless && !noindex && !/^\/(club|impressum|privacy-policy
       startFadeText();
     </script>
     <script>
+      // Discreet star rating after a host's name on cards (lib/ratings.ts).
+      import { startRatings } from '../lib/ratings.ts';
+      startRatings();
+    </script>
+    <script>
       // Cards already opened read fainter (lib/seen.ts).
       import { startSeen } from '../lib/seen.ts';
       startSeen();

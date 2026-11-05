@@ -1,5 +1,6 @@
 ---
 import { getSessions, berlinTodayMs, type Session } from '../data/sessions.ts';
+import RatingTag from './RatingTag.astro';
 import { filterCopy } from '../data/content.ts';
 import { occasionCopy } from '../data/seo.ts';
 import { href, DEFAULT_LANG, LANG_META, type Lang } from '../lib/url.ts';
@@ -101,7 +102,7 @@ const when = (s: Session, withDay: boolean) =>
                 )}
               </span>
               <span class="tt-sub">{s.host.name} · {s.district}</span>
-              {s.price && <span class="tt-price"><strong>{s.price}</strong> {perPerson}</span>}
+              {s.price && <span class="tt-price"><strong>{s.price}</strong> {perPerson}<RatingTag slug={s.host.slug} /></span>}
             </a>
           </li>
         ))}

@@ -1,0 +1,9 @@
+---
+/** A discreet "★ 5.0 (1)" after a host's name on workshop cards, filled in
+ *  the browser from published guest reviews (functions publicReviews
+ *  ?summary=1, script in layouts/Base.astro). Empty and hidden until the
+ *  host has a review Jirel published. */
+interface Props { slug: string }
+const { slug } = Astro.props;
+---
+<span class="rv-tag" data-rv={slug} hidden></span>

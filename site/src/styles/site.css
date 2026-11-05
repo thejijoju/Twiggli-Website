@@ -6599,13 +6599,18 @@ body.is-bare { padding-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { .review-star svg { transition: none; } .review-done-stars { animation: none; } }
 @media (max-width: 420px) { .review-star svg { width: 36px; height: 36px; } .review-post { padding: 16px 16px 14px; } .review-glow { padding: 20px 0; } }
 
-/* Live guest reviews on a host page, published from Jirel's review emails. */
-.host-reviews-live { margin-top: 16px; display: grid; gap: 12px; }
-.host-review-card { margin: 0; padding: 14px 16px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(106, 62, 236, .06), 0 10px 28px rgba(106, 62, 236, .12); }
-.host-review-card .hr-head { display: flex; align-items: center; gap: 10px; }
-.host-review-card .hr-avatar { width: 34px; height: 34px; border-radius: 50%; padding: 2px; background: conic-gradient(from 200deg, #ff8a5c, #e64ab4, #6a3eec, #ff8a5c); display: grid; flex: none; }
-.host-review-card .hr-avatar span { border-radius: 50%; background: #fff; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: var(--color-accent); }
-.host-review-card .hr-name { font-weight: 800; }
-.host-review-card .hr-stars { color: #ffb72b; letter-spacing: 1px; font-size: 15px; }
-.host-review-card p { margin: 8px 0 0; }
-.host-review-card .hr-meta { margin-top: 6px; font-size: 13px; color: var(--color-text-muted); }
+/* Live guest reviews on host and workshop pages: quiet, like a printed
+   quote, no box (Jirel 05.11.26: "elegant and more discreet"). */
+.host-reviews-live { margin: 20px 0 22px; display: grid; gap: 16px; }
+.host-reviews-live .host-about-title { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-muted); }
+.host-review-card { margin: 0; padding: 0 0 0 14px; border-left: 1.5px solid color-mix(in srgb, var(--color-text) 12%, transparent); }
+.host-review-card .hr-stars { font-size: 11px; letter-spacing: 2px; color: #d9a23a; }
+.host-review-card p { margin: 4px 0 0; font-style: italic; line-height: 1.5; }
+.host-review-card .hr-meta { margin-top: 4px; font-size: 13px; color: var(--color-text-muted); }
+
+/* "★ 5.0 (1)" after a host's name on cards (components/RatingTag.astro). */
+.rv-tag { font-size: .9em; color: var(--color-text-muted); white-space: nowrap; }
+.rv-tag::before { content: " · "; }
+.maker-price .rv-tag, .hd-card-price .rv-tag, .tt-price .rv-tag { margin-left: auto; padding-left: 8px; font-size: 12px; }
+.maker-price .rv-tag::before, .hd-card-price .rv-tag::before, .tt-price .rv-tag::before { content: none; }
+.maker-price:has(.rv-tag:not([hidden])), .hd-card-price:has(.rv-tag:not([hidden])), .tt-price:has(.rv-tag:not([hidden])) { display: flex; align-items: baseline; gap: 4px; }

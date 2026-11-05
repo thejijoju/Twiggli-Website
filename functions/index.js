@@ -1054,6 +1054,18 @@ export const reviewDecide = onRequest({ region: 'europe-west3', maxInstances: 5 
 
 export const publicReviews = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
+  // ?summary=1: stars per host for the small rating on workshop cards.
+  if (req.query.summary === '1') {
+    const all = await getFirestore().collection('guestReviews').where('status', '==', 'published').get();
+    const sum = {};
+    for (const d of all.docs) {
+      const r = d.data();
+      const x = (sum[r.host] ??= { total: 0, count: 0 });
+      x.total += r.stars; x.count += 1;
+    }
+    const hosts = Object.fromEntries(Object.entries(sum).map(([k, v]) => [k, { avg: Math.round((v.total / v.count) * 10) / 10, count: v.count }]));
+    return res.set('Cache-Control', 'public, max-age=60').status(200).json({ hosts });
+  }
   const host = String(req.query.h ?? '');
   if (!SLUG.test(host)) return res.status(400).json({ items: [] });
   const snap = await getFirestore().collection('guestReviews').where('host', '==', host).where('status', '==', 'published').get();

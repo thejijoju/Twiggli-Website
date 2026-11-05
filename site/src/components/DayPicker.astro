@@ -1,5 +1,6 @@
 ---
 import { getSessions, getOnRequest, capPerHostPerDay, spreadByHost, berlinTodayMs, DAYS_AHEAD, type Session, type OnRequestWorkshop } from '../data/sessions.ts';
+import RatingTag from './RatingTag.astro';
 import { activitiesOf, fadePhotos, filterCopy, type ActivityKey } from '../data/content.ts';
 import { hostHref } from '../data/seo.ts';
 import HostMonogram from './HostMonogram.astro';
@@ -735,7 +736,7 @@ import Voucher from './Voucher.astro';
                           {/* The host's name leads to their own page — every
                               date they run, in one place — where the title
                               beside it leads to the booking. */}
-                          <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.name}</a> · {s.district}</span>
+                          <span class="session-host"><a href={hostHref(lang, s.host)}>{s.host.name}</a> · {s.district}<RatingTag slug={s.host.slug} /></span>
                           <Going n={s.going} lang={lang} />
                           {s.partner && <span class="session-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
                           {/* The one thing that decides this workshop for
@@ -855,7 +856,7 @@ import Voucher from './Voucher.astro';
             </span>
             <span class="session-main">
               <a class="session-title" href={o.bookUrl} {...inquireAttrs(o)}>{o.title}</a>
-              <span class="session-host">{o.host.firstName ?? o.host.name} · {o.district}</span>
+              <span class="session-host">{o.host.firstName ?? o.host.name} · {o.district}<RatingTag slug={o.host.slug} /></span>
             </span>
             <span class="session-side">
               {o.price && <span class="session-price">{showPrice(o.price)}</span>}
@@ -919,7 +920,7 @@ import Voucher from './Voucher.astro';
                 ))}
               </span>
               <a class="session-title" href={o.bookUrl} {...inquireAttrs(o)}>{o.title}</a>
-              <span class="session-host">{o.host.name} · {o.district}</span>
+              <span class="session-host">{o.host.name} · {o.district}<RatingTag slug={o.host.slug} /></span>
               {o.usp && <span class="session-usp">{o.usp}</span>}
                           {/* Where the host closes sales before the day
                               itself, so nobody arrives at a booking page
