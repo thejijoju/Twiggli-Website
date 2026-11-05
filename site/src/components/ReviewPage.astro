@@ -1,0 +1,210 @@
+---
+/**
+ * Where guests leave a review after their workshop (review emails of
+ * 05.11.26). The link in the email carries the host (h), the guest's first
+ * name (n), the workshop (w) and, when they tapped a star in the email, the
+ * stars (s): /review/?h=the-munio&n=Steven&w=Kerzen-Workshop&s=5. The review
+ * goes through formRequest (Type "Review"), so it lands in Firestore and in
+ * Jirel's inbox; it is shown on the site only after Jirel adds it to
+ * trust.ts `reviews`, and only with the first name when the guest agreed.
+ * Kept out of the sitemap and search.
+ */
+import Base from '../layouts/Base.astro';
+import { getHosts } from '../data/content.ts';
+import { functionsBase } from '../data/firebase.ts';
+
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+
+const names: Record<string, string> = Object.fromEntries(
+  getHosts(lang, { withPreview: true }).map((h) => [h.slug, (h as { studio?: string }).studio || h.name]),
+);
+
+const t = {
+  en: {
+    title: 'How was your workshop?',
+    lede: 'Your review helps small Berlin studios get found. It takes a minute.',
+    with: 'at',
+    stars: 'How many stars?',
+    starNames: ['Not good', 'Okay', 'Good', 'Very good', 'Wonderful'],
+    text: 'What did you like?',
+    textHint: 'One or two sentences are perfect. This is what other guests will read.',
+    placeholder: 'For example: Laura was so warm and patient, and we went home with three candles we love.',
+    name: 'Your first name',
+    consent: 'Twiggli may show my review on the host’s page with my first name.',
+    send: 'Send my review',
+    cardLabel: 'Your review, as other guests will see it',
+    badge: 'Twiggli guest',
+    tapStars: 'Tap a star',
+    note: 'Jirel reads every review before it goes online.',
+    needStars: 'Please choose 1 to 5 stars.',
+    needText: 'Please write a sentence or two.',
+    error: 'That didn’t go through. Please try again, or reply to our email with your review.',
+    thanks: 'Thank you so much!',
+    thanksBody: 'Your review is on its way. It means a lot to the host, and to us.',
+    more: 'Find your next workshop',
+  },
+  de: {
+    title: 'Wie war dein Workshop?',
+    lede: 'Deine Bewertung hilft kleinen Berliner Studios, gefunden zu werden. Es dauert nur eine Minute.',
+    with: 'bei',
+    stars: 'Wie viele Sterne?',
+    starNames: ['Nicht gut', 'Okay', 'Gut', 'Sehr gut', 'Wunderbar'],
+    text: 'Was hat dir gefallen?',
+    textHint: 'Ein, zwei Sätze reichen völlig. Das lesen andere Gäste.',
+    placeholder: 'Zum Beispiel: Laura war so herzlich und geduldig, und wir sind mit drei Kerzen nach Hause gegangen, die wir lieben.',
+    name: 'Dein Vorname',
+    consent: 'Twiggli darf meine Bewertung mit meinem Vornamen auf der Seite des Gastgebers zeigen.',
+    send: 'Bewertung senden',
+    cardLabel: 'Deine Bewertung, so wie andere Gäste sie sehen',
+    badge: 'Twiggli-Gast',
+    tapStars: 'Tippe auf einen Stern',
+    note: 'Jirel liest jede Bewertung, bevor sie online geht.',
+    needStars: 'Bitte wähle 1 bis 5 Sterne.',
+    needText: 'Bitte schreib ein, zwei Sätze.',
+    error: 'Das hat leider nicht geklappt. Bitte versuch es noch einmal oder antworte einfach auf unsere E-Mail.',
+    thanks: 'Vielen, vielen Dank!',
+    thanksBody: 'Deine Bewertung ist unterwegs. Sie bedeutet dem Gastgeber sehr viel, und uns auch.',
+    more: 'Deinen nächsten Workshop finden',
+  },
+}[lang];
+const reviewEndpoint = `${functionsBase}/reviewSubmit`;
+const logo = '/img/logo.png';
+const workshopsHref = lang === 'de' ? '/de/workshops/' : '/workshops/';
+---
+
+<Base title={`${t.title} · Twiggli`} description={t.lede} lang={lang} noindex translations={['en', 'de']} pageClass="review-body">
+  <div class="container">
+    <section class="review-page">
+      <div id="review-start">
+        <p class="review-kicker" id="review-for" hidden></p>
+        <h1 class="review-title">{t.title}</h1>
+        <svg class="review-squiggle" viewBox="0 0 220 14" aria-hidden="true">
+          <defs><linearGradient id="rv-ink" x1="0" x2="1"><stop offset="0" stop-color="#ff8a5c" /><stop offset=".5" stop-color="#e64ab4" /><stop offset="1" stop-color="#6a3eec" /></linearGradient></defs>
+          <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke="url(#rv-ink)" stroke-width="3.5" stroke-linecap="round" />
+        </svg>
+        <p class="review-lede">{t.lede}</p>
+      </div>
+
+      <form id="review-form" class="review-form" novalidate data-endpoint={reviewEndpoint} data-names={JSON.stringify(names)} data-lang={lang}>
+        <div class="review-glow">
+          <article class="review-post" aria-label={t.cardLabel}>
+            <header class="review-post-head">
+              <span class="review-avatar" aria-hidden="true"><span id="review-initial">★</span></span>
+              <div class="review-who">
+                <label class="sr-only" for="review-name">{t.name}</label>
+                <input id="review-name" name="name" type="text" maxlength="60" autocomplete="given-name" placeholder={t.name} />
+                <span class="review-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l2.6 1.9 3.2-.1 1 3 2.6 1.9-1 3 1 3-2.6 1.9-1 3-3.2-.1L12 22.2l-2.6-1.9-3.2.1-1-3L2.6 15.5l1-3-1-3 2.6-1.9 1-3 3.2.1z" /><path d="M8 12.3l2.6 2.6L16.2 9.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>{t.badge}</span>
+              </div>
+              <img class="review-logo" src={logo} alt="Twiggli" width="34" height="34" />
+            </header>
+
+            <fieldset class="review-stars-set">
+              <legend class="sr-only">{t.stars}</legend>
+              <div class="review-stars">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <label class="review-star" title={t.starNames[n - 1]}>
+                    <input type="radio" name="stars" value={n} />
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.3l-5.8 3.1 1.2-6.5L2.6 9.4l6.5-.8z" /></svg>
+                    <span class="sr-only">{n} – {t.starNames[n - 1]}</span>
+                  </label>
+                ))}
+                <span class="review-star-name" id="star-name" aria-live="polite">{t.tapStars}</span>
+              </div>
+            </fieldset>
+
+            <label class="sr-only" for="review-text">{t.text}</label>
+            <textarea id="review-text" name="text" rows="3" maxlength="1200" placeholder={t.placeholder}></textarea>
+            <p class="review-post-foot" id="review-post-foot"></p>
+          </article>
+        </div>
+
+        <label class="review-consent"><input id="review-consent" type="checkbox" checked /> <span>{t.consent}</span></label>
+        <input type="text" name="_honey" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <p class="review-error" id="review-error" role="alert" hidden></p>
+        <button class="btn btn-primary review-send" type="submit">{t.send}</button>
+        <p class="review-note">{t.note}</p>
+      </form>
+
+      <div class="review-done" id="review-done" hidden>
+        <div class="review-done-stars" aria-hidden="true">★★★★★</div>
+        <h1 class="review-title">{t.thanks}</h1>
+        <p class="review-lede">{t.thanksBody}</p>
+        <a class="btn btn-primary" href={workshopsHref}>{t.more}</a>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script is:inline define:vars={{ starNames: t.starNames, withWord: t.with, needStars: t.needStars, needText: t.needText, errorText: t.error, tapStars: t.tapStars }}>
+  const form = document.getElementById('review-form');
+  const q = new URLSearchParams(location.search);
+  const names = JSON.parse(form.dataset.names || '{}');
+  const slug = (q.get('h') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 60);
+  const workshop = (q.get('w') || '').slice(0, 120);
+  const hostName = names[slug] || '';
+  const forLine = document.getElementById('review-for');
+  if (workshop || hostName) {
+    forLine.textContent = [workshop, hostName && `${withWord} ${hostName}`].filter(Boolean).join(' ');
+    forLine.hidden = false;
+  }
+  const foot = document.getElementById('review-post-foot');
+  foot.textContent = [workshop, hostName].filter(Boolean).join(' · ');
+
+  const nameInput = document.getElementById('review-name');
+  const initial = document.getElementById('review-initial');
+  const setInitial = () => { initial.textContent = (nameInput.value.trim()[0] || '★').toUpperCase(); };
+  nameInput.value = (q.get('n') || '').slice(0, 60);
+  setInitial();
+  nameInput.addEventListener('input', setInitial);
+
+  const text = document.getElementById('review-text');
+  const grow = () => { text.style.height = 'auto'; text.style.height = `${text.scrollHeight}px`; };
+  text.addEventListener('input', grow);
+
+  const starName = document.getElementById('star-name');
+  const radios = [...form.querySelectorAll('input[name="stars"]')];
+  const paint = () => {
+    const v = Number(form.querySelector('input[name="stars"]:checked')?.value || 0);
+    form.querySelectorAll('.review-star').forEach((el, i) => el.classList.toggle('on', i < v));
+    starName.textContent = v ? starNames[v - 1] : tapStars;
+    form.classList.toggle('has-stars', v > 0);
+  };
+  radios.forEach((r) => r.addEventListener('change', paint));
+  const pre = Number(q.get('s'));
+  if (pre >= 1 && pre <= 5) { radios[pre - 1].checked = true; paint(); }
+
+  const err = document.getElementById('review-error');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    const stars = Number(form.querySelector('input[name="stars"]:checked')?.value || 0);
+    const body = text.value.trim();
+    if (!stars) { err.textContent = needStars; err.hidden = false; return; }
+    if (body.length < 3) { err.textContent = needText; err.hidden = false; text.focus(); return; }
+    const btn = form.querySelector('.review-send');
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.dataset.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          _honey: form.querySelector('[name="_honey"]').value,
+          host: slug, hostName, workshop, stars, text: body,
+          name: nameInput.value.trim(),
+          showName: document.getElementById('review-consent').checked,
+          lang: form.dataset.lang,
+          test: q.get('test') === '1',
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.success !== 'true') throw new Error('not ok');
+      document.getElementById('review-start').hidden = true;
+      form.hidden = true;
+      document.getElementById('review-done').hidden = false;
+      window.scrollTo({ top: 0 });
+    } catch {
+      err.textContent = errorText; err.hidden = false; btn.disabled = false;
+    }
+  });
+</script>
