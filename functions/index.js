@@ -956,6 +956,22 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, 
     if (typeof app === 'string' && /^acct_\w+$/.test(app)) accountId = app;
   }
   const action = String(req.body?.action ?? 'status');
+  // An id that is not an account of this platform (left over from a test or
+  // another Stripe account, "No such account"): forget it, so the host can
+  // connect afresh instead of being stuck on it (Jirel's test, 06.11.26).
+  if (accountId) {
+    const r = await stripe(key, `accounts/${accountId}`);
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      if (r.status === 404 || /no such account/i.test(e?.error?.message ?? '') || e?.error?.code === 'account_invalid') {
+        console.warn('hostStripe: dropping unknown account', accountId, email);
+        accountId = undefined;
+        await memberRef.set({ stripe: FieldValue.delete() }, { merge: true });
+      } else if (action === 'status') {
+        return res.status(502).json({ error: e?.error?.message ?? 'Stripe error' });
+      }
+    }
+  }
   if (action === 'status') {
     if (!accountId) return res.status(200).json({ connected: false, chargesEnabled: false });
     const r = await stripe(key, `accounts/${accountId}`);
