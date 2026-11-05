@@ -1,5 +1,6 @@
 ---
 import { filterCopy } from '../data/content.ts';
+import RatingTag from './RatingTag.astro';
 import PageCircles from './PageCircles.astro';
 import { circlesFor } from '../data/pageCircles.ts';
 /** /workshops/ — the index of every activity page and every host page.
@@ -141,7 +142,7 @@ import Voucher from './Voucher.astro';
                     <span class="hub-card-date">{n ? formatDay(n.dayOffset, lang) : h.onRequest}</span>
                     <Voucher kind="badge" host={host} lang={lang} />
                   </span>
-                  <span class="hub-card-name">{host.name}</span>
+                  <span class="hub-card-name">{host.name}<RatingTag slug={host.slug} /></span>
                   <span class="hub-card-spec">{host.specialty}</span>
                   {/* The next date's price, as the host page's own cards give it,
                       so it is there before the click. */}

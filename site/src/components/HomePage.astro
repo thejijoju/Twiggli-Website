@@ -14,6 +14,7 @@
  *  pills read them — see the end of DayPicker.astro. Without scripting the
  *  form still lands on the calendar, unfiltered. */
 import Base from '../layouts/Base.astro';
+import RatingTag from './RatingTag.astro';
 import Newsletter from './Newsletter.astro';
 import HostCommunity from './HostCommunity.astro';
 import SiteSchema from './SiteSchema.astro';
@@ -160,7 +161,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                 <span class="hd-card-when">{formatWhen(s, lang)}</span>
                 <span class="maker-line"><span class="maker-title">{s.title}</span></span>
                 <span class="maker-sub">{s.host.firstName ?? s.host.name} · {s.district}</span>
-                {s.price && <span class="maker-price"><strong>{s.price}</strong><span>{f.priceMeta}</span></span>}
+                {s.price && <span class="maker-price"><strong>{s.price}</strong><span>{f.priceMeta}</span><RatingTag slug={s.host.slug} /></span>}
               </a>
               <Voucher kind="tile" host={s.host} lang={lang} title={s.title} workshopKey={s.workshopKey} />
             </li>

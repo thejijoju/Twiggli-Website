@@ -19,6 +19,7 @@
  *  photo, name and link is real; nothing is promised that the site does
  *  not do (no vouchers, no reviews). */
 import Base from '../layouts/Base.astro';
+import RatingTag from './RatingTag.astro';
 import Newsletter from './Newsletter.astro';
 import HostMonogram from './HostMonogram.astro';
 import HomeSearch from './HomeSearch.astro';
@@ -246,7 +247,7 @@ const isoWeek = (() => {
                   <span class="hd-card-when">{formatWhen(s, lang)}</span>
                   <span class="hd-card-title">{s.title}</span>
                   <span class="hd-card-host">{s.host.firstName ?? s.host.name} · {s.district}</span>
-                  {s.price && <span class="hd-card-price"><b>{s.price}</b> {f.priceMeta}</span>}
+                  {s.price && <span class="hd-card-price"><b>{s.price}</b> {f.priceMeta}<RatingTag slug={s.host.slug} /></span>}
                 </span>
               </a>
             </li>

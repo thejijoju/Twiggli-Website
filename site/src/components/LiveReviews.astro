@@ -26,10 +26,9 @@ const heading = title ? (lang === 'de' ? 'Was Gäste sagen' : 'What guests say')
         const guest = de ? 'Twiggli-Gast' : 'Twiggli guest';
         box.innerHTML = (box.dataset.title ? `<p class="host-about-title">${esc(box.dataset.title)}</p>` : '') + items.map((r) => `
           <blockquote class="host-review-card">
-            <div class="hr-head"><span class="hr-avatar"><span>${esc((r.name || '★')[0].toUpperCase())}</span></span>
-              <div><div class="hr-name">${esc(r.name || guest)}</div><div class="hr-stars" aria-label="${r.stars} / 5">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div></div></div>
+            <div class="hr-stars" aria-label="${r.stars} / 5">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
             <p>“${esc(r.text)}”</p>
-            <div class="hr-meta">${[r.workshop, r.month && month(r.month)].filter(Boolean).map(esc).join(' · ')}</div>
+            <div class="hr-meta">${[r.name || guest, r.workshop, r.month && month(r.month)].filter(Boolean).map(esc).join(' · ')}</div>
           </blockquote>`).join('');
         box.hidden = false;
       })
