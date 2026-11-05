@@ -6621,3 +6621,8 @@ body.is-bare { padding-bottom: 0; }
 .booked-facts dt { color: var(--color-text-muted); }
 .booked-facts dd { margin: 0; font-weight: 700; }
 .booked-facts .booked-what { grid-template-columns: 1fr; font-size: 18px; }
+
+/* Second choice in the "accept payments" dialog: link an existing Stripe account. */
+.hd-pay-link { margin-top: 10px; width: 100%; padding: 12px; border: 1.5px solid currentColor; border-radius: 12px; background: transparent; font: inherit; font-weight: 700; cursor: pointer; opacity: .85; }
+.hd-pay-link:hover { opacity: 1; }
+.hd-pay-link:disabled { opacity: .5; cursor: wait; }
