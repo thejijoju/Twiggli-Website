@@ -1,8 +1,8 @@
 // The voucher itself: its code, its PDF and the email that carries it.
 //
-// The PDF is the artwork in assets/bg-{de,en}.jpg (layout C, made once from
-// HTML) with the parts that change printed on top: the amount, the code,
-// who it is for and their message, and the line of details at the bottom.
+// The PDF is the photo collage in assets/bg-photos.jpg (the first vouchers'
+// design) with everything else drawn on top: logo, title, amount, who it is
+// for and their message, the code box, how to redeem, and the details line.
 // Fonts are Poppins and Caveat (SIL Open Font License), kept in assets/.
 import { readFileSync } from 'node:fs';
 import { randomInt } from 'node:crypto';
@@ -52,30 +52,55 @@ export const voucherPdf = async (v) => {
   doc.setTitle(de ? 'Twiggli-Gutschein' : 'Twiggli voucher');
   doc.setAuthor('Twiggli');
   const page = doc.addPage([W, H]);
-  page.drawImage(await doc.embedJpg(asset(de ? 'bg-de.jpg' : 'bg-en.jpg')), { x: 0, y: 0, width: W, height: H });
+  // The photo collage of the first vouchers (Jirel, 06.11.26: "keep that
+  // design"), on the warm background; everything below it is drawn here.
+  page.drawImage(await doc.embedJpg(asset('bg-photos.jpg')), { x: 0, y: 0, width: W, height: H });
   const regular = await doc.embedFont(asset('Poppins-Regular.ttf'), { subset: true });
   const semi = await doc.embedFont(asset('Poppins-SemiBold.ttf'), { subset: true });
   const bold = await doc.embedFont(asset('Poppins-Bold.ttf'), { subset: true });
   // Caveat's contextual letter forms come out garbled in pdf-lib: off.
   const hand = await doc.embedFont(asset('Caveat-SemiBold.ttf'), { features: { calt: false, liga: false, clig: false, rlig: false } });
+  // The fonts have no emoji: drop them rather than print empty boxes.
+  const plain = (t) => String(t ?? '').replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{1F3FB}-\u{1F3FF}\uFE0F\u200D\u20E3]/gu, '').replace(/\s+/g, ' ').trim();
   /** Centred text with its baseline `top` mm from the top of the page. */
   const centre = (text, font, size, top, color = INK) =>
     page.drawText(text, { x: (W - font.widthOfTextAtSize(text, size)) / 2, y: H - top * MM, size, font, color });
 
-  centre(euro(v.amount, de), bold, 54, 128);
+  // Logo, small, on the left under the photos.
+  page.drawImage(await doc.embedPng(asset('icon.png')), { x: 16 * MM, y: H - 147 * MM, width: 8.5 * MM, height: 8.5 * MM });
+  page.drawText('Twiggli', { x: 27 * MM, y: H - 144.2 * MM, size: 11, font: semi, color: INK });
+
+  centre(de ? 'ein Geschenk für dich' : 'a gift for you', hand, 22, 152, PURPLE);
+  centre(de ? 'Twiggli-Gutschein' : 'Twiggli voucher', bold, 22, 163);
+  centre(euro(v.amount, de), bold, 44, 184);
   const what = v.host
     ? (de ? `Für ${v.workshop ? `„${v.workshop}“ ` : 'einen Workshop '}bei ${v.host}` : `For ${v.workshop ? `“${v.workshop}” ` : 'a workshop '}with ${v.host}`)
     : (de ? 'Für jeden Workshop bei einer Berliner Maker*in: Töpfern, Kerzen, Drucken, Kochen und vieles mehr.'
           : 'For any workshop with a Berlin maker: pottery, candles, printmaking, cooking and much more.');
-  wrap(what, regular, 10.5, 120 * MM).slice(0, 2).forEach((l, i) => centre(l, regular, 10.5, 141 + i * 5.2, MUTED));
+  wrap(what, regular, 10, 130 * MM).slice(0, 2).forEach((l, i) => centre(l, regular, 10, 193 + i * 5, MUTED));
 
   // Who it is for, and their message, in the handwriting.
-  let top = 160;
-  if (v.recipient) { centre(`${de ? 'Für' : 'For'} ${v.recipient}`, hand, 24, top, PURPLE); top += 9; }
-  if (v.message) wrap(v.message, hand, 16, 130 * MM).slice(0, 3).forEach((l, i) => centre(l, hand, 16, top + i * 7, INK));
+  let top = 207;
+  const recipient = plain(v.recipient);
+  const message = plain(v.message);
+  if (recipient) { centre(`${de ? 'Für' : 'For'} ${recipient}`, hand, 20, top, PURPLE); top += 8; }
+  if (message) { wrap(message, hand, 15, 140 * MM).slice(0, 2).forEach((l, i) => centre(l, hand, 15, top + i * 6.5, INK)); top += message ? 6.5 * Math.min(2, wrap(message, hand, 15, 140 * MM).length) : 0; }
 
-  centre(v.code, semi, 20, 214.5);
-  if (v.test) centre(de ? 'TESTGUTSCHEIN · NICHT EINLÖSBAR' : 'TEST VOUCHER · NOT REDEEMABLE', bold, 9, 190, rgb(0.76, 0.2, 0.3));
+  // The code, in a dashed box.
+  const boxTop = Math.max(top + 4, 218);
+  const bw = 92 * MM, bh = 19 * MM;
+  page.drawRectangle({ x: (W - bw) / 2, y: H - (boxTop * MM) - bh, width: bw, height: bh, color: rgb(1, 1, 1), opacity: 0.85,
+    borderColor: PURPLE, borderWidth: 1.1, borderDashArray: [3, 2.5], borderOpacity: 0.9 });
+  centre(de ? 'GUTSCHEINCODE' : 'VOUCHER CODE', regular, 6.5, boxTop + 6, MUTED);
+  centre(v.code, semi, 19, boxTop + 14.5);
+  if (v.test) centre(de ? 'TESTGUTSCHEIN · NICHT EINLÖSBAR' : 'TEST VOUCHER · NOT REDEEMABLE', bold, 9, boxTop - 2, rgb(0.76, 0.2, 0.3));
+
+  const how = v.host
+    ? (de ? `Buche bei ${v.host} auf twiggli.com und gib den Gutscheincode in deiner Buchungsanfrage an, oder antworte einfach auf unsere E-Mail. Der Wert wird vom Preis abgezogen, ein Rest bleibt auf dem Code. Behalte den Code für dich, bis du ihn einlöst.`
+          : `Book with ${v.host} on twiggli.com and add your voucher code to the booking request, or simply reply to our email. The value is deducted from the price; anything left stays on the code. Keep the code to yourself until you redeem it.`)
+    : (de ? 'Such dir auf twiggli.com/voucher einen Workshop bei einer Berliner Maker*in aus und gib den Gutscheincode in deiner Buchungsanfrage an, oder antworte einfach auf unsere E-Mail. Der Wert wird vom Preis abgezogen, ein Rest bleibt auf dem Code. Behalte den Code für dich, bis du ihn einlöst.'
+          : 'Book a workshop at any participating Berlin maker on twiggli.com/voucher and add your voucher code to the booking request, or simply reply to our email. The value is deducted from the price; anything left stays on the code. Keep the code to yourself until you redeem it.');
+  wrap(how, regular, 7.8, 160 * MM).slice(0, 4).forEach((l, i) => centre(l, regular, 7.8, boxTop + bh / MM + 8 + i * 4, MUTED));
 
   const details = [
     v.code,
@@ -88,7 +113,7 @@ export const voucherPdf = async (v) => {
     de ? 'Keine Barauszahlung. Ein Restwert bleibt auf dem Code.' : 'No cash payout. Any remaining value stays on the code.',
   ].join('  |  ');
   wrap(details, regular, 7, 182 * MM).slice(0, 3).forEach((l, i) =>
-    page.drawText(l, { x: 14 * MM, y: H - (277 + i * 4) * MM, size: 7, font: regular, color: MUTED }));
+    page.drawText(l, { x: 14 * MM, y: H - (279 + i * 4) * MM, size: 7, font: regular, color: MUTED }));
   return Buffer.from(await doc.save());
 };
 
