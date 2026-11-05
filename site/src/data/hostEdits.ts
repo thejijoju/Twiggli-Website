@@ -81,7 +81,7 @@ const hours = (start: string, end?: string): string | undefined => {
  *  through our request form, like any date without a booking page. */
 export function accountDates(daysAhead = 100): {
   slug: string; title: string; date: string; time: string; duration?: string; price?: string;
-  spots?: number; minGuests?: number; languages?: string; district?: string; url: string; request: true;
+  spots?: number; minGuests?: number; languages?: string; district?: string; url: string; request: true; eventId?: string;
 }[] {
   const today = new Date(); today.setUTCHours(0, 0, 0, 0);
   const last = new Date(today.getTime() + daysAhead * 86400000);
@@ -106,6 +106,8 @@ export function accountDates(daysAhead = 100): {
         ...(typeof e.seats === 'number' && e.seats > 0 ? { spots: e.seats } : {}),
         ...(typeof e.minGuests === 'number' && e.minGuests > 1 ? { minGuests: e.minGuests } : {}),
         ...(e.languages ? { languages: e.languages } : {}),
+        // Priced: paid on the spot through the host's Stripe (DateRows, BookingDialog).
+        ...(typeof e.price === 'number' && e.price > 0 && e.id ? { eventId: e.id } : {}),
         url: '',
         request: true,
       });

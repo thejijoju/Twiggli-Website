@@ -364,6 +364,9 @@ const vc = lang === 'de'
     people?.addEventListener('input', totals);
     voucherIn?.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); checkVoucher(); } });
 
+    const payCopy = () => (dialog.dataset.lang === 'de'
+      ? { title: 'Platz buchen', lede: 'Sag uns, wer kommt. Danach zahlst du sicher über Stripe, und dein Platz ist sofort fest.', go: 'Weiter zur Zahlung', going: 'Einen Moment…', failed: 'Die Zahlung konnte gerade nicht starten. Bitte versuch es gleich noch einmal.', full: (n: number) => (n ? `Für diesen Termin sind nur noch ${n} ${n === 1 ? 'Platz' : 'Plätze'} frei.` : 'Dieser Termin ist leider ausgebucht.') }
+      : { title: 'Book your place', lede: 'Tell us who’s coming. Then you pay securely with Stripe, and your place is confirmed straight away.', go: 'Continue to payment', going: 'One moment…', failed: 'The payment could not start just now. Please try again in a moment.', full: (n: number) => (n ? `Only ${n} ${n === 1 ? 'place is' : 'places are'} left on this date.` : 'Sorry, this date is fully booked.') });
     const dateText = (iso?: string) => {
       if (!iso) return '';
       const d = new Date(`${iso}T12:00:00`);
@@ -373,11 +376,11 @@ const vc = lang === 'de'
     const open = (el: HTMLElement) => {
       picked = { ...el.dataset };
       const kind = picked.book || 'book';
-      if (heading) heading.textContent = copy[kind] ?? copy.book;
+      if (heading) heading.textContent = picked.bookPay ? payCopy().title : (copy[kind] ?? copy.book);
       // An event with several hosts and a special request are group
       // requests too: who, how many, when and where, plus the hosts.
       const event = kind === 'event' || kind === 'special';
-      if (lede) lede.textContent = kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : kind === 'wish' ? copy.wishLede : copy.lede;
+      if (lede) lede.textContent = picked.bookPay ? payCopy().lede : kind === 'event' ? copy.eventLede : kind === 'special' ? copy.specialLede : kind === 'notify' ? copy.notifyLede : kind === 'group' ? copy.groupLede : kind === 'studio' ? copy.studioLede : kind === 'membership' ? copy.membershipLede : kind === 'retreat' ? copy.retreatLede : kind === 'wish' ? copy.wishLede : copy.lede;
       if (whenField) whenField.hidden = !!picked.bookDate || kind === 'notify' || kind === 'retreat' || kind === 'wish';
       if (wishBox) wishBox.hidden = kind !== 'wish' && kind !== 'notify';
       // A date that only runs from a set number of participants says so,
@@ -433,7 +436,7 @@ const vc = lang === 'de'
         when.hidden = !when.textContent;
       }
       // The voucher field, at hosts that take Twiggli vouchers.
-      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind) && !(kind === 'wish' && picked.bookMin));
+      if (voucherBox) voucherBox.hidden = !!picked.bookPay || !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind) && !(kind === 'wish' && picked.bookMin));
       if (voucherRow) voucherRow.hidden = true;
       if (voucherIn) voucherIn.value = '';
       voucherOk = null; note('');
@@ -442,7 +445,7 @@ const vc = lang === 'de'
       if (error) error.hidden = true;
       form.hidden = false;
       if (sent) sent.hidden = true;
-      if (send) { send.disabled = false; send.textContent = copy.send; }
+      if (send) { send.disabled = false; send.textContent = picked.bookPay ? payCopy().go : copy.send; }
       // A button inside another panel (the group page's quick view) hands
       // over to the form rather than stacking it on top.
       document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => { if (d !== dialog) d.close(); });
@@ -516,6 +519,37 @@ const vc = lang === 'de'
       };
       const studioWhen = kind === 'studio' ? [fields['Start time'], fields.Hours && `${fields.Hours} h`, fields['How often'] === 'Regularly' ? 'regularly' : ''].filter(Boolean).join(', ') : '';
       const subject = `${label}: ${picked.bookTitle ?? ''}${picked.bookHost ? ` · ${picked.bookHost}` : ''}${picked.bookDate ? ` — ${picked.bookDate}${fields.Time ? ` ${fields.Time}` : ''}` : wish ? ` — ${wish}` : wishDates.length ? ` — ${wishDates.join(', ')}` : wishRough ? ` — ${wishRough}` : ''}${studioWhen ? ` ${studioWhen}` : ''}${fields.Where && fields.Where !== 'not said yet' ? `, ${fields.Where === 'At their own venue' ? 'at their venue' : 'at the studio'}` : ''} (${fields.People})`;
+      // A priced date from a host's Twiggli account: straight to payment on
+      // the host's own Stripe (functions bookingCheckout), no request.
+      if (picked.bookPay) {
+        const pc = payCopy();
+        if (send) { send.disabled = true; send.textContent = pc.going; }
+        try {
+          const res = await fetch(formEndpoint.replace(/formRequest$/, 'bookingCheckout'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              eventId: picked.bookPay, date: picked.bookDate, people: Number(data.get('people') || 1),
+              name: String(data.get('name') ?? ''), email: String(data.get('email') ?? ''), phone: String(data.get('phone') ?? ''),
+              message: String(data.get('message') ?? ''), lang: dialog.dataset.lang === 'de' ? 'de' : 'en', back: location.href,
+            }),
+          });
+          const out = await res.json().catch(() => ({}));
+          if (res.ok && out.url) {
+            track('checkout-started', { host: picked.bookHost ?? '', title: picked.bookTitle ?? '', lang: dialog.dataset.lang ?? '' });
+            location.href = out.url;
+            return;
+          }
+          if (error) {
+            error.textContent = out.error === 'full' ? pc.full(out.left ?? 0) : pc.failed;
+            error.hidden = false;
+          }
+        } catch {
+          if (error) { error.textContent = pc.failed; error.hidden = false; }
+        }
+        if (send) { send.disabled = false; send.textContent = pc.go; }
+        return;
+      }
       if (send) { send.disabled = true; send.textContent = copy.sending; }
       try {
         const res = await fetch(formEndpoint, {
