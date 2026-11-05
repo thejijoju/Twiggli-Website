@@ -17,7 +17,7 @@ export const makerPictures: Record<string, 'photo' | 'reel'> = {
   'norbert-bildhauerei': 'photo', // "Photos from his site cyclop-art.de, with his consent"
   // Reels noted as the host's own footage.
   alessia: 'reel', olivia: 'reel', helka: 'reel', lama: 'reel', blauhaus: 'reel',
-  loam: 'reel', pausify: 'reel', lomu: 'reel', pastamadre: 'reel', munio: 'reel',
+  pausify: 'reel', lomu: 'reel', pastamadre: 'reel', munio: 'reel',
   petitejungle: 'reel', 'anna-malerlebnisse': 'reel', chelti: 'reel', 'beat-etage': 'reel',
   'monk-garden': 'reel', bumerang: 'reel', druckrausch: 'reel', daisuki: 'reel', dirt: 'reel',
   arcoiris: 'reel', mampe: 'reel', 'smell-lab': 'reel', yurika: 'reel', sabine: 'reel',

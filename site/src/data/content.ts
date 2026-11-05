@@ -306,9 +306,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // PLACEHOLDER group range — the studio publishes no cap; its own reviews
   // call it a small group.
   blauhaus:         { activity: 'photography', groupRange: [1, 10], hourRange: [2.5, 2.5] },
-  // Eight seats per class on the shop's own stock counts; the courses run
-  // 2.5 h, the plate and vase workshops 3.
-  loam:             { activity: 'ceramics',  groupRange: [1, 8],  hourRange: [2.5, 3] },
   // Thirty is the cap their own ticket line names; every session runs
   // 11:00–13:30.
   pausify:          { activity: 'wellbeing', groupRange: [1, 30], hourRange: [2.5, 2.5] },
@@ -550,9 +547,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cyanotype printing', studio: 'Blauhaus',
       blurb: 'The oldest photographic process still in daily use, and the one that needs no darkroom: you brush a light-sensitive coating onto paper, lay leaves, flowers or finds from your last walk on top, and let the sun do the rest. What lifts out of the water tray is Prussian blue — a print, a postcard or a folded card to take home. Benedikt works with complete beginners as readily as with people who already draw or photograph; no experience is needed, every material is provided, and the moment the paper turns in the water is the one everyone remembers.',
       group: 'Small group', duration: '2.5 h', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
-    { slug: 'loam', name: 'Loam Berlin', specialty: 'Handbuilding pottery & courses', studio: 'Loam.',
-      blurb: 'Jana’s ceramics studio in Moabit — workshop, learning place and shop in one. Everything is built by hand rather than thrown: slab building, pinching and coiling, then surface decoration, and the studio glazes and fires your pieces for you to collect later. Classes take eight at most and run two and a half to three hours — an introduction to handbuilding, cups and mugs, plates and trays, candle holders, illustrated bowls, larger vases and carafes — alongside a six-week evening course, private one-to-one sessions, team events and open studio time. Every class is taught in English and German.',
-      group: 'Up to 8', duration: '2.5–3 h · 6-week course', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
     { slug: 'pausify', name: 'Pausify', specialty: 'Co-reading & focus sessions', studio: 'Pausify',
       blurb: 'Ksenia and Barbara’s reading and focus community — a book club where nobody assigns the reading. You bring whatever you are in the middle of: a novel, a sketchbook, a laptop, a half-finished project. Twenty minutes of hellos, then an hour of silence with everyone working side by side, then coffee and the conversation that comes out of it. It runs every weekend in a glass-walled space by Hauptbahnhof, in English and German, drinks and snacks included — single ticket or membership, and people often stay on for lunch. Book swaps, talks and writing workshops come round as special editions.',
       group: 'Up to 30', duration: '2.5 h', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
@@ -744,9 +738,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'blauhaus', name: 'Benedikt', specialty: 'Cyanotypie', studio: 'Blauhaus',
       blurb: 'Eines der ältesten fotografischen Verfahren — und eines, das keine Dunkelkammer braucht: Du streichst eine lichtempfindliche Schicht auf Papier, legst Blätter, Blüten oder Fundstücke vom letzten Spaziergang darauf und lässt die Sonne den Rest machen. Was aus der Wasserschale kommt, ist Preußischblau: ein Druck, eine Postkarte oder eine Klappkarte zum Mitnehmen. Benedikt arbeitet mit absoluten Anfängerinnen genauso wie mit Leuten, die schon zeichnen oder fotografieren; Vorkenntnisse braucht es keine, alle Materialien sind da, und der Moment, in dem das Papier im Wasser umschlägt, bleibt allen im Kopf.',
       group: 'Kleine Gruppe', duration: '2,5 Std.', place: 'Grimms Garten, Berlin', languages: 'DE · EN' },
-    { slug: 'loam', name: 'Loam Berlin', specialty: 'Aufbaukeramik & Kurse', studio: 'Loam.',
-      blurb: 'Das Keramikstudio von Jana in Moabit — Werkstatt, Lernort und Laden in einem. Gearbeitet wird von Hand statt an der Scheibe: Plattentechnik, Pinchen und Wulstaufbau, dazu Oberflächengestaltung; glasiert und gebrannt wird im Studio, abgeholt wird später. Die Kurse nehmen höchstens acht Leute und dauern zweieinhalb bis drei Stunden — Einführung in die Aufbaukeramik, Tassen und Becher, Teller und Schalen, Kerzenhalter, illustrierte Schüsseln, größere Vasen und Karaffen — dazu ein sechswöchiger Abendkurs, Einzelstunden, Team-Events und offene Studiozeit. Unterrichtet wird auf Deutsch und Englisch.',
-      group: 'Bis 8', duration: '2,5–3 Std. · 6-Wochen-Kurs', place: 'Elberfelder Str. 18, Moabit', languages: 'EN · DE' },
     { slug: 'pausify', name: 'Pausify', specialty: 'Gemeinsam lesen & fokussiert arbeiten', studio: 'Pausify',
       blurb: 'Die Lese- und Fokus-Community von Ksenia und Barbara — ein Buchclub, in dem niemand vorgibt, was gelesen wird. Du bringst mit, woran du gerade bist: einen Roman, ein Skizzenbuch, einen Laptop, ein halbfertiges Projekt. Zwanzig Minuten Ankommen, dann eine Stunde Stille, in der alle nebeneinander arbeiten, danach Kaffee und die Gespräche, die daraus entstehen. Jedes Wochenende in einem verglasten Raum am Hauptbahnhof, auf Deutsch und Englisch, Getränke und Snacks inklusive — Einzelticket oder Mitgliedschaft, und viele bleiben danach noch zum Mittagessen. Book Swaps, Talks und Schreibwerkstätten kommen als Sonderausgaben dazu.',
       group: 'Bis 30', duration: '2,5 Std.', place: 'EDGE Grand Central, Invalidenstr. 65, Moabit', languages: 'EN · DE' },
@@ -816,10 +807,6 @@ const reels: Record<string, { video: string; poster: string }> = {
   // light. No captions; audio stripped. The end card with their logo is left
   // off — it reads as a caption on a card this size.
   blauhaus: { video: '/video/blauhaus.mp4', poster: '/video/blauhaus-poster.jpg' },
-  // Loam's own, a class in progress: hands pinching and scoring clay at the
-  // bench, a horse built up mane and all on its board, and the finished
-  // pieces drying beside the glazed ones. No captions; audio stripped.
-  loam: { video: '/video/loam.mp4', poster: '/video/loam-poster.jpg' },
   // Pausify's own, cut between their caption and their end card: the
   // booths full of readers over the street, the staircase people read on,
   // the bean bags mid-conversation and the room before a session. Audio
@@ -1594,7 +1581,7 @@ const firstNames: Record<string, string> = {
   'norbert-bildhauerei': 'Norbert',
   'himapan-berlin': 'Kirsten',
   redrum: 'Michael', cateduckwall: 'Cate', 'smell-lab': 'Klara', lama: 'Dani', blauhaus: 'Benedikt',
-  loam: 'Jana', pausify: 'Ksenia & Barbara', lomu: 'Monique',
+  pausify: 'Ksenia & Barbara', lomu: 'Monique',
   tinkery: 'Astrid', yurika: 'Yurika',
 };
 
@@ -1635,7 +1622,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   chelti: { area: 'Friedenau' },
   // Based in the north of Berlin; she always comes to the group.
   'himapan-berlin': { area: 'Berlin', onSite: true },
-  lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' }, loam: { area: 'Moabit' },
+  lama: { area: 'Kreuzberg' }, blauhaus: { area: 'Mitte' },
   pausify: { area: 'Moabit' }, lomu: { area: 'Mitte', onSite: true },
   landsinn: { area: 'Potsdam-Babelsberg' },
 tinkery: { area: 'Marzahn-Hellersdorf / Mitte' },
