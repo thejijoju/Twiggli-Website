@@ -646,7 +646,10 @@ const fields = [
         const res = await fetch(`${cfg.functions}/${name}`, {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body),
         });
-        if (!res.ok) throw new Error(String(res.status));
+        if (!res.ok) {
+          const why = await res.json().catch(() => ({}));
+          throw new Error(why.error ? `${res.status}: ${why.error}` : String(res.status));
+        }
         return res.json();
       };
       const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested };
@@ -867,8 +870,9 @@ const fields = [
         try {
           const { url } = await api('hostStripe', { action: 'connect', lang: document.documentElement.lang === 'en' ? 'en' : 'de' });
           location.href = url;
-        } catch {
-          stripeBody.textContent = t.stripeFail;
+        } catch (err) {
+          // Stripe's own reason, small, so a host can tell us what went wrong.
+          stripeBody.textContent = `${t.stripeFail} (${(err as Error).message})`;
           stripeGo.disabled = false; stripeGo.textContent = t.stripeBtn;
         }
       });
