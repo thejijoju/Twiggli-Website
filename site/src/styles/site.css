@@ -6614,3 +6614,10 @@ body.is-bare { padding-bottom: 0; }
 .maker-price .rv-tag, .hd-card-price .rv-tag, .tt-price .rv-tag { margin-left: auto; padding-left: 8px; font-size: 12px; }
 .maker-price .rv-tag::before, .hd-card-price .rv-tag::before, .tt-price .rv-tag::before { content: none; }
 .maker-price:has(.rv-tag:not([hidden])), .hd-card-price:has(.rv-tag:not([hidden])), .tt-price:has(.rv-tag:not([hidden])) { display: flex; align-items: baseline; gap: 4px; }
+
+/* After paying a host's date (/booking/confirmed/, components/BookingConfirmed.astro). */
+.booked-facts { margin: 4px 0 6px; display: grid; gap: 6px; text-align: left; width: 100%; max-width: 360px; }
+.booked-facts div { display: grid; grid-template-columns: 90px 1fr; gap: 10px; }
+.booked-facts dt { color: var(--color-text-muted); }
+.booked-facts dd { margin: 0; font-weight: 700; }
+.booked-facts .booked-what { grid-template-columns: 1fr; font-size: 18px; }

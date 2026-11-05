@@ -75,6 +75,10 @@ export type Session = {
   /** Hosts whose booking platform must not be linked take requests by
    *  mail instead — the card's button becomes "Request booking". */
   request?: boolean;
+  /** A priced date a host created in their Twiggli account: the guest pays
+   *  it on the spot, on the host's own Stripe account (functions
+   *  bookingCheckout). The Firestore id of that date. */
+  payEventId?: string;
   /** Designed for children — picked out by the feed's kids filter. */
   kids?: boolean;
   /** Fully booked right now — the card says so and offers "Notify me"
@@ -130,6 +134,8 @@ type LiveWorkshop = {
   /** True when this host's card takes booking requests by mail instead of
    *  linking a booking page. */
   request?: boolean;
+  /** Firestore id of a priced dashboard date (hostEdits accountDates). */
+  eventId?: string;
   /** True for workshops designed for children (flagged by the scrape from
    *  the title, or per-source). */
   kids?: boolean;
@@ -447,6 +453,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.image ? { image: w.image } : {}),
       ...(w.minGuests ? { minGuests: w.minGuests } : {}),
       ...(w.request ? { request: true } : {}),
+      ...(w.eventId ? { payEventId: w.eventId } : {}),
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut || placesLeft(w) === 0 ? { soldOut: true } : {}),
       ...(w.waitingList || (!w.soldOut && placesLeft(w) === 0) ? { waitingList: true } : {}),
