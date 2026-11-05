@@ -92,19 +92,6 @@ const SOURCES = [
     title: 'Lese- & Fokus-Session', titleEn: 'Co-reading & focus session',
     district: 'Moabit' },
 
-  // Loam. — Jana Marlene Lippert's ceramics studio in Moabit. Every class
-  // sells from one Squarespace products collection, where a session lives in
-  // a variant's date option ("Sat 26th Sept l 11:00 - 14:00 l Deutsch &
-  // English") and the seats left are the variant's stock. The six-week
-  // course names only its first and last evening, so the reader expands the
-  // weekly range into the six meetings it stands for. The gift card carries
-  // amounts rather than dates and drops out on its own. The shop page
-  // (/classes-workshops) only embeds the collection; /pottery-classes-berlin
-  // is the collection itself, and the one that answers ?format=json.
-  { slug: 'loam', name: 'Loam. — pottery classes & workshops', mode: 'squarespace',
-    url: 'https://www.loamberlin.com/pottery-classes-berlin',
-    district: 'Moabit' },
-
   // LAMA Leather Goods — one WooCommerce product per workshop, each with a
   // DATE dropdown of its real dates. Prices and durations come from the
   // catalogue page; the dropdown supplies the dates and the hours.
