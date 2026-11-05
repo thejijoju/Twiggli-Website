@@ -6550,3 +6550,62 @@ body.is-bare { padding-bottom: 0; }
 .book-wish-dates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .book-wish-dates input { width: 100%; min-width: 0; }
 @media (max-width: 560px) { .book-wish-dates { grid-template-columns: 1fr; } }
+
+/* Review page (/review/, components/ReviewPage.astro): the form is the
+   review itself, a post card on a soft violet glow (Jirel's Threads
+   reference, 05.11.26), so the guest sees exactly what will be shown. */
+.review-page { margin: 36px auto 88px; max-width: 560px; display: grid; gap: 28px; text-align: center; }
+.review-kicker { margin: 0 0 8px; font-weight: 700; color: var(--color-accent-700); font-size: 15px; }
+.review-title { margin: 0; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; text-wrap: balance; }
+.review-squiggle { width: 160px; height: 12px; margin: 10px auto 0; display: block; }
+.review-lede { margin: 12px auto 0; max-width: 40ch; color: #5b5870; }
+.review-form { display: grid; gap: 18px; text-align: left; }
+.review-glow { padding: 28px 10px; border-radius: 32px; background: radial-gradient(70% 60% at 50% 50%, rgba(106, 62, 236, .16), rgba(230, 74, 180, .06) 55%, transparent 75%); }
+.review-post { display: grid; gap: 14px; padding: 20px 20px 16px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px rgba(106, 62, 236, .06), 0 18px 48px rgba(106, 62, 236, .16), 0 2px 8px rgba(106, 62, 236, .06); }
+.review-post-head { display: flex; align-items: center; gap: 12px; }
+.review-avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; padding: 3px; background: conic-gradient(from 200deg, #ff8a5c, #e64ab4, #6a3eec, #ff8a5c); display: grid; }
+.review-avatar span { border-radius: 50%; background: #fff; border: 2px solid #fff; display: grid; place-items: center; font-weight: 800; font-size: 19px; color: var(--color-accent); background-clip: padding-box; }
+.review-who { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.review-who input { font: inherit; font-weight: 800; font-size: 17px; border: 0; padding: 2px 0; background: transparent; color: inherit; width: 100%; border-bottom: 1.5px dashed transparent; }
+.review-who input:placeholder-shown { border-bottom-color: #d1cffd; }
+.review-who input:focus { outline: none; border-bottom-color: var(--color-accent); }
+.review-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: #6f6c80; }
+.review-badge svg { width: 15px; height: 15px; fill: #4c8dff; }
+.review-logo { flex: none; width: 34px; height: 34px; border-radius: 9px; object-fit: contain; }
+.review-stars-set { border: 0; margin: 0; padding: 0; }
+.review-stars { display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+.review-star { cursor: pointer; display: inline-flex; padding: 2px; border-radius: 10px; }
+.review-star input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.review-star svg { width: 40px; height: 40px; fill: #f1f0f7; stroke: #cfcbe0; stroke-width: 1.2; stroke-linejoin: round; transition: transform .15s ease, fill .15s ease; }
+.review-star.on svg { fill: #ffb72b; stroke: #ec9d00; }
+.review-star:hover svg { transform: scale(1.12) rotate(-4deg); }
+.review-star:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+.review-star-name { margin-left: 8px; font-size: 14px; font-weight: 700; color: #8b87a0; }
+.has-stars .review-star-name { color: #b37400; }
+.review-post textarea { font: inherit; font-size: 17px; line-height: 1.5; border: 0; padding: 0; resize: none; min-height: 78px; background: transparent; color: inherit; overflow: hidden; }
+.review-post textarea:focus { outline: none; }
+.review-post textarea::placeholder { color: #a9a6b8; }
+.review-post-foot { margin: 0; padding-top: 10px; border-top: 1px solid #f0eff6; font-size: 13px; color: #8b87a0; }
+.review-post-foot:empty { display: none; }
+.review-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: #4d4a60; padding: 0 6px; }
+.review-consent input { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--color-accent); flex: none; }
+.review-error { margin: 0; color: #c0263c; font-weight: 700; padding: 0 6px; }
+.review-send { justify-self: stretch; font-size: 17px; padding-block: 15px; }
+.review-note { margin: -6px 0 0; text-align: center; font-size: 13px; color: #8b87a0; }
+.review-done { display: grid; gap: 16px; justify-items: center; padding: 40px 20px; border-radius: 26px; background: #fff; box-shadow: 0 18px 48px rgba(106, 62, 236, .16); }
+.review-done .review-title { font-size: 32px; }
+.review-done-stars { font-size: 34px; letter-spacing: 6px; color: #ffb72b; animation: review-pop .5s ease both; }
+@keyframes review-pop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .review-star svg { transition: none; } .review-done-stars { animation: none; } }
+@media (max-width: 420px) { .review-star svg { width: 36px; height: 36px; } .review-post { padding: 16px 16px 14px; } .review-glow { padding: 20px 0; } }
+
+/* Live guest reviews on a host page, published from Jirel's review emails. */
+.host-reviews-live { margin-top: 16px; display: grid; gap: 12px; }
+.host-review-card { margin: 0; padding: 14px 16px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(106, 62, 236, .06), 0 10px 28px rgba(106, 62, 236, .12); }
+.host-review-card .hr-head { display: flex; align-items: center; gap: 10px; }
+.host-review-card .hr-avatar { width: 34px; height: 34px; border-radius: 50%; padding: 2px; background: conic-gradient(from 200deg, #ff8a5c, #e64ab4, #6a3eec, #ff8a5c); display: grid; flex: none; }
+.host-review-card .hr-avatar span { border-radius: 50%; background: #fff; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: var(--color-accent); }
+.host-review-card .hr-name { font-weight: 800; }
+.host-review-card .hr-stars { color: #ffb72b; letter-spacing: 1px; font-size: 15px; }
+.host-review-card p { margin: 8px 0 0; }
+.host-review-card .hr-meta { margin-top: 6px; font-size: 13px; color: var(--color-text-muted); }

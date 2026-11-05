@@ -976,3 +976,90 @@ export const hostStripe = onRequest(OPTS, async (req, res) => {
   if (!r.ok) return res.status(502).json({ error: link?.error?.message ?? 'Stripe error' });
   return res.status(200).json({ url: link.url });
 });
+
+// ── Guest reviews (05.11.26) ──
+// The review page (site/src/components/ReviewPage.astro) posts here. A review
+// is saved as "pending" and mailed to Jirel with Publish / Reject buttons:
+// nothing is shown on the site until she publishes it (Jirel, 05.11.26).
+// Published reviews are served by publicReviews and drawn on the host's page
+// in the browser, so publishing needs no deploy. Each mail also carries a
+// Remove link, so a published review (or a test) can be taken down again.
+const reviewSig = async (id, action) => createHmac('sha256', await approveKey()).update(`review\n${id}\n${action}`).digest('hex');
+const reviewLink = async (id, action) => `${FUNCTIONS_URL}/reviewDecide?id=${id}&a=${action}&sig=${await reviewSig(id, action)}`;
+
+export const reviewSubmit = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const b = req.body && typeof req.body === 'object' ? req.body : {};
+  if (b._honey) return res.status(200).json({ success: 'true' });
+  const stars = Math.round(Number(b.stars));
+  const reviewText = String(b.text ?? '').trim().slice(0, 1200);
+  const host = SLUG.test(String(b.host ?? '')) ? String(b.host) : '';
+  if (!(stars >= 1 && stars <= 5) || reviewText.length < 3 || !host) return res.status(400).json({ success: 'false', message: 'Stars, text and host are needed' });
+  const review = {
+    host,
+    hostName: text(b.hostName, 120),
+    workshop: text(b.workshop, 160),
+    name: text(b.name, 60),
+    showName: b.showName === true || b.showName === 'true',
+    stars,
+    text: reviewText,
+    lang: text(b.lang, 5) || 'en',
+    month: new Date().toISOString().slice(0, 7),
+    status: 'pending',
+    test: b.test === true || b.test === 'true',
+    createdAt: FieldValue.serverTimestamp(),
+  };
+  const doc = await getFirestore().collection('guestReviews').add(review);
+  try {
+    const [pub, rej, del] = await Promise.all([reviewLink(doc.id, 'publish'), reviewLink(doc.id, 'reject'), reviewLink(doc.id, 'delete')]);
+    const starLine = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+    const btn = (href, label, bg, fg) => `<table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;margin:0 8px 8px 0"><tr><td bgcolor="${bg}" style="border-radius:10px"><a href="${href}" style="display:inline-block;padding:12px 20px;color:${fg};font-weight:bold;text-decoration:none">${label}</a></td></tr></table>`;
+    const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+    await mail.sendMail({
+      from: { name: 'Twiggli Reviews', address: INBOX },
+      to: INBOX,
+      subject: `${review.test ? '[TEST] ' : ''}New review ${starLine} for ${review.hostName || host} from ${review.name || 'a guest'}`,
+      text: `${starLine}\n"${reviewText}"\n${review.name} · ${review.workshop} · ${review.hostName || host}\nShow first name: ${review.showName ? 'yes' : 'no'}\n\nPublish: ${pub}\nReject: ${rej}\nRemove later: ${del}`,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.6;color:#24272e;max-width:560px">
+<p style="margin:0 0 4px;color:#8a8a8a">New review for <b>${esc(review.hostName || host)}</b>${review.workshop ? ` · ${esc(review.workshop)}` : ''}</p>
+<p style="margin:0 0 8px;font-size:24px;color:#ffb72b;letter-spacing:2px">${starLine}</p>
+<p style="margin:0 0 8px;font-size:16px">“${esc(reviewText)}”</p>
+<p style="margin:0 0 18px;color:#555">${esc(review.name || 'No name')} · show first name: <b>${review.showName ? 'yes' : 'no'}</b></p>
+<p style="margin:0 0 6px">Nothing is shown on twiggli.com until you publish it.</p>
+${btn(pub, 'Publish on the host’s page', '#6a3eec', '#ffffff')}${btn(rej, 'Reject', '#eeeeee', '#24272e')}
+<p style="margin:14px 0 0;font-size:12px;color:#8a8a8a">Take it down later (also deletes it): <a href="${del}" style="color:#8a8a8a">remove this review</a></p></div>`,
+    });
+  } catch (err) { console.error('review mail failed', doc.id, err?.message); }
+  return res.status(200).json({ success: 'true', id: doc.id });
+});
+
+export const reviewDecide = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (req, res) => {
+  const id = String(req.query.id ?? '');
+  const a = String(req.query.a ?? '');
+  const sig = String(req.query.sig ?? '');
+  const page = (title, body) => res.status(200).set('Content-Type', 'text/html; charset=utf-8').send(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title><body style="font-family:Tahoma,Arial,sans-serif;background:#f4f4ff;margin:0;padding:48px 16px"><div style="max-width:480px;margin:0 auto;background:#fff;border-radius:18px;padding:28px 24px;box-shadow:0 18px 50px rgba(106,62,236,.18)"><p style="margin:0 0 12px;font-weight:bold;color:#6a3eec;font-size:20px">twiggli</p><h1 style="font-size:22px;margin:0 0 10px">${esc(title)}</h1>${body}</div></body>`);
+  if (!/^[A-Za-z0-9]{10,40}$/.test(id) || !['publish', 'reject', 'delete'].includes(a)) return page('Link not valid', '<p>This link is incomplete.</p>');
+  const want = Buffer.from(await reviewSig(id, a));
+  if (want.length !== Buffer.from(sig).length || !timingSafeEqual(want, Buffer.from(sig))) return page('Link not valid', '<p>This link is not signed by Twiggli.</p>');
+  const ref = getFirestore().doc(`guestReviews/${id}`);
+  const snap = await ref.get();
+  if (!snap.exists) return page('Already removed', '<p>This review no longer exists.</p>');
+  const r = snap.data();
+  if (a === 'delete') { await ref.delete(); return page('Review removed', `<p>The review from ${esc(r.name || 'a guest')} is deleted and no longer shown.</p>`); }
+  await ref.update({ status: a === 'publish' ? 'published' : 'rejected', decidedAt: FieldValue.serverTimestamp() });
+  return a === 'publish'
+    ? page('Published 🎉', `<p>The review from ${esc(r.name || 'a guest')} is now on ${esc(r.hostName || r.host)}'s page.</p><p><a href="${SITE}/" style="color:#6a3eec;font-weight:bold">Open twiggli.com</a></p>`)
+    : page('Rejected', '<p>This review will not be shown.</p>');
+});
+
+export const publicReviews = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  const host = String(req.query.h ?? '');
+  if (!SLUG.test(host)) return res.status(400).json({ items: [] });
+  const snap = await getFirestore().collection('guestReviews').where('host', '==', host).where('status', '==', 'published').get();
+  const items = snap.docs.map((d) => {
+    const r = d.data();
+    return { stars: r.stars, text: r.text, name: r.showName ? r.name : '', workshop: r.workshop, month: r.month, lang: r.lang };
+  });
+  res.set('Cache-Control', 'public, max-age=60').status(200).json({ items });
+});
