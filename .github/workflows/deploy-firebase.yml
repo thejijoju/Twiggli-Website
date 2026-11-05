@@ -60,7 +60,7 @@ jobs:
           if [ -z "$INBOX_EMAIL" ] || [ -z "$SENDER_EMAIL" ] || [ -z "$ADMIN_EMAILS" ]; then
             echo '::error::Secrets INBOX_EMAIL, CONTACT_EMAIL and ADMIN_EMAILS are all needed (Settings → Secrets and variables → Actions)'; exit 1
           fi
-          printf 'INBOX_EMAIL=%s\nSENDER_EMAIL=%s\nADMIN_EMAILS=%s\nVOUCHER_SEEDS="%s"\n' "$INBOX_EMAIL" "$SENDER_EMAIL" "$ADMIN_EMAILS" "$(printf '%s' "$VOUCHER_SEEDS" | tr '\n' ';')" > functions/.env
+          printf 'INBOX_EMAIL=%s\nSENDER_EMAIL=%s\nADMIN_EMAILS=%s\nVOUCHER_SEEDS="%s"\nVOUCHER_AUTO=on\n' "$INBOX_EMAIL" "$SENDER_EMAIL" "$ADMIN_EMAILS" "$(printf '%s' "$VOUCHER_SEEDS" | tr '\n' ';')" > functions/.env
       - name: Deploy
         if: steps.project.outputs.id != ''
         run: npx --yes firebase-tools@15.34.2 deploy --only functions:website --project "${{ steps.project.outputs.id }}" --non-interactive --force

@@ -436,6 +436,8 @@ const sendVoucherMail = async (to, parts, pdf, code) => { // pdf null: no attach
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
     from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to,
+    // Jirel gets a hidden copy of every voucher email (05.11.26).
+    ...(INBOX && to !== INBOX ? { bcc: INBOX } : {}),
     subject: parts.subject, text: parts.text, html: parts.html,
     attachments: [
       { filename: 'twiggli.png', content: parts.icon, cid: 'twiggli-icon' },
@@ -1234,4 +1236,35 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY,
     });
   } catch (err) { console.error('booking host mail failed', id, err?.message); }
   return res.status(200).json(out());
+});
+
+// ── Paid vouchers still waiting for their code and PDF ──
+// Vouchers bought while automatic sending was off (VOUCHER_AUTO) have
+// pdfSent: false. This sends each one, exactly as a new purchase would,
+// to the address the buyer chose. It can only deliver what was paid for,
+// once (a claim flag stops a second run), so it needs no sign-in.
+export const voucherIssuePending = onRequest({ region: 'europe-west3', secrets: [STRIPE_SECRET_KEY, GMAIL_APP_PASSWORD], maxInstances: 1 }, async (_req, res) => {
+  if (process.env.VOUCHER_AUTO !== 'on') return res.status(409).json({ error: 'automatic sending is off' });
+  const snap = await getFirestore().collection('vouchers').where('pdfSent', '==', false).get();
+  const done = [];
+  for (const d of snap.docs) {
+    const claimed = await getFirestore().runTransaction(async (t) => {
+      const cur = (await t.get(d.ref)).data();
+      if (cur.pdfSent !== false || cur.issuing) return false;
+      t.update(d.ref, { issuing: true });
+      return true;
+    });
+    if (!claimed) continue;
+    try {
+      const r = await stripe(STRIPE_SECRET_KEY.value(), `payment_intents/${d.id}`);
+      const pi = await r.json();
+      if (!r.ok || pi.status !== 'succeeded') throw new Error(pi?.error?.message ?? `status ${pi.status}`);
+      const sentTo = await issueVoucher(pi, pi.metadata ?? {}, d.data().buyer);
+      done.push({ ref: d.data().ref, sentTo });
+    } catch (err) {
+      console.error('pending voucher failed', d.id, err?.message);
+      await d.ref.update({ issuing: false });
+    }
+  }
+  return res.status(200).json({ sent: done.length, done });
 });
