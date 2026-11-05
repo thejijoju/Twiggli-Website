@@ -33,6 +33,11 @@ const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 // An app password of the Gmail account the requests go to (Google account →
 // Security → App passwords), so the function can mail Jirel from it.
 const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
+// The restricted key of the "Twiggli app" Stripe account, the Connect
+// platform where hosts' Standard accounts live (Jirel 05.11.26): host
+// onboarding and guests' bookings. Vouchers stay on STRIPE_SECRET_KEY
+// (the "Twiggli Website" account).
+const STRIPE_CONNECT_KEY = defineSecret('STRIPE_CONNECT_KEY');
 // No address is written in this repo (Jirel, 31.10.26): they come from
 // functions/.env, which deploy-firebase.yml writes from encrypted GitHub
 // secrets (INBOX_EMAIL, SENDER_EMAIL, ADMIN_EMAILS) and never commits.
@@ -933,13 +938,13 @@ const callerIds = async (req) => {
   } catch { return null; }
 };
 
-export const hostStripe = onRequest(OPTS, async (req, res) => {
+export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, async (req, res) => {
   if (!allow(req, res)) return;
   const who = await callerIds(req);
   if (!who) return res.status(401).json({ error: 'Not signed in' });
   const { email, uid } = who;
   if (!ADMINS.includes(email) && !(await mySlugs(email)).length) return res.status(403).json({ error: 'Hosts only' });
-  const key = STRIPE_SECRET_KEY.value();
+  const key = STRIPE_CONNECT_KEY.value();
   if (!key) return res.status(500).json({ error: 'Stripe key missing' });
   const db = getFirestore();
   const memberRef = db.doc(`hostMembers/${email}`);
@@ -1126,9 +1131,9 @@ const CANCEL_TEXT = {
   move: ['Keine Erstattung, aber du kannst auf einen späteren Termin wechseln.', 'No refund, but you can move to a later date.'],
 };
 
-export const bookingCheckout = onRequest(OPTS, async (req, res) => {
+export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, async (req, res) => {
   if (!allow(req, res)) return;
-  const key = STRIPE_SECRET_KEY.value();
+  const key = STRIPE_CONNECT_KEY.value();
   const b = req.body ?? {};
   const eventId = String(b.eventId ?? '');
   const date = String(b.date ?? '');
@@ -1183,7 +1188,7 @@ export const bookingCheckout = onRequest(OPTS, async (req, res) => {
   return res.status(200).json({ url: s.url });
 });
 
-export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_SECRET_KEY, GMAIL_APP_PASSWORD] }, async (req, res) => {
+export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY, GMAIL_APP_PASSWORD] }, async (req, res) => {
   if (!allow(req, res)) return;
   const id = String(req.body?.session_id ?? '');
   if (!/^cs_(live|test)_\w{10,200}$/.test(id)) return res.status(400).json({ error: 'bad-request' });
@@ -1193,7 +1198,7 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_SECRET_KEY, 
   let bk = snap.data();
   const out = () => ({ status: bk.status, title: bk.title, date: bk.date, start: bk.start, location: bk.location, people: bk.people, amount: bk.amount / 100, name: bk.name, cancel: bk.cancel, slug: bk.slug });
   if (bk.status === 'paid') return res.status(200).json(out());
-  const r = await stripeAs(STRIPE_SECRET_KEY.value(), bk.account, `checkout/sessions/${id}`);
+  const r = await stripeAs(STRIPE_CONNECT_KEY.value(), bk.account, `checkout/sessions/${id}`);
   const s = await r.json();
   if (!r.ok) return res.status(502).json({ error: 'stripe' });
   if (s.payment_status !== 'paid') return res.status(200).json({ ...out(), status: 'unpaid' });
