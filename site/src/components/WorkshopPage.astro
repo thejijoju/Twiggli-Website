@@ -5,6 +5,7 @@
 import { priceSummary } from '../data/priceFilter.ts';
 import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
+import LiveReviews from './LiveReviews.astro';
 import HostMonogram from './HostMonogram.astro';
 import { getHosts } from '../data/content.ts';
 import {
@@ -133,6 +134,7 @@ const wishAttrs = {
           {next.price && <div><dt>{t.price}</dt><dd>{next.price} · {t.perPerson}</dd></div>}
         </dl>
         <Voucher kind="pill" host={host} lang={lang} title={w.title} workshopKey={key} />
+        <LiveReviews slug={host.slug} lang={lang} />
         <p class="section-more"><a href={hostHref(lang, host)}>{x.backToHost} {host.name} →</a></p>
       </div>
     </section>
