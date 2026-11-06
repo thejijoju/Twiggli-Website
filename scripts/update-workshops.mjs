@@ -317,7 +317,10 @@ const SOURCES = [
   // Craftkai: Japanese craft workshops sold through a Shopify shop that
   // also lists Japan. Workshops our own hosts teach through it go under
   // their names, at their studios; the rest under Craftkai.
+  // Craftkai itself is off the site (archived 06.11.26, see archive/hosts/craftkai),
+  // so only the routed workshops are kept (routedOnly).
   { slug: 'craftkai', name: 'Craftkai — Japanese craft workshops', mode: 'craftkai',
+    routedOnly: true,
     url: 'https://apvghk-wg.myshopify.com/products.json?limit=250',
     district: 'Mitte',
     routes: [
@@ -2935,6 +2938,9 @@ function fromCraftkai(jsonText, source) {
     // a Berlin venue stays.
     if (/Tokyo|Osaka|Yamanashi|Kyoto/i.test(rawTitle) && !/Berlin|Manifesto|MisoLab/i.test(all)) continue;
     const route = (source.routes ?? []).find((r) => new RegExp(r.match, 'i').test(`${rawTitle} ${body}`));
+    // Craftkai itself is archived (06.11.26): only our own hosts' workshops sold
+    // through its shop are kept.
+    if (!route && source.routedOnly) continue;
     const district = route?.district
       ?? (/MisoLab|Gleimstra/i.test(all) ? 'Prenzlauer Berg' : source.district);
     const title = rawTitle

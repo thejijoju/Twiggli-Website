@@ -1,0 +1,879 @@
+diff --git a/scripts/update-workshops.mjs b/scripts/update-workshops.mjs
+index 67afaa8..231c504 100644
+--- a/scripts/update-workshops.mjs
++++ b/scripts/update-workshops.mjs
+@@ -317,7 +317,10 @@ const SOURCES = [
+   // Craftkai: Japanese craft workshops sold through a Shopify shop that
+   // also lists Japan. Workshops our own hosts teach through it go under
+   // their names, at their studios; the rest under Craftkai.
++  // Craftkai itself is off the site (archived 06.11.26, see archive/hosts/craftkai),
++  // so only the routed workshops are kept (routedOnly).
+   { slug: 'craftkai', name: 'Craftkai — Japanese craft workshops', mode: 'craftkai',
++    routedOnly: true,
+     url: 'https://apvghk-wg.myshopify.com/products.json?limit=250',
+     district: 'Mitte',
+     routes: [
+@@ -2935,6 +2938,9 @@ function fromCraftkai(jsonText, source) {
+     // a Berlin venue stays.
+     if (/Tokyo|Osaka|Yamanashi|Kyoto/i.test(rawTitle) && !/Berlin|Manifesto|MisoLab/i.test(all)) continue;
+     const route = (source.routes ?? []).find((r) => new RegExp(r.match, 'i').test(`${rawTitle} ${body}`));
++    // Craftkai itself is archived (06.11.26): only our own hosts' workshops sold
++    // through its shop are kept.
++    if (!route && source.routedOnly) continue;
+     const district = route?.district
+       ?? (/MisoLab|Gleimstra/i.test(all) ? 'Prenzlauer Berg' : source.district);
+     const title = rawTitle
+diff --git a/site/src/components/ActivityLinks.astro b/site/src/components/ActivityLinks.astro
+index ad81414..1446a32 100644
+--- a/site/src/components/ActivityLinks.astro
++++ b/site/src/components/ActivityLinks.astro
+@@ -37,7 +37,7 @@ const quick = [
+   { label: occ.kids.short, href: occasionHref(lang, 'kids'), tint: '#ffd9ee', icon: '🧸' },
+   { label: c.team, href: href(lang, '/corporatebookings/'), tint: '#d9f3ea', icon: '🙌' },
+ ];
+-const faces = ['craftkai', 'smell-lab', 'pausify'];
++const faces = ['munio', 'smell-lab', 'pausify'];
+ ---
+ 
+ <section class="section activity-band band-seam" id="workshops">
+diff --git a/site/src/components/HomeOption.astro b/site/src/components/HomeOption.astro
+index 0e10158..5bba79d 100644
+--- a/site/src/components/HomeOption.astro
++++ b/site/src/components/HomeOption.astro
+@@ -379,7 +379,7 @@ const isoWeek = (() => {
+             </div>
+           </div>
+           <div class="ho-e-photo">
+-            <img src={host('craftkai')} alt="Gruppe an einem langen Werktisch bei einem Holz-Workshop" />
++            <img src={host('anna-malerlebnisse-2')} alt="Gruppe an einem langen Tisch beim gemeinsamen Malen" />
+             <div class="ho-e-stack" aria-hidden="true">
+               {(['ceramics', 'food', 'art'] as const).map((a) => (
+                 <figure class="hd-polaroid"><img src={thumb(a)} alt="" /><figcaption>{f.activities[a]}</figcaption></figure>
+@@ -413,7 +413,7 @@ const isoWeek = (() => {
+           <div><span class="ho-kicker">Fürs Team</span><h2 class="hd-h2">{split.teams.title} <em>{split.teams.hand}</em></h2><p>{split.teams.copy}</p><a class="ho-btn ho-btn-ink" href={teamsHref} data-book="group" data-book-title={bookingCopy[lang].anyHost}>{split.teams.cta}</a></div>
+         </article>
+         <article>
+-          <img src={host('craftkai-7')} alt="" loading="lazy" decoding="async" />
++          <img src={host('petitejungle-5')} alt="" loading="lazy" decoding="async" />
+           <div><span class="ho-kicker">Für Maker*innen</span><h2 class="hd-h2">{split.makers.title} <em>{split.makers.hand}</em></h2><p>{split.makers.copy}</p><a class="ho-btn ho-btn-ink" href={hostCta}>{split.makers.cta}</a></div>
+         </article>
+       </section>
+diff --git a/site/src/components/HomePage.astro b/site/src/components/HomePage.astro
+index ffbb319..010ace6 100644
+--- a/site/src/components/HomePage.astro
++++ b/site/src/components/HomePage.astro
+@@ -256,7 +256,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
+   <div class="container">
+     <a class="find-solo hd-solo" href={calendarHref}>
+       <span class="find-solo-faces" aria-hidden="true">
+-        {['craftkai', 'smell-lab', 'pausify'].map((p) => <img src={mail(p)} alt="" loading="lazy" decoding="async" />)}
++        {['munio', 'smell-lab', 'pausify'].map((p) => <img src={mail(p)} alt="" loading="lazy" decoding="async" />)}
+       </span>
+       <span class="find-solo-text">
+         <strong>{find.soloTitle}</strong>
+diff --git a/site/src/components/HomeSplits.astro b/site/src/components/HomeSplits.astro
+index 1622eda..61b6c7d 100644
+--- a/site/src/components/HomeSplits.astro
++++ b/site/src/components/HomeSplits.astro
+@@ -25,7 +25,7 @@ const img = (name: string) => withBase(`/img/mail/${name}.jpg`);
+       </div>
+     </div>
+     <div class="home-split-collage" aria-hidden="true">
+-      <img class="home-split-card" src={img('craftkai')} alt="" loading="lazy" />
++      <img class="home-split-card" src={img('munio')} alt="" loading="lazy" />
+       <figure class="home-split-pic is-taped is-top">
+         <div class="home-split-paper"><img src={img('jem-kimchi')} alt="" loading="lazy" /><figcaption>{teams.pics[0]}</figcaption></div>
+         <span class="home-split-tape is-tl"></span><span class="home-split-tape is-br"></span>
+diff --git a/site/src/data/content.ts b/site/src/data/content.ts
+index 00e0514..d97b788 100644
+--- a/site/src/data/content.ts
++++ b/site/src/data/content.ts
+@@ -278,7 +278,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
+   // room is small, so these are deliberately modest.
+   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
+   'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
+-  craftkai:         { activity: 'craft',     groupRange: [1, 12], hourRange: [1, 2.5], groupPrice: [25, 109] },
+   yurika:           { activity: 'craft',     groupRange: [1, 12], hourRange: [1.5, 2], groupPrice: [45, 72] },
+   // Her team formats, 16.10.26: M from 7 (2 h), S from 10 (1.5 h), XS from
+   // 15 (1 h); up to 20 in the studio, up to 150 on-site. Net prices per
+@@ -507,9 +506,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
+     { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Perfume making', studio: 'Smell Lab Berlin',
+       blurb: 'Klara is an olfactory artist from Barcelona, trained in ArtScience at the Royal Academy of Art in The Hague, who has run her scent laboratory in Prenzlauer Berg since 2015. In her perfume workshop you work through 20 to 23 raw materials — essential oils and aroma molecules — learn their families and how they combine, then design a fragrance that is yours alone and take it home in a 10 ml bottle, with a dossier of everything covered. No experience needed; not suited to anyone very sensitive to fragrance. For teams she runs private sessions for 8 to 40 people in English, at her studio or at your venue.',
+       group: 'Small groups · teams 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-    { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanese craft workshops', studio: 'Craftkai',
+-      blurb: 'A Berlin–Japan craft community that brings Japanese artisans and their traditions to Berlin: kintsugi, the gold-seamed repair of broken ceramics; contemporary Sōgetsu ikebana; gold leaf laid by hand on washi; chopsticks planed from fragrant hinoki; Tokyo Yūzen hand-dyeing; natural Kusaki-zome dyeing; mizuhiki cord knots; a hanko seal designed live with a seal maker in Japan; and miso packed into your own cedar barrel. Several sessions are taught by artisans visiting from Japan. Most run at MisoLab in Prenzlauer Berg or at Craftkai’s Berlin craft days.',
+-      group: 'Small groups', duration: '1–2.5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+     { slug: 'yurika', name: 'Yurika', specialty: 'Natural dyeing with tea & plants', studio: 'Living Dyeing Project',
+       blurb: 'A Tokyo-born textile artist who has lived in Berlin since 2019, painting, embroidering and dyeing. Her Living Dyeing project colours fabric with what the city throws away: tea leaves already brewed in Berlin restaurants, onion skins, vegetable peel, coffee grounds. This is Kusaki-zome, the Japanese way of dyeing with plants, and with tea the tannin meets iron to give soft greys, warm browns and deep blue-blacks, never twice the same. Her workshops are slow and hands-on and made for beginners. You learn the technique and some shibori tie-dye, then dye a linen chabu tea mat or a cotton furoshiki to take home, or bring a piece of your own. A member of the Berlin Handcrafts Collective, she has taught natural dyeing across Germany.',
+       group: 'Small groups', duration: '1.5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+@@ -711,9 +707,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
+     { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Parfum selber machen', studio: 'Smell Lab Berlin',
+       blurb: 'Klara ist Duftkünstlerin aus Barcelona, hat an der Königlichen Kunstakademie in Den Haag ArtScience studiert und betreibt seit 2015 ihr Duftlabor in Prenzlauer Berg. Im Parfum-Workshop arbeitest du mit 20 bis 23 Rohstoffen — ätherischen Ölen und Aromamolekülen —, lernst ihre Duftfamilien kennen und wie sie zusammenspielen, entwirfst dann einen Duft, den es nur einmal gibt, und nimmst ihn im 10-ml-Flakon mit nach Hause, dazu ein Dossier mit allem Gelernten. Keine Vorkenntnisse nötig; nicht geeignet für Menschen, die sehr empfindlich auf Düfte reagieren. Für Teams gibt es private Sessions für 8 bis 40 Personen auf Englisch, im Studio oder bei euch vor Ort.',
+       group: 'Kleine Gruppen · Teams 8–40', duration: '3 Std.', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-    { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanisches Kunsthandwerk', studio: 'Craftkai',
+-      blurb: 'Eine Berlin-Japan-Handwerksgemeinschaft, die japanische Kunsthandwerker und ihre Traditionen nach Berlin bringt: Kintsugi, die Reparatur zerbrochener Keramik mit goldenen Nähten; zeitgenössisches Sōgetsu-Ikebana; Blattgold von Hand auf Washi; Essstäbchen aus duftendem Hinoki gehobelt; Tokyo-Yūzen-Färben von Hand; natürliches Kusaki-zome-Färben; Mizuhiki-Knoten; ein Hanko-Siegel, live mit einem Siegelmacher in Japan entworfen; und Miso, angesetzt im eigenen Zedernholzfass. Mehrere Kurse leiten Kunsthandwerker, die eigens aus Japan anreisen. Die meisten finden im MisoLab in Prenzlauer Berg oder an Craftkais Berliner Handwerkstagen statt.',
+-      group: 'Kleine Gruppen', duration: '1–2,5 Std.', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+     { slug: 'yurika', name: 'Yurika', specialty: 'Naturfärben mit Tee & Pflanzen', studio: 'Living Dyeing Project',
+       blurb: 'Eine in Tokio geborene Textilkünstlerin, die seit 2019 in Berlin lebt und malt, stickt und färbt. Ihr Projekt Living Dyeing färbt Stoff mit dem, was die Stadt wegwirft: Teeblätter, die in Berliner Restaurants schon aufgegossen wurden, Zwiebelschalen, Gemüseschalen, Kaffeesatz. Das ist Kusaki-zome, Japans Färben mit Pflanzen, und beim Tee trifft die Gerbsäure auf Eisen und ergibt sanfte Grautöne, warme Brauntöne und tiefes Blauschwarz, nie zweimal gleich. Ihre Workshops sind langsam, praktisch und für Anfänger gemacht. Du lernst die Technik und etwas Shibori-Abbinden und färbst dann ein Chabu-Teedeckchen aus Leinen oder ein Furoshiki aus Baumwolle zum Mitnehmen, oder du bringst ein eigenes Stück mit. Als Mitglied des Berlin Handcrafts Collective hat sie in ganz Deutschland Naturfärbe-Workshops gegeben.',
+       group: 'Kleine Gruppen', duration: '1,5–2 Std.', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+@@ -965,10 +958,6 @@ const reels: Record<string, { video: string; poster: string }> = {
+   // Yurika's own clip: tea-dyed linen squares laid out, then one held to
+   // the light. No captions on it, so only scaled.
+   yurika: { video: '/video/yurika.mp4', poster: '/video/yurika-poster.jpg' },
+-  // Stills from Craftkai's own workshop pages (chopsticks, mizuhiki,
+-  // kintsugi, miso, ikebana, Yūzen, weaving, gold leaf), a gentle push in on
+-  // each, dissolved, ending back on the first so the loop has no seam.
+-  craftkai: { video: '/video/craftkai.mp4', poster: '/video/craftkai-poster.jpg' },
+   // No footage of the darkroom, only stills, so the five she sent become one
+   // clip the way Kohfink's did: a second on each, dissolved over a third of a
+   // second, a light push in, and back to the first so the loop has no seam.
+@@ -1613,7 +1602,6 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
+   arcoiris: { area: 'Neukölln' }, redrum: { area: 'Kreuzberg' }, mampe: { area: 'Kreuzberg' },
+   studio32: { area: 'Schöneberg / Kreuzberg' }, cateduckwall: { area: 'Prenzlauer Berg' },
+   'smell-lab': { area: 'Prenzlauer Berg' },
+-  craftkai: { area: 'Prenzlauer Berg / Mitte' },
+   yurika: { area: 'Mitte / Wedding' },
+   aria: { area: 'Friedrichshagen', onSite: true },
+   petitejungle: { area: 'Mitte', onSite: true },
+diff --git a/site/src/data/hosts/es.ts b/site/src/data/hosts/es.ts
+index 19a406e..e2da709 100644
+--- a/site/src/data/hosts/es.ts
++++ b/site/src/data/hosts/es.ts
+@@ -151,9 +151,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Crea tu propio perfume', studio: 'Smell Lab Berlin',
+     blurb: 'Klara es artista olfativa de Barcelona, formada en ArtScience en la Real Academia de Arte de La Haya, y dirige desde 2015 su laboratorio de olores en Prenzlauer Berg. En su taller de perfume trabajas con 20 a 23 materias primas — aceites esenciales y moléculas aromáticas —, conoces sus familias y cómo combinarlas, y diseñas una fragancia solo tuya que te llevas en un frasco de 10 ml, junto con un dossier con todo lo aprendido. No hace falta experiencia; no recomendado para personas muy sensibles a los olores. Para equipos organiza sesiones privadas de 8 a 40 personas en inglés, en su estudio o en vuestro espacio.',
+     group: 'Grupos pequeños · equipos 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-  { slug: 'craftkai', name: 'Craftkai', specialty: 'Artesanía japonesa', studio: 'Craftkai',
+-    blurb: 'Una comunidad artesanal entre Berlín y Japón que trae a Berlín a artesanos japoneses y sus tradiciones: kintsugi, la reparación con costuras de oro de la cerámica rota; ikebana contemporáneo Sōgetsu; pan de oro aplicado a mano sobre washi; palillos cepillados en aromático hinoki; teñido a mano Tokyo Yūzen; teñido natural Kusaki-zome; nudos mizuhiki; un sello hanko diseñado en directo con un maestro en Japón; y miso en tu propio barril de cedro. Varios talleres los imparten artesanos que vienen desde Japón. La mayoría se celebran en MisoLab, en Prenzlauer Berg, o en las jornadas artesanales de Craftkai en Berlín.',
+-    group: 'Grupos pequeños', duration: '1–2,5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+   { slug: 'yurika', name: 'Yurika', specialty: 'Tinte natural con té y plantas', studio: 'Living Dyeing Project',
+     blurb: 'Artista textil nacida en Tokio que vive en Berlín desde 2019, donde pinta, borda y tiñe. Su proyecto Living Dyeing da color a la tela con lo que la ciudad tira: hojas de té ya infusionadas en restaurantes berlineses, pieles de cebolla, mondas de verdura, posos de café. Es el Kusaki-zome, el teñido japonés con plantas, y con el té el tanino se encuentra con el hierro y da grises suaves, marrones cálidos y negros azulados profundos, nunca dos veces iguales. Sus talleres son pausados, prácticos y pensados para principiantes. Aprendes la técnica y algo de shibori, y luego tiñes un mantel de té chabu de lino o un furoshiki de algodón para llevarte, o una pieza tuya. Miembro del Berlin Handcrafts Collective, ha dado talleres de tinte natural por toda Alemania.',
+     group: 'Grupos pequeños', duration: '1,5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+diff --git a/site/src/data/hosts/fr.ts b/site/src/data/hosts/fr.ts
+index dfee81d..204aeab 100644
+--- a/site/src/data/hosts/fr.ts
++++ b/site/src/data/hosts/fr.ts
+@@ -151,9 +151,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Création de parfum', studio: 'Smell Lab Berlin',
+     blurb: 'Klara est une artiste olfactive barcelonaise, formée en ArtScience à l’Académie royale des beaux-arts de La Haye, qui dirige depuis 2015 son laboratoire de senteurs à Prenzlauer Berg. Dans son atelier de parfum, vous explorez 20 à 23 matières premières — huiles essentielles et molécules aromatiques —, découvrez leurs familles et leurs accords, puis composez un parfum unique que vous emportez dans un flacon de 10 ml, avec un dossier reprenant tout ce qui a été vu. Aucune expérience requise ; déconseillé aux personnes très sensibles aux odeurs. Pour les équipes, elle propose des sessions privées de 8 à 40 personnes en anglais, à son atelier ou dans vos locaux.',
+     group: 'Petits groupes · équipes 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-  { slug: 'craftkai', name: 'Craftkai', specialty: 'Artisanat japonais', studio: 'Craftkai',
+-    blurb: 'Une communauté d’artisanat entre Berlin et le Japon qui fait venir à Berlin des artisans japonais et leurs traditions : le kintsugi, réparation à la couture d’or des céramiques brisées ; l’ikebana contemporain Sōgetsu ; la feuille d’or posée à la main sur le washi ; des baguettes rabotées dans le hinoki parfumé ; la teinture à la main Tokyo Yūzen ; la teinture naturelle Kusaki-zome ; les nœuds mizuhiki ; un sceau hanko dessiné en direct avec un graveur au Japon ; et du miso dans votre propre tonneau de cèdre. Plusieurs ateliers sont animés par des artisans venus du Japon. La plupart ont lieu au MisoLab à Prenzlauer Berg ou lors des journées artisanales de Craftkai à Berlin.',
+-    group: 'Petits groupes', duration: '1–2,5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+   { slug: 'yurika', name: 'Yurika', specialty: 'Teinture naturelle au thé et aux plantes', studio: 'Living Dyeing Project',
+     blurb: 'Artiste textile née à Tokyo et installée à Berlin depuis 2019, elle peint, brode et teint. Son projet Living Dyeing colore le tissu avec ce que la ville jette : des feuilles de thé déjà infusées dans des restaurants berlinois, des pelures d’oignon, des épluchures, du marc de café. C’est le Kusaki-zome, la teinture végétale japonaise, et avec le thé, le tanin rencontre le fer pour donner des gris doux, des bruns chauds et des noirs bleutés profonds, jamais deux fois les mêmes. Ses ateliers sont lents, concrets et pensés pour les débutants. Vous apprenez la technique et un peu de shibori, puis vous teignez un set à thé chabu en lin ou un furoshiki en coton à emporter, ou une pièce que vous apportez. Membre du Berlin Handcrafts Collective, elle a donné des ateliers de teinture naturelle dans toute l’Allemagne.',
+     group: 'Petits groupes', duration: '1 h 30 – 2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+diff --git a/site/src/data/hosts/it.ts b/site/src/data/hosts/it.ts
+index 9fedb03..efe31e5 100644
+--- a/site/src/data/hosts/it.ts
++++ b/site/src/data/hosts/it.ts
+@@ -151,9 +151,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Crea il tuo profumo', studio: 'Smell Lab Berlin',
+     blurb: 'Klara è un’artista olfattiva di Barcellona, formata in ArtScience alla Reale Accademia d’Arte dell’Aia, che dal 2015 guida il suo laboratorio di odori a Prenzlauer Berg. Nel suo workshop di profumeria lavori con 20–23 materie prime — oli essenziali e molecole aromatiche —, ne scopri le famiglie e gli accostamenti, poi crei una fragranza tutta tua da portare a casa in un flacone da 10 ml, con un dossier su tutto ciò che si è visto. Nessuna esperienza richiesta; sconsigliato a chi è molto sensibile ai profumi. Per i team organizza sessioni private da 8 a 40 persone in inglese, nel suo studio o nella vostra sede.',
+     group: 'Piccoli gruppi · team 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-  { slug: 'craftkai', name: 'Craftkai', specialty: 'Artigianato giapponese', studio: 'Craftkai',
+-    blurb: 'Una comunità artigiana tra Berlino e il Giappone che porta a Berlino artigiani giapponesi e le loro tradizioni: il kintsugi, la riparazione con cuciture d’oro della ceramica rotta; l’ikebana contemporaneo Sōgetsu; la foglia d’oro posata a mano sulla washi; bacchette piallate nel profumato hinoki; la tintura a mano Tokyo Yūzen; la tintura naturale Kusaki-zome; i nodi mizuhiki; un sigillo hanko disegnato dal vivo con un maestro in Giappone; e il miso nel tuo barile di cedro. Diversi workshop sono guidati da artigiani in arrivo dal Giappone. La maggior parte si svolge al MisoLab di Prenzlauer Berg o alle giornate artigiane di Craftkai a Berlino.',
+-    group: 'Piccoli gruppi', duration: '1–2,5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+   { slug: 'yurika', name: 'Yurika', specialty: 'Tintura naturale con tè e piante', studio: 'Living Dyeing Project',
+     blurb: 'Artista tessile nata a Tokyo e a Berlino dal 2019, dove dipinge, ricama e tinge. Il suo progetto Living Dyeing colora il tessuto con ciò che la città butta via: foglie di tè già infuse nei ristoranti berlinesi, bucce di cipolla, scarti di verdura, fondi di caffè. È il Kusaki-zome, la tintura giapponese con le piante, e con il tè il tannino incontra il ferro e dà grigi morbidi, marroni caldi e neri bluastri profondi, mai due volte uguali. I suoi workshop sono lenti, pratici e pensati per principianti. Impari la tecnica e un po’ di shibori, poi tingi una tovaglietta da tè chabu in lino o un furoshiki in cotone da portare a casa, oppure un pezzo tuo. Membro del Berlin Handcrafts Collective, ha tenuto workshop di tintura naturale in tutta la Germania.',
+     group: 'Piccoli gruppi', duration: '1,5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+diff --git a/site/src/data/hosts/nl.ts b/site/src/data/hosts/nl.ts
+index 97e5d38..887ea68 100644
+--- a/site/src/data/hosts/nl.ts
++++ b/site/src/data/hosts/nl.ts
+@@ -151,9 +151,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Je eigen parfum maken', studio: 'Smell Lab Berlin',
+     blurb: 'Klara is een geurkunstenaar uit Barcelona, opgeleid in ArtScience aan de Koninklijke Academie van Beeldende Kunsten in Den Haag, die sinds 2015 haar geurlab in Prenzlauer Berg runt. In haar parfumworkshop werk je met 20 tot 23 grondstoffen — etherische oliën en aromamoleculen —, leer je hun geurfamilies en hoe ze samengaan, en ontwerp je een geur die alleen van jou is en die je meeneemt in een flesje van 10 ml, met een dossier van alles wat aan bod kwam. Geen ervaring nodig; niet geschikt voor wie erg gevoelig is voor geuren. Voor teams organiseert ze privésessies voor 8 tot 40 personen in het Engels, in haar studio of op jullie locatie.',
+     group: 'Kleine groepen · teams 8–40', duration: '3 u', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-  { slug: 'craftkai', name: 'Craftkai', specialty: 'Japans ambacht', studio: 'Craftkai',
+-    blurb: 'Een ambachtsgemeenschap tussen Berlijn en Japan die Japanse ambachtslieden en hun tradities naar Berlijn brengt: kintsugi, het herstellen van gebroken keramiek met gouden naden; hedendaagse Sōgetsu-ikebana; bladgoud met de hand op washi; eetstokjes geschaafd uit geurig hinoki; Tokyo Yūzen-handverven; natuurlijk Kusaki-zome-verven; mizuhiki-knopen; een hanko-zegel dat je live ontwerpt met een zegelmaker in Japan; en miso in je eigen cederhouten vat. Verschillende workshops worden gegeven door ambachtslieden die uit Japan overkomen. De meeste vinden plaats in MisoLab in Prenzlauer Berg of op de Berlijnse ambachtsdagen van Craftkai.',
+-    group: 'Kleine groepen', duration: '1–2,5 u', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+   { slug: 'yurika', name: 'Yurika', specialty: 'Natuurlijk verven met thee & planten', studio: 'Living Dyeing Project',
+     blurb: 'Een in Tokio geboren textielkunstenaar die sinds 2019 in Berlijn woont en schildert, borduurt en verft. Haar project Living Dyeing kleurt stof met wat de stad weggooit: theeblaadjes die al in Berlijnse restaurants zijn gezet, uienschillen, groenteschillen, koffiedik. Dat is Kusaki-zome, de Japanse manier van verven met planten, en bij thee raakt de looizuur het ijzer en ontstaan zachte grijzen, warme bruinen en diep blauwzwart, nooit twee keer hetzelfde. Haar workshops zijn rustig, praktisch en gemaakt voor beginners. Je leert de techniek en wat shibori-afbinden en verft dan een linnen chabu-theematje of een katoenen furoshiki om mee te nemen, of een eigen stuk. Als lid van het Berlin Handcrafts Collective gaf ze natuurverfworkshops door heel Duitsland.',
+     group: 'Kleine groepen', duration: '1,5–2 u', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+diff --git a/site/src/data/hosts/pl.ts b/site/src/data/hosts/pl.ts
+index 64d88bf..8b9f7bc 100644
+--- a/site/src/data/hosts/pl.ts
++++ b/site/src/data/hosts/pl.ts
+@@ -151,9 +151,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Tworzenie perfum', studio: 'Smell Lab Berlin',
+     blurb: 'Klara to artystka zapachu z Barcelony, absolwentka ArtScience w Królewskiej Akademii Sztuk Pięknych w Hadze, która od 2015 roku prowadzi swoje laboratorium zapachów w Prenzlauer Berg. Na warsztacie perfumiarskim pracujesz z 20–23 surowcami — olejkami eterycznymi i cząsteczkami zapachowymi —, poznajesz ich rodziny i połączenia, a potem komponujesz własny, niepowtarzalny zapach, który zabierasz do domu we flakonie 10 ml, razem z materiałami ze wszystkim, co omówiliście. Doświadczenie nie jest potrzebne; nie dla osób bardzo wrażliwych na zapachy. Dla zespołów prowadzi prywatne sesje dla 8–40 osób po angielsku, w swojej pracowni lub u was.',
+     group: 'Małe grupy · zespoły 8–40', duration: '3 godz.', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-  { slug: 'craftkai', name: 'Craftkai', specialty: 'Japońskie rzemiosło', studio: 'Craftkai',
+-    blurb: 'Berlińsko-japońska społeczność rzemieślnicza, która sprowadza do Berlina japońskich mistrzów i ich tradycje: kintsugi, naprawę stłuczonej ceramiki złotymi szwami; współczesne ikebana Sōgetsu; płatki złota nakładane ręcznie na washi; pałeczki strugane z pachnącego hinoki; ręczne barwienie Tokyo Yūzen; naturalne barwienie Kusaki-zome; węzły mizuhiki; pieczęć hanko projektowaną na żywo z mistrzem w Japonii; oraz miso we własnej cedrowej beczce. Część warsztatów prowadzą rzemieślnicy przyjeżdżający z Japonii. Większość odbywa się w MisoLab w Prenzlauer Berg lub podczas berlińskich dni rzemiosła Craftkai.',
+-    group: 'Małe grupy', duration: '1–2,5 godz.', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+   { slug: 'yurika', name: 'Yurika', specialty: 'Naturalne barwienie herbatą i roślinami', studio: 'Living Dyeing Project',
+     blurb: 'Urodzona w Tokio artystka tekstylna, od 2019 roku w Berlinie, gdzie maluje, haftuje i barwi. Jej projekt Living Dyeing barwi tkaniny tym, co miasto wyrzuca: liśćmi herbaty już zaparzonej w berlińskich restauracjach, łupinami cebuli, obierkami warzyw, fusami z kawy. To Kusaki-zome, japońskie barwienie roślinami, a przy herbacie garbniki spotykają się z żelazem i dają miękkie szarości, ciepłe brązy i głęboką niebieskawą czerń, nigdy dwa razy takie same. Jej warsztaty są spokojne, praktyczne i dla początkujących. Poznajesz technikę i trochę shibori, a potem barwisz lnianą podkładkę do herbaty chabu albo bawełniane furoshiki do zabrania, albo własny kawałek tkaniny. Jako członkini Berlin Handcrafts Collective prowadziła warsztaty naturalnego barwienia w całych Niemczech.',
+     group: 'Małe grupy', duration: '1,5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+diff --git a/site/src/data/hosts/tr.ts b/site/src/data/hosts/tr.ts
+index 5145509..628b12c 100644
+--- a/site/src/data/hosts/tr.ts
++++ b/site/src/data/hosts/tr.ts
+@@ -151,9 +151,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Kendi parfümünü yap', studio: 'Smell Lab Berlin',
+     blurb: 'Klara, Lahey Kraliyet Sanat Akademisi’nde ArtScience eğitimi almış Barselonalı bir koku sanatçısı; 2015’ten beri Prenzlauer Berg’deki koku laboratuvarını yürütüyor. Parfüm atölyesinde 20–23 hammaddeyle — uçucu yağlar ve aroma molekülleri — çalışıyor, koku ailelerini ve nasıl birleştiklerini öğreniyor, ardından yalnızca sana ait bir koku tasarlayıp 10 ml’lik bir şişede eve götürüyorsun; işlenen her şeyi içeren bir dosyayla birlikte. Deneyim gerekmez; kokulara çok hassas olanlar için uygun değildir. Ekipler için stüdyosunda ya da sizin mekânınızda, İngilizce, 8–40 kişilik özel seanslar düzenliyor.',
+     group: 'Küçük gruplar · ekipler 8–40', duration: '3 sa', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
+-  { slug: 'craftkai', name: 'Craftkai', specialty: 'Japon el sanatları', studio: 'Craftkai',
+-    blurb: 'Japon zanaatkârlarını ve geleneklerini Berlin’e getiren bir Berlin–Japonya zanaat topluluğu: kırık seramiği altın dikişlerle onaran kintsugi; çağdaş Sōgetsu ikebanası; washi üzerine elle yaprak altın; kokulu hinoki ağacından rendelenen yemek çubukları; Tokyo Yūzen elle boyama; doğal Kusaki-zome boyama; mizuhiki ip düğümleri; Japonya’daki bir mühür ustasıyla canlı tasarlanan hanko mührü; ve kendi sedir fıçında miso. Atölyelerin bir kısmını Japonya’dan gelen zanaatkârlar yürütüyor. Çoğu Prenzlauer Berg’deki MisoLab’da ya da Craftkai’nin Berlin zanaat günlerinde yapılıyor.',
+-    group: 'Küçük gruplar', duration: '1–2,5 sa', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
+   { slug: 'yurika', name: 'Yurika', specialty: 'Çay ve bitkilerle doğal boyama', studio: 'Living Dyeing Project',
+     blurb: 'Tokyo doğumlu, 2019’dan beri Berlin’de yaşayan, resim yapan, nakış işleyen ve boyayan bir tekstil sanatçısı. Living Dyeing projesi kumaşı şehrin attıklarıyla renklendiriyor: Berlin restoranlarında demlenmiş çay yaprakları, soğan kabukları, sebze kabukları, kahve telvesi. Bu, Japonların bitkilerle boyama geleneği Kusaki-zome; çayda tanen demirle buluşup yumuşak griler, sıcak kahverengiler ve derin mavimsi siyahlar veriyor, hiçbiri birbirinin aynı olmuyor. Atölyeleri sakin, uygulamalı ve yeni başlayanlar için. Tekniği ve biraz shibori bağlama boyamayı öğreniyor, ardından eve götürmek üzere keten bir chabu çay örtüsü ya da pamuklu bir furoshiki boyuyorsun; istersen kendi kumaşını da getirebilirsin. Berlin Handcrafts Collective üyesi olarak Almanya’nın dört bir yanında doğal boyama atölyeleri verdi.',
+     group: 'Küçük gruplar', duration: '1,5–2 sa', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
+diff --git a/site/src/data/hosts/translation-state.json b/site/src/data/hosts/translation-state.json
+index 852aeba..70bd397 100644
+--- a/site/src/data/hosts/translation-state.json
++++ b/site/src/data/hosts/translation-state.json
+@@ -48,7 +48,6 @@
+     "studio32": "aa4327900cf75ba4",
+     "cateduckwall": "c3362ba462a6e03a",
+     "smell-lab": "503752847821fe10",
+-    "craftkai": "046769a2aaea7002",
+     "yurika": "0ceb87483b3171c1",
+     "anna-malerlebnisse": "9ca426142abc180d",
+     "norbert-bildhauerei": "c2c2481c749996b1",
+@@ -110,7 +109,6 @@
+     "studio32": "aa4327900cf75ba4",
+     "cateduckwall": "c3362ba462a6e03a",
+     "smell-lab": "503752847821fe10",
+-    "craftkai": "046769a2aaea7002",
+     "yurika": "0ceb87483b3171c1",
+     "anna-malerlebnisse": "9ca426142abc180d",
+     "norbert-bildhauerei": "c2c2481c749996b1",
+@@ -172,7 +170,6 @@
+     "studio32": "aa4327900cf75ba4",
+     "cateduckwall": "c3362ba462a6e03a",
+     "smell-lab": "503752847821fe10",
+-    "craftkai": "046769a2aaea7002",
+     "yurika": "0ceb87483b3171c1",
+     "anna-malerlebnisse": "9ca426142abc180d",
+     "norbert-bildhauerei": "c2c2481c749996b1",
+@@ -234,7 +231,6 @@
+     "studio32": "aa4327900cf75ba4",
+     "cateduckwall": "c3362ba462a6e03a",
+     "smell-lab": "503752847821fe10",
+-    "craftkai": "046769a2aaea7002",
+     "yurika": "0ceb87483b3171c1",
+     "anna-malerlebnisse": "9ca426142abc180d",
+     "norbert-bildhauerei": "c2c2481c749996b1",
+@@ -296,7 +292,6 @@
+     "studio32": "aa4327900cf75ba4",
+     "cateduckwall": "c3362ba462a6e03a",
+     "smell-lab": "503752847821fe10",
+-    "craftkai": "046769a2aaea7002",
+     "yurika": "0ceb87483b3171c1",
+     "anna-malerlebnisse": "9ca426142abc180d",
+     "norbert-bildhauerei": "c2c2481c749996b1",
+@@ -358,7 +353,6 @@
+     "studio32": "aa4327900cf75ba4",
+     "cateduckwall": "c3362ba462a6e03a",
+     "smell-lab": "503752847821fe10",
+-    "craftkai": "046769a2aaea7002",
+     "yurika": "0ceb87483b3171c1",
+     "anna-malerlebnisse": "9ca426142abc180d",
+     "norbert-bildhauerei": "c2c2481c749996b1",
+diff --git a/site/src/data/live-workshops.json b/site/src/data/live-workshops.json
+index 2728eff..1865ed2 100644
+--- a/site/src/data/live-workshops.json
++++ b/site/src/data/live-workshops.json
+@@ -1017,18 +1017,6 @@
+       "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1170866000%2F1615024444013%2F1%2Foriginal.20251113-112148?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.434&s=59d073291ac14c71743dc761ae3f5660",
+       "url": "https://www.eventbrite.de/e/cocktailkurs-in-berlin-klassiker-neues-tickets-1969157961471"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Mizuhiki",
+-      "date": "2026-10-17",
+-      "duration": "2 h",
+-      "price": "€25",
+-      "kids": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/mizuhiki-workshop-berlin-1790024736411.jpg?v=1790024910",
+-      "url": "https://craftkai.com/workshop/mizuhiki-workshop-berlin"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -1118,89 +1106,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/gallery-botanical-candle-making-workshop-berlin-1788906770776.jpg?v=1788906812",
+       "url": "https://craftkai.com/workshop/botanical-candle-making-workshop-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Contemporary Ikebana",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "price": "€45",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/contemporary-ikebana-workshop-berlin-1788641699306.jpg?v=1788709515",
+-      "url": "https://craftkai.com/workshop/contemporary-ikebana-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Paint Your Own Tote Bag with Tokyo Yūzen",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "price": "€60",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Tokyo_Tegaki_Yuzen-1788087872354.jpg?v=1788088818",
+-      "url": "https://craftkai.com/workshop/tokyo-tegaki-yuzen"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi Atelier Berlin",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "price": "€70",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi-workshop-berlin-1788765942053.jpg?v=1788766080",
+-      "url": "https://craftkai.com/workshop/kintsugi-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi France Studio CIRCOLO",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "price": "€80",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi_20France_20Studio_20CIRCOLO_20-1787842495104.jpg?v=1787854992",
+-      "url": "https://craftkai.com/workshop/kintsugi-france-studio-circolo"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Your Own Japanese Hanging Scroll with Hokusai's Mount Fuji",
+-      "date": "2026-10-17",
+-      "time": "11:00",
+-      "duration": "2 h",
+-      "price": "€80",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Kakejiku-1789382077973.png?v=1789382102",
+-      "url": "https://craftkai.com/workshop/kakejiku"
+-    },
+     {
+       "slug": "yurika",
+       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+@@ -1260,43 +1165,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/gallery-botanical-candle-making-workshop-berlin-1788906770776.jpg?v=1788906812",
+       "url": "https://craftkai.com/workshop/botanical-candle-making-workshop-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "12:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "12:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Miso Workshop — Ferment Your Own Cedar-Barrel Miso",
+-      "date": "2026-10-17",
+-      "time": "12:00",
+-      "duration": "1 h",
+-      "price": "€95",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/miso.jpg?v=1783889859",
+-      "url": "https://craftkai.com/workshop/miso-workshop-ferment-your-own-cedar-barrel-miso"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -1323,18 +1191,6 @@
+       "url": "https://www.ariahart.de/",
+       "district": "Friedrichshagen"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "13:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+     {
+       "slug": "drawingwalks",
+       "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+@@ -1347,18 +1203,6 @@
+       "district": "Prenzlauer Berg",
+       "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/68103918/calendar/10021038"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Contemporary Ikebana",
+-      "date": "2026-10-17",
+-      "time": "13:30",
+-      "price": "€45",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/contemporary-ikebana-workshop-berlin-1788641699306.jpg?v=1788709515",
+-      "url": "https://craftkai.com/workshop/contemporary-ikebana-workshop-berlin"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -1371,64 +1215,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "14:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Paint Your Own Tote Bag with Tokyo Yūzen",
+-      "date": "2026-10-17",
+-      "time": "14:00",
+-      "price": "€60",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Tokyo_Tegaki_Yuzen-1788087872354.jpg?v=1788088818",
+-      "url": "https://craftkai.com/workshop/tokyo-tegaki-yuzen"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi Atelier Berlin",
+-      "date": "2026-10-17",
+-      "time": "14:00",
+-      "price": "€70",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi-workshop-berlin-1788765942053.jpg?v=1788766080",
+-      "url": "https://craftkai.com/workshop/kintsugi-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi France Studio CIRCOLO",
+-      "date": "2026-10-17",
+-      "time": "14:00",
+-      "price": "€80",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi_20France_20Studio_20CIRCOLO_20-1787842495104.jpg?v=1787854992",
+-      "url": "https://craftkai.com/workshop/kintsugi-france-studio-circolo"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Your Own Japanese Hanging Scroll with Hokusai's Mount Fuji",
+-      "date": "2026-10-17",
+-      "time": "14:00",
+-      "duration": "2 h",
+-      "price": "€80",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Kakejiku-1789382077973.png?v=1789382102",
+-      "url": "https://craftkai.com/workshop/kakejiku"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -1492,31 +1278,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/gallery-botanical-candle-making-workshop-berlin-1788906770776.jpg?v=1788906812",
+       "url": "https://craftkai.com/workshop/botanical-candle-making-workshop-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "15:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+     {
+       "slug": "yurika",
+       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+@@ -1540,18 +1301,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/gallery-spoon_carving_workshop_berlin-1787340852631.jpg?v=1788092071",
+       "url": "https://craftkai.com/workshop/spoon-carving-workshop-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Contemporary Ikebana",
+-      "date": "2026-10-17",
+-      "time": "15:30",
+-      "price": "€45",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/contemporary-ikebana-workshop-berlin-1788641699306.jpg?v=1788709515",
+-      "url": "https://craftkai.com/workshop/contemporary-ikebana-workshop-berlin"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+@@ -1564,31 +1313,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/gallery-botanical-candle-making-workshop-berlin-1788906770776.jpg?v=1788906812",
+       "url": "https://craftkai.com/workshop/botanical-candle-making-workshop-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "16:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "16:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -1601,53 +1325,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Paint Your Own Tote Bag with Tokyo Yūzen",
+-      "date": "2026-10-17",
+-      "time": "16:30",
+-      "price": "€60",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Tokyo_Tegaki_Yuzen-1788087872354.jpg?v=1788088818",
+-      "url": "https://craftkai.com/workshop/tokyo-tegaki-yuzen"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi Atelier Berlin",
+-      "date": "2026-10-17",
+-      "time": "16:30",
+-      "price": "€70",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi-workshop-berlin-1788765942053.jpg?v=1788766080",
+-      "url": "https://craftkai.com/workshop/kintsugi-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi France Studio CIRCOLO",
+-      "date": "2026-10-17",
+-      "time": "16:30",
+-      "price": "€80",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi_20France_20Studio_20CIRCOLO_20-1787842495104.jpg?v=1787854992",
+-      "url": "https://craftkai.com/workshop/kintsugi-france-studio-circolo"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Your Own Japanese Hanging Scroll with Hokusai's Mount Fuji",
+-      "date": "2026-10-17",
+-      "time": "16:30",
+-      "duration": "2 h",
+-      "price": "€80",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Kakejiku-1789382077973.png?v=1789382102",
+-      "url": "https://craftkai.com/workshop/kakejiku"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -1712,42 +1389,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/gallery-botanical-candle-making-workshop-berlin-1788906770776.jpg?v=1788906812",
+       "url": "https://craftkai.com/workshop/botanical-candle-making-workshop-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "17:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Contemporary Ikebana",
+-      "date": "2026-10-17",
+-      "time": "17:30",
+-      "price": "€45",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/contemporary-ikebana-workshop-berlin-1788641699306.jpg?v=1788709515",
+-      "url": "https://craftkai.com/workshop/contemporary-ikebana-workshop-berlin"
+-    },
+     {
+       "slug": "munio",
+       "sourceUrl": "https://themunio.de/collections/workshops",
+@@ -1761,30 +1402,6 @@
+       "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+       "district": "Schöneberg"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "18:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+     {
+       "slug": "yurika",
+       "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+@@ -1832,54 +1449,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Candles_and_prosecco_workshop.jpg?v=1789741486",
+       "url": "https://www.gallerialucia.com/products/candles-and-prosecco-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Chopstick Making with Shintaro Oku",
+-      "date": "2026-10-17",
+-      "time": "19:00",
+-      "duration": "1 h",
+-      "price": "€50",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/chopstick-making-workshop-berlin-1788652395831.jpg?v=1788705559",
+-      "url": "https://craftkai.com/workshop/chopstick-making-workshop-berlin"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Create Your Own Hanko",
+-      "date": "2026-10-17",
+-      "time": "19:00",
+-      "price": "€90",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Create_20Your_20Own_20Hanko-1788038778243.jpg?v=1788089374",
+-      "url": "https://craftkai.com/workshop/create-your-own-hanko"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Paint Your Own Tote Bag with Tokyo Yūzen",
+-      "date": "2026-10-17",
+-      "time": "19:00",
+-      "price": "€60",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Tokyo_Tegaki_Yuzen-1788087872354.jpg?v=1788088818",
+-      "url": "https://craftkai.com/workshop/tokyo-tegaki-yuzen"
+-    },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Your Own Japanese Hanging Scroll with Hokusai's Mount Fuji",
+-      "date": "2026-10-17",
+-      "time": "19:00",
+-      "duration": "2 h",
+-      "price": "€80",
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/Kakejiku-1789382077973.png?v=1789382102",
+-      "url": "https://craftkai.com/workshop/kakejiku"
+-    },
+     {
+       "slug": "ceramic-kingdom",
+       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
+@@ -1893,18 +1462,6 @@
+       "url": "https://www.ceramickingdomberlin.com/en/class-try-the-wheel",
+       "district": "Neukölln"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi France Studio CIRCOLO",
+-      "date": "2026-10-17",
+-      "time": "19:30",
+-      "price": "€80",
+-      "soldOut": true,
+-      "district": "Mitte",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi_20France_20Studio_20CIRCOLO_20-1787842495104.jpg?v=1787854992",
+-      "url": "https://craftkai.com/workshop/kintsugi-france-studio-circolo"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -1943,17 +1500,6 @@
+       "district": "Moabit",
+       "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Kintsugi France Studio CIRCOLO",
+-      "date": "2026-10-18",
+-      "time": "11:00",
+-      "price": "€80",
+-      "district": "Prenzlauer Berg",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/kintsugi_France_Studio_CIRCOLO_misolab-1790465592292.jpg?v=1790506167",
+-      "url": "https://craftkai.com/workshop/kintsugi_france_studio_circolo_misolab"
+-    },
+     {
+       "slug": "sarah",
+       "sourceUrl": "https://sarahniklowitz.de/sunday-morning-pages-brunch/",
+@@ -3264,17 +2810,6 @@
+       "district": "Moabit",
+       "image": "https://www.pausify.org/web/image/6114-bed3a576/Event%20%27Sunday%20Event%20-%20August%2017%27%20cover%20image.webp"
+     },
+-    {
+-      "slug": "craftkai",
+-      "sourceUrl": "https://apvghk-wg.myshopify.com/products.json?limit=250",
+-      "title": "Art Piece Weaving",
+-      "date": "2026-10-25",
+-      "time": "11:00",
+-      "price": "€55",
+-      "district": "Prenzlauer Berg",
+-      "image": "https://cdn.shopify.com/s/files/1/1040/7916/3732/files/art-piece-weaving-misolab-1790467812479.png?v=1790507878",
+-      "url": "https://craftkai.com/workshop/art-piece-weaving-misolab"
+-    },
+     {
+       "slug": "tufttuft",
+       "sourceUrl": "https://tufttuftberlin.as.me/schedule/85685f54",
+diff --git a/site/src/data/posterLqip.json b/site/src/data/posterLqip.json
+index e565d76..01b9613 100644
+--- a/site/src/data/posterLqip.json
++++ b/site/src/data/posterLqip.json
+@@ -14,7 +14,6 @@
+  "/video/celina-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABgAAEBAQEBAAAAAAAAAAAAAAADBQYEBwEBAQAAAAAAAAAAAAAAAAAAAgMQAAIBBAAGAwEBAAAAAAAAAAECEQAEIQMxQVEiEgWhcYEUsREBAAAAAAAAAAAAAAAAAAAAAP/AABEIABYADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AK3vPbW6l7UrsOxSJaBCyJkGcnPMV54lwrDyLAScA9OFcVzfb9d3cOrwdwh8KZBHDuBj8odOtH1qSOv+mqKNKf5hx0psPNnXPw4qcwSe0eI6AQB9ZNI1DQB//9k=",
+  "/video/ceramic-kingdom-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABvAAACAwEAAAAAAAAAAAAAAAAGBQIEAwcBAQEBAAAAAAAAAAAAAAAAAAMCBRAAAgEEAAQEBwEAAAAAAAAAAgEDABIhEZEEYSIxsRMUcoGhcUFRMjMRAAICAwEBAAAAAAAAAAAAAAABIRHBAqHwA//AABEIABYADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AOZctDJfcQG49JEY5QZ3d+VxotjgQDqJSWbdvc3tft6xt+NEEMUccq1GEUemLV9zJNNZ+VS9lGsBkehEl9HTa/Wrl8yU16S2uUEg360muggnxd1ZwySse1Akm1m5vH2a8qcB/lxpPy38l8ZVkoZn/9k=",
+  "/video/chelti-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABpAAEBAQEAAAAAAAAAAAAAAAAEBQYCAQEAAAAAAAAAAAAAAAAAAAAEEAACAQMDAgYDAQAAAAAAAAABAhEAAxIhQQQycaFiQ8GykSNC0WERAAIDAAMBAAAAAAAAAAAAAAIBEQBBI4FSQv/AABEIABYADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AO15yvlxXBIRQpnSY0kEGZBFZfPgLIa3dkE+qnvbJ+6XasfiPIAus7ZZRJXf9Ykd6gM17Joss4nqCEz4UIyfme4rBbWu6S1cJkDQtvk0KPKoMT/u9IbE9JZdiInUEidSan2eodqZ/W+RoBPkJZV/Avb/AP/Z",
+- "/video/craftkai-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABrAAEBAQAAAAAAAAAAAAAAAAAFBgQBAQEAAAAAAAAAAAAAAAAAAAQFEAACAQMBBAoDAQAAAAAAAAABAhEhAAMxBEGBYYJzsjTxEgUiI8FxQ1JREQADAQEBAQAAAAAAAAAAAAAAAgEhEWEx/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8Aqw2HIyOwEwSWmigA1Y6RAMTwsx/UVJ+ENmT+kKgA/wCe6vjYITGKFYoVbd5uRrHCLxqcOGUBiDpEfYs6uu/RlS+GTaM4jDA0UueZJH5ugwZkzYkcqag6xuJFx+f9fV25sXd8fS7RudZgvun/2Q==",
+  "/video/daisuki-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABcAAEBAQAAAAAAAAAAAAAAAAAFAwYBAQAAAAAAAAAAAAAAAAAAAAQQAQADAAICAwEBAAAAAAAAAAERAwIxAFESYXEEBYERAQEBAQEAAAAAAAAAAAAAAAECMQAR/8AAEQgAEAAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8Arb+67W7aKNZs9Sd6Vklhznkny8B3Ov8AXtpXGja5UfWyc/4mkT5OiYsxg1gzqi/ExOklOR8dNDdsofceemKX0TOexMTKUU1p5nf/2Q==",
+  "/video/dirt-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABnAAEBAQEAAAAAAAAAAAAAAAAEAgYFAQADAQAAAAAAAAAAAAAAAAAAAgEDEAACAQMCBQUBAAAAAAAAAAABAgMAETESIXGRMuEEUaGBIhNhEQADAQEBAAAAAAAAAAAAAAAAARJREQL/wAARCAAWAAwDASIAAhEAAxEA/9oADAMBAAIRAxEAPwC/Ksksv9APt2oRkFdqWEQx6piJX3CsRpV74BAwBzpCQJpX9IgrEXsp+o4bVtSDjJTzJHNrJy702V5bjox6VnIOr5rRSZHCllYSvWn/2Q==",
+  "/video/drawingwalks-poster.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgABuAGrAAD//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABrAAEBAQEAAAAAAAAAAAAAAAAGBQQIAQEBAQAAAAAAAAAAAAAAAAADAgQQAAIABQEHBQEAAAAAAAAAAAECABEEMQMSQVEzciIhFLGBBdGyUhEAAgEFAQAAAAAAAAAAAAAAAAERAzICMUGB/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AqYaHPmQuOxB6VYyLb5H7vGbxXHGIxt/LAkyhLir6RVGgSLEAi99uqxEJvJp0C68iiYmJ7omRmmuODmv4t2R8qkkqpA9+9oRipZC2rqmdQ2yUgSHeDFBxKnmX1MVclxyr+RAZbN9O1en/2Q==",
+diff --git a/site/src/data/removed-hosts.json b/site/src/data/removed-hosts.json
+index babb2fa..c1056c2 100644
+--- a/site/src/data/removed-hosts.json
++++ b/site/src/data/removed-hosts.json
+@@ -4,6 +4,7 @@
+     { "slug": "mijita", "activity": "craft", "removed": "2026-10-11", "workshops": [] },
+     { "slug": "tessia", "activity": "craft", "removed": "2026-10-18", "workshops": ["wax-carving-ring-workshop-halber-tag", "sandguss-wax-carving-workshop-ganzer-tag"] },
+     { "slug": "haki", "activity": "ceramics", "removed": "2026-10-19", "workshops": ["handbuilding-workshop", "offener-platz-an-der-drehscheibe-fortgeschrittene"] },
+-    { "slug": "loam", "activity": "ceramics", "removed": "2026-11-05", "workshops": ["ceramic-candle-holder-pottery-workshop", "ceramic-plates-trays-and-bowls-workshop", "ceramics-hand-building-6-week-course-6-termine", "cups-and-mugs-pottery-class", "introduction-to-hand-building-pottery", "vases-and-carafes-build-larger-ceramic-vessels"] }
++    { "slug": "loam", "activity": "ceramics", "removed": "2026-11-05", "workshops": ["ceramic-candle-holder-pottery-workshop", "ceramic-plates-trays-and-bowls-workshop", "ceramics-hand-building-6-week-course-6-termine", "cups-and-mugs-pottery-class", "introduction-to-hand-building-pottery", "vases-and-carafes-build-larger-ceramic-vessels"] },
++    { "slug": "craftkai", "activity": "craft", "removed": "2026-11-06", "workshops": ["art-piece-weaving", "chopstick-making-with-shintaro-oku", "contemporary-ikebana", "create-your-own-hanko", "kintsugi-atelier-berlin", "kintsugi-france-studio-circolo", "miso-workshop-ferment-your-own-cedar-barrel-miso", "mizuhiki", "paint-your-own-tote-bag-with-tokyo-yuzen", "your-own-japanese-hanging-scroll-with-hokusai-s-mount-fuji"] }
+   ]
+ }

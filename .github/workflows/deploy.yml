@@ -116,7 +116,8 @@ jobs:
           # and drop them (Mijita, removed at the host's request on 11 Oct;
           # Tessia, taken off on 18 Oct until she agrees to be listed; Sümer of
           # Haki Ceramics, archived on 19 Oct while she is fully booked; Loam,
-          # taken off on 5 Nov as she never joined as a host).
+          # taken off on 5 Nov as she never joined as a host; Craftkai, archived
+          # on 6 Nov).
           for l in "" de/ fr/ es/ it/ nl/ pl/ tr/; do
             echo "https://www.twiggli.com/${l}workshops/craft/mijita/" >> urls.txt
             for p in "" wax-carving-ring-workshop-halber-tag/ sandguss-wax-carving-workshop-ganzer-tag/; do
@@ -127,6 +128,9 @@ jobs:
             done
             for p in "" ceramic-candle-holder-pottery-workshop/ ceramic-plates-trays-and-bowls-workshop/ ceramics-hand-building-6-week-course-6-termine/ cups-and-mugs-pottery-class/ introduction-to-hand-building-pottery/ vases-and-carafes-build-larger-ceramic-vessels/; do
               echo "https://www.twiggli.com/${l}workshops/ceramics/loam/${p}" >> urls.txt
+            done
+            for p in "" art-piece-weaving/ chopstick-making-with-shintaro-oku/ contemporary-ikebana/ create-your-own-hanko/ kintsugi-atelier-berlin/ kintsugi-france-studio-circolo/ miso-workshop-ferment-your-own-cedar-barrel-miso/ mizuhiki/ paint-your-own-tote-bag-with-tokyo-yuzen/ your-own-japanese-hanging-scroll-with-hokusai-s-mount-fuji/; do
+              echo "https://www.twiggli.com/${l}workshops/craft/craftkai/${p}" >> urls.txt
             done
           done
           echo "$(wc -l < urls.txt) urls"
