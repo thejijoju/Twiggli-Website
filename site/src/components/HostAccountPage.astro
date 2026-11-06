@@ -53,7 +53,7 @@ const hosts = Object.fromEntries(
         for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.price, s.image);
         for (const o of onRequestFor(h.slug, lang)) add(o.title, o.price);
       } catch { /* a host without listings: own dates only */ }
-      return out.slice(0, 16);
+      return out;
     })(),
     en: pick(h as unknown as Record<string, unknown>),
     de: pick((de.get(h.slug) ?? h) as unknown as Record<string, unknown>),
@@ -1026,15 +1026,12 @@ const fields = [
         const name = firstName(r);
         const each = priceOf(r);
         const box = (label: string, input: HTMLElement) => { const l = el('label', 'ib-box'); l.append(el('small', '', label), input); return l; };
-        // The host's workshops: their own dates, their weekly classes and the one asked for.
-        const titles = [...new Set([r.fields.Workshop, ...ownEvents.map((e) => e.title),
-          ...Array.from(slotsBox.querySelectorAll<HTMLInputElement>('.ha-slot [name="title"]')).map((x) => x.value)].map((x) => (x || '').trim()).filter(Boolean))];
-        // Workshop picker with picture and price (Luma-style, not a plain select):
-        // the host can offer a different workshop than the one asked for.
+        // Exactly the host's own listings (e.g. Jem: kimchi, sourdough, tofu), nothing more,
+        // nothing less. Only a host without any listing falls back to the workshop asked for.
         type Opt = { title: string; price: string; image: string };
         const listed: Opt[] = hosts[slug]?.workshops ?? [];
-        const opts: Opt[] = [...listed];
-        for (const ti of titles) if (!opts.some((o) => o.title.toLowerCase() === ti.toLowerCase())) opts.push({ title: ti, price: '', image: hosts[slug]?.photos?.[0] ?? '' });
+        const opts: Opt[] = listed.length ? [...listed]
+          : [{ title: (r.fields.Workshop || '').trim(), price: '', image: hosts[slug]?.photos?.[0] ?? '' }].filter((o) => o.title);
         const start = opts.find((o) => o.title.toLowerCase() === (r.fields.Workshop || '').trim().toLowerCase()) ?? opts[0];
         let chosen: Opt | undefined = start;
         const ws = { get value() { return chosen?.title ?? ''; } };
