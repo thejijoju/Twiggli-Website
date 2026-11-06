@@ -218,6 +218,10 @@ const fields = [
             </div>
             <div class="ib-modal-body" data-ib-modal-body></div>
           </dialog>
+          <dialog class="ib-modal ib-offer ib-decline" data-ib-decline aria-label={t.ib.decline}>
+            <button type="button" class="ib-modal-x ib-offer-x" aria-label={t.back} onclick="this.closest('dialog').close()">×</button>
+            <div class="ib-modal-body" data-ib-decline-body></div>
+          </dialog>
           <dialog class="ib-modal ib-offer" data-ib-offer aria-label={t.ib.offer}>
             <button type="button" class="ib-modal-x ib-offer-x" aria-label={t.back} onclick="this.closest('dialog').close()">×</button>
             <div class="ib-modal-body" data-ib-offer-body></div>
@@ -983,22 +987,39 @@ const fields = [
           const rnote = el('p', 'ha-note'); rnote.setAttribute('role', 'status');
           const mk = (label: string) => { const b = el('button', 'ib-act', label) as HTMLButtonElement; b.type = 'button'; return b; };
           const bAccept = mk(t.ib.accept); const bOffer = mk(t.ib.offer); const bDecline = mk(t.ib.decline);
-          const form = el('div', 'ib-form'); form.hidden = true;
           const all = [bAccept, bOffer, bDecline];
           bAccept.addEventListener('click', () => void send(r, 'accept', {}, rnote, all));
           bOffer.addEventListener('click', () => openOffer(r, rnote, all));
+          // Declining opens its own popup on top (as the offer does), never a form below.
           bDecline.addEventListener('click', () => {
-            form.hidden = false;
-            form.innerHTML = '';
-            const sel = document.createElement('select');
-            for (const [v, l] of [['booked', t.ib.rBooked], ['size', t.ib.rSize], ['away', t.ib.rAway], ['fit', t.ib.rFit], ['other', t.ib.rOther]]) { const o = document.createElement('option'); o.value = v; o.textContent = l; sel.append(o); }
-            const m = document.createElement('textarea'); m.rows = 2; m.placeholder = t.replyMsgPh;
-            const go = mk(t.ib.declineSend); go.classList.add('ib-act-main');
-            go.addEventListener('click', () => void send(r, 'decline', { reason: sel.value, message: m.value.trim() }, rnote, [...all, go]));
-            form.append(el('b', '', t.ib.declineTitle), el('p', 'ib-hint', t.ib.declineNote), sel, labelled(t.replyMsg, m), go);
+            const dlg = $<HTMLDialogElement>('[data-ib-decline]');
+            const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
+            const list = el('div', 'ib-reasons'); list.setAttribute('role', 'radiogroup');
+            const reasons: [string, string][] = [['booked', t.ib.rBooked], ['size', t.ib.rSize], ['away', t.ib.rAway], ['fit', t.ib.rFit], ['other', t.ib.rOther]];
+            reasons.forEach(([v, l], i) => {
+              const lab = el('label', 'ib-reason');
+              const inp = document.createElement('input'); inp.type = 'radio'; inp.name = 'ib-reason'; inp.value = v; if (i === 0) inp.checked = true;
+              lab.append(inp, el('span', '', l));
+              list.append(lab);
+            });
+            const m = document.createElement('textarea'); m.rows = 3; m.placeholder = t.ib.declinePh;
+            const mbox = el('label', 'ib-box'); mbox.append(el('small', '', t.replyMsg), m);
+            const go = mk(t.ib.declineSend); go.classList.add('ib-act-main', 'ib-offer-send');
+            go.addEventListener('click', () => {
+              const reason = list.querySelector<HTMLInputElement>('input:checked')?.value ?? 'other';
+              dlg.close();
+              void send(r, 'decline', { reason, message: m.value.trim() }, rnote, all);
+            });
+            body.replaceChildren(
+              el('h2', 'ib-offer-h', say(t.ib.declineHead, { name })),
+              el('h3', 'ib-offer-sec', t.ib.declineTitle), el('p', 'ib-hint', t.ib.declineNote), list,
+              mbox, go,
+            );
+            dlg.showModal();
+            list.querySelector<HTMLInputElement>('input:checked')?.focus();
           });
           acts.append(...all);
-          res.append(acts, form, rnote);
+          res.append(acts, rnote);
         }
         const g = (r as Req & { guest?: { requests: number; cameFrom: string; lang: string } }).guest;
         const about = el('div', 'ib-about');
@@ -1710,7 +1731,11 @@ const fields = [
   .ib-close { position: absolute; top: 10px; right: 0; border: 0; background: rgba(36, 39, 46, 0.06); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; display: none; }
 
   .ib-modal { width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 48px); border: 0; border-radius: 26px; padding: 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); }
-  .ib-modal::backdrop { background: rgba(20, 20, 24, 0.45); }
+  /* Twiggli's signature: popups float over a blurred page; a second popup
+     (offer, decline) blurs the one below it, so it reads as stacked on top. */
+  .ib-modal::backdrop { background: rgba(40, 30, 60, 0.22); backdrop-filter: blur(12px) saturate(1.1); -webkit-backdrop-filter: blur(12px) saturate(1.1); }
+  .ib-offer { box-shadow: 0 30px 80px rgba(36, 20, 70, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.6); }
+  .ib-decline { width: min(520px, calc(100vw - 32px)); }
   .ib-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 18px; border-bottom: 1px solid rgba(36, 39, 46, 0.1); position: sticky; top: 0; background: #fff; z-index: 1; }
   .ib-modal-head h2 { margin: 0; font-size: 1.9rem; }
   .ib-modal-x { border: 0; background: rgba(36, 39, 46, 0.06); border-radius: 50%; width: 38px; height: 38px; font-size: 1.3rem; cursor: pointer; }
@@ -1773,6 +1798,11 @@ const fields = [
   .ib-pk-opt.is-on { background: rgba(106, 62, 236, 0.1); }
   .ib-pk-check { width: 22px; color: var(--color-accent); font-weight: 700; }
   .ib-offer-send { margin-top: 6px; padding: 15px; font-size: 1.05rem; }
+  .ib-reasons { display: grid; gap: 8px; }
+  .ib-reason { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid rgba(36, 39, 46, 0.18); border-radius: 14px; cursor: pointer; font-size: 1rem; transition: border-color .15s, box-shadow .15s; }
+  .ib-reason:hover { border-color: rgba(36, 39, 46, 0.4); }
+  .ib-reason:has(input:checked) { border-color: var(--color-accent); box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.12); }
+  .ib-reason input { accent-color: var(--color-accent); width: 18px; height: 18px; margin: 0; }
   .ib-what small { color: var(--color-text-muted); }
   .ib-what h3 { margin: 4px 0 10px; font-size: 1.45rem; line-height: 1.2; }
   .ib-what p { margin: 2px 0; }
