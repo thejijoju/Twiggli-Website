@@ -192,6 +192,13 @@ const fields = [
             <div class="ib-conv" data-ib-conv><p class="ib-pick">{t.ib.pick}</p></div>
             <aside class="ib-res" data-ib-res hidden></aside>
           </div>
+          <dialog class="ib-modal" data-ib-modal aria-labelledby="ib-modal-title">
+            <div class="ib-modal-head">
+              <h2 id="ib-modal-title">{t.ib.details}</h2>
+              <button type="button" class="ib-modal-x" aria-label={t.back} onclick="this.closest('dialog').close()">×</button>
+            </div>
+            <div class="ib-modal-body" data-ib-modal-body></div>
+          </dialog>
         </section>
 
         <!-- Overview: the host's week at a glance (the first thing they see). -->
@@ -819,6 +826,8 @@ const fields = [
         try {
           await api('hostReply', { id: r.id, action, ...extra });
           note.textContent = t.ib.sent;
+          const dlg = root.querySelector<HTMLDialogElement>('[data-ib-modal]');
+          if (dlg?.open) dlg.close();
           reqs = (await api('hostInbox', { slug })).items ?? reqs;
           renderMsgs();
           const again = reqs.find((x) => x.id === r.id);
@@ -864,7 +873,13 @@ const fields = [
           card.append(el('p', `ib-until${late ? ' is-late' : ''}`, late ? t.ib.late : say(t.ib.until, { when: new Date(deadline).toLocaleString(loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) })));
           const go = el('button', 'ib-respond', t.ib.respond) as HTMLButtonElement;
           go.type = 'button';
-          go.addEventListener('click', () => { $('[data-ib-grid]').classList.add('show-res'); res.querySelector<HTMLButtonElement>('.ib-act')?.focus(); });
+          go.addEventListener('click', () => {
+            const dlg = $<HTMLDialogElement>('[data-ib-modal]');
+            const body = dlg.querySelector<HTMLElement>('[data-ib-modal-body]')!;
+            buildRes(body, true);
+            dlg.showModal();
+            body.querySelector<HTMLButtonElement>('.ib-act')?.focus();
+          });
           card.append(go);
         }
         thread.append(card);
@@ -917,17 +932,17 @@ const fields = [
         conv.replaceChildren(head, thread, comp);
         thread.scrollTop = thread.scrollHeight;
 
-        // ── Right: the request, the three actions, the guest ──
-        const res = $('[data-ib-res]');
-        res.hidden = false;
+        // ── The request, the three actions, the guest: in the right column and in the
+        //    "Anfragedetails" popup that Antworten opens (as Airbnb's Reservation details) ──
+        const buildRes = (res: HTMLElement, inModal: boolean) => {
         const closeRes = el('button', 'ib-close', '×') as HTMLButtonElement;
         closeRes.type = 'button'; closeRes.setAttribute('aria-label', t.back);
-        closeRes.addEventListener('click', () => $('[data-ib-grid]').classList.remove('show-res'));
+        closeRes.addEventListener('click', () => { if (inModal) (res.closest('dialog') as HTMLDialogElement | null)?.close(); else $('[data-ib-grid]').classList.remove('show-res'); });
         const what = el('div', 'ib-what');
         what.append(el('small', '', statusText[r.status] ?? t.ib.inquiry), el('h3', '', say(t.ib.asked, { name, what: r.fields.Workshop || t.ib.inquiry })),
           el('p', '', [fmtDay(dateOf(r)), r.fields.Time].filter(Boolean).join(', ')),
           el('p', '', [ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) }), each ? `€ ${(each * ppl).toLocaleString(loc)} ${t.ib.total}` : ''].filter(Boolean).join(' · ')));
-        res.replaceChildren(closeRes, what);
+        res.replaceChildren(...(inModal ? [] : [closeRes]), what);
         if (waiting(r) || r.status === 'suggested' || r.status === 'offered') {
           const acts = el('div', 'ib-acts');
           const rnote = el('p', 'ha-note'); rnote.setAttribute('role', 'status');
@@ -974,6 +989,10 @@ const fields = [
         if (r.fields.Occasion) ul.append(el('li', '', r.fields.Occasion));
         about.append(ul);
         res.append(about);
+        };
+        const res = $('[data-ib-res]');
+        res.hidden = false;
+        buildRes(res, false);
         $('[data-ib-grid]').classList.add('is-open');
       };
       const labelled = (label: string, input: HTMLElement) => { const l = el('label', 'ha-field'); l.append(el('span', '', label), input); return l; };
@@ -1485,6 +1504,15 @@ const fields = [
   .ib-saved-add { border: 0; background: none; color: var(--color-accent); font: inherit; font-weight: 600; cursor: pointer; padding: 4px 0; }
   .ib-res { padding: 18px 0 18px 22px; position: relative; min-width: 0; }
   .ib-close { position: absolute; top: 10px; right: 0; border: 0; background: rgba(36, 39, 46, 0.06); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; display: none; }
+
+  .ib-modal { width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 48px); border: 0; border-radius: 26px; padding: 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); }
+  .ib-modal::backdrop { background: rgba(20, 20, 24, 0.45); }
+  .ib-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 18px; border-bottom: 1px solid rgba(36, 39, 46, 0.1); position: sticky; top: 0; background: #fff; z-index: 1; }
+  .ib-modal-head h2 { margin: 0; font-size: 1.9rem; }
+  .ib-modal-x { border: 0; background: rgba(36, 39, 46, 0.06); border-radius: 50%; width: 38px; height: 38px; font-size: 1.3rem; cursor: pointer; }
+  .ib-modal-body { padding: 22px 32px 30px; }
+  .ib-modal-body .ib-what h3 { font-size: 1.6rem; }
+  @media (max-width: 560px) { .ib-modal-head { padding: 20px; } .ib-modal-head h2 { font-size: 1.4rem; } .ib-modal-body { padding: 16px 20px 24px; } }
   .ib-what small { color: var(--color-text-muted); }
   .ib-what h3 { margin: 4px 0 10px; font-size: 1.45rem; line-height: 1.2; }
   .ib-what p { margin: 2px 0; }

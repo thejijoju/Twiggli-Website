@@ -241,7 +241,7 @@ const en: HostAccountCopy = {
   phone: 'Phone',
   back: '← All messages',
   ib: {
-    unread: 'Unread', priority: 'Needs your answer', recent: 'Recent', pick: 'Pick a conversation on the left.',
+    details: 'Request details', unread: 'Unread', priority: 'Needs your answer', recent: 'Recent', pick: 'Pick a conversation on the left.',
     inquiry: 'Booking request', asked: '{name} asked about {what}', until: 'You have until {when} to respond', late: 'The 48 hours are over: answer as soon as you can, the guest is still waiting.',
     respond: 'Respond', total: 'total', perPerson: 'per person', guests: '{n} guests', guest1: '1 guest',
     accept: 'Accept', offer: 'Make an offer', decline: 'Decline', offerTitle: 'Your offer', offerWhen: 'Date and time (optional)', offerPrice: 'Price per person in € (optional)', offerSend: 'Send offer', offerNeed: 'Add a date or a price.',
@@ -440,7 +440,7 @@ const de: HostAccountCopy = {
   phone: 'Telefon',
   back: '← Alle Nachrichten',
   ib: {
-    unread: 'Ungelesen', priority: 'Warten auf deine Antwort', recent: 'Zuletzt', pick: 'Wähle links eine Unterhaltung aus.',
+    details: 'Anfragedetails', unread: 'Ungelesen', priority: 'Warten auf deine Antwort', recent: 'Zuletzt', pick: 'Wähle links eine Unterhaltung aus.',
     inquiry: 'Buchungsanfrage', asked: '{name} fragt nach {what}', until: 'Du hast bis {when} Zeit zu antworten', late: 'Die 48 Stunden sind um: Antworte bitte so bald wie möglich, der Gast wartet noch.',
     respond: 'Antworten', total: 'gesamt', perPerson: 'pro Person', guests: '{n} Gäste', guest1: '1 Gast',
     accept: 'Annehmen', offer: 'Angebot machen', decline: 'Ablehnen', offerTitle: 'Dein Angebot', offerWhen: 'Datum und Uhrzeit (optional)', offerPrice: 'Preis pro Person in € (optional)', offerSend: 'Angebot senden', offerNeed: 'Gib ein Datum oder einen Preis an.',
