@@ -16,6 +16,8 @@ import { hostAccountCopy } from '../data/hostAccount.ts';
 import { firebaseConfig, firebaseReady, functionsBase } from '../data/firebase.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
+import { workshopsFor, onRequestFor } from '../data/seo.ts';
+import { previewSessionsFor } from '../data/sessions.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
 interface Props { lang: Lang }
@@ -36,6 +38,23 @@ const hosts = Object.fromEntries(
     page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
     // Their own pictures, to pick a cover for a new date without uploading.
     photos: [...new Set([h.photo, ...(h.gallery ?? [])].filter((x): x is string => !!x))].slice(0, 8),
+    // Their workshops with a picture and price, for the offer's workshop picker.
+    workshops: (() => {
+      const seen = new Set<string>();
+      const out: { title: string; price: string; image: string }[] = [];
+      const add = (title: string, price?: string, image?: string) => {
+        const k = title.trim().toLowerCase();
+        if (!title || seen.has(k)) return;
+        seen.add(k);
+        out.push({ title, price: price ?? '', image: image || h.photo || h.poster || '' });
+      };
+      try {
+        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.sessions[0]?.price, w.sessions[0]?.image);
+        for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.price, s.image);
+        for (const o of onRequestFor(h.slug, lang)) add(o.title, o.price);
+      } catch { /* a host without listings: own dates only */ }
+      return out.slice(0, 16);
+    })(),
     en: pick(h as unknown as Record<string, unknown>),
     de: pick((de.get(h.slug) ?? h) as unknown as Record<string, unknown>),
     slots: recurring.filter((r) => r.slug === h.slug).map((r) => ({
@@ -1010,8 +1029,48 @@ const fields = [
         // The host's workshops: their own dates, their weekly classes and the one asked for.
         const titles = [...new Set([r.fields.Workshop, ...ownEvents.map((e) => e.title),
           ...Array.from(slotsBox.querySelectorAll<HTMLInputElement>('.ha-slot [name="title"]')).map((x) => x.value)].map((x) => (x || '').trim()).filter(Boolean))];
-        const ws = document.createElement('select');
-        for (const ti of titles) { const o = document.createElement('option'); o.textContent = ti; ws.append(o); }
+        // Workshop picker with picture and price (Luma-style, not a plain select):
+        // the host can offer a different workshop than the one asked for.
+        type Opt = { title: string; price: string; image: string };
+        const listed: Opt[] = hosts[slug]?.workshops ?? [];
+        const opts: Opt[] = [...listed];
+        for (const ti of titles) if (!opts.some((o) => o.title.toLowerCase() === ti.toLowerCase())) opts.push({ title: ti, price: '', image: hosts[slug]?.photos?.[0] ?? '' });
+        const start = opts.find((o) => o.title.toLowerCase() === (r.fields.Workshop || '').trim().toLowerCase()) ?? opts[0];
+        let chosen: Opt | undefined = start;
+        const ws = { get value() { return chosen?.title ?? ''; } };
+        const thumb = (o?: Opt) => {
+          if (o?.image) { const im = document.createElement('img'); im.src = o.image; im.alt = ''; im.loading = 'lazy'; im.className = 'ib-pk-img'; im.addEventListener('error', () => im.replaceWith(el('span', 'ib-pk-img ib-pk-ph', hdEmoji()))); return im; }
+          return el('span', 'ib-pk-img ib-pk-ph', hdEmoji());
+        };
+        const picker = el('div', 'ib-pk');
+        const pkBtn = el('button', 'ib-pk-btn') as HTMLButtonElement;
+        pkBtn.type = 'button'; pkBtn.setAttribute('aria-haspopup', 'listbox'); pkBtn.setAttribute('aria-expanded', 'false');
+        const pkList = el('div', 'ib-pk-list'); pkList.setAttribute('role', 'listbox'); pkList.hidden = true;
+        const pkShow = () => {
+          pkBtn.replaceChildren(el('small', 'ib-pk-label', t.ib.oWorkshop));
+          const rowEl = el('span', 'ib-pk-row');
+          const txt = el('span', 'ib-pk-txt');
+          txt.append(el('b', '', chosen?.title ?? '—'), ...(chosen?.price ? [el('span', '', chosen.price)] : []));
+          rowEl.append(thumb(chosen), txt, el('span', 'ib-pk-chev', '⌄'));
+          pkBtn.append(rowEl);
+          pkList.replaceChildren(...opts.map((o) => {
+            const it = el('button', `ib-pk-opt${o === chosen ? ' is-on' : ''}`) as HTMLButtonElement;
+            it.type = 'button'; it.setAttribute('role', 'option'); it.setAttribute('aria-selected', String(o === chosen));
+            const tx = el('span', 'ib-pk-txt'); tx.append(el('b', '', o.title), ...(o.price ? [el('span', '', o.price)] : []));
+            it.append(thumb(o), tx, el('span', 'ib-pk-check', o === chosen ? '✓' : ''));
+            it.addEventListener('click', () => {
+              chosen = o; pkList.hidden = true; pkBtn.setAttribute('aria-expanded', 'false'); pkShow();
+              // A different workshop: its usual price becomes the starting point.
+              const p = Number(String(o.price).replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+              if (p) { sub.value = String(Math.round(p * (Number(gs.value) || 1))); usual.textContent = say(t.ib.oUsual, { each: eur(p) }); paint(); }
+              pkBtn.focus();
+            });
+            return it;
+          }));
+        };
+        pkBtn.addEventListener('click', () => { pkList.hidden = !pkList.hidden; pkBtn.setAttribute('aria-expanded', String(!pkList.hidden)); if (!pkList.hidden) pkList.querySelector<HTMLButtonElement>('.is-on, .ib-pk-opt')?.focus(); });
+        picker.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Escape' && !pkList.hidden) { e.stopPropagation(); e.preventDefault(); pkList.hidden = true; pkBtn.focus(); } });
+        picker.append(pkBtn, pkList);
         const dt = document.createElement('input'); dt.type = 'date'; dt.value = dateOf(r); dt.min = iso(new Date());
         const tm = document.createElement('input'); tm.type = 'time'; tm.value = (r.fields.Time || '').slice(0, 5);
         const when = el('div', 'ib-two'); when.append(box(t.ib.oDate, dt), box(t.ib.oTime, tm));
@@ -1042,6 +1101,7 @@ const fields = [
         const msg = document.createElement('textarea'); msg.rows = 3; msg.placeholder = t.replyMsgPh;
         const note = el('p', 'ha-note'); note.setAttribute('role', 'status');
         const eur = (n: number) => `€${n.toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const usual = el('p', 'ib-hint', each ? say(t.ib.oUsual, { each: eur(each) }) : t.ib.oUsualNone);
         const paint = () => {
           const base = Number(sub.value) || 0;
           const n = Number(gs.value) || 1;
@@ -1076,11 +1136,12 @@ const fields = [
         body.replaceChildren(
           el('h2', 'ib-offer-h', say(t.ib.oTitle, { name })),
           el('p', 'ib-hint', say(t.ib.oSub, { name })),
-          el('h3', 'ib-offer-sec', t.ib.oTrip), box(t.ib.oWorkshop, ws), when, box(t.ib.oGuests, gs),
-          el('h3', 'ib-offer-sec', t.ib.oPricing), el('p', 'ib-hint', each ? say(t.ib.oUsual, { each: eur(each) }) : t.ib.oUsualNone),
+          el('h3', 'ib-offer-sec', t.ib.oTrip), picker, when, box(t.ib.oGuests, gs),
+          el('h3', 'ib-offer-sec', t.ib.oPricing), usual,
           box(t.ib.oSubtotal, sub), el('p', 'ib-hint ib-small', t.ib.oSubNote), extrasBox, addBtn, sum,
           box(t.replyMsg, msg), note, go,
         );
+        pkShow();
         paint();
         dlg.showModal();
       };
@@ -1627,6 +1688,22 @@ const fields = [
   .ib-extras { display: grid; gap: 8px; }
   .ib-extra { display: grid; grid-template-columns: minmax(0, 1fr) 110px auto; gap: 8px; align-items: center; }
   .ib-extra input { font: inherit; padding: 10px 12px; border: 1.5px solid rgba(36, 39, 46, 0.25); border-radius: 10px; min-width: 0; }
+  .ib-pk { position: relative; }
+  .ib-pk-btn { width: 100%; text-align: left; border: 1.5px solid rgba(36, 39, 46, 0.18); border-radius: 16px; background: #fff; padding: 10px 14px; font: inherit; cursor: pointer; display: grid; gap: 6px; transition: border-color .15s, box-shadow .15s; }
+  .ib-pk-btn:hover, .ib-pk-btn[aria-expanded='true'] { border-color: var(--color-accent); box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.12); }
+  .ib-pk-label { color: var(--color-text-muted); font-size: 0.8rem; }
+  .ib-pk-row { display: flex; align-items: center; gap: 12px; }
+  .ib-pk-img { flex: none; width: 52px; height: 52px; border-radius: 12px; object-fit: cover; }
+  .ib-pk-ph { display: grid; place-items: center; font-size: 24px; background: rgba(106, 62, 236, 0.08); }
+  .ib-pk-txt { flex: 1; min-width: 0; display: grid; }
+  .ib-pk-txt b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ib-pk-txt span { color: var(--color-text-muted); font-size: 0.86rem; }
+  .ib-pk-chev { color: var(--color-text-muted); font-size: 1.2rem; line-height: 1; }
+  .ib-pk-list { position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 10; max-height: 340px; overflow-y: auto; background: #fff; border-radius: 18px; padding: 8px; box-shadow: 0 18px 50px rgba(36, 39, 46, 0.18), 0 0 0 1px rgba(36, 39, 46, 0.06); display: grid; gap: 2px; }
+  .ib-pk-opt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; background: none; border-radius: 12px; padding: 8px 10px; font: inherit; cursor: pointer; }
+  .ib-pk-opt:hover, .ib-pk-opt:focus-visible { background: rgba(106, 62, 236, 0.07); outline: none; }
+  .ib-pk-opt.is-on { background: rgba(106, 62, 236, 0.1); }
+  .ib-pk-check { width: 22px; color: var(--color-accent); font-weight: 700; }
   .ib-offer-send { margin-top: 6px; padding: 15px; font-size: 1.05rem; }
   .ib-what small { color: var(--color-text-muted); }
   .ib-what h3 { margin: 4px 0 10px; font-size: 1.45rem; line-height: 1.2; }
