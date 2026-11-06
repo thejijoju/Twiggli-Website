@@ -233,6 +233,7 @@ const fields = [
           <div class="hd-hi">
             <div><h1 data-ha-hello></h1><p class="ha-sub">{t.helloSub}</p></div>
             <div class="hd-seg" data-ha-when>
+              <button type="button" aria-pressed="false" data-w="requests" data-ha-req-tab hidden>{t.ib.reqTab} <span class="hd-seg-n" data-ha-req-n></span></button>
               <button type="button" aria-pressed="true" data-w="upcoming">{t.wUpcoming}</button>
               <button type="button" aria-pressed="false" data-w="past">{t.wPast}</button>
             </div>
@@ -240,7 +241,6 @@ const fields = [
           <button type="button" class="hd-add-big hd-add-phone" data-ha-new>+ {t.newDate}</button>
           <!-- Open requests as cards with the time left (as the Airbnb app's Today). -->
           <div class="hd-reqs" data-ha-reqs hidden>
-            <h2 class="hd-reqs-h" data-ha-reqs-h></h2>
             <div class="hd-reqs-row" data-ha-reqs-row></div>
           </div>
           <button type="button" class="hd-alert" data-ha-alert data-ha-go="messages" hidden>
@@ -700,6 +700,7 @@ const fields = [
       let reqs: Req[] = [];
       let filter = 'all';
       let when = 'upcoming';
+      let whenChosen = false; // until the host picks a tab, open requests come first
       const api = async (name: string, body: Record<string, unknown>) => {
         const token = await auth.currentUser?.getIdToken();
         const res = await fetch(`${cfg.functions}/${name}`, {
@@ -776,9 +777,17 @@ const fields = [
         const wrap = $('[data-ha-reqs]');
         const row = $('[data-ha-reqs-row]');
         window.clearInterval(reqTick);
-        wrap.hidden = !pending.length;
+        // Requests have their own tab, and that tab shows only the requests:
+        // no numbers, no dates, no "Neuer Termin" (one thing at a time).
+        const tab = $('[data-ha-req-tab]');
+        tab.hidden = !pending.length;
+        $('[data-ha-req-n]').textContent = String(pending.length);
+        if (!whenChosen && pending.length) when = 'requests';
+        if (when === 'requests' && !pending.length) when = 'upcoming';
+        root.querySelectorAll<HTMLButtonElement>('[data-ha-when] button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.w === when)));
+        $('[data-ha-panel="overview"]').classList.toggle('is-requests', when === 'requests');
+        wrap.hidden = when !== 'requests';
         if (!pending.length) { row.replaceChildren(); return; }
-        $('[data-ha-reqs-h]').textContent = pending.length === 1 ? t.ib.reqTitle1 : t.ib.reqTitleN;
         const sorted = [...pending].sort((a, b) => a.createdAt - b.createdAt);
         const lefts: [HTMLElement, number][] = [];
         row.replaceChildren(...sorted.map((r) => {
@@ -786,12 +795,12 @@ const fields = [
           const left = el('span', 'hd-req-left');
           lefts.push([left, r.createdAt + 48 * 3600 * 1000]);
           const d = dateOf(r);
-          const when = d ? new Date(`${d}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+          const day = d ? new Date(`${d}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
           const n = peopleOf(r);
-          card.append(left, el('span', 'hd-req-av', firstName(r).charAt(0).toUpperCase()),
-            el('b', 'hd-req-what', when ? say(t.ib.reqFor, { date: when }) : t.ib.inquiry),
-            el('span', 'hd-req-n', n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) })));
-          if (r.fields.Workshop) card.append(el('small', 'hd-req-ws', r.fields.Workshop));
+          const txt = el('span', 'hd-req-txt');
+          txt.append(el('b', 'hd-req-what', day ? say(t.ib.reqFor, { date: day }) : t.ib.inquiry),
+            el('span', 'hd-req-n', [n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) }), r.fields.Workshop].filter(Boolean).join(' · ')));
+          card.append(el('span', 'hd-req-av', firstName(r).charAt(0).toUpperCase()), txt, left);
           card.addEventListener('click', () => {
             showTab('messages');
             openDetail(r);
@@ -1315,6 +1324,7 @@ const fields = [
       }));
       root.querySelectorAll<HTMLButtonElement>('[data-ha-when] button').forEach((b) => b.addEventListener('click', () => {
         when = b.dataset.w!;
+        whenChosen = true;
         root.querySelectorAll('[data-ha-when] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
         renderMsgs();
       }));
@@ -2093,20 +2103,26 @@ const fields = [
   .ha-app { min-width: 0; width: 100%; justify-self: stretch; }
   .hd-stats > * { min-width: 0; }
   .hd-reqs { margin: 4px 0 26px; min-width: 0; max-width: 100%; }
-  .hd-reqs-h { margin: 0 0 14px; font-size: 1.6rem; letter-spacing: -0.01em; }
-  .hd-reqs-row { min-width: 0; max-width: 100%; display: flex; gap: 14px; overflow-x: auto; padding: 6px 4px 18px; margin: -6px -4px 0; scroll-snap-type: x mandatory; scrollbar-width: none; }
-  .hd-reqs-row::-webkit-scrollbar { display: none; }
-  .hd-req { flex: 0 0 auto; width: 196px; scroll-snap-align: start; display: grid; justify-items: center; align-content: start; gap: 6px; padding: 22px 16px 20px; border: 0; border-radius: 26px; font: inherit; color: inherit; text-align: center; cursor: pointer;
-    background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2);
-    box-shadow: 0 14px 34px -14px rgba(60, 30, 120, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.7) inset; transition: transform .18s ease, box-shadow .18s ease; }
-  .hd-req:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -14px rgba(60, 30, 120, 0.36), 0 0 0 1px rgba(255, 255, 255, 0.7) inset; }
-  .hd-req-left { font-weight: 700; font-size: 0.98rem; font-variant-numeric: tabular-nums; }
+  /* Requests tab: only the requests. */
+  .hd-overview.is-requests :is(.hd-add-phone, .hd-alert, .hd-stats, [data-ha-list-title], [data-ha-days], [data-ha-today-empty]) { display: none !important; }
+  .hd-seg-n { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; margin-left: 4px; border-radius: 10px; background: var(--color-accent); color: #fff; font-size: 0.72rem; font-weight: 700; }
+  .hd-reqs-row { display: grid; gap: 12px; max-width: 620px; }
+  .hd-req { display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 18px; border: 0; border-radius: 20px; background: #fff; font: inherit; color: inherit; text-align: left; cursor: pointer;
+    box-shadow: 0 10px 24px -16px rgba(60, 30, 120, 0.35), 0 0 0 1px rgba(36, 39, 46, 0.05); transition: transform .15s ease, box-shadow .15s ease; }
+  .hd-req:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -16px rgba(60, 30, 120, 0.4), 0 0 0 1px rgba(36, 39, 46, 0.06); }
+  .hd-req-av { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: rgba(106, 62, 236, 0.1); color: var(--color-accent); font-weight: 700; font-size: 1.15rem; }
+  .hd-req-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .hd-req-what { font-size: 1rem; }
+  .hd-req-n { color: var(--color-text-muted); font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hd-req-left { flex: none; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
   .hd-req-left.is-soon { color: #d4384a; }
-  .hd-req-av { display: grid; place-items: center; width: 64px; height: 64px; margin: 10px 0 8px; border-radius: 50%; font-size: 1.6rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, #ff8a5c, #e64ab4 55%, #6a3eec); box-shadow: 0 8px 18px -6px rgba(230, 74, 180, 0.55); }
-  .hd-req-what { font-size: 1.05rem; line-height: 1.25; }
-  .hd-req-n { color: var(--color-text-muted); font-size: 0.92rem; }
-  .hd-req-ws { color: var(--color-text-muted); font-size: 0.8rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  @media (max-width: 640px) { .hd-reqs { text-align: center; } .hd-reqs-h { font-size: 1.9rem; } .hd-reqs-row { justify-content: flex-start; max-width: none; margin: -6px -20px 0; padding: 6px 20px 18px; scroll-padding: 0 20px; } .hd-req { width: 168px; } }
+  .hd-seg button[data-w='requests'] { white-space: nowrap; }
+  @media (max-width: 640px) {
+    .hd-req { display: grid; grid-template-columns: 46px minmax(0, 1fr); grid-template-areas: 'av left' 'av txt'; column-gap: 14px; row-gap: 2px; align-items: center; }
+    .hd-req-av { grid-area: av; }
+    .hd-req-left { grid-area: left; font-size: 0.78rem; }
+    .hd-req-txt { grid-area: txt; }
+  }
   .hd-alert { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; font: inherit; color: inherit; background: #fff; border: 0; border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; cursor: pointer; box-shadow: 0 8px 10px -8px rgba(224, 69, 123, 0.3); }
   .hd-alert-ic { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; background: #ffe3ec; }
   .hd-alert-t { flex: 1; min-width: 0; display: grid; }
