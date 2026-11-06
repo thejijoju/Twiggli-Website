@@ -761,14 +761,27 @@ export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, c
   if (!SLUG.test(slug) || !(ADMINS.includes(email) || (await mySlugs(email)).includes(slug))) return res.status(403).json({ error: 'Not your page' });
   // Sorted here rather than in the query, which would need a composite index.
   const snap = await getFirestore().collection('formRequests').where('hostSlug', '==', slug).get();
+  // "About the guest", as on Airbnb: how often they asked on Twiggli, how
+  // they found us and in which language (only counts, never other hosts').
+  const emails = [...new Set(snap.docs.map((d) => d.data().email).filter(isEmail))].slice(0, 30);
+  const asked = {};
+  await Promise.all(emails.map(async (e) => {
+    const n = await getFirestore().collection('formRequests').where('email', '==', e).count().get().catch(() => null);
+    asked[e] = n?.data().count ?? 1;
+  }));
   const items = snap.docs.map((d) => {
     const x = d.data();
-    return { id: d.id, subject: x.subject, fields: x.fields, status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0 };
+    return {
+      id: d.id, subject: x.subject, fields: x.fields, status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0,
+      guest: { requests: asked[x.email] ?? 1, cameFrom: String(x.fields?.['Came from'] ?? ''), lang: String(x.fields?.Language ?? '') },
+    };
   }).sort((a, b) => b.createdAt - a.createdAt).slice(0, 200);
   return res.status(200).json({ items });
 });
 
-const ACTIONS = { accept: 'accepted', decline: 'declined', suggest: 'suggested' };
+// offer: another date and/or price for the guest (Airbnb's "special offer");
+// message: a note without changing the request's status.
+const ACTIONS = { accept: 'accepted', decline: 'declined', suggest: 'suggested', offer: 'offered', message: '' };
 
 export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
@@ -778,21 +791,25 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   const action = String(req.body?.action ?? '');
   const message = text(req.body?.message, 2000);
   const when = text(req.body?.when, 120);
-  if (!/^[A-Za-z0-9]{10,40}$/.test(id) || !ACTIONS[action]) return res.status(400).json({ error: 'Bad request' });
+  const price = Math.round(Number(req.body?.price) * 100) / 100;
+  const reason = text(req.body?.reason, 80);
+  if (!/^[A-Za-z0-9]{10,40}$/.test(id) || !(action in ACTIONS)) return res.status(400).json({ error: 'Bad request' });
+  if (action === 'message' && !message) return res.status(400).json({ error: 'Empty message' });
   const ref = getFirestore().doc(`formRequests/${id}`);
   const snap = await ref.get();
   const x = snap.data();
   if (!x?.hostSlug || !(ADMINS.includes(email) || (await mySlugs(email)).includes(x.hostSlug))) return res.status(403).json({ error: 'Not your request' });
-  const entry = { by: email, action, message, when, at: Date.now() };
-  await ref.update({ status: ACTIONS[action], thread: FieldValue.arrayUnion(entry) });
+  const entry = { by: email, action, message, when, at: Date.now(),
+    ...(action === 'offer' && price > 0 && price < 10000 ? { price } : {}), ...(action === 'decline' && reason ? { reason } : {}) };
+  await ref.update({ ...(ACTIONS[action] ? { status: ACTIONS[action] } : {}), thread: FieldValue.arrayUnion(entry) });
   // Jirel sees every answer; the guest is NOT emailed automatically (she
   // decides about that), so she passes it on until then.
   try {
     const guest = x.fields?.Name || x.email || 'the guest';
     await mailJirel({
-      subject: `Host ${ACTIONS[action]}: ${x.subject}`,
+      subject: `Host ${ACTIONS[action] || 'wrote'}: ${x.subject}`,
       replyTo: isEmail(x.email) ? x.email : undefined,
-      text: `${email} ${ACTIONS[action]} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}`,
+      text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.price ? `\nOffered price: €${entry.price} per person` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}`,
     });
   } catch (err) { console.error('hostReply note failed', err?.message); }
   return res.status(200).json({ status: ACTIONS[action] });
