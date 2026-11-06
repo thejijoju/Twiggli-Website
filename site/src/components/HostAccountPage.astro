@@ -41,15 +41,15 @@ const hosts = Object.fromEntries(
     // Their workshops with a picture and price, for the offer's workshop picker.
     workshops: (() => {
       const seen = new Set<string>();
-      const out: { title: string; price: string; image: string; key: string; dates: number }[] = [];
-      const add = (title: string, key: string, price?: string, image?: string, dates = 0) => {
+      const out: { title: string; price: string; image: string; key: string; dates: number; url: string }[] = [];
+      const add = (title: string, key: string, price?: string, image?: string, dates = 0, url = '') => {
         const k = title.trim().toLowerCase();
         if (!title || seen.has(k)) return;
         seen.add(k);
-        out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates });
+        out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates, url });
       };
       try {
-        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length);
+        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`));
         for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.workshopKey, s.price, s.image);
         for (const o of onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price);
       } catch { /* a host without listings: own dates only */ }
@@ -549,21 +549,21 @@ const fields = [
         const list = $('[data-hl-list]');
         const note = $('[data-hl-note]');
         if (!slug) return;
-        type L = { title: string; key: string; price: string; image: string; dates: number; status: 'live' | 'paused' };
-        const built: L[] = (hosts[slug]?.workshops ?? []).filter((w) => w.key).map((w) => ({ ...w, status: 'live' }));
-        let state: { key: string; title: string; status: string; price: string; image: string }[] = [];
+        type Edit = { title?: string; price?: number | null; note?: string } | null;
+        type L = { title: string; key: string; price: string; image: string; dates: number; url: string; status: 'live' | 'paused'; edit: Edit };
+        const built = (hosts[slug]?.workshops ?? []).filter((w) => w.key);
+        let state: { key: string; title: string; status: string; price: string; image: string; edit: Edit }[] = [];
         try { state = (await api('hostListing', { slug, action: 'list' })).items ?? []; } catch { /* shown as online */ }
         const rows: L[] = [];
         for (const w of built) {
-          const st = state.find((x) => x.key === w.key)?.status;
-          if (st === 'deleted') continue;
-          rows.push({ ...w, status: st === 'paused' ? 'paused' : 'live' });
+          const st = state.find((x) => x.key === w.key);
+          if (st?.status === 'deleted') continue;
+          rows.push({ ...w, status: st?.status === 'paused' ? 'paused' : 'live', edit: st?.edit ?? null });
         }
         // Paused ones are already off the built site: they come from the saved state.
-        for (const x of state) if (x.status === 'paused' && !rows.some((r) => r.key === x.key)) rows.push({ title: x.title, key: x.key, price: x.price, image: x.image, dates: 0, status: 'paused' });
+        for (const x of state) if (x.status === 'paused' && !rows.some((r) => r.key === x.key)) rows.push({ title: x.title, key: x.key, price: x.price, image: x.image, dates: 0, url: '', status: 'paused', edit: x.edit });
         if (!rows.length) { list.replaceChildren(el('p', 'hl-empty', t.ib.lsEmpty)); return; }
-        const set = async (w: L, status: 'live' | 'paused' | 'deleted', btns: HTMLButtonElement[]) => {
-          btns.forEach((b) => { b.disabled = true; });
+        const set = async (w: L, status: 'live' | 'paused' | 'deleted') => {
           note.textContent = '';
           try {
             await api('hostListing', { slug, key: w.key, title: w.title, price: w.price, image: w.image, status });
@@ -571,29 +571,73 @@ const fields = [
           } catch { note.textContent = t.ib.lsFail; }
           await renderListings();
         };
+        const dlg = $<HTMLDialogElement>('[data-hl-confirm]');
+        const dbody = dlg.querySelector<HTMLElement>('[data-hl-confirm-body]')!;
+        const box = (label: string, input: HTMLElement) => { const l = el('label', 'ib-box'); l.append(el('small', '', label), input); return l; };
+        const openEdit = (w: L) => {
+          const ti = document.createElement('input'); ti.maxLength = 120; ti.value = w.edit?.title || w.title;
+          const pr = document.createElement('input'); pr.type = 'number'; pr.min = '0'; pr.step = '1'; pr.inputMode = 'numeric';
+          pr.value = String(w.edit?.price ?? (Number(String(w.price).replace(/[^\d]/g, '')) || ''));
+          const no = document.createElement('textarea'); no.rows = 2; no.maxLength = 220; no.placeholder = t.ib.lsNotePh; no.value = w.edit?.note ?? '';
+          const save = el('button', 'ib-act ib-act-main ib-offer-send', t.ib.lsSave) as HTMLButtonElement; save.type = 'button';
+          save.addEventListener('click', async () => {
+            save.disabled = true;
+            try {
+              await api('hostListing', { slug, action: 'edit', key: w.key, title: w.title, newTitle: ti.value.trim(), price: Number(pr.value) || null, note: no.value.trim() });
+              dlg.close(); note.textContent = t.ib.lsDoneEdit; await renderListings();
+            } catch { save.disabled = false; note.textContent = t.ib.lsFail; }
+          });
+          dbody.replaceChildren(el('h2', 'ib-offer-h', t.ib.lsEditTitle), el('p', 'ib-hint', t.ib.lsEditSub),
+            box(t.ib.lsFTitle, ti), box(t.ib.lsFPrice, pr), box(t.ib.lsFNote, no), save);
+          dlg.showModal(); ti.focus();
+        };
+        const askDelete = (w: L) => {
+          // Asked on top, in its own popup; pausing is offered as the gentler way.
+          const yes = el('button', 'ib-act ib-act-main hl-del-yes', t.ib.lsDeleteYes) as HTMLButtonElement; yes.type = 'button';
+          yes.addEventListener('click', () => { dlg.close(); void set(w, 'deleted'); });
+          const pause = el('button', 'ib-act', t.ib.lsPauseInstead) as HTMLButtonElement; pause.type = 'button';
+          pause.addEventListener('click', () => { dlg.close(); void set(w, 'paused'); });
+          const two = el('div', 'ib-confirm-acts'); two.append(yes, ...(w.status === 'live' ? [pause] : []));
+          dbody.classList.add('is-confirm');
+          dlg.addEventListener('close', () => dbody.classList.remove('is-confirm'), { once: true });
+          dbody.replaceChildren(el('h2', 'ib-offer-h', say(t.ib.lsDeleteQ, { title: w.title })), el('p', 'ib-hint', t.ib.lsDeleteNote), two);
+          dlg.showModal();
+        };
+        let openMenu: HTMLElement | null = null;
+        const closeMenu = () => { if (openMenu) { openMenu.hidden = true; openMenu.previousElementSibling?.setAttribute('aria-expanded', 'false'); openMenu = null; } };
+        document.addEventListener('click', closeMenu);
         list.replaceChildren(...rows.map((w) => {
           const row = el('article', `hl-row${w.status === 'paused' ? ' is-paused' : ''}`);
           const pic = w.image ? Object.assign(document.createElement('img'), { src: w.image, alt: '', loading: 'lazy', className: 'hl-img' }) : el('span', 'hl-img');
           const txt = el('div', 'hl-txt');
           const pill = el('span', `hl-pill ${w.status === 'paused' ? 'is-paused' : 'is-live'}`, w.status === 'paused' ? t.ib.lsPaused : t.ib.lsLive);
-          txt.append(pill, el('b', '', w.title), el('small', '', [w.price, w.dates ? say(w.dates === 1 ? t.ib.lsDate1 : t.ib.lsDates, { n: String(w.dates) }) : ''].filter(Boolean).join(' · ')));
-          const acts = el('div', 'hl-acts');
-          const toggle = el('button', 'hl-btn', w.status === 'paused' ? t.ib.lsResume : t.ib.lsPause) as HTMLButtonElement; toggle.type = 'button';
-          const del = el('button', 'hl-btn hl-del', t.ib.lsDelete) as HTMLButtonElement; del.type = 'button';
-          toggle.addEventListener('click', () => void set(w, w.status === 'paused' ? 'live' : 'paused', [toggle, del]));
-          del.addEventListener('click', () => {
-            // Asked on top, in its own popup; pausing is offered as the gentler way.
-            const dlg = $<HTMLDialogElement>('[data-hl-confirm]');
-            const body = dlg.querySelector<HTMLElement>('[data-hl-confirm-body]')!;
-            const yes = el('button', 'ib-act ib-act-main ib-offer-send hl-del-yes', t.ib.lsDeleteYes) as HTMLButtonElement; yes.type = 'button';
-            yes.addEventListener('click', () => { dlg.close(); void set(w, 'deleted', [toggle, del]); });
-            const pause = el('button', 'ib-act', t.ib.lsPauseInstead) as HTMLButtonElement; pause.type = 'button';
-            pause.addEventListener('click', () => { dlg.close(); void set(w, 'paused', [toggle, del]); });
-            body.replaceChildren(el('h2', 'ib-offer-h', say(t.ib.lsDeleteQ, { title: w.title })), el('p', 'ib-hint', t.ib.lsDeleteNote), yes, ...(w.status === 'live' ? [pause] : []));
-            dlg.showModal();
+          const price = w.edit?.price ? `€${w.edit.price}` : w.price;
+          txt.append(pill, el('b', '', w.edit?.title || w.title), el('small', '', [price, w.dates ? say(w.dates === 1 ? t.ib.lsDate1 : t.ib.lsDates, { n: String(w.dates) }) : ''].filter(Boolean).join(' · ')));
+          // The ⋯ menu: everything for this workshop in one place.
+          const wrap = el('div', 'hl-more');
+          const dots = el('button', 'hl-dots', '⋯') as HTMLButtonElement; dots.type = 'button';
+          dots.setAttribute('aria-label', t.ib.lsMore); dots.setAttribute('aria-haspopup', 'menu'); dots.setAttribute('aria-expanded', 'false');
+          const menu = el('div', 'hl-menu'); menu.setAttribute('role', 'menu'); menu.hidden = true;
+          const item = (label: string, fn: () => void, cls = '') => { const b = el('button', `hl-mi${cls}`, label) as HTMLButtonElement; b.type = 'button'; b.setAttribute('role', 'menuitem'); b.addEventListener('click', (e) => { e.stopPropagation(); closeMenu(); fn(); }); return b; };
+          menu.append(
+            item(t.ib.lsEdit, () => openEdit(w)),
+            item(t.ib.lsAddDate, () => openCreate({ slug, title: w.edit?.title || w.title, date: '', start: '', price: w.edit?.price ?? (Number(String(w.price).replace(/[^\d]/g, '')) || null) } as unknown as Ev)),
+            ...(w.url && w.status === 'live' ? [
+              item(t.ib.lsView, () => window.open(w.url, '_blank', 'noopener')),
+              item(t.ib.lsCopy, () => { void navigator.clipboard?.writeText(new URL(w.url, location.origin).href).then(() => { note.textContent = t.ib.lsCopied; }); }),
+            ] : []),
+            item(w.status === 'paused' ? t.ib.lsResume : t.ib.lsPause, () => void set(w, w.status === 'paused' ? 'live' : 'paused')),
+            el('hr', 'hl-sep'),
+            item(t.ib.lsDelete, () => askDelete(w), ' hl-mi-del'),
+          );
+          dots.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const was = openMenu === menu;
+            closeMenu();
+            if (!was) { menu.hidden = false; dots.setAttribute('aria-expanded', 'true'); openMenu = menu; }
           });
-          acts.append(toggle, del);
-          row.append(pic, txt, acts);
+          wrap.append(dots, menu);
+          row.append(pic, txt, wrap);
           return row;
         }));
       };
@@ -1125,7 +1169,23 @@ const fields = [
           const mk = (label: string) => { const b = el('button', 'ib-act', label) as HTMLButtonElement; b.type = 'button'; return b; };
           const bAccept = mk(t.ib.accept); const bOffer = mk(t.ib.offer); const bDecline = mk(t.ib.decline);
           const all = [bAccept, bOffer, bDecline];
-          bAccept.addEventListener('click', () => void send(r, 'accept', {}, rnote, all));
+          // Accepting asks once more, in its own popup on top, with what it means.
+          bAccept.addEventListener('click', () => {
+            const dlg = $<HTMLDialogElement>('[data-ib-decline]');
+            const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
+            const sumUp = el('div', 'ib-confirm-sum');
+            sumUp.append(el('span', '', [fmtDay(dateOf(r)), r.fields.Time].filter(Boolean).join(', ')),
+              el('span', '', ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) })),
+              ...(each ? [el('b', '', say(t.ib.acEarn, { amt: `€ ${keep(each * ppl).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` }))] : []));
+            const yes = mk(t.ib.acYes); yes.classList.add('ib-act-main', 'ib-act-grad');
+            yes.addEventListener('click', () => { dlg.close(); void send(r, 'accept', {}, rnote, all); });
+            const no = mk(t.ib.acNo); no.addEventListener('click', () => dlg.close());
+            const btns = el('div', 'ib-confirm-acts'); btns.append(yes, no);
+            body.classList.add('is-confirm');
+            dlg.addEventListener('close', () => body.classList.remove('is-confirm'), { once: true });
+            body.replaceChildren(el('h2', 'ib-offer-h', say(t.ib.acTitle, { name })), el('p', 'ib-hint', say(t.ib.acNote, { name })), sumUp, btns);
+            dlg.showModal();
+          });
           bOffer.addEventListener('click', () => openOffer(r, rnote, all));
           // Declining opens its own popup on top (as the offer does), never a form below.
           bDecline.addEventListener('click', () => {
@@ -1665,8 +1725,8 @@ const fields = [
         // late), two hours long, so no field ever shows --:--.
         const now = new Date();
         const nextHour = now.getHours() + 1;
-        fld('date').value = ev?.date ?? (nextHour <= 21 ? iso(now) : iso(tomorrow));
-        fld('start').value = ev?.start ?? (nextHour <= 21 ? hm(nextHour * 60) : '18:00');
+        fld('date').value = ev?.date || (nextHour <= 21 ? iso(now) : iso(tomorrow));
+        fld('start').value = ev?.start || (nextHour <= 21 ? hm(nextHour * 60) : '18:00');
         fld('end').value = ev?.end || hm(mins(fld('start').value) + 120);
         fld('until').value = ev?.until ?? '';
         (createForm.querySelector<HTMLInputElement>(`[name="repeat"][value="${ev?.repeat ?? 'once'}"]`) ?? createForm.querySelector<HTMLInputElement>('[name="repeat"]'))!.checked = true;
@@ -2180,18 +2240,28 @@ const fields = [
   .hl-pill { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
   .hl-pill.is-live { background: #e6f6ec; color: #1f7a45; }
   .hl-pill.is-paused { background: rgba(36, 39, 46, 0.07); color: var(--color-text-muted); }
-  .hl-acts { flex: none; display: flex; gap: 8px; }
-  .hl-btn { border: 0; border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 0.86rem; font-weight: 600; background: rgba(36, 39, 46, 0.06); color: var(--color-text); cursor: pointer; }
-  .hl-btn:hover { background: rgba(36, 39, 46, 0.1); }
-  .hl-del { color: #c4314b; background: rgba(212, 56, 74, 0.08); }
-  .hl-del:hover { background: rgba(212, 56, 74, 0.14); }
-  .hl-del-yes { background: #c4314b !important; }
-  .hl-empty { color: var(--color-text-muted); }
+  .hl-more { position: relative; flex: none; }
+  .hl-dots { width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(36, 39, 46, 0.05); font-size: 1.3rem; line-height: 1; color: var(--color-text); cursor: pointer; }
+  .hl-dots:hover, .hl-dots[aria-expanded='true'] { background: rgba(36, 39, 46, 0.1); }
+  .hl-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; min-width: 220px; padding: 6px; border-radius: 16px; background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(18px) saturate(1.2); -webkit-backdrop-filter: blur(18px) saturate(1.2); box-shadow: 0 18px 44px -12px rgba(60, 30, 120, 0.3), 0 0 0 1px rgba(36, 39, 46, 0.06); display: grid; }
+  .hl-mi { border: 0; background: none; text-align: left; font: inherit; font-size: 0.94rem; padding: 10px 12px; border-radius: 10px; color: var(--color-text); cursor: pointer; }
+  .hl-mi:hover { background: rgba(106, 62, 236, 0.07); }
+  .hl-mi-del { color: #c4314b; }
+  .hl-mi-del:hover { background: rgba(212, 56, 74, 0.08); }
+  .hl-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.08); margin: 4px 6px; }
+  /* Yes/no questions on top (accept a request, delete a workshop). */
+  .ib-confirm-sum { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 6px; padding: 14px 16px; border-radius: 16px; background: linear-gradient(135deg, rgba(106, 62, 236, 0.08), rgba(230, 74, 180, 0.07)); font-size: 0.95rem; }
+  .ib-confirm-sum b { color: #1f7a45; margin-left: auto; }
+  .ib-confirm-acts { display: flex; gap: 10px; margin-top: 10px; }
+  .ib-confirm-acts .ib-act { flex: 1; padding: 15px; font-size: 1.02rem; }
+  .ib-act-grad { background: linear-gradient(135deg, #6a3eec, #e64ab4) !important; color: #fff; }
   @media (max-width: 640px) {
-    .hl-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); grid-template-areas: 'img txt' 'acts acts'; row-gap: 12px; }
-    .hl-img { grid-area: img; } .hl-txt { grid-area: txt; }
-    .hl-acts { grid-area: acts; } .hl-acts .hl-btn { flex: 1; }
+    .ib-modal-body.is-confirm { min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+    .ib-modal-body.is-confirm .ib-confirm-acts { margin-top: auto; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); }
   }
+  .hl-del-yes { background: #c4314b !important; color: #fff; }
+  .hl-empty { color: var(--color-text-muted); }
+  @media (max-width: 640px) { .hl-img { width: 56px; height: 56px; } .hl-menu { min-width: 200px; } }
   .hd-reqs { margin: 4px 0 26px; min-width: 0; max-width: 100%; }
   /* Requests tab: only the requests. */
   .hd-overview.is-requests :is(.hd-add-phone, .hd-alert, .hd-stats, [data-ha-list-title], [data-ha-days], [data-ha-today-empty]) { display: none !important; }

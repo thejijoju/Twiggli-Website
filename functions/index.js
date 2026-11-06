@@ -956,16 +956,28 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
   const col = getFirestore().collection('hostListings');
   if (b.action === 'list') {
     const snap = await col.where('slug', '==', slug).get();
-    return res.status(200).json({ items: snap.docs.map((d) => { const x = d.data(); return { key: x.key, title: x.title, status: x.status, price: x.price ?? '', image: x.image ?? '' }; }) });
+    return res.status(200).json({ items: snap.docs.map((d) => { const x = d.data(); return { key: x.key, title: x.title, status: x.status, price: x.price ?? '', image: x.image ?? '', edit: x.edit ?? null }; }) });
   }
   const key = String(b.key ?? '');
   if (!LISTING_KEY.test(key)) return res.status(400).json({ error: 'Bad workshop' });
   const ref = col.doc(`${slug}__${key}`);
   const title = text(b.title, 160);
+  // Edit: the host's own title, price per person and a short line for the
+  // workshop, laid over what the site shows (the page address stays).
+  if (b.action === 'edit') {
+    const n = Math.round(Number(b.price));
+    const edit = { title: text(b.newTitle, 120), price: Number.isFinite(n) && n > 0 && n <= 5000 ? n : null, note: text(b.note, 220) };
+    const prev = (await ref.get()).data();
+    await ref.set({ slug, key, title, status: prev?.status ?? 'live', edit, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    try {
+      await mailJirel({ subject: `${slug}: "${title || key}" edited`, text: `${email} edited "${title || key}" (${slug}): title "${edit.title}", price ${edit.price ?? '-'}, note "${edit.note}". The site follows within the hour.` });
+    } catch (err) { console.error('listing note failed', err?.message); }
+    return res.status(200).json({ ok: true });
+  }
   // Back online is saved too (not deleted), so its time reaches publicEvents
   // "updated" and the hourly check republishes the site (host-dates.yml).
   if (b.status === 'live' || LISTING_STATES.includes(b.status)) {
-    await ref.set({ slug, key, title, status: b.status, price: text(b.price, 40), image: String(b.image ?? '').slice(0, 400), by: email, updatedAt: FieldValue.serverTimestamp() });
+    await ref.set({ slug, key, title, status: b.status, price: text(b.price, 40), image: String(b.image ?? '').slice(0, 400), by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
   } else {
     return res.status(400).json({ error: 'Bad status' });
   }
@@ -987,10 +999,12 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
     return { id: d.id, ...pub };
   });
   // Workshops hosts paused or deleted (hostListing), left out of the site.
-  const hidden = (await getFirestore().collection('hostListings').get()).docs
-    .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, key: x.key, status: x.status }; })
-    .filter((x) => LISTING_STATES.includes(x.status));
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden });
+  const listings = (await getFirestore().collection('hostListings').get()).docs
+    .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, key: x.key, status: x.status, edit: x.edit ?? null }; });
+  const hidden = listings.filter((x) => LISTING_STATES.includes(x.status)).map(({ slug, key, status }) => ({ slug, key, status }));
+  // And the hosts' own title, price and line for a workshop (hostListing edit).
+  const edits = listings.filter((x) => x.edit && !LISTING_STATES.includes(x.status)).map(({ slug, key, edit }) => ({ slug, key, ...edit }));
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
