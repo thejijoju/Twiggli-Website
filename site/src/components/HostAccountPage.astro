@@ -199,6 +199,10 @@ const fields = [
             </div>
             <div class="ib-modal-body" data-ib-modal-body></div>
           </dialog>
+          <dialog class="ib-modal ib-offer" data-ib-offer aria-label={t.ib.offer}>
+            <button type="button" class="ib-modal-x ib-offer-x" aria-label={t.back} onclick="this.closest('dialog').close()">×</button>
+            <div class="ib-modal-body" data-ib-offer-body></div>
+          </dialog>
         </section>
 
         <!-- Overview: the host's week at a glance (the first thing they see). -->
@@ -885,7 +889,11 @@ const fields = [
         thread.append(card);
         for (const h of r.thread) {
           const line = h.action === 'accept' ? t.ib.accepted : h.action === 'decline' ? t.ib.declined : h.action === 'suggest' ? say(t.ib.suggested, { when: h.when ?? '' })
-            : h.action === 'offer' ? say(t.ib.offered, { what: [h.when, (h as { price?: number }).price ? `€ ${(h as { price?: number }).price} ${t.ib.perPerson}` : ''].filter(Boolean).join(', ') }) : '';
+            : h.action === 'offer' ? (() => {
+              const o = h as { price?: number; total?: number; people?: number; workshop?: string };
+              return say(t.ib.offered, { what: [o.workshop, h.when, o.people ? (o.people === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(o.people) })) : '',
+                o.total ? `€ ${o.total.toLocaleString(loc)} ${t.ib.total}` : o.price ? `€ ${o.price} ${t.ib.perPerson}` : ''].filter(Boolean).join(', ') });
+            })() : '';
           const b = el('div', 'ib-bubble ib-mine');
           b.append(el('span', 'ib-who', `${t.ib.you} · ${new Date(h.at).toLocaleString(loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`));
           if (line) b.append(el('p', 'ib-sys', line));
@@ -942,6 +950,11 @@ const fields = [
         what.append(el('small', '', statusText[r.status] ?? t.ib.inquiry), el('h3', '', say(t.ib.asked, { name, what: r.fields.Workshop || t.ib.inquiry })),
           el('p', '', [fmtDay(dateOf(r)), r.fields.Time].filter(Boolean).join(', ')),
           el('p', '', [ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) }), each ? `€ ${(each * ppl).toLocaleString(loc)} ${t.ib.total}` : ''].filter(Boolean).join(' · ')));
+        if (each) {
+          const earn = el('div', 'ib-earn');
+          earn.append(el('span', '', t.ib.oYou), el('b', '', `€ ${(each * ppl * 0.85).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`));
+          what.append(earn);
+        }
         res.replaceChildren(...(inModal ? [] : [closeRes]), what);
         if (waiting(r) || r.status === 'suggested' || r.status === 'offered') {
           const acts = el('div', 'ib-acts');
@@ -951,19 +964,7 @@ const fields = [
           const form = el('div', 'ib-form'); form.hidden = true;
           const all = [bAccept, bOffer, bDecline];
           bAccept.addEventListener('click', () => void send(r, 'accept', {}, rnote, all));
-          bOffer.addEventListener('click', () => {
-            form.hidden = false;
-            form.innerHTML = '';
-            const w = document.createElement('input'); w.type = 'text'; w.placeholder = t.ib.offerWhen;
-            const pr = document.createElement('input'); pr.type = 'number'; pr.min = '0'; pr.step = '1'; pr.placeholder = t.ib.offerPrice; if (each) pr.value = String(each);
-            const m = document.createElement('textarea'); m.rows = 2; m.placeholder = t.replyMsgPh;
-            const go = mk(t.ib.offerSend); go.classList.add('ib-act-main');
-            go.addEventListener('click', () => {
-              if (!w.value.trim() && !(Number(pr.value) > 0)) { rnote.textContent = t.ib.offerNeed; return; }
-              void send(r, 'offer', { when: w.value.trim(), price: Number(pr.value) || 0, message: m.value.trim() }, rnote, [...all, go]);
-            });
-            form.append(el('b', '', t.ib.offerTitle), labelled(t.ib.offerWhen, w), labelled(t.ib.offerPrice, pr), labelled(t.replyMsg, m), go);
-          });
+          bOffer.addEventListener('click', () => openOffer(r, rnote, all));
           bDecline.addEventListener('click', () => {
             form.hidden = false;
             form.innerHTML = '';
@@ -994,6 +995,94 @@ const fields = [
         res.hidden = false;
         buildRes(res, false);
         $('[data-ib-grid]').classList.add('is-open');
+      };
+      /** "Angebot machen", as Airbnb's special offer: workshop, date and time,
+       *  people, a price for the whole group, what the guest pays and what the
+       *  host gets, and a note. Opens over the request details. */
+      const openOffer = (r: Req, rnote: HTMLElement, lock: HTMLButtonElement[]) => {
+        const de = document.documentElement.lang === 'de';
+        const loc = de ? 'de-DE' : 'en-GB';
+        const dlg = $<HTMLDialogElement>('[data-ib-offer]');
+        const body = dlg.querySelector<HTMLElement>('[data-ib-offer-body]')!;
+        const name = firstName(r);
+        const each = priceOf(r);
+        const box = (label: string, input: HTMLElement) => { const l = el('label', 'ib-box'); l.append(el('small', '', label), input); return l; };
+        // The host's workshops: their own dates, their weekly classes and the one asked for.
+        const titles = [...new Set([r.fields.Workshop, ...ownEvents.map((e) => e.title),
+          ...Array.from(slotsBox.querySelectorAll<HTMLInputElement>('.ha-slot [name="title"]')).map((x) => x.value)].map((x) => (x || '').trim()).filter(Boolean))];
+        const ws = document.createElement('select');
+        for (const ti of titles) { const o = document.createElement('option'); o.textContent = ti; ws.append(o); }
+        const dt = document.createElement('input'); dt.type = 'date'; dt.value = dateOf(r); dt.min = iso(new Date());
+        const tm = document.createElement('input'); tm.type = 'time'; tm.value = (r.fields.Time || '').slice(0, 5);
+        const when = el('div', 'ib-two'); when.append(box(t.ib.oDate, dt), box(t.ib.oTime, tm));
+        const gs = document.createElement('select');
+        const want = peopleOf(r);
+        for (let n = 1; n <= Math.max(40, want); n++) { const o = document.createElement('option'); o.value = String(n); o.textContent = String(n); if (n === want) o.selected = true; gs.append(o); }
+        const sub = document.createElement('input'); sub.type = 'number'; sub.min = '0'; sub.step = '1'; sub.inputMode = 'decimal';
+        if (each) sub.value = String(Math.round(each * want));
+        const sum = el('div', 'ib-sum');
+        // Extras for groups, each its own line: snacks, an extra hour, travel …
+        const extrasBox = el('div', 'ib-extras');
+        const extras: { name: HTMLInputElement; amt: HTMLInputElement }[] = [];
+        const addExtra = () => {
+          const rowEl = el('div', 'ib-extra');
+          const nm = document.createElement('input'); nm.type = 'text'; nm.placeholder = t.ib.oExtraPh; nm.setAttribute('aria-label', t.ib.oExtraName);
+          const am = document.createElement('input'); am.type = 'number'; am.min = '0'; am.step = '1'; am.placeholder = '€'; am.setAttribute('aria-label', t.ib.oExtraAmt);
+          const rm = el('button', 'ib-saved-del', '×') as HTMLButtonElement; rm.type = 'button'; rm.setAttribute('aria-label', 'remove');
+          const item = { name: nm, amt: am };
+          rm.addEventListener('click', () => { extras.splice(extras.indexOf(item), 1); rowEl.remove(); paint(); });
+          nm.addEventListener('input', paint); am.addEventListener('input', paint);
+          rowEl.append(nm, am, rm);
+          extrasBox.append(rowEl);
+          extras.push(item);
+          nm.focus();
+        };
+        const addBtn = el('button', 'ib-saved-add', t.ib.oExtraAdd) as HTMLButtonElement; addBtn.type = 'button';
+        addBtn.addEventListener('click', addExtra);
+        const msg = document.createElement('textarea'); msg.rows = 3; msg.placeholder = t.replyMsgPh;
+        const note = el('p', 'ha-note'); note.setAttribute('role', 'status');
+        const eur = (n: number) => `€${n.toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const paint = () => {
+          const base = Number(sub.value) || 0;
+          const n = Number(gs.value) || 1;
+          const extraLines = extras.map((x) => ({ name: x.name.value.trim(), amt: Number(x.amt.value) || 0 })).filter((x) => x.amt > 0);
+          const total = base + extraLines.reduce((a, x) => a + x.amt, 0);
+          sum.replaceChildren();
+          if (!total) return;
+          // As Airbnb: the calculation and the guest's price in one box, and
+          // what the host earns in its own box below (Jirel 06.11: hosts must
+          // always see their earning potential).
+          const calc = el('div', 'ib-sum-box');
+          if (base) { const l1 = el('div', 'ib-sum-row'); l1.append(el('span', '', say(t.ib.oLine, { n: String(n), each: eur(base / n) })), el('span', '', eur(base))); calc.append(l1); }
+          for (const x of extraLines) { const lx = el('div', 'ib-sum-row'); lx.append(el('span', '', x.name || t.ib.oExtraName), el('span', '', eur(x.amt))); calc.append(lx); }
+          const l2 = el('div', 'ib-sum-row ib-sum-strong'); l2.append(el('span', '', t.ib.oGuestPays), el('span', '', eur(total)));
+          calc.append(l2);
+          const you = el('div', 'ib-sum-box ib-sum-you');
+          const l3 = el('div', 'ib-sum-row ib-sum-strong'); l3.append(el('span', '', t.ib.oYou), el('span', '', eur(total * 0.85)));
+          you.append(l3);
+          sum.append(calc, you);
+        };
+        sub.addEventListener('input', paint); gs.addEventListener('change', paint);
+        const go = el('button', 'ib-act ib-act-main ib-offer-send', t.ib.offerSend) as HTMLButtonElement; go.type = 'button';
+        go.addEventListener('click', () => {
+          const n = Number(gs.value) || 1;
+          const extraLines = extras.map((x) => ({ name: x.name.value.trim(), amt: Number(x.amt.value) || 0 })).filter((x) => x.amt > 0);
+          const total = (Number(sub.value) || 0) + extraLines.reduce((a, x) => a + x.amt, 0);
+          if (!dt.value && !total) { note.textContent = t.ib.offerNeed; return; }
+          const whenTxt = [dt.value ? new Date(`${dt.value}T12:00:00`).toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }) : '', tm.value].filter(Boolean).join(', ');
+          dlg.close();
+          void send(r, 'offer', { when: whenTxt, date: dt.value, time: tm.value, workshop: ws.value, people: n, total, extras: extraLines, price: total ? Math.round((total / n) * 100) / 100 : 0, message: msg.value.trim() }, rnote, lock);
+        });
+        body.replaceChildren(
+          el('h2', 'ib-offer-h', say(t.ib.oTitle, { name })),
+          el('p', 'ib-hint', say(t.ib.oSub, { name })),
+          el('h3', 'ib-offer-sec', t.ib.oTrip), box(t.ib.oWorkshop, ws), when, box(t.ib.oGuests, gs),
+          el('h3', 'ib-offer-sec', t.ib.oPricing), el('p', 'ib-hint', each ? say(t.ib.oUsual, { each: eur(each) }) : t.ib.oUsualNone),
+          box(t.ib.oSubtotal, sub), el('p', 'ib-hint ib-small', t.ib.oSubNote), extrasBox, addBtn, sum,
+          box(t.replyMsg, msg), note, go,
+        );
+        paint();
+        dlg.showModal();
       };
       const labelled = (label: string, input: HTMLElement) => { const l = el('label', 'ha-field'); l.append(el('span', '', label), input); return l; };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-filter] button').forEach((b) => b.addEventListener('click', () => {
@@ -1513,6 +1602,32 @@ const fields = [
   .ib-modal-body { padding: 22px 32px 30px; }
   .ib-modal-body .ib-what h3 { font-size: 1.6rem; }
   @media (max-width: 560px) { .ib-modal-head { padding: 20px; } .ib-modal-head h2 { font-size: 1.4rem; } .ib-modal-body { padding: 16px 20px 24px; } }
+
+  .ib-offer { width: min(600px, calc(100vw - 32px)); }
+  .ib-offer-x { position: absolute; top: 20px; right: 20px; }
+  .ib-offer .ib-modal-body { padding: 40px 32px 30px; display: grid; gap: 12px; }
+  .ib-offer-h { margin: 0; font-size: 1.7rem; padding-right: 40px; }
+  .ib-offer-sec { margin: 14px 0 0; font-size: 1.1rem; }
+  .ib-box { display: grid; gap: 2px; border: 1.5px solid rgba(36, 39, 46, 0.25); border-radius: 12px; padding: 10px 14px; }
+  .ib-box small { color: var(--color-text-muted); font-size: 0.8rem; }
+  .ib-box input, .ib-box select, .ib-box textarea { border: 0; padding: 2px 0; font: inherit; font-size: 1.05rem; background: transparent; outline: none; width: 100%; color: inherit; }
+  .ib-box:focus-within { border-color: var(--color-text); }
+  .ib-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ib-small { font-size: 0.8rem; }
+  .ib-sum { display: grid; gap: 12px; margin-top: 6px; }
+  .ib-sum:empty { display: none; }
+  .ib-sum-box { border: 2px solid var(--color-text); border-radius: 14px; padding: 4px 18px; }
+  .ib-sum-row { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; }
+  .ib-sum-row + .ib-sum-row { border-top: 1px solid rgba(36, 39, 46, 0.15); }
+  .ib-sum-strong { font-weight: 700; }
+  .ib-sum-you { border: 1.5px solid rgba(36, 39, 46, 0.2); background: rgba(31, 157, 85, 0.07); }
+  .ib-sum-you .ib-sum-row span:last-child { color: #1a7f45; font-size: 1.15rem; }
+  .ib-earn { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(31, 157, 85, 0.08); }
+  .ib-earn b { color: #1a7f45; font-size: 1.1rem; }
+  .ib-extras { display: grid; gap: 8px; }
+  .ib-extra { display: grid; grid-template-columns: minmax(0, 1fr) 110px auto; gap: 8px; align-items: center; }
+  .ib-extra input { font: inherit; padding: 10px 12px; border: 1.5px solid rgba(36, 39, 46, 0.25); border-radius: 10px; min-width: 0; }
+  .ib-offer-send { margin-top: 6px; padding: 15px; font-size: 1.05rem; }
   .ib-what small { color: var(--color-text-muted); }
   .ib-what h3 { margin: 4px 0 10px; font-size: 1.45rem; line-height: 1.2; }
   .ib-what p { margin: 2px 0; }
