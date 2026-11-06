@@ -800,7 +800,17 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   const x = snap.data();
   if (!x?.hostSlug || !(ADMINS.includes(email) || (await mySlugs(email)).includes(x.hostSlug))) return res.status(403).json({ error: 'Not your request' });
   const entry = { by: email, action, message, when, at: Date.now(),
-    ...(action === 'offer' && price > 0 && price < 10000 ? { price } : {}), ...(action === 'decline' && reason ? { reason } : {}) };
+    ...(action === 'offer' && price > 0 && price < 10000 ? { price } : {}), ...(action === 'decline' && reason ? { reason } : {}),
+    // The offer in full: which workshop, when, for how many, at what total.
+    ...(action === 'offer' ? {
+      workshop: text(req.body?.workshop, 160),
+      date: /^\d{4}-\d\d-\d\d$/.test(String(req.body?.date ?? '')) ? String(req.body.date) : '',
+      time: /^\d\d:\d\d$/.test(String(req.body?.time ?? '')) ? String(req.body.time) : '',
+      people: Math.max(1, Math.min(500, Math.round(Number(req.body?.people) || 0))) || undefined,
+      total: Number(req.body?.total) > 0 && Number(req.body?.total) < 100000 ? Math.round(Number(req.body.total) * 100) / 100 : undefined,
+      extras: Array.isArray(req.body?.extras) ? req.body.extras.slice(0, 10).map((x) => ({ name: text(x?.name, 80), amt: Math.round(Number(x?.amt) * 100) / 100 })).filter((x) => x.amt > 0 && x.amt < 100000) : undefined,
+    } : {}) };
+  for (const k of Object.keys(entry)) if (entry[k] === undefined || entry[k] === '') delete entry[k];
   await ref.update({ ...(ACTIONS[action] ? { status: ACTIONS[action] } : {}), thread: FieldValue.arrayUnion(entry) });
   // Jirel sees every answer; the guest is NOT emailed automatically (she
   // decides about that), so she passes it on until then.
@@ -809,7 +819,7 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
     await mailJirel({
       subject: `Host ${ACTIONS[action] || 'wrote'}: ${x.subject}`,
       replyTo: isEmail(x.email) ? x.email : undefined,
-      text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.price ? `\nOffered price: €${entry.price} per person` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}`,
+      text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.workshop ? `\nWorkshop: ${entry.workshop}` : ''}${entry.people ? `\nPeople: ${entry.people}` : ''}${entry.extras?.length ? `\nExtras: ${entry.extras.map((x) => `${x.name || 'extra'} €${x.amt}`).join(', ')}` : ''}${entry.total ? `\nOffered total: €${entry.total}` : ''}${entry.price ? ` (€${entry.price} per person)` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}`,
     });
   } catch (err) { console.error('hostReply note failed', err?.message); }
   return res.status(200).json({ status: ACTIONS[action] });
