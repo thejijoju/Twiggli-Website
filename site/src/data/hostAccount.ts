@@ -140,6 +140,8 @@ export interface HostAccountCopy {
   people: string;
   phone: string;
   back: string;
+  /** The messages view, Airbnb-style (three columns): list, conversation, request. */
+  ib: Record<string, string>;
   welcomeTitle: string;
   welcomeLede: string;
   claimLede: string;
@@ -238,6 +240,19 @@ const en: HostAccountCopy = {
   people: 'People',
   phone: 'Phone',
   back: '← All messages',
+  ib: {
+    unread: 'Unread', priority: 'Needs your answer', recent: 'Recent', pick: 'Pick a conversation on the left.',
+    inquiry: 'Booking request', asked: '{name} asked about {what}', until: 'You have until {when} to respond', late: 'The 48 hours are over: answer as soon as you can, the guest is still waiting.',
+    respond: 'Respond', total: 'total', perPerson: 'per person', guests: '{n} guests', guest1: '1 guest',
+    accept: 'Accept', offer: 'Make an offer', decline: 'Decline', offerTitle: 'Your offer', offerWhen: 'Date and time (optional)', offerPrice: 'Price per person in € (optional)', offerSend: 'Send offer', offerNeed: 'Add a date or a price.',
+    declineTitle: 'Why are you declining?', declineNote: 'The guest never sees your reason. We suggest other hosts to them.', declineSend: 'Decline request',
+    rBooked: 'Already booked that day', rSize: 'Group too big or too small', rAway: 'I\'m away', rFit: 'Not the right fit', rOther: 'Other',
+    about: 'About {name}', reqN: '{n} requests on Twiggli', req1: 'First request on Twiggli', came: 'Found Twiggli via {src}', speaks: 'Writes in {lang}',
+    write: 'Write a message…', send: 'Send', saved: 'Saved replies', saveThis: '+ Save this text as a reply', noSaved: 'No saved replies yet.',
+    you: 'You', accepted: 'You accepted.', declined: 'You declined.', suggested: 'You suggested {when}.', offered: 'You made an offer: {what}.', sent: 'Sent. We pass it on to the guest.',
+    todoStripe: 'Connect Stripe to receive payments', todoStripeSub: 'Guests can then book and pay your dates straight away.', todoGo: 'Connect',
+    msg1: 'Looking forward to it! Please bring clothes that can get a little dirty.', msg2: 'The studio is on the ground floor; ring the bell marked with my name.', msg3: 'All materials are included, you don\'t need to bring anything.',
+  },
   welcomeTitle: 'Welcome to Twiggli',
   welcomeLede: 'Sign in or create your host account.',
   tabOverview: 'Overview',
@@ -424,6 +439,19 @@ const de: HostAccountCopy = {
   people: 'Personen',
   phone: 'Telefon',
   back: '← Alle Nachrichten',
+  ib: {
+    unread: 'Ungelesen', priority: 'Warten auf deine Antwort', recent: 'Zuletzt', pick: 'Wähle links eine Unterhaltung aus.',
+    inquiry: 'Buchungsanfrage', asked: '{name} fragt nach {what}', until: 'Du hast bis {when} Zeit zu antworten', late: 'Die 48 Stunden sind um: Antworte bitte so bald wie möglich, der Gast wartet noch.',
+    respond: 'Antworten', total: 'gesamt', perPerson: 'pro Person', guests: '{n} Gäste', guest1: '1 Gast',
+    accept: 'Annehmen', offer: 'Angebot machen', decline: 'Ablehnen', offerTitle: 'Dein Angebot', offerWhen: 'Datum und Uhrzeit (optional)', offerPrice: 'Preis pro Person in € (optional)', offerSend: 'Angebot senden', offerNeed: 'Gib ein Datum oder einen Preis an.',
+    declineTitle: 'Warum lehnst du ab?', declineNote: 'Der Gast sieht deinen Grund nie. Wir schlagen ihm andere Gastgeber vor.', declineSend: 'Anfrage ablehnen',
+    rBooked: 'An dem Tag schon ausgebucht', rSize: 'Gruppe zu groß oder zu klein', rAway: 'Ich bin nicht da', rFit: 'Passt nicht zu mir', rOther: 'Anderes',
+    about: 'Über {name}', reqN: '{n} Anfragen auf Twiggli', req1: 'Erste Anfrage auf Twiggli', came: 'Kam über {src} zu Twiggli', speaks: 'Schreibt auf {lang}',
+    write: 'Nachricht schreiben…', send: 'Senden', saved: 'Gespeicherte Antworten', saveThis: '+ Diesen Text als Antwort speichern', noSaved: 'Noch keine gespeicherten Antworten.',
+    you: 'Du', accepted: 'Du hast angenommen.', declined: 'Du hast abgelehnt.', suggested: 'Du hast {when} vorgeschlagen.', offered: 'Dein Angebot: {what}.', sent: 'Gesendet. Wir geben es an den Gast weiter.',
+    todoStripe: 'Verbinde Stripe, um Zahlungen zu erhalten', todoStripeSub: 'Dann können Gäste deine Termine direkt buchen und bezahlen.', todoGo: 'Verbinden',
+    msg1: 'Ich freu mich auf euch! Bitte zieht Kleidung an, die etwas abbekommen darf.', msg2: 'Das Studio ist im Erdgeschoss, klingelt bitte bei meinem Namen.', msg3: 'Alles Material ist inklusive, ihr müsst nichts mitbringen.',
+  },
   welcomeTitle: 'Willkommen bei Twiggli',
   welcomeLede: 'Melde dich an oder leg dein Gastgeber-Konto an.',
   tabOverview: 'Übersicht',
