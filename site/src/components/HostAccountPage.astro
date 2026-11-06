@@ -238,6 +238,11 @@ const fields = [
             </div>
           </div>
           <button type="button" class="hd-add-big hd-add-phone" data-ha-new>+ {t.newDate}</button>
+          <!-- Open requests as cards with the time left (as the Airbnb app's Today). -->
+          <div class="hd-reqs" data-ha-reqs hidden>
+            <h2 class="hd-reqs-h" data-ha-reqs-h></h2>
+            <div class="hd-reqs-row" data-ha-reqs-row></div>
+          </div>
           <button type="button" class="hd-alert" data-ha-alert data-ha-go="messages" hidden>
             <span class="hd-alert-ic" aria-hidden="true">✉️</span>
             <span class="hd-alert-t"><b data-ha-alert-title></b><span data-ha-alert-sub></span></span>
@@ -764,13 +769,55 @@ const fields = [
       const priceOf = (r: Req) => Number(String(r.fields.Price ?? '').replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
       const peopleOf = (r: Req) => Number(r.fields.People) || 1;
       const WD = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+      // Today: one card per open request with the hours left to answer; a tap
+      // opens the request details (as the Airbnb app).
+      let reqTick = 0;
+      const renderReqCards = (pending: Req[]) => {
+        const wrap = $('[data-ha-reqs]');
+        const row = $('[data-ha-reqs-row]');
+        window.clearInterval(reqTick);
+        wrap.hidden = !pending.length;
+        if (!pending.length) { row.replaceChildren(); return; }
+        $('[data-ha-reqs-h]').textContent = pending.length === 1 ? t.ib.reqTitle1 : t.ib.reqTitleN;
+        const sorted = [...pending].sort((a, b) => a.createdAt - b.createdAt);
+        const lefts: [HTMLElement, number][] = [];
+        row.replaceChildren(...sorted.map((r) => {
+          const card = el('button', 'hd-req') as HTMLButtonElement; card.type = 'button';
+          const left = el('span', 'hd-req-left');
+          lefts.push([left, r.createdAt + 48 * 3600 * 1000]);
+          const d = dateOf(r);
+          const when = d ? new Date(`${d}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+          const n = peopleOf(r);
+          card.append(left, el('span', 'hd-req-av', firstName(r).charAt(0).toUpperCase()),
+            el('b', 'hd-req-what', when ? say(t.ib.reqFor, { date: when }) : t.ib.inquiry),
+            el('span', 'hd-req-n', n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) })));
+          if (r.fields.Workshop) card.append(el('small', 'hd-req-ws', r.fields.Workshop));
+          card.addEventListener('click', () => {
+            showTab('messages');
+            openDetail(r);
+            root.querySelector<HTMLButtonElement>('[data-ib-conv] .ib-respond')?.click();
+          });
+          return card;
+        }));
+        const paintLeft = () => {
+          for (const [node, deadline] of lefts) {
+            const ms = deadline - Date.now();
+            const h = Math.floor(ms / 3600000);
+            node.textContent = ms <= 0 ? t.ib.timeUp : h >= 1 ? say(h === 1 ? t.ib.hLeft1 : t.ib.hLeft, { n: String(h) }) : say(t.ib.mLeft, { n: String(Math.max(1, Math.ceil(ms / 60000))) });
+            node.classList.toggle('is-soon', ms < 6 * 3600000);
+          }
+        };
+        paintLeft();
+        reqTick = window.setInterval(paintLeft, 30000);
+      };
       const renderOverview = (pending: Req[]) => {
         const today = iso(new Date());
         const month = today.slice(0, 7);
         const booked = reqs.filter((r) => r.status === 'accepted');
         // Waiting requests, right at the top.
         const alert = $('[data-ha-alert]');
-        alert.hidden = !pending.length;
+        alert.hidden = true; // the request cards below replace the banner
+        renderReqCards(pending);
         $('[data-ha-alert-title]').textContent = (pending.length === 1 ? t.alertOne : t.alertMany).replace('{n}', String(pending.length));
         $('[data-ha-alert-sub]').textContent = pending.slice(0, 2)
           .map((r) => `${(r.fields.Name || t.guest).split(' ')[0]} · ${r.fields.Date ? new Date(dateOf(r)).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'numeric' }) : ''} · ${peopleOf(r)} ${t.people}`)
@@ -2041,6 +2088,25 @@ const fields = [
   .hd-seg { display: flex; background: rgba(36, 39, 46, 0.06); border-radius: 12px; padding: 4px; }
   .hd-seg button { font: inherit; font-size: 0.88rem; border: 0; background: none; border-radius: 9px; padding: 7px 16px; color: var(--color-text-muted); cursor: pointer; }
   .hd-seg button[aria-pressed='true'] { background: #fff; color: var(--color-text); font-weight: 600; box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.2); }
+  /* The app sits in a grid column: let it shrink so the card row scrolls instead of widening the page. */
+  .ha.container { grid-template-columns: minmax(0, 1fr); }
+  .ha-app { min-width: 0; width: 100%; justify-self: stretch; }
+  .hd-stats > * { min-width: 0; }
+  .hd-reqs { margin: 4px 0 26px; min-width: 0; max-width: 100%; }
+  .hd-reqs-h { margin: 0 0 14px; font-size: 1.6rem; letter-spacing: -0.01em; }
+  .hd-reqs-row { min-width: 0; max-width: 100%; display: flex; gap: 14px; overflow-x: auto; padding: 6px 4px 18px; margin: -6px -4px 0; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .hd-reqs-row::-webkit-scrollbar { display: none; }
+  .hd-req { flex: 0 0 auto; width: 196px; scroll-snap-align: start; display: grid; justify-items: center; align-content: start; gap: 6px; padding: 22px 16px 20px; border: 0; border-radius: 26px; font: inherit; color: inherit; text-align: center; cursor: pointer;
+    background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow: 0 14px 34px -14px rgba(60, 30, 120, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.7) inset; transition: transform .18s ease, box-shadow .18s ease; }
+  .hd-req:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -14px rgba(60, 30, 120, 0.36), 0 0 0 1px rgba(255, 255, 255, 0.7) inset; }
+  .hd-req-left { font-weight: 700; font-size: 0.98rem; font-variant-numeric: tabular-nums; }
+  .hd-req-left.is-soon { color: #d4384a; }
+  .hd-req-av { display: grid; place-items: center; width: 64px; height: 64px; margin: 10px 0 8px; border-radius: 50%; font-size: 1.6rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, #ff8a5c, #e64ab4 55%, #6a3eec); box-shadow: 0 8px 18px -6px rgba(230, 74, 180, 0.55); }
+  .hd-req-what { font-size: 1.05rem; line-height: 1.25; }
+  .hd-req-n { color: var(--color-text-muted); font-size: 0.92rem; }
+  .hd-req-ws { color: var(--color-text-muted); font-size: 0.8rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  @media (max-width: 640px) { .hd-reqs { text-align: center; } .hd-reqs-h { font-size: 1.9rem; } .hd-reqs-row { justify-content: flex-start; max-width: none; margin: -6px -20px 0; padding: 6px 20px 18px; scroll-padding: 0 20px; } .hd-req { width: 168px; } }
   .hd-alert { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; font: inherit; color: inherit; background: #fff; border: 0; border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; cursor: pointer; box-shadow: 0 8px 10px -8px rgba(224, 69, 123, 0.3); }
   .hd-alert-ic { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; background: #ffe3ec; }
   .hd-alert-t { flex: 1; min-width: 0; display: grid; }
