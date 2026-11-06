@@ -451,6 +451,9 @@ const fields = [
       const tpl = $<HTMLTemplateElement>('[data-ha-slot-tpl]');
       let email = '';
       let slug = '';
+      // Twiggli's service fee in percent (hostMembers.commissionPct, else 15), shown to hosts as a line.
+      let feePct = 15;
+      const keep = (n: number) => n * (1 - feePct / 100);
       // Saved texts per language for the current host (from Firestore, else the site).
       let texts: Record<'en' | 'de', Profile> = { en: {}, de: {} };
       let textLang: 'en' | 'de' = 'en';
@@ -777,7 +780,7 @@ const fields = [
         };
         set('open', String(pending.length), pending.length ? t.stOpenNote : t.stOpenNone);
         set('bookings', String(thisMonth.length), t.stBookingsNote.replace('{n}', String(thisMonth.reduce((a, r) => a + peopleOf(r), 0))));
-        set('earnings', euro(thisMonth.reduce((a, r) => a + priceOf(r) * peopleOf(r) * 0.85, 0)));
+        set('earnings', euro(thisMonth.reduce((a, r) => a + keep(priceOf(r) * peopleOf(r)), 0)));
         // Dates: the weekly schedule for the next two weeks, plus confirmed bookings.
         const slots = Array.from(slotsBox.querySelectorAll('.ha-slot')).map((n) => ({
           title: (n.querySelector('[name="title"]') as HTMLInputElement).value,
@@ -971,7 +974,7 @@ const fields = [
           el('p', '', [ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) }), each ? `€ ${(each * ppl).toLocaleString(loc)} ${t.ib.total}` : ''].filter(Boolean).join(' · ')));
         if (each) {
           const earn = el('div', 'ib-earn');
-          earn.append(el('span', '', t.ib.oYou), el('b', '', `€ ${(each * ppl * 0.85).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`));
+          earn.append(el('span', '', t.ib.oYou), el('b', '', `€ ${keep(each * ppl).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`));
           what.append(earn);
         }
         res.replaceChildren(...(inModal ? [] : [closeRes]), what);
@@ -1163,8 +1166,12 @@ const fields = [
           const l2 = el('div', 'ib-sum-row ib-sum-strong'); l2.append(el('span', '', t.ib.oGuestPays), el('span', '', eur(total)));
           calc.append(l2);
           const you = el('div', 'ib-sum-box ib-sum-you');
-          const l3 = el('div', 'ib-sum-row ib-sum-strong'); l3.append(el('span', '', t.ib.oYou), el('span', '', eur(total * 0.85)));
-          you.append(l3);
+          // As Airbnb, and so hosts see what the platform takes: subtotal, service fee, earnings.
+          const fee = Math.round(total * feePct) / 100;
+          const l0 = el('div', 'ib-sum-row'); l0.append(el('span', '', t.ib.oSubtotalLine), el('span', '', eur(total)));
+          const lf = el('div', 'ib-sum-row'); lf.append(el('span', '', say(t.ib.oFee, { pct: String(feePct) })), el('span', '', `-${eur(fee)}`));
+          const l3 = el('div', 'ib-sum-row ib-sum-strong'); l3.append(el('span', '', t.ib.oYou), el('span', '', eur(total - fee)));
+          you.append(l0, lf, l3);
           sum.append(calc, you);
         };
         sub.addEventListener('input', paint); gs.addEventListener('change', paint);
@@ -1602,6 +1609,8 @@ const fields = [
         try {
           const m = await getDoc(doc(db, 'hostMembers', email));
           slugs = ((m.data()?.slugs as string[] | undefined) ?? []).filter((s) => hosts[s]);
+          const pct = Number(m.data()?.commissionPct);
+          if (Number.isFinite(pct)) feePct = Math.max(0, Math.min(30, pct));
         } catch { /* not a member: no read access */ }
         // Whether this is Jirel: the server says, so no address is in the page.
         let admin = false;
