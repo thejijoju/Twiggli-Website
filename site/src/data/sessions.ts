@@ -12,7 +12,7 @@ import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
-import { withHostSlots, accountDates, isHiddenListing } from './hostEdits.ts';
+import { withHostSlots, accountDates, isHiddenListing, listingEdit } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 
 /** Places left on a date: the feed's or the host's count (or one the host
@@ -215,8 +215,10 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
     const host = bySlug.get(slug);
     if (!host) continue;
     for (const o of offers) {
+      if (isHiddenListing(slug, slugify(o.title))) continue;
       out.push({
         id: `req-${slug}-${hash(o.title)}`,
+        key: slugify(o.title),
         host,
         title: lang === 'de' || !o.titleEn ? o.title : o.titleEn,
         district: o.district ?? host.area ?? host.place,
@@ -243,7 +245,11 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
       request: true,
     });
   }
-  return out;
+  // A host's own title, price and line for the workshop (dashboard edit).
+  return out.map((o) => {
+    const e = o.key ? listingEdit(o.host.slug, o.key) : undefined;
+    return e ? { ...o, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}) } : o;
+  });
 }
 
 export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
@@ -500,7 +506,12 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     }
   }
   // Workshops the host paused or deleted in their dashboard stay off the site.
-  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey));
+  // and their own title, price and line for a workshop go over the scraped ones.
+  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey)).map((s) => {
+    const e = listingEdit(s.host.slug, s.workshopKey);
+    if (!e) return s;
+    return { ...s, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}) };
+  });
 }
 
 /** The feed carries only real sessions — dated ones scraped or entered

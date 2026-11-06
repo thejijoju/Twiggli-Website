@@ -20,6 +20,10 @@ const profiles = (edits as { profiles?: ProfileRow[] }).profiles ?? [];
 const hidden = new Set(((edits as { hidden?: { slug: string; key: string }[] }).hidden ?? []).map((h) => `${h.slug}|${h.key}`));
 /** Whether a host took this workshop (its page key) off the site. */
 export const isHiddenListing = (slug: string, key: string): boolean => hidden.has(`${slug}|${key}`);
+type ListingEdit = { slug: string; key: string; title?: string; price?: number | null; note?: string };
+const listingEdits = new Map(((edits as { listingEdits?: ListingEdit[] }).listingEdits ?? []).map((e) => [`${e.slug}|${e.key}`, e]));
+/** A host's own title, price per person and short line for a workshop. */
+export const listingEdit = (slug: string, key: string): ListingEdit | undefined => listingEdits.get(`${slug}|${key}`);
 const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.active !== false);
 
 /** Account field → HostCopy field. */
