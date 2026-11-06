@@ -278,7 +278,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // room is small, so these are deliberately modest.
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
-  craftkai:         { activity: 'craft',     groupRange: [1, 12], hourRange: [1, 2.5], groupPrice: [25, 109] },
   yurika:           { activity: 'craft',     groupRange: [1, 12], hourRange: [1.5, 2], groupPrice: [45, 72] },
   // Her team formats, 16.10.26: M from 7 (2 h), S from 10 (1.5 h), XS from
   // 15 (1 h); up to 20 in the studio, up to 150 on-site. Net prices per
@@ -507,9 +506,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Perfume making', studio: 'Smell Lab Berlin',
       blurb: 'Klara is an olfactory artist from Barcelona, trained in ArtScience at the Royal Academy of Art in The Hague, who has run her scent laboratory in Prenzlauer Berg since 2015. In her perfume workshop you work through 20 to 23 raw materials — essential oils and aroma molecules — learn their families and how they combine, then design a fragrance that is yours alone and take it home in a 10 ml bottle, with a dossier of everything covered. No experience needed; not suited to anyone very sensitive to fragrance. For teams she runs private sessions for 8 to 40 people in English, at her studio or at your venue.',
       group: 'Small groups · teams 8–40', duration: '3 h', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
-    { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanese craft workshops', studio: 'Craftkai',
-      blurb: 'A Berlin–Japan craft community that brings Japanese artisans and their traditions to Berlin: kintsugi, the gold-seamed repair of broken ceramics; contemporary Sōgetsu ikebana; gold leaf laid by hand on washi; chopsticks planed from fragrant hinoki; Tokyo Yūzen hand-dyeing; natural Kusaki-zome dyeing; mizuhiki cord knots; a hanko seal designed live with a seal maker in Japan; and miso packed into your own cedar barrel. Several sessions are taught by artisans visiting from Japan. Most run at MisoLab in Prenzlauer Berg or at Craftkai’s Berlin craft days.',
-      group: 'Small groups', duration: '1–2.5 h', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
     { slug: 'yurika', name: 'Yurika', specialty: 'Natural dyeing with tea & plants', studio: 'Living Dyeing Project',
       blurb: 'A Tokyo-born textile artist who has lived in Berlin since 2019, painting, embroidering and dyeing. Her Living Dyeing project colours fabric with what the city throws away: tea leaves already brewed in Berlin restaurants, onion skins, vegetable peel, coffee grounds. This is Kusaki-zome, the Japanese way of dyeing with plants, and with tea the tannin meets iron to give soft greys, warm browns and deep blue-blacks, never twice the same. Her workshops are slow and hands-on and made for beginners. You learn the technique and some shibori tie-dye, then dye a linen chabu tea mat or a cotton furoshiki to take home, or bring a piece of your own. A member of the Berlin Handcrafts Collective, she has taught natural dyeing across Germany.',
       group: 'Small groups', duration: '1.5–2 h', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
@@ -711,9 +707,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'smell-lab', name: 'Smell Lab', specialty: 'Parfum selber machen', studio: 'Smell Lab Berlin',
       blurb: 'Klara ist Duftkünstlerin aus Barcelona, hat an der Königlichen Kunstakademie in Den Haag ArtScience studiert und betreibt seit 2015 ihr Duftlabor in Prenzlauer Berg. Im Parfum-Workshop arbeitest du mit 20 bis 23 Rohstoffen — ätherischen Ölen und Aromamolekülen —, lernst ihre Duftfamilien kennen und wie sie zusammenspielen, entwirfst dann einen Duft, den es nur einmal gibt, und nimmst ihn im 10-ml-Flakon mit nach Hause, dazu ein Dossier mit allem Gelernten. Keine Vorkenntnisse nötig; nicht geeignet für Menschen, die sehr empfindlich auf Düfte reagieren. Für Teams gibt es private Sessions für 8 bis 40 Personen auf Englisch, im Studio oder bei euch vor Ort.',
       group: 'Kleine Gruppen · Teams 8–40', duration: '3 Std.', place: 'Pappelallee 88, Prenzlauer Berg', languages: 'EN · ES' },
-    { slug: 'craftkai', name: 'Craftkai', specialty: 'Japanisches Kunsthandwerk', studio: 'Craftkai',
-      blurb: 'Eine Berlin-Japan-Handwerksgemeinschaft, die japanische Kunsthandwerker und ihre Traditionen nach Berlin bringt: Kintsugi, die Reparatur zerbrochener Keramik mit goldenen Nähten; zeitgenössisches Sōgetsu-Ikebana; Blattgold von Hand auf Washi; Essstäbchen aus duftendem Hinoki gehobelt; Tokyo-Yūzen-Färben von Hand; natürliches Kusaki-zome-Färben; Mizuhiki-Knoten; ein Hanko-Siegel, live mit einem Siegelmacher in Japan entworfen; und Miso, angesetzt im eigenen Zedernholzfass. Mehrere Kurse leiten Kunsthandwerker, die eigens aus Japan anreisen. Die meisten finden im MisoLab in Prenzlauer Berg oder an Craftkais Berliner Handwerkstagen statt.',
-      group: 'Kleine Gruppen', duration: '1–2,5 Std.', place: 'MisoLab, Gleimstraße 10a, Prenzlauer Berg · Manifesto Berlin', languages: 'EN · DE · JA' },
     { slug: 'yurika', name: 'Yurika', specialty: 'Naturfärben mit Tee & Pflanzen', studio: 'Living Dyeing Project',
       blurb: 'Eine in Tokio geborene Textilkünstlerin, die seit 2019 in Berlin lebt und malt, stickt und färbt. Ihr Projekt Living Dyeing färbt Stoff mit dem, was die Stadt wegwirft: Teeblätter, die in Berliner Restaurants schon aufgegossen wurden, Zwiebelschalen, Gemüseschalen, Kaffeesatz. Das ist Kusaki-zome, Japans Färben mit Pflanzen, und beim Tee trifft die Gerbsäure auf Eisen und ergibt sanfte Grautöne, warme Brauntöne und tiefes Blauschwarz, nie zweimal gleich. Ihre Workshops sind langsam, praktisch und für Anfänger gemacht. Du lernst die Technik und etwas Shibori-Abbinden und färbst dann ein Chabu-Teedeckchen aus Leinen oder ein Furoshiki aus Baumwolle zum Mitnehmen, oder du bringst ein eigenes Stück mit. Als Mitglied des Berlin Handcrafts Collective hat sie in ganz Deutschland Naturfärbe-Workshops gegeben.',
       group: 'Kleine Gruppen', duration: '1,5–2 Std.', place: 'Craftkai, Manifesto Berlin · silent green, Wedding', languages: 'EN · JA' },
@@ -965,10 +958,6 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Yurika's own clip: tea-dyed linen squares laid out, then one held to
   // the light. No captions on it, so only scaled.
   yurika: { video: '/video/yurika.mp4', poster: '/video/yurika-poster.jpg' },
-  // Stills from Craftkai's own workshop pages (chopsticks, mizuhiki,
-  // kintsugi, miso, ikebana, Yūzen, weaving, gold leaf), a gentle push in on
-  // each, dissolved, ending back on the first so the loop has no seam.
-  craftkai: { video: '/video/craftkai.mp4', poster: '/video/craftkai-poster.jpg' },
   // No footage of the darkroom, only stills, so the five she sent become one
   // clip the way Kohfink's did: a second on each, dissolved over a third of a
   // second, a light push in, and back to the first so the loop has no seam.
@@ -1613,7 +1602,6 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   arcoiris: { area: 'Neukölln' }, redrum: { area: 'Kreuzberg' }, mampe: { area: 'Kreuzberg' },
   studio32: { area: 'Schöneberg / Kreuzberg' }, cateduckwall: { area: 'Prenzlauer Berg' },
   'smell-lab': { area: 'Prenzlauer Berg' },
-  craftkai: { area: 'Prenzlauer Berg / Mitte' },
   yurika: { area: 'Mitte / Wedding' },
   aria: { area: 'Friedrichshagen', onSite: true },
   petitejungle: { area: 'Mitte', onSite: true },
