@@ -982,6 +982,21 @@ const fields = [
           what.append(earn);
         }
         res.replaceChildren(...(inModal ? [] : [closeRes]), what);
+        if (inModal) {
+          // As the Airbnb app: the guest's initial beside the title, and what they wrote.
+          what.classList.add('has-av');
+          what.prepend(el('span', 'ha-av ib-what-av', name.charAt(0).toUpperCase()));
+          if (r.fields.Message) {
+            const said = el('div', 'ib-said');
+            const ago = (() => {
+              const mins = Math.max(1, Math.round((Date.now() - r.createdAt) / 60000));
+              const rtf = new Intl.RelativeTimeFormat(loc, { numeric: 'auto' });
+              return mins < 60 ? rtf.format(-mins, 'minute') : mins < 2880 ? rtf.format(-Math.round(mins / 60), 'hour') : rtf.format(-Math.round(mins / 1440), 'day');
+            })();
+            said.append(el('b', '', say(t.ib.said, { name })), el('small', '', ago), el('p', '', r.fields.Message));
+            res.append(said);
+          }
+        }
         if (waiting(r) || r.status === 'suggested' || r.status === 'offered') {
           const acts = el('div', 'ib-acts');
           const rnote = el('p', 'ha-note'); rnote.setAttribute('role', 'status');
@@ -1020,6 +1035,33 @@ const fields = [
           });
           acts.append(...all);
           res.append(acts, rnote);
+          // A live countdown at the bottom (as the Airbnb app), with a button to write to the guest.
+          if (inModal) {
+            const dlg = res.closest('dialog') as HTMLDialogElement | null;
+            const foot = el('div', 'ib-foot');
+            const clock = el('p', 'ib-clock');
+            const msgBtn = el('button', 'ib-act ib-act-main', t.ib.msgBtn) as HTMLButtonElement; msgBtn.type = 'button';
+            msgBtn.addEventListener('click', () => {
+              dlg?.close();
+              $('[data-ib-grid]').classList.add('is-open');
+              $<HTMLTextAreaElement>('[data-ib-conv] .ib-comp textarea')?.focus();
+            });
+            foot.append(clock, msgBtn);
+            const tick = () => {
+              const left = deadline - Date.now();
+              if (left <= 0) { clock.textContent = t.ib.late; clock.classList.add('is-late'); return false; }
+              const h = Math.floor(left / 3600000), m = Math.floor(left / 60000) % 60, sec = Math.floor(left / 1000) % 60;
+              const time = `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+              clock.replaceChildren(...say(t.ib.decide, { time: '\u0000' }).split('\u0000').flatMap((part, i) => (i ? [el('b', '', time), document.createTextNode(part)] : [document.createTextNode(part)])));
+              clock.classList.toggle('is-soon', left < 6 * 3600000);
+              return true;
+            };
+            if (tick()) {
+              const iv = window.setInterval(() => { if (!tick() || !dlg?.open) window.clearInterval(iv); }, 1000);
+              dlg?.addEventListener('close', () => window.clearInterval(iv), { once: true });
+            }
+            res.append(foot);
+          }
         }
         const g = (r as Req & { guest?: { requests: number; cameFrom: string; lang: string } }).guest;
         const about = el('div', 'ib-about');
@@ -1741,6 +1783,31 @@ const fields = [
   .ib-modal-x { border: 0; background: rgba(36, 39, 46, 0.06); border-radius: 50%; width: 38px; height: 38px; font-size: 1.3rem; cursor: pointer; }
   .ib-modal-body { padding: 22px 32px 30px; }
   .ib-modal-body .ib-what h3 { font-size: 1.6rem; }
+  .ib-what.has-av { position: relative; }
+  .ib-what.has-av h3 { padding-right: 64px; }
+  .ib-what .ib-what-av { position: absolute; top: 0; right: 0; width: 52px; height: 52px; font-size: 1.3rem; border-radius: 50%; }
+  .ib-said { margin: 18px 0 4px; padding-top: 18px; border-top: 1px solid rgba(36, 39, 46, 0.1); }
+  .ib-said b { display: block; }
+  .ib-said small { color: var(--color-text-muted); }
+  .ib-said p { margin: 8px 0 0; white-space: pre-line; line-height: 1.5; }
+  /* Countdown footer: frosted glass, stuck to the bottom of the popup. */
+  .ib-foot { position: sticky; bottom: -30px; margin: 18px -32px -30px; padding: 16px 32px 22px; display: grid; gap: 12px; text-align: center;
+    background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(18px) saturate(1.2); -webkit-backdrop-filter: blur(18px) saturate(1.2); border-top: 1px solid rgba(36, 39, 46, 0.08); }
+  .ib-clock { margin: 0; font-size: 0.98rem; }
+  .ib-clock b { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .ib-clock.is-soon b, .ib-clock.is-late { color: #d4384a; }
+  .ib-foot .ib-act-main { padding: 15px; font-size: 1.05rem; background: linear-gradient(135deg, #6a3eec, #e64ab4); color: #fff; }
+  /* Phones: popups become full-height sheets over the blurred page; a second
+     one (offer, decline) sits a little lower, so the one beneath peeks out. */
+  @media (max-width: 640px) {
+    .ib-modal, .ib-modal.ib-offer, .ib-modal.ib-decline { width: 100vw; max-width: 100vw; height: calc(100dvh - 10px); max-height: none; margin: 10px 0 0; border-radius: 26px 26px 0 0; animation: ib-sheet .28s cubic-bezier(.2, .8, .2, 1); }
+    .ib-modal.ib-offer { height: calc(100dvh - 34px); margin-top: 34px; }
+    .ib-modal-head { padding: 20px; } .ib-modal-body { padding: 16px 20px 24px; }
+    .ib-modal.ib-offer .ib-modal-body { padding: 74px 20px 24px; }
+    .ib-modal .ib-offer-x { top: 16px; left: 16px; right: auto; }
+    .ib-foot { bottom: -24px; margin: 18px -20px -24px; padding: 14px 20px calc(18px + env(safe-area-inset-bottom)); }
+  }
+  @keyframes ib-sheet { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
   @media (max-width: 560px) { .ib-modal-head { padding: 20px; } .ib-modal-head h2 { font-size: 1.4rem; } .ib-modal-body { padding: 16px 20px 24px; } }
 
   .ib-offer { width: min(600px, calc(100vw - 32px)); }
