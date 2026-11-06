@@ -12,7 +12,7 @@ import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
-import { withHostSlots, accountDates } from './hostEdits.ts';
+import { withHostSlots, accountDates, isHiddenListing } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 
 /** Places left on a date: the feed's or the host's count (or one the host
@@ -159,6 +159,8 @@ type LiveOnRequest = Omit<LiveWorkshop, 'date' | 'time'>;
 
 export type OnRequestWorkshop = {
   id: string;
+  /** The workshop's page key (slugify of its own title), as Session.workshopKey. */
+  key?: string;
   host: Host;
   title: string;
   district: string;
@@ -190,9 +192,10 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
   const out: OnRequestWorkshop[] = [];
   for (const o of ((liveData as { onRequest?: LiveOnRequest[] }).onRequest ?? [])) {
     const host = bySlug.get(o.slug);
-    if (!host) continue;
+    if (!host || isHiddenListing(o.slug, slugify(o.title))) continue;
     out.push({
       id: `req-${o.slug}-${hash(o.title)}`,
+      key: slugify(o.title),
       host: withWorkshopReel(host, o.slug, o.title),
       title: lang !== 'de' && o.titleEn ? o.titleEn : o.title,
       district: o.district ?? host.studio ?? host.place,
@@ -496,7 +499,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       });
     }
   }
-  return sessions;
+  // Workshops the host paused or deleted in their dashboard stay off the site.
+  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey));
 }
 
 /** The feed carries only real sessions — dated ones scraped or entered
@@ -580,8 +584,9 @@ export function previewSessionsFor(slug: string, lang: Lang): Session[] {
 export function previewOnRequestFor(slug: string, lang: Lang): OnRequestWorkshop[] {
   const host = getHosts(lang, { withPreview: true }).find((h) => h.slug === slug);
   if (!host) return [];
-  return (preview.onRequest[slug] ?? []).map((o) => ({
+  return (preview.onRequest[slug] ?? []).filter((o) => !isHiddenListing(slug, slugify(o.title))).map((o) => ({
     id: `req-${slug}-${hash(o.title)}`,
+    key: slugify(o.title),
     host,
     title: lang === 'de' || !o.titleEn ? o.title : o.titleEn,
     district: o.district ?? host.area ?? host.place,

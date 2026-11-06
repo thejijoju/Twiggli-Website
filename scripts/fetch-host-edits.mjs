@@ -55,12 +55,14 @@ if (!projectId || !apiKey) {
     const active = slots.filter((s) => s.active !== false).sort((a, b) => `${a.slug} ${a.time}`.localeCompare(`${b.slug} ${b.time}`));
     // Dates hosts created in their dashboard (functions/index.js publicEvents).
     let events = [];
+    // Workshops hosts paused or deleted in their dashboard (hostListing).
+    let hidden = [];
     try {
       const r = await fetch(`https://europe-west3-${projectId}.cloudfunctions.net/publicEvents`);
-      if (r.ok) events = (await r.json()).items ?? [];
+      if (r.ok) { const j = await r.json(); events = j.items ?? []; hidden = j.hidden ?? []; }
     } catch (err) { console.log(`host dates not fetched: ${err.message}`); }
-    writeFileSync(OUT, `${JSON.stringify({ fetched: new Date().toISOString(), profiles, slots: active, events }, null, 2)}\n`);
-    console.log(`host edits: ${profiles.length} profile(s), ${active.length} slot(s), ${events.length} date(s)`);
+    writeFileSync(OUT, `${JSON.stringify({ fetched: new Date().toISOString(), profiles, slots: active, events, hidden }, null, 2)}\n`);
+    console.log(`host edits: ${profiles.length} profile(s), ${active.length} slot(s), ${events.length} date(s), ${hidden.length} hidden workshop(s)`);
   } catch (err) {
     console.log(`host edits not fetched, keeping the file as it is: ${err.message}`);
   }
