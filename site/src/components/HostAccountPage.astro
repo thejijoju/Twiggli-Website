@@ -1068,9 +1068,57 @@ const fields = [
         pkBtn.addEventListener('click', () => { pkList.hidden = !pkList.hidden; pkBtn.setAttribute('aria-expanded', String(!pkList.hidden)); if (!pkList.hidden) pkList.querySelector<HTMLButtonElement>('.is-on, .ib-pk-opt')?.focus(); });
         picker.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Escape' && !pkList.hidden) { e.stopPropagation(); e.preventDefault(); pkList.hidden = true; pkBtn.focus(); } });
         picker.append(pkBtn, pkList);
-        const dt = document.createElement('input'); dt.type = 'date'; dt.value = dateOf(r); dt.min = iso(new Date());
+        // Date: a calendar that opens under the field (as Airbnb), so the host can
+        // propose another day. The guest's wished-for day keeps a dot.
+        const asked = dateOf(r);
+        const todayIso = iso(new Date());
+        const dt = { value: asked && asked >= todayIso ? asked : '' };
+        const dBtn = el('button', 'ib-date-btn') as HTMLButtonElement; dBtn.type = 'button'; dBtn.setAttribute('aria-expanded', 'false');
+        const dLab = el('span', '');
+        dBtn.append(dLab, el('span', 'ib-date-chev', '⌄'));
+        const dLabel = () => { dLab.textContent = dt.value ? new Date(`${dt.value}T12:00:00`).toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : t.ib.oDatePick; dLab.classList.toggle('is-empty', !dt.value); };
+        dLabel();
+        const dBox = el('div', 'ib-box ib-date-box'); dBox.append(el('small', '', t.ib.oDate), dBtn);
+        const calPop = el('div', 'ib-cal hd-cal'); calPop.hidden = true;
+        let calM = new Date(`${dt.value || asked || todayIso}T12:00:00`); calM.setDate(1);
+        const drawOfferCal = () => {
+          const y = calM.getFullYear(), mo = calM.getMonth();
+          const head = el('div', 'hd-cal-head');
+          const nav = el('span', '');
+          const prev = el('button', '', '‹') as HTMLButtonElement; prev.type = 'button'; prev.setAttribute('aria-label', '‹');
+          const next = el('button', '', '›') as HTMLButtonElement; next.type = 'button'; next.setAttribute('aria-label', '›');
+          const thisMonth = new Date(); thisMonth.setDate(1);
+          prev.disabled = y < thisMonth.getFullYear() || (y === thisMonth.getFullYear() && mo <= thisMonth.getMonth());
+          prev.addEventListener('click', () => { calM.setMonth(mo - 1); drawOfferCal(); });
+          next.addEventListener('click', () => { calM.setMonth(mo + 1); drawOfferCal(); });
+          nav.append(prev, next);
+          head.append(el('b', '', new Date(y, mo, 1).toLocaleDateString(loc, { month: 'long', year: 'numeric' })), nav);
+          const grid = el('div', 'hd-cal-grid');
+          for (let i = 0; i < 7; i++) grid.append(el('span', 'hd-cal-wd', new Date(2024, 0, 1 + i).toLocaleDateString(loc, { weekday: 'narrow' })));
+          const lead = (new Date(y, mo, 1).getDay() + 6) % 7; // Monday first
+          for (let i = 0; i < lead; i++) grid.append(el('span', ''));
+          const days = new Date(y, mo + 1, 0).getDate();
+          for (let d = 1; d <= days; d++) {
+            const v = iso(new Date(y, mo, d));
+            const b = el('button', 'hd-cal-day', String(d)) as HTMLButtonElement; b.type = 'button';
+            if (v === todayIso) b.classList.add('is-today');
+            if (v === asked) { b.classList.add('is-asked'); b.title = t.ib.oAsked; }
+            if (v === dt.value) { b.classList.add('is-on'); b.setAttribute('aria-pressed', 'true'); }
+            if (v < todayIso) b.disabled = true;
+            b.addEventListener('click', () => { dt.value = v; dLabel(); calPop.hidden = true; dBtn.setAttribute('aria-expanded', 'false'); dBtn.focus(); });
+            grid.append(b);
+          }
+          const parts: HTMLElement[] = [head, grid];
+          if (asked) { const lg = el('p', 'ib-cal-legend'); lg.append(el('i', ''), document.createTextNode(`${t.ib.oAsked}: ${new Date(`${asked}T12:00:00`).toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short' })}`)); parts.push(lg); }
+          calPop.replaceChildren(...parts);
+        };
+        dBtn.addEventListener('click', () => {
+          calPop.hidden = !calPop.hidden; dBtn.setAttribute('aria-expanded', String(!calPop.hidden));
+          if (!calPop.hidden) { calM = new Date(`${dt.value || asked || todayIso}T12:00:00`); calM.setDate(1); drawOfferCal(); calPop.querySelector<HTMLButtonElement>('.is-on, .is-today')?.focus({ preventScroll: true }); }
+        });
+        calPop.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Escape') { e.stopPropagation(); e.preventDefault(); calPop.hidden = true; dBtn.setAttribute('aria-expanded', 'false'); dBtn.focus(); } });
         const tm = document.createElement('input'); tm.type = 'time'; tm.value = (r.fields.Time || '').slice(0, 5);
-        const when = el('div', 'ib-two'); when.append(box(t.ib.oDate, dt), box(t.ib.oTime, tm));
+        const when = el('div', 'ib-two ib-when'); when.append(dBox, box(t.ib.oTime, tm), calPop);
         const gs = document.createElement('select');
         const want = peopleOf(r);
         for (let n = 1; n <= Math.max(40, want); n++) { const o = document.createElement('option'); o.value = String(n); o.textContent = String(n); if (n === want) o.selected = true; gs.append(o); }
@@ -1671,6 +1719,20 @@ const fields = [
   .ib-box input, .ib-box select, .ib-box textarea { border: 0; padding: 2px 0; font: inherit; font-size: 1.05rem; background: transparent; outline: none; width: 100%; color: inherit; }
   .ib-box:focus-within { border-color: var(--color-text); }
   .ib-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ib-when { position: relative; }
+  .ib-date-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; border: 0; padding: 2px 0; background: none; font: inherit; font-size: 1.05rem; color: inherit; cursor: pointer; text-align: left; }
+  .ib-date-btn .is-empty { color: var(--color-text-muted); }
+  .ib-date-chev { font-size: 1.1rem; line-height: 1; transition: transform .15s; }
+  .ib-date-btn[aria-expanded='true'] .ib-date-chev { transform: rotate(180deg); }
+  .ib-date-box:has([aria-expanded='true']) { border-color: var(--color-text); }
+  .ib-cal { position: absolute; left: 0; top: calc(100% + 8px); z-index: 12; width: min(340px, 100%); background: #fff; border-radius: 18px; box-shadow: 0 18px 50px rgba(36, 39, 46, 0.18), 0 0 0 1px rgba(36, 39, 46, 0.06); }
+  .ib-cal .hd-cal-day { height: 40px; border-radius: 50%; aspect-ratio: 1; justify-self: center; width: 40px; position: relative; }
+  .ib-cal .hd-cal-day.is-on { background: var(--color-text); }
+  .ib-cal .hd-cal-day.is-asked::after { content: ''; position: absolute; left: 50%; bottom: 4px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--color-accent); }
+  .ib-cal .hd-cal-day.is-on.is-asked::after { background: #fff; }
+  .ib-cal .hd-cal-head button:disabled { opacity: .3; cursor: default; }
+  .ib-cal-legend { display: flex; align-items: center; gap: 8px; margin: 10px 4px 2px; font-size: 0.82rem; color: var(--color-text-muted); }
+  .ib-cal-legend i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
   .ib-small { font-size: 0.8rem; }
   .ib-sum { display: grid; gap: 12px; margin-top: 6px; }
   .ib-sum:empty { display: none; }
