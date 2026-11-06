@@ -16,6 +16,10 @@ type SlotRow = {
 };
 
 const profiles = (edits as { profiles?: ProfileRow[] }).profiles ?? [];
+/** Workshops a host paused or deleted in their dashboard (hostListing). */
+const hidden = new Set(((edits as { hidden?: { slug: string; key: string }[] }).hidden ?? []).map((h) => `${h.slug}|${h.key}`));
+/** Whether a host took this workshop (its page key) off the site. */
+export const isHiddenListing = (slug: string, key: string): boolean => hidden.has(`${slug}|${key}`);
 const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.active !== false);
 
 /** Account field → HostCopy field. */

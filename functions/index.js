@@ -937,6 +937,45 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
   return res.status(200).json({ items });
 });
 
+// ── Listings: a host pauses or deletes a workshop ──
+// Saved in Firestore hostListings/{slug}__{key} (key = the workshop's page
+// key, slugify of its title). Paused: off the site until the host puts it
+// back online; deleted: off the site for good (Jirel can restore it). The
+// build (scripts/fetch-host-edits.mjs via publicEvents) leaves both out,
+// within the hour (host-dates.yml).
+const LISTING_KEY = /^[a-z0-9-]{1,120}$/;
+const LISTING_STATES = ['paused', 'deleted'];
+
+export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const b = req.body ?? {};
+  const slug = String(b.slug ?? '');
+  if (!SLUG.test(slug) || !(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
+  const col = getFirestore().collection('hostListings');
+  if (b.action === 'list') {
+    const snap = await col.where('slug', '==', slug).get();
+    return res.status(200).json({ items: snap.docs.map((d) => { const x = d.data(); return { key: x.key, title: x.title, status: x.status, price: x.price ?? '', image: x.image ?? '' }; }) });
+  }
+  const key = String(b.key ?? '');
+  if (!LISTING_KEY.test(key)) return res.status(400).json({ error: 'Bad workshop' });
+  const ref = col.doc(`${slug}__${key}`);
+  const title = text(b.title, 160);
+  // Back online is saved too (not deleted), so its time reaches publicEvents
+  // "updated" and the hourly check republishes the site (host-dates.yml).
+  if (b.status === 'live' || LISTING_STATES.includes(b.status)) {
+    await ref.set({ slug, key, title, status: b.status, price: text(b.price, 40), image: String(b.image ?? '').slice(0, 400), by: email, updatedAt: FieldValue.serverTimestamp() });
+  } else {
+    return res.status(400).json({ error: 'Bad status' });
+  }
+  try {
+    const what = b.status === 'live' ? 'back online' : b.status;
+    await mailJirel({ subject: `${slug}: "${title || key}" ${what}`, text: `${email} set "${title || key}" (${slug}) to ${what}. The site follows with the next deploy.` });
+  } catch (err) { console.error('listing note failed', err?.message); }
+  return res.status(200).json({ ok: true });
+});
+
 /** Public: every public date (no personal data), for the website build. */
 export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (_req, res) => {
   const snap = await getFirestore().collection('hostEvents').where('visibility', '==', 'public').get();
@@ -947,7 +986,11 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
     const { by: _by, createdAt: _c, updatedAt: _u, ...pub } = x;
     return { id: d.id, ...pub };
   });
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items });
+  // Workshops hosts paused or deleted (hostListing), left out of the site.
+  const hidden = (await getFirestore().collection('hostListings').get()).docs
+    .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, key: x.key, status: x.status }; })
+    .filter((x) => LISTING_STATES.includes(x.status));
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
