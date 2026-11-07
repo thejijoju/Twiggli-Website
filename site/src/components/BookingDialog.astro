@@ -27,8 +27,8 @@ const e = bigEventsCopy[lang].dialog;
 // Redeeming a Twiggli voucher in the form, at hosts that take them
 // (functions voucherCheck). English wherever German isn't the language.
 const vc = lang === 'de'
-  ? { voucherAdd: 'Gutschein hinzufügen', voucherSubtotal: 'Zwischensumme', voucherDiscount: 'Gutschein', voucherTotal: 'Gesamt', voucherRemove: 'Gutschein entfernen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.' }
-  : { voucherAdd: 'Add a voucher', voucherSubtotal: 'Subtotal', voucherDiscount: 'Voucher', voucherTotal: 'Total', voucherRemove: 'Remove voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Apply', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.' };
+  ? { voucherAdd: 'Gutschein hinzufügen', voucherSubtotal: 'Zwischensumme', voucherDiscount: 'Gutschein', voucherTotal: 'Gesamt', voucherRemove: 'Gutschein entfernen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.', reserveFree: 'Platz reservieren (0 €)', reserveRest: 'Weiter: {amount} reservieren', holdHint: 'Gutschein und Karte werden erst belastet, wenn der Gastgeber bestätigt. Sagt er ab, bleibt alles frei.', holdFailed: 'Die Zahlung konnte gerade nicht starten. Bitte versuch es gleich noch einmal.' }
+  : { voucherAdd: 'Add a voucher', voucherSubtotal: 'Subtotal', voucherDiscount: 'Voucher', voucherTotal: 'Total', voucherRemove: 'Remove voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Apply', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.', reserveFree: 'Reserve your place (€0)', reserveRest: 'Continue: reserve {amount}', holdHint: 'Your voucher and card are only charged once the host confirms. If they can’t, nothing is taken.', holdFailed: 'The payment could not start just now. Please try again in a moment.' };
 ---
 
 <dialog
@@ -173,6 +173,7 @@ const vc = lang === 'de'
           <button type="button" class="bv-remove" data-bv-remove aria-label={vc.voucherRemove}>×</button>
         </div>
         <div class="bv-line bv-total" data-bv-tot-line hidden><span>{vc.voucherTotal}</span><b data-bv-total></b></div>
+        <p class="bv-hold" data-bv-hold hidden>{vc.holdHint}</p>
       </div>
       {/* Left empty by people; a bot that fills it is ignored. */}
       <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
@@ -315,7 +316,23 @@ const vc = lang === 'de'
       q('[data-bv-sub]')!.hidden = !known;
       q('[data-bv-subtotal]')!.textContent = known ? eur(sub) : '';
       q('[data-bv-tot-line]')!.hidden = !(known && voucherOk);
-      if (known && voucherOk) q('[data-bv-total]')!.textContent = eur(Math.max(0, sub - voucherOk.balance));
+      if (known && voucherOk) {
+        q('[data-bv-total]')!.textContent = eur(Math.max(0, sub - voucherOk.balance));
+        // Only what this booking uses comes off; the rest stays on the code.
+        q('[data-bv-minus]')!.textContent = `−${eur(Math.min(sub, voucherOk.balance))}`;
+      }
+      // On a request with a voucher, the button reserves: €0 when covered,
+      // else the rest is held on the card (functions formRequest, holdConfirm).
+      const hold = holdPlan();
+      q('[data-bv-hold]')!.hidden = !hold;
+      if (send && !send.disabled) send.textContent = hold ? (hold.rest ? copy.reserveRest.replace('{amount}', eur(hold.rest / 100)) : copy.reserveFree) : (picked.bookPay ? payCopy().go : copy.send);
+    };
+    /** Total and rest (in cents) when a checked voucher pays on a request. */
+    const holdPlan = () => {
+      const unit = unitPrice();
+      if (!voucherOk || picked.bookPay || !(Number.isFinite(unit) && unit > 0)) return null;
+      const total = Math.round(unit * Math.max(1, Number(people?.value) || 1) * 100);
+      return { total, rest: Math.max(0, total - Math.round(voucherOk.balance * 100)) };
     };
     const note = (msg: string) => { if (voucherNote) { voucherNote.textContent = msg; voucherNote.hidden = !msg; } };
     const showApplied = () => {
@@ -566,10 +583,24 @@ const vc = lang === 'de'
             email: fields.Email, _subject: subject, _template: 'table', _captcha: 'false',
             // Which host's dashboard the request lands in (functions/index.js formRequest).
             ...(picked.bookSlug ? { _hostSlug: picked.bookSlug } : {}),
+            // Paying with the voucher: held until the host confirms.
+            ...(holdPlan() ? { _voucherHold: true, _totalCents: holdPlan()!.total, _back: location.href } : {}),
           }),
         });
+        const out = await res.json().catch(() => ({}));
+        // A rest to pay: the card is held on Stripe's page, then back to us.
+        if (res.ok && out.url) {
+          track('voucher-hold-started', { host: picked.bookHost ?? '', title: picked.bookTitle ?? '', lang: dialog.dataset.lang ?? '' });
+          location.href = out.url;
+          return;
+        }
+        if (out.message === 'payment') {
+          if (error) { error.textContent = copy.holdFailed; error.hidden = false; }
+          if (send) { send.disabled = false; totals(); }
+          return;
+        }
         // FormSubmit can answer 200 and still refuse (success: "false").
-        if (!res.ok || String((await res.json().catch(() => ({}))).success) !== 'true') throw new Error(String(res.status));
+        if (!res.ok || String(out.success) !== 'true') throw new Error(String(res.status));
         track('request-sent', { kind, host: picked.bookHost ?? '', title: picked.bookTitle ?? '', lang: dialog.dataset.lang ?? '' });
         form.hidden = true;
         if (sent) sent.hidden = false;

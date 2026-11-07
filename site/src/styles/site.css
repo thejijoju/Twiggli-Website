@@ -4815,6 +4815,7 @@ html.map-locked { overflow: hidden; }
 .bv .bv-line > span { font-weight: 400; }
 .bv-total { font-size: 15px; color: #8a8d92; }
 .bv-total b { font-size: 22px; font-weight: 600; color: var(--color-text); }
+.bv-hold { margin: 6px 0 0; font-size: 13px; line-height: 1.45; color: #6b7076; }
 .bv-add { justify-self: start; padding: 0; border: 0; background: none; font: inherit; font-size: 15px; font-weight: 500; color: var(--color-accent); cursor: pointer; }
 .bv-add:hover { opacity: 0.8; }
 .bv-row { display: flex; gap: 10px; }

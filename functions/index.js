@@ -398,6 +398,10 @@ const voucherKey = async () => {
 };
 const cleanCode = (code) => String(code ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const codeHash = async (raw) => createHmac('sha256', await voucherKey()).update(raw).digest('hex');
+const HOLD_MS = 7 * 24 * 3600 * 1000;
+/** Cents of a voucher held for open requests (holds older than 7 days lapse). */
+const heldCents = (v) => Object.values(v.holds ?? {}).reduce((n, h) => n + (Date.now() - (h?.at ?? 0) < HOLD_MS ? (h?.cents ?? 0) : 0), 0);
+
 /** The voucher behind a code, or why it can't be used at this host. */
 const lookupVoucher = async (code, hostSlug) => {
   const raw = cleanCode(code);
@@ -423,9 +427,12 @@ const lookupVoucher = async (code, hostSlug) => {
   if (!snap.exists) return { error: 'invalid' };
   const v = snap.data();
   if (v.validUntil && v.validUntil < new Date().toISOString().slice(0, 10)) return { error: 'expired' };
-  if (!(v.balance > 0)) return { error: 'used' };
+  // Amounts held for requests the host hasn't answered yet (7 days at most,
+  // as long as Stripe keeps a card hold) are not available meanwhile.
+  const balance = Math.round(((v.balance ?? 0) * 100) - heldCents(v)) / 100;
+  if (!(balance > 0)) return { error: 'used' };
   if (v.hostSlug && hostSlug && v.hostSlug !== hostSlug) return { error: 'host', host: v.hostSlug };
-  return { ok: true, hash, balance: v.balance, validUntil: v.validUntil ?? '', hostSlug: v.hostSlug ?? '', ref: v.ref ?? '' };
+  return { ok: true, hash, balance, validUntil: v.validUntil ?? '', hostSlug: v.hostSlug ?? '', ref: v.ref ?? '' };
 };
 
 const COMPANY = 'Twiggli UG (haftungsbeschränkt) · Rodenkirchener Str. 147 · 50997 Köln';
@@ -630,37 +637,145 @@ export const formRequest = onRequest(
       }).catch(() => {});
     }
 
-    // The guest hears that their request arrived (Jirel, 30.10.26), so they
-    // don't send it twice. Only for requests, not for notes like vouchers.
-    if (isEmail(email) && /request/i.test(String(fields.Type ?? '')) && !/voucher/i.test(String(fields.Type ?? ''))) {
-      try { await confirmGuest(email, fields); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
-    }
-    // A paid voucher: the buyer's confirmation, checked against Stripe.
-    if (/voucher paid/i.test(String(fields.Type ?? ''))) {
-      try { await confirmVoucherBuyer(String(fields['Stripe PaymentIntent'] ?? '')); } catch (err) { console.error('voucher confirmation failed', doc.id, err?.message); }
+    // Paying with a voucher on a request (07.11.26, as Luma's coupon): the
+    // voucher is held, and anything it doesn't cover is held on the guest's
+    // card (Stripe, Twiggli's account, captured later). Both are only taken
+    // once the host accepts (hostReply); a decline releases them, and an
+    // unanswered hold lapses after 7 days.
+    const totalCents = Math.round(Number(body._totalCents));
+    if (body._voucherHold === true && voucherHash && hostSlug && totalCents > 0 && totalCents < 1000000) {
+      const vRef = getFirestore().doc(`voucherCodes/${voucherHash}`);
+      let voucherCents = 0;
+      await getFirestore().runTransaction(async (t) => {
+        const vd = (await t.get(vRef)).data() ?? {};
+        voucherCents = Math.max(0, Math.min(totalCents, Math.round((vd.balance ?? 0) * 100) - heldCents(vd)));
+        if (voucherCents) t.update(vRef, { [`holds.${doc.id}`]: { cents: voucherCents, at: Date.now() } });
+      });
+      const chargeCents = totalCents - voucherCents;
+      const eurs = (c) => `€${(c / 100).toFixed(2).replace(/\.00$/, '')}`;
+      fields.Payment = chargeCents
+        ? `Voucher ${eurs(voucherCents)} held + ${eurs(chargeCents)} held on the guest's card (Twiggli's Stripe). Both are taken only when the host accepts.`
+        : `Voucher ${eurs(voucherCents)} held: covers the whole price (${eurs(totalCents)}). Taken only when the host accepts.`;
+      await doc.update({ fields, hold: { voucherHash, voucherCents, totalCents, chargeCents, at: Date.now() }, ...(chargeCents ? { status: 'awaiting_payment' } : {}) });
+      if (chargeCents) {
+        const de = String(fields.Language ?? '').startsWith('de');
+        const p = new URLSearchParams();
+        p.set('mode', 'payment');
+        p.set('locale', de ? 'de' : 'en');
+        if (isEmail(email)) p.set('customer_email', email);
+        p.set('success_url', `${SITE}${de ? '/de' : ''}/booking/confirmed/?hold={CHECKOUT_SESSION_ID}`);
+        p.set('cancel_url', typeof body._back === 'string' && body._back.startsWith(SITE) ? body._back.slice(0, 400) : `${SITE}${de ? '/de' : ''}/`);
+        p.set('line_items[0][quantity]', '1');
+        p.set('line_items[0][price_data][currency]', 'eur');
+        p.set('line_items[0][price_data][unit_amount]', String(chargeCents));
+        p.set('line_items[0][price_data][product_data][name]', `${text(fields.Workshop, 120) || 'Workshop'}${fields.Date ? ` · ${text(fields.Date, 40)}` : ''}`);
+        p.set('line_items[0][price_data][product_data][description]', de
+          ? `Rest nach Gutschein (${eurs(voucherCents)}). Wird erst abgebucht, wenn der Gastgeber bestätigt.`
+          : `Rest after your voucher (${eurs(voucherCents)}). Only charged once the host confirms.`);
+        p.set('payment_intent_data[capture_method]', 'manual');
+        p.set('payment_intent_data[description]', `Twiggli request ${doc.id}: ${text(fields.Workshop, 80)} (${text(fields.Name, 60)})`);
+        for (const [k, v] of Object.entries({ kind: 'twiggli voucher request', request_id: doc.id, host: hostSlug })) { p.set(`metadata[${k}]`, v); p.set(`payment_intent_data[metadata][${k}]`, v); }
+        const r = await stripe(STRIPE_SECRET_KEY.value(), 'checkout/sessions', p);
+        const sj = await r.json();
+        if (!r.ok) {
+          console.error('hold checkout', sj?.error?.message);
+          await vRef.update({ [`holds.${doc.id}`]: FieldValue.delete() }).catch(() => {});
+          await doc.update({ status: 'payment_failed' });
+          return res.status(502).json({ success: 'false', message: 'payment' });
+        }
+        await doc.update({ 'hold.session': sj.id });
+        // Jirel and the guest hear about it once the card is held (holdConfirm).
+        return res.status(200).json({ success: 'true', id: doc.id, url: sj.url });
+      }
     }
 
-    try {
-      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-      const rows = Object.entries(fields)
-        .map(([k, v]) => `<tr><th align="left" valign="top" style="padding:6px 12px;background:#f4f4f4">${esc(k)}</th><td style="padding:6px 12px;white-space:pre-wrap">${esc(v)}</td></tr>`)
-        .join('');
-      await mail.sendMail({
-        from: { name: 'Twiggli Formular', address: INBOX },
-        to: INBOX,
-        ...(isEmail(email) ? { replyTo: email } : {}),
-        subject,
-        text: Object.entries(fields).map(([k, v]) => `${k}: ${v}`).join('\n'),
-        html: `<table style="font-family:Tahoma,sans-serif;font-size:14px;border-collapse:collapse">${rows}</table>`,
-      });
-      await doc.update({ mailed: true });
-    } catch (err) {
-      // Still saved in Firestore (formRequests, mailed: false).
-      console.error('formRequest mail failed', doc.id, err?.message);
-    }
+    await deliverRequest(doc, subject, email, fields);
     return res.status(200).json({ success: 'true', id: doc.id });
   },
 );
+
+/** A saved request reaches people: the guest's "we got it" email and the
+ *  note to Jirel's inbox (marked mailed). */
+const deliverRequest = async (doc, subject, email, fields) => {
+    // The guest hears that their request arrived (Jirel, 30.10.26), so they
+  // don't send it twice. Only for requests, not for notes like vouchers.
+  if (isEmail(email) && /request/i.test(String(fields.Type ?? '')) && !/voucher/i.test(String(fields.Type ?? ''))) {
+    try { await confirmGuest(email, fields); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
+  }
+  // A paid voucher: the buyer's confirmation, checked against Stripe.
+  if (/voucher paid/i.test(String(fields.Type ?? ''))) {
+    try { await confirmVoucherBuyer(String(fields['Stripe PaymentIntent'] ?? '')); } catch (err) { console.error('voucher confirmation failed', doc.id, err?.message); }
+  }
+
+  try {
+    const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+    const rows = Object.entries(fields)
+      .map(([k, v]) => `<tr><th align="left" valign="top" style="padding:6px 12px;background:#f4f4f4">${esc(k)}</th><td style="padding:6px 12px;white-space:pre-wrap">${esc(v)}</td></tr>`)
+      .join('');
+    await mail.sendMail({
+      from: { name: 'Twiggli Formular', address: INBOX },
+      to: INBOX,
+      ...(isEmail(email) ? { replyTo: email } : {}),
+      subject,
+      text: Object.entries(fields).map(([k, v]) => `${k}: ${v}`).join('\n'),
+      html: `<table style="font-family:Tahoma,sans-serif;font-size:14px;border-collapse:collapse">${rows}</table>`,
+    });
+    await doc.update({ mailed: true });
+  } catch (err) {
+    // Still saved in Firestore (formRequests, mailed: false).
+    console.error('formRequest mail failed', doc.id, err?.message);
+  }
+};
+
+/** Back from Stripe after a voucher request with a rest to pay: once the
+ *  card is held, the request goes out like any other (deliverRequest). */
+export const holdConfirm = onRequest({ ...OPTS, secrets: [STRIPE_SECRET_KEY, GMAIL_APP_PASSWORD] }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const sid = String(req.body?.session_id ?? '');
+  if (!/^cs_(live|test)_\w{10,200}$/.test(sid)) return res.status(400).json({ error: 'bad-request' });
+  const snap = await getFirestore().collection('formRequests').where('hold.session', '==', sid).limit(1).get();
+  if (snap.empty) return res.status(404).json({ error: 'not-found' });
+  const doc = snap.docs[0].ref;
+  const x = snap.docs[0].data();
+  const out = (status) => ({ status, workshop: x.fields?.Workshop ?? '', date: x.fields?.Date ?? '', time: x.fields?.Time ?? '', people: x.fields?.People ?? '', voucher: (x.hold?.voucherCents ?? 0) / 100, held: (x.hold?.chargeCents ?? 0) / 100 });
+  if (x.status !== 'awaiting_payment') return res.status(200).json(out('held'));
+  const r = await stripe(STRIPE_SECRET_KEY.value(), `checkout/sessions/${sid}?expand[]=payment_intent`);
+  const s = await r.json();
+  if (!r.ok) return res.status(502).json({ error: 'stripe' });
+  if (s.status !== 'complete' || s.payment_intent?.status !== 'requires_capture') return res.status(200).json(out('unpaid'));
+  const first = await getFirestore().runTransaction(async (t) => {
+    const cur = (await t.get(doc)).data();
+    if (cur.status !== 'awaiting_payment') return false;
+    t.update(doc, { status: 'pending', 'hold.paymentIntent': s.payment_intent.id });
+    return true;
+  });
+  if (first) await deliverRequest(doc, x.subject, x.email, x.fields);
+  return res.status(200).json(out('held'));
+});
+
+/** On the host's answer: accepted takes the voucher and charges the held
+ *  card; declined releases both. Throws when the card hold has lapsed. */
+const settleHold = async (ref, x, accepted) => {
+  const h = x.hold;
+  if (!h || h.settled) return;
+  const pi = h.paymentIntent;
+  if (pi) {
+    const r = await stripe(STRIPE_SECRET_KEY.value(), `payment_intents/${pi}/${accepted ? 'capture' : 'cancel'}`, new URLSearchParams());
+    if (!r.ok && accepted) { const e = await r.json().catch(() => ({})); throw new Error(e?.error?.message || 'capture failed'); }
+  }
+  const vRef = getFirestore().doc(`voucherCodes/${h.voucherHash}`);
+  await getFirestore().runTransaction(async (t) => {
+    const vd = (await t.get(vRef)).data();
+    if (vd && accepted && h.voucherCents) {
+      t.update(vRef, {
+        balance: Math.max(0, Math.round((vd.balance ?? 0) * 100) - h.voucherCents) / 100,
+        [`holds.${ref.id}`]: FieldValue.delete(),
+        redemptions: FieldValue.arrayUnion({ requestId: ref.id, hostSlug: x.hostSlug, amount: h.voucherCents / 100, at: Date.now(), status: 'redeemed' }),
+      });
+    } else if (vd) t.update(vRef, { [`holds.${ref.id}`]: FieldValue.delete() });
+    t.update(ref, { 'hold.settled': accepted ? 'taken' : 'released', 'hold.settledAt': Date.now() });
+  });
+};
 
 /** The key that signs Approve links: made once, kept in Firestore
  *  (_config/hostAccess), which no browser can read (firestore.rules). */
@@ -782,10 +897,12 @@ export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, c
     const n = await getFirestore().collection('formRequests').where('email', '==', e).count().get().catch(() => null);
     asked[e] = n?.data().count ?? 1;
   }));
-  const items = snap.docs.map((d) => {
+  // A voucher request still on Stripe's page (or abandoned there) is not a request yet.
+  const items = snap.docs.filter((d) => !['awaiting_payment', 'payment_failed'].includes(d.data().status)).map((d) => {
     const x = d.data();
     return {
       id: d.id, subject: x.subject, fields: x.fields, status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0,
+      ...(x.hold ? { hold: { voucher: (x.hold.voucherCents ?? 0) / 100, card: (x.hold.chargeCents ?? 0) / 100, settled: x.hold.settled ?? '' } } : {}),
       guest: { requests: asked[x.email] ?? 1, cameFrom: String(x.fields?.['Came from'] ?? ''), lang: String(x.fields?.Language ?? '') },
     };
   }).sort((a, b) => b.createdAt - a.createdAt).slice(0, 200);
@@ -796,7 +913,7 @@ export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, c
 // message: a note without changing the request's status.
 const ACTIONS = { accept: 'accepted', decline: 'declined', suggest: 'suggested', offer: 'offered', message: '' };
 
-export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false }, async (req, res) => {
+export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD, STRIPE_SECRET_KEY], maxInstances: 10, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
   const email = await caller(req);
   if (!email) return res.status(401).json({ error: 'Not signed in' });
@@ -812,6 +929,13 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   const snap = await ref.get();
   const x = snap.data();
   if (!x?.hostSlug || !(ADMINS.includes(email) || (await mySlugs(email)).includes(x.hostSlug))) return res.status(403).json({ error: 'Not your request' });
+  // A voucher request: accepting takes the voucher and charges the held card.
+  if (x.hold && (action === 'accept' || action === 'decline')) {
+    try { await settleHold(ref, x, action === 'accept'); } catch (err) {
+      console.error('settleHold', id, err?.message);
+      return res.status(409).json({ error: 'payment', message: 'The card hold has lapsed (7 days). Ask the guest to pay at the studio, or write to Jirel.' });
+    }
+  }
   const entry = { by: email, action, message, when, at: Date.now(),
     ...(action === 'offer' && price > 0 && price < 10000 ? { price } : {}), ...(action === 'decline' && reason ? { reason } : {}),
     // The offer in full: which workshop, when, for how many, at what total.
