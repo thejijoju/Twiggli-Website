@@ -438,7 +438,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     const host = bySlug.get(w.slug);
     if (!host) continue;
     const dayOffset = Math.round((Date.parse(w.date) - today) / 86400000);
-    if (dayOffset < 0 || dayOffset >= DAYS_AHEAD) continue;
+    // A date the scraper got wrong ("2027-01-00", Schmiede 07.11.26) is skipped, not built.
+    if (!Number.isFinite(dayOffset) || dayOffset < 0 || dayOffset >= DAYS_AHEAD) continue;
     const lead = bookingLeadDays[w.slug];
     if (lead && workingDaysBetween(today, Date.parse(w.date)) < lead) continue;
     sessions.push({

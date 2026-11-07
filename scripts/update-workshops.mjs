@@ -4790,7 +4790,11 @@ for (const source of SOURCES) {
     const found = await scrape(source);
     const total = found.workshops.length + found.recurring.length + (found.onRequest?.length ?? 0);
     if (total) {
-      workshops.push(...found.workshops);
+      // Only real calendar days ("2027-01-00" from a misread line is dropped).
+      workshops.push(...found.workshops.filter((w) => {
+        const d = new Date(`${w.date}T12:00:00Z`);
+        return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === w.date;
+      }));
       recurringOut.push(...found.recurring);
       onRequestOut.push(...(found.onRequest ?? []));
       statuses.push({ slug: source.slug, url: source.url, status: 'ok', count: total });
