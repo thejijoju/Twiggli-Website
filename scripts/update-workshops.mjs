@@ -210,6 +210,15 @@ const SOURCES = [
     title: 'DIY Kaffeerösten', titleEn: 'DIY Coffee Roasting', price: '€59',
     district: 'Prenzlauer Berg',
     bookUrl: 'https://tenfarmersandbananas.com/produkt/diy-kaffeeroesten-in-berlin/' },
+  // Angelo also sells single places on Konfetti (partner "Ten Farmers and
+  // Bananas"); the homepage list above stopped parsing in Oct 26, so the
+  // dates come from his Konfetti course (id x4m09x) too. Read for dates
+  // only: bookings come through our form (requestBooking), as for Aria.
+  { slug: 'angelo', name: 'Coffee and Bananas — roasting workshops (Konfetti)', mode: 'konfetti',
+    url: 'https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/',
+    pagePattern: '/de-de/e/[a-z0-9-]*-x4m09x/?$', idFromUrl: true,
+    requestBooking: true, infoUrl: 'https://www.coffeeandbananas.com/',
+    district: 'Prenzlauer Berg' },
   // Squarespace site booking through Konfetti — the sitemap finds every
   // course page, each page's embedded widget names its Konfetti event, and
   // the calendar API serves the dates with live tickets left.
