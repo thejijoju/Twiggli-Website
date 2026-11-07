@@ -1282,10 +1282,45 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   }
   const pct = Number.isFinite(member.commissionPct) ? Math.max(0, Math.min(30, member.commissionPct)) : DEFAULT_COMMISSION;
   const total = ev.price * 100 * people;
-  const fee = Math.round(total * pct / 100);
+  // A Twiggli voucher (07.11.26): its value comes off the price. The guest
+  // pays the rest on the host's Stripe; Twiggli pays the voucher part out to
+  // the host with the monthly voucher payout (minus 15%, as agreed). The
+  // voucher's balance is taken only once the booking is paid.
+  let voucherCents = 0;
+  let voucherHash = '';
+  if (b.voucher) {
+    const v = await lookupVoucher(b.voucher, ev.slug);
+    if (!v.ok) return res.status(409).json({ error: 'voucher', reason: v.error });
+    voucherCents = Math.min(total, Math.round(v.balance * 100));
+    voucherHash = v.hash;
+  }
+  const charge = total - voucherCents;
+  const fee = Math.round(charge * pct / 100);
   const page = `${SITE}${de ? '/de' : ''}/booking/confirmed/`;
   const back = typeof b.back === 'string' && b.back.startsWith(SITE) ? b.back.slice(0, 400) : `${SITE}${de ? '/de' : ''}/`;
   const when = `${new Date(`${date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' })}, ${ev.start}`;
+  const booking = {
+    eventId, date, start: ev.start, slug: ev.slug, title: ev.title, location: ev.location ?? '', cancel: ev.cancel ?? '7d',
+    people, name, email, phone: text(b.phone, 60), message: String(b.message ?? '').slice(0, 1000), lang,
+    hostEmail: ev.by, account, amount: total, fee, commissionPct: pct, status: 'pending', createdAt: FieldValue.serverTimestamp(),
+    ...(voucherCents ? { voucherHash, voucherCents } : {}),
+  };
+  // The voucher covers everything: booked at once, no Stripe.
+  if (!charge) {
+    const id = `vb${randomBytes(12).toString('hex')}`;
+    const ref = db.doc(`bookings/${id}`);
+    try {
+      await db.runTransaction(async (t) => {
+        const vRef = db.doc(`voucherCodes/${voucherHash}`);
+        const vd = (await t.get(vRef)).data();
+        if (!vd || Math.round((vd.balance ?? 0) * 100) < voucherCents) throw new Error('voucher-used');
+        t.update(vRef, { balance: Math.round(vd.balance * 100 - voucherCents) / 100, redemptions: FieldValue.arrayUnion({ bookingId: id, hostSlug: ev.slug, amount: voucherCents / 100, at: Date.now(), status: 'redeemed' }) });
+        t.set(ref, { ...booking, status: 'paid', paidBy: 'voucher', paidAt: FieldValue.serverTimestamp() });
+      });
+    } catch { return res.status(409).json({ error: 'voucher', reason: 'used' }); }
+    await sendBookingMails(id, { ...booking, status: 'paid', paidBy: 'voucher' });
+    return res.status(200).json({ url: `${page}?b=${id}&e=${eventId}` });
+  }
   const p = new URLSearchParams();
   p.set('mode', 'payment');
   p.set('locale', lang);
@@ -1293,11 +1328,13 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   p.set('success_url', `${page}?session_id={CHECKOUT_SESSION_ID}&e=${eventId}`);
   p.set('cancel_url', back);
   p.set('expires_at', String(Math.floor(Date.now() / 1000) + 30 * 60));
-  p.set('line_items[0][quantity]', String(people));
+  // With a voucher, one line for the rest (Stripe has no negative lines).
+  const voucherLine = voucherCents ? (de ? `Gutschein −€${(voucherCents / 100).toFixed(2).replace(/\.00$/, '')} angerechnet` : `Voucher −€${(voucherCents / 100).toFixed(2).replace(/\.00$/, '')} applied`) : '';
+  p.set('line_items[0][quantity]', voucherCents ? '1' : String(people));
   p.set('line_items[0][price_data][currency]', 'eur');
-  p.set('line_items[0][price_data][unit_amount]', String(ev.price * 100));
-  p.set('line_items[0][price_data][product_data][name]', `${ev.title} · ${when}`);
-  p.set('line_items[0][price_data][product_data][description]', [(CANCEL_TEXT[ev.cancel] ?? CANCEL_TEXT['7d'])[de ? 0 : 1], ev.location].filter(Boolean).join(' · '));
+  p.set('line_items[0][price_data][unit_amount]', String(voucherCents ? charge : ev.price * 100));
+  p.set('line_items[0][price_data][product_data][name]', `${voucherCents ? `${people}× ` : ''}${ev.title} · ${when}`);
+  p.set('line_items[0][price_data][product_data][description]', [voucherLine, (CANCEL_TEXT[ev.cancel] ?? CANCEL_TEXT['7d'])[de ? 0 : 1], ev.location].filter(Boolean).join(' · '));
   if (fee > 0) p.set('payment_intent_data[application_fee_amount]', String(fee));
   p.set('payment_intent_data[description]', `Twiggli: ${ev.title}, ${date} ${ev.start}, ${people}× (${name})`);
   const meta = { kind: 'twiggli booking', event_id: eventId, date, start: ev.start, people: String(people), name, slug: ev.slug, commission_pct: String(pct) };
@@ -1305,23 +1342,20 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   const r = await stripeAs(key, account, 'checkout/sessions', p);
   const s = await r.json();
   if (!r.ok) { console.error('bookingCheckout', s?.error?.message); return res.status(502).json({ error: 'stripe', message: s?.error?.message }); }
-  await db.doc(`bookings/${s.id}`).set({
-    eventId, date, start: ev.start, slug: ev.slug, title: ev.title, location: ev.location ?? '', cancel: ev.cancel ?? '7d',
-    people, name, email, phone: text(b.phone, 60), message: String(b.message ?? '').slice(0, 1000), lang,
-    hostEmail: ev.by, account, amount: total, fee, commissionPct: pct, status: 'pending', createdAt: FieldValue.serverTimestamp(),
-  });
+  await db.doc(`bookings/${s.id}`).set(booking);
   return res.status(200).json({ url: s.url });
 });
 
 export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY, GMAIL_APP_PASSWORD] }, async (req, res) => {
   if (!allow(req, res)) return;
   const id = String(req.body?.session_id ?? '');
-  if (!/^cs_(live|test)_\w{10,200}$/.test(id)) return res.status(400).json({ error: 'bad-request' });
+  // cs_…: paid on Stripe; vb…: paid in full with a voucher (bookingCheckout).
+  if (!/^cs_(live|test)_\w{10,200}$/.test(id) && !/^vb[0-9a-f]{24}$/.test(id)) return res.status(400).json({ error: 'bad-request' });
   const ref = getFirestore().doc(`bookings/${id}`);
   const snap = await ref.get();
   if (!snap.exists) return res.status(404).json({ error: 'not-found' });
   let bk = snap.data();
-  const out = () => ({ status: bk.status, title: bk.title, date: bk.date, start: bk.start, location: bk.location, people: bk.people, amount: bk.amount / 100, name: bk.name, cancel: bk.cancel, slug: bk.slug });
+  const out = () => ({ status: bk.status, title: bk.title, date: bk.date, start: bk.start, location: bk.location, people: bk.people, amount: bk.amount / 100, voucher: (bk.voucherCents ?? 0) / 100, name: bk.name, cancel: bk.cancel, slug: bk.slug });
   if (bk.status === 'paid') return res.status(200).json(out());
   const r = await stripeAs(STRIPE_CONNECT_KEY.value(), bk.account, `checkout/sessions/${id}`);
   const s = await r.json();
@@ -1331,35 +1365,54 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY,
   const first = await getFirestore().runTransaction(async (t) => {
     const cur = (await t.get(ref)).data();
     if (cur.status === 'paid') return false;
-    t.update(ref, { status: 'paid', paidAt: FieldValue.serverTimestamp(), paymentIntent: String(s.payment_intent ?? '') });
+    // The voucher part is taken from the code now that the rest is paid.
+    let short = false;
+    if (cur.voucherHash && cur.voucherCents) {
+      const vRef = getFirestore().doc(`voucherCodes/${cur.voucherHash}`);
+      const vd = (await t.get(vRef)).data();
+      const have = Math.round((vd?.balance ?? 0) * 100);
+      short = have < cur.voucherCents; // used up meanwhile: Jirel sorts it out
+      if (vd) t.update(vRef, { balance: Math.max(0, have - cur.voucherCents) / 100, redemptions: FieldValue.arrayUnion({ bookingId: id, hostSlug: cur.slug, amount: cur.voucherCents / 100, at: Date.now(), status: 'redeemed' }) });
+    }
+    t.update(ref, { status: 'paid', paidAt: FieldValue.serverTimestamp(), paymentIntent: String(s.payment_intent ?? ''), ...(short ? { voucherShort: true } : {}) });
     return true;
   });
   bk = { ...bk, status: 'paid' };
   if (!first) return res.status(200).json(out());
+  await sendBookingMails(id, bk);
+  return res.status(200).json(out());
+});
+
+/** The emails for a paid booking: the guest's confirmation, and the host's
+ *  note (Jirel in CC), with the voucher part shown where there is one. */
+const sendBookingMails = async (id, bk) => {
   const de = bk.lang === 'de';
   const day = new Date(`${bk.date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
   const eur = (c) => `€${(c / 100).toFixed(2).replace(/\.00$/, '')}`;
   const cancel = (CANCEL_TEXT[bk.cancel] ?? CANCEL_TEXT['7d'])[de ? 0 : 1];
   const first_ = bk.name.split(/\s+/)[0];
-  const rows = [[de ? 'Workshop' : 'Workshop', bk.title], [de ? 'Wann' : 'When', `${day}, ${bk.start}`], [de ? 'Wo' : 'Where', bk.location], [de ? 'Plätze' : 'Places', String(bk.people)], [de ? 'Bezahlt' : 'Paid', eur(bk.amount)], [de ? 'Stornierung' : 'Cancellation', cancel]].filter(([, v]) => v);
+  const vc = bk.voucherCents ?? 0;
+  const charged = bk.amount - vc;
+  const rows = [[de ? 'Workshop' : 'Workshop', bk.title], [de ? 'Wann' : 'When', `${day}, ${bk.start}`], [de ? 'Wo' : 'Where', bk.location], [de ? 'Plätze' : 'Places', String(bk.people)],
+    ...(vc ? [[de ? 'Gutschein' : 'Voucher', `−${eur(vc)}`]] : []),
+    [de ? 'Bezahlt' : 'Paid', eur(charged)], [de ? 'Stornierung' : 'Cancellation', cancel]].filter(([, v]) => v);
   const table = rows.map(([k, v]) => `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">${esc(k)}</td><td style="padding:5px 0"><b>${esc(v)}</b></td></tr>`).join('');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   try {
     await mail.sendMail({
       from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: bk.email,
       subject: de ? `Gebucht! ${bk.title} am ${day} ${emojiFor(bk.title)}` : `You're booked! ${bk.title} on ${day} ${emojiFor(bk.title)}`,
-      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? `Hallo ${esc(first_)},<br><br>dein Platz ist sicher, wir freuen uns auf dich! 🎉` : `Hi ${esc(first_)},<br><br>your place is booked, we can't wait to see you! 🎉`}<table style="margin:16px 0;font-size:14px">${table}</table>${de ? 'Die Zahlungsbestätigung von Stripe kommt in einer eigenen E-Mail. Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : 'Your payment receipt from Stripe comes in a separate email. Questions, or need to change something? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>'}</div>`,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? `Hallo ${esc(first_)},<br><br>dein Platz ist sicher, wir freuen uns auf dich! 🎉` : `Hi ${esc(first_)},<br><br>your place is booked, we can't wait to see you! 🎉`}<table style="margin:16px 0;font-size:14px">${table}</table>${charged && de ? 'Die Zahlungsbestätigung von Stripe kommt in einer eigenen E-Mail. Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : de ? 'Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : `${charged ? 'Your payment receipt from Stripe comes in a separate email. ' : ''}Questions, or need to change something? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`}</div>`,
     });
   } catch (err) { console.error('booking guest mail failed', id, err?.message); }
   try {
     await mail.sendMail({
       from: { name: 'Twiggli', address: SENDER }, replyTo: bk.email, to: bk.hostEmail, cc: INBOX,
       subject: `Neue Buchung über Twiggli: ${bk.title}, ${bk.date} ${bk.start} (${bk.people} ${bk.people === 1 ? 'Platz' : 'Plätze'}) 🎉`,
-      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:560px">Hallo,<br><br>gerade wurde über Twiggli gebucht und bezahlt:<table style="margin:16px 0;font-size:14px">${table}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Gast</td><td style="padding:5px 0"><b>${esc(bk.name)}</b>, ${esc(bk.email)}${bk.phone ? `, ${esc(bk.phone)}` : ''}</td></tr>${bk.message ? `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Nachricht</td><td style="padding:5px 0">${esc(bk.message)}</td></tr>` : ''}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Auszahlung</td><td style="padding:5px 0"><b>${eur(bk.amount - bk.fee)}</b> (${eur(bk.amount)} minus ${bk.commissionPct} % Twiggli${bk.commissionPct ? '' : ', erste Buchung provisionsfrei'}, abzüglich Stripe-Gebühren)</td></tr></table>Das Geld liegt schon auf deinem Stripe-Konto. Antworte auf diese E-Mail, um ${esc(first_)} direkt zu schreiben.<br><br>Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b></div>`,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:560px">Hallo,<br><br>gerade wurde über Twiggli gebucht und bezahlt:<table style="margin:16px 0;font-size:14px">${table}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Gast</td><td style="padding:5px 0"><b>${esc(bk.name)}</b>, ${esc(bk.email)}${bk.phone ? `, ${esc(bk.phone)}` : ''}</td></tr>${bk.message ? `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Nachricht</td><td style="padding:5px 0">${esc(bk.message)}</td></tr>` : ''}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Auszahlung</td><td style="padding:5px 0">${charged ? `<b>${eur(charged - bk.fee)}</b> über Stripe (${eur(charged)} minus ${bk.commissionPct} % Twiggli${bk.commissionPct ? '' : ', erste Buchung provisionsfrei'}, abzüglich Stripe-Gebühren)` : ''}${charged && vc ? '<br>' : ''}${vc ? `<b>${eur(Math.round(vc * 0.85))}</b> für den Gutschein (${eur(vc)} minus 15 %), zahlt Twiggli bis zum 10. des Folgemonats aus` : ''}</td></tr></table>${charged ? 'Das Geld liegt schon auf deinem Stripe-Konto. ' : ''} Antworte auf diese E-Mail, um ${esc(first_)} direkt zu schreiben.<br><br>Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b></div>`,
     });
   } catch (err) { console.error('booking host mail failed', id, err?.message); }
-  return res.status(200).json(out());
-});
+};
 
 // ── Paid vouchers still waiting for their code and PDF ──
 // Vouchers bought while automatic sending was off (VOUCHER_AUTO) have
