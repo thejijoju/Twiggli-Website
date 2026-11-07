@@ -79,6 +79,8 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
           <input type="email" id={id} name="email" placeholder={copy.placeholder} autocomplete="email" required />
           <button type="submit" class="subscribe-btn" data-label={copy.button} data-sending={bookingCopy[lang].sending}>{copy.button}</button>
         </div>
+        <!-- Hidden from people; bots fill it in and are dropped (formRequest). -->
+        <input type="text" name="_honey" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true" />
       </form>
       <p class="newsletter-note" data-newsletter-thanks hidden>{brevo ? copy.checkInbox : copy.thanks}</p>
       <p class="newsletter-note newsletter-error" data-newsletter-error hidden>{copy.error}</p>
@@ -98,6 +100,7 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
       event.preventDefault();
       if (!form.reportValidity()) return;
       const email = String(new FormData(form).get('email') ?? '').trim();
+      const honey = String(new FormData(form).get('_honey') ?? '');
       if (error) error.hidden = true;
       if (button) { button.disabled = true; button.textContent = button.dataset.sending ?? ''; }
       try {
@@ -129,6 +132,7 @@ const KINDS = ['card', 'taped', 'stamp'] as const;
             _subject: `${teams ? 'Team newsletter' : 'Newsletter'} signup: ${email}`,
             _template: 'table',
             _captcha: 'false',
+            _honey: honey,
           }),
         });
         // FormSubmit can answer 200 and still refuse (success: "false").

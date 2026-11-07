@@ -576,7 +576,20 @@ export const formRequest = onRequest(
     // 10+ letters, case flipping back and forth. Two or more such fields
     // and it is a bot: kept in Firestore (marked spam), but nobody is mailed.
     const gibberish = (v) => /^[A-Za-z]{10,}$/.test(v) && (v.match(/[a-z][A-Z]|[A-Z][a-z]/g) ?? []).length >= 5;
-    const spam = Object.entries(fields).filter(([k, v]) => !/^(Type|Sent from|Language|Came from|Interested in)$/.test(k) && gibberish(String(v).trim())).length >= 2;
+    // Newsletter bots sign up Gmail addresses with dots scattered through
+    // them ("an.u.la.fuw.51.6@gmail.com", 07.11.26): Gmail ignores dots, so
+    // every variant reaches the same inbox and slips past filters. Three or
+    // more dots with two or more one- or two-character pieces is never a
+    // real person's way of writing their address.
+    const dottedGmail = (e) => {
+      const m = /^([^@]+)@(gmail|googlemail)\.com$/i.exec(e);
+      if (!m) return false;
+      const parts = m[1].split('.');
+      return parts.length >= 4 && parts.filter((x) => x.length <= 2).length >= 2;
+    };
+    const signup = /newsletter signup/i.test(String(fields.Type ?? ''));
+    const spam = (signup && dottedGmail(email))
+      || Object.entries(fields).filter(([k, v]) => !/^(Type|Sent from|Language|Came from|Interested in)$/.test(k) && gibberish(String(v).trim())).length >= 2;
     if (spam) {
       await getFirestore().collection('formRequests').add({ subject, email, fields, origin: req.get('origin') ?? '', createdAt: FieldValue.serverTimestamp(), mailed: false, spam: true }).catch(() => {});
       return res.status(200).json({ success: 'true' });
