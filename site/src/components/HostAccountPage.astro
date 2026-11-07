@@ -1028,8 +1028,9 @@ const fields = [
           renderMsgs();
           const again = reqs.find((x) => x.id === r.id);
           if (again) openDetail(again);
-        } catch {
-          note.textContent = fill(t.error, cfg.contact);
+        } catch (err) {
+          // A voucher request whose card hold lapsed (7 days): say so plainly.
+          note.textContent = /payment/.test(String((err as Error)?.message)) ? t.ib.holdLapsed : fill(t.error, cfg.contact);
           btns.forEach((b) => { b.disabled = false; });
         }
       };
@@ -1146,6 +1147,13 @@ const fields = [
           const earn = el('div', 'ib-earn');
           earn.append(el('span', '', t.ib.oYou), el('b', '', `€ ${keep(each * ppl).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`));
           what.append(earn);
+        }
+        // Paid with a Twiggli voucher: held until the host accepts (functions settleHold).
+        const hold = (r as Req & { hold?: { voucher: number; card: number; settled: string } }).hold;
+        if (hold) {
+          const eur2 = (n: number) => `€ ${n.toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          what.append(el('p', 'ib-hold', hold.settled === 'taken' ? say(t.ib.holdTaken, { v: eur2(hold.voucher + hold.card) })
+            : say(hold.card ? t.ib.holdCard : t.ib.holdVoucher, { v: eur2(hold.voucher), c: eur2(hold.card) })));
         }
         res.replaceChildren(...(inModal ? [] : [closeRes]), what);
         if (inModal) {
@@ -1967,6 +1975,7 @@ const fields = [
   .ib-modal-body { padding: 22px 32px 30px; }
   .ib-modal-body .ib-what h3 { font-size: 1.6rem; }
   .ib-what.has-av { position: relative; }
+  .ib-hold { margin: 10px 0 0 !important; padding: 10px 14px; border-radius: 12px; background: linear-gradient(135deg, rgba(106, 62, 236, 0.08), rgba(230, 74, 180, 0.07)); font-size: 0.92rem; }
   .ib-what.has-av h3 { padding-right: 64px; }
   .ib-what .ib-what-av { position: absolute; top: 0; right: 0; width: 52px; height: 52px; font-size: 1.3rem; border-radius: 50%; }
   .ib-said { margin: 18px 0 4px; padding-top: 18px; border-top: 1px solid rgba(36, 39, 46, 0.1); }
