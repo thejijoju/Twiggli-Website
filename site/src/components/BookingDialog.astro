@@ -436,7 +436,8 @@ const vc = lang === 'de'
         when.hidden = !when.textContent;
       }
       // The voucher field, at hosts that take Twiggli vouchers.
-      if (voucherBox) voucherBox.hidden = !!picked.bookPay || !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind) && !(kind === 'wish' && picked.bookMin));
+      // Also on dates paid straight away: the voucher comes off the price (bookingCheckout).
+      if (voucherBox) voucherBox.hidden = !(picked.bookSlug && voucherHostList.includes(picked.bookSlug) && ['book', 'request', 'wish'].includes(kind) && !(kind === 'wish' && picked.bookMin));
       if (voucherRow) voucherRow.hidden = true;
       if (voucherIn) voucherIn.value = '';
       voucherOk = null; note('');
@@ -532,6 +533,7 @@ const vc = lang === 'de'
               eventId: picked.bookPay, date: picked.bookDate, people: Number(data.get('people') || 1),
               name: String(data.get('name') ?? ''), email: String(data.get('email') ?? ''), phone: String(data.get('phone') ?? ''),
               message: String(data.get('message') ?? ''), lang: dialog.dataset.lang === 'de' ? 'de' : 'en', back: location.href,
+              ...(voucherOk ? { voucher: voucherOk.code } : {}),
             }),
           });
           const out = await res.json().catch(() => ({}));
@@ -541,7 +543,9 @@ const vc = lang === 'de'
             return;
           }
           if (error) {
-            error.textContent = out.error === 'full' ? pc.full(out.left ?? 0) : pc.failed;
+            error.textContent = out.error === 'full' ? pc.full(out.left ?? 0)
+              : out.error === 'voucher' ? (({ expired: copy.voucherExpired, used: copy.voucherUsed, host: copy.voucherHost } as Record<string, string>)[out.reason] ?? copy.voucherInvalid)
+              : pc.failed;
             error.hidden = false;
           }
         } catch {

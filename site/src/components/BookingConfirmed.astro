@@ -11,8 +11,8 @@ import { functionsBase } from '../data/firebase.ts';
 interface Props { lang: 'en' | 'de' }
 const { lang } = Astro.props;
 const t = {
-  en: { title: 'You’re booked!', checking: 'Checking your payment…', body: 'Your place is confirmed. A confirmation is on its way to your inbox.', unpaid: 'Your payment hasn’t come through yet. If you were charged, reply to our email and we’ll sort it out.', error: 'We couldn’t check your booking just now. Your confirmation email will follow; if not, write to hello@twiggli.com.', more: 'Discover more workshops', when: 'When', where: 'Where', places: 'Places', paid: 'Paid' },
-  de: { title: 'Gebucht!', checking: 'Wir prüfen deine Zahlung…', body: 'Dein Platz ist sicher. Die Bestätigung ist auf dem Weg in dein Postfach.', unpaid: 'Deine Zahlung ist noch nicht angekommen. Falls schon abgebucht wurde, antworte einfach auf unsere E-Mail.', error: 'Wir konnten deine Buchung gerade nicht prüfen. Die Bestätigung kommt per E-Mail; sonst schreib an hello@twiggli.com.', more: 'Weitere Workshops entdecken', when: 'Wann', where: 'Wo', places: 'Plätze', paid: 'Bezahlt' },
+  en: { title: 'You’re booked!', checking: 'Checking your payment…', body: 'Your place is confirmed. A confirmation is on its way to your inbox.', unpaid: 'Your payment hasn’t come through yet. If you were charged, reply to our email and we’ll sort it out.', error: 'We couldn’t check your booking just now. Your confirmation email will follow; if not, write to hello@twiggli.com.', more: 'Discover more workshops', when: 'When', where: 'Where', places: 'Places', voucher: 'Voucher', paid: 'Paid' },
+  de: { title: 'Gebucht!', checking: 'Wir prüfen deine Zahlung…', body: 'Dein Platz ist sicher. Die Bestätigung ist auf dem Weg in dein Postfach.', unpaid: 'Deine Zahlung ist noch nicht angekommen. Falls schon abgebucht wurde, antworte einfach auf unsere E-Mail.', error: 'Wir konnten deine Buchung gerade nicht prüfen. Die Bestätigung kommt per E-Mail; sonst schreib an hello@twiggli.com.', more: 'Weitere Workshops entdecken', when: 'Wann', where: 'Wo', places: 'Plätze', voucher: 'Gutschein', paid: 'Bezahlt' },
 }[lang];
 ---
 
@@ -38,14 +38,14 @@ const t = {
   const facts = document.getElementById('booked-facts');
   const de = box.dataset.lang === 'de';
   const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-  fetch(box.dataset.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: q.get('session_id') || '' }) })
+  fetch(box.dataset.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: q.get('session_id') || q.get('b') || '' }) })
     .then((r) => r.json())
     .then((b) => {
       if (b.status !== 'paid') { title.textContent = t.checking.replace('…', ''); body.textContent = t.unpaid; return; }
       title.textContent = t.title;
       body.textContent = t.body;
       const day = new Date(`${b.date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
-      facts.innerHTML = [['', b.title], [t.when, `${day}, ${b.start}`], [t.where, b.location], [t.places, b.people], [t.paid, `€${b.amount}`]]
+      facts.innerHTML = [['', b.title], [t.when, `${day}, ${b.start}`], [t.where, b.location], [t.places, b.people], ...(b.voucher ? [[t.voucher, `−€${b.voucher}`]] : []), [t.paid, `€${Math.round((b.amount - (b.voucher || 0)) * 100) / 100}`]]
         .filter(([, v]) => v).map(([k, v]) => (k ? `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>` : `<div class="booked-what"><dd>${esc(v)}</dd></div>`)).join('');
       facts.hidden = false;
     })
