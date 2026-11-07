@@ -54,7 +54,7 @@ import { withBase, type Lang } from '../lib/url.ts';
 export const voucherHostsAgreed: string[] = [
   'anna-malerlebnisse', 'himapan-berlin',
   'ceramic-kingdom', 'petitejungle', 'rebeca',
-  'angelo', 'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
+  'evelyn', 'nina', 'ana', 'helka', 'maximiliana',
   'munio',
 ];
 
@@ -72,6 +72,7 @@ export const voucherHosts: string[] = [
   'druckrausch', // Deborah (Druckrausch), "ja, wir sind einverstanden!", 28.10.26
   'strassenbraeu', // William (Straßenbräu), "Gutscheine: Könnt ihr gerne verkaufen, kein Problem!", 30.10.26
   'fave-studio', // Elena & Giulia (fave studio), "Yes we agree", 04.11.26 (email, Giulia)
+  'angelo', // Angelo Hey (Coffee and Bananas), "I confirm", 07.11.26 (email)
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
