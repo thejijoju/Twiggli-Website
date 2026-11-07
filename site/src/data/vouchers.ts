@@ -286,7 +286,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     stepsCopy: [
       '€25, €50, €75 or any amount from €20, and a personal message if you like.',
       'Within 24 hours you get the payment link, then the voucher as a PDF, to print or to forward.',
-      'Whoever gets it books a workshop with any of the makers below, any time in the next 3 years.',
+      'Whoever gets it books a workshop with any of the makers below on twiggli.com and enters the code there, any time in the next 3 years. The voucher can only be redeemed on Twiggli.',
     ],
     hostsTitle: 'Where it', hostsEm: 'can be used', hostsSub: 'Makers who take Twiggli vouchers. More are joining.', perPerson: 'per person', more: 'See the workshop',
     facts: ['Valid for 3 years', 'PDF to print or forward', 'Pay by link, no account'],
@@ -322,7 +322,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     stepsCopy: [
       '25, 50, 75 € oder ein Wunschbetrag ab 20 €, gern mit persönlicher Nachricht.',
       'Innerhalb von 24 Stunden bekommst du den Zahlungslink, danach den Gutschein als PDF zum Ausdrucken oder Weiterleiten.',
-      'Die beschenkte Person bucht einen Workshop bei einer der Maker*innen unten, irgendwann in den nächsten 3 Jahren.',
+      'Die beschenkte Person bucht einen Workshop bei einer der Maker*innen unten auf twiggli.com und gibt dort den Code ein, irgendwann in den nächsten 3 Jahren. Einlösbar nur über Twiggli.',
     ],
     hostsTitle: 'Hier', hostsEm: 'einlösbar', hostsSub: 'Maker*innen, die Twiggli-Gutscheine annehmen. Es kommen laufend neue dazu.', perPerson: 'pro Person', more: 'Zum Workshop',
     facts: ['3 Jahre gültig', 'PDF zum Ausdrucken oder Weiterleiten', 'Bezahlen per Link, ohne Konto'],
@@ -358,7 +358,7 @@ export const voucherCopy: Record<Lang, VoucherCopy> = {
     stepsCopy: [
       '25, 50, 75 € ou un montant libre dès 20 €, avec un message personnel si vous voulez.',
       'Sous 24 heures, vous recevez le lien de paiement, puis le bon en PDF à imprimer ou à transférer.',
-      'La personne réserve un atelier chez l’un des créateurs ci-dessous, quand elle veut dans les 3 ans.',
+      'La personne réserve un atelier chez l’un des créateurs ci-dessous sur twiggli.com et y saisit le code, quand elle veut dans les 3 ans. Le bon ne s’utilise que sur Twiggli.',
     ],
     hostsTitle: 'Où', hostsEm: 'l’utiliser', hostsSub: 'Les créateurs qui acceptent les bons Twiggli. D’autres arrivent.', perPerson: 'par personne', more: 'Voir l’atelier',
     facts: ['Valable 3 ans', 'PDF à imprimer ou transférer', 'Paiement par lien, sans compte'],
