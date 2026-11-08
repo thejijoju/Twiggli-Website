@@ -65,6 +65,23 @@ const knownSlugs = async (email) => {
   }
   return [...out];
 };
+/** The host behind a Twiggli page, from the same sheet: their email(s)
+ *  (column D) and first name (column A). Null when the sheet has no row. */
+const hostContact = async (slug) => {
+  const tok = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token?scopes=https://www.googleapis.com/auth/spreadsheets.readonly', { headers: { 'Metadata-Flavor': 'Google' } });
+  if (!tok.ok) throw new Error(`token ${tok.status}`);
+  const { access_token: token } = await tok.json();
+  const range = encodeURIComponent("'Hosts & Emails'!A2:K400");
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${HOST_SHEET}/values/${range}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`sheet ${res.status}`);
+  for (const r of (await res.json()).values ?? []) {
+    const slugs = String(r[10] ?? '').toLowerCase().split(/[\s,;]+/);
+    if (!slugs.includes(slug)) continue;
+    const emails = String(r[3] ?? '').split(/[\s,;/]+/).filter(isEmail);
+    if (emails.length) return { emails, firstName: String(r[0] ?? '').trim().split(/\s+/)[0] };
+  }
+  return null;
+};
 // May open every host's account without approval, and approves the others.
 const ADMINS = String(process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
@@ -453,6 +470,66 @@ const sendVoucherMail = async (to, parts, pdf, code) => { // pdf null: no attach
   });
 };
 
+/** The language we write to each voucher host in (as in our emails to
+ *  them); everyone else gets German. */
+const HOST_LANG = {
+  anne: 'en', studio32: 'en', pia: 'en', 'fave-studio': 'en', angelo: 'en', ana: 'en', pigi: 'en',
+  'lucille-guder': 'fr',
+};
+
+/** "Someone bought a voucher for you": a short, warm note to the host of a
+ *  host voucher, with who bought it, who it is for, and the code (Jirel,
+ *  08.11.26). General vouchers have no host yet, so nobody is told until
+ *  one is used for a booking. Sent once per payment, Jirel in BCC. */
+const notifyVoucherHost = async (piId, m, code, amount) => {
+  const slug = String(m.host_slug ?? '');
+  if (!SLUG.test(slug)) return;
+  const ref = getFirestore().doc(`vouchers/${piId}`);
+  if ((await ref.get()).data()?.hostNotifiedAt) return;
+  const who = await hostContact(slug);
+  if (!who) { console.error('voucher host: no email in the sheet for', slug); return; }
+  const lang = HOST_LANG[slug] ?? 'de';
+  const eur = (n) => (lang === 'en' ? `€${n % 1 ? n.toFixed(2) : n}` : `${(n % 1 ? n.toFixed(2) : String(n)).replace('.', ',')} €`);
+  const keep = Math.round(amount * 85) / 100;
+  const people = Number(m.people) || 1;
+  const recipient = String(m.recipient ?? '').trim();
+  const recipientFirst = recipient.split(/\s+/)[0];
+  const t = {
+    de: {
+      subject: 'Glückwunsch! Jemand hat einen Gutschein für dich gekauft 🎁',
+      hi: `Hey ${who.firstName}!`, congrats: 'Glückwunsch! 🎉 Gerade hat jemand einen <b>Twiggli</b>-Gutschein für deinen Workshop gekauft:',
+      rows: [['Workshop', m.workshop], ['Gekauft von', m.buyer_name], ['Für', recipient], ['Plätze', String(people)], ['Wert', eur(amount)], ['Gutscheincode', code]],
+      next: `Du musst jetzt nichts tun. ${recipientFirst || 'Die Person'} löst den Gutschein beim Buchen auf deiner <b>Twiggli</b>-Seite ein. Sobald das passiert, sage ich dir Bescheid: Die Buchung kommt dann per E-Mail und in dein Dashboard, markiert mit „mit Gutschein bezahlt“, und du bestätigst sie wie gewohnt.`,
+      pay: `Nach dem Workshop bekommst du den Betrag bis zum 10. des Folgemonats, abzüglich 15 % Provision (bei ${eur(amount)} sind das ${eur(keep)} für dich).`,
+    },
+    en: {
+      subject: 'Congrats! Someone bought a voucher for you 🎁',
+      hi: `Hey ${who.firstName}!`, congrats: 'Congrats! 🎉 Someone just bought a <b>Twiggli</b> voucher for your workshop:',
+      rows: [['Workshop', m.workshop], ['Bought by', m.buyer_name], ['For', recipient], ['Places', String(people)], ['Value', eur(amount)], ['Voucher code', code]],
+      next: `There's nothing you need to do now. ${recipientFirst || 'They'} redeem${recipientFirst ? 's' : ''} the voucher when booking on your <b>Twiggli</b> page. As soon as that happens, I'll let you know: the booking arrives by email and in your dashboard, marked "paid with voucher", and you confirm it as usual.`,
+      pay: `After the workshop, you get the amount by the 10th of the following month, minus 15% commission (for ${eur(amount)} that's ${eur(keep)} for you).`,
+    },
+    fr: {
+      subject: "Félicitations ! Quelqu'un a acheté un bon cadeau pour toi 🎁",
+      hi: `Coucou ${who.firstName} !`, congrats: "Félicitations ! 🎉 Quelqu'un vient d'acheter un bon cadeau <b>Twiggli</b> pour ton atelier :",
+      rows: [['Atelier', m.workshop], ['Acheté par', m.buyer_name], ['Pour', recipient], ['Places', String(people)], ['Valeur', eur(amount)], ['Code', code]],
+      next: `Tu n'as rien à faire pour l'instant. ${recipientFirst || 'La personne'} utilisera le bon en réservant sur ta page <b>Twiggli</b>. Dès que c'est le cas, je te préviens : la réservation arrive par e-mail et dans ton tableau de bord, marquée « payé avec un bon », et tu la confirmes comme d'habitude.`,
+      pay: `Après l'atelier, tu reçois le montant avant le 10 du mois suivant, moins 15 % de commission (pour ${eur(amount)}, cela fait ${eur(keep)} pour toi).`,
+    },
+  }[lang];
+  const rows = t.rows.filter(([, v]) => String(v ?? '').trim());
+  const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: who.emails,
+    ...(INBOX ? { bcc: INBOX } : {}),
+    subject: t.subject,
+    text: `${t.hi}\n\n${t.congrats.replace(/<[^>]+>/g, '')}\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${t.next.replace(/<[^>]+>/g, '')}\n\n${t.pay}\n\nCheers,\nJirel`,
+    html: `<div style="font-family:Tahoma,sans-serif;font-size:14px;line-height:1.5">${esc(t.hi)}<br><br>${t.congrats}<table style="margin:14px 0;font-size:14px">${table}</table>${t.next}<br><br>${t.pay}<br><br>Cheers,<br>Jirel</div>`,
+  });
+  await ref.set({ hostNotifiedAt: FieldValue.serverTimestamp(), hostNotifiedTo: who.emails.length }, { merge: true });
+};
+
 /** A paid voucher: a new code (kept only as its HMAC), its PDF, and the
  *  email to the buyer, or straight to the person it is for. Returns who
  *  got it: 'buyer' or 'recipient'. */
@@ -499,6 +576,7 @@ const issueVoucher = async (pi, m, buyer) => {
     await sendVoucherMail(buyer, voucherMail({ ...common, gift: false, firstName: String(m.buyer_name ?? '').trim().split(/\s+/)[0] }), pdf, code);
   }
   await getFirestore().doc(`vouchers/${pi.id}`).update({ pdfSent: true, codeLast4: cleanCode(code).slice(-4), sentTo: toThem ? m.recipient_email : buyer });
+  try { await notifyVoucherHost(pi.id, m, code, amount); } catch (err) { console.error('voucher host note failed', pi.id, err?.message); }
   return toThem ? 'recipient' : 'buyer';
 };
 
