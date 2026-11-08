@@ -218,7 +218,17 @@ const SOURCES = [
     url: 'https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/',
     pagePattern: '/de-de/e/[a-z0-9-]*-x4m09x/?$', idFromUrl: true,
     requestBooking: true, infoUrl: 'https://www.coffeeandbananas.com/',
-    district: 'Prenzlauer Berg' },
+    district: 'Prenzlauer Berg',
+    // Angelo, email 08.11.26: no more Saturdays, Sundays now 11:00–13:00,
+    // €49, up to 8 bookings per date through Twiggli. Konfetti still lists
+    // the old slots, so they are corrected here.
+    adjust: (w) => {
+      const day = new Date(`${w.date}T12:00:00Z`).getUTCDay();
+      if (day === 6) return null;
+      const out = { ...w, price: '€49', spots: Math.min(w.spots ?? 8, 8) };
+      if (day === 0) Object.assign(out, { time: '11:00', duration: '2 h' });
+      return out;
+    } },
   // Squarespace site booking through Konfetti — the sitemap finds every
   // course page, each page's embedded widget names its Konfetti event, and
   // the calendar API serves the dates with live tickets left.
@@ -4794,7 +4804,7 @@ for (const source of SOURCES) {
       workshops.push(...found.workshops.filter((w) => {
         const d = new Date(`${w.date}T12:00:00Z`);
         return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === w.date;
-      }));
+      }).map((w) => (source.adjust ? source.adjust(w) : w)).filter(Boolean));
       recurringOut.push(...found.recurring);
       onRequestOut.push(...(found.onRequest ?? []));
       statuses.push({ slug: source.slug, url: source.url, status: 'ok', count: total });
@@ -4821,7 +4831,7 @@ for (const source of SOURCES) {
     console.log(
       `[${source.slug}] kept images: ${keptDated.filter((w) => w.image).length}/${keptDated.length}`,
     );
-    workshops.push(...keptDated);
+    workshops.push(...keptDated.map((w) => (source.adjust ? source.adjust(w) : w)).filter(Boolean));
     recurringOut.push(...keptRecurring);
     onRequestOut.push(...keptOnRequest);
     statuses.push({
