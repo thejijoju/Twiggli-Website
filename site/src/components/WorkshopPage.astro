@@ -10,7 +10,7 @@ import HostMonogram from './HostMonogram.astro';
 import { getHosts } from '../data/content.ts';
 import {
   absolute, activityCopy, activityHref, clip, formatWhen, hostHref, hostImage, hubExtraCopy, hubHref,
-  pageCopy, sessionIso, spellDuration, spellLanguages, workshopHref, workshopLede, workshopTitle, workshopsFor,
+  pageCopy, sessionIso, sessionEndIso, placeAddress, spellDuration, spellLanguages, workshopHref, workshopLede, workshopTitle, workshopsFor,
 } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -47,12 +47,13 @@ const events = w.sessions.slice(0, 30).map((s) => {
     '@type': 'Event',
     name: s.title,
     startDate: sessionIso(s),
+    ...(sessionEndIso(s, s.duration ?? host.duration) ? { endDate: sessionEndIso(s, s.duration ?? host.duration) } : {}),
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
       '@type': 'Place',
       name: host.studio ?? host.name,
-      address: { '@type': 'PostalAddress', streetAddress: s.place, addressLocality: 'Berlin', addressCountry: 'DE' },
+      address: { '@type': 'PostalAddress', streetAddress: placeAddress(s.place) ?? s.place, addressLocality: 'Berlin', addressCountry: 'DE' },
     },
     ...(s.image || image ? { image: [s.image ?? image] } : {}),
     description: clip(lede, 300),

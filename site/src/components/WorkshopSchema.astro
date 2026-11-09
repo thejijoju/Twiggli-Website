@@ -7,7 +7,7 @@
  *  folds into that page. Offers link straight to the host's booking page. */
 import type { Host } from '../data/content.ts';
 import type { Session } from '../data/sessions.ts';
-import { absolute, activityCopy, activityHref, hostHref, hostImage, hubHref, pageCopy, sessionIso } from '../data/seo.ts';
+import { absolute, activityCopy, activityHref, hostHref, hostImage, hubHref, pageCopy, sessionIso, sessionEndIso, placeAddress } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -33,6 +33,7 @@ const events = sessions.slice(0, 30).map((s) => {
     '@type': 'Event',
     name: s.title,
     startDate: sessionIso(s),
+    ...(sessionEndIso(s, s.duration ?? host.duration) ? { endDate: sessionEndIso(s, s.duration ?? host.duration) } : {}),
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
@@ -40,7 +41,7 @@ const events = sessions.slice(0, 30).map((s) => {
       name: host.studio ?? host.name,
       address: {
         '@type': 'PostalAddress',
-        streetAddress: s.place,
+        streetAddress: placeAddress(s.place) ?? s.place,
         addressLocality: 'Berlin',
         addressCountry: 'DE',
       },
