@@ -468,17 +468,26 @@ const lookupVoucher = async (code, hostSlug) => {
   }
   if (!snap.exists) return { error: 'invalid' };
   const v = snap.data();
-  if (v.validUntil && v.validUntil < new Date().toISOString().slice(0, 10)) return { error: 'expired' };
+  // German law (§§ 195, 199 BGB): a voucher stays valid until 31 December
+  // of the third year after purchase. Codes issued before 09.11.26 were
+  // stored with purchase date + 3 years, so every stored date is read as
+  // the end of its year.
+  const until = yearEnd(v.validUntil);
+  if (until && until < new Date().toISOString().slice(0, 10)) return { error: 'expired' };
   // Amounts held for requests the host hasn't answered yet (7 days at most,
   // as long as Stripe keeps a card hold) are not available meanwhile.
   const balance = Math.round(((v.balance ?? 0) * 100) - heldCents(v)) / 100;
   if (!(balance > 0)) return { error: 'used' };
   if (v.hostSlug && hostSlug && v.hostSlug !== hostSlug) return { error: 'host', host: v.hostSlug };
-  return { ok: true, hash, balance, validUntil: v.validUntil ?? '', hostSlug: v.hostSlug ?? '', ref: v.ref ?? '' };
+  return { ok: true, hash, balance, validUntil: until, hostSlug: v.hostSlug ?? '', ref: v.ref ?? '' };
 };
 
 const COMPANY = 'Twiggli UG (haftungsbeschränkt) · Rodenkirchener Str. 147 · 50997 Köln';
 const isoDay = (d) => d.toISOString().slice(0, 10);
+/** 31 December of the year in an ISO date ('2029-10-31' → '2029-12-31'); '' stays ''. */
+const yearEnd = (iso) => (/^\d{4}/.test(String(iso ?? '')) ? `${String(iso).slice(0, 4)}-12-31` : '');
+/** A voucher bought on `d` is valid until 31 December three years later (§§ 195, 199 BGB). */
+const legalUntil = (d) => `${d.getUTCFullYear() + 3}-12-31`;
 
 /** The voucher email, with its PDF and our icon, from our public address. */
 const sendVoucherMail = async (to, parts, pdf, code) => { // pdf null: no attachment
@@ -561,8 +570,7 @@ const notifyVoucherHost = async (piId, m, code, amount) => {
 const issueVoucher = async (pi, m, buyer) => {
   const amount = pi.amount / 100;
   const today = new Date();
-  const until = new Date(today); until.setFullYear(until.getFullYear() + 3);
-  const validUntil = isoDay(until);
+  const validUntil = legalUntil(today);
   let code = '';
   for (let i = 0; i < 5 && !code; i++) {
     const c = newVoucherCode();
@@ -617,10 +625,10 @@ export const voucherPreview = onRequest({ region: 'europe-west3', secrets: [GMAI
   await ref.set({ at: Date.now() });
   const lang = req.query.lang === 'en' ? 'en' : 'de';
   const gift = req.query.kind === 'gift';
-  const today = new Date(); const until = new Date(today); until.setFullYear(until.getFullYear() + 3);
+  const today = new Date();
   const code = 'TW-TEST-0000';
   const v = {
-    lang, amount: 50, code, validUntil: isoDay(until), date: isoDay(today), order: 'VC-TEST', company: COMPANY,
+    lang, amount: 50, code, validUntil: legalUntil(today), date: isoDay(today), order: 'VC-TEST', company: COMPANY,
     recipient: gift ? 'Lena' : '', message: gift ? (lang === 'de' ? 'Alles Liebe zum Geburtstag! Such dir was Schönes aus.' : 'Happy birthday! Pick something lovely.') : '',
   };
   const pdf = await voucherPdf({ ...v, test: true });
@@ -711,7 +719,7 @@ export const formRequest = onRequest(
     if (fields['Voucher code']) {
       const v = await lookupVoucher(fields['Voucher code'], text(body._hostSlug, 80));
       fields['Voucher check'] = v.ok
-        ? `VALID: €${v.balance} left, valid until ${v.validUntil}${v.ref ? `, order ${v.ref}` : ''}. Deduct it from the price and note it on the voucher.`
+        ? `VALID: €${v.balance} left, valid until ${yearEnd(v.validUntil)}${v.ref ? `, order ${v.ref}` : ''}. Deduct it from the price and note it on the voucher.`
         : `NOT VALID (${v.error}). Do not accept it.`;
       if (v.ok) voucherHash = v.hash;
     }
