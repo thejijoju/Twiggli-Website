@@ -7,7 +7,7 @@
  *  folds into that page. Offers link straight to the host's booking page. */
 import type { Host } from '../data/content.ts';
 import type { Session } from '../data/sessions.ts';
-import { absolute, activityCopy, activityHref, hostHref, hostImage, hubHref, pageCopy, sessionIso, sessionEndIso, placeAddress } from '../data/seo.ts';
+import { absolute, activityCopy, activityHref, hostHref, hostImage, hubHref, pageCopy, sessionIso, sessionEndIso, placeAddress, offerValidFrom, eventPrice } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -28,7 +28,7 @@ const fromPrice = (price: string): string | undefined =>
 // Google reads a bounded amount of markup per page; a host's next thirty
 // dates is more than any searcher acts on.
 const events = sessions.slice(0, 30).map((s) => {
-  const price = s.price ? fromPrice(s.price) : undefined;
+  const price = eventPrice(s, sessions);
   return {
     '@type': 'Event',
     name: s.title,
@@ -46,7 +46,7 @@ const events = sessions.slice(0, 30).map((s) => {
         addressCountry: 'DE',
       },
     },
-    ...(s.image || image ? { image: [s.image ?? image] } : {}),
+    image: [absolute(s.image ?? image ?? '/img/logo.png')],
     description: `${host.specialty} — ${host.name}. ${s.duration ?? host.duration}, ${s.languages ?? host.languages}.`,
     organizer: { '@type': 'Organization', name: host.studio ?? host.name, url: pageUrl },
     performer: { '@type': 'Organization', name: host.name },
@@ -56,6 +56,7 @@ const events = sessions.slice(0, 30).map((s) => {
             '@type': 'Offer',
             price,
             priceCurrency: 'EUR',
+            validFrom: offerValidFrom(),
             // Our page for the date: bookings go through Twiggli.
             url: `${pageUrl}#${s.id}`,
             availability: s.soldOut
