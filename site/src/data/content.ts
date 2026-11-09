@@ -1290,9 +1290,16 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
     'flower collage': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
     // Her dots-technique clip (sent 09.11.26): the dotted body painting from a
     // photo, then the women holding up their finished pieces. Captions kept,
-    // audio stripped. Poster: a dotted painting in progress.
-    'Punkt-Technik': { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
-    'dots technique': { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
+    // audio stripped. Poster: a dotted painting in progress. Second clip
+    // (also 09.11): blue dots at the table, and the finished pieces on the sofa table.
+    'Punkt-Technik': [
+      { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
+      { video: '/video/lucille-guder-dots-2.mp4', poster: '/video/lucille-guder-dots-2-poster.jpg' },
+    ],
+    'dots technique': [
+      { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
+      { video: '/video/lucille-guder-dots-2.mp4', poster: '/video/lucille-guder-dots-2-poster.jpg' },
+    ],
   },
   pia: {
     Vulva: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
