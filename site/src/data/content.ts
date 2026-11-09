@@ -1288,6 +1288,11 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
   'lucille-guder': {
     Blumencollage: { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
     'flower collage': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
+    // Her dots-technique clip (sent 09.11.26): the dotted body painting from a
+    // photo, then the women holding up their finished pieces. Captions kept,
+    // audio stripped. Poster: a dotted painting in progress.
+    'Punkt-Technik': { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
+    'dots technique': { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
   },
   pia: {
     Vulva: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
