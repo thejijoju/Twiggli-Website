@@ -4,4 +4,5 @@
  *  scripts/update-workshops.mjs skips their feeds too. */
 export const archivedSlugs = new Set<string>([
   'sabine', // Sabine Alex, Mobile Dunkelkammer: left 30.10.26, stays on Konfetti
+  'celia', // Cèlia Hoste, La HoCo (knitting): asked to be removed, 09.11.26
 ]);
