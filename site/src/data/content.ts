@@ -839,6 +839,12 @@ const reels: Record<string, { video: string; poster: string }> = {
   // Jeannette's frog, drawn and painted in watercolour, as a time-lapse (one of
   // the six videos she sent via Google Drive, 28.10.26; black bars cropped).
   'jeannette-tolksdorff': { video: '/video/jeannette-tolksdorff.mp4', poster: '/video/jeannette-tolksdorff-poster.jpg' },
+  /* Lucille's own reel for her self-photography & flower collage workshop
+     (sent 09.11.26): the photo studio, drawing the outline, pressed flowers
+     laid on it, the small women's circle at the table, the finished
+     collages. Her captions stay (they carry the workshop's message).
+     Audio stripped. Poster: a finished collage. */
+  'lucille-guder': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
   // Pia's Christmas painting: the finished canvases, Glühwein and the table (WhatsApp, 03.11.26).
   'pia-christmas': { video: '/video/pia-christmas.mp4', poster: '/video/pia-christmas-poster.jpg' },
   /* Anna's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
@@ -1279,6 +1285,10 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
   // private groups on request, and both titles carry the word. Same file as
   // her general reel for the moment; they part company as soon as she has
   // footage of the collective-painting format her copy describes.
+  'lucille-guder': {
+    Blumencollage: { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
+    'flower collage': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
+  },
   pia: {
     Vulva: { video: '/video/pia-vulva.mp4', poster: '/video/pia-vulva-poster.jpg' },
   },
