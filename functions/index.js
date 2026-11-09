@@ -71,14 +71,16 @@ const hostContact = async (slug) => {
   const tok = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token?scopes=https://www.googleapis.com/auth/spreadsheets.readonly', { headers: { 'Metadata-Flavor': 'Google' } });
   if (!tok.ok) throw new Error(`token ${tok.status}`);
   const { access_token: token } = await tok.json();
-  const range = encodeURIComponent("'Hosts & Emails'!A2:K400");
+  const range = encodeURIComponent("'Hosts & Emails'!A2:L400");
   const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${HOST_SHEET}/values/${range}`, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`sheet ${res.status}`);
   for (const r of (await res.json()).values ?? []) {
     const slugs = String(r[10] ?? '').toLowerCase().split(/[\s,;]+/);
     if (!slugs.includes(slug)) continue;
     const emails = String(r[3] ?? '').split(/[\s,;/]+/).filter(isEmail);
-    if (emails.length) return { emails, firstName: String(r[0] ?? '').trim().split(/\s+/)[0] };
+    // Column L: the language we write to them in (de, en or fr).
+    const lang = /^(de|en|fr)$/.test(String(r[11] ?? '').trim()) ? String(r[11]).trim() : '';
+    if (emails.length) return { emails, firstName: String(r[0] ?? '').trim().split(/\s+/)[0], lang };
   }
   return null;
 };
@@ -805,6 +807,115 @@ export const formRequest = onRequest(
   },
 );
 
+/** Hosts who have left Twiggli (site/src/data/hosts/archived.ts): their
+ *  requests go to Jirel only. */
+const ARCHIVED_HOSTS = new Set(['sabine', 'celia']);
+
+/** "New booking request": the request goes straight to the host the moment
+ *  the guest sends it (Jirel, 09.11.26), in the designed layout of the
+ *  forwards sent by hand before, in the host's language (column L of
+ *  'Hosts & Emails'). Reply goes to the guest, Jirel in CC. Only for a
+ *  request to one host (booking, group, date request) with a date not in
+ *  the past; anything else stays with Jirel. Returns what happened, for
+ *  the note to Jirel's inbox. */
+const notifyHostRequest = async (doc, email, f) => {
+  const data = (await doc.get()).data() ?? {};
+  const slug = String(data.hostSlug ?? '');
+  const type = String(f.Type ?? '');
+  if (!SLUG.test(slug) || !/^(Booking request|Group booking request|Date request)$/.test(type)) return '';
+  if (data.hostMailedAt) return 'already sent';
+  if (ARCHIVED_HOSTS.has(slug)) return 'NOT sent: host has left Twiggli';
+  const iso = String(f.Date ?? '').match(/^(\d{4}-\d\d-\d\d)/)?.[1] ?? '';
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+  if (iso && iso < today) return 'NOT sent: date is in the past';
+  const who = await hostContact(slug).catch(() => null);
+  if (!who) return `NOT sent: no email for "${slug}" in 'Hosts & Emails'`;
+  const lang = who.lang || HOST_LANG[slug] || 'de';
+  const tomorrow = new Date(Date.now() + 86400000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+  const soon = iso === today ? 'today' : iso === tomorrow ? 'tomorrow' : '';
+  const guest = String(f.Name ?? '').trim();
+  const gFirst = guest.split(/\s+/)[0] || guest;
+  const what = String(f.Workshop ?? '').trim();
+  const people = Number(String(f.People ?? '').match(/\d+/)?.[0] ?? 0);
+  const prices = String(f.Price ?? '').replace(/\./g, '').match(/\d+(?:,\d+)?/g)?.map((x) => Number(x.replace(',', '.'))) ?? [];
+  const one = prices.length === 1 ? prices[0] : 0;
+  const eur = (n) => `€${(Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, '')}`;
+  const when = String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1');
+  const T = {
+    de: {
+      kicker: `Neue ${type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
+      head: `Antworte auf ${esc(gFirst)}s Anfrage`,
+      hi: `Hallo${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
+      intro: soon
+        ? `${esc(guest)} möchte ${soon === 'today' ? '<b>heute</b>' : '<b>morgen</b>'} zu dir kommen. Bitte ruf an oder schreib so schnell wie möglich, am besten mit Antwort auf diese E-Mail (ich bin in CC).`
+        : `${esc(guest)} hat über <b>Twiggli</b> bei dir angefragt. Bitte melde dich direkt bei ${esc(gFirst)}, am einfachsten mit Antwort auf diese E-Mail (ich bin in CC).`,
+      date: type === 'Date request' ? `${esc(gFirst)} hat keinen passenden Termin gefunden. Magst du einen öffnen oder einen anderen vorschlagen?` : '',
+      rows: [['Workshop', what], ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
+      msg: 'Nachricht', earn: 'Mögliche Einnahmen', earnNote: (g) => `${eur(g)} gesamt, ${eur(g * 0.85)} nach 15 % Twiggli-Provision (falls für dich vereinbart)`,
+      contact: 'Kontakt', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
+      subject: `Neue Anfrage über Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'Person' : 'Personen'})` : ''}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''} 💌`,
+    },
+    en: {
+      kicker: `New ${type === 'Group booking request' ? 'group request' : type === 'Date request' ? 'date request' : 'booking request'}${soon === 'today' ? ' · today' : soon === 'tomorrow' ? ' · tomorrow' : ''}`,
+      head: `Reply to ${esc(gFirst)}'s request`,
+      hi: `Hi${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
+      intro: soon
+        ? `${esc(guest)} would like to come <b>${soon}</b>. Please call or write as soon as you can, easiest by replying to this email (I'm in CC).`
+        : `${esc(guest)} sent you a request on <b>Twiggli</b>. Please get in touch with ${esc(gFirst)} directly, easiest by replying to this email (I'm in CC).`,
+      date: type === 'Date request' ? `${esc(gFirst)} didn't find a date that works. Could you open one, or suggest another?` : '',
+      rows: [['Workshop', what], ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
+      msg: 'Message', earn: 'Your earnings', earnNote: (g) => `${eur(g)} in total, ${eur(g * 0.85)} after the 15% Twiggli commission (where agreed with you)`,
+      contact: 'Contact', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
+      subject: `New request via Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'person' : 'people'})` : ''}${soon ? ` · ${soon}` : ''} 💌`,
+    },
+    fr: {
+      kicker: `Nouvelle demande${soon === 'today' ? ' · aujourd’hui' : soon === 'tomorrow' ? ' · demain' : ''}`,
+      head: `Réponds à la demande de ${esc(gFirst)}`,
+      hi: `Coucou${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
+      intro: soon
+        ? `${esc(guest)} aimerait venir <b>${soon === 'today' ? 'aujourd’hui' : 'demain'}</b>. Appelle ou écris dès que possible, le plus simple en répondant à ce mail (je suis en copie).`
+        : `${esc(guest)} t’a envoyé une demande sur <b>Twiggli</b>. Contacte ${esc(gFirst)} directement, le plus simple en répondant à ce mail (je suis en copie).`,
+      date: type === 'Date request' ? `${esc(gFirst)} n’a pas trouvé de date qui convient. Tu peux en ouvrir une ou en proposer une autre ?` : '',
+      rows: [['Atelier', what], ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
+      msg: 'Message', earn: 'Revenus possibles', earnNote: (g) => `${eur(g)} au total, ${eur(g * 0.85)} après la commission Twiggli de 15 % (si convenue avec toi)`,
+      contact: 'Contact', bye: 'Bises', sig: 'Jirel, fondatrice @ <b>Twiggli</b>',
+      subject: `Nouvelle demande via Twiggli : ${what}${when ? `, ${when}` : ''}${people ? ` (${people} pers.)` : ''} 💌`,
+    },
+  }[lang] ?? null;
+  if (!T) return '';
+  const gross = one && people ? one * people : 0;
+  const cell = 'padding:9px 0;border-bottom:1px solid #efe9e2;font-size:14px';
+  const table = T.rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="${cell};color:#6b7076">${esc(k)}</td><td align="right" style="${cell};font-weight:bold">${esc(v)}</td></tr>`).join('');
+  const message = String(f.Message ?? '').trim();
+  const contact = [guest && `<b>${esc(guest)}</b>`, isEmail(email) && `<a href="mailto:${esc(email)}" style="color:#6a3eec">${esc(email)}</a>`, f.Phone && `<a href="tel:${esc(String(f.Phone).replace(/\s/g, ''))}" style="color:#6a3eec">${esc(f.Phone)}</a>`].filter(Boolean).join('<br>');
+  const html = `<div style="padding:24px 0;font-family:Tahoma,Arial,sans-serif;color:#24272e">
+<table width="600" align="center" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;border-radius:14px;overflow:hidden">
+<tr><td style="padding:22px 30px 4px"><table cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle"><img src="${SITE}/img/logo.png" width="34" height="34" alt="" style="display:block"></td><td style="padding-left:10px;vertical-align:middle;font-weight:bold;font-size:20px">Twiggli</td></tr></table></td></tr>
+<tr><td style="padding:18px 30px 0">
+<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6a3eec;font-weight:bold">${T.kicker} ${emojiFor(what)}</p>
+<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25">${T.head}</h1>
+<p style="margin:0 0 6px;font-size:14px;line-height:1.6;color:#454a50">${T.hi}</p>
+<p style="margin:0 0 ${T.date ? 6 : 16}px;font-size:14px;line-height:1.6;color:#454a50">${T.intro}</p>
+${T.date ? `<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#454a50">${T.date}</p>` : ''}
+</td></tr>
+<tr><td style="padding:6px 30px 0"><table width="100%" cellpadding="0" cellspacing="0">${table}</table></td></tr>
+${message ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7076;font-weight:bold">${T.msg}</p><p style="margin:0;padding:10px 14px;border-left:3px solid #6a3eec;font-size:14px;line-height:1.6;color:#454a50;white-space:pre-wrap">${esc(message)}</p></td></tr>` : ''}
+${gross ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1f8a4c;font-weight:bold">${T.earn}</p><p style="margin:0;font-size:15px;color:#1f8a4c;font-weight:bold">${T.earnNote(gross)}</p></td></tr>` : ''}
+<tr><td style="padding:16px 30px 0"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7076;font-weight:bold">${T.contact}</p><p style="margin:0;font-size:14px;line-height:1.7">${contact}</p>
+<p style="margin:20px 0 22px;font-size:14px;line-height:1.6;color:#454a50">${T.bye} 💛<br>${T.sig}</p></td></tr>
+<tr><td style="padding:14px 30px;font-size:11px;color:#888;line-height:1.6"><a href="${SITE}" style="color:#888">www.twiggli.com</a></td></tr>
+</table></div>`;
+  const strip = (h) => String(h).replace(/<[^>]+>/g, '');
+  const text = [T.hi, strip(T.intro), strip(T.date), '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${[guest, email, f.Phone].filter(Boolean).join(', ')}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: SENDER }, to: who.emails, ...(INBOX ? { cc: INBOX } : {}),
+    ...(isEmail(email) ? { replyTo: [email, INBOX] } : {}), subject: T.subject, text, html,
+  });
+  await doc.update({ hostMailedAt: FieldValue.serverTimestamp(), hostMailedTo: who.emails });
+  return `sent to ${who.emails.join(', ')} (${lang})`;
+};
+
 /** A saved request reaches people: the guest's "we got it" email and the
  *  note to Jirel's inbox (marked mailed). */
 const deliverRequest = async (doc, subject, email, fields) => {
@@ -812,6 +923,15 @@ const deliverRequest = async (doc, subject, email, fields) => {
   // don't send it twice. Only for requests, not for notes like vouchers.
   if (isEmail(email) && /request/i.test(String(fields.Type ?? '')) && !/voucher/i.test(String(fields.Type ?? ''))) {
     try { await confirmGuest(email, fields); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
+  }
+  // The host hears about it straight away (Jirel, 09.11.26); the note to
+  // Jirel below says whether it went out.
+  try {
+    const sent = await notifyHostRequest(doc, email, fields);
+    if (sent) fields['Host notified'] = sent;
+  } catch (err) {
+    console.error('host request mail failed', doc.id, err?.message);
+    fields['Host notified'] = `NOT sent (error: ${String(err?.message ?? err).slice(0, 120)}). Please forward by hand.`;
   }
   // A paid voucher: the buyer's confirmation, checked against Stripe.
   if (/voucher paid/i.test(String(fields.Type ?? ''))) {
