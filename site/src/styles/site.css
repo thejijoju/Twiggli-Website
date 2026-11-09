@@ -3733,6 +3733,8 @@ html.sheet-locked { overflow: hidden; }
   object-fit: cover;
   display: block;
 }
+.host-watch { margin: 10px 0 0; font-size: 0.95rem; }
+.host-watch a { color: inherit; text-underline-offset: 3px; }
 .host-blurb {
   margin: 0 0 8px;
   white-space: pre-line; /* a blank line in a blurb is a paragraph break */

@@ -124,6 +124,8 @@ export default defineConfig({
     removedHostRedirects(),
     expiredClassRedirects(),
     sitemap({
+      // The reels' own pages, with their video data (src/pages/video-sitemap.xml.ts).
+      customSitemaps: ['https://www.twiggli.com/video-sitemap.xml'],
       // Preview hosts' pages (src/data/hosts/preview.ts) are for the host
       // to look at by direct link before going live — never in the sitemap.
       filter: (page) =>

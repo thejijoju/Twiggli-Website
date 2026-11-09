@@ -1,0 +1,156 @@
+---
+/** One host's reel as a page of its own — a "watch page" in Google's
+ *  terms — so the reel can appear as a video result. The video leads, the
+ *  host's own blurb and facts follow, then the next dates and the way back
+ *  to booking (videoPages.ts). */
+import Base from '../layouts/Base.astro';
+import {
+  absolute, activityCopy, formatWhen, hostDurationText, hostGroupText, hostHref, hostLanguagesText, sessionsFor, workshopHref,
+} from '../data/seo.ts';
+import { isoDuration, VIDEO_LANGS, videoCopy, videoHosts, videoHref, videosIndexHref } from '../data/videoPages.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props { lang: 'en' | 'de'; slug: string }
+const { lang, slug } = Astro.props;
+const all = videoHosts(lang);
+const found = all.find((v) => v.host.slug === slug);
+if (!found) throw new Error(`No video page for ${slug}`);
+const { host, entry } = found;
+const t = videoCopy[lang];
+const activity = activityCopy[lang][host.activity];
+
+const title = t.title(host.specialty, host.name);
+const description = t.description(host.name, host.specialty, host.studio);
+const next = sessionsFor(host.slug, lang).slice(0, 3);
+// Same activity first, then the rest, four in all.
+const more = [
+  ...all.filter((v) => v.host.slug !== slug && v.host.activity === host.activity),
+  ...all.filter((v) => v.host.slug !== slug && v.host.activity !== host.activity),
+].slice(0, 4);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: `${host.specialty} — ${host.name}`,
+  description,
+  thumbnailUrl: [absolute(host.poster ?? host.photo ?? '/img/logo.png')],
+  uploadDate: `${entry.uploaded}T12:00:00+02:00`,
+  duration: isoDuration(entry.seconds),
+  contentUrl: absolute(host.video!),
+  inLanguage: lang,
+  publisher: { '@type': 'Organization', name: 'Twiggli', url: 'https://www.twiggli.com/', logo: { '@type': 'ImageObject', url: absolute('/img/logo.png') } },
+};
+const facts: [string, string][] = [
+  [t.where, host.place],
+  [t.length, hostDurationText(host, lang)],
+  [t.group, hostGroupText(host, lang)],
+  [t.languages, hostLanguagesText(host, lang as Lang)],
+].filter(([, v]) => !!v) as [string, string][];
+---
+
+<Base title={title} description={description} lang={lang} image={host.poster} translations={VIDEO_LANGS}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={videosIndexHref(lang)}>{t.crumbs}</a>
+      <span aria-hidden="true">›</span>
+      <span>{host.name}</span>
+    </nav>
+
+    <section class="page-head">
+      <span class="kicker kicker-tight">{t.kicker} · {activity.short}</span>
+      <h1 class="page-title">{t.h1(host.specialty, host.name)}</h1>
+    </section>
+
+    <section class="section video-watch">
+      <div class="video-frame">
+        <video
+          src={host.video}
+          poster={host.poster}
+          controls
+          muted
+          loop
+          playsinline
+          autoplay
+          preload="metadata"
+          aria-label={`${host.name} — ${host.specialty}`}
+        ></video>
+      </div>
+      <div class="video-side">
+        <p class="video-studio">{host.studio}</p>
+        <p class="host-blurb">{host.blurb}</p>
+        <dl class="video-facts">
+          {facts.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+        </dl>
+        <h2 class="video-h2">{t.next}</h2>
+        {next.length ? (
+          <ul class="video-dates">
+            {next.map((s) => (
+              <li><a href={workshopHref(lang, host, s.workshopKey)}>{s.title}</a><span>{formatWhen(s, lang)}{s.price ? ` · ${s.price}` : ''}</span></li>
+            ))}
+          </ul>
+        ) : (
+          <p class="video-muted">{t.onRequest}</p>
+        )}
+        <p class="video-cta">
+          <a class="btn btn-primary" href={hostHref(lang, host)}>{t.book}</a>
+          <a class="video-link" href={hostHref(lang, host)}>{t.profile(host.name)} →</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="video-h2">{t.more}</h2>
+      <div class="video-grid">
+        {more.map((v) => (
+          <a class="video-card" href={videoHref(lang, v.host.slug)}>
+            <img src={v.host.poster} alt="" loading="lazy" decoding="async" />
+            <span class="video-card-name">{v.host.name}</span>
+            <span class="video-card-what">{v.host.specialty}</span>
+          </a>
+        ))}
+      </div>
+      <p><a class="video-link" href={videosIndexHref(lang)}>{t.all} →</a></p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .video-watch {
+    display: grid;
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .video-frame {
+    aspect-ratio: 9 / 16;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: 0 20px 60px -30px rgb(0 0 0 / 0.35);
+  }
+  .video-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video-studio { font-weight: 600; margin: 0 0 8px; }
+  .video-facts { display: grid; gap: 6px; margin: 20px 0; }
+  .video-facts div { display: flex; gap: 12px; }
+  .video-facts dt { min-width: 92px; opacity: 0.65; }
+  .video-facts dd { margin: 0; }
+  .video-h2 { font-size: 1.15rem; margin: 24px 0 10px; }
+  .video-dates { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .video-dates li { display: flex; flex-direction: column; }
+  .video-dates span, .video-muted { opacity: 0.7; font-size: 0.92rem; }
+  .video-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 24px; }
+  .video-link { color: inherit; text-underline-offset: 3px; }
+  .video-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .video-card { display: flex; flex-direction: column; gap: 4px; color: inherit; text-decoration: none; }
+  .video-card img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 14px; background: var(--color-surface); }
+  .video-card-name { font-weight: 600; margin-top: 6px; }
+  .video-card-what { font-size: 0.9rem; opacity: 0.7; }
+  @media (max-width: 760px) {
+    .video-watch { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .video-frame { max-width: 420px; }
+    .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

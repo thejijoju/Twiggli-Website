@@ -124,6 +124,8 @@ export function getSiteData(lang: Lang) {
     /* Out of the header, still a click away here. */
     { label: t.nav.contact, href: href(lang, '/contact/') },
     { label: t.nav.blog, href: href(docLang, '/blog/') },
+    /* Workshop videos (videoPages.ts), English and German only. */
+    { label: 'Videos', href: href(docLang, '/videos/') },
     /* The about page is in English and German only (/about/, /de/ueber-uns/). */
     { label: t.footer.about, href: href(docLang, '/about/') },
   ];
