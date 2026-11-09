@@ -52,7 +52,7 @@ import { withBase, type Lang } from '../lib/url.ts';
  */
 /** Agreed in principle (email or WhatsApp), waiting for a written yes. */
 export const voucherHostsAgreed: string[] = [
-  'anna-malerlebnisse', 'himapan-berlin',
+  'himapan-berlin',
   'ceramic-kingdom', 'petitejungle', 'rebeca',
   'evelyn', 'nina', 'helka', 'maximiliana',
   'munio',
@@ -74,6 +74,7 @@ export const voucherHosts: string[] = [
   'fave-studio', // Elena & Giulia (fave studio), "Yes we agree", 04.11.26 (email, Giulia)
   'angelo', // Angelo Hey (Coffee and Bananas), "I confirm", 07.11.26 (email)
   'ana', // Ana Kavalis (Resonant Body), "I confirm!", 07.11.26 (email)
+  'anna-malerlebnisse', // Anna (ANNA-Malerlebnisse), "Ich bestätige", 09.11.26 (email), at €35 (open dates)
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
@@ -121,7 +122,7 @@ export const VOUCHER_MAX_PEOPLE = 2;
  *  (Fred: a €64 wine tasting, cooking classes €119–127; Jirel 27.10).
  *  Straßenbräu: €29 is their group price from 5, a voucher is for one or
  *  two, so it takes the shop's €34 tasting. */
-const voucherPriceOverride: Record<string, number> = { studio32: 119, strassenbraeu: 34 };
+const voucherPriceOverride: Record<string, number> = { studio32: 119, strassenbraeu: 34, 'anna-malerlebnisse': 35 };
 
 export const voucherPrice = (host: Pick<Host, 'slug' | 'groupPrice'>): number | undefined => {
   if (voucherPriceOverride[host.slug]) return voucherPriceOverride[host.slug];
