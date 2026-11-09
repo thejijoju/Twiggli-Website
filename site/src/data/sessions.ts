@@ -599,7 +599,7 @@ export function previewOnRequestFor(slug: string, lang: Lang): OnRequestWorkshop
   return (preview.onRequest[slug] ?? []).filter((o) => !isHiddenListing(slug, slugify(o.title))).map((o) => ({
     id: `req-${slug}-${hash(o.title)}`,
     key: slugify(o.title),
-    host,
+    host: withWorkshopReel(host, slug, lang === 'de' || !o.titleEn ? o.title : o.titleEn),
     title: lang === 'de' || !o.titleEn ? o.title : o.titleEn,
     district: o.district ?? host.area ?? host.place,
     bookUrl: o.url,
