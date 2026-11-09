@@ -6,9 +6,7 @@ lang: de
 category: Gastgeberporträt
 ---
 
-Bitte einen Raum voller Erwachsener, die Teile des weiblichen Körpers zu
-benennen, und schau, was passiert. Jemand lacht. Jemand schaut auf den Boden.
-Irgendwann sagt jemand „da unten“. Wir haben Apps, die unseren Zyklus auf den
+Wir haben Apps, die unseren Zyklus auf den
 Tag genau kennen, und trotzdem fehlen uns die einfachen Worte für den Körper,
 den diese Apps beschreiben.
 

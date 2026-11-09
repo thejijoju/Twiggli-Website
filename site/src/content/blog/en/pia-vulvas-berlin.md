@@ -6,9 +6,7 @@ lang: en
 category: Host profile
 ---
 
-Ask a room of grown adults to name the parts of the female body, and watch what
-happens. Someone laughs. Someone looks at the floor. Someone, eventually, says
-"down there." We have apps that track our cycles to the day, and still we
+We have apps that track our cycles to the day, and still we
 lack the plain words for the body those apps describe.
 
 Pia knows this better than most. For a long time she worked in women's health,
