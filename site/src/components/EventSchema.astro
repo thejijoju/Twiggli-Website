@@ -9,7 +9,7 @@
  *  their card via the feed's #live-… anchors.
  */
 import { capPerHostPerDay, getSessions } from '../data/sessions.ts';
-import { absolute, hostHref, sessionIso } from '../data/seo.ts';
+import { absolute, eventPrice, hostHref, hostImage, offerValidFrom, placeAddress, sessionEndIso, sessionIso } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
 interface Props {
@@ -24,10 +24,14 @@ const { lang, pageUrl } = Astro.props;
 // The same sessions the calendar shows: two a day per host at most.
 const sessions = capPerHostPerDay(getSessions(lang)).slice(0, 80);
 
-const events = sessions.map((s) => ({
+const all = getSessions(lang);
+const events = sessions.map((s) => {
+  const price = eventPrice(s, all.filter((o) => o.host.slug === s.host.slug));
+  return {
   '@type': 'Event',
   name: s.title,
   startDate: sessionIso(s),
+  ...(sessionEndIso(s, s.duration ?? s.host.duration) ? { endDate: sessionEndIso(s, s.duration ?? s.host.duration) } : {}),
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   eventStatus: 'https://schema.org/EventScheduled',
   location: {
@@ -35,22 +39,24 @@ const events = sessions.map((s) => ({
     name: s.host.studio ?? s.host.name,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: s.place,
+      streetAddress: placeAddress(s.place) ?? s.place,
       addressLocality: 'Berlin',
       addressCountry: 'DE',
     },
   },
-  ...(s.image || s.host.photo ? { image: [s.image ?? s.host.photo] } : {}),
+  image: [absolute(s.image ?? hostImage(s.host) ?? '/img/logo.png')],
   description: `${s.host.specialty} — ${s.host.name}`,
-  organizer: { '@type': 'Organization', name: s.host.name },
+  organizer: { '@type': 'Organization', name: s.host.studio ?? s.host.name, url: absolute(hostHref(lang, s.host)) },
+  performer: { '@type': 'Organization', name: s.host.name },
   // The from-price: "€40–100" is 40, not the 40100 that stripping every
   // non-digit used to send.
-  ...(s.price && /\d/.test(s.price)
+  ...(price !== undefined
     ? {
         offers: {
           '@type': 'Offer',
-          price: s.price.match(/\d+(?:[.,]\d+)?/)![0].replace(',', '.'),
+          price,
           priceCurrency: 'EUR',
+          validFrom: offerValidFrom(),
           // Our card for the date: bookings go through Twiggli.
           url: `${pageUrl}#${s.id}`,
           availability: s.soldOut
@@ -62,7 +68,8 @@ const events = sessions.map((s) => ({
   // The host's own page, a URL of its own — an #anchor on this page folds
   // into this page, and Google lists one event per URL.
   url: absolute(hostHref(lang, s.host)),
-}));
+  };
+});
 
 const schema = {
   '@context': 'https://schema.org',

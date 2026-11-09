@@ -731,6 +731,20 @@ export const sessionEndIso = (s: Pick<Session, 'dayOffset' | 'time'>, duration?:
   return `${date}T${t}:00${berlinOffset(date)}`;
 };
 
+/** "Tickets on sale from": the day the page was built, for the offer's
+ *  validFrom (Google asks for it; our dates are bookable as soon as listed). */
+export const offerValidFrom = (): string => isoDay(0);
+
+/** A session's from-price for the event markup, or, where its own row has
+ *  none, the lowest price of the host's other dates of the same class. */
+export const eventPrice = (s: { price?: string; title: string }, all: { price?: string; title: string }[]): string | undefined => {
+  const num = (p?: string) => p?.match(/\d+(?:[.,]\d+)?/)?.[0].replace(',', '.');
+  const own = num(s.price);
+  if (own !== undefined) return own;
+  const others = all.filter((o) => o.title === s.title).map((o) => num(o.price)).filter((v): v is string => v !== undefined);
+  return others.length ? others.sort((a, b) => Number(a) - Number(b))[0] : undefined;
+};
+
 /** The street part of a session's place for the event markup: "Akazienstr.
  *  30, Berlin / vor Ort" → "Akazienstr. 30, Berlin" (the "/ on site" note is
  *  for people, not for Google's address). */

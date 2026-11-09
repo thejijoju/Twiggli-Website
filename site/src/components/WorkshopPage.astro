@@ -10,7 +10,7 @@ import HostMonogram from './HostMonogram.astro';
 import { getHosts } from '../data/content.ts';
 import {
   absolute, activityCopy, activityHref, clip, formatWhen, hostHref, hostImage, hubExtraCopy, hubHref,
-  pageCopy, sessionIso, sessionEndIso, placeAddress, spellDuration, spellLanguages, workshopHref, workshopLede, workshopTitle, workshopsFor,
+  pageCopy, sessionIso, sessionEndIso, placeAddress, offerValidFrom, eventPrice, spellDuration, spellLanguages, workshopHref, workshopLede, workshopTitle, workshopsFor,
 } from '../data/seo.ts';
 import type { Lang } from '../lib/url.ts';
 
@@ -42,7 +42,7 @@ const image = media.poster ? absolute(media.poster) : hostImage(host);
 const fromPrice = (price: string): string | undefined =>
   price.match(/\d+(?:[.,]\d+)?/)?.[0].replace(',', '.');
 const events = w.sessions.slice(0, 30).map((s) => {
-  const price = s.price ? fromPrice(s.price) : undefined;
+  const price = eventPrice(s, w.sessions);
   return {
     '@type': 'Event',
     name: s.title,
@@ -55,12 +55,12 @@ const events = w.sessions.slice(0, 30).map((s) => {
       name: host.studio ?? host.name,
       address: { '@type': 'PostalAddress', streetAddress: placeAddress(s.place) ?? s.place, addressLocality: 'Berlin', addressCountry: 'DE' },
     },
-    ...(s.image || image ? { image: [s.image ?? image] } : {}),
+    image: [absolute(s.image ?? image ?? '/img/logo.png')],
     description: clip(lede, 300),
     organizer: { '@type': 'Organization', name: host.studio ?? host.name, url: absolute(hostHref(lang, host)) },
     performer: { '@type': 'Organization', name: host.name },
     ...(price !== undefined
-      ? { offers: { '@type': 'Offer', price, priceCurrency: 'EUR', url: `${pageUrl}#${s.id}`, availability: s.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' } }
+      ? { offers: { '@type': 'Offer', price, priceCurrency: 'EUR', validFrom: offerValidFrom(), url: `${pageUrl}#${s.id}`, availability: s.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' } }
       : {}),
     url: pageUrl,
   };
