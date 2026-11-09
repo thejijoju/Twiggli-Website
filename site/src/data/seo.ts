@@ -715,6 +715,28 @@ export const sessionIso = (s: Pick<Session, 'dayOffset' | 'time'>): string => {
   return s.time ? `${date}T${s.time}:00${berlinOffset(date)}` : date;
 };
 
+/** When a dated session ends, for Google's event results: start plus its
+ *  length ("2 h", "1.5–2 h" takes the longer end). Left out for multi-part
+ *  courses ("4 × 3 h"), multi-day ones and anything past midnight. */
+export const sessionEndIso = (s: Pick<Session, 'dayOffset' | 'time'>, duration?: string): string | undefined => {
+  if (!s.time || !duration) return undefined;
+  const m = duration.trim().match(/^(\d+(?:[.,]\d+)?)(?:\s*[–-]\s*(\d+(?:[.,]\d+)?))?\s*(?:h|Std\.?)$/);
+  if (!m) return undefined;
+  const hours = Number((m[2] ?? m[1]).replace(',', '.'));
+  const [hh, mm] = s.time.split(':').map(Number);
+  const end = hh * 60 + mm + Math.round(hours * 60);
+  if (!(hours > 0) || end >= 24 * 60) return undefined;
+  const date = isoDay(s.dayOffset);
+  const t = `${String(Math.floor(end / 60)).padStart(2, '0')}:${String(end % 60).padStart(2, '0')}`;
+  return `${date}T${t}:00${berlinOffset(date)}`;
+};
+
+/** The street part of a session's place for the event markup: "Akazienstr.
+ *  30, Berlin / vor Ort" → "Akazienstr. 30, Berlin" (the "/ on site" note is
+ *  for people, not for Google's address). */
+export const placeAddress = (place?: string): string | undefined =>
+  place?.split(/\s+\/\s+/)[0].trim() || undefined;
+
 /** "Sat 13 Sep" / "Sa., 13. Sep." — with Today / Tomorrow for the first two
  *  days, as the calendar does. */
 export const formatDay = (dayOffset: number, lang: Lang): string => {
