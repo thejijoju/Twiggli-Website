@@ -1,0 +1,11 @@
+---
+import VideoPage from '../../../components/VideoPage.astro';
+import { videoHosts } from '../../../data/videoPages.ts';
+
+export function getStaticPaths() {
+  return videoHosts('en').map((v) => ({ params: { slug: v.host.slug } }));
+}
+const { slug } = Astro.params;
+---
+
+<VideoPage lang="de" slug={slug!} />

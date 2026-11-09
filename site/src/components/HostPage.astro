@@ -26,6 +26,7 @@ import {
 } from '../data/seo.ts';
 import { href, type Lang } from '../lib/url.ts';
 import { photoCredit } from '../data/photoCredit.ts';
+import { hasVideoPage, videoCopy, videoHref } from '../data/videoPages.ts';
 
 interface Props {
   lang: Lang;
@@ -167,6 +168,11 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           <HostMonogram name={host.name} />
         )}
       </div>
+      {/* The reel's own page (videoPages.ts), so Google can list it as a
+          video; English and German only. */}
+      {host.video && !preview && (lang === 'en' || lang === 'de') && hasVideoPage(host.slug) && (
+        <p class="host-watch"><a href={videoHref(lang, host.slug)}>▶ {videoCopy[lang].watch}</a></p>
+      )}
       {/* More of the work, where the host has sent pictures of it: a
           slideshow under the reel, swiped or stepped through with the dots,
           turning by itself every few seconds unless motion is reduced. */}

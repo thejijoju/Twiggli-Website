@@ -1,0 +1,50 @@
+---
+/** Every video page in one grid, grouped by activity (videoPages.ts). */
+import Base from '../layouts/Base.astro';
+import { activityCopy, ACTIVITY_ORDER } from '../data/seo.ts';
+import { VIDEO_LANGS, videoCopy, videoHosts, videoHref } from '../data/videoPages.ts';
+
+interface Props { lang: 'en' | 'de' }
+const { lang } = Astro.props;
+const t = videoCopy[lang];
+const all = videoHosts(lang);
+const groups = ACTIVITY_ORDER.map((a) => ({ a, items: all.filter((v) => v.host.activity === a) })).filter((g) => g.items.length);
+---
+
+<Base title={t.indexTitle} description={t.indexDescription} lang={lang} translations={VIDEO_LANGS}>
+  <div class="container">
+    <section class="page-head">
+      <span class="kicker kicker-tight">{t.kicker}</span>
+      <h1 class="page-title">{t.indexH1}</h1>
+      <p class="page-lede">{t.indexLede}</p>
+    </section>
+    {groups.map((g) => (
+      <section class="section">
+        <h2 class="vi-h2">{activityCopy[lang][g.a].short}</h2>
+        <div class="vi-grid">
+          {g.items.map((v) => (
+            <a class="vi-card" href={videoHref(lang, v.host.slug)}>
+              <img src={v.host.poster} alt={`${v.host.name} — ${v.host.specialty}`} loading="lazy" decoding="async" />
+              <span class="vi-play" aria-hidden="true">▶</span>
+              <span class="vi-name">{v.host.name}</span>
+              <span class="vi-what">{v.host.specialty}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .vi-h2 { font-size: 1.2rem; margin: 0 0 14px; }
+  .vi-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+  .vi-card { position: relative; display: flex; flex-direction: column; gap: 4px; color: inherit; text-decoration: none; }
+  .vi-card img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 14px; background: var(--color-surface); }
+  .vi-play { position: absolute; top: 10px; left: 10px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    background: rgb(255 255 255 / 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-size: 0.8rem; }
+  .vi-name { font-weight: 600; margin-top: 6px; }
+  .vi-what { font-size: 0.9rem; opacity: 0.7; }
+  @media (max-width: 900px) { .vi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .vi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } }
+</style>
