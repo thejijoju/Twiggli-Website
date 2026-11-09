@@ -53,7 +53,7 @@ import { withBase, type Lang } from '../lib/url.ts';
 /** Agreed in principle (email or WhatsApp), waiting for a written yes. */
 export const voucherHostsAgreed: string[] = [
   'himapan-berlin',
-  'ceramic-kingdom', 'petitejungle', 'rebeca',
+  'petitejungle', 'rebeca',
   'evelyn', 'nina', 'helka', 'maximiliana',
   'munio',
 ];
@@ -75,6 +75,7 @@ export const voucherHosts: string[] = [
   'angelo', // Angelo Hey (Coffee and Bananas), "I confirm", 07.11.26 (email)
   'ana', // Ana Kavalis (Resonant Body), "I confirm!", 07.11.26 (email)
   'anna-malerlebnisse', // Anna (ANNA-Malerlebnisse), "Ich bestätige", 09.11.26 (email), at €35 (open dates)
+  'ceramic-kingdom', // Madeline (Ceramic Kingdom), "I confirm. We can try it out.", 09.11.26 (email)
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
