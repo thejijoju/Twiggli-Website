@@ -300,33 +300,58 @@ const confirmGuest = async (to, f) => {
   const name = String(f.Name ?? '').trim().split(/\s+/)[0];
   const what = f.Workshop || f.Studio || f.Type;
   const icon = f.Studio ? '🏠' : emojiFor(what);
+  const host = String(f.Host ?? '').trim();
   const when = [String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1'), f.Time].filter(Boolean).join(', ');
   const rows = [
-    [de ? 'Workshop' : 'Workshop', `${what} ${icon}`],
-    [de ? 'Gastgeber' : 'Host', f.Host],
+    [de ? 'Gastgeber:in' : 'Host', host],
     [de ? 'Wann' : 'When', when],
     [de ? 'Personen' : 'People', f.People],
   ].filter(([, v]) => v);
-  const intro = de
-    ? `Hallo${name ? ` ${esc(name)}` : ''},<br><br>danke für deine Anfrage bei <b>Twiggli</b>! Sie ist gut bei uns angekommen:`
-    : `Hi${name ? ` ${esc(name)}` : ''},<br><br>thank you for your request on <b>Twiggli</b>! It has reached us:`;
   const runs = String(f['Runs from'] ?? '').match(/\d+/)?.[0];
   const runsNote = !runs ? '' : de
-    ? `Dieser Kurs findet ab ${runs} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald ${runs} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.<br><br>`
-    : `This class runs from ${runs} participants. Your request is confirmed as soon as ${runs} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.<br><br>`;
-  const outro = runsNote + (de
-    ? 'Wir geben sie direkt an den Gastgeber weiter. Er oder sie meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>'
-    : 'We pass it straight on to the host, who will get back to you by email, usually within 1–2 days. There is nothing else you need to do.<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>');
-  const table = rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#777">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
+    ? `Dieser Kurs findet ab ${runs} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald ${runs} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.`
+    : `This class runs from ${runs} participants. Your request is confirmed as soon as ${runs} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.`;
+  // Designed like the host's "New booking request" email (Jirel 09.11.26):
+  // logo, purple kicker, one big line, a details card, what happens next.
+  const t = de ? {
+    kicker: 'Anfrage erhalten', head: `Danke${name ? `, ${esc(name)}` : ''}! ${icon}`,
+    intro: `Deine Anfrage bei <b>Twiggli</b> ist gut angekommen. Wir haben sie direkt an ${host ? esc(host) : 'den Gastgeber'} weitergegeben.`,
+    nextHead: 'Wie geht’s weiter?',
+    next: `${host ? esc(host) : 'Der Gastgeber'} meldet sich direkt bei dir per E-Mail, meist innerhalb von 1–2 Tagen, um zu bestätigen oder einen anderen Termin vorzuschlagen. Du musst nichts weiter tun.`,
+    q: 'Fragen? Antworte einfach auf diese E-Mail.', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
+    subject: `Deine Anfrage bei Twiggli: ${what} ${icon}`,
+  } : {
+    kicker: 'Request received', head: `Thank you${name ? `, ${esc(name)}` : ''}! ${icon}`,
+    intro: `Your request on <b>Twiggli</b> has reached us, and we've passed it straight on to ${host ? esc(host) : 'the host'}.`,
+    nextHead: 'What happens next?',
+    next: `${host ? esc(host) : 'The host'} will get in touch with you directly by email, usually within 1–2 days, to confirm or suggest another date. There is nothing else you need to do.`,
+    q: 'Questions? Just reply to this email.', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
+    subject: `Your Twiggli request: ${what} ${icon}`,
+  };
+  const cell = 'padding:9px 0;border-bottom:1px solid #efe9e2;font-size:14px';
+  const table = rows.map(([k, v]) => `<tr><td style="${cell};color:#6b7076">${esc(k)}</td><td align="right" style="${cell};font-weight:bold">${esc(v)}</td></tr>`).join('');
+  const html = `<div style="padding:24px 0;font-family:Tahoma,Arial,sans-serif;color:#24272e">
+<table width="600" align="center" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;border-radius:14px;overflow:hidden">
+<tr><td style="padding:22px 30px 4px"><table cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle"><img src="${SITE}/img/logo.png" width="34" height="34" alt="" style="display:block"></td><td style="padding-left:10px;vertical-align:middle;font-weight:bold;font-size:20px">Twiggli</td></tr></table></td></tr>
+<tr><td style="padding:18px 30px 0">
+<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6a3eec;font-weight:bold">${t.kicker}</p>
+<h1 style="margin:0 0 10px;font-size:24px;line-height:1.25">${t.head}</h1>
+<p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#454a50">${t.intro}</p>
+</td></tr>
+<tr><td style="padding:14px 30px 0"><table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px"><tr><td style="padding:16px 18px">
+<p style="margin:0 0 4px;font-size:17px;font-weight:bold">${esc(what)}</p>
+<table width="100%" cellpadding="0" cellspacing="0">${table}</table>
+</td></tr></table></td></tr>
+<tr><td style="padding:18px 30px 0">
+<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7076;font-weight:bold">${t.nextHead}</p>
+<p style="margin:0;font-size:14px;line-height:1.6;color:#454a50">${t.next}${runsNote ? `<br><br>${runsNote}` : ''}</p>
+<p style="margin:18px 0 22px;font-size:14px;line-height:1.6;color:#454a50">${t.q}<br><br>${t.bye} 💛<br>${t.sig}</p>
+</td></tr>
+<tr><td style="padding:14px 30px;font-size:11px;color:#888;line-height:1.6"><a href="${SITE}" style="color:#888">www.twiggli.com</a></td></tr>
+</table></div>`;
+  const text = `${t.head.replace(/<[^>]+>/g, '')}\n\n${t.intro.replace(/<[^>]+>/g, '')}\n\n${what}\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${t.next}${runsNote ? `\n\n${runsNote}` : ''}\n\n${t.q}\n\n${t.bye}\n${t.sig.replace(/<[^>]+>/g, '')}`;
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-  await mail.sendMail({
-    from: { name: 'Twiggli', address: SENDER },
-    replyTo: SENDER,
-    to,
-    subject: de ? `Deine Anfrage bei Twiggli: ${what} ${icon}` : `Your Twiggli request: ${what} ${icon}`,
-    text: `${de ? 'Danke für deine Anfrage bei Twiggli' : 'Thank you for your request on Twiggli'}.\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${de ? 'Der Gastgeber meldet sich bei dir per E-Mail, meist innerhalb von 1–2 Tagen.' : 'The host will get back to you by email, usually within 1–2 days.'}\n\n💛 Jirel, Twiggli`,
-    html: `<div style="font-family:Tahoma,sans-serif;font-size:14px;line-height:1.5">${intro}<table style="margin:14px 0;font-size:14px">${table}</table>${outro}</div>`,
-  });
+  await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to, subject: t.subject, text, html });
 };
 
 /** HTML-escaped, for the email table. */
