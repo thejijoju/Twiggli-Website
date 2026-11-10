@@ -1,73 +1,64 @@
 ---
-title: "We Still Can't Say 'Vulva.' Pia Is Teaching Berlin to Paint One."
-description: "Most of us don't know what we don't know about women's health. A former Clue product director thinks a brush might be the easiest way to start finding out."
+title: "Pia: painting vulvas, and finally talking about women's health"
+description: "A room full of paintings, friends who struggled to just start, and a long time working in women's health at Clue. How Pia brought it all together in one workshop."
 date: 2026-11-09
 lang: en
 category: Host profile
 ---
 
-We have apps that track our cycles to the day, and still we
-lack the plain words for the body those apps describe.
-
-Pia knows this better than most. For a long time she worked in women's health,
-as a product manager and director at Clue, the period tracking app from Berlin.
-She learned more there than she ever expected to. And the more she learned, the
-clearer one thing became: most of us don't know what we don't know about women's
-health.
+Pia started her workshops because she loves painting. Her room is filled with
+paintings, and friends around her asked to paint together with her, because so
+many people struggle to just start painting. So they asked her.
 
 <figure class="post-figure">
   <img src="/img/blog/pia.jpg" alt="Pia, founder of Vulvas.berlin, smiling against a light wall" loading="lazy" decoding="async" />
   <figcaption>Pia, founder of Vulvas.berlin. Photo: vulvas.berlin</figcaption>
 </figure>
 
-## It began with a blank canvas
+That is when she discovered how much she also loves painting with people:
+figuring out what they want to create, and bringing it to life together.
 
-Her answer did not come from a boardroom. It came from her own room, the one
-filled with her paintings. Friends would see them and want to paint too, but
-they couldn't bring themselves to start. A blank canvas, it turns out, is its
-own kind of silence. So they asked Pia to paint with them.
+## A long time in women's health
 
-What she discovered surprised her. She didn't only love painting. She loved
-painting with people: finding out what someone wants to create, and helping
-them bring it to life.
+Pia used to work at Clue, the period tracking app from Berlin. For a very long
+time she worked in the field of women's health, as a product manager and
+director, and she learned so much there. Surprisingly much.
 
-## The visible part of a bigger story
+So much that she wanted to do something with everything she had learned. She
+thought this topic is so important, there is so much to do, and most of us
+don't know all the things we don't know about women's health.
 
-So she put the two together. The painting would be the container; the
-conversations would happen inside it.
+## Painting as a container
 
-Why vulvas? Because the vulva is the visible part of women's health, the part we
-can actually see and still struggle to name. If we can talk about this, Pia
-reasons, we can start to talk about everything else.
+So she decided to combine both: painting as a container for these
+conversations to happen.
+
+Painting vulvas is symbolic. The vulva is the visual part of women's health,
+and if we can talk about this, we can start talking about everything else.
 
 <figure class="post-video">
   <video src="/video/pia-vulva.mp4" poster="/video/pia-vulva-poster.jpg" muted loop playsinline autoplay preload="metadata" aria-label="A group painting colourful vulvas in acrylic at a long table"></video>
   <figcaption>A Vulva Painting Workshop with Pia in Friedrichshain.</figcaption>
 </figure>
 
-It is a disarmingly simple idea. Nobody has to give a speech or confess
-anything. You sit at a table with a brush in your hand, and while you paint, you
-learn: about anatomy, about the vagina, about the clitoris, and about the
-language most of us were never given. The painting is simply art, a beautiful
-way to be together and make something. The learning slips in alongside it.
+## What happens in the workshop
 
-## What people carry home
+The workshop is about building language and learning about anatomy, the vagina
+and the clitoris. And the painting is just art: a beautiful way to be together
+and create something.
 
-People leave with an artwork, but rarely with only that. They leave with new
-knowledge about their bodies, the wish to keep creating, and sometimes the
-courage to start a conversation of their own. A painting on the wall, Pia
-hopes, keeps asking questions long after the paint has dried.
+People get to take something with them. Their painting can inspire them to make
+change and spark conversations long after the workshop. They leave not only
+with an artwork, but also inspired to create, and with new knowledge about
+their bodies.
 
-No two evenings are alike. Every painting is unique, and every workshop takes
-its own turn, because the conversation depends on who sits at the table. New
-topics come up every time.
+## Every workshop is different
+
+Every painting is unique, and every workshop is different, because the
+conversations depend on the people who joined. New topics come up every time.
 
 > "It's always interesting. I really, really enjoy facilitating this and being
 > with people through this experience." — Pia
-
-We spend a great deal of money teaching people to optimise their bodies, and
-remarkably little teaching them to talk about them. An evening of paint and
-honest conversation is a small correction. It may also be the most useful one.
 
 <div class="post-callout">
   <p class="post-callout-label">Paint with Pia</p>
