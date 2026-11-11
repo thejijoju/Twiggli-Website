@@ -502,6 +502,12 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         ...(r.price ? { price: r.price } : {}),
         ...(r.kids ? { kids: true } : {}),
         ...(r.request ? { request: true } : {}),
+        // Places per session, where the host set one (Pia: 6, 11.11.26),
+        // less any booked through Twiggli for that date (availability.ts).
+        ...(() => {
+          const left = placesLeft({ slug: r.slug, date: new Date(today + dayOffset * 86400000).toISOString().slice(0, 10), time: r.time, spots: r.spots });
+          return left !== undefined ? { spots: left } : {};
+        })(),
         ...(usp(r.slug, r.title) ? { usp: usp(r.slug, r.title) } : {}),
       });
     }

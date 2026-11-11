@@ -60,7 +60,7 @@ export const hosts: HostCopy[] = [
     group: '3–12', duration: '3 h', place: 'Kunstraum Heartspace, Berlino', languages: 'EN', priceNote: 'sconti per gruppi possibili' },
   { slug: 'pia', name: 'Pia', specialty: 'Pittura di vulve e apprendimento giocoso', studio: 'Vulva Painting Studio',
     blurb: 'Ti va di creare un’opera che lascia il segno parlando del corpo delle donne? In questo workshop scopri l’anatomia con dei puzzle, crei il tuo concept artistico e gli dai vita con gli acrilici su una tela 15 × 15 cm. Niente nudità, nessuna abilità di pittura o conoscenza di anatomia richiesta: solo mente aperta e curiosità. Trasformiamo i tabù in conversazioni, un dipinto alla volta ♡',
-    group: 'Fino a 10 in studio · 4–15 nella tua sede', duration: '2,5 h', place: 'Friedrichshain o la tua sede', languages: 'EN · DE' },
+    group: 'Fino a 6 per workshop in studio · 4–15 nella tua sede', duration: '2,5 h', place: 'Friedrichshain o la tua sede', languages: 'EN · DE' },
   { slug: 'sarah', name: 'Sarah', specialty: 'Mindfulness & scrittura creativa',
     blurb: 'Fuori dalla modalità funzione, dentro il qui e ora. Un mix di mindfulness, meditazione, journaling, scrittura creativa e movimento dolce — strumenti semplici per più calma, chiarezza e concentrazione al lavoro.',
     group: '3–12', duration: '1–7 h', place: 'In sede / Warschauer Str. / online', languages: 'DE · EN' },

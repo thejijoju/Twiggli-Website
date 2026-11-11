@@ -60,7 +60,7 @@ export const hosts: HostCopy[] = [
     group: '3–12', duration: '3 sa', place: 'Kunstraum Heartspace, Berlin', languages: 'EN', priceNote: 'grup indirimi mümkün' },
   { slug: 'pia', name: 'Pia', specialty: 'Vulva resmi ve oyunla öğrenme', studio: 'Vulva Painting Studio',
     blurb: 'Kadın bedeni hakkında konuşurken iddialı bir eser yapmaya ne dersin? Bu atölyede anatomiyi yapbozlarla keşfediyor, kendi sanat konseptini oluşturuyor ve onu 15 × 15 cm’lik bir tuvalde akrilikle hayata geçiriyorsun. Çıplaklık yok, resim becerisi ya da anatomi bilgisi gerekmiyor: sadece açık bir zihin ve merak. Tabuları sohbetlere dönüştürelim, her seferinde bir resimle ♡',
-    group: 'Stüdyoda 10 kişiye kadar · senin mekânında 4–15', duration: '2,5 sa', place: 'Friedrichshain ya da senin mekânın', languages: 'EN · DE' },
+    group: 'Stüdyoda atölye başına 6 kişiye kadar · senin mekânında 4–15', duration: '2,5 sa', place: 'Friedrichshain ya da senin mekânın', languages: 'EN · DE' },
   { slug: 'sarah', name: 'Sarah', specialty: 'Farkındalık & yaratıcı yazarlık',
     blurb: 'İşlev modundan çık, şimdi ve buradaya gel. Farkındalık, meditasyon, günlük tutma, yaratıcı yazarlık ve nazik hareketin bir karışımı — işte daha fazla sükûnet, netlik ve odak için basit araçlar.',
     group: '3–12', duration: '1–7 sa', place: 'Yerinde / Warschauer Str. / online', languages: 'DE · EN' },

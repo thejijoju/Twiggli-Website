@@ -60,7 +60,7 @@ export const hosts: HostCopy[] = [
     group: '3–12', duration: '3 godz.', place: 'Kunstraum Heartspace, Berlin', languages: 'EN', priceNote: 'możliwe zniżki grupowe' },
   { slug: 'pia', name: 'Pia', specialty: 'Malowanie wulw i nauka przez zabawę', studio: 'Vulva Painting Studio',
     blurb: 'Masz ochotę stworzyć wyrazistą pracę i porozmawiać o kobiecym ciele? Na tych warsztatach poznajesz anatomię dzięki puzzlom, tworzysz własną koncepcję i malujesz ją akrylami na płótnie 15 × 15 cm. Bez nagości, bez umiejętności malarskich i wiedzy o anatomii: wystarczy otwartość i ciekawość. Zamieńmy tabu w rozmowy, obraz po obrazie ♡',
-    group: 'Do 10 w studiu · 4–15 w Twojej lokalizacji', duration: '2,5 godz.', place: 'Friedrichshain lub Twoja lokalizacja', languages: 'EN · DE' },
+    group: 'Do 6 na warsztat w studiu · 4–15 w Twojej lokalizacji', duration: '2,5 godz.', place: 'Friedrichshain lub Twoja lokalizacja', languages: 'EN · DE' },
   { slug: 'sarah', name: 'Sarah', specialty: 'Uważność & pisanie kreatywne',
     blurb: 'Wyjdź z trybu funkcjonowania i wejdź w tu i teraz. Połączenie uważności, medytacji, journalingu, pisania kreatywnego i łagodnego ruchu — proste narzędzia dla większego spokoju, jasności i skupienia w pracy.',
     group: '3–12', duration: '1–7 godz.', place: 'U was na miejscu / Warschauer Str. / online', languages: 'DE · EN' },
