@@ -282,8 +282,8 @@ export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
  *  group is quoted separately, which is why the directory labels them as
  *  such rather than presenting them as the price of a booking.
  */
-/** Tuft Tuft's "Hot desk" in their booking feed is a day at a tufting
- *  station for people who already tuft — no teacher. It shows as "Open
+/** A "Hot desk" in a booking feed is a day at a work station for people
+ *  who already know the craft — no teacher. It shows as "Open
  *  studio", tagged for the experienced, and stays out of the home page's
  *  classes and out of the host's price range. */
 const OPEN_STUDIO = /\bhot ?desk\b/i;

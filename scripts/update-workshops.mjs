@@ -610,20 +610,6 @@ const SOURCES = [
     titleEn: 'Experimenting with Alabaster',
     district: 'Lichtenberg' },
 
-  // Tuft Tuft (Marienburger Str. 21, Prenzlauer Berg) books its rug-tufting
-  // workshops through Acuity, which the existing mode reads: it returns the
-  // real slot list per class, so each date carries its own spot count and
-  // goes sold-out on its own, and the card deep-links into that class's
-  // date picker. The schedule hash is taken rather than the numeric owner,
-  // since the hash is what their booking links expose and it needs no
-  // redirect to resolve. Sizes and prices come from Acuity itself, so a new
-  // format appears without touching this file.
-  { slug: 'tufttuft', name: 'Tuft Tuft — tufting workshops (Acuity)', mode: 'acuity',
-    scheduleHash: '85685f54', url: 'https://tufttuftberlin.as.me/schedule/85685f54',
-    district: 'Prenzlauer Berg',
-    // Chad (11.11.26): only The OG and The Big One may be listed; nothing else without his OK.
-    adjust: (w) => (/\bThe OG\b|\bThe Big One\b/i.test(w.title) ? w : null) },
-
   // Alessia Sinopoli is the third Kunstraum Heartspace artist here, after
   // Cate Duckwall and Rebeca — the venue itself is not a host, so each
   // artist is read from wherever they sell.

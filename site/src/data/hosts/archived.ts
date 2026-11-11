@@ -1,9 +1,9 @@
-/** Hosts who have left Twiggli. Their copy and pictures stay in the code,
- *  in case they come back, but getHosts() never returns them: no page, no
+/** Hosts who have left Twiggli. Their copy and pictures usually stay in the code,
+ *  in case they come back (unless they asked for deletion), but getHosts() never returns them: no page, no
  *  card, no date, no search entry, no sitemap line, anywhere on the site.
  *  scripts/update-workshops.mjs skips their feeds too. */
 export const archivedSlugs = new Set<string>([
   'sabine', // Sabine Alex, Mobile Dunkelkammer: left 30.10.26, stays on Konfetti
   'celia', // Cèlia Hoste, La HoCo (knitting): asked to be removed, 09.11.26
-  'tufttuft', // Chad Wright, Tuft Tuft: paused 11.11.26 until contract + his own visuals; then only The OG and The Big One
+  'tufttuft', // Tuft Tuft: declined 11.11.26, all copy, images and video deleted; never re-add without a written OK
 ]);
