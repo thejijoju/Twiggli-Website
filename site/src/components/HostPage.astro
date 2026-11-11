@@ -11,6 +11,7 @@ import WorkshopSchema from './WorkshopSchema.astro';
 import { confirmedLine, reviewMonth, reviewsFor } from '../data/trust.ts';
 import LiveReviews from './LiveReviews.astro';
 import Voucher from './Voucher.astro';
+import { hostWorkshops, hostWorkshopsCopy } from '../data/hostWorkshops.ts';
 import { getHosts, isPreviewHost, requestMin } from '../data/content.ts';
 import { hostAbout, hostLogos } from '../data/hostAbout.ts';
 import { followCopy } from '../data/follow.ts';
@@ -66,7 +67,12 @@ const reviewSchema = guestReviews.length ? {
 } : undefined;
 const sessions = preview ? previewSessionsFor(host.slug, lang) : sessionsFor(host.slug, lang);
 const workshops = preview ? [] : workshopsFor(host.slug, lang);
-const onRequest = preview ? previewOnRequestFor(host.slug, lang) : onRequestFor(host.slug, lang);
+const cards = hostWorkshops(host.slug, lang);
+const wc = hostWorkshopsCopy[lang] ?? hostWorkshopsCopy.en;
+// With one block per workshop, the on-request rows take the blocks' titles
+// (in the page's language) and prices.
+const onRequest = (preview ? previewOnRequestFor(host.slug, lang) : onRequestFor(host.slug, lang))
+  .map((o, i) => (cards?.[i] ? { ...o, title: cards[i].title, price: `€${cards[i].price}` } : o));
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 // The host's own words and logo, where they sent us some (hostAbout.ts).
@@ -258,10 +264,10 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           </a>
         )}
         {/* A · the second button, for a host who takes vouchers. */}
-        <Voucher kind="pill" host={host} lang={lang} title={sessions[0]?.title} />
+        {!cards && <Voucher kind="pill" host={host} lang={lang} title={sessions[0]?.title} />}
         </div>
         {/* B · the gift box: 1 or 2 places at the host's price. */}
-        <Voucher kind="box" host={host} lang={lang} title={sessions[0]?.title} />
+        {!cards && <Voucher kind="box" host={host} lang={lang} title={sessions[0]?.title} />}
         {/* Follow: an email when this host adds dates (data/follow.ts). The
             field is the button's first step; a remembered email is filled in. */}
         <div class="host-follow" data-follow={host.slug} data-follow-name={host.name} hidden>
@@ -283,6 +289,43 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
 
 
     <hr class="rule" />
+
+    {cards && (
+      <>
+        <section class="section" id="workshops">
+          <h2 class="section-title">{wc.heading}</h2>
+          <div class="hw-grid">
+            {cards.map((w, i) => {
+              const o = onRequest[i];
+              return (
+                <article class="hw-card">
+                  <div class="hw-media">
+                    {w.video ? (
+                      <video src={w.video} poster={w.poster} muted loop playsinline autoplay preload="metadata" aria-label={w.title}></video>
+                    ) : w.photo ? (
+                      <img src={w.photo} alt={w.title} loading="lazy" decoding="async" />
+                    ) : null}
+                  </div>
+                  <h3 class="hw-title">{w.title}</h3>
+                  <p class="hw-price"><strong>€{w.price}</strong> {wc.perPerson}</p>
+                  <p class="hw-facts">{w.facts}</p>
+                  <p class="hw-text">{w.text}</p>
+                  <div class="hw-actions">
+                    {o && <a class="date-book" href={o.bookUrl} {...inquireAttrs(o)}>{wc.ask}</a>}
+                    {isVoucherHost(host.slug) && (
+                      <a class="vc-pill hw-gift" href={`${href(lang, '/voucher/')}?host=${encodeURIComponent(host.slug)}`}
+                        data-voucher="host" data-voucher-slug={host.slug} data-voucher-host={host.name}
+                        data-voucher-title={w.title} data-voucher-price={w.price} data-voucher-people="1">🎁 {wc.gift}</a>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+        <hr class="rule" />
+      </>
+    )}
 
     {workshops.length > 1 && (
       <>
@@ -467,3 +510,17 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
     }
   });
 </script>
+
+<style>
+  .hw-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .hw-card { display: flex; flex-direction: column; gap: 8px; }
+  .hw-media { aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; background: var(--color-surface); margin-bottom: 6px; }
+  .hw-media video, .hw-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hw-title { font-size: 1.2rem; margin: 0; }
+  .hw-price { margin: 0; }
+  .hw-facts { margin: 0; font-size: 0.9rem; opacity: 0.7; }
+  .hw-text { margin: 4px 0 0; line-height: 1.55; }
+  .hw-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 12px; align-items: center; }
+  .hw-gift { display: inline-block; }
+  @media (max-width: 900px) { .hw-grid { grid-template-columns: minmax(0, 1fr); } .hw-media { aspect-ratio: 16 / 11; } }
+</style>
