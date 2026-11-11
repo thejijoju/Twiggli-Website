@@ -209,7 +209,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   helka:        { activity: 'ceramics',    groupRange: [5, 30],   hourRange: [1.5, 3], groupPrice: 95 },
   alessia:      { activity: 'art',         groupRange: [1, 8],    hourRange: [4, 4] },
   // PLACEHOLDER group range — Acuity carries no class size for these.
-  tufttuft:     { activity: 'craft',       groupRange: [1, 10],   hourRange: [3, 5] },
   simone:       { activity: 'craft',       groupRange: [3, 6],    hourRange: [4, 6] },
   tania:        { activity: 'ceramics',    groupRange: [1, 8],    hourRange: [3, 3] },
   drawingwalks: { activity: 'art',         groupRange: [1, 15],   hourRange: [2.75, 2.75] },
@@ -358,9 +357,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'simone', name: 'Simone', specialty: 'Stone sculpture in alabaster', studio: 'B.L.O.-Ateliers',
       blurb: 'A stone sculptor working out of the B.L.O.-Ateliers on the old railway depot in Lichtenberg. Alabaster is soft enough to shape with rasps and files and turns translucent once it is polished — a trick she saves for the end. You can chase a specific idea, an animal or a heart or a figure, or simply start rasping and follow where the stone goes; she says both ways are right. Groups of three to six, no experience needed, and tool use is included in the fee.',
       group: '3–6', duration: '4.5 h · 6 h · 2 × 4 h', place: 'B.L.O.-Ateliers, Kaskelstr. 55, Lichtenberg', languages: 'DE' },
-    { slug: 'tufttuft', name: 'Tuft Tuft', specialty: 'Rug tufting', studio: 'Tuft Tuft',
-      blurb: 'Punch your own design into a handmade rug with a tufting gun \u2014 no experience needed. You send the idea ahead so they can make it tuft-ready, then pick from a wall of yarn colours and work the frame with hands-on guidance. They shear, finish and trim it for you afterwards; collect in about two weeks or have it shipped. Two sizes: The OG at 30 \u00d7 40 cm, and The Big One, a five-hour 50 \u00d7 50. Snacks included.',
-      group: 'Small group', duration: '3\u20135 h', place: 'Marienburger Str. 21, Prenzlauer Berg', languages: 'EN' },
     { slug: 'alessia', name: 'Alessia', specialty: 'Realistic pencil portraits',
       blurb: 'An Italian artist based in Berlin teaching realistic portrait drawing from photographic references — a structured method rather than a knack. You work the grid for proportion, learn what pencils of different hardness actually do, and spend most of the afternoon on shading and hatching, which is where a portrait turns from flat to solid. Eight people at most, so the guidance follows your own way of drawing; beginners and improvers both. Professional materials, printed references, tea and a sweet treat at the break are all provided.',
       group: 'Up to 8', duration: '4 h', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
@@ -584,9 +580,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'simone', name: 'Simone', specialty: 'Steinbildhauerei in Alabaster', studio: 'B.L.O.-Ateliers',
       blurb: 'Steinbildhauerin in den B.L.O.-Ateliers auf dem alten Bahndepot in Lichtenberg. Alabaster lässt sich mit Raspeln und Feilen gut bearbeiten und zeigt seine Transparenz erst, wenn er ganz glatt geschliffen ist — den Trick dafür hebt sie sich fürs Ende auf. Du kannst einer konkreten Idee folgen, einem Tier, einem Herz, einer Figur, oder einfach drauflosraspeln und schauen, wohin der Stein dich führt; beide Wege sind richtig. Kleine Gruppen von drei bis sechs, ohne Vorkenntnisse, Werkzeugnutzung inklusive.',
       group: '3–6', duration: '4,5 Std. · 6 Std. · 2 × 4 Std.', place: 'B.L.O.-Ateliers, Kaskelstr. 55, Lichtenberg', languages: 'DE' },
-    { slug: 'tufttuft', name: 'Tuft Tuft', specialty: 'Teppiche tuften', studio: 'Tuft Tuft',
-      blurb: 'Mit der Tufting-Pistole euer eigenes Motiv in einen handgemachten Teppich schie\u00dfen \u2014 ganz ohne Vorkenntnisse. Ihr schickt die Idee vorab, damit sie tuftfertig gemacht wird, w\u00e4hlt dann aus einer Wand voller Garnfarben und arbeitet am Rahmen mit Anleitung. Scheren, Finish und Zuschnitt \u00fcbernehmen sie; abholen in etwa zwei Wochen oder Versand gegen eine kleine Geb\u00fchr. Zwei Gr\u00f6\u00dfen: The OG mit 30 \u00d7 40 cm und The Big One, f\u00fcnf Stunden mit 50 \u00d7 50 cm. Snacks inklusive.',
-      group: 'Kleine Gruppe', duration: '3\u20135 Std.', place: 'Marienburger Str. 21, Prenzlauer Berg', languages: 'EN' },
     { slug: 'alessia', name: 'Alessia', specialty: 'Realistische Bleistiftporträts',
       blurb: 'Italienische Künstlerin in Berlin, die realistisches Porträtzeichnen nach Fotovorlage unterrichtet — als klare Methode, nicht als Talentfrage. Ihr arbeitet mit dem Raster für die Proportionen, lernt, was Bleistifte unterschiedlicher Härte wirklich können, und verbringt den größten Teil des Nachmittags mit Schraffur und Schattierung, wo ein Porträt von flach zu plastisch wird. Höchstens acht Personen, die Anleitung folgt eurer eigenen Handschrift; Anfängerinnen wie Geübte. Profimaterial, gedruckte Vorlagen, Tee und etwas Süßes in der Pause sind inklusive.',
       group: 'Bis 8', duration: '4 Std.', place: 'Kunstraum Heartspace, Danziger Str. 172, Prenzlauer Berg', languages: 'EN' },
@@ -991,17 +984,6 @@ const reels: Record<string, { video: string; poster: string }> = {
   // clip — glazing, firing, the finished pots among the plants — is left
   // off; eleven seconds is a card's worth. Audio stripped.
   'loom-lab': { video: '/video/loom-lab.mp4', poster: '/video/loom-lab-poster.jpg' },
-  // Tuft Tuft's own, cut down from their reel: the market stall, two people
-  // filling a rainbow heart at the frame, then the studio itself — the pink
-  // room, the wall of yarn, guns working the canvas, and the finished rugs
-  // held up at the end. Audio stripped, like the rest.
-  // The original opens on a hook — a host to camera under "What if I'm not
-  // good at it", answered later by "What if we did it together?" — and both
-  // lines are burnt into the picture. Those 3.6 seconds are gone: the
-  // captions read as an ad on a page that is already selling the workshop,
-  // and the second one sits over footage nobody would miss. What is left is
-  // the room and the work, which is what the card is for.
-  // tufttuft: reel removed 11.11.26 (Chad hadn't approved it); add his own visuals here when he sends them.
   // Simone's own: a fist on a chisel working the face of an alabaster block,
   // outdoors on the B.L.O. yard. Audio stripped (hers carried music).
   // The only landscape footage on the site — 16:9, where every other reel is
@@ -1610,7 +1592,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   qian: { area: 'Prenzlauer Berg', onSite: true }, celina: { area: 'Gesundbrunnen' },
   evelyn: { area: 'Friedrichshain', onSite: true }, violaine: { area: 'Neukölln' },
   tania: { area: 'Charlottenburg' }, simone: { area: 'Lichtenberg' },
-  tufttuft: { area: 'Prenzlauer Berg' }, alessia: { area: 'Prenzlauer Berg' },
+  alessia: { area: 'Prenzlauer Berg' },
   sina: { area: 'Friedrichshain' },
   celia: { area: 'Friedrichshain' }, olivia: { area: 'Friedrichshain' },
   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
