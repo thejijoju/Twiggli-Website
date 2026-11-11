@@ -21,7 +21,7 @@ export const makerPictures: Record<string, 'photo' | 'reel'> = {
   petitejungle: 'reel', 'anna-malerlebnisse': 'reel', chelti: 'reel', 'beat-etage': 'reel',
   'monk-garden': 'reel', bumerang: 'reel', druckrausch: 'reel', daisuki: 'reel', dirt: 'reel',
   arcoiris: 'reel', mampe: 'reel', 'smell-lab': 'reel', yurika: 'reel', sabine: 'reel',
-  dominik: 'reel', ana: 'reel', 'loom-lab': 'reel', tufttuft: 'reel', simone: 'reel',
+  dominik: 'reel', ana: 'reel', 'loom-lab': 'reel', simone: 'reel',
   tania: 'reel', drawingwalks: 'reel', evelyn: 'reel', qian: 'reel', kohfink: 'reel',
   rebeca: 'reel', nina: 'reel', redrum: 'reel', sarah: 'reel', celina: 'reel', anne: 'reel',
   violaine: 'reel', angelo: 'reel', nicole: 'reel', pia: 'reel', 'galleria-lucia': 'reel',
