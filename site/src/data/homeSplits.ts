@@ -20,7 +20,7 @@ export const homeSplits: Record<Lang, HomeSplitsCopy> = {
   en: {
     teams: {
       kicker: 'For teams', title: 'Team events,', hand: 'made by hand',
-      copy: 'Private workshops for your team: pottery, candles, cooking, printing and more, at a host’s studio or your office. Tell us the date and group size and get options and a quote within 24 hours.',
+      copy: 'Swap the laptop for clay, wax or ink: making something together, and seeing the result, brings a team closer than any meeting. Private workshops for your team: pottery, candles, cooking, printing and more, at a host’s studio or your office. Tell us the date and group size and get options and a quote within 24 hours.',
       ticks: ['One request, several hosts to choose from', 'At their studio or your office', 'One invoice for your company'],
       pics: ['kimchi', 'perfume'],
       cta: 'Request a group booking', more: 'See hosts for groups',
@@ -36,7 +36,7 @@ export const homeSplits: Record<Lang, HomeSplitsCopy> = {
   de: {
     teams: {
       kicker: 'Für Teams', title: 'Team-Events,', hand: 'mit den Händen gemacht',
-      copy: 'Private Workshops für dein Team: Töpfern, Kerzen, Kochen, Drucken und mehr, im Studio der Gastgeber oder bei euch im Büro. Nenn uns Datum und Gruppengröße und du bekommst innerhalb von 24 Stunden Vorschläge und ein Angebot.',
+      copy: 'Laptop gegen Ton, Wachs oder Farbe tauschen: Gemeinsam etwas erschaffen und das Ergebnis sehen bringt ein Team näher zusammen als jedes Meeting. Private Workshops für dein Team: Töpfern, Kerzen, Kochen, Drucken und mehr, im Studio der Gastgeber oder bei euch im Büro. Nenn uns Datum und Gruppengröße und du bekommst innerhalb von 24 Stunden Vorschläge und ein Angebot.',
       ticks: ['Eine Anfrage, mehrere Gastgeber zur Auswahl', 'Im Studio oder bei euch im Büro', 'Eine Rechnung für eure Firma'],
       pics: ['Kimchi', 'Parfüm'],
       cta: 'Gruppenbuchung anfragen', more: 'Gastgeber für Gruppen ansehen',
