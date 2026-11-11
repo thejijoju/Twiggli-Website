@@ -23,8 +23,9 @@ type Copy = Partial<Record<Lang, HostWorkshop[]>> & { en: HostWorkshop[] };
 const LUCILLE_MEDIA = [
   { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
   { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
-  // No video of the flower crowns yet (asked 11.11.26): her group photo.
-  { photo: '/img/hosts/lucille-guder-6.jpg' },
+  // No video of the flower crowns yet (asked 11.11.26): the crown-making
+  // table, hands only (no faces, Jirel 11.11.26).
+  { photo: '/img/hosts/lucille-guder-5.jpg' },
 ];
 
 // Texts from lucilleguder.com (workshop pages, 11.11.26).

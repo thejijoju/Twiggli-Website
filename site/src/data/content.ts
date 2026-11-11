@@ -834,9 +834,11 @@ const reels: Record<string, { video: string; poster: string }> = {
   'jeannette-tolksdorff': { video: '/video/jeannette-tolksdorff.mp4', poster: '/video/jeannette-tolksdorff-poster.jpg' },
   /* Lucille's own reel for her self-photography & flower collage workshop
      (sent 09.11.26): the photo studio, drawing the outline, pressed flowers
-     laid on it, the small women's circle at the table, the finished
-     collages. Her captions stay (they carry the workshop's message).
-     Audio stripped. Poster: a finished collage. */
+     laid on it, the finished collages. Her captions stay (they carry the
+     workshop's message). Audio stripped. Poster: a finished collage.
+     Cut 11.11.26 to hands, drawings and collages only: the dark studio
+     opening, the women's circle and the table from above are out, so no
+     faces (Jirel: avoid showing faces in videos). */
   'lucille-guder': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
   // Pia's Christmas painting: the finished canvases, Glühwein and the table (WhatsApp, 03.11.26).
   'pia-christmas': { video: '/video/pia-christmas.mp4', poster: '/video/pia-christmas-poster.jpg' },
@@ -1271,16 +1273,15 @@ const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
     Blumencollage: { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
     'flower collage': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
     // Her dots-technique clip (sent 09.11.26): the dotted body painting from a
-    // photo, then the women holding up their finished pieces. Captions kept,
-    // audio stripped. Poster: a dotted painting in progress. Second clip
-    // (also 09.11): blue dots at the table, and the finished pieces on the sofa table.
+    // photo. Captions kept, audio stripped. Poster: a dotted painting in
+    // progress. Cut 11.11.26 to hands and paintings only, no faces (Jirel:
+    // avoid showing faces in videos); her second clip was nearly all faces
+    // and is gone.
     'Punkt-Technik': [
       { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
-      { video: '/video/lucille-guder-dots-2.mp4', poster: '/video/lucille-guder-dots-2-poster.jpg' },
     ],
     'dots technique': [
       { video: '/video/lucille-guder-dots.mp4', poster: '/video/lucille-guder-dots-poster.jpg' },
-      { video: '/video/lucille-guder-dots-2.mp4', poster: '/video/lucille-guder-dots-2-poster.jpg' },
     ],
   },
   pia: {
