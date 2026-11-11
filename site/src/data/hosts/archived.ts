@@ -5,5 +5,4 @@
 export const archivedSlugs = new Set<string>([
   'sabine', // Sabine Alex, Mobile Dunkelkammer: left 30.10.26, stays on Konfetti
   'celia', // Cèlia Hoste, La HoCo (knitting): asked to be removed, 09.11.26
-  'tufttuft', // Tuft Tuft: declined 11.11.26, all copy, images and video deleted; never re-add without a written OK
 ]);

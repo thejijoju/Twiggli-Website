@@ -4781,7 +4781,7 @@ const onRequestOut = [];
 const statuses = [];
 // Hosts who left Twiggli (site/src/data/hosts/archived.ts): their feeds
 // are no longer read.
-const ARCHIVED = new Set(['sabine', 'celia', 'tufttuft']);
+const ARCHIVED = new Set(['sabine', 'celia']);
 for (const source of SOURCES) {
   if (ARCHIVED.has(source.slug)) continue;
   try {
