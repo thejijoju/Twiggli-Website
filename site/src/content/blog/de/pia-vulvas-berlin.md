@@ -1,15 +1,14 @@
 ---
 title: "Pia: Vulven malen und endlich über Frauengesundheit reden"
-description: "Ein Zimmer voller Bilder, Freundinnen, denen der Anfang schwerfiel, und eine lange Zeit in der Frauengesundheit bei Clue. Wie Pia alles in einem Workshop zusammenbringt."
+description: "Ein Zimmer voller Bilder, Mal-Sessions mit Freundinnen und Freunden und eine lange Zeit in der Frauengesundheit bei Clue. Wie Pia alles in einem Workshop zusammenbringt."
 date: 2026-11-09
 lang: de
 category: Gastgeberporträt
 ---
 
 Pia hat mit ihren Workshops angefangen, weil sie das Malen liebt. Ihr Zimmer
-ist voller Bilder, und Freundinnen und Freunde fragten sie, ob sie zusammen
-malen könnten, denn vielen fällt es schwer, einfach mit dem Malen anzufangen.
-Also fragten sie Pia.
+ist voller Bilder, und alles begann mit Mal-Sessions mit Freundinnen und
+Freunden.
 
 <figure class="post-figure">
   <img src="/img/blog/pia.jpg" alt="Pia, Gründerin von Vulvas.berlin, lächelnd vor einer hellen Wand" loading="lazy" decoding="async" />

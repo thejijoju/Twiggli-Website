@@ -828,7 +828,11 @@ const notifyHostRequest = async (doc, email, f) => {
   const iso = String(f.Date ?? '').match(/^(\d{4}-\d\d-\d\d)/)?.[1] ?? '';
   const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
   if (iso && iso < today) return 'NOT sent: date is in the past';
-  const who = await hostContact(slug).catch(() => null);
+  let who = null;
+  try { who = await hostContact(slug); } catch (err) {
+    console.error('host lookup failed', slug, err?.message);
+    return `NOT sent: could not read 'Hosts & Emails' (${String(err?.message ?? err).slice(0, 80)}). Please forward by hand.`;
+  }
   if (!who) return `NOT sent: no email for "${slug}" in 'Hosts & Emails'`;
   const lang = who.lang || HOST_LANG[slug] || 'de';
   const tomorrow = new Date(Date.now() + 86400000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
