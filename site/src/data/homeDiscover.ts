@@ -35,7 +35,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   en: {
     eyebrow: 'Workshops & community in Berlin · by real makers',
     h1a: 'Make something with your hands.', h1b: 'This week in Berlin.',
-    lede: 'Pottery, candles, printmaking, sushi and more, with independent Berlin makers. On your own, as a pair or with your whole team. For everyone looking for community.',
+    lede: 'Step away from the desk and the screen and make something real: pottery, candles, printmaking, sushi and more, with independent Berlin makers. There’s nothing like holding what you made, and sharing that joy with others. On your own, as a pair or with your whole team.',
     searchLabel: 'Find a workshop',
     what: 'What?', whatAny: 'Any workshop',
     when: 'When?', whenAny: 'Any day',
@@ -50,7 +50,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   de: {
     eyebrow: 'Workshops & Community in Berlin · von echten Maker*innen',
     h1a: 'Mach was mit deinen Händen.', h1b: 'Diese Woche in Berlin.',
-    lede: 'Töpfern, Kerzen, Siebdruck, Sushi und mehr, bei unabhängigen Berliner Maker*innen. Allein, zu zweit oder mit dem ganzen Team. Für alle, die Community suchen.',
+    lede: 'Weg vom Schreibtisch und Bildschirm, hin zu etwas Echtem: Töpfern, Kerzen, Siebdruck, Sushi und mehr, bei unabhängigen Berliner Maker*innen. Nichts ist schöner, als das eigene Werk in den Händen zu halten und die Freude daran mit anderen zu teilen. Allein, zu zweit oder mit dem ganzen Team.',
     searchLabel: 'Workshop finden',
     what: 'Was?', whatAny: 'Alle Workshops',
     when: 'Wann?', whenAny: 'Jederzeit',
@@ -65,7 +65,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   fr: {
     eyebrow: 'Ateliers à Berlin · par de vrais artisans',
     h1a: 'Créez quelque chose de vos mains.', h1b: 'Cette semaine à Berlin.',
-    lede: 'Poterie, bougies, sérigraphie, sushis et plus encore, avec des artisans indépendants de Berlin. Seul, à deux ou avec toute votre équipe. Pour tous ceux qui cherchent une communauté.',
+    lede: 'Quittez le bureau et l’écran pour créer quelque chose de vrai : poterie, bougies, sérigraphie, sushis et plus encore, avec des artisans indépendants de Berlin. Rien ne vaut le plaisir de tenir ce qu’on a fait de ses mains, et de partager cette joie avec d’autres. Seul, à deux ou avec toute votre équipe.',
     searchLabel: 'Trouver un atelier',
     what: 'Quoi ?', whatAny: 'Tous les ateliers',
     when: 'Quand ?', whenAny: 'N’importe quel jour',
@@ -80,7 +80,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   es: {
     eyebrow: 'Talleres en Berlín · de creadores reales',
     h1a: 'Crea algo con tus manos.', h1b: 'Esta semana en Berlín.',
-    lede: 'Cerámica, velas, serigrafía, sushi y mucho más, con creadores independientes de Berlín. Solo, en pareja o con todo tu equipo. Para quienes buscan comunidad.',
+    lede: 'Deja el escritorio y la pantalla y crea algo real: cerámica, velas, serigrafía, sushi y mucho más, con creadores independientes de Berlín. No hay nada como tener en tus manos lo que has hecho y compartir esa alegría con otros. Solo, en pareja o con todo tu equipo.',
     searchLabel: 'Buscar un taller',
     what: '¿Qué?', whatAny: 'Todos los talleres',
     when: '¿Cuándo?', whenAny: 'Cualquier día',
@@ -95,7 +95,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   it: {
     eyebrow: 'Workshop a Berlino · da veri artigiani',
     h1a: 'Crea qualcosa con le tue mani.', h1b: 'Questa settimana a Berlino.',
-    lede: 'Ceramica, candele, serigrafia, sushi e altro ancora, con artigiani indipendenti di Berlino. Da solo, in due o con tutto il team. Per chi cerca una community.',
+    lede: 'Lascia la scrivania e lo schermo e crea qualcosa di vero: ceramica, candele, serigrafia, sushi e altro ancora, con artigiani indipendenti di Berlino. Non c’è niente come tenere in mano ciò che hai creato e condividere quella gioia con gli altri. Da solo, in due o con tutto il team.',
     searchLabel: 'Trova un workshop',
     what: 'Cosa?', whatAny: 'Tutti i workshop',
     when: 'Quando?', whenAny: 'Qualsiasi giorno',
@@ -110,7 +110,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   nl: {
     eyebrow: 'Workshops in Berlijn · van echte makers',
     h1a: 'Maak iets met je handen.', h1b: 'Deze week in Berlijn.',
-    lede: 'Keramiek, kaarsen, zeefdruk, sushi en meer, bij onafhankelijke Berlijnse makers. Alleen, met z’n tweeën of met je hele team. Voor iedereen die een community zoekt.',
+    lede: 'Weg van je bureau en je scherm, op naar iets echts: keramiek, kaarsen, zeefdruk, sushi en meer, bij onafhankelijke Berlijnse makers. Er gaat niets boven vasthouden wat je zelf hebt gemaakt, en die vreugde delen met anderen. Alleen, met z’n tweeën of met je hele team.',
     searchLabel: 'Workshop zoeken',
     what: 'Wat?', whatAny: 'Alle workshops',
     when: 'Wanneer?', whenAny: 'Elke dag',
@@ -125,7 +125,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   pl: {
     eyebrow: 'Warsztaty w Berlinie · od prawdziwych twórców',
     h1a: 'Zrób coś własnymi rękami.', h1b: 'W tym tygodniu w Berlinie.',
-    lede: 'Ceramika, świece, sitodruk, sushi i nie tylko, z niezależnymi twórcami z Berlina. Samemu, we dwoje albo z całym zespołem. Dla wszystkich, którzy szukają społeczności.',
+    lede: 'Odejdź od biurka i ekranu i stwórz coś prawdziwego: ceramika, świece, sitodruk, sushi i nie tylko, z niezależnymi twórcami z Berlina. Nie ma nic lepszego niż trzymać w dłoniach to, co się zrobiło, i dzielić tę radość z innymi. Samemu, we dwoje albo z całym zespołem.',
     searchLabel: 'Znajdź warsztat',
     what: 'Co?', whatAny: 'Wszystkie warsztaty',
     when: 'Kiedy?', whenAny: 'Dowolny dzień',
@@ -140,7 +140,7 @@ export const homeDiscoverCopy: Record<Lang, HomeDiscoverCopy> = {
   tr: {
     eyebrow: 'Berlin’de atölyeler · gerçek üreticilerden',
     h1a: 'Ellerinle bir şey yap.', h1b: 'Bu hafta Berlin’de.',
-    lede: 'Seramik, mum, serigrafi, suşi ve daha fazlası, Berlin’in bağımsız üreticileriyle. Tek başına, iki kişi ya da tüm ekibinle. Topluluk arayan herkes için.',
+    lede: 'Masadan ve ekrandan uzaklaş, gerçek bir şey yap: seramik, mum, serigrafi, suşi ve daha fazlası, Berlin’in bağımsız üreticileriyle. Kendi ellerinle yaptığını tutmak ve bu sevinci başkalarıyla paylaşmak gibisi yok. Tek başına, iki kişi ya da tüm ekibinle.',
     searchLabel: 'Atölye bul',
     what: 'Ne?', whatAny: 'Tüm atölyeler',
     when: 'Ne zaman?', whenAny: 'Herhangi bir gün',
