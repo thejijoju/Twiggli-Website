@@ -620,7 +620,9 @@ const SOURCES = [
   // format appears without touching this file.
   { slug: 'tufttuft', name: 'Tuft Tuft — tufting workshops (Acuity)', mode: 'acuity',
     scheduleHash: '85685f54', url: 'https://tufttuftberlin.as.me/schedule/85685f54',
-    district: 'Prenzlauer Berg' },
+    district: 'Prenzlauer Berg',
+    // Chad (11.11.26): only The OG and The Big One may be listed; nothing else without his OK.
+    adjust: (w) => (/\bThe OG\b|\bThe Big One\b/i.test(w.title) ? w : null) },
 
   // Alessia Sinopoli is the third Kunstraum Heartspace artist here, after
   // Cate Duckwall and Rebeca — the venue itself is not a host, so each
