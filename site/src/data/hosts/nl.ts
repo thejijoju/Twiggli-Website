@@ -60,7 +60,7 @@ export const hosts: HostCopy[] = [
     group: '3–12', duration: '3 u', place: 'Kunstraum Heartspace, Berlijn', languages: 'EN', priceNote: 'groepskorting mogelijk' },
   { slug: 'pia', name: 'Pia', specialty: 'Vulva schilderen en speels leren', studio: 'Vulva Painting Studio',
     blurb: 'Zin om een statement-kunstwerk te maken terwijl we praten over vrouwenlichamen? In deze workshop ontdek je de anatomie met puzzels, bedenk je je eigen kunstconcept en breng je het tot leven met acrylverf op een doek van 15 × 15 cm. Geen naaktheid, geen schilderervaring of kennis van anatomie nodig: alleen een open blik en nieuwsgierigheid. Laten we taboes in gesprekken veranderen, één schilderij tegelijk ♡',
-    group: 'Tot 10 in de studio · 4–15 op jouw locatie', duration: '2,5 u', place: 'Friedrichshain of jouw locatie', languages: 'EN · DE' },
+    group: 'Tot 6 per workshop in de studio · 4–15 op jouw locatie', duration: '2,5 u', place: 'Friedrichshain of jouw locatie', languages: 'EN · DE' },
   { slug: 'sarah', name: 'Sarah', specialty: 'Mindfulness & creatief schrijven',
     blurb: 'Uit de functiemodus en het hier en nu in. Een mix van mindfulness, meditatie, journaling, creatief schrijven en zachte beweging — eenvoudige tools voor meer rust, helderheid en focus op het werk.',
     group: '3–12', duration: '1–7 u', place: 'Op locatie / Warschauer Str. / online', languages: 'DE · EN' },
