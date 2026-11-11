@@ -23,7 +23,7 @@ export type HomeRow = {
 
 /* A picture per activity — the same clips the old activity row used. */
 const catPic: Record<string, string> = {
-  ceramics: 'ceramic-kingdom', art: 'rebeca', craft: 'tufttuft', food: 'jem-sushi',
+  ceramics: 'ceramic-kingdom', art: 'rebeca', craft: 'druckrausch', food: 'jem-sushi',
   photography: 'anne', wellbeing: 'sarah', music: 'beat-etage',
 };
 export const activityThumb = (a: string): string => withBase(`/video/thumbs/${catPic[a]}.jpg`);

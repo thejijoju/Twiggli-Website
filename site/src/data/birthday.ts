@@ -9,7 +9,6 @@ export const birthdayPicks: { slug: string; image: string; price?: number; area?
   { slug: 'ceramic-kingdom', image: 'ceramic-kingdom' },
   { slug: 'munio', image: 'munio' },
   { slug: 'studio32', image: 'studio32' },
-  { slug: 'tufttuft', image: 'tufttuft' },
   { slug: 'galleria-lucia', image: 'galleria-lucia-dipdye' },
   { slug: 'jem', image: 'jem-sushi' },
   { slug: 'druckrausch', image: 'druckrausch' },

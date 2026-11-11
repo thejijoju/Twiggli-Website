@@ -5,4 +5,5 @@
 export const archivedSlugs = new Set<string>([
   'sabine', // Sabine Alex, Mobile Dunkelkammer: left 30.10.26, stays on Konfetti
   'celia', // Cèlia Hoste, La HoCo (knitting): asked to be removed, 09.11.26
+  'tufttuft', // Chad Wright, Tuft Tuft: paused 11.11.26 until contract + his own visuals; then only The OG and The Big One
 ]);

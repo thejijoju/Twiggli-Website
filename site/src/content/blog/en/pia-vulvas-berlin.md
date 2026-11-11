@@ -1,14 +1,13 @@
 ---
 title: "Pia: painting vulvas, and finally talking about women's health"
-description: "A room full of paintings, friends who struggled to just start, and a long time working in women's health at Clue. How Pia brought it all together in one workshop."
+description: "A room full of paintings, painting sessions with friends, and a long time working in women's health at Clue. How Pia brought it all together in one workshop."
 date: 2026-11-09
 lang: en
 category: Host profile
 ---
 
 Pia started her workshops because she loves painting. Her room is filled with
-paintings, and friends around her asked to paint together with her, because so
-many people struggle to just start painting. So they asked her.
+paintings, and it all began with painting sessions with friends.
 
 <figure class="post-figure">
   <img src="/img/blog/pia.jpg" alt="Pia, founder of Vulvas.berlin, smiling against a light wall" loading="lazy" decoding="async" />
