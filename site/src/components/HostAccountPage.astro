@@ -2121,27 +2121,37 @@ const fields = [
     background: radial-gradient(60% 55% at 15% 20%, #e6dbff 0%, transparent 70%), radial-gradient(55% 50% at 85% 85%, #ffe2f0 0%, transparent 70%), linear-gradient(135deg, #f1eaff 0%, #fff4e3 55%, #ffe8f2 100%);
   }
   .ha-signin {
-    position: relative; z-index: 1; width: 100%; max-width: 420px; box-sizing: border-box;
-    display: grid; gap: 14px; padding: 40px 36px; border-radius: 32px; text-align: center;
+    position: relative; z-index: 1; width: 100%; max-width: 360px; box-sizing: border-box;
+    display: grid; gap: 12px; padding: 34px 30px; border-radius: 28px; text-align: center;
     background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
     box-shadow: 0 30px 80px rgba(60, 30, 120, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.9);
   }
-  .ha-wave { width: 72px; height: 72px; margin: 0 auto 6px; border-radius: 22px; display: grid; place-items: center; font-size: 34px; background: linear-gradient(135deg, #6a3eec, #e64ab4); box-shadow: 0 12px 30px rgba(106, 62, 236, 0.35); }
-  .ha-signin h2 { margin: 0; font-size: 1.85rem; letter-spacing: -0.02em; }
-  .ha-sub { margin: -6px 0 10px; color: var(--color-text-muted); font-size: 0.98rem; }
+  .ha-wave { width: 62px; height: 62px; margin: 0 auto 4px; border-radius: 19px; display: flex; align-items: center; justify-content: center; font-size: 40px; line-height: 1; background: linear-gradient(135deg, #6a3eec, #e64ab4); box-shadow: 0 12px 30px rgba(106, 62, 236, 0.35); }
+  .ha-signin h2 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .ha-sub { margin: -6px 0 8px; color: var(--color-text-muted); font-size: 0.88rem; }
   @media (max-width: 560px) {
     .ha:not(.is-in) { padding-inline: 28px; }
-    .ha-signin { padding: 30px 22px; gap: 12px; border-radius: 26px; }
-    .ha-signin h2 { font-size: 1.45rem; }
-    .ha-wave { width: 58px; height: 58px; font-size: 28px; border-radius: 18px; }
-    .ha-sub { font-size: 0.92rem; }
-    .ha-signin .ha-btn, .ha-signin .ha-google { min-height: 46px; }
+    .ha-signin { padding: 28px 22px; gap: 11px; border-radius: 24px; }
+    .ha-signin h2 { font-size: 1.3rem; }
+    .ha-wave { width: 54px; height: 54px; font-size: 34px; border-radius: 16px; }
+    .ha-sub { font-size: 0.85rem; }
+    .ha-signin .ha-btn, .ha-signin .ha-google { min-height: 42px; }
   }
   .ha-invite { margin: 0; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, #ffc94d 35%, #fff); font-size: 0.88rem; }
   .ha-signin label { display: grid; gap: 6px; text-align: left; }
-  .ha-signin .ha-btn { width: 100%; min-height: 50px; border-radius: 14px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
+  /* Hover (Jirel 12.11.26): every button says it can be clicked, the logo grows a little. */
+  .ha-home img { transition: transform .2s ease; }
+  .ha-home:hover img, .ha-home:focus-visible img { transform: scale(1.12); }
+  .ha .ha-btn, .ha .ha-google, .ha [data-ha-tab], .ha .hd-add, .ha .hd-bell, .ha [data-ha-avatar] { transition: transform .15s ease, filter .15s ease, box-shadow .15s ease, background-color .15s ease; }
+  .ha .ha-btn:not(:disabled):hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 8px 20px rgba(106, 62, 236, 0.28); }
+  .ha .ha-btn:not(:disabled):active { transform: translateY(0); filter: brightness(.97); }
+  .ha-signin .ha-btn.ha-google:not(:disabled):hover { background: #f6f3ff; border-color: rgba(106, 62, 236, 0.35); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(36, 39, 46, 0.08); filter: none; }
+  .ha [data-ha-tab]:hover, .ha .hd-bell:hover { background: rgba(36, 39, 46, 0.06); }
+  .ha .hd-add:hover, .ha [data-ha-avatar]:hover { transform: scale(1.05); }
+  .ha-signin input:hover { border-color: rgba(106, 62, 236, 0.4); }
+  .ha-signin .ha-btn { width: 100%; min-height: 44px; font-size: 0.92rem; border-radius: 14px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
   .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px 0; }
-  .ha-signin .ha-google { min-height: 50px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
+  .ha-signin .ha-google { min-height: 44px; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
   .ha-field { display: grid; gap: 6px; margin-bottom: 16px; }
   .ha-field > span, .ha-signin label > span { font-weight: 600; font-size: 0.92rem; }
   .ha-field small { color: var(--color-text-muted); font-size: 0.82rem; }
