@@ -1880,13 +1880,15 @@ const fields = [
           pick.replaceChildren(...all.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
           $('[data-ha-pick-wrap] span').textContent = t.adminPick;
           pick.addEventListener('change', async () => {
-            if (!slugs.includes(pick.value) && (await claim(pick.value, '', '')) === 'granted') slugs.push(pick.value);
-            openHost(pick.value);
+            try { if (!slugs.includes(pick.value) && (await claim(pick.value, '', '')) === 'granted') slugs.push(pick.value); } catch (err) { console.warn('admin claim', pick.value, err); }
+            openHost(pick.value).catch(failed);
           });
           $('[data-ha-pick-wrap]').hidden = false;
           const first = slugs[0] ?? all.find((s) => s === 'test-jirel') ?? all[0];
           pick.value = first;
-          if (!slugs.includes(first) && (await claim(first, '', '')) === 'granted') slugs.push(first);
+          try {
+            if (!slugs.includes(first) && (await claim(first, '', '')) === 'granted') slugs.push(first);
+          } catch (err) { console.warn('admin claim', first, err); }
           await openHost(first);
           return;
         }
@@ -1905,15 +1907,24 @@ const fields = [
         }
         if (slugs.length > 1) {
           pick.replaceChildren(...slugs.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
-          pick.addEventListener('change', () => openHost(pick.value));
+          pick.addEventListener('change', () => { openHost(pick.value).catch(failed); });
           $('[data-ha-pick-wrap]').hidden = false;
         }
         await openHost(slugs[0]);
       };
 
+      // If loading the account fails, say so (with the reason) instead of
+      // leaving an empty page under the header (Jirel, 12.11.26).
+      const failed = (err: unknown) => {
+        console.error('host account', err);
+        const box = $('[data-ha-nohost]');
+        const why = err instanceof Error ? err.message : String(err);
+        box.textContent = `${fill(t.error, cfg.contact)} (${why})`;
+        box.hidden = false;
+      };
       finishSignIn().finally(() => {
         let once = false;
-        onAuthStateChanged(auth, (user) => { if (!once) { once = true; start(user); } });
+        onAuthStateChanged(auth, (user) => { if (!once) { once = true; start(user).catch(failed); } });
       });
     }
   }
