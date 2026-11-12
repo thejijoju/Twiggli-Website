@@ -466,8 +466,8 @@ const fields = [
       const app = $('[data-ha-app]');
       const editor = $('[data-ha-editor]');
       const pick = $<HTMLSelectElement>('[data-ha-pick]');
-      const pageForm = $<HTMLFormElement>('[data-ha-panel="listings"]');
-      const slotForm = $<HTMLFormElement>('[data-ha-panel="calendar"]');
+      const pageForm = $<HTMLFormElement>('form[data-ha-panel="listings"]');
+      const slotForm = $<HTMLFormElement>('form[data-ha-panel="calendar"]');
       const slotsBox = $('[data-ha-slots]');
       const tpl = $<HTMLTemplateElement>('[data-ha-slot-tpl]');
       let email = '';
