@@ -15,9 +15,10 @@ import { withBase, type Lang } from '../lib/url.ts';
  *  - himapan-berlin: our agreement email of 22.10.26 names vouchers
  *    ("Auch für Gutscheine gelten 15 %…"), and Kirsten replied on 23.10.26
  *    "ich stimme unserer Vereinbarung zu".
- *  - chelti: NOT yet. The same voucher line was in their agreement email
- *    (22.10.26), but they have not confirmed it ("Ja") — they only sent
- *    photos. Add them once they do.
+ *  - chelti: confirmed in writing 12.11.26 ("Gutscheine finden wir ebenfalls
+ *    eine schöne Idee … Das passt für uns."). Their tastings are private from
+ *    4 people with no public dates yet, so takesIndividuals() keeps the gift
+ *    button off until they add dates someone can book alone.
  *  - lucille-guder: agreed to vouchers (her reply to Jirel, 24.10.26). She
  *    is still a preview host, so the voucher page's host list (getHosts
  *    without `withPreview`) leaves her out until she goes live; only her
@@ -77,6 +78,7 @@ export const voucherHosts: string[] = [
   'anna-malerlebnisse', // Anna (ANNA-Malerlebnisse), "Ich bestätige", 09.11.26 (email), at €35 (open dates)
   'ceramic-kingdom', // Madeline (Ceramic Kingdom), "I confirm. We can try it out.", 09.11.26 (email)
   'maximiliana', // Maxi (Birdwatching Sketchbook), "Let's do the voucher deal!", 11.11.26 (email); on a break, no dates for now
+  'chelti', // Karolina & Mamuka (Chelti), "Das passt für uns.", 12.11.26 (email); shows once they have dates for 1–2 people
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
