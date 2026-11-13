@@ -25,7 +25,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
-import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
 import nodemailer from 'nodemailer';
 import { newVoucherCode, voucherMail, voucherPdf } from './voucher.js';
 
@@ -1843,4 +1843,93 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
   } catch { /* checked again on the dashboard */ }
   await getFirestore().doc(`hostMembers/${st.e.toLowerCase()}`).set({ stripe: { accountId, chargesEnabled, linked: true, linkedAt: FieldValue.serverTimestamp() } }, { merge: true });
   return back(st.l, 'linked');
+});
+
+// ── Signing in with a 6-digit code (Jirel 13.11.26, like Luma) ───────────
+// signinCode emails a code (valid 10 minutes, plus a "sign in directly"
+// button with Firebase's own email link); signinVerify checks it and hands
+// back a Firebase custom token, which the page signs in with. Codes are
+// kept only as a keyed hash in Firestore signinCodes/{hash of the email},
+// which no browser can read (firestore.rules). At most 5 wrong tries per
+// code, one new code a minute and 6 an hour per address.
+// createCustomToken needs the functions' service account to hold the role
+// "Service Account Token Creator" on itself (functions/README.md).
+
+const CODE_TTL = 10 * 60 * 1000;
+const codeDoc = (email) => getFirestore().doc(`signinCodes/${createHash('sha256').update(email).digest('hex')}`);
+const signinHash = (key, email, code) => createHmac('sha256', key).update(`code\n${email}\n${code}`).digest('hex');
+
+const codeMail = (lang, code, link) => {
+  const de = lang === 'de';
+  const t = de
+    ? { subject: `${code} ist dein Twiggli-Code`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden. Er gilt 10 Minuten.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
+    : { subject: `${code} is your Twiggli code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in. It is valid for 10 minutes.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', foot: "Didn't ask for a code? You can safely ignore this email." };
+  const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#fff;border-radius:24px;padding:32px 28px;text-align:center">
+<tr><td><img src="${SITE}/img/logo.png" width="44" height="44" alt="Twiggli" style="display:block;margin:0 auto 18px"></td></tr>
+<tr><td style="font-size:20px;font-weight:bold;padding-bottom:8px">${t.head}</td></tr>
+<tr><td style="font-size:14px;line-height:1.5;color:#5b5f6b;padding-bottom:22px">${t.lede}</td></tr>
+<tr><td style="padding-bottom:24px"><div style="display:inline-block;font-size:32px;font-weight:bold;letter-spacing:8px;color:#6A3EEC;background:#f1eaff;border-radius:16px;padding:14px 22px">${code}</div></td></tr>
+${link ? `<tr><td style="font-size:13px;color:#5b5f6b;padding-bottom:10px">${t.or}</td></tr>
+<tr><td style="padding-bottom:22px"><a href="${link}" style="display:inline-block;background:#6A3EEC;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;border-radius:999px;padding:12px 24px">${t.btn}</a></td></tr>` : ''}
+<tr><td style="font-size:12px;color:#8a8f9c;line-height:1.5">${t.foot}</td></tr>
+</table></td></tr></table></body></html>`;
+  const text = `${t.head}: ${code}\n\n${t.lede}${link ? `\n\n${t.or} ${link}` : ''}\n\n${t.foot}`;
+  return { subject: t.subject, html, text };
+};
+
+export const signinCode = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = String(req.body?.email ?? '').trim().toLowerCase();
+  if (!isEmail(email) || email.length > 200) return res.status(400).json({ error: 'email' });
+  const lang = req.body?.lang === 'de' ? 'de' : 'en';
+  const ref = codeDoc(email);
+  const now = Date.now();
+  const prev = (await ref.get()).data();
+  const hour = (prev?.sent ?? []).filter((t) => now - t < 3600e3);
+  if (prev?.lastSent && now - prev.lastSent < 55e3) return res.status(429).json({ error: 'wait', wait: Math.ceil((60e3 - (now - prev.lastSent)) / 1000) });
+  if (hour.length >= 6) return res.status(429).json({ error: 'hour' });
+  const code = String(randomInt(0, 1e6)).padStart(6, '0');
+  await ref.set({ hash: signinHash(await approveKey(), email, code), expires: now + CODE_TTL, tries: 0, lastSent: now, sent: [...hour, now] });
+  let link = '';
+  try { link = await getAuth().generateSignInWithEmailLink(email, { url: `${SITE}${lang === 'de' ? '/de' : ''}/host/account/`, handleCodeInApp: true }); } catch (err) { console.warn('email link', err?.message); }
+  const m = codeMail(lang, code, link);
+  try {
+    const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+    await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to: email, subject: m.subject, text: m.text, html: m.html });
+  } catch (err) {
+    console.error('code mail', err?.message);
+    return res.status(502).json({ error: 'mail' });
+  }
+  return res.status(200).json({ ok: true });
+});
+
+export const signinVerify = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = String(req.body?.email ?? '').trim().toLowerCase();
+  const code = String(req.body?.code ?? '').replace(/\D/g, '');
+  if (!isEmail(email) || code.length !== 6) return res.status(400).json({ error: 'code' });
+  const ref = codeDoc(email);
+  const key = await approveKey();
+  const verdict = await getFirestore().runTransaction(async (t) => {
+    const d = (await t.get(ref)).data();
+    if (!d?.hash || Date.now() > d.expires) return 'expired';
+    if ((d.tries ?? 0) >= 5) return 'tries';
+    const a = Buffer.from(signinHash(key, email, code), 'hex');
+    const b = Buffer.from(d.hash, 'hex');
+    if (a.length === b.length && timingSafeEqual(a, b)) { t.update(ref, { hash: FieldValue.delete(), expires: 0 }); return 'ok'; }
+    t.update(ref, { tries: (d.tries ?? 0) + 1 });
+    return (d.tries ?? 0) + 1 >= 5 ? 'tries' : 'wrong';
+  });
+  if (verdict !== 'ok') return res.status(verdict === 'wrong' ? 401 : 410).json({ error: verdict });
+  let user;
+  try { user = await getAuth().getUserByEmail(email); } catch { user = await getAuth().createUser({ email, emailVerified: true }); }
+  if (!user.emailVerified) await getAuth().updateUser(user.uid, { emailVerified: true });
+  try {
+    return res.status(200).json({ token: await getAuth().createCustomToken(user.uid) });
+  } catch (err) {
+    console.error('custom token', err?.message);
+    return res.status(500).json({ error: 'token' });
+  }
 });

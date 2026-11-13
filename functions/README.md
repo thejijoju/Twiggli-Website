@@ -45,3 +45,12 @@ In Firestore, add one document per host email to the `hostMembers` collection:
 2. If it works, set `VOUCHERS_ON_FIREBASE = true` in `site/src/data/firebase.ts`.
 3. Push, then buy one €20 voucher yourself.
 4. After that, the Supabase project can be switched off.
+
+## Sign-in codes (signinCode / signinVerify)
+
+The 6-digit sign-in code turns into a Firebase session with
+`createCustomToken`, which needs the functions' service account
+(`<project-number>-compute@developer.gserviceaccount.com`) to hold the role
+**Service Account Token Creator** on itself (IAM → Service accounts → that
+account → Permissions → Grant access), and the **IAM Service Account
+Credentials API** enabled.
