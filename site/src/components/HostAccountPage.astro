@@ -93,8 +93,9 @@ const fields = [
   <a class="ha-home" href={href(lang, '/')} aria-label="Twiggli"><img src={withBase('/img/logo.png')} alt="" width="34" height="34" /></a>
   {/* Signed out: "Sign in" stays top right, as on every page; here it just
       puts the cursor in the email field (Jirel 13.11.26). */}
-  <label class="ha-top-signin" for="ha-email">
-    <span>{lang === 'de' ? 'Anmelden' : 'Sign in'}</span>
+  <label class="social-bar-signin ha-top-signin" for="ha-email">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" /><path d="M5 20c.6-3.6 3.4-5.8 7-5.8s6.4 2.2 7 5.8" /></svg>
+    <span class="social-bar-signin-label">{lang === 'de' ? 'Anmelden' : 'Sign in'}</span>
   </label>
   <section
     class="ha container"
@@ -2155,8 +2156,10 @@ const fields = [
   .ha-apply a:hover { text-decoration: underline; }
   /* Hover (Jirel 12.11.26): every button says it can be clicked, the logo grows a little. */
   .ha-home img { transition: transform .2s ease; }
-  .ha-top-signin { position: absolute; top: 18px; right: 24px; z-index: 30; cursor: pointer; display: inline-flex; align-items: center; border-radius: 999px; white-space: nowrap; line-height: 1.3; padding: 8px 16px; font-size: 14px; font-weight: 600; color: #fff; background: linear-gradient(90deg, #6a3eec, #e64ab4); box-shadow: 0 6px 16px rgba(106, 62, 236, 0.25); transition: transform .15s ease, filter .15s ease; }
-  .ha-top-signin:hover { background: linear-gradient(90deg, #6a3eec, #e64ab4); filter: brightness(1.08); transform: translateY(-1px); }
+  /* The homepage's sign-in pill as it is (styles/site.css .social-bar-signin),
+     with the dark bar it sits on there painted under its lavender wash. */
+  .ha-top-signin { position: absolute; top: 16px; right: 24px; z-index: 30; background: linear-gradient(135deg, rgba(178, 172, 252, 0.2), rgba(106, 62, 236, 0.34)), #202020; }
+  .ha-top-signin:hover { background: linear-gradient(135deg, rgba(178, 172, 252, 0.3), rgba(106, 62, 236, 0.48)), #202020; }
   .ha.is-in ~ .ha-top-signin, body:has(.ha.is-in) .ha-top-signin { display: none; }
   @media (max-width: 640px) { .ha-top-signin { right: 16px; } }
   /* The waving hand: a small wave every few seconds, still for reduced motion. */
@@ -2183,6 +2186,11 @@ const fields = [
   /* "Your email" fades to 70% while the mouse is on the words. */
   .ha-signin label > span { transition: opacity .15s ease; }
   .ha-signin label > span:hover { opacity: 0.7; }
+  /* The heading fades like "Your email"; the line under it darkens. */
+  .ha-signin h2 { transition: opacity .15s ease; }
+  .ha-signin h2:hover { opacity: 0.7; }
+  .ha-sub { transition: color .15s ease; }
+  .ha-sub:hover { color: var(--color-text); }
   .ha-signin .ha-btn { width: 100%; min-height: 44px; font-size: 0.92rem; border-radius: 18px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
   .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px 0; }
   .ha-signin .ha-google { min-height: 44px; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
