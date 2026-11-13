@@ -2166,7 +2166,9 @@ const fields = [
   .ha-wave { display: flex; }
   .ha-wave-hand { display: inline-block; transform-origin: 70% 75%; animation: ha-wave 3.2s ease-in-out 0.2s infinite; }
   @keyframes ha-wave { 0%, 60%, 100% { transform: rotate(0); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-6deg); } 30% { transform: rotate(12deg); } 40% { transform: rotate(-3deg); } 50% { transform: rotate(6deg); } }
-  @media (prefers-reduced-motion: reduce) { .ha-wave-hand { animation: none; } }
+  /* Reduced motion: one soft wave on arrival, then still (Jirel 13.11.26). */
+  @keyframes ha-wave-soft { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(8deg); } 60% { transform: rotate(-3deg); } }
+  @media (prefers-reduced-motion: reduce) { .ha-wave-hand { animation: ha-wave-soft 1.2s ease-in-out 0.3s 1; } }
   .ha-home:hover img, .ha-home:focus-visible img { transform: scale(1.12); }
   .ha .ha-btn, .ha .ha-google, .ha [data-ha-tab], .ha .hd-add, .ha .hd-bell, .ha [data-ha-avatar] { transition: transform .15s ease, filter .15s ease, box-shadow .15s ease, background-color .15s ease; }
   .ha .ha-btn:not(:disabled):hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 8px 20px rgba(106, 62, 236, 0.28); }
