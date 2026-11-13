@@ -4,263 +4,407 @@ import LegalPage from '../../layouts/LegalPage.astro';
 import { withBase } from '../../lib/url.ts';
 
 /**
- * German version of privacy-policy.astro — keep the two in step. The
- * providers are the ones the website and app really use (29.10.26);
- * Abschnitt 5a is the Google API Services User Data Policy disclosure for
- * Sign in with Google.
+ * German version of privacy-policy.astro — keep the two in step.
+ * Rewritten 13.11.26 for Google's brand verification. Abschnitt 5 is the
+ * Google API Services User Data Policy disclosure (anchor #google, keep it).
  */
 const toc = [
-  { id: 'controller', label: '1. Wer verantwortlich ist' },
-  { id: 'data', label: '2. Was wir erheben' },
-  { id: 'purposes', label: '3. Warum, und auf welcher Rechtsgrundlage' },
-  { id: 'cookies', label: '4. Cookies und Gerätespeicher' },
-  { id: 'sharing', label: '5. Mit wem wir Daten teilen' },
-  { id: 'google', label: '5a. Anmeldung mit Google' },
-  { id: 'hosts', label: '6. Zwischen Gastgebern und Teilnehmenden' },
-  { id: 'transfers', label: '7. Übermittlung außerhalb des EWR' },
-  { id: 'retention', label: '8. Wie lange wir Daten speichern' },
-  { id: 'permissions', label: '9. App-Berechtigungen' },
-  { id: 'rights', label: '10. Deine Rechte' },
-  { id: 'children', label: '11. Kinder' },
-  { id: 'changes', label: '12. Änderungen dieser Richtlinie' },
+  { id: 'controller', label: '1. Wer wir sind' },
+  { id: 'summary', label: '2. Kurz gesagt' },
+  { id: 'website', label: '3. Besuch unserer Website' },
+  { id: 'account', label: '4. Dein Twiggli-Konto' },
+  { id: 'google', label: '5. Anmeldung mit Google (Google-Nutzerdaten)' },
+  { id: 'requests', label: '6. Buchungsanfragen und Anfragen' },
+  { id: 'payments', label: '7. Zahlungen und Gutscheine' },
+  { id: 'emails', label: '8. E-Mails und Newsletter' },
+  { id: 'hosts', label: '9. Zwischen Gastgeber:innen und Teilnehmenden' },
+  { id: 'app', label: '10. Die Twiggli-App' },
+  { id: 'recipients', label: '11. Dienstleister, die wir nutzen' },
+  { id: 'transfers', label: '12. Übermittlung außerhalb der EU' },
+  { id: 'retention', label: '13. Wie lange wir Daten speichern' },
+  { id: 'security', label: '14. Sicherheit' },
+  { id: 'rights', label: '15. Deine Rechte' },
+  { id: 'children', label: '16. Kinder' },
+  { id: 'changes', label: '17. Änderungen dieser Erklärung' },
 ];
 ---
 
 <LegalPage
+  updated="13. November 2026"
   title="Datenschutzerklärung — Twiggli"
   kicker="Rechtliches"
   heading="Datenschutzerklärung"
-  description="Welche personenbezogenen Daten Twiggli erhebt, warum, und welche Rechte du daran hast."
-  lede="Dies erklärt, was wir erheben, wenn du die Twiggli-App oder -Website nutzt, was wir damit tun, wer sonst noch Zugriff darauf hat, und wie du sie zurückbekommst oder löschen lassen kannst."
+  description="Welche personenbezogenen Daten Twiggli erhebt, warum, wer sie erhält, wie lange wir sie speichern und welche Rechte du hast."
+  lede="Twiggli ist eine Berliner Plattform, auf der Menschen kreative Workshops bei lokalen Gastgeber:innen entdecken und buchen. Hier erklären wir, welche personenbezogenen Daten wir verarbeiten, wenn du unsere Website, unsere App oder dein Gastgeber-Konto nutzt, warum wir das tun, wer sie erhält, wie lange wir sie speichern und wie du deine Rechte ausübst."
   toc={toc}
   lang="de"
 >
 
-  <h2 id="controller">1. Wer verantwortlich ist</h2>
+  <h2 id="controller">1. Wer wir sind</h2>
   <p>
-    Verantwortlicher für die hier beschriebenen personenbezogenen Daten ist
-    Twiggli UG (haftungsbeschränkt),
-    Rodenkirchener Str. 147, 50997 Köln, Deutschland —
-    {contactEmail}. Die vollständigen Angaben findest du in
-    unserem <a href={withBase('/impressum/')}>Impressum</a>.
+    Verantwortlich für die Verarbeitung deiner personenbezogenen Daten im Sinne
+    der Datenschutz-Grundverordnung (DSGVO) ist:
   </p>
   <p>
-    Kontakt für Datenschutzfragen: {contactEmail}. Wir sind nicht verpflichtet, eine:n
-    Datenschutzbeauftragte:n zu benennen; Fragen gehen direkt an die Gründerin.
+    Twiggli UG (haftungsbeschränkt)<br />
+    Rodenkirchener Str. 147, 50997 Köln<br />
+    E-Mail: {contactEmail}
+  </p>
+  <p>
+    Weitere Angaben findest du in unserem <a href={withBase('/impressum/')}>Impressum</a>.
+    Wir sind nicht verpflichtet, eine:n Datenschutzbeauftragte:n zu benennen.
+    Bei Fragen zu deinen Daten schreib an {contactEmail}; deine Nachricht
+    erreicht direkt die Gründerin.
   </p>
 
-  <h2 id="data">2. Was wir erheben</h2>
-  <h3>Daten, die du uns gibst</h3>
+  <h2 id="summary">2. Kurz gesagt</h2>
   <ul>
-    <li><strong>Konto:</strong> deine E-Mail-Adresse und, wenn du dich mit Google anmeldest, dein
-      Name und Profilbild (siehe Abschnitt 5a). Auf der Website meldest du dich mit einem
-      einmaligen E-Mail-Link oder mit Google an, ohne Passwort. In der App wird ein von dir
-      gewähltes Passwort von Firebase nur gehasht gespeichert. Optional ein Foto, Stadt und
-      kurze Bio.</li>
-    <li><strong>Gastgeberprofil:</strong> was du anbietest, deine Einträge, sowie die Videos und
-      Fotos, die du hochlädst.</li>
-    <li><strong>Buchungen:</strong> welche Workshops du gebucht hast, wann, für wie viele Personen,
-      und jede Notiz, die du dem Gastgeber schickst.</li>
-    <li><strong>Zahlungen und Gutscheine:</strong> abgewickelt über Stripe. Wir erhalten den
-      Betrag, deinen Namen und deine E-Mail, Empfänger:in und Nachricht des Gutscheins sowie eine
-      maskierte Zahlungsreferenz, nie deine vollständigen Kartendaten.</li>
-    <li><strong>Anfragen:</strong> was du in ein Buchungs-, Gruppen-, Raum- oder
-      Kontaktformular einträgst: Name, E-Mail, Telefon, Datum, Personenzahl und deine
-      Nachricht.</li>
-    <li><strong>Nachrichten und Support:</strong> was du uns oder einem Gastgeber über die App
-      schreibst.</li>
-  </ul>
-  <h3>Automatisch erhobene Daten</h3>
-  <ul>
-    <li><strong>Nutzung:</strong> auf der Website gezählte Seitenaufrufe und Klicks, ohne Cookies
-      und ohne Profile (Umami, Abschnitt 4). In der App aufgerufene Angebote und Suchanfragen.</li>
-    <li><strong>Gerät und Verbindung:</strong> Gerätetyp, Betriebssystem, App-Version, Browser,
-      Sprache und IP-Adresse.</li>
-    <li><strong>Ungefährer Standort:</strong> um dir Workshops in deiner Nähe zu zeigen. Genauer
-      Standort nur mit deiner Berechtigung — siehe Abschnitt 9.</li>
+    <li>Wir erheben nur, was wir für Twiggli brauchen: um Workshops zu zeigen,
+      deine Anfragen an Gastgeber:innen weiterzugeben, Zahlungen abzuwickeln und
+      Gastgeber-Konten zu betreiben.</li>
+    <li>Wir verkaufen keine personenbezogenen Daten und nutzen keine Werbe- oder
+      Tracking-Cookies.</li>
+    <li>Unsere Statistik ist cookielos und anonym.</li>
+    <li>Zahlungen wickelt Stripe ab; deine vollständigen Kartendaten sehen wir
+      nie.</li>
+    <li>Wenn du dich mit Google anmeldest, erhalten wir nur deinen Namen, deine
+      E-Mail-Adresse und dein Profilbild (Abschnitt 5).</li>
+    <li>Du kannst jederzeit Auskunft verlangen und deine Daten berichtigen oder
+      löschen lassen (Abschnitt 15).</li>
   </ul>
 
-  <h2 id="purposes">3. Warum, und auf welcher Rechtsgrundlage</h2>
-  <dl>
-    <dt>Betrieb deines Kontos und deiner Buchungen</dt>
-    <dd>Erforderlich zur Vertragserfüllung, Art. 6 Abs. 1 lit. b DSGVO.</dd>
-    <dt>Zahlungsabwicklung und Auszahlung an Gastgeber</dt>
-    <dd>Vertragserfüllung, Art. 6 Abs. 1 lit. b, sowie unsere gesetzlichen Buchführungspflichten,
-      Art. 6 Abs. 1 lit. c.</dd>
-    <dt>Anzeige von Workshops in deiner Nähe</dt>
-    <dd>Vertragserfüllung, Art. 6 Abs. 1 lit. b, oder deine Einwilligung, wenn genauer Standort
-      genutzt wird, Art. 6 Abs. 1 lit. a.</dd>
-    <dt>Sicherheit der Plattform — Betrug, gefälschte Angebote, Missbrauch</dt>
-    <dd>Unser berechtigtes Interesse an einer vertrauenswürdigen Plattform, Art. 6 Abs. 1 lit. f.</dd>
-    <dt>Produktverbesserung durch Nutzungsstatistiken</dt>
-    <dd>Deine Einwilligung, sofern Cookies oder ähnliche Technologien genutzt werden,
-      Art. 6 Abs. 1 lit. a; andernfalls unser berechtigtes Interesse, Art. 6 Abs. 1 lit. f.</dd>
-    <dt>Marketing-E-Mails</dt>
-    <dd>Deine Einwilligung, Art. 6 Abs. 1 lit. a. Jede E-Mail enthält einen Abmeldelink.</dd>
-    <dt>Erfüllung gesetzlicher Pflichten</dt>
-    <dd>Art. 6 Abs. 1 lit. c — insbesondere steuer- und handelsrechtliche
-      Aufbewahrungspflichten.</dd>
-  </dl>
-
-  <h2 id="cookies">4. Cookies und Gerätespeicher</h2>
+  <h2 id="website">3. Besuch unserer Website</h2>
+  <h3>Server-Logs</h3>
   <p>
-    Cookies und vergleichbare Speicherung auf deinem Gerät werden über das technisch notwendige
-    Maß hinaus nur mit deiner Einwilligung nach § 25 Abs. 1 TDDDG eingesetzt. Technisch
-    notwendige Speicherung — Anmeldestatus, Speicherung deiner Cookie-Auswahl, Sicherheit —
-    benötigt keine Einwilligung nach § 25 Abs. 2 TDDDG.
+    Unsere Website twiggli.com wird bei GitHub Pages (GitHub, Inc.) gehostet.
+    Beim Aufruf einer Seite übermittelt dein Browser technische Daten, die der
+    Server für die Auslieferung braucht: IP-Adresse, Datum und Uhrzeit, die
+    aufgerufene Seite, die verweisende Seite, Browser und Betriebssystem. Diese
+    Daten dienen nur der Auslieferung und Sicherheit der Website.
+    Rechtsgrundlage: unser berechtigtes Interesse an einer funktionierenden und
+    sicheren Website (Art. 6 Abs. 1 lit. f DSGVO).
   </p>
+  <h3>Statistik ohne Cookies</h3>
   <p>
-    Was die Website auf deinem Gerät speichert: ob du angemeldet bist (Firebase
-    Authentication), deine Cookie-Auswahl, die E-Mail-Adresse, an die ein Anmeldelink ging (bis
-    du ihn öffnest), und deine Sprache. All das ist technisch notwendig. Du kannst deine Auswahl
-    jederzeit ändern, indem du die Daten dieser Website in deinem Browser löschst; das Banner
-    fragt dann erneut. Ein Widerruf hat keine Auswirkung auf bereits erfolgte Verarbeitung.
+    Um zu verstehen, welche Seiten genutzt werden, verwenden wir Umami Cloud.
+    Umami zählt Seitenaufrufe und Klicks ohne Cookies, ohne deine vollständige
+    IP-Adresse zu speichern und ohne Profile einzelner Besucher:innen zu bilden;
+    wir sehen nur Summen. Rechtsgrundlage: unser berechtigtes Interesse an der
+    Verbesserung der Website (Art. 6 Abs. 1 lit. f DSGVO).
   </p>
+  <h3>Schriftarten</h3>
   <p>
-    Analyse: Wir nutzen Umami Cloud. Umami zählt Besuche und Klicks ohne Cookies, ohne deine
-    IP-Adresse zu speichern und ohne Profile einzelner Besucher:innen. Werbe- oder
-    Tracking-Cookies setzen wir nicht ein.
+    Unsere Schriften werden von Google Fonts (Google Ireland Ltd.) geladen. Dabei
+    erhält Google deine IP-Adresse. Rechtsgrundlage: unser berechtigtes Interesse
+    an einer einheitlichen, gut lesbaren Gestaltung (Art. 6 Abs. 1 lit. f DSGVO).
+  </p>
+  <h3>Cookies und Speicherung auf deinem Gerät</h3>
+  <p>
+    Informationen auf deinem Gerät zu speichern, erfordert deine Einwilligung,
+    außer es ist für den gewünschten Dienst unbedingt erforderlich (§ 25 TDDDG).
+    Unsere Website speichert nur Unbedingt-Erforderliches: ob du angemeldet bist
+    (Firebase Authentication), die E-Mail-Adresse, an die ein Anmeldelink ging
+    (bis du ihn öffnest), deine Cookie-Auswahl und deine Sprache. Wir nutzen
+    keine Werbe-, Marketing- oder Tracking-Cookies von Dritten. Du kannst diese
+    Daten jederzeit löschen, indem du die Website-Daten in deinem Browser
+    löschst.
   </p>
 
-  <h2 id="sharing">5. Mit wem wir Daten teilen</h2>
+  <h2 id="account">4. Dein Twiggli-Konto</h2>
   <p>
-    Wir verkaufen keine personenbezogenen Daten. Wir teilen sie nur, wo es für den Betrieb des
-    Dienstes nötig ist:
+    Du kannst ein Konto anlegen, um deine Buchungen oder, als Gastgeber:in, deine
+    Workshops zu verwalten. Die Anmeldung funktioniert ohne Passwort, entweder
+    mit einem Einmal-Link an deine E-Mail-Adresse oder mit deinem Google-Konto
+    (Abschnitt 5). In der App kannst du auch ein Passwort nutzen, das Firebase
+    nur verschlüsselt (gehasht) speichert.
   </p>
+  <p>
+    Wir verarbeiten deine E-Mail-Adresse und, je nachdem was du ergänzt, deinen
+    Namen, dein Profilbild, deine Stadt und eine kurze Beschreibung.
+    Gastgeber-Konten enthalten zusätzlich, was du veröffentlichst: deine
+    Workshops, Termine, Preise, Texte, Fotos und Videos sowie die Anfragen und
+    Nachrichten, die du erhältst. Bevor ein Gastgeber-Konto eine öffentliche
+    Seite bearbeiten kann, prüfen und bestätigen wir es.
+  </p>
+  <p>
+    Rechtsgrundlage: Erfüllung unseres Vertrags mit dir (Art. 6 Abs. 1 lit. b
+    DSGVO). Konten laufen auf Google Firebase (Authentication,
+    Firestore-Datenbank und Cloud Functions in der Region Frankfurt).
+  </p>
+
+  <h2 id="google">5. Anmeldung mit Google (Google-Nutzerdaten)</h2>
+  <p>
+    Dieser Abschnitt beschreibt genau, wie Twiggli mit den Daten umgeht, die wir
+    erhalten, wenn du auf twiggli.com oder in der Twiggli-App „Mit Google
+    anmelden“ wählst.
+  </p>
+  <h3>Worauf wir zugreifen</h3>
+  <p>
+    Wir fordern nur die grundlegenden Anmelde-Berechtigungen von Google an
+    (<code>openid</code>, <code>email</code> und <code>profile</code>). Darüber
+    teilt Google mit uns deine <strong>E-Mail-Adresse</strong>, deinen
+    <strong>Namen</strong>, dein <strong>Profilbild</strong> und eine technische
+    Google-Konto-ID. Auf Gmail, Google Drive, Kontakte, Kalender, Standortverlauf
+    oder andere Google-Daten greifen wir nicht zu und können es auch nicht.
+  </p>
+  <h3>Wofür wir sie nutzen</h3>
   <ul>
-    <li><strong>Gastgeber</strong> — die Details deiner Buchung. Siehe Abschnitt 6.</li>
-    <li><strong>Zahlungen</strong> — Stripe Payments Europe, Ltd. (Irland), für Zahlungen für
-      Gutscheine und Buchungen.</li>
-    <li><strong>Konten, Datenbank und Serverfunktionen</strong> — Google Firebase (Google
-      Ireland Ltd.; Firestore und Cloud Functions in der Region Frankfurt), für die Anmeldung,
-      Gastgeber-Konten, Anfragen und Gutscheine.</li>
-    <li><strong>Website-Hosting</strong> — GitHub Pages (GitHub, Inc., USA), das die Seiten
-      ausliefert und dafür deine IP-Adresse verarbeitet.</li>
-    <li><strong>E-Mail</strong> — Google Gmail / Google Workspace (Google Ireland Ltd.), für
-      unsere Antworten und um deine Anfragen an uns weiterzuleiten. Anmeldelinks verschickt
-      Firebase.</li>
-    <li><strong>Schriften</strong> — Google Fonts (Google Ireland Ltd.), das die Schriftarten
-      lädt und dabei deine IP-Adresse sieht.</li>
-    <li><strong>Buchungs- und Anfrageformular auf dieser Website</strong> — Google Firebase
-      (Google Cloud, Region Frankfurt), das deine Eingaben (Name, E-Mail, Telefon, Personenzahl,
-      Nachricht und den Workshop) speichert und per E-Mail (Gmail) an uns weiterleitet.</li>
-    <li><strong>Analyse</strong> — Umami Cloud (Umami Software, Inc.), ohne Cookies und ohne
-      persönliche Profile.</li>
-    <li><strong>Behörden</strong> — soweit wir gesetzlich dazu verpflichtet sind, oder zur
-      Geltendmachung oder Verteidigung von Rechtsansprüchen.</li>
+    <li>um dein Twiggli-Konto anzulegen und dich anzumelden;</li>
+    <li>um deinen Namen und dein Bild in deinem Konto anzuzeigen;</li>
+    <li>um dich als Gastgeber:in deiner Twiggli-Seite zu erkennen, damit du
+      Workshops, Termine und Anfragen verwalten kannst;</li>
+    <li>um dir E-Mails zu deinem Konto, deinen Buchungen und Anfragen zu
+      senden.</li>
   </ul>
   <p>
-    Anbieter, die in unserem Auftrag handeln, sind durch einen Auftragsverarbeitungsvertrag nach
-    Art. 28 DSGVO gebunden.
+    Wir nutzen Google-Nutzerdaten nicht für Werbung oder Profilbildung, nicht
+    zum Training von KI- oder Machine-Learning-Modellen und verkaufen sie nie.
   </p>
-
-  <h2 id="google">5a. Anmeldung mit Google</h2>
+  <h3>Wie wir sie speichern und schützen</h3>
   <p>
-    Wenn du „Mit Google anmelden“ wählst, teilt Google uns deinen Namen, deine E-Mail-Adresse und
-    dein Profilbild mit, sonst nichts: Wir fragen keinen Zugriff auf dein Gmail, Drive, deine
-    Kontakte, deinen Kalender oder andere Google-Daten an.
+    Google-Nutzerdaten werden in Google Firebase Authentication und, bei
+    Gastgeber-Konten, in unserer Firestore-Datenbank in der Region Frankfurt
+    (Google Cloud, Deutschland) gespeichert. Sie werden nur über verschlüsselte
+    Verbindungen (HTTPS/TLS) übertragen und verschlüsselt gespeichert. Zugriff
+    hat nur die Gründerin von Twiggli; unsere Server-Funktionen lesen die Daten
+    nur, um zu prüfen, wer angemeldet ist.
   </p>
+  <h3>An wen wir sie weitergeben</h3>
   <p>
-    Wir nutzen diese drei Angaben nur, um dich anzumelden, deinen Namen und dein Bild in deinem
-    Konto zu zeigen und dich mit deiner Gastgeber-Seite zu verbinden. Wir nutzen sie nicht für
-    Werbung, verkaufen sie nicht und geben sie an niemanden weiter außer an unsere
-    Auftragsverarbeiter aus Abschnitt 5. Unsere Nutzung und Weitergabe von Daten aus Google-APIs
-    hält sich an die
-    <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
-    einschließlich der Anforderungen zur eingeschränkten Nutzung (Limited Use).
+    Wir geben Google-Nutzerdaten nicht an Dritte weiter, außer an die
+    Auftragsverarbeiter, die den Dienst für uns betreiben (Google Firebase und
+    Google Cloud, Abschnitt 11), wenn du uns darum bittest oder wenn das Gesetz
+    es verlangt. Wenn du einen Workshop buchst, erhält die Gastgeber:in nur die in
+    Abschnitt 9 beschriebenen Buchungsdaten.
   </p>
+  <h3>Speicherdauer und Löschung</h3>
   <p>
-    Du kannst Twiggli den Zugriff jederzeit unter
+    Wir speichern deine Google-Anmeldedaten, solange dein Twiggli-Konto besteht.
+    Wenn du die Löschung deines Kontos verlangst (an {contactEmail}), löschen wir
+    deine Google-Anmeldedaten innerhalb von 30 Tagen. Du kannst Twiggli den
+    Zugriff auf dein Google-Konto auch jederzeit unter
     <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>
-    entziehen und uns unter {contactEmail} bitten, dein Konto zu löschen.
+    entziehen; danach erhalten wir keine weiteren Daten von Google.
+  </p>
+  <h3>Limited Use</h3>
+  <p>
+    Die Nutzung und Weitergabe von Informationen, die Twiggli über Google-APIs
+    erhält, entspricht der
+    <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+    einschließlich der Limited-Use-Anforderungen.
   </p>
 
-  <h2 id="hosts">6. Zwischen Gastgebern und Teilnehmenden</h2>
+  <h2 id="requests">6. Buchungsanfragen und Anfragen</h2>
   <p>
-    Wenn du buchst, erhält der Gastgeber, was er für die Durchführung braucht: deinen Namen, die
-    Personenzahl und jede Notiz, die du geschickt hast. Kontaktdaten werden nur geteilt, wo der
-    Workshop es erfordert, und der Gastgeber darf sie ausschließlich für diesen Workshop
-    verwenden.
+    Wenn du eine Buchungsanfrage, eine Gruppen- oder Firmenanfrage, eine
+    Raum-Mietanfrage oder eine Terminanfrage sendest, dich auf eine Warteliste
+    setzt oder uns über ein Formular kontaktierst, verarbeiten wir deine Angaben:
+    Name, E-Mail-Adresse, Telefonnummer (freiwillig), den Workshop, Wunschdatum
+    und -uhrzeit, Personenzahl, Anlass und deine Nachricht sowie die Seite, von
+    der du sie gesendet hast.
   </p>
   <p>
-    Wenn du selbst Gastgeber bist, sehen Teilnehmende dein öffentliches Profil — deinen Namen,
-    Foto, Bio und deine Angebote. Deine Adresse wird nur bei Workshops angezeigt, die du an einem
-    von dir veröffentlichten Ort anbietest.
-  </p>
-
-  <h2 id="transfers">7. Übermittlung außerhalb des EWR</h2>
-  <p>
-    Wir versuchen, Daten innerhalb der EU zu halten. Verarbeitet ein Anbieter Daten außerhalb des
-    EWR, stützen wir uns auf einen Angemessenheitsbeschluss oder auf die Standardvertragsklauseln
-    der Europäischen Kommission zusammen mit zusätzlichen Schutzmaßnahmen.
-  </p>
-  <p>
-    Anbieter, bei denen aktuell eine Übermittlung stattfindet: GitHub (Website-Hosting) und Umami
-    (Analyse), beide in den USA, sowie Google und Stripe, soweit sie ihre US-Konzerngesellschaften
-    einsetzen. Grundlage ist das EU-US Data Privacy Framework, wo der Anbieter zertifiziert ist,
-    sonst Standardvertragsklauseln.
+    Deine Anfrage wird in unserer Firestore-Datenbank (Frankfurt) gespeichert,
+    per E-Mail an uns gesendet und an die Gastgeber:in des Workshops
+    weitergeleitet, damit sie dir antworten kann. Du erhältst eine
+    Bestätigungs-E-Mail. Rechtsgrundlage: vorvertragliche Maßnahmen auf deine
+    Anfrage und Erfüllung des Vertrags (Art. 6 Abs. 1 lit. b DSGVO).
   </p>
 
-  <h2 id="retention">8. Wie lange wir Daten speichern</h2>
+  <h2 id="payments">7. Zahlungen und Gutscheine</h2>
+  <h3>Workshop mit Zahlung buchen</h3>
+  <p>
+    Wenn eine Gastgeber:in Zahlungen über Twiggli annimmt, zahlst du direkt an
+    die Gastgeber:in über Stripe (Stripe Connect). Die Gastgeber:in ist
+    Verkäufer:in; Twiggli erhält eine Provision. Stripe verarbeitet deine
+    Zahlungsdaten (Karte oder andere Zahlungsart), Namen, E-Mail-Adresse und
+    Rechnungsland. Wir erhalten die Buchungsdaten, den Betrag, deinen Namen und
+    deine E-Mail-Adresse und eine maskierte Zahlungsreferenz, nie deine
+    vollständigen Kartendaten.
+  </p>
+  <h3>Gutscheine</h3>
+  <p>
+    Wenn du einen Twiggli-Gutschein kaufst, wickelt Stripe die Zahlung für
+    Twiggli ab. Wir verarbeiten deinen Namen, deine E-Mail-Adresse, den Betrag,
+    den Namen der beschenkten Person und deine persönliche Nachricht (falls du
+    sie angibst) sowie den Gutscheincode, um den Gutschein auszustellen, zu
+    versenden und bei der Einlösung zu prüfen.
+  </p>
+  <p>
+    Zahlungsdienstleister: Stripe Payments Europe, Ltd., 1 Grand Canal Street
+    Lower, Dublin 2, Irland. Stripe verarbeitet Daten teils auch als eigenständig
+    Verantwortlicher, etwa zur Betrugsprävention und für eigene gesetzliche
+    Pflichten; siehe <a href="https://stripe.com/de/privacy">stripe.com/de/privacy</a>.
+    Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) und unsere
+    gesetzlichen Aufbewahrungspflichten (Art. 6 Abs. 1 lit. c DSGVO).
+  </p>
+
+  <h2 id="emails">8. E-Mails und Newsletter</h2>
+  <p>
+    Wir beantworten deine Nachrichten und senden E-Mails zu Anfragen, Buchungen,
+    Gutscheinen und deinem Konto von {contactEmail} über Google Workspace
+    (Gmail). Rechtsgrundlage: Vertragserfüllung bzw. Beantwortung deiner Anfrage
+    (Art. 6 Abs. 1 lit. b und f DSGVO).
+  </p>
+  <p>
+    Wenn du dich für unseren Newsletter anmeldest, werden deine E-Mail-Adresse
+    und Sprache bei Brevo (Sendinblue SAS, Paris, Frankreich) gespeichert, das
+    den Newsletter für uns versendet. Du erhältst zuerst eine E-Mail, in der du
+    deine Anmeldung bestätigst (Double-Opt-in); wir speichern, wann du dich
+    angemeldet und bestätigt hast. Brevo misst außerdem, ob ein Newsletter
+    geöffnet und welche Links angeklickt wurden, damit wir sehen, welche Inhalte
+    interessieren. Rechtsgrundlage: deine Einwilligung (Art. 6 Abs. 1 lit. a
+    DSGVO). Du kannst dich jederzeit über den Link in jedem Newsletter oder per
+    Nachricht an uns abmelden.
+  </p>
+  <p>
+    Wenn du ein Unternehmen führst (zum Beispiel ein Studio oder eine Firma, die
+    ein Team-Event plant), schreiben wir dich unter Umständen an der Adresse an,
+    die du für geschäftliche Anfragen veröffentlichst, um Twiggli vorzustellen.
+    Rechtsgrundlage: unser berechtigtes Interesse an Geschäftskontakten (Art. 6
+    Abs. 1 lit. f DSGVO). Eine kurze Antwort genügt, und wir schreiben nicht
+    wieder.
+  </p>
+
+  <h2 id="hosts">9. Zwischen Gastgeber:innen und Teilnehmenden</h2>
+  <p>
+    Wenn du einen Workshop buchst oder anfragst, erhält die Gastgeber:in, was sie
+    für die Durchführung braucht: deinen Namen, deine E-Mail-Adresse, deine
+    Telefonnummer (falls angegeben), das Datum, die Personenzahl und deine
+    Nachricht. Gastgeber:innen dürfen diese Daten nur für diesen Workshop nutzen.
+  </p>
+  <p>
+    Als Gastgeber:in zeigt deine öffentliche Seite deinen Namen oder
+    Studionamen, Fotos, Videos, Texte, Workshops, Preise und Termine sowie die
+    Workshop-Adresse, die du veröffentlichst. Teilnehmende, die bei dir buchen,
+    erhalten die Angaben, die sie zur Teilnahme brauchen.
+  </p>
+
+  <h2 id="app">10. Die Twiggli-App</h2>
+  <p>
+    Die App (iOS und Android) nutzt dasselbe Konto und dieselben Dienstleister
+    wie die Website. Sie fragt diese Berechtigungen nur an, wenn eine Funktion
+    sie braucht, und du kannst sie jederzeit in den Geräteeinstellungen
+    widerrufen:
+  </p>
   <ul>
-    <li><strong>Kontodaten:</strong> solange dein Konto besteht, danach Löschung innerhalb von
-      30 Tagen nach Schließung.</li>
-    <li><strong>Buchungs- und Zahlungsunterlagen:</strong> bis zu 10 Jahre, wie es deutsches
-      Steuer- und Handelsrecht vorschreibt.</li>
-    <li><strong>Von dir veröffentlichte Inhalte:</strong> bis du sie löschst, oder dein Konto
-      geschlossen wird.</li>
-    <li><strong>Nutzungs- und Analysedaten:</strong> anonym gezählt; Umami behält nur die Summen,
-      nichts, was dich identifiziert.</li>
-    <li><strong>Anfragen und Support-Nachrichten:</strong> 3 Jahre nach dem letzten Kontakt (die
-      regelmäßige Verjährungsfrist), sofern sie nicht Teil einer Buchung wurden.</li>
+    <li><strong>Standort</strong>: um Workshops in deiner Nähe zu zeigen. Ohne
+      Berechtigung nutzen wir nur deinen ungefähren Standort; den genauen nur,
+      wenn du es erlaubst (Art. 6 Abs. 1 lit. a DSGVO).</li>
+    <li><strong>Kamera und Fotomediathek</strong>: um ein Workshop-Video oder
+      Profilfoto hochzuladen.</li>
+    <li><strong>Mitteilungen</strong>: für Buchungsbestätigungen und
+      Erinnerungen.</li>
+  </ul>
+  <p>
+    Die App verarbeitet außerdem technische Daten wie Gerätetyp,
+    Betriebssystem und App-Version, um richtig zu funktionieren und Fehler zu
+    beheben.
+  </p>
+
+  <h2 id="recipients">11. Dienstleister, die wir nutzen</h2>
+  <p>
+    Wir verkaufen keine personenbezogenen Daten. Wir nutzen folgende
+    Dienstleister, die Daten in unserem Auftrag auf Grundlage eines
+    Auftragsverarbeitungsvertrags verarbeiten (Art. 28 DSGVO), soweit nicht
+    anders angegeben:
+  </p>
+  <ul>
+    <li><strong>Google Firebase und Google Cloud</strong> (Google Ireland Ltd.):
+      Anmeldung, Datenbank und Server-Funktionen, Region Frankfurt.</li>
+    <li><strong>Google Workspace / Gmail</strong> (Google Ireland Ltd.): E-Mail.</li>
+    <li><strong>Brevo</strong> (Sendinblue SAS, Paris, Frankreich): Newsletter.</li>
+    <li><strong>GitHub Pages</strong> (GitHub, Inc., USA): Hosting der Website.</li>
+    <li><strong>Stripe</strong> (Stripe Payments Europe, Ltd., Irland): Zahlungen,
+      teils als eigenständig Verantwortlicher.</li>
+    <li><strong>Umami Cloud</strong> (Umami Software, Inc., USA): cookielose
+      Statistik.</li>
+    <li><strong>Google Fonts</strong> (Google Ireland Ltd.): Schriftarten.</li>
+    <li><strong>Gastgeber:innen</strong>: die Angaben zu deiner Buchung oder
+      Anfrage (Abschnitt 9).</li>
+    <li><strong>Behörden und Berater</strong>: wenn wir gesetzlich dazu
+      verpflichtet sind, etwa gegenüber unserer Steuerberatung, oder zur
+      Geltendmachung oder Abwehr von Rechtsansprüchen.</li>
   </ul>
 
-  <h2 id="permissions">9. App-Berechtigungen</h2>
+  <h2 id="transfers">12. Übermittlung außerhalb der EU</h2>
   <p>
-    Die App fragt diese nur ab, wenn eine Funktion sie benötigt, und du kannst jede davon in den
-    Geräteeinstellungen widerrufen:
+    Wir speichern Daten nach Möglichkeit in der EU. Einige Dienstleister (GitHub,
+    Umami sowie Google und Stripe über ihre US-Konzerngesellschaften) können Daten
+    in den USA verarbeiten. Grundlage ist das EU-US Data Privacy Framework, soweit
+    der Anbieter zertifiziert ist, ansonsten die Standardvertragsklauseln der
+    EU-Kommission (Art. 46 DSGVO).
   </p>
+
+  <h2 id="retention">13. Wie lange wir Daten speichern</h2>
   <ul>
-    <li><strong>Standort</strong> — um Workshops nach Entfernung zu sortieren.</li>
-    <li><strong>Kamera und Fotomediathek</strong> — um ein Workshop-Video aufzunehmen oder
-      hochzuladen, oder ein Profilfoto festzulegen.</li>
-    <li><strong>Benachrichtigungen</strong> — Buchungsbestätigungen und Erinnerungen.</li>
+    <li><strong>Kontodaten</strong>, einschließlich Google-Anmeldedaten: solange
+      dein Konto besteht; Löschung innerhalb von 30 Tagen nach deiner
+      Aufforderung.</li>
+    <li><strong>Anfragen und Nachrichten:</strong> 3 Jahre nach dem letzten
+      Kontakt (regelmäßige Verjährungsfrist), sofern keine Buchung daraus
+      entstand.</li>
+    <li><strong>Buchungs-, Zahlungs- und Gutscheinbelege:</strong> bis zu
+      10 Jahre, wie es das deutsche Steuer- und Handelsrecht verlangt (§ 147 AO,
+      § 257 HGB).</li>
+    <li><strong>Newsletter:</strong> bis du dich abmeldest.</li>
+    <li><strong>Server-Logs:</strong> so lange, wie GitHub sie für Sicherheit und
+      Auslieferung braucht.</li>
+    <li><strong>Statistik:</strong> nur anonyme Summen, nichts, was dich
+      identifiziert.</li>
   </ul>
 
-  <h2 id="rights">10. Deine Rechte</h2>
-  <p>Nach der DSGVO kannst du von uns verlangen, dass wir:</p>
+  <h2 id="security">14. Sicherheit</h2>
+  <p>
+    Alle Daten werden über verschlüsselte Verbindungen (HTTPS/TLS) übertragen.
+    Unsere Datenbank und Server-Funktionen laufen in der Google-Cloud-Region
+    Frankfurt, wo Daten verschlüsselt gespeichert werden. Zugriff auf
+    personenbezogene Daten haben nur die Personen, die ihn für den Betrieb von
+    Twiggli brauchen, und Datenbankregeln stellen sicher, dass Gastgeber:innen
+    nur ihre eigenen Seiten und Anfragen sehen und bearbeiten können.
+  </p>
+
+  <h2 id="rights">15. Deine Rechte</h2>
+  <p>Nach der DSGVO hast du das Recht auf:</p>
   <ul>
-    <li>dir mitteilen, welche Daten wir über dich gespeichert haben, und dir eine Kopie geben
-      (Art. 15);</li>
-    <li>Falsches berichtigen (Art. 16);</li>
-    <li>deine Daten löschen (Art. 17);</li>
-    <li>die Verarbeitung einschränken (Art. 18);</li>
-    <li>sie in einem übertragbaren Format herausgeben (Art. 20);</li>
-    <li>die auf berechtigtem Interesse beruhende Verarbeitung einstellen — einschließlich
-      Profiling (Art. 21).</li>
+    <li>Auskunft über deine gespeicherten Daten und eine Kopie (Art. 15);</li>
+    <li>Berichtigung unrichtiger Daten (Art. 16);</li>
+    <li>Löschung (Art. 17);</li>
+    <li>Einschränkung der Verarbeitung (Art. 18);</li>
+    <li>Datenübertragbarkeit (Art. 20);</li>
+    <li>Widerruf deiner Einwilligung jederzeit mit Wirkung für die Zukunft
+      (Art. 7 Abs. 3).</li>
   </ul>
   <p>
-    Beruht eine Verarbeitung auf Einwilligung, kannst du sie jederzeit mit Wirkung für die Zukunft
-    widerrufen.
+    <strong>Widerspruchsrecht (Art. 21 DSGVO):</strong> Soweit wir deine Daten
+    auf Grundlage unseres berechtigten Interesses verarbeiten, kannst du aus
+    Gründen, die sich aus deiner besonderen Situation ergeben, jederzeit
+    widersprechen. Der Verarbeitung zu Zwecken der Direktwerbung kannst du
+    jederzeit ohne Angabe von Gründen widersprechen.
   </p>
   <p>
-    Schreib an {contactEmail} und wir antworten innerhalb eines
-    Monats. Du kannst dich auch bei einer Aufsichtsbehörde beschweren. Für uns zuständig ist die
-    Berliner Beauftragte für Datenschutz und Informationsfreiheit, du kannst dich aber auch an
-    die Behörde an deinem Wohn- oder Arbeitsort wenden.
+    Um deine Rechte auszuüben, schreib an {contactEmail}; wir antworten innerhalb
+    eines Monats. Du hast außerdem das Recht, dich bei einer
+    Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für uns ist die
+    Landesbeauftragte für Datenschutz und Informationsfreiheit
+    Nordrhein-Westfalen; du kannst dich auch an die Behörde an deinem Wohn- oder
+    Arbeitsort wenden. Wir nutzen keine automatisierte Entscheidungsfindung oder
+    Profiling im Sinne von Art. 22 DSGVO.
   </p>
 
-  <h2 id="children">11. Kinder</h2>
+  <h2 id="children">16. Kinder</h2>
   <p>
-    Twiggli ist nicht für Kinder unter 16 Jahren bestimmt. Wir erheben wissentlich keine Daten von
-    ihnen. Falls du glaubst, dass ein Kind uns personenbezogene Daten übermittelt hat, kontaktiere
-    uns bitte und wir löschen sie.
+    Twiggli richtet sich nicht an Kinder unter 16 Jahren. Workshops für Kinder
+    bucht ein Elternteil oder eine sorgeberechtigte Person. Wir erheben nicht
+    wissentlich Daten von Kindern; wenn du glaubst, dass ein Kind uns Daten
+    gegeben hat, melde dich und wir löschen sie.
   </p>
 
-  <h2 id="changes">12. Änderungen dieser Richtlinie</h2>
+  <h2 id="changes">17. Änderungen dieser Erklärung</h2>
   <p>
-    Wir aktualisieren diese Richtlinie, wenn sich das Produkt oder die Rechtslage ändert. Das
-    Datum oben zeigt die aktuelle Version. Wirkt sich eine Änderung wesentlich darauf aus, wie wir
-    deine Daten nutzen, informieren wir dich vorher in der App oder per E-Mail.
+    Wir passen diese Erklärung an, wenn sich unsere Dienste oder die Rechtslage
+    ändern. Das Datum oben zeigt die aktuelle Fassung. Wenn eine Änderung
+    wesentlich beeinflusst, wie wir deine Daten nutzen, informieren wir dich
+    vorher per E-Mail oder in der App.
   </p>
 </LegalPage>
