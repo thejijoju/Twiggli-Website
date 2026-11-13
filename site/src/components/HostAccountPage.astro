@@ -2148,7 +2148,14 @@ const fields = [
   .ha-signin .ha-btn.ha-google:not(:disabled):hover { background: #f6f3ff; border-color: rgba(106, 62, 236, 0.35); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(36, 39, 46, 0.08); filter: none; }
   .ha [data-ha-tab]:hover, .ha .hd-bell:hover { background: rgba(36, 39, 46, 0.06); }
   .ha .hd-add:hover, .ha [data-ha-avatar]:hover { transform: scale(1.05); }
-  .ha-signin input:hover { border-color: rgba(106, 62, 236, 0.4); }
+  /* The field's border turns the same lilac as the Google button's on hover
+     (the inside stays white); the generic .ha input rule is more specific,
+     so this one repeats its selector. */
+  .ha .ha-signin input:not([type='checkbox']):not([type='radio']) { transition: border-color .15s ease; }
+  .ha .ha-signin input:not([type='checkbox']):not([type='radio']):hover { border-color: rgba(106, 62, 236, 0.35); }
+  /* "Your email" fades to 70% while the mouse is on the words. */
+  .ha-signin label > span { transition: opacity .15s ease; }
+  .ha-signin label > span:hover { opacity: 0.7; }
   .ha-signin .ha-btn { width: 100%; min-height: 44px; font-size: 0.92rem; border-radius: 14px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
   .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px 0; }
   .ha-signin .ha-google { min-height: 44px; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
