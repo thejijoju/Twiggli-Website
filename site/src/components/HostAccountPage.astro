@@ -1844,7 +1844,12 @@ const fields = [
       });
 
       const start = async (user: { email: string | null } | null) => {
-        if (!user?.email) { signin.hidden = false; return; }
+        if (!user?.email) {
+          signin.hidden = false;
+          // Arrived from "Sign in": the cursor waits in the email field.
+          signin.querySelector<HTMLInputElement>('input[name="email"]')?.focus();
+          return;
+        }
         email = user.email.toLowerCase();
         signin.hidden = true;
         app.hidden = false;

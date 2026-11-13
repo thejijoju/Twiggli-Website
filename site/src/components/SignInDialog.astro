@@ -102,7 +102,10 @@ const accountHref = href(lang === 'de' ? 'de' : 'en', '/host/account/');
       const el = (event.target as HTMLElement).closest<HTMLElement>('[data-signin]');
       if (!el) return;
       event.preventDefault();
-      open(el);
+      // Jirel 13.11.26: "Sign in" goes straight to the account page, where
+      // the email field is ready to type in (no pop-up first).
+      track('signin-open', { lang });
+      location.href = dialog.dataset.account ?? '/host/account/';
     });
     dialog.querySelectorAll('[data-signin-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
