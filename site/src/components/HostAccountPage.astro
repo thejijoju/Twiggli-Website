@@ -2161,7 +2161,7 @@ const fields = [
   @media (max-width: 640px) { .ha-top-signin { right: 16px; } }
   /* The waving hand: a small wave every few seconds, still for reduced motion. */
   .ha-wave { display: flex; }
-  .ha-wave-hand { display: inline-block; transform-origin: 70% 75%; animation: ha-wave 3.2s ease-in-out 0.6s infinite; }
+  .ha-wave-hand { display: inline-block; transform-origin: 70% 75%; animation: ha-wave 3.2s ease-in-out 0.2s infinite; }
   @keyframes ha-wave { 0%, 60%, 100% { transform: rotate(0); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-6deg); } 30% { transform: rotate(12deg); } 40% { transform: rotate(-3deg); } 50% { transform: rotate(6deg); } }
   @media (prefers-reduced-motion: reduce) { .ha-wave-hand { animation: none; } }
   .ha-home:hover img, .ha-home:focus-visible img { transform: scale(1.12); }
@@ -2176,10 +2176,14 @@ const fields = [
      so this one repeats its selector. */
   .ha .ha-signin input:not([type='checkbox']):not([type='radio']) { transition: border-color .15s ease; }
   .ha .ha-signin input:not([type='checkbox']):not([type='radio']):hover { border-color: rgba(106, 62, 236, 0.35); }
+  /* Rounder field; on focus one lilac 2px line, no second browser ring. */
+  .ha .ha-signin input:not([type='checkbox']):not([type='radio']) { border-radius: 16px; }
+  .ha .ha-signin input:not([type='checkbox']):not([type='radio']):focus,
+  .ha .ha-signin input:not([type='checkbox']):not([type='radio']):focus-visible { outline: none; border: 2px solid rgba(106, 62, 236, 0.55); padding: 9px 11px; box-shadow: none; }
   /* "Your email" fades to 70% while the mouse is on the words. */
   .ha-signin label > span { transition: opacity .15s ease; }
   .ha-signin label > span:hover { opacity: 0.7; }
-  .ha-signin .ha-btn { width: 100%; min-height: 44px; font-size: 0.92rem; border-radius: 14px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
+  .ha-signin .ha-btn { width: 100%; min-height: 44px; font-size: 0.92rem; border-radius: 18px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
   .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px 0; }
   .ha-signin .ha-google { min-height: 44px; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
   .ha-field { display: grid; gap: 6px; margin-bottom: 16px; }
