@@ -1862,15 +1862,15 @@ const signinHash = (key, email, code) => createHmac('sha256', key).update(`code\
 const codeMail = (lang, code, link) => {
   const de = lang === 'de';
   const t = de
-    ? { subject: `${code} ist dein Twiggli-Code`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden. Er gilt 10 Minuten.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf twiggli.com ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
-    : { subject: `${code} is your Twiggli code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in. It is valid for 10 minutes.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', safe: 'Never share this code or enter it anywhere other than twiggli.com. We will never ask you for it by phone, chat or email.', foot: "Didn't ask for a code? You can safely ignore this email." };
+    ? { subject: `${code} ist dein Twiggli-Anmeldecode`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden. Er gilt 10 Minuten.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf twiggli.com ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
+    : { subject: `${code} is your Twiggli sign-in code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in. It is valid for 10 minutes.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', safe: 'Never share this code or enter it anywhere other than twiggli.com. We will never ask you for it by phone, chat or email.', foot: "Didn't ask for a code? You can safely ignore this email." };
   const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#fff;border-radius:24px;padding:32px 28px;text-align:center">
 <tr><td><img src="${SITE}/img/logo.png" width="44" height="44" alt="Twiggli" style="display:block;margin:0 auto 18px"></td></tr>
 <tr><td style="font-size:20px;font-weight:bold;padding-bottom:8px">${t.head}</td></tr>
 <tr><td style="font-size:14px;line-height:1.5;color:#5b5f6b;padding-bottom:22px">${t.lede}</td></tr>
-<tr><td style="padding-bottom:24px"><div style="display:inline-block;font-family:Menlo,Consolas,monospace;font-size:30px;font-weight:600;letter-spacing:10px;color:#24272e;background:#f6f6f8;border:1px solid #e6e6ec;border-radius:12px;padding:14px 18px 14px 28px">${code}</div></td></tr>
+<tr><td style="padding-bottom:24px"><div style="display:inline-block;-webkit-user-select:all;user-select:all;font-family:Menlo,Consolas,monospace;font-size:30px;font-weight:600;letter-spacing:10px;color:#24272e;background:#f6f6f8;border:1px solid #e6e6ec;border-radius:12px;padding:14px 18px 14px 28px">${code}</div></td></tr>
 ${link ? `<tr><td style="font-size:13px;color:#5b5f6b;padding-bottom:10px">${t.or}</td></tr>
 <tr><td style="padding-bottom:22px"><a href="${link}" style="display:inline-block;background:#6A3EEC;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;border-radius:999px;padding:12px 24px">${t.btn}</a></td></tr>` : ''}
 <tr><td style="font-size:12px;color:#5b5f6b;line-height:1.5;padding-bottom:8px">${t.safe}</td></tr>
