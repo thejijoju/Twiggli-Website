@@ -1846,7 +1846,7 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
 });
 
 // ── Signing in with a 6-digit code (Jirel 13.11.26, like Luma) ───────────
-// signinCode emails a code (valid 10 minutes; code only, no link since
+// signinCode emails a code (valid 5 minutes; code only, no link since
 // 13.11.26); signinVerify checks it and hands
 // back a Firebase custom token, which the page signs in with. Codes are
 // kept only as a keyed hash in Firestore signinCodes/{hash of the email},
@@ -1855,15 +1855,15 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
 // createCustomToken needs the functions' service account to hold the role
 // "Service Account Token Creator" on itself (functions/README.md).
 
-const CODE_TTL = 10 * 60 * 1000;
+const CODE_TTL = 5 * 60 * 1000; // 5 minutes (Jirel 13.11.26)
 const codeDoc = (email) => getFirestore().doc(`signinCodes/${createHash('sha256').update(email).digest('hex')}`);
 const signinHash = (key, email, code) => createHmac('sha256', key).update(`code\n${email}\n${code}`).digest('hex');
 
 const codeMail = (lang, code, link) => {
   const de = lang === 'de';
   const t = de
-    ? { subject: `${code} ist dein Twiggli-Anmeldecode`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden. Er gilt 10 Minuten.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf twiggli.com ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
-    : { subject: `${code} is your Twiggli sign-in code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in. It is valid for 10 minutes.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', safe: 'Never share this code or enter it anywhere other than twiggli.com. We will never ask you for it by phone, chat or email.', foot: "Didn't ask for a code? You can safely ignore this email." };
+    ? { subject: `${code} ist dein Twiggli-Anmeldecode`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf twiggli.com ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
+    : { subject: `${code} is your Twiggli sign-in code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', safe: 'Never share this code or enter it anywhere other than twiggli.com. We will never ask you for it by phone, chat or email.', foot: "Didn't ask for a code? You can safely ignore this email." };
   const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#fff;border-radius:24px;padding:32px 28px;text-align:center">
