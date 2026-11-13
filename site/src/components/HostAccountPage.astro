@@ -133,6 +133,34 @@ const fields = [
       <p class="ha-apply">{lang === 'de' ? 'Noch kein Host?' : 'Not a host yet?'} <a href={`${href(lang, '/host/')}#apply`}>{lang === 'de' ? 'Hier bewerben' : 'Apply here'} →</a></p>
     </form>
 
+    <!-- Step 2: the 6-digit code from the email (Jirel 13.11.26, like Luma). -->
+    <form class="ha-signin ha-code" data-ha-code hidden novalidate
+      data-wait={lang === 'de' ? 'Neuer Code in {s} s' : 'Resend code in {s}s'}
+      data-wrong={lang === 'de' ? 'Der Code stimmt nicht. Versuch es noch einmal.' : "That code isn't right. Try again."}
+      data-expired={lang === 'de' ? 'Der Code ist abgelaufen. Fordere einfach einen neuen an.' : 'That code has expired. Just request a new one.'}
+      data-resent={lang === 'de' ? 'Neuer Code ist unterwegs.' : 'A new code is on its way.'}
+      data-checking={lang === 'de' ? 'Wird geprüft …' : 'Checking …'}>
+      <button type="button" class="ha-code-back" data-ha-code-back aria-label={lang === 'de' ? 'Zurück' : 'Back'}>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <span class="ha-wave ha-code-icon" aria-hidden="true">✉️</span>
+      <h2>{lang === 'de' ? 'Code eingeben' : 'Enter code'}</h2>
+      <p class="ha-sub">{lang === 'de' ? 'Wir haben dir einen 6-stelligen Code geschickt an' : 'We sent a 6-digit code to'}<br /><b data-ha-code-to></b></p>
+      <div class="ha-code-boxes" data-ha-code-boxes role="group" aria-label={lang === 'de' ? '6-stelliger Code' : '6-digit code'}>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`${lang === 'de' ? 'Ziffer' : 'Digit'} ${i + 1}`} />
+        ))}
+      </div>
+      <p class="ha-note" data-ha-code-note role="status"></p>
+      <div class="ha-code-row">
+        <button type="button" class="ha-code-paste" data-ha-code-paste>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h1.5A1.5 1.5 0 0 1 19 6.5v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H8"/></svg>
+          {lang === 'de' ? 'Code einfügen' : 'Paste code'}
+        </button>
+        <button type="button" class="ha-code-resend" data-ha-code-resend disabled>{lang === 'de' ? 'Code erneut senden' : 'Resend code'}</button>
+      </div>
+    </form>
+
     <!-- Signed in. -->
     <div class="ha-app" data-ha-app hidden>
       <header class="hd-top">
@@ -432,12 +460,12 @@ const fields = [
 </Base>
 
 <script>
-  import { formEndpoint } from '../data/firebase.ts';
+  import { formEndpoint, functionsBase } from '../data/firebase.ts';
   import { rememberSignedIn } from '../lib/auth.ts';
   import { initializeApp } from 'firebase/app';
   import {
-    getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink,
-    signInWithPopup, signOut,
+    getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, signInWithEmailLink,
+    signInWithCustomToken, signInWithPopup, signOut,
   } from 'firebase/auth';
   import {
     collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where, writeBatch,
@@ -491,21 +519,122 @@ const fields = [
       const remember = (v: string) => { try { localStorage.setItem(STORE, v); } catch { /* private mode */ } };
       const recall = () => { try { return localStorage.getItem(STORE) ?? ''; } catch { return ''; } };
 
-      // ── Signing in: an email link, no password ──
+      // ── Signing in: a 6-digit code by email (functions signinCode /
+      //    signinVerify), no password. The email also carries Firebase's
+      //    own sign-in link, which finishSignIn below still handles. ──
+      const codeForm = $<HTMLFormElement>('[data-ha-code]');
+      const boxes = [...codeForm.querySelectorAll<HTMLInputElement>('[data-ha-code-boxes] input')];
+      const codeNote = $('[data-ha-code-note]');
+      const resend = $<HTMLButtonElement>('[data-ha-code-resend]');
+      const resendLabel = resend.textContent ?? '';
+      let codeTo = '';
+      let timer = 0;
+      const codeSay = (msg: string, ok = true) => { codeNote.textContent = msg; codeNote.dataset.ok = String(ok); };
+      const codeCountdown = (secs: number) => {
+        clearInterval(timer);
+        let left = secs;
+        const tick = () => {
+          if (left <= 0) { clearInterval(timer); resend.disabled = false; resend.textContent = resendLabel; return; }
+          resend.disabled = true; resend.textContent = (codeForm.dataset.wait ?? '').replace('{s}', String(left)); left -= 1;
+        };
+        tick(); timer = window.setInterval(tick, 1000);
+      };
+      const post = (fn: string, body: object) => fetch(`${functionsBase}/${fn}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const sendCode = async (addr: string) => {
+        const r = await post('signinCode', { email: addr, lang: root.dataset.lang === 'de' ? 'de' : 'en' });
+        if (r.ok) return 60;
+        const j = await r.json().catch(() => ({}));
+        if (r.status === 429 && j.wait) return Number(j.wait);
+        throw new Error(j.error || String(r.status));
+      };
+      const showCode = (addr: string, wait: number) => {
+        codeTo = addr;
+        $('[data-ha-code-to]').textContent = addr;
+        boxes.forEach((b) => { b.value = ''; });
+        codeSay('');
+        signin.hidden = true; codeForm.hidden = false;
+        boxes[0].focus();
+        codeCountdown(wait);
+      };
       signin.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = signin.querySelector('button')!;
-        const addr = (signin.elements.namedItem('email') as HTMLInputElement).value.trim();
+        const addr = (signin.elements.namedItem('email') as HTMLInputElement).value.trim().toLowerCase();
         btn.disabled = true; btn.textContent = t.sending;
         try {
-          await sendSignInLinkToEmail(auth, addr, { url: location.origin + location.pathname, handleCodeInApp: true });
+          const wait = await sendCode(addr);
           remember(addr);
-          note(signin, t.linkSent, true);
+          note(signin, '');
+          showCode(addr, wait);
         } catch {
           note(signin, fill(t.error, cfg.contact), false);
         }
         btn.disabled = false; btn.textContent = t.sendLink;
       });
+      const verify = async () => {
+        const code = boxes.map((b) => b.value).join('');
+        if (!/^\d{6}$/.test(code)) return;
+        boxes.forEach((b) => { b.disabled = true; });
+        codeSay(codeForm.dataset.checking ?? '');
+        try {
+          const r = await post('signinVerify', { email: codeTo, code });
+          const j = await r.json().catch(() => ({}));
+          if (r.ok && j.token) {
+            await signInWithCustomToken(auth, j.token);
+            try { localStorage.removeItem(STORE); } catch { /* private mode */ }
+            rememberSignedIn(true);
+            location.reload();
+            return;
+          }
+          codeSay(j.error === 'wrong' ? codeForm.dataset.wrong ?? '' : j.error === 'expired' || j.error === 'tries' ? codeForm.dataset.expired ?? '' : fill(t.error, cfg.contact), false);
+          codeForm.classList.remove('is-shake'); void codeForm.offsetWidth; codeForm.classList.add('is-shake');
+        } catch {
+          codeSay(fill(t.error, cfg.contact), false);
+        }
+        boxes.forEach((b) => { b.disabled = false; b.value = ''; });
+        boxes[0].focus();
+      };
+      const fillCode = (digits: string, from = 0) => {
+        const d = digits.replace(/\D/g, '').slice(0, 6 - from);
+        [...d].forEach((c, i) => { boxes[from + i].value = c; });
+        boxes[Math.min(from + d.length, 5)].focus();
+        if (boxes.every((b) => b.value)) verify();
+      };
+      boxes.forEach((b, i) => {
+        b.addEventListener('input', () => {
+          const v = b.value.replace(/\D/g, '');
+          if (v.length > 1) { b.value = ''; fillCode(v, i); return; }
+          b.value = v;
+          if (v && i < 5) boxes[i + 1].focus();
+          if (boxes.every((x) => x.value)) verify();
+        });
+        b.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !b.value && i > 0) { boxes[i - 1].value = ''; boxes[i - 1].focus(); e.preventDefault(); }
+          if (e.key === 'ArrowLeft' && i > 0) boxes[i - 1].focus();
+          if (e.key === 'ArrowRight' && i < 5) boxes[i + 1].focus();
+        });
+        b.addEventListener('paste', (e) => {
+          const text = e.clipboardData?.getData('text') ?? '';
+          if (!text) return;
+          e.preventDefault();
+          fillCode(text, 0);
+        });
+        b.addEventListener('focus', () => b.select());
+      });
+      $('[data-ha-code-paste]').addEventListener('click', async () => {
+        try { fillCode(await navigator.clipboard.readText(), 0); } catch { boxes[0].focus(); }
+      });
+      resend.addEventListener('click', async () => {
+        resend.disabled = true;
+        try { codeCountdown(await sendCode(codeTo)); codeSay(codeForm.dataset.resent ?? ''); }
+        catch { resend.disabled = false; codeSay(fill(t.error, cfg.contact), false); }
+      });
+      $('[data-ha-code-back]').addEventListener('click', () => {
+        clearInterval(timer);
+        codeForm.hidden = true; signin.hidden = false;
+        signin.querySelector<HTMLInputElement>('input[name="email"]')?.focus();
+      });
+      codeForm.addEventListener('submit', (e) => { e.preventDefault(); verify(); });
       $('[data-ha-signout]').addEventListener('click', async () => {
         await signOut(auth);
         rememberSignedIn(false);
@@ -2194,6 +2323,27 @@ const fields = [
   .ha-sub { transition: color .15s ease; }
   .ha-sub:hover { color: var(--color-text); }
   .ha-signin .ha-btn { width: 100%; min-height: 44px; font-size: 0.92rem; border-radius: 18px; background: linear-gradient(90deg, #6a3eec, #e64ab4); }
+  /* The code step (Jirel 13.11.26, like Luma): same card, six boxes. */
+  .ha-code { position: relative; }
+  .ha-code-back { position: absolute; top: 18px; left: 18px; width: 38px; height: 38px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(36, 39, 46, 0.06); color: var(--color-text); cursor: pointer; transition: background-color .15s ease, transform .15s ease; }
+  .ha-code-back:hover { background: rgba(106, 62, 236, 0.12); color: #6a3eec; transform: translateX(-1px); }
+  .ha-code-icon { font-size: 30px; }
+  .ha-code .ha-sub b { color: var(--color-text); font-weight: 600; word-break: break-all; }
+  .ha-code-boxes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 4px 0 2px; }
+  .ha .ha-code-boxes input:not([type='checkbox']):not([type='radio']) { width: 100%; aspect-ratio: 1 / 1.12; padding: 0; text-align: center; font-size: 1.35rem; font-weight: 700; color: #24272e; border-radius: 14px; border: 1px solid rgba(36, 39, 46, 0.16); background: #fff; caret-color: #6a3eec; transition: border-color .15s ease, box-shadow .15s ease; }
+  .ha .ha-code-boxes input:not([type='checkbox']):not([type='radio']):hover { border-color: rgba(106, 62, 236, 0.35); }
+  .ha .ha-code-boxes input:not([type='checkbox']):not([type='radio']):focus { outline: none; border: 2px solid rgba(106, 62, 236, 0.55); padding: 0; }
+  .ha .ha-code-boxes input:disabled { opacity: .6; }
+  .ha-code-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; }
+  .ha-code-paste { display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 0.86rem; font-weight: 600; color: var(--color-text); background: rgba(36, 39, 46, 0.06); border: 0; border-radius: 14px; padding: 9px 13px; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+  .ha-code-paste:hover { background: rgba(106, 62, 236, 0.12); color: #6a3eec; }
+  .ha-code-resend { font: inherit; font-size: 0.86rem; background: none; border: 0; padding: 4px 0; color: #6a3eec; font-weight: 600; cursor: pointer; }
+  .ha-code-resend:disabled { color: var(--color-text-muted); font-weight: 400; cursor: default; }
+  .ha-code-resend:not(:disabled):hover { text-decoration: underline; }
+  .ha-code .ha-note:empty { display: none; }
+  .ha-code.is-shake .ha-code-boxes { animation: ha-shake .35s ease; }
+  @keyframes ha-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @media (max-width: 560px) { .ha-code-boxes { gap: 6px; } .ha-code-back { top: 14px; left: 14px; } }
   .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px 0; }
   .ha-signin .ha-google { min-height: 44px; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
   .ha-field { display: grid; gap: 6px; margin-bottom: 16px; }
