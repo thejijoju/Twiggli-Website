@@ -2809,6 +2809,11 @@ const fields = [
   .hd-prof-studio, .hd-prof-facts li, .hd-prof-stats span, .hd-prof-card-m, .hd-set-sub, .hd-set-row span, .hd-set-name label, .hd-menu-id .hd-who { transition: color .15s ease; }
   .hd-prof-facts li:hover, .hd-prof-stats span:hover, .hd-prof-card-m:hover, .hd-set-sub:hover, .hd-set-row span:hover, .hd-set-name label:hover, .hd-menu-id .hd-who:hover { color: #16181d; }
   .hd-prof-studio:hover { color: #241a5e; }
+  /* Menu head (Jirel 14.11.26): name fades, email darkens, the picture grows a touch. */
+  .hd-menu-id b { transition: opacity .15s ease; }
+  .hd-menu-id b:hover { opacity: .7; }
+  .hd-menu-av { transition: transform .2s ease; }
+  .hd-menu-av:hover { transform: scale(1.08); }
   .hd-set-name { display: grid; gap: 6px; }
   .hd-set-name label { font-size: 0.92rem; color: var(--color-text-muted); }
   .hd-set-name div { display: flex; gap: 8px; }
