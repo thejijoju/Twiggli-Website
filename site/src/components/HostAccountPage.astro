@@ -212,7 +212,7 @@ const fields = [
                 <select data-ha-pick></select>
               </label>
               <hr class="hd-menu-sep" />
-              <button type="button" class="hd-item" data-ha-signout>{t.signOut}</button>
+              <button type="button" class="hd-item hd-out" data-ha-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg></button>
             </div>
           </div>
         </div>
@@ -301,7 +301,7 @@ const fields = [
           <p class="hd-set-sub" data-hs-pay>{lang === 'de' ? 'Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.' : 'Connect Stripe so guests can pay you directly.'}</p>
           <button type="button" class="hd-set-btn" data-hs-pay-btn>{lang === 'de' ? 'Stripe verbinden' : 'Connect Stripe'}</button>
         </div>
-        <button type="button" class="hd-set-out" data-hs-signout>{t.signOut}</button>
+        <button type="button" class="hd-set-out hd-out" data-hs-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg></button>
       </section>
 
       <div data-ha-editor hidden>
@@ -2814,6 +2814,11 @@ const fields = [
   .hd-menu-id b:hover { opacity: .7; }
   .hd-menu-av { transition: transform .2s ease; }
   .hd-menu-av:hover { transform: scale(1.08); }
+  /* Sign out: a small door slides in on hover (Jirel 14.11.26, like Luma). */
+  .hd-out { display: inline-flex; align-items: center; gap: 8px; }
+  .hd-menu .hd-out { display: flex; }
+  .hd-door { opacity: 0; transform: translateX(-4px); transition: opacity .18s ease, transform .18s ease; }
+  .hd-out:hover .hd-door, .hd-out:focus-visible .hd-door { opacity: 1; transform: none; }
   .hd-set-name { display: grid; gap: 6px; }
   .hd-set-name label { font-size: 0.92rem; color: var(--color-text-muted); }
   .hd-set-name div { display: flex; gap: 8px; }
