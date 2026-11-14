@@ -38,6 +38,10 @@ const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
 // onboarding and guests' bookings. Vouchers stay on STRIPE_SECRET_KEY
 // (the "Twiggli Website" account).
 const STRIPE_CONNECT_KEY = defineSecret('STRIPE_CONNECT_KEY');
+// Brevo's transactional API key (Secret Manager BREVO_API_KEY): sign-in codes
+// go out through Brevo from no-reply@twiggli.com, so mail apps treat them as
+// system mail (Jirel 14.11.26). Gmail stays the fallback.
+const BREVO_API_KEY = defineSecret('BREVO_API_KEY');
 // No address is written in this repo (Jirel, 31.10.26): they come from
 // functions/.env, which deploy-firebase.yml writes from encrypted GitHub
 // secrets (INBOX_EMAIL, SENDER_EMAIL, ADMIN_EMAILS) and never commits.
@@ -1880,7 +1884,7 @@ ${link ? `<tr><td style="font-size:13px;color:#5b5f6b;padding-bottom:10px">${t.o
   return { subject: t.subject, html, text };
 };
 
-export const signinCode = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+export const signinCode = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD, BREVO_API_KEY], maxInstances: 5, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
   const email = String(req.body?.email ?? '').trim().toLowerCase();
   if (!isEmail(email) || email.length > 200) return res.status(400).json({ error: 'email' });
@@ -1897,6 +1901,18 @@ export const signinCode = onRequest({ region: 'europe-west3', secrets: [GMAIL_AP
   // type the code on twiggli.com and nowhere else, and a link would muddy that.
   const link = '';
   const m = codeMail(lang, code, link);
+  // Brevo first (system mail from no-reply@twiggli.com), Gmail if that fails.
+  try {
+    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': BREVO_API_KEY.value(), 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ sender: { name: 'Twiggli', email: 'no-reply@twiggli.com' }, to: [{ email }], subject: m.subject, htmlContent: m.html, textContent: m.text, tags: ['signin-code'] }),
+    });
+    if (r.ok) return res.status(200).json({ ok: true });
+    console.error('code mail brevo', r.status, (await r.text()).slice(0, 300));
+  } catch (err) {
+    console.error('code mail brevo', err?.message);
+  }
   try {
     const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
     await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to: email, subject: m.subject, text: m.text, html: m.html });
