@@ -2003,3 +2003,34 @@ export const profilePhoto = onRequest({ region: 'europe-west3', maxInstances: 5,
     return res.status(500).json({ error: 'upload' });
   }
 });
+
+// ── Account settings (Jirel 14.11.26, like Luma): first/last name, a short
+// bio and social links, plus the email language. Kept in Firestore
+// userSettings/{uid}; the name also becomes the account's displayName.
+const SOCIAL = { instagram: /^[A-Za-z0-9._]{1,30}$/, tiktok: /^[A-Za-z0-9._]{1,30}$/, youtube: /^[A-Za-z0-9._-]{1,60}$/ };
+export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
+  let user;
+  try { user = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { user = null; }
+  if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
+  const ref = getFirestore().doc(`userSettings/${user.uid}`);
+  if (req.body?.action !== 'save') return res.status(200).json((await ref.get()).data() ?? {});
+  const b = req.body ?? {};
+  const clean = (v, max) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
+  const handle = (v) => clean(v, 80).replace(/^https?:\/\/(www\.)?[^/]+\/@?/i, '').replace(/^@/, '').replace(/\/+$/, '');
+  const out = {
+    first: clean(b.first, 40), last: clean(b.last, 40),
+    bio: String(b.bio ?? '').trim().slice(0, 280),
+    lang: b.lang === 'en' ? 'en' : 'de',
+    updatedAt: FieldValue.serverTimestamp(), email: user.email ?? '',
+  };
+  for (const [k, re] of Object.entries(SOCIAL)) { const h = handle(b[k]); out[k] = re.test(h) ? h : ''; }
+  const site = clean(b.website, 200);
+  out.website = /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(site) ? (site.startsWith('http') ? site : `https://${site}`) : '';
+  await ref.set(out, { merge: true });
+  const name = `${out.first} ${out.last}`.trim();
+  if (name) await getAuth().updateUser(user.uid, { displayName: name });
+  const { updatedAt, ...back } = out;
+  return res.status(200).json(back);
+});
