@@ -129,7 +129,8 @@ const fields = [
     <p class="ha-card ha-note" data-ha-soon hidden></p>
 
     <!-- Signed out: one field, one button. -->
-    <form class="ha-signin" data-ha-signin hidden>
+    <form class="ha-signin" data-ha-signin hidden
+      data-timedout={lang === 'de' ? 'Du wurdest nach 7 Stunden automatisch abgemeldet. Melde dich einfach wieder an.' : 'You were signed out automatically after 7 hours. Just sign in again.'}>
       <span class="ha-wave" aria-hidden="true"><span class="ha-wave-hand">👋</span></span>
       <h2>{t.welcomeTitle}</h2>
       <p class="ha-sub">{t.welcomeLede}</p>
@@ -598,7 +599,7 @@ const fields = [
 
 <script>
   import { formEndpoint, functionsBase } from '../data/firebase.ts';
-  import { rememberSignedIn } from '../lib/auth.ts';
+  import { rememberSignedIn, sessionLeft } from '../lib/auth.ts';
   import { initializeApp } from 'firebase/app';
   import {
     getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, signInWithEmailLink, updateProfile,
@@ -2394,7 +2395,26 @@ const fields = [
       };
       finishSignIn().finally(() => {
         let once = false;
-        onAuthStateChanged(auth, (user) => { if (!once) { once = true; start(user).catch(failed); } });
+        // Sessions end on their own after SESSION_HOURS (lib/auth.ts), also
+        // in a tab left open: then the page signs out and reloads.
+        const expire = async () => {
+          await signOut(auth);
+          rememberSignedIn(false);
+          try { sessionStorage.setItem('twiggli-host-timedout', '1'); } catch { /* private mode */ }
+          location.reload();
+        };
+        onAuthStateChanged(auth, (user) => {
+          if (once) return;
+          once = true;
+          if (user && sessionLeft(user) <= 0) { expire().catch(failed); return; }
+          if (user) setTimeout(() => { expire().catch(failed); }, Math.min(sessionLeft(user), 2 ** 31 - 1));
+          else {
+            let out = false;
+            try { out = sessionStorage.getItem('twiggli-host-timedout') === '1'; sessionStorage.removeItem('twiggli-host-timedout'); } catch { /* private mode */ }
+            if (out) note(signin, signin.dataset.timedout ?? '', true);
+          }
+          start(user).catch(failed);
+        });
       });
     }
   }
