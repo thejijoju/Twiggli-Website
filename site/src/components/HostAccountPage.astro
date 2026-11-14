@@ -212,7 +212,7 @@ const fields = [
                 <select data-ha-pick></select>
               </label>
               <hr class="hd-menu-sep" />
-              <button type="button" class="hd-item hd-out" data-ha-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg></button>
+              <button type="button" class="hd-item hd-out" data-ha-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56z"/></svg></button>
             </div>
           </div>
         </div>
@@ -300,7 +300,6 @@ const fields = [
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg><span class="hd-set-pre">instagram.com/</span><input name="instagram" placeholder="username" /></label>
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.3 5 4.5"/></svg><span class="hd-set-pre">tiktok.com/@</span><input name="tiktok" placeholder="username" /></label>
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg><span class="hd-set-pre">youtube.com/@</span><input name="youtube" placeholder="username" /></label>
-              <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/></svg><input name="website" placeholder={lang === 'de' ? 'Deine Website' : 'Your website'} /></label>
             </div>
             <div class="hd-set-actions">
               <button type="submit" class="hd-set-save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.3 4.6-4.8"/></svg>{lang === 'de' ? 'Änderungen speichern' : 'Save changes'}</button>
@@ -350,7 +349,7 @@ const fields = [
           </div>
         </div>
 
-        <button type="button" class="hd-set-out hd-out" data-hs-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg></button>
+        <button type="button" class="hd-set-out hd-out" data-hs-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56z"/></svg></button>
       </section>
 
       <div data-ha-editor hidden>
@@ -797,7 +796,7 @@ const fields = [
       const fillSettings = () => {
         const u = auth.currentUser;
         const [f0, ...rest] = (u?.displayName || '').split(' ');
-        for (const k of ['first', 'last', 'bio', 'instagram', 'tiktok', 'youtube', 'website']) {
+        for (const k of ['first', 'last', 'bio', 'instagram', 'tiktok', 'youtube']) {
           const el = sForm.elements.namedItem(k) as HTMLInputElement | null;
           if (el) el.value = us[k] ?? (k === 'first' ? f0 : k === 'last' ? rest.join(' ') : '');
         }
@@ -811,7 +810,7 @@ const fields = [
       }));
       const saveSettings = async (extra: Record<string, string> = {}) => {
         const data: Record<string, string> = { ...us, ...extra };
-        for (const k of ['first', 'last', 'bio', 'instagram', 'tiktok', 'youtube', 'website']) data[k] = (sForm.elements.namedItem(k) as HTMLInputElement).value;
+        for (const k of ['first', 'last', 'bio', 'instagram', 'tiktok', 'youtube']) data[k] = (sForm.elements.namedItem(k) as HTMLInputElement).value;
         us = await api('userSettings', { action: 'save', ...data });
         await auth.currentUser?.reload();
         fillSettings(); renderProfile();
@@ -1039,7 +1038,6 @@ const fields = [
         if (us?.instagram) links.push(['Instagram', `https://instagram.com/${us.instagram}`]);
         if (us?.tiktok) links.push(['TikTok', `https://tiktok.com/@${us.tiktok}`]);
         if (us?.youtube) links.push(['YouTube', `https://youtube.com/@${us.youtube}`]);
-        if (us?.website) links.push([us.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''), us.website]);
         soc.replaceChildren(...links.map(([label, url]) => { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = label; return a; }));
         soc.hidden = !links.length;
         const since = u?.metadata.creationTime ? new Date(u.metadata.creationTime) : null;
@@ -2860,7 +2858,7 @@ const fields = [
   .hd-set-btn { justify-self: start; font: inherit; font-weight: 600; font-size: 0.9rem; color: #fff; background: #6a3eec; border: 0; border-radius: 999px; padding: 10px 18px; cursor: pointer; transition: transform .15s ease, filter .15s ease; }
   .hd-set-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
   .hd-set-out { justify-self: start; font: inherit; font-size: 0.92rem; color: var(--color-text-muted); background: none; border: 0; padding: 6px 0; cursor: pointer; }
-  .hd-set-out:hover { color: #b42318; }
+  .hd-set-out:hover { color: #16181d; }
   .hd-avatar.has-photo, .hd-menu-av.has-photo { overflow: hidden; padding: 0; background: #fff; }
   .hd-avatar.has-photo img, .hd-menu-av.has-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
   /* Profile page (Jirel 14.11.26, like Luma). */
@@ -2933,17 +2931,17 @@ const fields = [
   .hd-set-form label { display: grid; gap: 6px; }
   .hd-set-form label > span, .hd-set-lbl { font-size: 0.9rem; font-weight: 600; color: var(--color-text); }
   .hd-set-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .ha .hd-set-form input, .ha .hd-set-form textarea { border-radius: 12px; border: 1px solid rgba(36, 39, 46, 0.12); background: #fff; transition: border-color .15s ease; }
+  .ha .hd-set-form input, .ha .hd-set-form textarea { border-radius: 16px; border: 1px solid rgba(36, 39, 46, 0.12); background: #fff; transition: border-color .15s ease; }
   .ha .hd-set-form input:hover, .ha .hd-set-form textarea:hover { border-color: rgba(106, 62, 236, 0.35); }
   .ha .hd-set-form input:focus, .ha .hd-set-form textarea:focus { outline: none; border-color: rgba(106, 62, 236, 0.55); }
   .hd-set-social { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
   .hd-set-social label { display: flex !important; align-items: stretch; gap: 0; color: var(--color-text-muted); }
   .hd-set-social label > svg { align-self: center; margin-right: 10px; }
   .hd-set-social svg { flex: none; }
-  .hd-set-form label > .hd-set-pre { flex: none; display: flex; align-items: center; font-weight: 400; font-size: 0.86rem; color: var(--color-text-muted); background: rgba(36, 39, 46, 0.05); border-radius: 12px 0 0 12px; padding: 10px 10px; border: 1px solid rgba(36, 39, 46, 0.12); border-right: 0; }
-  .ha .hd-set-social .hd-set-pre + input { border-radius: 0 12px 12px 0; min-width: 0; }
-  .hd-set-actions { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
-  .hd-set-save { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 600; font-size: 0.92rem; color: #fff; background: #16181d; border: 0; border-radius: 12px; padding: 11px 18px; cursor: pointer; transition: transform .15s ease, opacity .15s ease; }
+  .hd-set-form label > .hd-set-pre { flex: none; display: flex; align-items: center; font-weight: 400; font-size: 0.86rem; color: var(--color-text-muted); background: rgba(36, 39, 46, 0.05); border-radius: 16px 0 0 16px; padding: 10px 10px; border: 1px solid rgba(36, 39, 46, 0.12); border-right: 0; }
+  .ha .hd-set-social .hd-set-pre + input { border-radius: 0 16px 16px 0; min-width: 0; }
+  .hd-set-actions { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 6px; }
+  .hd-set-save { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 600; font-size: 0.92rem; color: #fff; background: #16181d; border: 0; border-radius: 16px; padding: 11px 20px; cursor: pointer; transition: transform .15s ease, opacity .15s ease; }
   .hd-set-save:hover { transform: translateY(-1px); opacity: .9; }
   .hd-set-save:disabled { opacity: .5; cursor: default; }
   .hd-set-note { font-size: 0.85rem; color: #1f7a3f; }
@@ -2956,6 +2954,11 @@ const fields = [
   .hd-set-seg button { font: inherit; font-size: 0.9rem; border: 0; background: none; border-radius: 9px; padding: 7px 16px; color: var(--color-text-muted); cursor: pointer; }
   .hd-set-seg button[aria-pressed='true'] { background: #fff; color: #16181d; font-weight: 600; box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.2); }
   .hd-set-out { margin-top: 36px; }
+  /* Hover on plain text in Settings (Jirel 14.11.26): headings and labels fade to 70%, grey text turns near-black. */
+  .hd-set-form h2, .hd-set-block h2, .hd-set-form label > span, .hd-set-lbl, .hd-set-mail b { transition: opacity .15s ease; }
+  .hd-set-form h2:hover, .hd-set-block h2:hover, .hd-set-form label > span:hover, .hd-set-lbl:hover, .hd-set-mail b:hover { opacity: .7; }
+  .hd-set-pre, .hd-set-pill, .hd-set-note { transition: color .15s ease; }
+  .hd-set-form label > .hd-set-pre:hover, .hd-set-pill:hover { color: #16181d; opacity: 1; }
   .hd-set-url { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 14px; padding: 10px 10px 10px 14px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); }
   .hd-set-url a { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.92rem; color: #6a3eec; text-decoration: none; transition: color .15s ease; }
   .hd-set-url a:hover { color: #16181d; }
