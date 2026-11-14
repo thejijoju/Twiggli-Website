@@ -307,6 +307,14 @@ const fields = [
               <small class="hd-set-note" data-hs-note role="status"></small>
             </div>
           </form>
+          <div class="hd-set-block" data-hs-page hidden>
+            <h2>{lang === 'de' ? 'Deine Seite' : 'Your page'}</h2>
+            <p class="hd-set-sub">{lang === 'de' ? 'Teile sie auf Instagram, in deiner Bio oder per WhatsApp.' : 'Share it on Instagram, in your bio or on WhatsApp.'}</p>
+            <div class="hd-set-url">
+              <a data-hs-page-url target="_blank" rel="noopener"></a>
+              <button type="button" data-hs-page-copy data-done={lang === 'de' ? 'Kopiert ✓' : 'Copied ✓'}><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>{lang === 'de' ? 'Kopieren' : 'Copy'}</span></button>
+            </div>
+          </div>
           <div class="hd-set-block">
             <h2>{lang === 'de' ? 'E-Mail' : 'Email'}</h2>
             <div class="hd-set-mail">
@@ -810,6 +818,14 @@ const fields = [
         const n = (auth.currentUser?.displayName || '').trim();
         if (n) $('[data-ha-menu-name]').textContent = n;
       };
+      $<HTMLButtonElement>('[data-hs-page-copy]').addEventListener('click', async (e) => {
+        const b = e.currentTarget as HTMLButtonElement;
+        const label = b.querySelector('span')!;
+        const was = label.textContent;
+        try { await navigator.clipboard.writeText($<HTMLAnchorElement>('[data-hs-page-url]').href); label.textContent = b.dataset.done ?? '✓'; }
+        catch { label.textContent = '–'; }
+        setTimeout(() => { label.textContent = was; }, 1800);
+      });
       sForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const note = $('[data-hs-note]');
@@ -1200,6 +1216,11 @@ const fields = [
         slug = s;
         const h = hosts[s];
         $<HTMLAnchorElement>('[data-ha-view]').href = h?.page ?? '#';
+        // Settings → "Your page": the full address to share, with a copy button.
+        const full = h?.page ? new URL(h.page, location.origin).href : '';
+        $<HTMLAnchorElement>('[data-hs-page-url]').href = full;
+        $('[data-hs-page-url]').textContent = full.replace(/^https?:\/\//, '');
+        $('[data-hs-page]').hidden = !full;
         const [prof, slotSnap] = await Promise.all([
           getDocs(query(collection(db, 'hostProfiles'), where('slug', '==', s))),
           getDocs(query(collection(db, 'hostSlots'), where('slug', '==', s))),
@@ -2935,6 +2956,11 @@ const fields = [
   .hd-set-seg button { font: inherit; font-size: 0.9rem; border: 0; background: none; border-radius: 9px; padding: 7px 16px; color: var(--color-text-muted); cursor: pointer; }
   .hd-set-seg button[aria-pressed='true'] { background: #fff; color: #16181d; font-weight: 600; box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.2); }
   .hd-set-out { margin-top: 36px; }
+  .hd-set-url { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 14px; padding: 10px 10px 10px 14px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); }
+  .hd-set-url a { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.92rem; color: #6a3eec; text-decoration: none; transition: color .15s ease; }
+  .hd-set-url a:hover { color: #16181d; }
+  .hd-set-url button { flex: none; display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 0.86rem; font-weight: 600; color: #16181d; background: rgba(36, 39, 46, 0.06); border: 0; border-radius: 10px; padding: 7px 12px; cursor: pointer; transition: background-color .15s ease; }
+  .hd-set-url button:hover { background: rgba(36, 39, 46, 0.1); }
   .hd-prof-bio { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--color-text); max-width: 46ch; }
   .hd-prof-social { display: flex; flex-wrap: wrap; gap: 14px; }
   .hd-prof-social a { font-size: 0.88rem; color: var(--color-text-muted); text-decoration: none; transition: color .15s ease; }
