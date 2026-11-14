@@ -1951,3 +1951,23 @@ export const signinVerify = onRequest({ region: 'europe-west3', maxInstances: 5,
     return res.status(500).json({ error: 'token' });
   }
 });
+
+// ── Profile numbers (Jirel 14.11.26, like Luma: hosted · attended) ────────
+// hosted: requests to the caller's pages that they accepted; attended:
+// the caller's own requests that a host accepted.
+export const profileStats = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Sign in first' });
+  const col = getFirestore().collection('formRequests');
+  const count = async (q) => (await q.count().get()).data().count;
+  try {
+    const attended = await count(col.where('email', '==', email).where('status', '==', 'accepted'));
+    let hosted = 0;
+    for (const s of (await mySlugs(email)).slice(0, 10)) hosted += await count(col.where('hostSlug', '==', s).where('status', '==', 'accepted'));
+    return res.status(200).json({ hosted, attended });
+  } catch (err) {
+    console.error('profileStats', err?.message);
+    return res.status(200).json({ hosted: null, attended: null });
+  }
+});

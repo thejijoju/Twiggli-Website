@@ -35,6 +35,7 @@ const recurring = (liveData as { recurring?: { slug: string; title: string; week
 const hosts = Object.fromEntries(
   getHosts('en', { withPreview: true }).map((h) => [h.slug, {
     name: h.name,
+    place: (h as unknown as { place?: string }).place ?? '',
     page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
     // Their own pictures, to pick a cover for a new date without uploading.
     photos: [...new Set([h.photo, ...(h.gallery ?? [])].filter((x): x is string => !!x))].slice(0, 8),
@@ -204,7 +205,7 @@ const fields = [
                 <span class="hd-menu-av" data-ha-menu-av aria-hidden="true">🙂</span>
                 <div class="hd-menu-id"><b data-ha-menu-name></b><p class="hd-who" data-ha-who></p></div>
               </div>
-              <a class="hd-item" data-ha-view target="_blank" rel="noopener">{lang === 'de' ? 'Profil' : 'Profile'}</a>
+              <button type="button" class="hd-item" data-ha-go="profile">{lang === 'de' ? 'Profil' : 'Profile'}</button>
               <button type="button" class="hd-item" data-ha-go="settings">{lang === 'de' ? 'Einstellungen' : 'Settings'}</button>
               <label class="ha-pick" data-ha-pick-wrap hidden>
                 <span>{t.hostPick}</span>
@@ -240,6 +241,31 @@ const fields = [
         <label><span>{t.claimNote}</span><textarea name="note" rows="2" placeholder={t.claimNotePh}></textarea></label>
         <div class="ha-save"><button type="submit" class="ha-btn">{t.claimSend}</button><p class="ha-note" role="status"></p></div>
       </form>
+
+      {/* Profile inside the account, like Luma (Jirel 14.11.26): not the public page. */}
+      <section class="hd-prof" data-ha-panel="profile" hidden>
+        <header class="hd-prof-head">
+          <div class="hd-prof-avwrap">
+            <span class="hd-prof-av" data-ha-prof-av aria-hidden="true">🙂</span>
+            <label class="hd-prof-cam" data-ha-prof-cam title={lang === 'de' ? 'Profilfoto ändern' : 'Change profile photo'}>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              <span class="sr-only">{lang === 'de' ? 'Profilfoto ändern' : 'Change profile photo'}</span>
+              <input type="file" accept="image/*" data-ha-prof-file hidden />
+            </label>
+          </div>
+          <div class="hd-prof-id">
+            <h1 data-ha-prof-name></h1>
+            <p class="hd-prof-meta"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span data-ha-prof-since></span></p>
+            <p class="hd-prof-meta" data-ha-prof-cityrow hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span data-ha-prof-city></span></p>
+            <p class="hd-prof-stats"><span><b data-ha-prof-hosted>–</b> {lang === 'de' ? 'Veranstaltet' : 'Hosted'}</span><span><b data-ha-prof-attended>–</b> {lang === 'de' ? 'Besucht' : 'Attended'}</span></p>
+            <p class="hd-prof-note" data-ha-prof-note role="status"></p>
+            <button type="button" class="hd-prof-rm" data-ha-prof-rm hidden>{lang === 'de' ? 'Foto entfernen, Emoji nutzen' : 'Remove photo, use emoji'}</button>
+            <a class="hd-prof-pub" data-ha-view target="_blank" rel="noopener">{lang === 'de' ? 'Öffentliche Seite ansehen' : 'View public page'}</a>
+          </div>
+        </header>
+        <div class="hd-prof-list" data-ha-prof-list></div>
+        <p class="hd-prof-empty" data-ha-prof-empty hidden>{lang === 'de' ? 'Noch keine Workshops auf deiner Seite.' : 'No workshops on your page yet.'}</p>
+      </section>
 
       <section class="hd-set" data-ha-panel="settings" hidden>
         <h1>{lang === 'de' ? 'Einstellungen' : 'Settings'}</h1>
@@ -512,7 +538,7 @@ const fields = [
   import { rememberSignedIn } from '../lib/auth.ts';
   import { initializeApp } from 'firebase/app';
   import {
-    getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, signInWithEmailLink,
+    getAuth, GoogleAuthProvider, isSignInWithEmailLink, onAuthStateChanged, signInWithEmailLink, updateProfile,
     signInWithCustomToken, signInWithPopup, signOut,
   } from 'firebase/auth';
   import {
@@ -847,6 +873,7 @@ const fields = [
         root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== name; });
         window.scrollTo({ top: 0 });
         if (name === 'listings') void renderListings();
+        if (name === 'profile') renderProfile();
       };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => tab.addEventListener('click', () => showTab(tab.dataset.haTab!)));
       // The bell, "+ Date" and the waiting-requests notice jump to their tab.
@@ -861,7 +888,7 @@ const fields = [
       // The Google profile photo when there is one, else the chosen emoji (Jirel 14.11.26).
       const paintAvatars = () => {
         const photo = auth.currentUser?.photoURL;
-        for (const node of [avatar, $('[data-ha-menu-av]')]) {
+        for (const node of [avatar, $('[data-ha-menu-av]'), $('[data-ha-prof-av]')]) {
           node.replaceChildren();
           node.classList.toggle('has-photo', !!photo);
           if (photo) {
@@ -874,6 +901,67 @@ const fields = [
         const card = root.querySelector<HTMLElement>('[data-ha-emojis]')?.closest<HTMLElement>('.hd-set-card');
         if (card) card.hidden = !!photo;
       };
+      const renderProfile = () => {
+        const de = document.documentElement.lang !== 'en';
+        const u = auth.currentUser;
+        const h = slug ? hosts[slug] : undefined;
+        $('[data-ha-prof-name]').textContent = h?.name || u?.displayName || email.split('@')[0];
+        const since = u?.metadata.creationTime ? new Date(u.metadata.creationTime) : null;
+        $('[data-ha-prof-since]').textContent = since
+          ? `${de ? 'Dabei seit' : 'Joined'} ${since.toLocaleDateString(de ? 'de-DE' : 'en-GB', { month: 'long', year: 'numeric' })}`
+          : '';
+        const ws = (h?.workshops ?? []).filter((w) => w.url);
+        // Studio location: the city only (Jirel 14.11.26).
+        const place = String((h as unknown as { place?: string })?.place ?? '');
+        const city = /berlin/i.test(place) ? 'Berlin'
+          : /k[öo]ln|cologne/i.test(place) ? (de ? 'Köln' : 'Cologne')
+          : /brandenburg|potsdam|cottbus|oranienburg|bernau|falkensee|königs wusterhausen|eberswalde|frankfurt \(oder\)/i.test(place) ? 'Brandenburg'
+          : place.split(',').pop()?.trim().replace(/^\d{5}\s*/, '') ?? '';
+        $('[data-ha-prof-city]').textContent = city ? `${de ? 'Studio-Standort' : 'Studio location'}: ${city}` : '';
+        $('[data-ha-prof-cityrow]').hidden = !city;
+        $('[data-ha-prof-cam]').hidden = !slug;
+        $('[data-ha-prof-rm]').hidden = !u?.photoURL;
+        void api('profileStats', {}).then((st) => {
+          $('[data-ha-prof-hosted]').textContent = st.hosted == null ? '–' : String(st.hosted);
+          $('[data-ha-prof-attended]').textContent = st.attended == null ? '–' : String(st.attended);
+        }).catch(() => {});
+        $<HTMLAnchorElement>('[data-ha-view]').hidden = !h;
+        const list = $('[data-ha-prof-list]');
+        list.replaceChildren(...ws.map((w) => {
+          const a = document.createElement('a');
+          a.className = 'hd-prof-card'; a.href = w.url; a.target = '_blank'; a.rel = 'noopener';
+          if (w.image) { const img = document.createElement('img'); img.src = w.image; img.alt = ''; img.loading = 'lazy'; a.append(img); }
+          const t = document.createElement('span'); t.className = 'hd-prof-card-t'; t.textContent = w.title;
+          const m = document.createElement('span'); m.className = 'hd-prof-card-m';
+          m.textContent = [w.price, w.dates ? `${w.dates} ${de ? (w.dates === 1 ? 'Termin' : 'Termine') : (w.dates === 1 ? 'date' : 'dates')}` : ''].filter(Boolean).join(' · ');
+          a.append(t, m);
+          return a;
+        }));
+        $('[data-ha-prof-empty]').hidden = ws.length > 0;
+      };
+      // Changing the profile photo: uploaded to the host's media folder, set on the Firebase user.
+      $<HTMLInputElement>('[data-ha-prof-file]').addEventListener('change', async (e) => {
+        const f = (e.target as HTMLInputElement).files?.[0];
+        const de = document.documentElement.lang !== 'en';
+        const note = $('[data-ha-prof-note]');
+        if (!f || !slug || !auth.currentUser) return;
+        if (f.size > 8 * 1024 * 1024) { note.textContent = de ? 'Das Bild ist zu groß (max. 8 MB).' : 'That picture is too big (max 8 MB).'; return; }
+        note.textContent = de ? 'Wird hochgeladen …' : 'Uploading …';
+        try {
+          const r = storageRef(getStorage(app0), `hostMedia/${slug}/avatar-${Date.now()}.${(f.type.split('/')[1] || 'jpg').replace(/[^a-z]/g, '')}`);
+          await uploadBytes(r, f, { contentType: f.type });
+          await updateProfile(auth.currentUser, { photoURL: await getDownloadURL(r) });
+          note.textContent = '';
+          paintAvatars(); renderProfile();
+        } catch (err) {
+          note.textContent = `${fill(t.error, cfg.contact)} (${(err as Error).message})`;
+        }
+      });
+      $('[data-ha-prof-rm]').addEventListener('click', async () => {
+        if (!auth.currentUser) return;
+        await updateProfile(auth.currentUser, { photoURL: null });
+        paintAvatars(); renderProfile();
+      });
       const hdEmoji = () => { try { return localStorage.getItem(`${EMOJI_KEY}:${email}`) || '🙂'; } catch { return '🙂'; } };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-emojis] button').forEach((b) => b.addEventListener('click', () => {
         try { localStorage.setItem(`${EMOJI_KEY}:${email}`, b.textContent || '🙂'); } catch { /* private mode */ }
@@ -2626,6 +2714,34 @@ const fields = [
   .hd-set-out:hover { color: #b42318; }
   .hd-avatar.has-photo, .hd-menu-av.has-photo { overflow: hidden; padding: 0; background: #fff; }
   .hd-avatar.has-photo img, .hd-menu-av.has-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+  /* Profile page (Jirel 14.11.26, like Luma). */
+  .hd-prof { max-width: 720px; }
+  .hd-prof-head { display: flex; align-items: center; gap: 28px; padding: 8px 0 28px; border-bottom: 1px solid rgba(36, 39, 46, 0.08); }
+  .hd-prof-av { flex: none; width: 128px; height: 128px; border-radius: 50%; display: grid; place-items: center; font-size: 4rem; background: #ffeec2; box-shadow: 0 12px 30px rgba(60, 30, 120, 0.12); overflow: hidden; }
+  .hd-prof-av.has-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .hd-prof-id { min-width: 0; display: grid; gap: 6px; }
+  .hd-prof-id h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2rem); letter-spacing: -0.02em; }
+  .hd-prof-meta { margin: 0; display: flex; align-items: center; gap: 7px; font-size: 0.92rem; color: var(--color-text-muted); }
+  .hd-prof-stats { margin: 0; display: flex; gap: 16px; font-size: 0.92rem; color: var(--color-text-muted); }
+  .hd-prof-stats b { color: var(--color-text); }
+  .hd-prof-avwrap { position: relative; flex: none; }
+  .hd-prof-cam { position: absolute; right: 2px; bottom: 2px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: #16181d; box-shadow: 0 4px 14px rgba(36, 39, 46, 0.18); cursor: pointer; transition: transform .15s ease; }
+  .hd-prof-cam:hover { transform: scale(1.08); }
+  .hd-prof-cam[hidden] { display: none; }
+  .hd-prof-note { margin: 0; font-size: 0.85rem; color: var(--color-text-muted); }
+  .hd-prof-note:empty { display: none; }
+  .hd-prof-rm { justify-self: start; font: inherit; font-size: 0.82rem; color: var(--color-text-muted); background: none; border: 0; padding: 0; cursor: pointer; }
+  .hd-prof-rm:hover { color: #16181d; }
+  .hd-prof-pub { justify-self: start; font-size: 0.88rem; font-weight: 600; color: #6a3eec; text-decoration: none; }
+  .hd-prof-pub:hover { color: #16181d; }
+  .hd-prof-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; padding-top: 24px; }
+  .hd-prof-card { display: grid; gap: 4px; text-decoration: none; color: var(--color-text); }
+  .hd-prof-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; margin-bottom: 6px; transition: transform .2s ease; }
+  .hd-prof-card:hover img { transform: scale(1.02); }
+  .hd-prof-card-t { font-weight: 600; font-size: 0.95rem; }
+  .hd-prof-card-m { font-size: 0.84rem; color: var(--color-text-muted); }
+  .hd-prof-empty { padding-top: 40px; text-align: center; color: var(--color-text-muted); }
+  @media (max-width: 560px) { .hd-prof-head { flex-direction: column; text-align: center; } .hd-prof-meta, .hd-prof-stats { justify-content: center; } .hd-prof-pub { justify-self: center; } .hd-prof-av { width: 104px; height: 104px; font-size: 3.2rem; } }
   .hd-menu-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.08); margin: 6px 0; }
   .hd-hi { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
   .hd-hi h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
