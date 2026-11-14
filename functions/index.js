@@ -25,6 +25,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
+import { getStorage as adminStorage } from 'firebase-admin/storage';
 import { createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
 import nodemailer from 'nodemailer';
 import { newVoucherCode, voucherMail, voucherPdf } from './voucher.js';
@@ -1969,5 +1970,36 @@ export const profileStats = onRequest({ region: 'europe-west3', maxInstances: 5,
   } catch (err) {
     console.error('profileStats', err?.message);
     return res.status(200).json({ hosted: null, attended: null });
+  }
+});
+
+// ── Profile photo (Jirel 14.11.26): the page sends a small JPEG (resized in
+// the browser), saved to Storage as avatars/<uid>-<time>.jpg with a download
+// token, then set as the Firebase user's photoURL. { remove: true } clears it.
+export const profilePhoto = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false, memory: '512MiB' }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
+  let user;
+  try { user = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { user = null; }
+  if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
+  if (req.body?.remove) {
+    await getAuth().updateUser(user.uid, { photoURL: null });
+    return res.status(200).json({ ok: true, url: '' });
+  }
+  const d = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(req.body?.image ?? ''));
+  if (!d) return res.status(400).json({ error: 'image' });
+  const buf = Buffer.from(d[2], 'base64');
+  if (buf.length > 2 * 1024 * 1024) return res.status(413).json({ error: 'too big' });
+  try {
+    const bucket = adminStorage().bucket();
+    const path = `avatars/${user.uid}-${Date.now()}.${d[1] === 'jpeg' ? 'jpg' : d[1]}`;
+    const token = randomBytes(16).toString('hex');
+    await bucket.file(path).save(buf, { contentType: `image/${d[1]}`, metadata: { cacheControl: 'public, max-age=31536000', metadata: { firebaseStorageDownloadTokens: token } } });
+    const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path)}?alt=media&token=${token}`;
+    await getAuth().updateUser(user.uid, { photoURL: url });
+    return res.status(200).json({ ok: true, url });
+  } catch (err) {
+    console.error('profilePhoto', err?.message);
+    return res.status(500).json({ error: 'upload' });
   }
 });
