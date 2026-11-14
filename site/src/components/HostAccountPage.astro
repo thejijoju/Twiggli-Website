@@ -161,6 +161,16 @@ const fields = [
       </div>
     </form>
 
+    <!-- A second of welcome right after signing in (Jirel 14.11.26, like Luma). -->
+    <div class="ha-welcome" data-ha-welcome hidden aria-live="polite">
+      <div class="ha-welcome-glow" aria-hidden="true"></div>
+      <div class="ha-welcome-in">
+        <span class="ha-welcome-avatar" data-ha-welcome-avatar></span>
+        <h2>{lang === 'de' ? 'Willkommen bei Twiggli' : 'Welcome to Twiggli'}</h2>
+        <p data-ha-welcome-name></p>
+      </div>
+    </div>
+
     <!-- Signed in. -->
     <div class="ha-app" data-ha-app hidden>
       <header class="hd-top">
@@ -522,6 +532,22 @@ const fields = [
       // ── Signing in: a 6-digit code by email (functions signinCode /
       //    signinVerify), no password. The email also carries Firebase's
       //    own sign-in link, which finishSignIn below still handles. ──
+      // The welcome moment shows once, on the load right after signing in.
+      const WELCOME = 'twiggli-host-welcome';
+      const welcomeNext = () => { try { sessionStorage.setItem(WELCOME, '1'); } catch { /* private mode */ } };
+      const showWelcome = (u: { displayName?: string | null; photoURL?: string | null; email?: string | null } | null) => {
+        let due = false;
+        try { due = sessionStorage.getItem(WELCOME) === '1'; sessionStorage.removeItem(WELCOME); } catch { /* private mode */ }
+        if (!due || !u) return;
+        const box = $('[data-ha-welcome]');
+        const name = (u.displayName || '').trim() || (u.email || '').split('@')[0];
+        const av = $('[data-ha-welcome-avatar]');
+        if (u.photoURL) { const img = document.createElement('img'); img.src = u.photoURL; img.alt = ''; img.referrerPolicy = 'no-referrer'; av.append(img); }
+        else av.textContent = (name[0] || '🙂').toUpperCase();
+        $('[data-ha-welcome-name]').textContent = name;
+        box.hidden = false;
+        setTimeout(() => { box.classList.add('is-out'); setTimeout(() => { box.hidden = true; }, 450); }, 1300);
+      };
       const codeForm = $<HTMLFormElement>('[data-ha-code]');
       const boxes = [...codeForm.querySelectorAll<HTMLInputElement>('[data-ha-code-boxes] input')];
       const codeNote = $('[data-ha-code-note]');
@@ -583,6 +609,7 @@ const fields = [
             await signInWithCustomToken(auth, j.token);
             try { localStorage.removeItem(STORE); } catch { /* private mode */ }
             rememberSignedIn(true);
+            welcomeNext();
             location.reload();
             return;
           }
@@ -641,7 +668,7 @@ const fields = [
         location.reload();
       });
       $('[data-ha-google]').addEventListener('click', async () => {
-        try { await signInWithPopup(auth, new GoogleAuthProvider()); location.reload(); }
+        try { await signInWithPopup(auth, new GoogleAuthProvider()); welcomeNext(); location.reload(); }
         catch (err) { if ((err as { code?: string }).code !== 'auth/popup-closed-by-user') note(signin, fill(t.error, cfg.contact), false); }
       });
 
@@ -669,6 +696,7 @@ const fields = [
         const addr = recall() || window.prompt(t.email) || '';
         try {
           await signInWithEmailLink(auth, addr, location.href);
+          welcomeNext();
           try { localStorage.removeItem(STORE); } catch { /* private mode */ }
         } catch {
           signin.hidden = false;
@@ -1987,6 +2015,7 @@ const fields = [
           return;
         }
         email = user.email.toLowerCase();
+        showWelcome(auth.currentUser);
         signin.hidden = true;
         app.hidden = false;
         $('[data-ha-who]').textContent = fill(t.signedInAs, email);
@@ -2345,6 +2374,22 @@ const fields = [
   .ha-code.is-shake .ha-code-boxes { animation: ha-shake .35s ease; }
   @keyframes ha-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
   @media (max-width: 560px) { .ha-code-boxes { gap: 6px; } .ha-code-back { top: 14px; left: 14px; } }
+  /* Welcome moment: a soft Twiggli-coloured glow, avatar, name, then fades. */
+  .ha-welcome { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: #faf8f6; animation: ha-welcome-in .35s ease both; }
+  .ha-welcome.is-out { animation: ha-welcome-out .45s ease both; }
+  .ha-welcome-glow { position: absolute; width: min(760px, 120vw); aspect-ratio: 1; border-radius: 50%; filter: blur(70px); opacity: .85;
+    background: radial-gradient(circle at 50% 38%, #6a3eec 0%, transparent 42%), radial-gradient(circle at 46% 55%, #e64ab4 0%, transparent 48%), radial-gradient(circle at 54% 72%, #ffb547 0%, transparent 50%);
+    animation: ha-welcome-glow 1.8s ease-out both; }
+  .ha-welcome-in { position: relative; display: grid; justify-items: center; gap: 10px; text-align: center; color: #fff; }
+  .ha-welcome-avatar { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; font-size: 2.4rem; font-weight: 700; color: #6a3eec; background: #fff; box-shadow: 0 14px 40px rgba(60, 20, 120, 0.25); animation: ha-welcome-pop .5s cubic-bezier(.2, .9, .3, 1.3) .1s both; }
+  .ha-welcome-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .ha-welcome h2 { margin: 8px 0 0; font-size: 1.7rem; letter-spacing: -0.02em; text-shadow: 0 2px 18px rgba(60, 20, 120, 0.3); }
+  .ha-welcome p { margin: 0; font-size: 1.05rem; opacity: .9; }
+  @keyframes ha-welcome-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ha-welcome-out { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+  @keyframes ha-welcome-glow { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: .85; } }
+  @keyframes ha-welcome-pop { from { transform: scale(.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .ha-welcome-glow, .ha-welcome-avatar { animation: none; } }
   .ha-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); margin: 6px 0; }
   .ha-signin .ha-google { min-height: 44px; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-text); background: #fff; border: 1px solid rgba(36, 39, 46, 0.12); }
   .ha-field { display: grid; gap: 6px; margin-bottom: 16px; }
