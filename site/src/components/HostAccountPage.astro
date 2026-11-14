@@ -89,6 +89,20 @@ const fields = [
 ---
 
 <Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="ha-page" noindex translations={['en', 'de']} bare>
+  {/* The wash at the top follows the time of day (Jirel 14.11.26, like Luma):
+      dawn, day (the purple-to-yellow she loves), dusk, night blue, and late
+      at night a deep blue with stars. ?daypart=night etc. to preview. */}
+  <script is:inline>
+    (function () {
+      var set = function () {
+        var q = new URLSearchParams(location.search).get('daypart');
+        var h = new Date().getHours();
+        var p = q || (h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : h >= 20 && h < 23 ? 'night' : 'late');
+        document.documentElement.dataset.daypart = p;
+      };
+      set(); setInterval(set, 10 * 60 * 1000);
+    })();
+  </script>
   <!-- Its own slim bar instead of the site menu (a full-screen app, like Luma). -->
   <a class="ha-home" href={href(lang, '/')} aria-label="Twiggli"><img src={withBase('/img/logo.png')} alt="" width="34" height="34" /></a>
   {/* Signed out: "Sign in" stays top right, as on every page; here it just
@@ -844,11 +858,26 @@ const fields = [
       avatar.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden = !menu.hidden; });
       document.addEventListener('click', (e) => { if (!menu.contains(e.target as Node)) menu.hidden = true; });
       const EMOJI_KEY = 'twiggli-host-emoji';
+      // The Google profile photo when there is one, else the chosen emoji (Jirel 14.11.26).
+      const paintAvatars = () => {
+        const photo = auth.currentUser?.photoURL;
+        for (const node of [avatar, $('[data-ha-menu-av]')]) {
+          node.replaceChildren();
+          node.classList.toggle('has-photo', !!photo);
+          if (photo) {
+            const img = document.createElement('img');
+            img.src = photo; img.alt = ''; img.referrerPolicy = 'no-referrer';
+            img.addEventListener('error', () => { node.classList.remove('has-photo'); node.textContent = hdEmoji(); });
+            node.append(img);
+          } else node.textContent = hdEmoji();
+        }
+        const card = root.querySelector<HTMLElement>('[data-ha-emojis]')?.closest<HTMLElement>('.hd-set-card');
+        if (card) card.hidden = !!photo;
+      };
       const hdEmoji = () => { try { return localStorage.getItem(`${EMOJI_KEY}:${email}`) || '🙂'; } catch { return '🙂'; } };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-emojis] button').forEach((b) => b.addEventListener('click', () => {
         try { localStorage.setItem(`${EMOJI_KEY}:${email}`, b.textContent || '🙂'); } catch { /* private mode */ }
-        avatar.textContent = b.textContent;
-        $('[data-ha-menu-av]').textContent = b.textContent;
+        paintAvatars();
         menu.hidden = true;
       }));
 
@@ -981,8 +1010,7 @@ const fields = [
         root.querySelectorAll<HTMLElement>('[data-ha-hostonly]').forEach((x) => { x.hidden = false; });
         const first = (auth.currentUser?.displayName || '').split(' ')[0] || (h?.name ?? '').split(' ')[0];
         $('[data-ha-hello]').textContent = `${t.hello} ${first} 👋`;
-        avatar.textContent = hdEmoji();
-        $('[data-ha-menu-av]').textContent = hdEmoji();
+        paintAvatars();
         if (!auth.currentUser?.displayName && h?.name) $('[data-ha-menu-name]').textContent = h.name;
         loadInbox();
         void loadStripe().then(() => {
@@ -2084,7 +2112,8 @@ const fields = [
           // add it to her hostMembers first, so the rules let her save.
           const all = Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name));
           pick.replaceChildren(...all.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
-          $('[data-ha-pick-wrap] span').textContent = t.adminPick;
+          $('[data-ha-pick-wrap] span').textContent = document.documentElement.lang === 'en' ? 'Open a host' : 'Host öffnen';
+          $('[data-ha-pick-wrap]').dataset.admin = '1';
           pick.addEventListener('change', async () => {
             try { if (!slugs.includes(pick.value) && (await claim(pick.value, '', '')) === 'granted') slugs.push(pick.value); } catch (err) { console.warn('admin claim', pick.value, err); }
             openHost(pick.value).catch(failed);
@@ -2372,7 +2401,7 @@ const fields = [
   .ha-signin .ha-btn.ha-google:not(:disabled):hover { background: #f6f3ff; border-color: rgba(106, 62, 236, 0.35); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(36, 39, 46, 0.08); filter: none; }
   /* Hover like Luma (Jirel 14.11.26): no grey box, the text just turns near-black. */
   .ha [data-ha-tab], .ha .hd-bell { transition: color .15s ease; }
-  .ha [data-ha-tab]:hover, .ha .hd-bell:hover { background: none; color: #16181d; }
+  .ha [data-ha-tab]:hover, .ha .hd-bell:hover { background: none; color: #16181d; text-shadow: 0 0 .45px currentColor, 0 0 .45px currentColor; }
   .ha .hd-add:hover, .ha [data-ha-avatar]:hover { transform: scale(1.05); }
   /* The field's border turns the same lilac as the Google button's on hover
      (the inside stays white); the generic .ha input rule is more specific,
@@ -2500,14 +2529,39 @@ const fields = [
   /* Desktop: flat cream, the purple-to-yellow wash only across the top (as
      in the mockup). Phones keep the softer all-over tint. */
   @media (min-width: 761px) {
-    html:has(body.is-bare) { background: linear-gradient(180deg, rgba(106, 62, 236, 0.16), rgba(255, 201, 77, 0.09) 150px, #fdf8f2 260px) no-repeat, #fdf8f2 !important; }
+    html:has(body.is-bare) { background: linear-gradient(180deg, var(--ha-w1), var(--ha-w2) 150px, var(--ha-base) 260px) no-repeat, var(--ha-base) !important; }
     body.is-bare, body.is-bare .page { background: transparent !important; background-image: none !important; }
     body.is-bare::before { display: none; }
   }
   body.is-bare::before {
     content: ''; position: fixed; inset: 0 0 auto 0; height: 300px; z-index: -1; pointer-events: none;
-    background: linear-gradient(180deg, rgba(106, 62, 236, 0.13), rgba(255, 214, 120, 0.07) 60%, rgba(253, 249, 243, 0));
+    background: linear-gradient(180deg, var(--ha-w1), var(--ha-w2) 60%, rgba(253, 249, 243, 0));
   }
+  /* Times of day. Day is the original purple-to-yellow. */
+  html { --ha-w1: rgba(106, 62, 236, 0.16); --ha-w2: rgba(255, 201, 77, 0.09); --ha-base: #fdf8f2; }
+  html[data-daypart='dawn'] { --ha-w1: rgba(255, 150, 130, 0.26); --ha-w2: rgba(150, 190, 255, 0.12); --ha-base: #fdf8f4; }
+  html[data-daypart='dusk'] { --ha-w1: rgba(255, 120, 80, 0.24); --ha-w2: rgba(230, 74, 180, 0.12); --ha-base: #fdf7f4; }
+  html[data-daypart='night'] { --ha-w1: rgba(60, 100, 220, 0.30); --ha-w2: rgba(130, 160, 240, 0.14); --ha-base: #f6f7fc; }
+  html[data-daypart='late'] { --ha-w1: rgba(14, 22, 70, 0.92); --ha-w2: rgba(40, 60, 150, 0.30); --ha-base: #f3f4fa; }
+  /* Late at night: a few soft stars in the dark band, twinkling slowly. */
+  html[data-daypart='late'] body.is-bare::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 170px; z-index: -1; pointer-events: none;
+    background-image:
+      radial-gradient(1.9px 1.9px at 12% 22%, #fff3c4, transparent), radial-gradient(1.6px 1.6px at 27% 58%, #fff3c4, transparent),
+      radial-gradient(2.1px 2.1px at 41% 14%, #fff3c4, transparent), radial-gradient(1.6px 1.6px at 55% 46%, #fff3c4, transparent),
+      radial-gradient(1.9px 1.9px at 68% 20%, #fff3c4, transparent), radial-gradient(1.6px 1.6px at 79% 62%, #fff3c4, transparent),
+      radial-gradient(2.3px 2.3px at 90% 28%, #fff3c4, transparent), radial-gradient(1.6px 1.6px at 6% 70%, #fff3c4, transparent),
+      radial-gradient(1.6px 1.6px at 34% 36%, #fff3c4, transparent), radial-gradient(1.9px 1.9px at 61% 72%, #fff3c4, transparent);
+    -webkit-mask-image: linear-gradient(#000 40%, transparent); mask-image: linear-gradient(#000 40%, transparent);
+    animation: ha-twinkle 4s ease-in-out infinite alternate;
+  }
+  @keyframes ha-twinkle { from { opacity: .6; } to { opacity: 1; } }
+  html[data-daypart='late'] body.is-bare::after { filter: drop-shadow(0 0 2px rgba(255, 236, 170, 0.7)); }
+  @media (prefers-reduced-motion: reduce) { html[data-daypart='late'] body.is-bare::after { animation: none; } }
+  /* On the dark band the top bar turns light. */
+  html[data-daypart='late'] .ha-tabs button, html[data-daypart='late'] .ha .hd-bell { color: rgba(255, 255, 255, 0.72); }
+  html[data-daypart='late'] .ha-tabs button[aria-selected='true'], html[data-daypart='late'] .ha .ha-tabs button:hover, html[data-daypart='late'] .ha .hd-bell:hover { color: #fff; }
+  html[data-daypart='late'] .ha-top-signin { color: #fff; }
   .ha-home { position: absolute; top: 16px; left: 24px; z-index: 30; }
   .ha-home img { display: block; border-radius: 10px; }
   .ha { max-width: 860px; }
@@ -2544,12 +2598,18 @@ const fields = [
   .hd-menu-id b { display: block; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hd-who { margin: 2px 0 0; font-size: 0.82rem; color: var(--color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal; }
   .hd-item { display: block; width: 100%; padding: 9px 10px; border-radius: 10px; font-size: 0.92rem; color: var(--color-text-muted); transition: background-color .15s ease, color .15s ease; }
-  .hd-item:hover { background: none; color: #16181d; }
+  .hd-item:hover { background: none; color: #16181d; text-shadow: 0 0 .45px currentColor, 0 0 .45px currentColor; }
   .hd-emojis { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 2px; padding: 4px 6px 8px; }
   .hd-emojis button { min-width: 0; min-height: 0; width: 100%; aspect-ratio: 1; padding: 0; display: grid; place-items: center; font-size: 1.05rem; line-height: 1; border-radius: 10px; transition: background-color .15s ease, transform .15s ease; }
   .hd-emojis button:hover { background: #f1eaff; transform: scale(1.12); }
   .hd-menu .ha-pick { padding: 8px 10px; font-size: 0.8rem; color: var(--color-text-muted); }
   .ha .hd-menu .ha-pick select { width: 100%; min-width: 0; max-width: 100%; font-size: 0.85rem; padding: 8px 10px; border-radius: 12px; text-overflow: ellipsis; color: var(--color-text); }
+  /* Admin host picker: a label with a small "Admin" pill and a soft, borderless select with our own chevron. */
+  .hd-menu .ha-pick > span { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-text); }
+  .hd-menu .ha-pick[data-admin] > span::after { content: 'Admin'; font-size: 0.66rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #6a3eec; background: #f1eaff; border-radius: 999px; padding: 2px 8px; }
+  .ha .hd-menu .ha-pick select { -webkit-appearance: none; appearance: none; cursor: pointer; border: 1px solid transparent; background: #f5f3f9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236a3eec' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center; padding: 10px 34px 10px 12px; transition: border-color .15s ease, background-color .15s ease; }
+  .ha .hd-menu .ha-pick select:hover { border-color: rgba(106, 62, 236, 0.35); background-color: #fff; }
+  .ha .hd-menu .ha-pick select:focus { outline: none; border-color: rgba(106, 62, 236, 0.55); background-color: #fff; }
   /* Settings page (Jirel 14.11.26): account, profile emoji, payouts, sign out. */
   .hd-set { max-width: 560px; display: grid; gap: 16px; }
   .hd-set h1 { margin: 0 0 4px; font-size: clamp(1.6rem, 4vw, 2rem); }
@@ -2564,6 +2624,8 @@ const fields = [
   .hd-set-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
   .hd-set-out { justify-self: start; font: inherit; font-size: 0.92rem; color: var(--color-text-muted); background: none; border: 0; padding: 6px 0; cursor: pointer; }
   .hd-set-out:hover { color: #b42318; }
+  .hd-avatar.has-photo, .hd-menu-av.has-photo { overflow: hidden; padding: 0; background: #fff; }
+  .hd-avatar.has-photo img, .hd-menu-av.has-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
   .hd-menu-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.08); margin: 6px 0; }
   .hd-hi { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
   .hd-hi h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
