@@ -60,6 +60,19 @@ export async function signInWithGoogle({ account }: SignInContext): Promise<void
   location.href = account;
 }
 
+/** Like Luma, a session ends on its own: this many hours after signing
+ *  in, the visitor is signed out and signs in again with a new code
+ *  (Jirel, 14.11.26). */
+export const SESSION_HOURS = 7;
+const SESSION_MS = SESSION_HOURS * 3600 * 1000;
+
+/** Milliseconds left in this session (0 or less once it has run out),
+ *  counted from the last sign-in Firebase recorded for this user. */
+export const sessionLeft = (u: { metadata: { lastSignInTime?: string } }): number => {
+  const at = Date.parse(u.metadata.lastSignInTime ?? '');
+  return Number.isFinite(at) ? at + SESSION_MS - Date.now() : SESSION_MS;
+};
+
 /** Marks the visitor as signed in or out (the host account page calls it). */
 export const rememberSignedIn = (on: boolean) => {
   try { if (on) localStorage.setItem(SIGNED_IN, '1'); else localStorage.removeItem(SIGNED_IN); } catch { /* private mode */ }
@@ -74,6 +87,7 @@ export async function getUser(): Promise<TwiggliUser | null> {
     const stop = mod.onAuthStateChanged(auth, (user) => { stop(); resolve(user); });
   });
   if (!u?.email) { rememberSignedIn(false); return null; }
+  if (sessionLeft(u) <= 0) { await mod.signOut(auth); rememberSignedIn(false); return null; }
   return { id: u.uid, email: u.email, name: u.displayName ?? undefined, avatarUrl: u.photoURL ?? undefined };
 }
 
