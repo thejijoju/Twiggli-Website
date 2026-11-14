@@ -186,16 +186,17 @@ const fields = [
           <div class="hd-me">
             <button type="button" class="hd-avatar" data-ha-avatar aria-haspopup="true" aria-label={t.profile}>🙂</button>
             <div class="hd-menu" data-ha-menu hidden>
-              <p class="hd-who" data-ha-who></p>
-              <p class="hd-label">{t.pickEmoji}</p>
-              <div class="hd-emojis" data-ha-emojis>
-                {['🏺', '🎨', '🕯️', '🧵', '🌿', '🍳', '🍺', '🥃', '📷', '🪵', '💍', '📚', '🌸', '🥁', '✨', '🙂'].map((e) => <button type="button">{e}</button>)}
+              <div class="hd-menu-head">
+                <span class="hd-menu-av" data-ha-menu-av aria-hidden="true">🙂</span>
+                <div class="hd-menu-id"><b data-ha-menu-name></b><p class="hd-who" data-ha-who></p></div>
               </div>
+              <a class="hd-item" data-ha-view target="_blank" rel="noopener">{lang === 'de' ? 'Profil' : 'Profile'}</a>
+              <button type="button" class="hd-item" data-ha-go="settings">{lang === 'de' ? 'Einstellungen' : 'Settings'}</button>
               <label class="ha-pick" data-ha-pick-wrap hidden>
                 <span>{t.hostPick}</span>
                 <select data-ha-pick></select>
               </label>
-              <a class="hd-item" data-ha-view target="_blank" rel="noopener">{t.viewPage} ↗</a>
+              <hr class="hd-menu-sep" />
               <button type="button" class="hd-item" data-ha-signout>{t.signOut}</button>
             </div>
           </div>
@@ -225,6 +226,28 @@ const fields = [
         <label><span>{t.claimNote}</span><textarea name="note" rows="2" placeholder={t.claimNotePh}></textarea></label>
         <div class="ha-save"><button type="submit" class="ha-btn">{t.claimSend}</button><p class="ha-note" role="status"></p></div>
       </form>
+
+      <section class="hd-set" data-ha-panel="settings" hidden>
+        <h1>{lang === 'de' ? 'Einstellungen' : 'Settings'}</h1>
+        <div class="hd-set-card">
+          <h2>{lang === 'de' ? 'Konto' : 'Account'}</h2>
+          <p class="hd-set-row"><span>{lang === 'de' ? 'E-Mail' : 'Email'}</span><b data-hs-email></b></p>
+          <p class="hd-set-row"><span>{lang === 'de' ? 'Anmeldung' : 'Sign-in'}</span><b>{lang === 'de' ? 'Code per E-Mail oder Google' : 'Email code or Google'}</b></p>
+        </div>
+        <div class="hd-set-card">
+          <h2>{lang === 'de' ? 'Profil-Emoji' : 'Profile emoji'}</h2>
+          <p class="hd-set-sub">{lang === 'de' ? 'Erscheint oben rechts und bei deinen Terminen ohne Foto.' : 'Shown top right and on your dates without a photo.'}</p>
+          <div class="hd-emojis" data-ha-emojis>
+              {['🏺', '🎨', '🕯️', '🧵', '🌿', '🍳', '🍺', '🥃', '📷', '🪵', '💍', '📚', '🌸', '🥁', '✨', '🙂'].map((e) => <button type="button">{e}</button>)}
+            </div>
+        </div>
+        <div class="hd-set-card">
+          <h2>{lang === 'de' ? 'Auszahlungen' : 'Payouts'}</h2>
+          <p class="hd-set-sub" data-hs-pay>{lang === 'de' ? 'Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.' : 'Connect Stripe so guests can pay you directly.'}</p>
+          <button type="button" class="hd-set-btn" data-hs-pay-btn>{lang === 'de' ? 'Stripe verbinden' : 'Connect Stripe'}</button>
+        </div>
+        <button type="button" class="hd-set-out" data-hs-signout>{t.signOut}</button>
+      </section>
 
       <div data-ha-editor hidden>
 
@@ -272,6 +295,7 @@ const fields = [
         </section>
 
         <!-- Overview: the host's week at a glance (the first thing they see). -->
+
         <section data-ha-panel="overview" class="hd-overview">
           <div class="hd-hi">
             <div><h1 data-ha-hello></h1><p class="ha-sub">{t.helloSub}</p></div>
@@ -662,6 +686,7 @@ const fields = [
         signin.querySelector<HTMLInputElement>('input[name="email"]')?.focus();
       });
       codeForm.addEventListener('submit', (e) => { e.preventDefault(); verify(); });
+      $('[data-hs-signout]').addEventListener('click', () => $('[data-ha-signout]').click());
       $('[data-ha-signout]').addEventListener('click', async () => {
         await signOut(auth);
         rememberSignedIn(false);
@@ -811,7 +836,7 @@ const fields = [
       };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => tab.addEventListener('click', () => showTab(tab.dataset.haTab!)));
       // The bell, "+ Date" and the waiting-requests notice jump to their tab.
-      root.querySelectorAll<HTMLElement>('[data-ha-go]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.haGo!)));
+      root.querySelectorAll<HTMLElement>('[data-ha-go]').forEach((b) => b.addEventListener('click', () => { showTab(b.dataset.haGo!); const m = root.querySelector<HTMLElement>('[data-ha-menu]'); if (m) m.hidden = true; }));
 
       // ── Profile: an emoji as the avatar, and the menu behind it ──
       const menu = $('[data-ha-menu]');
@@ -823,6 +848,7 @@ const fields = [
       root.querySelectorAll<HTMLButtonElement>('[data-ha-emojis] button').forEach((b) => b.addEventListener('click', () => {
         try { localStorage.setItem(`${EMOJI_KEY}:${email}`, b.textContent || '🙂'); } catch { /* private mode */ }
         avatar.textContent = b.textContent;
+        $('[data-ha-menu-av]').textContent = b.textContent;
         menu.hidden = true;
       }));
 
@@ -956,6 +982,8 @@ const fields = [
         const first = (auth.currentUser?.displayName || '').split(' ')[0] || (h?.name ?? '').split(' ')[0];
         $('[data-ha-hello]').textContent = `${t.hello} ${first} 👋`;
         avatar.textContent = hdEmoji();
+        $('[data-ha-menu-av]').textContent = hdEmoji();
+        if (!auth.currentUser?.displayName && h?.name) $('[data-ha-menu-name]').textContent = h.name;
         loadInbox();
         void loadStripe().then(() => {
           // Back from Stripe's onboarding: say how it went, then tidy the address.
@@ -1648,11 +1676,19 @@ const fields = [
         stripeBox.showModal();
       };
       stripeBox.addEventListener('click', (e) => { if (e.target === stripeBox) stripeBox.close(); });
+      $('[data-hs-pay-btn]').addEventListener('click', () => { if (!stripeBox.open) stripeBox.showModal(); });
       const loadStripe = async () => {
         try {
           const s = await api('hostStripe', { action: 'status' });
           stripeReady = !!s.chargesEnabled;
           renderTodo();
+          const de = document.documentElement.lang !== 'en';
+          if (stripeReady) {
+            $('[data-hs-pay]').textContent = de ? '✓ Stripe ist verbunden. Zahlungen gehen direkt auf dein Konto.' : '✓ Stripe is connected. Payments go straight to your account.';
+            $('[data-hs-pay-btn]').hidden = true;
+          } else if (s.connected) {
+            $('[data-hs-pay]').textContent = t.stripePending;
+          }
           if (s.connected && !s.chargesEnabled) stripeBody.textContent = t.stripePending;
         } catch { stripeReady = null; }
       };
@@ -2018,7 +2054,9 @@ const fields = [
         showWelcome(auth.currentUser);
         signin.hidden = true;
         app.hidden = false;
-        $('[data-ha-who]').textContent = fill(t.signedInAs, email);
+        $('[data-ha-who]').textContent = email;
+        $('[data-hs-email]').textContent = email;
+        $('[data-ha-menu-name]').textContent = auth.currentUser?.displayName || email.split('@')[0];
         root.classList.add('is-in');
         rememberSignedIn(true);
         const invited = pendingInvite();
@@ -2493,6 +2531,38 @@ const fields = [
   .hd-emojis button:hover { background: rgba(36, 39, 46, 0.06); }
   .hd-item { font: inherit; font-size: 0.92rem; text-align: left; background: none; border: 0; padding: 6px 0; color: var(--color-text); cursor: pointer; text-decoration: none; }
   .hd-menu .ha-pick { display: grid; gap: 4px; font-size: 0.82rem; }
+  /* Account menu in the Luma style (Jirel 14.11.26): who you are on top,
+     then plain rows; the emoji grid only opens on request. One column that
+     never grows past the card. */
+  .hd-menu { width: 280px; padding: 8px; gap: 0; grid-template-columns: minmax(0, 1fr); border-radius: 18px; box-shadow: 0 24px 60px rgba(36, 39, 46, 0.16), 0 0 0 1px rgba(36, 39, 46, 0.06); }
+  .hd-menu > * { min-width: 0; }
+  .hd-menu-head { display: flex; align-items: center; gap: 12px; padding: 10px 10px 14px; margin-bottom: 6px; border-bottom: 1px solid rgba(36, 39, 46, 0.08); }
+  .hd-menu-av { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; background: #ffeec2; }
+  .hd-menu-id { min-width: 0; }
+  .hd-menu-id b { display: block; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hd-who { margin: 2px 0 0; font-size: 0.82rem; color: var(--color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal; }
+  .hd-item { display: block; width: 100%; padding: 9px 10px; border-radius: 10px; font-size: 0.92rem; color: var(--color-text-muted); transition: background-color .15s ease, color .15s ease; }
+  .hd-item:hover { background: rgba(36, 39, 46, 0.05); color: #16181d; }
+  .hd-emojis { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 2px; padding: 4px 6px 8px; }
+  .hd-emojis button { min-width: 0; min-height: 0; width: 100%; aspect-ratio: 1; padding: 0; display: grid; place-items: center; font-size: 1.05rem; line-height: 1; border-radius: 10px; transition: background-color .15s ease, transform .15s ease; }
+  .hd-emojis button:hover { background: #f1eaff; transform: scale(1.12); }
+  .hd-menu .ha-pick { padding: 8px 10px; font-size: 0.8rem; color: var(--color-text-muted); }
+  .ha .hd-menu .ha-pick select { width: 100%; min-width: 0; max-width: 100%; font-size: 0.85rem; padding: 8px 10px; border-radius: 12px; text-overflow: ellipsis; color: var(--color-text); }
+  /* Settings page (Jirel 14.11.26): account, profile emoji, payouts, sign out. */
+  .hd-set { max-width: 560px; display: grid; gap: 16px; }
+  .hd-set h1 { margin: 0 0 4px; font-size: clamp(1.6rem, 4vw, 2rem); }
+  .hd-set-card { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 6px 24px rgba(36, 39, 46, 0.07); display: grid; gap: 10px; }
+  .hd-set-card h2 { margin: 0; font-size: 1.05rem; }
+  .hd-set-row { margin: 0; display: flex; justify-content: space-between; gap: 16px; font-size: 0.92rem; }
+  .hd-set-row span { color: var(--color-text-muted); }
+  .hd-set-row b { font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; }
+  .hd-set-sub { margin: 0; font-size: 0.88rem; color: var(--color-text-muted); }
+  .hd-set .hd-emojis { padding: 0; max-width: 360px; }
+  .hd-set-btn { justify-self: start; font: inherit; font-weight: 600; font-size: 0.9rem; color: #fff; background: #6a3eec; border: 0; border-radius: 999px; padding: 10px 18px; cursor: pointer; transition: transform .15s ease, filter .15s ease; }
+  .hd-set-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .hd-set-out { justify-self: start; font: inherit; font-size: 0.92rem; color: var(--color-text-muted); background: none; border: 0; padding: 6px 0; cursor: pointer; }
+  .hd-set-out:hover { color: #b42318; }
+  .hd-menu-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.08); margin: 6px 0; }
   .hd-hi { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
   .hd-hi h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
   .hd-hi .ha-sub { margin: 4px 0 0; }
