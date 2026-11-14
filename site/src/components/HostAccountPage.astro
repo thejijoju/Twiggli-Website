@@ -270,7 +270,6 @@ const fields = [
             <p class="hd-prof-note" data-ha-prof-note role="status"></p>
             <div class="hd-prof-actions">
               <a class="hd-prof-pub" data-ha-view target="_blank" rel="noopener">{lang === 'de' ? 'Öffentliche Seite ansehen' : 'View public page'}</a>
-              <button type="button" class="hd-prof-rm" data-ha-prof-rm hidden>{lang === 'de' ? 'Foto entfernen' : 'Remove photo'}</button>
             </div>
           </div>
         </header>
@@ -929,6 +928,14 @@ const fields = [
         const card = root.querySelector<HTMLElement>('[data-ha-emojis]')?.closest<HTMLElement>('.hd-set-card');
         if (card) card.hidden = !!photo;
       };
+      // Hosted / attended: fetched once right after signing in, so the profile
+      // shows them at once; refreshed quietly each time it opens.
+      let stats: { hosted: number | null; attended: number | null } | null = null;
+      const paintStats = () => {
+        $('[data-ha-prof-hosted]').textContent = stats?.hosted == null ? '0' : String(stats.hosted);
+        $('[data-ha-prof-attended]').textContent = stats?.attended == null ? '0' : String(stats.attended);
+      };
+      const loadStats = () => api('profileStats', {}).then((st) => { stats = st; paintStats(); }).catch(() => {});
       const renderProfile = () => {
         const de = document.documentElement.lang !== 'en';
         const u = auth.currentUser;
@@ -953,11 +960,8 @@ const fields = [
         $('[data-ha-prof-city]').textContent = city ? `${de ? 'Studio-Standort' : 'Studio location'}: ${city}` : '';
         $('[data-ha-prof-cityrow]').hidden = !city;
         $('[data-ha-prof-cam]').hidden = false;
-        $('[data-ha-prof-rm]').hidden = !u?.photoURL;
-        void api('profileStats', {}).then((st) => {
-          $('[data-ha-prof-hosted]').textContent = st.hosted == null ? '–' : String(st.hosted);
-          $('[data-ha-prof-attended]').textContent = st.attended == null ? '–' : String(st.attended);
-        }).catch(() => {});
+        paintStats();
+        void loadStats();
         $<HTMLAnchorElement>('[data-ha-view]').hidden = !h;
         const list = $('[data-ha-prof-list]');
         list.replaceChildren(...ws.map((w) => {
@@ -1003,11 +1007,6 @@ const fields = [
           note.textContent = `${de ? 'Das hat nicht geklappt' : 'That didn’t work'} (${(err as Error).message})`;
         }
         input.value = '';
-      });
-      $('[data-ha-prof-rm]').addEventListener('click', async () => {
-        if (!auth.currentUser) return;
-        try { await api('profilePhoto', { remove: true }); await auth.currentUser.reload(); } catch { /* stays as it is */ }
-        paintAvatars(); renderProfile();
       });
       const hdEmoji = () => { try { return localStorage.getItem(`${EMOJI_KEY}:${email}`) || '🙂'; } catch { return '🙂'; } };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-emojis] button').forEach((b) => b.addEventListener('click', () => {
@@ -2219,6 +2218,7 @@ const fields = [
         app.hidden = false;
         $('[data-ha-who]').textContent = email;
         $('[data-hs-email]').textContent = email;
+        void loadStats();
         $<HTMLInputElement>('[data-hs-name]').value = auth.currentUser?.displayName || '';
         $('[data-ha-menu-name]').textContent = auth.currentUser?.displayName || email.split('@')[0];
         root.classList.add('is-in');
@@ -2789,8 +2789,6 @@ const fields = [
   .hd-prof-pub { font-size: 0.88rem; font-weight: 600; color: #6a3eec; text-decoration: none; }
   .hd-prof-pub:hover { color: #16181d; }
   .hd-prof-pub[hidden] { display: none; }
-  .hd-prof-rm { font: inherit; font-size: 0.86rem; color: var(--color-text-muted); background: none; border: 0; padding: 0; cursor: pointer; }
-  .hd-prof-rm:hover { color: #16181d; }
   .hd-prof-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding-top: 28px; }
   .hd-prof-card { display: grid; gap: 4px; text-decoration: none; color: var(--color-text); }
   .hd-prof-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; margin-bottom: 6px; transition: transform .2s ease; }
@@ -2804,6 +2802,13 @@ const fields = [
     .hd-prof-addname { justify-self: center; }
     .hd-prof-av { width: 108px; height: 108px; font-size: 3.4rem; }
   }
+  /* Hover on plain text (Jirel 14.11.26, like the sign-in card): grey text
+     turns near-black, dark headings fade to 70%. */
+  .hd-prof-titles h1, .hd-set h1, .hd-set-card h2, .hd-prof-stats b, .hd-prof-card-t, .hd-set-row b { transition: opacity .15s ease; }
+  .hd-prof-titles h1:hover, .hd-set h1:hover, .hd-set-card h2:hover, .hd-prof-stats b:hover, .hd-prof-card-t:hover, .hd-set-row b:hover { opacity: .7; }
+  .hd-prof-studio, .hd-prof-facts li, .hd-prof-stats span, .hd-prof-card-m, .hd-set-sub, .hd-set-row span, .hd-set-name label, .hd-menu-id .hd-who { transition: color .15s ease; }
+  .hd-prof-facts li:hover, .hd-prof-stats span:hover, .hd-prof-card-m:hover, .hd-set-sub:hover, .hd-set-row span:hover, .hd-set-name label:hover, .hd-menu-id .hd-who:hover { color: #16181d; }
+  .hd-prof-studio:hover { color: #4a24c4; }
   .hd-set-name { display: grid; gap: 6px; }
   .hd-set-name label { font-size: 0.92rem; color: var(--color-text-muted); }
   .hd-set-name div { display: flex; gap: 8px; }
