@@ -1870,7 +1870,7 @@ const codeMail = (lang, code, link) => {
 <tr><td><img src="${SITE}/img/logo.png" width="44" height="44" alt="Twiggli" style="display:block;margin:0 auto 18px"></td></tr>
 <tr><td style="font-size:20px;font-weight:bold;padding-bottom:8px">${t.head}</td></tr>
 <tr><td style="font-size:14px;line-height:1.5;color:#5b5f6b;padding-bottom:22px">${t.lede.replace('twiggli.com', `<a href="${SITE}${de ? '/de' : ''}/host/account/" style="color:#6A3EEC;text-decoration:none;font-weight:bold">twiggli.com</a>`)}</td></tr>
-<tr><td style="padding-bottom:24px"><div style="display:inline-block;-webkit-user-select:all;user-select:all;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:30px;font-weight:600;letter-spacing:8px;color:#24272e;background:#f6f6f8;border:1px solid #e6e6ec;border-radius:12px;padding:14px 18px 14px 28px">${code}</div></td></tr>
+<tr><td style="padding-bottom:24px;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:40px;font-weight:bold;line-height:1.1;color:#24272e;-webkit-user-select:all;user-select:all">${code}</td></tr>
 ${link ? `<tr><td style="font-size:13px;color:#5b5f6b;padding-bottom:10px">${t.or}</td></tr>
 <tr><td style="padding-bottom:22px"><a href="${link}" style="display:inline-block;background:#6A3EEC;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;border-radius:999px;padding:12px 24px">${t.btn}</a></td></tr>` : ''}
 <tr><td style="font-size:12px;color:#5b5f6b;line-height:1.5;padding-bottom:8px">${t.safe}</td></tr>
