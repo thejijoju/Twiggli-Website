@@ -546,7 +546,7 @@ const fields = [
         else av.textContent = (name[0] || '🙂').toUpperCase();
         $('[data-ha-welcome-name]').textContent = name;
         box.hidden = false;
-        setTimeout(() => { box.classList.add('is-out'); setTimeout(() => { box.hidden = true; }, 450); }, 1300);
+        setTimeout(() => { box.classList.add('is-out'); setTimeout(() => { box.hidden = true; }, 450); }, 1600); // ~2 s in all (Jirel 14.11.26)
       };
       const codeForm = $<HTMLFormElement>('[data-ha-code]');
       const boxes = [...codeForm.querySelectorAll<HTMLInputElement>('[data-ha-code-boxes] input')];
