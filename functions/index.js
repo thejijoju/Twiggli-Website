@@ -1449,8 +1449,16 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
 /** Public: every public date (no personal data), for the website build. */
 export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (_req, res) => {
   const snap = await getFirestore().collection('hostEvents').where('visibility', '==', 'public').get();
+  // Deleted accounts held for 30 days: purge the expired ones (this runs at
+  // every daily build).
+  try {
+    const old = await getFirestore().collection('deletedAccounts').where('purgeAfter', '<', Date.now()).limit(20).get();
+    await Promise.all(old.docs.map((x) => x.ref.delete()));
+  } catch (err) { console.error('purge deleted', err?.message); }
+  // Hosts who deleted their account: off the site at the next build.
+  const gone = (await getFirestore().doc('_config/goneHosts').get()).data()?.slugs ?? [];
   let updated = 0;
-  const items = snap.docs.map((d) => {
+  const items = snap.docs.filter((d) => !gone.includes(d.data().slug)).map((d) => {
     const x = d.data();
     updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0);
     const { by: _by, createdAt: _c, updatedAt: _u, ...pub } = x;
@@ -1462,7 +1470,7 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   const hidden = listings.filter((x) => LISTING_STATES.includes(x.status)).map(({ slug, key, status }) => ({ slug, key, status }));
   // And the hosts' own title, price and line for a workshop (hostListing edit).
   const edits = listings.filter((x) => x.edit && !LISTING_STATES.includes(x.status)).map(({ slug, key, edit }) => ({ slug, key, ...edit }));
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits });
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
@@ -2402,6 +2410,28 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
     if (!((sudo.until ?? 0) > Date.now())) return res.status(403).json({ error: 'confirm' });
     const email = String(t.email ?? '').toLowerCase();
     const db = getFirestore();
+    // Their host pages: off the site, unless someone else still runs them.
+    // What we may keep is held for 30 days in deletedAccounts/{uid} (not
+    // public, not used), then purged; booking records stay for the tax
+    // retention period (privacy policy, section on retention).
+    const mine = email ? ((await db.doc(`hostMembers/${email}`).get()).data()?.slugs ?? []) : [];
+    const gone = [];
+    for (const slug of mine) {
+      const others = await db.collection('hostMembers').where('slugs', 'array-contains', slug).get();
+      if (!others.docs.some((x) => x.id !== email)) gone.push(slug);
+    }
+    const held = [];
+    for (const slug of gone) {
+      for (const c of ['hostProfiles', 'hostSlots', 'hostListings', 'hostEvents']) {
+        const q = await db.collection(c).where('slug', '==', slug).get();
+        for (const x of q.docs) { held.push({ c, id: x.id, data: x.data() }); await x.ref.delete(); }
+      }
+      const rv = await db.collection('guestReviews').where('host', '==', slug).get();
+      for (const x of rv.docs) await x.ref.update({ status: 'withdrawn', withdrawnAt: Date.now() });
+    }
+    if (gone.length) await db.doc('_config/goneHosts').set({ slugs: FieldValue.arrayUnion(...gone) }, { merge: true });
+    await db.doc(`deletedAccounts/${t.uid}`).set({ email, slugs: gone, deletedAt: Date.now(), purgeAfter: Date.now() + 30 * 864e5, held: JSON.stringify(held).slice(0, 900000) });
+    await db.doc(`Users/${t.uid}`).delete().catch(() => {});
     const devs = await col.get();
     const b = db.batch();
     devs.docs.forEach((x) => b.delete(x.ref));
@@ -2412,7 +2442,19 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
     tfaCache.delete(t.uid);
     try {
       const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-      await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, subject: `Account deleted: ${email}`, text: `${email} deleted their Twiggli account on twiggli.com (login, profile, settings, photo and page access). Their workshop pages are still on the site until you take them down.` });
+      const until = new Date(Date.now() + 30 * 864e5).toLocaleDateString('de-DE', { timeZone: 'Europe/Berlin' });
+      await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, subject: `Account deleted: ${email}`, text: `${email} deleted their Twiggli account on twiggli.com.
+
+Done automatically:
+- Login, profile, settings, photo, 2FA, devices, app profile (Users) deleted.
+${gone.length ? `- Host page(s) ${gone.join(', ')}: off the site with the next build (daily 02:30), their dates, page texts and reviews are no longer shown.` : '- No host page of their own.'}
+- What we may keep is held, not public, until ${until} (deletedAccounts), then deleted. Booking and payment records stay for the tax retention period.
+
+Left for you by ${until}:
+- Their row in 'Hosts & Emails' (and the other tabs).
+- Brevo contact, if there is one.
+${gone.length ? `- Add ${gone.join(', ')} to site/src/data/hosts/archived.ts and remove their copy and pictures (or ask me).` : ''}
+- Stripe: they close their own Stripe account.` });
     } catch (err) { console.error('delete notice', err?.message); }
     return res.status(200).json({ ok: true });
   }
