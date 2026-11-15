@@ -1,0 +1,11 @@
+---
+/* The account's views get their own address, like Luma (Jirel 15.11.26):
+   /host/account/settings/preferences opens Settings → Preferences. */
+import HostAccountPage from '../../../../components/HostAccountPage.astro';
+export function getStaticPaths() {
+  return ['calendar', 'messages', 'listings', 'profile', 'settings', 'settings/preferences', 'settings/payments'].map((view) => ({ params: { view } }));
+}
+const { view } = Astro.params;
+---
+
+<HostAccountPage lang="de" view={view} />

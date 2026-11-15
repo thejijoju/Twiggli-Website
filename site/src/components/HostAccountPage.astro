@@ -20,8 +20,9 @@ import { workshopsFor, onRequestFor } from '../data/seo.ts';
 import { previewSessionsFor } from '../data/sessions.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+/** view: the part of the account the address opens (settings/preferences …), see pages/host/account/[...view].astro. */
+interface Props { lang: Lang; view?: string }
+const { lang, view = '' } = Astro.props;
 const t = hostAccountCopy(lang);
 /** German, English or French (Jirel 15.11.26: the account in the host's language). */
 const L = <T,>(de: T, en: T, fr: T): T => (lang === 'de' ? de : lang === 'fr' ? fr : en);
@@ -118,6 +119,7 @@ const fields = [
     class="ha container"
     data-ha
     data-lang={lang}
+    data-view={view}
     data-config={JSON.stringify(config)}
     data-hosts={JSON.stringify(hosts)}
     data-copy={JSON.stringify(t)}
@@ -1282,6 +1284,7 @@ const fields = [
       root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((tb) => tb.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((x) => x.setAttribute('aria-selected', String(x === tb)));
         root.querySelectorAll<HTMLElement>('[data-hs-pane]').forEach((p) => { p.hidden = p.dataset.hsPane !== tb.dataset.hsTab; });
+        setPath();
       }));
       const saveSettings = async (extra: Record<string, string> = {}) => {
         const data: Record<string, string> = { ...us, ...extra };
@@ -1378,7 +1381,8 @@ const fields = [
           root.dataset.lang = want;
           document.documentElement.lang = want;
           document.title = now.title;
-          history.replaceState(history.state, '', pageFor(want) + location.search + location.hash);
+          const v = subPath();
+          history.replaceState(history.state, '', pageFor(want) + (v ? `${v}/` : '') + location.search + location.hash);
           root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === want)));
           // Draw what the script filled in again, in the new words.
           const again = (fn: () => unknown) => { try { void fn(); } catch { /* drawn again next time */ } };
@@ -1543,8 +1547,39 @@ const fields = [
         window.scrollTo({ top: 0 });
         if (name === 'listings') void renderListings();
         if (name === 'profile') renderProfile();
+        setPath();
       };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => tab.addEventListener('click', () => showTab(tab.dataset.haTab!)));
+      // ── Addresses per view, like Luma (Jirel 15.11.26): /host/account/settings/preferences
+      //    etc. Changing tabs changes the address (no reload); back/forward and
+      //    reloading open the same view. ──
+      const VIEWS: Record<string, [string, string?]> = {
+        '': ['overview'], calendar: ['calendar'], messages: ['messages'], listings: ['listings'], profile: ['profile'],
+        settings: ['settings', 'account'], 'settings/preferences': ['settings', 'prefs'], 'settings/payments': ['settings', 'pay'],
+      };
+      const subPath = () => location.pathname.replace(/^\/(?:(?:de|fr)\/)?host\/account\/?/, '').replace(/\/$/, '');
+      const currentView = () => {
+        const tab = root.querySelector<HTMLElement>('[data-ha-panel]:not([hidden]):not([data-ha-old])')?.dataset.haPanel ?? 'overview';
+        if (tab !== 'settings') return Object.keys(VIEWS).find((k) => VIEWS[k][0] === tab && !VIEWS[k][1]) ?? '';
+        const pane = root.querySelector<HTMLElement>('[data-hs-tab][aria-selected="true"]')?.dataset.hsTab ?? 'account';
+        return Object.keys(VIEWS).find((k) => VIEWS[k][0] === 'settings' && VIEWS[k][1] === pane) ?? 'settings';
+      };
+      let routing = false;
+      const setPath = () => {
+        if (routing) return;
+        const v = currentView();
+        if (v === subPath()) return;
+        history.pushState(null, '', `${pageFor(root.dataset.lang || 'en')}${v ? `${v}/` : ''}${location.search}`);
+      };
+      const openView = (v: string) => {
+        const [tab, pane] = VIEWS[v] ?? VIEWS[''];
+        routing = true;
+        try {
+          showTab(tab);
+          if (pane) root.querySelector<HTMLButtonElement>(`[data-hs-tab="${pane}"]`)?.click();
+        } finally { routing = false; }
+      };
+      window.addEventListener('popstate', () => { if (root.classList.contains('is-in')) openView(subPath()); });
       // The bell, "+ Date" and the waiting-requests notice jump to their tab.
       root.querySelectorAll<HTMLElement>('[data-ha-go]').forEach((b) => b.addEventListener('click', () => { showTab(b.dataset.haGo!); const m = root.querySelector<HTMLElement>('[data-ha-menu]'); if (m) m.hidden = true; }));
 
@@ -2890,6 +2925,7 @@ const fields = [
         $('[data-ha-menu-name]').textContent = auth.currentUser?.displayName || email.split('@')[0];
         paintAvatars(); // the photo straight away, not the emoji first
         root.classList.add('is-in');
+        if (subPath()) openView(subPath());
         rememberSignedIn(true);
         const invited = pendingInvite();
         if (invited) {
