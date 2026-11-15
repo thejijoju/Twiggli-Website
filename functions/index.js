@@ -2430,7 +2430,11 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
       for (const x of rv.docs) await x.ref.update({ status: 'withdrawn', withdrawnAt: Date.now() });
     }
     if (gone.length) await db.doc('_config/goneHosts').set({ slugs: FieldValue.arrayUnion(...gone) }, { merge: true });
-    await db.doc(`deletedAccounts/${t.uid}`).set({ email, slugs: gone, deletedAt: Date.now(), purgeAfter: Date.now() + 30 * 864e5, held: JSON.stringify(held).slice(0, 900000) });
+    // Name and email are kept with it for the 30 days too (Jirel 15.11.26).
+    const st = (await db.doc(`userSettings/${t.uid}`).get()).data() ?? {};
+    let name = `${st.first ?? ''} ${st.last ?? ''}`.trim();
+    if (!name) { try { name = (await getAuth().getUser(t.uid)).displayName ?? ''; } catch { /* none */ } }
+    await db.doc(`deletedAccounts/${t.uid}`).set({ email, name, slugs: gone, deletedAt: Date.now(), purgeAfter: Date.now() + 30 * 864e5, held: JSON.stringify(held).slice(0, 900000) });
     await db.doc(`Users/${t.uid}`).delete().catch(() => {});
     const devs = await col.get();
     const b = db.batch();
@@ -2443,12 +2447,12 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
     try {
       const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
       const until = new Date(Date.now() + 30 * 864e5).toLocaleDateString('de-DE', { timeZone: 'Europe/Berlin' });
-      await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, subject: `Account deleted: ${email}`, text: `${email} deleted their Twiggli account on twiggli.com.
+      await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, subject: `Account deleted: ${name ? `${name}, ` : ''}${email}`, text: `${name ? `${name} (${email})` : email} deleted their Twiggli account on twiggli.com.
 
 Done automatically:
 - Login, profile, settings, photo, 2FA, devices, app profile (Users) deleted.
 ${gone.length ? `- Host page(s) ${gone.join(', ')}: off the site with the next build (daily 02:30), their dates, page texts and reviews are no longer shown.` : '- No host page of their own.'}
-- What we may keep is held, not public, until ${until} (deletedAccounts), then deleted. Booking and payment records stay for the tax retention period.
+- Their name and email, and what we may keep, are held, not public, until ${until} (deletedAccounts), then deleted. Booking and payment records stay for the tax retention period.
 
 Left for you by ${until}:
 - Their row in 'Hosts & Emails' (and the other tabs).
