@@ -951,12 +951,26 @@ const fields = [
         const j = await r.json().catch(() => ({}));
         return { ok: r.ok, status: r.status, j };
       };
+      // Faster loading (Jirel 15.11.26): if this browser already knows the
+      // account has two-factor off, the page opens at once and the server is
+      // asked in the background (it refuses data without the second step anyway).
+      const TFA_KEY = () => `twiggli-tfa:${auth.currentUser?.uid ?? ''}`;
       const tfaNeeded = async () => {
         try {
           const claims = (await auth.currentUser!.getIdTokenResult()).claims;
           if (claims.mfa) return false;
-          const { ok, j } = await authed('twoFactor', { action: 'status' });
-          return ok && Boolean(j.on);
+          const ask = authed('twoFactor', { action: 'status' }).then(({ ok, j }) => {
+            const on = ok && Boolean(j.on);
+            try { localStorage.setItem(TFA_KEY(), on ? 'on' : 'off'); } catch { /* private mode */ }
+            return on;
+          });
+          let known = '';
+          try { known = localStorage.getItem(TFA_KEY()) ?? ''; } catch { /* private mode */ }
+          if (known === 'off') {
+            void ask.then((on) => { if (on) { app.hidden = true; root.classList.remove('is-in'); showTfa(); } }).catch(() => {});
+            return false;
+          }
+          return await ask;
         } catch { return false; }
       };
       const tfaForm = $<HTMLFormElement>('[data-ha-tfa]');
@@ -1127,6 +1141,7 @@ const fields = [
         if (!ok) { tfaErr(status, j); return; }
         tfaMsg('');
         if (j.token) { try { await signInWithCustomToken(auth, j.token); } catch { /* the next sign-in asks for the code */ } }
+        try { localStorage.setItem(TFA_KEY(), 'on'); } catch { /* private mode */ }
         const list = $('[data-hs-tfa-list]');
         list.replaceChildren(...(j.backup as string[]).map((c) => { const li = document.createElement('li'); li.textContent = c; return li; }));
         tfaPart('codes');
@@ -1218,6 +1233,7 @@ const fields = [
       const disableTfa = async () => {
         const { ok, status, j } = await authed('twoFactor', { action: 'disable', lang: pageLang });
         if (!ok) { tfaErr(status, j); return; }
+        try { localStorage.setItem(TFA_KEY(), 'off'); } catch { /* private mode */ }
         tfaMsg(''); tfaPart('off');
       };
       // ── Settings (Jirel 14.11.26, like Luma): tabs, profile form, language ──
@@ -2865,6 +2881,7 @@ const fields = [
           void loadDevices();
         }).catch(() => {});
         $('[data-ha-menu-name]').textContent = auth.currentUser?.displayName || email.split('@')[0];
+        paintAvatars(); // the photo straight away, not the emoji first
         root.classList.add('is-in');
         rememberSignedIn(true);
         const invited = pendingInvite();
@@ -2874,19 +2891,22 @@ const fields = [
           history.replaceState(null, '', location.pathname);
         }
         let slugs: string[] = [];
+        // Whether this is Jirel: the server says, so no address is in the page.
+        // Asked at the same time as the membership, not one after the other.
+        const whoami = (async () => {
+          try {
+            const token = await auth.currentUser?.getIdToken();
+            const r = await fetch(`${cfg.functions}/hostClaim`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ whoami: true }) });
+            return !!(await r.json()).admin;
+          } catch { return false; }
+        })();
         try {
           const m = await getDoc(doc(db, 'hostMembers', email));
           slugs = ((m.data()?.slugs as string[] | undefined) ?? []).filter((s) => hosts[s]);
           const pct = Number(m.data()?.commissionPct);
           if (Number.isFinite(pct)) feePct = Math.max(0, Math.min(30, pct));
         } catch { /* not a member: no read access */ }
-        // Whether this is Jirel: the server says, so no address is in the page.
-        let admin = false;
-        try {
-          const token = await auth.currentUser?.getIdToken();
-          const r = await fetch(`${cfg.functions}/hostClaim`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ whoami: true }) });
-          admin = !!(await r.json()).admin;
-        } catch { admin = false; }
+        const admin = await whoami;
         if (admin) {
           // Jirel: every host in the picker; opening one asks the server to
           // add it to her hostMembers first, so the rules let her save.
