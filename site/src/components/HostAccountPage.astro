@@ -295,7 +295,7 @@ const fields = [
               <label><span>{lang === 'de' ? 'Vorname' : 'First name'}</span><input name="first" autocomplete="given-name" maxlength="40" /></label>
               <label><span>{lang === 'de' ? 'Nachname' : 'Last name'}</span><input name="last" autocomplete="family-name" maxlength="40" /></label>
             </div>
-            <label><span>{lang === 'de' ? 'Kurzbio' : 'Bio'}</span><textarea name="bio" rows="3" maxlength="280" placeholder={lang === 'de' ? 'Erzähl kurz etwas über dich und dein Handwerk.' : 'Share a little about you and your craft.'}></textarea></label>
+            <label class="hd-set-bio"><span>{lang === 'de' ? 'Kurzbio' : 'Bio'}</span><textarea name="bio" rows="2" maxlength="160" data-hs-bio placeholder={lang === 'de' ? 'Erzähl kurz etwas über dich und dein Handwerk.' : 'Share a little about you and your craft.'}></textarea><small class="hd-set-count" data-hs-bio-count aria-live="polite">0/160</small></label>
             <span class="hd-set-lbl">{lang === 'de' ? 'Social Links' : 'Social links'}</span>
             <div class="hd-set-social">
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg><span class="hd-set-pre">instagram.com/</span><input name="instagram" placeholder="username" /></label>
@@ -794,6 +794,21 @@ const fields = [
       // ── Settings (Jirel 14.11.26, like Luma): tabs, profile form, language ──
       let us: Record<string, string> = {};
       const sForm = $<HTMLFormElement>('[data-hs-form]');
+      // The bio box grows with its text instead of a drag handle, and counts
+      // down to 160 characters (Jirel 15.11.26, like Luma).
+      const bioBox = $<HTMLTextAreaElement>('[data-hs-bio]');
+      const bioCount = $('[data-hs-bio-count]');
+      const bioFit = () => {
+        if (bioBox.value.length > 160) bioBox.value = bioBox.value.slice(0, 160);
+        bioCount.textContent = `${bioBox.value.length}/160`;
+        bioCount.dataset.near = String(bioBox.value.length >= 140);
+        if (!bioBox.offsetParent) return;
+        bioBox.style.height = 'auto';
+        bioBox.style.height = `${bioBox.scrollHeight + 2}px`;
+      };
+      bioBox.addEventListener('input', bioFit);
+      bioBox.addEventListener('focus', bioFit);
+      root.querySelectorAll('[data-ha-go="settings"], [data-hs-tab]').forEach((b) => b.addEventListener('click', () => requestAnimationFrame(bioFit)));
       const fillSettings = () => {
         const u = auth.currentUser;
         const [f0, ...rest] = (u?.displayName || '').split(' ');
@@ -801,6 +816,7 @@ const fields = [
           const el = sForm.elements.namedItem(k) as HTMLInputElement | null;
           if (el) el.value = us[k] ?? (k === 'first' ? f0 : k === 'last' ? rest.join(' ') : '');
         }
+        bioFit();
         const lg = us.lang || (document.documentElement.lang === 'en' ? 'en' : 'de');
         root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === lg)));
       };
@@ -2897,7 +2913,10 @@ const fields = [
   .hd-prof-addname { justify-self: start; font: inherit; font-size: 0.86rem; color: #6a3eec; background: none; border: 0; padding: 2px 0; cursor: pointer; }
   .hd-prof-addname:hover { color: #16181d; }
   .hd-prof-facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-  .hd-prof-facts li { display: flex; align-items: center; gap: 8px; font-size: 0.92rem; color: var(--color-text-muted); }
+  .hd-prof-facts li { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--color-text-muted); }
+  /* Bio, "Dabei seit" and the studio location: one size, one colour, and
+     the bio sits closer to the lines under it (Jirel 15.11.26). */
+  .hd-prof-bio + .hd-prof-facts { margin-top: -8px; }
   .hd-prof-facts li[hidden] { display: none; }
   .hd-prof-stats { display: flex; gap: 28px; }
   .hd-prof-stats span { display: grid; justify-items: center; text-align: center; gap: 0; font-size: 0.8rem; color: var(--color-text-muted); }
@@ -2954,6 +2973,14 @@ const fields = [
   .ha .hd-set-form input, .ha .hd-set-form textarea { border-radius: 16px; border: 1px solid rgba(36, 39, 46, 0.12); background: #fff; transition: border-color .15s ease; }
   .ha .hd-set-form input:hover, .ha .hd-set-form textarea:hover { border-color: rgba(106, 62, 236, 0.35); }
   .ha .hd-set-form input:focus, .ha .hd-set-form textarea:focus { outline: none; border-color: rgba(106, 62, 236, 0.55); }
+  /* The bio box, Luma-style: roomy, readable text, no drag handle, grows
+     with the text; a soft purple ring while typing. */
+  .hd-set-bio { position: relative; }
+  .ha .hd-set-form .hd-set-bio textarea { resize: none; overflow: hidden; field-sizing: content; min-height: 4.6em; padding: 14px 18px 26px; font-size: 1.05rem; line-height: 1.55; color: #16181d; border-radius: 16px; }
+  .ha .hd-set-form .hd-set-bio textarea:focus { box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.12); }
+  .ha .hd-set-form .hd-set-bio textarea::placeholder { color: rgba(36, 39, 46, 0.42); }
+  .hd-set-count { position: absolute; right: 16px; bottom: 8px; font-size: 0.75rem; color: rgba(36, 39, 46, 0.45); pointer-events: none; font-variant-numeric: tabular-nums; }
+  .hd-set-count[data-near="true"] { color: #6a3eec; font-weight: 600; }
   .hd-set-social { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
   .hd-set-social label { display: flex !important; align-items: stretch; gap: 0; color: var(--color-text-muted); }
   .hd-set-social label > svg { align-self: center; margin-right: 10px; }
@@ -2984,7 +3011,7 @@ const fields = [
   .hd-set-url a:hover { color: #16181d; }
   .hd-set-url button { flex: none; display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 0.86rem; font-weight: 600; color: #16181d; background: rgba(36, 39, 46, 0.06); border: 0; border-radius: 10px; padding: 7px 12px; cursor: pointer; transition: background-color .15s ease; }
   .hd-set-url button:hover { background: rgba(36, 39, 46, 0.1); }
-  .hd-prof-bio { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--color-text); max-width: 46ch; }
+  .hd-prof-bio { margin: 0; font-size: 0.85rem; line-height: 1.5; color: var(--color-text-muted); max-width: 46ch; }
   .hd-prof-social { display: flex; flex-wrap: wrap; gap: 14px; }
   .hd-prof-social a { font-size: 0.88rem; color: var(--color-text-muted); text-decoration: none; transition: color .15s ease; }
   .hd-prof-social a:hover { color: #16181d; }
