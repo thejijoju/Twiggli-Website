@@ -508,11 +508,18 @@ const fields = [
 
       <div data-ha-editor hidden>
 
+        <!-- Calendar, messages and listings are being rebuilt from scratch
+             (Jirel 15.11.26): the old panels stay in the code, hidden
+             (data-ha-old), until the new ones replace them. -->
+        <section class="hd-blank" data-ha-panel="calendar" hidden><h2>{t.tabCalendar}</h2></section>
+        <section class="hd-blank" data-ha-panel="messages" hidden><h2>{t.tabMessages}</h2></section>
+        <section class="hd-blank" data-ha-panel="listings" hidden><h2>{t.tabListings}</h2></section>
+
         <!-- Messages, as on Airbnb (functions hostInbox / hostReply): the list
              (needs your answer, recent), the conversation with its request card
              and countdown, and the request with Accept / Make an offer / Decline
              and what we know about the guest. -->
-        <section data-ha-panel="messages" class="ib" hidden>
+        <section data-ha-panel="messages" class="ib" data-ha-old hidden>
           <button type="button" class="ib-todo" data-ib-todo hidden>
             <span class="ib-todo-ic" aria-hidden="true">💳</span>
             <span class="ib-todo-t"><b>{t.ib.todoStripe}</b><span>{t.ib.todoStripeSub}</span></span>
@@ -586,7 +593,7 @@ const fields = [
         <!-- Admin: personal invite links to email to the hosts. -->
 
         <!-- The host's workshops: pause (off the site until put back) or delete. -->
-        <section class="hl" data-ha-panel="listings" hidden>
+        <section class="hl" data-ha-panel="listings" data-ha-old hidden>
           <h2 class="ha-h">{t.ib.lsTitle}</h2>
           <p class="ha-sub">{t.ib.lsSub}</p>
           <div class="hl-list" data-hl-list></div>
@@ -597,7 +604,7 @@ const fields = [
           <div class="ib-modal-body" data-hl-confirm-body></div>
         </dialog>
 
-        <form class="ha-card" data-ha-panel="listings" hidden>
+        <form class="ha-card" data-ha-panel="listings" data-ha-old hidden>
           <div class="ha-langs" role="radiogroup" aria-label={t.textIn}>
             <span>{t.textIn}</span>
             <label><input type="radio" name="textlang" value="en" checked /> English</label>
@@ -709,12 +716,12 @@ const fields = [
         </form>
 
         <!-- Calendar: the host's own dates, then their weekly schedule. -->
-        <section class="hd-dates" data-ha-panel="calendar" hidden>
+        <section class="hd-dates" data-ha-panel="calendar" data-ha-old hidden>
           <div class="hd-dates-head"><h2 class="hd-h2">{t.yourDates}</h2><button type="button" class="hd-add-big" data-ha-new>+ {t.newDate}</button></div>
           <div data-ha-own-dates></div>
           <p class="ha-empty" data-ha-own-empty hidden>{t.noOwnDates}</p>
         </section>
-        <form class="ha-card" data-ha-panel="calendar" hidden>
+        <form class="ha-card" data-ha-panel="calendar" data-ha-old hidden>
           <p class="ha-lede">{t.scheduleLede}</p>
           <div data-ha-slots></div>
           <p class="ha-note" data-ha-noslots hidden>{t.noSlots}</p>
@@ -3591,6 +3598,8 @@ const fields = [
   .hd-pause-btn:hover { transform: translateY(-1px); border-color: rgba(36, 39, 46, 0.35); }
   .ha-back { margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: rgba(31, 122, 63, 0.1); color: #1f7a3f; font-weight: 600; font-size: 0.92rem; }
   .ha-back[hidden] { display: none; }
+  [data-ha-old] { display: none !important; }
+  .hd-blank h2 { margin: 8px 0 0; font-size: clamp(1.7rem, 4vw, 2.1rem); letter-spacing: -0.02em; }
   /* Two-factor (Jirel 15.11.26). */
   .hd-tfa-card { background: #fff; border-radius: 16px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); display: grid; gap: 12px; justify-items: start; }
   .hd-tfa-card p { margin: 0; display: flex; align-items: center; gap: 10px; }
