@@ -2267,7 +2267,8 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   const d = snap.data();
   tfaCache.delete(t.uid);
   if (action === 'status') return res.status(200).json({ on: snap.exists, since: d?.since ?? null, verified: Boolean(t.mfa), confirmed });
-  if (['setup', 'enable', 'disable'].includes(action) && !confirmed) return res.status(403).json({ error: 'confirm' });
+  // Turning it on needs the email code first; turning it off is one click (Jirel 15.11.26).
+  if (['setup', 'enable'].includes(action) && !confirmed) return res.status(403).json({ error: 'confirm' });
 
   let usedBackup = false;
   // Checks a code (or a backup code) against the saved secret; counts misses.
@@ -2314,7 +2315,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
     return res.status(200).json({ backup: codes, token: await getAuth().createCustomToken(t.uid, { mfa: Date.now() }) });
   }
   if (action === 'disable') {
-    // Like Luma: the email confirmation (checked above) is enough, one click.
+    // One click, no code, no email (Jirel 15.11.26).
     if (snap.exists) {
       await ref.delete();
       tfaCache.delete(t.uid);

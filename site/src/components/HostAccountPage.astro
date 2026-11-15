@@ -1093,10 +1093,8 @@ const fields = [
         try { await navigator.clipboard.writeText(`Twiggli backup codes\n${codes}`); const was = b.textContent; b.textContent = b.dataset.done ?? ''; setTimeout(() => { b.textContent = was; }, 1600); } catch { /* select by hand */ }
       });
       $('[data-hs-tfa-saved]').addEventListener('click', () => { void loadTfa(); });
-      // Turning it off: confirm by email, then it's off (one click, like Luma).
-      $('[data-hs-tfa-off-start]').addEventListener('click', () => {
-        void confirmFirst(() => { void disableTfa(); }, 'off');
-      });
+      // Turning it off: one click, done (Jirel 15.11.26).
+      $('[data-hs-tfa-off-start]').addEventListener('click', () => { void disableTfa(); });
       const disableTfa = async () => {
         const { ok, status, j } = await authed('twoFactor', { action: 'disable', lang: pageLang });
         if (!ok) { tfaErr(status, j); return; }
