@@ -1978,11 +1978,17 @@ const CODE_TTL = 5 * 60 * 1000; // 5 minutes (Jirel 13.11.26)
 const codeDoc = (email) => getFirestore().doc(`signinCodes/${createHash('sha256').update(email).digest('hex')}`);
 const signinHash = (key, email, code) => createHmac('sha256', key).update(`code\n${email}\n${code}`).digest('hex');
 
-const codeMail = (lang, code, link) => {
+const codeMail = (lang, code, link, kind = 'signin') => {
   const de = lang === 'de';
-  const t = de
+  const confirm = kind === 'confirm'
+    ? (de
+      ? { subject: `${code} ist dein Twiggli-Bestätigungscode`, head: 'Bestätige, dass du es bist', lede: 'Gib diesen Code auf twiggli.com ein, um eine Sicherheitseinstellung in deinem Konto zu ändern.', foot: 'Du wolltest nichts ändern? Dann ignoriere diese E-Mail und schreib uns kurz, wir schauen uns dein Konto an.' }
+      : { subject: `${code} is your Twiggli confirmation code`, head: "Confirm it's you", lede: 'Enter this code on twiggli.com to change a security setting in your account.', foot: "Didn't try to change anything? Ignore this email and let us know, we'll look into your account." })
+    : {};
+  const t0 = de
     ? { subject: `${code} ist dein Twiggli-Anmeldecode`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf unserer Website ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
     : { subject: `${code} is your Twiggli sign-in code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', safe: 'Never share this code or enter it anywhere other than our website. We will never ask you for it by phone, chat or email.', foot: "Didn't ask for a code? You can safely ignore this email." };
+  const t = { ...t0, ...confirm };
   const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#fff;border-radius:24px;padding:32px 28px;text-align:center">
@@ -2160,22 +2166,107 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   return res.status(200).json(back);
 });
 
+/** A system email from no-reply@twiggli.com: Brevo first, Gmail if that fails. */
+const systemMail = async (to, m, tag) => {
+  try {
+    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': BREVO_API_KEY.value(), 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ sender: { name: 'Twiggli', email: 'no-reply@twiggli.com' }, to: [{ email: to }], subject: m.subject, htmlContent: m.html, textContent: m.text, tags: [tag] }),
+    });
+    if (r.ok) return true;
+    console.error('system mail brevo', tag, r.status, (await r.text()).slice(0, 200));
+  } catch (err) { console.error('system mail brevo', tag, err?.message); }
+  try {
+    const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+    await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to, subject: m.subject, text: m.text, html: m.html });
+    return true;
+  } catch (err) { console.error('system mail', tag, err?.message); return false; }
+};
+
+/** "Two-factor was turned on / off / a backup code was used" (Jirel
+ *  15.11.26), so a host notices at once if it wasn't them. */
+const securityMail = (lang, event) => {
+  const de = lang === 'de';
+  const when = new Date().toLocaleString(de ? 'de-DE' : 'en-GB', { timeZone: 'Europe/Berlin', dateStyle: 'long', timeStyle: 'short' });
+  const T = de ? {
+    on: ['Zwei-Faktor-Authentifizierung ist an', 'Ab jetzt fragen wir beim Anmelden zusätzlich nach dem Code aus deiner Authenticator-App.'],
+    off: ['Zwei-Faktor-Authentifizierung ist aus', 'Beim Anmelden fragen wir jetzt nur noch nach dem Code per E-Mail.'],
+    backup: ['Ein Backup-Code wurde benutzt', 'Jemand hat sich mit einem deiner Backup-Codes angemeldet. Dieser Code funktioniert ab jetzt nicht mehr.'],
+    at: `Am ${when} Uhr (Berlin)`, notyou: `Warst du das nicht? Schreib uns sofort an <a href="mailto:${SENDER}" style="color:#6A3EEC;text-decoration:none;font-weight:bold">${SENDER}</a>, dann sichern wir dein Konto.`,
+    subject: { on: 'Zwei-Faktor-Authentifizierung eingeschaltet', off: 'Zwei-Faktor-Authentifizierung ausgeschaltet', backup: 'Backup-Code für dein Twiggli-Konto benutzt' },
+  } : {
+    on: ['Two-factor authentication is on', "From now on we'll also ask for the code from your authenticator app when you sign in."],
+    off: ['Two-factor authentication is off', "When you sign in we'll now only ask for the code by email."],
+    backup: ['A backup code was used', 'Someone signed in with one of your backup codes. That code no longer works.'],
+    at: `On ${when} (Berlin time)`, notyou: `Wasn't you? Write to us right away at <a href="mailto:${SENDER}" style="color:#6A3EEC;text-decoration:none;font-weight:bold">${SENDER}</a> and we'll secure your account.`,
+    subject: { on: 'Two-factor authentication turned on', off: 'Two-factor authentication turned off', backup: 'Backup code used on your Twiggli account' },
+  };
+  const [head, lede] = T[event];
+  const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#fff;border-radius:24px;padding:32px 28px;text-align:center">
+<tr><td><img src="${SITE}/img/logo.png" width="44" height="44" alt="Twiggli" style="display:block;margin:0 auto 18px"></td></tr>
+<tr><td style="font-size:20px;font-weight:bold;padding-bottom:8px">${head}</td></tr>
+<tr><td style="font-size:14px;line-height:1.5;color:#5b5f6b;padding-bottom:14px">${lede}</td></tr>
+<tr><td style="font-size:13px;color:#8a8f9c;padding-bottom:20px">${T.at}</td></tr>
+<tr><td style="font-size:13px;line-height:1.5;color:#24272e">${T.notyou}</td></tr>
+</table></td></tr></table></body></html>`;
+  const text = `${head}\n\n${lede}\n${T.at}\n\n${T.notyou.replace(/<[^>]+>/g, '')}`;
+  return { subject: T.subject[event], html, text };
+};
+const tfaSudoDoc = (uid) => getFirestore().doc(`twoFactorSudo/${uid}`);
+
+// Every change to two-factor needs a fresh email code first (Jirel 15.11.26,
+// like Luma's "Confirm access"): confirmSend → confirmCheck { code } opens
+// 10 minutes in which setup / enable / disable work.
 // status → { on, since, verified }; setup → { qr (svg), secret, uri };
 // enable { code } → { backup }; verify { code | backup } → { token };
 // disable { code | backup } → { ok }. Wrong codes: 5 tries, then 10 minutes.
-export const twoFactor = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD, BREVO_API_KEY], maxInstances: 5, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   let t;
   try { t = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { t = null; }
   if (!t?.uid || !t.email) return res.status(401).json({ error: 'Sign in first' });
   const action = String(req.body?.action ?? 'status');
+  const lang = req.body?.lang === 'en' ? 'en' : 'de';
   const ref = tfaDoc(t.uid);
+  const sudoRef = tfaSudoDoc(t.uid);
+  const sudo = (await sudoRef.get()).data() ?? {};
+  const now = Date.now();
+  const tell = (event) => systemMail(t.email, securityMail(lang, event), `2fa-${event}`).catch(() => {});
+
+  if (action === 'confirmSend') {
+    const hour = (sudo.sent ?? []).filter((x) => now - x < 3600e3);
+    if (sudo.lastSent && now - sudo.lastSent < 55e3) return res.status(429).json({ error: 'wait', wait: Math.ceil((60e3 - (now - sudo.lastSent)) / 1000) });
+    if (hour.length >= 6) return res.status(429).json({ error: 'hour' });
+    const code = String(randomInt(0, 1e6)).padStart(6, '0');
+    await sudoRef.set({ hash: signinHash(await approveKey(), `sudo:${t.uid}`, code), expires: now + CODE_TTL, tries: 0, lastSent: now, sent: [...hour, now], until: 0 });
+    const ok = await systemMail(t.email, codeMail(lang, code, '', 'confirm'), 'confirm-code');
+    return ok ? res.status(200).json({ ok: true, to: t.email }) : res.status(502).json({ error: 'mail' });
+  }
+  if (action === 'confirmCheck') {
+    const code = String(req.body?.code ?? '').replace(/\D/g, '');
+    if (!sudo.hash || now > (sudo.expires ?? 0)) return res.status(410).json({ error: 'expired' });
+    if ((sudo.tries ?? 0) >= 5) return res.status(429).json({ error: 'locked' });
+    const a = Buffer.from(signinHash(await approveKey(), `sudo:${t.uid}`, code), 'hex');
+    const b = Buffer.from(sudo.hash, 'hex');
+    if (code.length !== 6 || a.length !== b.length || !timingSafeEqual(a, b)) {
+      await sudoRef.update({ tries: (sudo.tries ?? 0) + 1 });
+      return res.status(401).json({ error: 'wrong' });
+    }
+    await sudoRef.set({ hash: FieldValue.delete(), expires: 0, until: now + 10 * 60_000 }, { merge: true });
+    return res.status(200).json({ ok: true });
+  }
+  const confirmed = (sudo.until ?? 0) > now;
   const snap = await ref.get();
   const d = snap.data();
   tfaCache.delete(t.uid);
-  if (action === 'status') return res.status(200).json({ on: snap.exists, since: d?.since ?? null, verified: Boolean(t.mfa) });
+  if (action === 'status') return res.status(200).json({ on: snap.exists, since: d?.since ?? null, verified: Boolean(t.mfa), confirmed });
+  if (['setup', 'enable', 'disable'].includes(action) && !confirmed) return res.status(403).json({ error: 'confirm' });
 
+  let usedBackup = false;
   // Checks a code (or a backup code) against the saved secret; counts misses.
   const check = async (doc, secretBuf) => {
     if ((doc.lockUntil ?? 0) > Date.now()) return 'locked';
@@ -2186,7 +2277,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', maxInstances: 5, co
       if (step >= 0 && step > (doc.lastStep ?? -1)) { await ref.update({ lastStep: step, tries: 0 }); return 'ok'; }
     } else if (backup) {
       const h = backupHash(await approveKey(), backup);
-      if ((doc.backup ?? []).includes(h)) { await ref.update({ backup: FieldValue.arrayRemove(h), tries: 0 }); return 'ok'; }
+      if ((doc.backup ?? []).includes(h)) { await ref.update({ backup: FieldValue.arrayRemove(h), tries: 0 }); usedBackup = true; return 'ok'; }
     }
     const tries = (doc.tries ?? 0) + 1;
     await ref.update(tries >= 5 ? { tries: 0, lockUntil: Date.now() + 10 * 60_000 } : { tries });
@@ -2215,6 +2306,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', maxInstances: 5, co
     await ref.set({ secret: p.secret, since: Date.now(), lastStep: step, tries: 0, backup: codes.map((c) => backupHash(key, c)) });
     await tfaPendingDoc(t.uid).delete();
     tfaCache.delete(t.uid);
+    await tell('on');
     // This session just proved the app, so it may carry on.
     return res.status(200).json({ backup: codes, token: await getAuth().createCustomToken(t.uid, { mfa: Date.now() }) });
   }
@@ -2222,9 +2314,12 @@ export const twoFactor = onRequest({ region: 'europe-west3', maxInstances: 5, co
     if (!snap.exists) return action === 'verify' ? res.status(200).json({ token: null }) : res.status(200).json({ ok: true });
     const verdict = await check(d, await unseal(d.secret));
     if (verdict !== 'ok') return res.status(verdict === 'locked' ? 429 : 401).json({ error: verdict });
+    if (usedBackup) await tell('backup');
     if (action === 'disable') {
       await ref.delete();
       tfaCache.delete(t.uid);
+      await sudoRef.set({ until: 0 }, { merge: true });
+      await tell('off');
       return res.status(200).json({ ok: true });
     }
     try {
