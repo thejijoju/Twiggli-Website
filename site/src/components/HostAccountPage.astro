@@ -320,6 +320,7 @@ const fields = [
               <label><span>{lang === 'de' ? 'Vorname' : 'First name'}</span><input name="first" autocomplete="given-name" maxlength="40" /></label>
               <label><span>{lang === 'de' ? 'Nachname' : 'Last name'}</span><input name="last" autocomplete="family-name" maxlength="40" /></label>
             </div>
+            <label class="hd-set-phone"><span>{lang === 'de' ? 'Telefon' : 'Phone'}</span><input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+49 170 1234567" /><small>{lang === 'de' ? 'Sieht nur Twiggli, damit wir dich bei kurzfristigen Anfragen erreichen.' : 'Only Twiggli sees this, so we can reach you about last-minute requests.'}</small></label>
             <label class="hd-set-bio"><span>{lang === 'de' ? 'Kurzbio' : 'Bio'}</span><textarea name="bio" rows="2" maxlength="160" data-hs-bio placeholder={lang === 'de' ? 'Erzähl kurz etwas über dich und dein Handwerk.' : 'Share a little about you and your craft.'}></textarea><small class="hd-set-count" data-hs-bio-count aria-live="polite">0/160</small></label>
             <span class="hd-set-lbl">{lang === 'de' ? 'Social Links' : 'Social links'}</span>
             <div class="hd-set-social">
@@ -330,6 +331,16 @@ const fields = [
             <div class="hd-set-actions">
               <button type="submit" class="hd-set-save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.3 4.6-4.8"/></svg>{lang === 'de' ? 'Änderungen speichern' : 'Save changes'}</button>
               <small class="hd-set-note" data-hs-note role="status"></small>
+            </div>
+          </form>
+          <form class="hd-set-block hd-set-form" data-hs-studio hidden novalidate>
+            <h2>{lang === 'de' ? 'Dein Studio' : 'Your studio'}</h2>
+            <p class="hd-set-sub">{lang === 'de' ? 'So steht es auf deiner Seite. Wir prüfen Änderungen kurz, bevor sie online gehen.' : "This is how it shows on your page. We check changes briefly before they go live."}</p>
+            <label><span>{lang === 'de' ? 'Name des Studios' : 'Studio name'}</span><input name="studio" maxlength="80" /></label>
+            <label><span>{lang === 'de' ? 'Adresse' : 'Address'}</span><input name="place" maxlength="120" autocomplete="street-address" placeholder={lang === 'de' ? 'Straße Nr., PLZ Ort' : 'Street no., postcode city'} /></label>
+            <div class="hd-set-actions">
+              <button type="submit" class="hd-set-save">{lang === 'de' ? 'Studio speichern' : 'Save studio'}</button>
+              <span class="hd-set-note" data-hs-studio-note role="status"></span>
             </div>
           </form>
           <div class="hd-set-block" data-hs-page hidden>
@@ -398,11 +409,17 @@ const fields = [
         <div class="hd-set-pane" data-hs-pane="prefs" hidden>
           <div class="hd-set-block">
             <h2>{lang === 'de' ? 'Sprache' : 'Language'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'In welcher Sprache sollen wir dir schreiben?' : 'Which language should we write to you in?'}</p>
+            <p class="hd-set-sub">{lang === 'de' ? 'In welcher Sprache sollen wir dir schreiben? Das gilt auch für die automatischen Buchungsanfragen.' : 'Which language should we write to you in? This also applies to the automatic booking requests.'}</p>
             <div class="hd-set-seg" data-hs-lang>
               <button type="button" data-v="de">Deutsch</button>
               <button type="button" data-v="en">English</button>
             </div>
+          </div>
+          <div class="hd-set-block" data-hs-notify>
+            <h2>{lang === 'de' ? 'E-Mail-Benachrichtigungen' : 'Email notifications'}</h2>
+            <label class="hd-sw-row"><span><b>{lang === 'de' ? 'Neue Anfragen' : 'New requests'}</b><small>{lang === 'de' ? 'Buchungs-, Gruppen- und Terminanfragen. Immer an, damit dir kein Gast verloren geht.' : "Booking, group and date requests. Always on, so you never miss a guest."}</small></span><input type="checkbox" class="hd-sw" checked disabled /></label>
+            <label class="hd-sw-row"><span><b>{lang === 'de' ? 'Neue Bewertungen' : 'New reviews'}</b><small>{lang === 'de' ? 'Wenn eine Bewertung auf deiner Seite erscheint.' : 'When a review appears on your page.'}</small></span><input type="checkbox" class="hd-sw" name="notifyReviews" checked /></label>
+            <label class="hd-sw-row"><span><b>{lang === 'de' ? 'Neuigkeiten von Twiggli' : 'News from Twiggli'}</b><small>{lang === 'de' ? 'Ab und zu Tipps für mehr Buchungen und Neues auf Twiggli.' : 'Now and then, tips for more bookings and news about Twiggli.'}</small></span><input type="checkbox" class="hd-sw" name="notifyNews" checked /></label>
           </div>
           <div class="hd-set-block" data-hs-emoji-block>
             <h2>{lang === 'de' ? 'Profil-Emoji' : 'Profile emoji'}</h2>
@@ -1026,11 +1043,12 @@ const fields = [
       const fillSettings = () => {
         const u = auth.currentUser;
         const [f0, ...rest] = (u?.displayName || '').split(' ');
-        for (const k of ['first', 'last', 'bio', 'instagram', 'tiktok', 'youtube']) {
+        for (const k of ['first', 'last', 'bio', 'phone', 'instagram', 'tiktok', 'youtube']) {
           const el = sForm.elements.namedItem(k) as HTMLInputElement | null;
           if (el) el.value = us[k] ?? (k === 'first' ? f0 : k === 'last' ? rest.join(' ') : '');
         }
         bioFit();
+        root.querySelectorAll<HTMLInputElement>('[data-hs-notify] input[name]').forEach((x) => { x.checked = us[x.name] !== 'off'; });
         const lg = us.lang || (document.documentElement.lang === 'en' ? 'en' : 'de');
         root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === lg)));
       };
@@ -1041,7 +1059,8 @@ const fields = [
       }));
       const saveSettings = async (extra: Record<string, string> = {}) => {
         const data: Record<string, string> = { ...us, ...extra };
-        for (const k of ['first', 'last', 'bio', 'instagram', 'tiktok', 'youtube']) data[k] = (sForm.elements.namedItem(k) as HTMLInputElement).value;
+        root.querySelectorAll<HTMLInputElement>('[data-hs-notify] input[name]').forEach((x) => { data[x.name] = x.checked ? 'on' : 'off'; });
+        for (const k of ['first', 'last', 'bio', 'phone', 'instagram', 'tiktok', 'youtube']) data[k] = (sForm.elements.namedItem(k) as HTMLInputElement).value;
         us = await api('userSettings', { action: 'save', ...data });
         await auth.currentUser?.reload();
         fillSettings(); renderProfile();
@@ -1066,9 +1085,38 @@ const fields = [
         catch { note.textContent = fill(t.error, cfg.contact); }
         btn.disabled = false;
       });
+      root.querySelectorAll<HTMLInputElement>('[data-hs-notify] input[name]').forEach((x) => x.addEventListener('change', () => { void saveSettings().catch(() => {}); }));
+      // "Dein Studio": the studio name and address on the host's page, for
+      // both languages (the same fields as in the page text editor).
+      const studioForm = $<HTMLFormElement>('[data-hs-studio]');
+      const fillStudio = () => {
+        if (!slug) { studioForm.hidden = true; return; }
+        studioForm.hidden = false;
+        const src = texts.de.studio || texts.de.place ? texts.de : texts.en;
+        (studioForm.elements.namedItem('studio') as HTMLInputElement).value = src.studio ?? '';
+        (studioForm.elements.namedItem('place') as HTMLInputElement).value = src.place ?? '';
+      };
+      studioForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const n = $('[data-hs-studio-note]');
+        const btn = studioForm.querySelector<HTMLButtonElement>('.hd-set-save')!;
+        const studio = (studioForm.elements.namedItem('studio') as HTMLInputElement).value.trim();
+        const place = (studioForm.elements.namedItem('place') as HTMLInputElement).value.trim();
+        btn.disabled = true; n.textContent = '';
+        try {
+          for (const l of ['en', 'de'] as const) {
+            texts[l] = { ...texts[l], studio, place };
+            await setDoc(doc(db, 'hostProfiles', `${slug}_${l}`), { slug, lang: l, ...texts[l], updated_at: new Date().toISOString(), updated_by: email });
+          }
+          if (textLang) showText();
+          tellUs('studio name / address');
+          n.textContent = root.dataset.lang === 'de' ? 'Gespeichert ✓' : 'Saved ✓';
+        } catch { n.textContent = fill(t.error, cfg.contact); }
+        btn.disabled = false;
+      });
       root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((b) => b.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-        void saveSettings({ lang: b.dataset.v || 'de' }).catch(() => {});
+        void saveSettings({ langPick: b.dataset.v || 'de' }).catch(() => {});
       }));
       $('[data-ha-signout]').addEventListener('click', async () => {
         await signOut(auth);
@@ -1462,6 +1510,7 @@ const fields = [
           return base;
         };
         texts = { en: saved('en'), de: saved('de') };
+        fillStudio();
         showText();
         slotsBox.replaceChildren();
         const slots = slotSnap.docs.map((d) => d.data() as Slot & { active?: boolean })
@@ -3219,6 +3268,18 @@ const fields = [
   .hd-set-seg button { font: inherit; font-size: 0.9rem; border: 0; background: none; border-radius: 9px; padding: 7px 16px; color: var(--color-text-muted); cursor: pointer; }
   .hd-set-seg button[aria-pressed='true'] { background: #fff; color: #16181d; font-weight: 600; box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.2); }
   .hd-set-out { margin-top: 36px; }
+  /* Phone hint, notification switches (Jirel 15.11.26). */
+  .hd-set-phone small { font-size: 0.8rem; color: var(--color-text-muted); }
+  .hd-sw-row { display: flex !important; align-items: center; justify-content: space-between; gap: 18px; background: #fff; border-radius: 16px; padding: 14px 18px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); cursor: pointer; }
+  .hd-sw-row > span { display: grid; gap: 2px; }
+  .hd-sw-row b { font-size: 0.95rem; color: #16181d; }
+  .hd-sw-row small { font-size: 0.84rem; color: var(--color-text-muted); }
+  .ha input.hd-sw[type='checkbox'] { appearance: none; -webkit-appearance: none; flex: none; width: 42px; height: 24px; border-radius: 999px; background: rgba(36, 39, 46, 0.18); position: relative; cursor: pointer; transition: background .2s ease; margin: 0; border: 0; }
+  .ha input.hd-sw[type='checkbox']::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); transition: transform .2s ease; }
+  .ha input.hd-sw[type='checkbox']:checked { background: #6a3eec; }
+  .ha input.hd-sw[type='checkbox']:checked::after { transform: translateX(18px); }
+  .ha input.hd-sw[type='checkbox']:disabled { opacity: .55; cursor: default; }
+  .hd-sw-row:has(input:disabled) { cursor: default; }
   /* Two-factor (Jirel 15.11.26). */
   .hd-tfa-card { background: #fff; border-radius: 16px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); display: grid; gap: 12px; justify-items: start; }
   .hd-tfa-card p { margin: 0; display: flex; align-items: center; gap: 10px; }
