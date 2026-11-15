@@ -26,7 +26,8 @@ import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { getStorage as adminStorage } from 'firebase-admin/storage';
-import { createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
+import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
+import QRCode from 'qrcode';
 import nodemailer from 'nodemailer';
 import { newVoucherCode, voucherMail, voucherPdf } from './voucher.js';
 
@@ -1029,12 +1030,77 @@ const approveKey = async () => {
 };
 const sign = (key, email, slug) => createHmac('sha256', key).update(`${email}\n${slug}`).digest('hex');
 
+// ── Two-factor sign-in (Jirel 15.11.26), opt-in per account ──────────────
+// An authenticator app (TOTP, RFC 6238: SHA-1, 30 s, 6 digits) on top of the
+// email code or Google. twoFactor/{uid} exists only while it is on and
+// holds the secret encrypted (AES-256-GCM, key from _config/hostAccess) and
+// eight one-time backup codes as hashes. A session that passed the second
+// step carries the claim mfa (a custom token from twoFactor below); while
+// 2FA is on, every function here and the Firestore host rules refuse a
+// session without it. Only the website checks it: the app signs in on its own.
+const tfaDoc = (uid) => getFirestore().doc(`twoFactor/${uid}`);
+const tfaPendingDoc = (uid) => getFirestore().doc(`twoFactorPending/${uid}`);
+const tfaCache = new Map();
+const tfaOn = async (uid) => {
+  const hit = tfaCache.get(uid);
+  if (hit && hit.at > Date.now() - 60_000) return hit.on;
+  const on = (await tfaDoc(uid).get()).exists;
+  tfaCache.set(uid, { on, at: Date.now() });
+  return on;
+};
+/** True when this account has 2FA on and the session skipped the second step. */
+const mfaMissing = async (t) => !t.mfa && await tfaOn(t.uid);
+const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+const b32encode = (buf) => {
+  let bits = 0, val = 0, out = '';
+  for (const byte of buf) { val = (val << 8) | byte; bits += 8; while (bits >= 5) { out += B32[(val >>> (bits - 5)) & 31]; bits -= 5; } }
+  if (bits > 0) out += B32[(val << (5 - bits)) & 31];
+  return out;
+};
+const totpAt = (secret, step) => {
+  const msg = Buffer.alloc(8);
+  msg.writeBigUInt64BE(BigInt(step));
+  const h = createHmac('sha1', secret).update(msg).digest();
+  const o = h[h.length - 1] & 15;
+  return String((h.readUInt32BE(o) & 0x7fffffff) % 1_000_000).padStart(6, '0');
+};
+/** The 30-second step a code matches (one step either side for clock
+ *  drift), or -1. */
+const totpStep = (secret, code) => {
+  const now = Math.floor(Date.now() / 30_000);
+  for (const d of [0, -1, 1]) {
+    const a = Buffer.from(totpAt(secret, now + d));
+    const b = Buffer.from(String(code).padStart(6, '0').slice(0, 6));
+    if (a.length === b.length && timingSafeEqual(a, b)) return now + d;
+  }
+  return -1;
+};
+const tfaKey = async () => createHash('sha256').update(`totp\n${await approveKey()}`).digest();
+const seal = async (buf) => {
+  const iv = randomBytes(12);
+  const c = createCipheriv('aes-256-gcm', await tfaKey(), iv);
+  const enc = Buffer.concat([c.update(buf), c.final()]);
+  return [iv, c.getAuthTag(), enc].map((x) => x.toString('base64')).join('.');
+};
+const unseal = async (str) => {
+  const [iv, tag, enc] = String(str).split('.').map((x) => Buffer.from(x, 'base64'));
+  const d = createDecipheriv('aes-256-gcm', await tfaKey(), iv);
+  d.setAuthTag(tag);
+  return Buffer.concat([d.update(enc), d.final()]);
+};
+const backupHash = (key, code) => createHmac('sha256', key).update(`backup\n${code.replace(/[^a-z0-9]/gi, '').toLowerCase()}`).digest('hex');
+const newBackupCodes = () => Array.from({ length: 8 }, () => {
+  const raw = b32encode(randomBytes(6)).slice(0, 8).toLowerCase();
+  return `${raw.slice(0, 4)}-${raw.slice(4)}`;
+});
+
 /** Who is calling, from the Firebase sign-in token the page sends. */
 const caller = async (req) => {
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   if (!m) return null;
   try {
     const t = await getAuth().verifyIdToken(m[1]);
+    if (await mfaMissing(t)) return null;
     return t.email && t.email_verified ? t.email.toLowerCase() : null;
   } catch { return null; }
 };
@@ -1397,6 +1463,7 @@ const callerIds = async (req) => {
   if (!m) return null;
   try {
     const t = await getAuth().verifyIdToken(m[1]);
+    if (await mfaMissing(t)) return null;
     return t.email && t.email_verified ? { email: t.email.toLowerCase(), uid: t.uid } : null;
   } catch { return null; }
 };
@@ -1981,6 +2048,7 @@ export const profilePhoto = onRequest({ region: 'europe-west3', maxInstances: 5,
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   let user;
   try { user = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { user = null; }
+  if (user && await mfaMissing(user)) user = null;
   if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
   if (req.body?.remove) {
     await getAuth().updateUser(user.uid, { photoURL: null });
@@ -2013,6 +2081,7 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   let user;
   try { user = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { user = null; }
+  if (user && await mfaMissing(user)) user = null;
   if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
   const ref = getFirestore().doc(`userSettings/${user.uid}`);
   if (req.body?.action !== 'save') return res.status(200).json((await ref.get()).data() ?? {});
@@ -2033,4 +2102,81 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   if (name) await getAuth().updateUser(user.uid, { displayName: name });
   const { updatedAt, ...back } = out;
   return res.status(200).json(back);
+});
+
+// status → { on, since, verified }; setup → { qr (svg), secret, uri };
+// enable { code } → { backup }; verify { code | backup } → { token };
+// disable { code | backup } → { ok }. Wrong codes: 5 tries, then 10 minutes.
+export const twoFactor = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
+  let t;
+  try { t = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { t = null; }
+  if (!t?.uid || !t.email) return res.status(401).json({ error: 'Sign in first' });
+  const action = String(req.body?.action ?? 'status');
+  const ref = tfaDoc(t.uid);
+  const snap = await ref.get();
+  const d = snap.data();
+  tfaCache.delete(t.uid);
+  if (action === 'status') return res.status(200).json({ on: snap.exists, since: d?.since ?? null, verified: Boolean(t.mfa) });
+
+  // Checks a code (or a backup code) against the saved secret; counts misses.
+  const check = async (doc, secretBuf) => {
+    if ((doc.lockUntil ?? 0) > Date.now()) return 'locked';
+    const code = String(req.body?.code ?? '').replace(/\D/g, '');
+    const backup = String(req.body?.backup ?? '').trim();
+    if (code.length === 6) {
+      const step = totpStep(secretBuf, code);
+      if (step >= 0 && step > (doc.lastStep ?? -1)) { await ref.update({ lastStep: step, tries: 0 }); return 'ok'; }
+    } else if (backup) {
+      const h = backupHash(await approveKey(), backup);
+      if ((doc.backup ?? []).includes(h)) { await ref.update({ backup: FieldValue.arrayRemove(h), tries: 0 }); return 'ok'; }
+    }
+    const tries = (doc.tries ?? 0) + 1;
+    await ref.update(tries >= 5 ? { tries: 0, lockUntil: Date.now() + 10 * 60_000 } : { tries });
+    return tries >= 5 ? 'locked' : 'wrong';
+  };
+
+  if (action === 'setup') {
+    if (snap.exists) return res.status(409).json({ error: 'on' });
+    const secret = randomBytes(20);
+    const b32 = b32encode(secret);
+    await tfaPendingDoc(t.uid).set({ secret: await seal(secret), expires: Date.now() + 15 * 60_000 });
+    const label = encodeURIComponent(`Twiggli:${t.email}`);
+    const uri = `otpauth://totp/${label}?secret=${b32}&issuer=Twiggli&algorithm=SHA1&digits=6&period=30`;
+    const qr = await QRCode.toString(uri, { type: 'svg', margin: 0, errorCorrectionLevel: 'M', color: { dark: '#16181d', light: '#0000' } });
+    return res.status(200).json({ qr, secret: b32.match(/.{1,4}/g).join(' '), uri });
+  }
+  if (action === 'enable') {
+    if (snap.exists) return res.status(409).json({ error: 'on' });
+    const p = (await tfaPendingDoc(t.uid).get()).data();
+    if (!p?.secret || Date.now() > p.expires) return res.status(410).json({ error: 'expired' });
+    const secret = await unseal(p.secret);
+    const step = totpStep(secret, String(req.body?.code ?? '').replace(/\D/g, ''));
+    if (step < 0) return res.status(401).json({ error: 'wrong' });
+    const codes = newBackupCodes();
+    const key = await approveKey();
+    await ref.set({ secret: p.secret, since: Date.now(), lastStep: step, tries: 0, backup: codes.map((c) => backupHash(key, c)) });
+    await tfaPendingDoc(t.uid).delete();
+    tfaCache.delete(t.uid);
+    // This session just proved the app, so it may carry on.
+    return res.status(200).json({ backup: codes, token: await getAuth().createCustomToken(t.uid, { mfa: Date.now() }) });
+  }
+  if (action === 'verify' || action === 'disable') {
+    if (!snap.exists) return action === 'verify' ? res.status(200).json({ token: null }) : res.status(200).json({ ok: true });
+    const verdict = await check(d, await unseal(d.secret));
+    if (verdict !== 'ok') return res.status(verdict === 'locked' ? 429 : 401).json({ error: verdict });
+    if (action === 'disable') {
+      await ref.delete();
+      tfaCache.delete(t.uid);
+      return res.status(200).json({ ok: true });
+    }
+    try {
+      return res.status(200).json({ token: await getAuth().createCustomToken(t.uid, { mfa: Date.now() }) });
+    } catch (err) {
+      console.error('2fa token', err?.message);
+      return res.status(500).json({ error: 'token' });
+    }
+  }
+  return res.status(400).json({ error: 'action' });
 });

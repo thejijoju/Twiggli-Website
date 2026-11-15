@@ -177,6 +177,31 @@ const fields = [
       </div>
     </form>
 
+    <!-- Step 3, only with two-factor on (Jirel 15.11.26): the code from the
+         authenticator app, or one of the backup codes. -->
+    <form class="ha-signin ha-code ha-tfa" data-ha-tfa hidden novalidate
+      data-wrong={lang === 'de' ? 'Der Code stimmt nicht. Versuch es noch einmal.' : "That code isn't right. Try again."}
+      data-locked={lang === 'de' ? 'Zu viele Versuche. Warte 10 Minuten und versuch es dann noch einmal.' : 'Too many tries. Wait 10 minutes, then try again.'}
+      data-checking={lang === 'de' ? 'Wird geprüft …' : 'Checking …'}>
+      <span class="ha-code-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      <h2>{lang === 'de' ? 'Bestätigungscode' : 'Verification code'}</h2>
+      <p class="ha-sub" data-ha-tfa-sub>{lang === 'de' ? 'Öffne deine Authenticator-App und gib den 6-stelligen Code für Twiggli ein.' : 'Open your authenticator app and enter the 6-digit code for Twiggli.'}</p>
+      <div class="ha-code-boxes" data-ha-tfa-boxes role="group" aria-label={lang === 'de' ? '6-stelliger Code' : '6-digit code'}>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`${lang === 'de' ? 'Ziffer' : 'Digit'} ${i + 1}`} />
+        ))}
+      </div>
+      <div class="ha-tfa-backup" data-ha-tfa-backup hidden>
+        <input type="text" name="backup" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="abcd-efgh" aria-label={lang === 'de' ? 'Backup-Code' : 'Backup code'} />
+        <button type="submit" class="ha-btn">{lang === 'de' ? 'Bestätigen' : 'Confirm'}</button>
+      </div>
+      <p class="ha-note" data-ha-tfa-note role="status"></p>
+      <div class="ha-code-row">
+        <button type="button" class="ha-code-paste" data-ha-tfa-switch data-other={lang === 'de' ? 'Code aus der App verwenden' : 'Use the code from the app'}>{lang === 'de' ? 'Backup-Code verwenden' : 'Use a backup code'}</button>
+        <button type="button" class="ha-code-resend" data-ha-tfa-out>{t.signOut}</button>
+      </div>
+    </form>
+
     <!-- A second of welcome right after signing in (Jirel 14.11.26, like Luma). -->
     <div class="ha-welcome" data-ha-welcome hidden aria-live="polite">
       <div class="ha-welcome-glow" aria-hidden="true"></div>
@@ -321,6 +346,52 @@ const fields = [
               <p><b data-hs-email></b><span class="hd-set-pill">{lang === 'de' ? 'Haupt-E-Mail' : 'Primary'}</span></p>
               <p class="hd-set-sub">{lang === 'de' ? 'Hier bekommst du Anfragen und deinen Anmeldecode. Anmelden kannst du dich auch mit Google.' : 'Requests and your sign-in code arrive here. You can also sign in with Google.'}</p>
             </div>
+          </div>
+          <div class="hd-set-block hd-tfa" data-hs-tfa
+            data-wrong={lang === 'de' ? 'Der Code stimmt nicht. Versuch es noch einmal.' : "That code isn't right. Try again."}
+            data-locked={lang === 'de' ? 'Zu viele Versuche. Warte 10 Minuten.' : 'Too many tries. Wait 10 minutes.'}
+            data-expired={lang === 'de' ? 'Das hat zu lange gedauert. Starte die Einrichtung bitte neu.' : 'That took too long. Please start the setup again.'}
+            data-since={lang === 'de' ? 'Aktiv seit {d}' : 'On since {d}'}>
+            <h2>{lang === 'de' ? 'Zwei-Faktor-Authentifizierung' : 'Two-factor authentication'}</h2>
+            <div class="hd-tfa-card" data-hs-tfa-off>
+              <p class="hd-set-sub">{lang === 'de' ? 'Schütze dein Konto zusätzlich mit einer Authenticator-App, z. B. Google Authenticator, 1Password oder Apple Passwörter. Beim Anmelden fragen wir dann nach einem zweiten Code.' : 'Protect your account with an authenticator app as well, such as Google Authenticator, 1Password or Apple Passwords. When you sign in, we then ask for a second code.'}</p>
+              <button type="button" class="hd-set-save" data-hs-tfa-start><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>{lang === 'de' ? 'Einrichten' : 'Set up'}</button>
+            </div>
+            <div class="hd-tfa-card" data-hs-tfa-setup hidden>
+              <ol class="hd-tfa-steps">
+                <li><b>{lang === 'de' ? 'Scanne den QR-Code mit deiner Authenticator-App.' : 'Scan the QR code with your authenticator app.'}</b>
+                  <div class="hd-tfa-qr" data-hs-tfa-qr></div>
+                  <span class="hd-set-sub">{lang === 'de' ? 'Oder gib diesen Schlüssel von Hand ein:' : 'Or type in this key by hand:'}</span>
+                  <code class="hd-tfa-key" data-hs-tfa-key></code>
+                </li>
+                <li><b>{lang === 'de' ? 'Gib den 6-stelligen Code aus der App ein.' : 'Enter the 6-digit code from the app.'}</b>
+                  <input class="hd-tfa-input" data-hs-tfa-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
+                </li>
+              </ol>
+              <div class="hd-tfa-row">
+                <button type="button" class="hd-set-save" data-hs-tfa-enable>{lang === 'de' ? 'Aktivieren' : 'Turn on'}</button>
+                <button type="button" class="hd-tfa-link" data-hs-tfa-cancel>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+              </div>
+            </div>
+            <div class="hd-tfa-card" data-hs-tfa-codes hidden>
+              <p><b>{lang === 'de' ? 'Deine Backup-Codes' : 'Your backup codes'}</b></p>
+              <p class="hd-set-sub">{lang === 'de' ? 'Falls du dein Handy einmal nicht hast: Jeder Code funktioniert genau einmal. Bewahre sie sicher auf, z. B. in deinem Passwort-Manager.' : "In case you don't have your phone: each code works exactly once. Keep them somewhere safe, such as your password manager."}</p>
+              <ul class="hd-tfa-list" data-hs-tfa-list></ul>
+              <div class="hd-tfa-row">
+                <button type="button" class="hd-tfa-copy" data-hs-tfa-copy data-done={lang === 'de' ? 'Kopiert ✓' : 'Copied ✓'}>{lang === 'de' ? 'Codes kopieren' : 'Copy codes'}</button>
+                <button type="button" class="hd-set-save" data-hs-tfa-saved>{lang === 'de' ? 'Ich habe sie gespeichert' : "I've saved them"}</button>
+              </div>
+            </div>
+            <div class="hd-tfa-card" data-hs-tfa-on hidden>
+              <p><b>{lang === 'de' ? 'Authenticator-App' : 'Authenticator app'}</b><span class="hd-set-pill hd-tfa-pill">{lang === 'de' ? 'Aktiv' : 'On'}</span></p>
+              <p class="hd-set-sub" data-hs-tfa-since></p>
+              <div class="hd-tfa-row" data-hs-tfa-offrow hidden>
+                <input class="hd-tfa-input" data-hs-tfa-offcode type="text" autocomplete="one-time-code" maxlength="9" placeholder={lang === 'de' ? 'Code oder Backup-Code' : 'Code or backup code'} />
+                <button type="button" class="hd-set-save" data-hs-tfa-offgo>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
+              </div>
+              <button type="button" class="hd-tfa-link" data-hs-tfa-off-start>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
+            </div>
+            <p class="ha-note" data-hs-tfa-note role="status"></p>
           </div>
         </div>
 
@@ -790,6 +861,149 @@ const fields = [
         signin.querySelector<HTMLInputElement>('input[name="email"]')?.focus();
       });
       codeForm.addEventListener('submit', (e) => { e.preventDefault(); verify(); });
+
+      // ── Two-factor (Jirel 15.11.26) ──
+      const authed = async (fn: string, body: object) => {
+        const token = await auth.currentUser?.getIdToken();
+        const r = await fetch(`${functionsBase}/${fn}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body) });
+        const j = await r.json().catch(() => ({}));
+        return { ok: r.ok, status: r.status, j };
+      };
+      const tfaNeeded = async () => {
+        try {
+          const claims = (await auth.currentUser!.getIdTokenResult()).claims;
+          if (claims.mfa) return false;
+          const { ok, j } = await authed('twoFactor', { action: 'status' });
+          return ok && Boolean(j.on);
+        } catch { return false; }
+      };
+      const tfaForm = $<HTMLFormElement>('[data-ha-tfa]');
+      const tfaBoxes = [...tfaForm.querySelectorAll<HTMLInputElement>('[data-ha-tfa-boxes] input')];
+      const tfaBackup = $('[data-ha-tfa-backup]');
+      const tfaNote = $('[data-ha-tfa-note]');
+      const tfaSay = (msg: string, ok = true) => { tfaNote.textContent = msg; tfaNote.dataset.ok = String(ok); };
+      const showTfa = () => {
+        tfaForm.hidden = false;
+        tfaBoxes.forEach((b) => { b.value = ''; });
+        tfaBoxes[0].focus();
+      };
+      const tfaGo = async (body: Record<string, string>) => {
+        tfaBoxes.forEach((b) => { b.disabled = true; });
+        tfaSay(tfaForm.dataset.checking ?? '');
+        try {
+          const { ok, status, j } = await authed('twoFactor', { action: 'verify', ...body });
+          if (ok && j.token) {
+            await signInWithCustomToken(auth, j.token);
+            rememberSignedIn(true);
+            welcomeNext();
+            location.reload();
+            return;
+          }
+          tfaSay(status === 429 ? tfaForm.dataset.locked ?? '' : tfaForm.dataset.wrong ?? '', false);
+          tfaForm.classList.remove('is-shake'); void tfaForm.offsetWidth; tfaForm.classList.add('is-shake');
+        } catch { tfaSay(fill(t.error, cfg.contact), false); }
+        tfaBoxes.forEach((b) => { b.disabled = false; b.value = ''; });
+        if (tfaBackup.hidden) tfaBoxes[0].focus();
+      };
+      const tfaFill = (digits: string, from = 0) => {
+        const d = digits.replace(/\D/g, '').slice(0, 6 - from);
+        [...d].forEach((c, i) => { tfaBoxes[from + i].value = c; });
+        tfaBoxes[Math.min(from + d.length, 5)].focus();
+        if (tfaBoxes.every((b) => b.value)) void tfaGo({ code: tfaBoxes.map((b) => b.value).join('') });
+      };
+      tfaBoxes.forEach((b, i) => {
+        b.addEventListener('input', () => {
+          const v = b.value.replace(/\D/g, '');
+          if (v.length > 1) { b.value = ''; tfaFill(v, i); return; }
+          b.value = v;
+          if (v && i < 5) tfaBoxes[i + 1].focus();
+          if (tfaBoxes.every((x) => x.value)) void tfaGo({ code: tfaBoxes.map((x) => x.value).join('') });
+        });
+        b.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !b.value && i > 0) { tfaBoxes[i - 1].value = ''; tfaBoxes[i - 1].focus(); e.preventDefault(); }
+        });
+        b.addEventListener('paste', (e) => { const x = e.clipboardData?.getData('text') ?? ''; if (x) { e.preventDefault(); tfaFill(x, 0); } });
+        b.addEventListener('focus', () => b.select());
+      });
+      const tfaSwitch = $<HTMLButtonElement>('[data-ha-tfa-switch]');
+      tfaSwitch.addEventListener('click', () => {
+        const toBackup = tfaBackup.hidden;
+        tfaBackup.hidden = !toBackup;
+        $('[data-ha-tfa-boxes]').hidden = toBackup;
+        const other = tfaSwitch.dataset.other ?? '';
+        tfaSwitch.dataset.other = tfaSwitch.textContent ?? '';
+        tfaSwitch.textContent = other;
+        tfaSay('');
+        (toBackup ? tfaBackup.querySelector('input')! : tfaBoxes[0]).focus();
+      });
+      tfaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v = (tfaBackup.querySelector('input') as HTMLInputElement).value.trim();
+        if (!tfaBackup.hidden && v) void tfaGo({ backup: v });
+      });
+      $('[data-ha-tfa-out]').addEventListener('click', () => $('[data-ha-signout]').click());
+
+      // Settings: turn two-factor on or off.
+      const tfaBox = $('[data-hs-tfa]');
+      const tfaPart = (name: 'off' | 'setup' | 'codes' | 'on') => {
+        for (const n of ['off', 'setup', 'codes', 'on']) tfaBox.querySelector<HTMLElement>(`[data-hs-tfa-${n}]`)!.hidden = n !== name;
+      };
+      const tfaMsg = (msg: string, ok = true) => { const n = $('[data-hs-tfa-note]'); n.textContent = msg; n.dataset.ok = String(ok); };
+      const tfaErr = (status: number, j: { error?: string }) => tfaMsg(status === 429 ? tfaBox.dataset.locked ?? '' : j.error === 'expired' ? tfaBox.dataset.expired ?? '' : j.error === 'wrong' ? tfaBox.dataset.wrong ?? '' : fill(t.error, cfg.contact), false);
+      const tfaShowOn = (since: number | null) => {
+        tfaPart('on');
+        $('[data-hs-tfa-offrow]').hidden = true; $('[data-hs-tfa-off-start]').hidden = false;
+        const d = since ? new Date(since).toLocaleDateString(root.dataset.lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+        $('[data-hs-tfa-since]').textContent = d ? (tfaBox.dataset.since ?? '').replace('{d}', d) : '';
+      };
+      const loadTfa = async () => {
+        try { const { ok, j } = await authed('twoFactor', { action: 'status' }); if (ok) { if (j.on) tfaShowOn(j.since); else tfaPart('off'); } } catch { /* stays as is */ }
+      };
+      $('[data-hs-tfa-start]').addEventListener('click', async () => {
+        tfaMsg('');
+        const { ok, status, j } = await authed('twoFactor', { action: 'setup' });
+        if (!ok) { tfaErr(status, j); return; }
+        $('[data-hs-tfa-qr]').innerHTML = j.qr;
+        $('[data-hs-tfa-key]').textContent = j.secret;
+        ($('[data-hs-tfa-code]') as HTMLInputElement).value = '';
+        tfaPart('setup');
+        ($('[data-hs-tfa-code]') as HTMLInputElement).focus();
+      });
+      $('[data-hs-tfa-cancel]').addEventListener('click', () => { tfaMsg(''); tfaPart('off'); });
+      const enableTfa = async () => {
+        const code = ($('[data-hs-tfa-code]') as HTMLInputElement).value.replace(/\D/g, '');
+        if (code.length !== 6) return;
+        const { ok, status, j } = await authed('twoFactor', { action: 'enable', code });
+        if (!ok) { tfaErr(status, j); return; }
+        tfaMsg('');
+        if (j.token) { try { await signInWithCustomToken(auth, j.token); } catch { /* the next sign-in asks for the code */ } }
+        const list = $('[data-hs-tfa-list]');
+        list.replaceChildren(...(j.backup as string[]).map((c) => { const li = document.createElement('li'); li.textContent = c; return li; }));
+        tfaPart('codes');
+      };
+      $('[data-hs-tfa-enable]').addEventListener('click', () => { void enableTfa(); });
+      $('[data-hs-tfa-code]').addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') { e.preventDefault(); void enableTfa(); } });
+      $('[data-hs-tfa-copy]').addEventListener('click', async () => {
+        const b = $<HTMLButtonElement>('[data-hs-tfa-copy]');
+        const codes = [...$('[data-hs-tfa-list]').querySelectorAll('li')].map((li) => li.textContent).join('\n');
+        try { await navigator.clipboard.writeText(`Twiggli backup codes\n${codes}`); const was = b.textContent; b.textContent = b.dataset.done ?? ''; setTimeout(() => { b.textContent = was; }, 1600); } catch { /* select by hand */ }
+      });
+      $('[data-hs-tfa-saved]').addEventListener('click', () => { void loadTfa(); });
+      $('[data-hs-tfa-off-start]').addEventListener('click', () => {
+        $('[data-hs-tfa-offrow]').hidden = false; $('[data-hs-tfa-off-start]').hidden = true;
+        ($('[data-hs-tfa-offcode]') as HTMLInputElement).focus();
+      });
+      const disableTfa = async () => {
+        const v = ($('[data-hs-tfa-offcode]') as HTMLInputElement).value.trim();
+        if (!v) return;
+        const body = /^\d{6}$/.test(v.replace(/\s/g, '')) ? { code: v.replace(/\s/g, '') } : { backup: v };
+        const { ok, status, j } = await authed('twoFactor', { action: 'disable', ...body });
+        if (!ok) { tfaErr(status, j); return; }
+        ($('[data-hs-tfa-offcode]') as HTMLInputElement).value = '';
+        tfaMsg(''); tfaPart('off');
+      };
+      $('[data-hs-tfa-offgo]').addEventListener('click', () => { void disableTfa(); });
+      $('[data-hs-tfa-offcode]').addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') { e.preventDefault(); void disableTfa(); } });
       $('[data-hs-signout]').addEventListener('click', () => $('[data-ha-signout]').click());
       // ── Settings (Jirel 14.11.26, like Luma): tabs, profile form, language ──
       let us: Record<string, string> = {};
@@ -2329,6 +2543,9 @@ const fields = [
           return;
         }
         email = user.email.toLowerCase();
+        // Two-factor on, and this session hasn't passed the app code yet:
+        // ask for it before anything else shows.
+        if (await tfaNeeded()) { signin.hidden = true; showTfa(); return; }
         showWelcome(auth.currentUser);
         signin.hidden = true;
         app.hidden = false;
@@ -2336,6 +2553,7 @@ const fields = [
         $('[data-hs-email]').textContent = email;
         void loadStats();
         void loadSettings();
+        void loadTfa();
         $('[data-ha-menu-name]').textContent = auth.currentUser?.displayName || email.split('@')[0];
         root.classList.add('is-in');
         rememberSignedIn(true);
@@ -3001,6 +3219,30 @@ const fields = [
   .hd-set-seg button { font: inherit; font-size: 0.9rem; border: 0; background: none; border-radius: 9px; padding: 7px 16px; color: var(--color-text-muted); cursor: pointer; }
   .hd-set-seg button[aria-pressed='true'] { background: #fff; color: #16181d; font-weight: 600; box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.2); }
   .hd-set-out { margin-top: 36px; }
+  /* Two-factor (Jirel 15.11.26). */
+  .hd-tfa-card { background: #fff; border-radius: 16px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); display: grid; gap: 12px; justify-items: start; }
+  .hd-tfa-card p { margin: 0; display: flex; align-items: center; gap: 10px; }
+  .hd-tfa-card[hidden] { display: none; }
+  .hd-tfa-pill { color: #1f7a3f; background: rgba(31, 122, 63, 0.1); }
+  .hd-tfa-steps { margin: 0; padding-left: 1.2em; display: grid; gap: 18px; }
+  .hd-tfa-steps li { display: grid; gap: 10px; justify-items: start; }
+  .hd-tfa-steps li::marker { font-weight: 700; color: #6a3eec; }
+  .hd-tfa-qr { width: 168px; height: 168px; padding: 12px; background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.1); }
+  .hd-tfa-qr svg { display: block; width: 100%; height: 100%; }
+  .hd-tfa-key { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92rem; letter-spacing: 0.04em; background: rgba(106, 62, 236, 0.07); color: #16181d; border-radius: 10px; padding: 8px 12px; user-select: all; word-break: break-all; }
+  .ha .hd-tfa-card input.hd-tfa-input:not([type='checkbox']) { font: inherit; font-size: 1.1rem; letter-spacing: 0.18em; width: 12ch; padding: 10px 14px; border-radius: 16px; border: 1px solid rgba(36, 39, 46, 0.12); background: #fff; }
+  .ha .hd-tfa-input:focus { outline: none; border-color: rgba(106, 62, 236, 0.55); box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.12); }
+  .ha .hd-tfa-card input[data-hs-tfa-offcode]:not([type='checkbox']) { width: 18ch; letter-spacing: 0.04em; }
+  .hd-tfa-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .hd-tfa-row[hidden] { display: none; }
+  .hd-tfa-link, .hd-tfa-copy { font: inherit; font-size: 0.9rem; background: none; border: 0; padding: 4px 0; color: var(--color-text-muted); cursor: pointer; transition: color .15s ease; }
+  .hd-tfa-link:hover, .hd-tfa-copy:hover { color: #16181d; }
+  .hd-tfa-copy { color: #6a3eec; font-weight: 600; }
+  .hd-tfa-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 11ch)); gap: 8px 28px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.98rem; color: #16181d; }
+  .ha-tfa [data-ha-tfa-boxes][hidden] { display: none; }
+  .ha-tfa-backup { display: grid; gap: 10px; }
+  .ha-tfa-backup[hidden] { display: none; }
+  .ha-tfa-backup input { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-align: center; letter-spacing: 0.08em; }
   /* Hover on plain text in Settings (Jirel 14.11.26): headings and labels fade to 70%, grey text turns near-black. */
   .hd-set-form h2, .hd-set-block h2, .hd-set-form label > span, .hd-set-lbl, .hd-set-mail b { transition: opacity .15s ease; }
   .hd-set-form h2:hover, .hd-set-block h2:hover, .hd-set-form label > span:hover, .hd-set-lbl:hover, .hd-set-mail b:hover { opacity: .7; }
