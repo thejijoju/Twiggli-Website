@@ -1114,7 +1114,7 @@ const caller = async (req) => {
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   if (!m) return null;
   try {
-    const t = await getAuth().verifyIdToken(m[1]);
+    const t = await getAuth().verifyIdToken(m[1], true);
     if (await mfaMissing(t)) return null;
     return t.email && t.email_verified ? t.email.toLowerCase() : null;
   } catch { return null; }
@@ -1477,7 +1477,7 @@ const callerIds = async (req) => {
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   if (!m) return null;
   try {
-    const t = await getAuth().verifyIdToken(m[1]);
+    const t = await getAuth().verifyIdToken(m[1], true);
     if (await mfaMissing(t)) return null;
     return t.email && t.email_verified ? { email: t.email.toLowerCase(), uid: t.uid } : null;
   } catch { return null; }
@@ -1983,7 +1983,12 @@ const codeMail = (lang, code, link, kind = 'signin') => {
   // kind 'confirm-on' / 'confirm-off': the code to turn two-factor on or off,
   // and the email says so (Jirel 15.11.26).
   const off = kind === 'confirm-off';
-  const confirm = kind.startsWith('confirm')
+  const del = kind === 'confirm-delete';
+  const confirm = del
+    ? (de
+      ? { subject: `Code zum Löschen deines Kontos: ${code}`, head: 'Code zum Löschen deines Twiggli-Kontos', lede: 'Das ist dein Twiggli-Bestätigungscode, um dein Konto endgültig zu löschen.', foot: `Du erkennst diese E-Mail nicht und glaubst, jemand gibt sich als du aus? Schreib uns an ${SENDER}.` }
+      : { subject: `Code to delete your account: ${code}`, head: 'Code to delete your Twiggli account', lede: 'This is your Twiggli confirmation code to permanently delete your account.', foot: `Don't recognise this email and think someone may be impersonating you? Write to us at ${SENDER}.` })
+    : kind.startsWith('confirm')
     ? (de
       ? { subject: `Code zum ${off ? 'Ausschalten' : 'Einschalten'} der 2FA: ${code}`, head: `Code zum ${off ? 'Ausschalten' : 'Einschalten'} der Zwei-Faktor-Authentifizierung`, lede: `Das ist dein Twiggli-Bestätigungscode, um die Zwei-Faktor-Authentifizierung ${off ? 'auszuschalten' : 'einzuschalten'}.`, foot: `Du erkennst diese E-Mail nicht und glaubst, jemand gibt sich als du aus? Schreib uns an ${SENDER}.` }
       : { subject: `Code to turn ${off ? 'off' : 'on'} 2FA: ${code}`, head: `Code to turn ${off ? 'off' : 'on'} two-factor authentication`, lede: `This is your Twiggli confirmation code to turn ${off ? 'off' : 'on'} two-factor authentication.`, foot: `Don't recognise this email and think someone may be impersonating you? Write to us at ${SENDER}.` })
@@ -2103,7 +2108,7 @@ export const profilePhoto = onRequest({ region: 'europe-west3', maxInstances: 5,
   if (!allow(req, res)) return;
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   let user;
-  try { user = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { user = null; }
+  try { user = m ? await getAuth().verifyIdToken(m[1], true) : null; } catch { user = null; }
   if (user && await mfaMissing(user)) user = null;
   if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
   if (req.body?.remove) {
@@ -2136,7 +2141,7 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   if (!allow(req, res)) return;
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   let user;
-  try { user = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { user = null; }
+  try { user = m ? await getAuth().verifyIdToken(m[1], true) : null; } catch { user = null; }
   if (user && await mfaMissing(user)) user = null;
   if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
   const ref = getFirestore().doc(`userSettings/${user.uid}`);
@@ -2230,7 +2235,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   if (!allow(req, res)) return;
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
   let t;
-  try { t = m ? await getAuth().verifyIdToken(m[1]) : null; } catch { t = null; }
+  try { t = m ? await getAuth().verifyIdToken(m[1], true) : null; } catch { t = null; }
   if (!t?.uid || !t.email) return res.status(401).json({ error: 'Sign in first' });
   const action = String(req.body?.action ?? 'status');
   const lang = req.body?.lang === 'en' ? 'en' : 'de';
@@ -2246,7 +2251,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
     if (hour.length >= 6) return res.status(429).json({ error: 'hour' });
     const code = String(randomInt(0, 1e6)).padStart(6, '0');
     await sudoRef.set({ hash: signinHash(await approveKey(), `sudo:${t.uid}`, code), expires: now + CODE_TTL, tries: 0, lastSent: now, sent: [...hour, now], until: 0 });
-    const ok = await systemMail(t.email, codeMail(lang, code, '', req.body?.purpose === 'off' ? 'confirm-off' : 'confirm-on'), 'confirm-code');
+    const ok = await systemMail(t.email, codeMail(lang, code, '', req.body?.purpose === 'off' ? 'confirm-off' : req.body?.purpose === 'delete' ? 'confirm-delete' : 'confirm-on'), 'confirm-code');
     return ok ? res.status(200).json({ ok: true, to: t.email }) : res.status(502).json({ error: 'mail' });
   }
   if (action === 'confirmCheck') {
@@ -2335,6 +2340,81 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
       console.error('2fa token', err?.message);
       return res.status(500).json({ error: 'token' });
     }
+  }
+  return res.status(400).json({ error: 'action' });
+});
+
+// ── Active devices and deleting the account (Jirel 15.11.26, like Luma) ──
+// Every signed-in page load says hello (touch) with a random id kept in
+// that browser; the settings list them. Signing out one device marks it,
+// and that browser signs out on its next load; "all other devices" also
+// revokes every sign-in token (the functions check revocation), and this
+// device gets a fresh one.
+const deviceLabel = (ua) => {
+  const u = String(ua ?? '');
+  const browser = /Edg\//.test(u) ? 'Edge' : /Firefox\//.test(u) ? 'Firefox' : /Chrome\//.test(u) ? 'Chrome' : /Safari\//.test(u) ? 'Safari' : 'Browser';
+  const os = /iPhone|iPad/.test(u) ? 'iOS' : /Android/.test(u) ? 'Android' : /Mac OS X/.test(u) ? 'macOS' : /Windows/.test(u) ? 'Windows' : /Linux/.test(u) ? 'Linux' : '';
+  return { browser, os, mobile: /iPhone|Android.*Mobile/.test(u) };
+};
+const devicesCol = (uid) => getFirestore().collection(`userDevices/${uid}/devices`);
+export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
+  let t;
+  try { t = m ? await getAuth().verifyIdToken(m[1], true) : null; } catch { t = null; }
+  if (!t?.uid) return res.status(401).json({ error: 'Sign in first' });
+  const action = String(req.body?.action ?? 'list');
+  const id = String(req.body?.device ?? '');
+  const okId = /^[a-z0-9]{12,40}$/.test(id);
+  const col = devicesCol(t.uid);
+  if (action === 'touch') {
+    if (!okId) return res.status(400).json({ error: 'device' });
+    const ref = col.doc(id);
+    const d = (await ref.get()).data();
+    if (d?.revoked) { await ref.delete(); return res.status(200).json({ signOut: true }); }
+    const city = String(req.get('x-client-geo-city') ?? req.get('x-appengine-city') ?? '').slice(0, 60);
+    const country = String(req.get('x-client-geo-country') ?? req.get('x-appengine-country') ?? '').slice(0, 4);
+    await ref.set({ ...deviceLabel(req.get('user-agent')), lastActive: Date.now(), ...(d ? {} : { since: Date.now() }), ...(city && city !== '?' ? { city } : {}), ...(country && country !== 'ZZ' ? { country } : {}) }, { merge: true });
+    return res.status(200).json({ ok: true });
+  }
+  if (action === 'list') {
+    const snap = await col.orderBy('lastActive', 'desc').limit(20).get();
+    return res.status(200).json({ devices: snap.docs.filter((x) => !x.data().revoked).map((x) => ({ id: x.id, ...x.data(), current: x.id === id })) });
+  }
+  if (action === 'revoke') {
+    if (!okId || id === String(req.body?.current ?? '')) return res.status(400).json({ error: 'device' });
+    await col.doc(id).set({ revoked: true }, { merge: true });
+    return res.status(200).json({ ok: true });
+  }
+  if (action === 'revokeOthers') {
+    const cur = String(req.body?.current ?? '');
+    const snap = await col.get();
+    const b = getFirestore().batch();
+    snap.docs.forEach((x) => { if (x.id !== cur) b.set(x.ref, { revoked: true }, { merge: true }); });
+    await b.commit();
+    await getAuth().revokeRefreshTokens(t.uid);
+    // This device stays signed in (with the second step if it had passed it).
+    return res.status(200).json({ token: await getAuth().createCustomToken(t.uid, t.mfa ? { mfa: Date.now() } : undefined) });
+  }
+  if (action === 'delete') {
+    // Needs the email code first ("Code zum Löschen deines Kontos").
+    const sudo = (await tfaSudoDoc(t.uid).get()).data() ?? {};
+    if (!((sudo.until ?? 0) > Date.now())) return res.status(403).json({ error: 'confirm' });
+    const email = String(t.email ?? '').toLowerCase();
+    const db = getFirestore();
+    const devs = await col.get();
+    const b = db.batch();
+    devs.docs.forEach((x) => b.delete(x.ref));
+    for (const ref of [db.doc(`userSettings/${t.uid}`), tfaDoc(t.uid), tfaPendingDoc(t.uid), tfaSudoDoc(t.uid), ...(email ? [db.doc(`hostMembers/${email}`)] : [])]) b.delete(ref);
+    await b.commit();
+    try { const [files] = await adminStorage().bucket().getFiles({ prefix: `avatars/${t.uid}-` }); await Promise.all(files.map((f) => f.delete())); } catch (err) { console.error('delete avatars', err?.message); }
+    await getAuth().deleteUser(t.uid);
+    tfaCache.delete(t.uid);
+    try {
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, subject: `Account deleted: ${email}`, text: `${email} deleted their Twiggli account on twiggli.com (login, profile, settings, photo and page access). Their workshop pages are still on the site until you take them down.` });
+    } catch (err) { console.error('delete notice', err?.message); }
+    return res.status(200).json({ ok: true });
   }
   return res.status(400).json({ error: 'action' });
 });
