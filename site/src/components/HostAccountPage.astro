@@ -1003,10 +1003,12 @@ const fields = [
       const sudo = $<HTMLDialogElement>('[data-hs-sudo]');
       const sudoNote = (m: string, ok = true) => { const n = $('[data-hs-sudo-note]'); n.textContent = m; n.dataset.ok = String(ok); };
       let sudoThen: (() => void) | null = null;
+      let sudoPurpose: 'on' | 'off' = 'on';
       let sudoTimer = 0;
       // Runs fn right away if this session confirmed by email in the last
       // 10 minutes, otherwise after the "Confirm it's you" step.
-      const confirmFirst = async (fn: () => void) => {
+      const confirmFirst = async (fn: () => void, purpose: 'on' | 'off' = 'on') => {
+        sudoPurpose = purpose;
         const { ok, j } = await authed('twoFactor', { action: 'status', lang: pageLang });
         if (ok && j.confirmed) { fn(); return; }
         sudoThen = fn;
@@ -1020,7 +1022,7 @@ const fields = [
       const sudoSend = async () => {
         const b = $<HTMLButtonElement>('[data-hs-sudo-send]');
         b.disabled = true;
-        const { ok, status, j } = await authed('twoFactor', { action: 'confirmSend', lang: pageLang });
+        const { ok, status, j } = await authed('twoFactor', { action: 'confirmSend', purpose: sudoPurpose, lang: pageLang });
         if (!ok && status !== 429) { b.disabled = false; sudoNote(fill(t.error, cfg.contact), false); return; }
         $('[data-hs-sudo-text]').textContent = (sudo.dataset.sent ?? '').replace('{e}', email);
         $('[data-hs-sudo-step]').hidden = false;
@@ -1100,7 +1102,7 @@ const fields = [
         void confirmFirst(() => {
           $('[data-hs-tfa-offrow]').hidden = false; $('[data-hs-tfa-off-start]').hidden = true;
           ($('[data-hs-tfa-offcode]') as HTMLInputElement).focus();
-        });
+        }, 'off');
       });
       const disableTfa = async () => {
         const v = ($('[data-hs-tfa-offcode]') as HTMLInputElement).value.trim();
