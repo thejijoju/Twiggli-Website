@@ -403,6 +403,23 @@ const fields = [
               <button type="button" class="hd-tfa-link" data-hs-tfa-off-start>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
             </div>
             <p class="ha-note" data-hs-tfa-note role="status"></p>
+            <!-- "Confirm it's you" before any change to two-factor (Jirel 15.11.26, like Luma). -->
+            <dialog class="hd-sudo" data-hs-sudo
+              data-wait={lang === 'de' ? 'Neuer Code in {s} s' : 'New code in {s}s'}
+              data-sent={lang === 'de' ? 'Wir haben einen 6-stelligen Code an {e} geschickt.' : 'We sent a 6-digit code to {e}.'}
+              data-wrong={lang === 'de' ? 'Der Code stimmt nicht.' : "That code isn't right."}
+              data-expired={lang === 'de' ? 'Der Code ist abgelaufen. Fordere einfach einen neuen an.' : 'That code has expired. Just ask for a new one.'}>
+              <button type="button" class="hd-sudo-x" data-hs-sudo-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>×</button>
+              <span class="hd-sudo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <h3>{lang === 'de' ? 'Bestätige, dass du es bist' : "Confirm it's you"}</h3>
+              <p data-hs-sudo-text>{lang === 'de' ? 'Das ist eine sensible Änderung. Dafür brauchen wir eine kurze Bestätigung per E-Mail.' : 'This is a sensitive change, so we need a quick confirmation by email.'}</p>
+              <button type="button" class="hd-set-save hd-sudo-send" data-hs-sudo-send>{lang === 'de' ? 'Code per E-Mail senden' : 'Send email code'}</button>
+              <div class="hd-sudo-code" data-hs-sudo-step hidden>
+                <input class="hd-tfa-input" data-hs-sudo-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
+                <button type="button" class="hd-set-save" data-hs-sudo-go>{lang === 'de' ? 'Bestätigen' : 'Confirm'}</button>
+              </div>
+              <p class="ha-note" data-hs-sudo-note role="status"></p>
+            </dialog>
           </div>
         </div>
 
@@ -908,7 +925,7 @@ const fields = [
         tfaBoxes.forEach((b) => { b.disabled = true; });
         tfaSay(tfaForm.dataset.checking ?? '');
         try {
-          const { ok, status, j } = await authed('twoFactor', { action: 'verify', ...body });
+          const { ok, status, j } = await authed('twoFactor', { action: 'verify', lang: root.dataset.lang === 'en' ? 'en' : 'de', ...body });
           if (ok && j.token) {
             await signInWithCustomToken(auth, j.token);
             rememberSignedIn(true);
@@ -966,7 +983,58 @@ const fields = [
         for (const n of ['off', 'setup', 'codes', 'on']) tfaBox.querySelector<HTMLElement>(`[data-hs-tfa-${n}]`)!.hidden = n !== name;
       };
       const tfaMsg = (msg: string, ok = true) => { const n = $('[data-hs-tfa-note]'); n.textContent = msg; n.dataset.ok = String(ok); };
-      const tfaErr = (status: number, j: { error?: string }) => tfaMsg(status === 429 ? tfaBox.dataset.locked ?? '' : j.error === 'expired' ? tfaBox.dataset.expired ?? '' : j.error === 'wrong' ? tfaBox.dataset.wrong ?? '' : fill(t.error, cfg.contact), false);
+      const pageLang = root.dataset.lang === 'en' ? 'en' : 'de';
+      const sudo = $<HTMLDialogElement>('[data-hs-sudo]');
+      const sudoNote = (m: string, ok = true) => { const n = $('[data-hs-sudo-note]'); n.textContent = m; n.dataset.ok = String(ok); };
+      let sudoThen: (() => void) | null = null;
+      let sudoTimer = 0;
+      // Runs fn right away if this session confirmed by email in the last
+      // 10 minutes, otherwise after the "Confirm it's you" step.
+      const confirmFirst = async (fn: () => void) => {
+        const { ok, j } = await authed('twoFactor', { action: 'status', lang: pageLang });
+        if (ok && j.confirmed) { fn(); return; }
+        sudoThen = fn;
+        $('[data-hs-sudo-step]').hidden = true;
+        $<HTMLButtonElement>('[data-hs-sudo-send]').hidden = false;
+        sudo.classList.remove('is-sent');
+        sudoNote('');
+        sudo.showModal();
+        $<HTMLButtonElement>('[data-hs-sudo-send]').focus();
+      };
+      const sudoSend = async () => {
+        const b = $<HTMLButtonElement>('[data-hs-sudo-send]');
+        b.disabled = true;
+        const { ok, status, j } = await authed('twoFactor', { action: 'confirmSend', lang: pageLang });
+        if (!ok && status !== 429) { b.disabled = false; sudoNote(fill(t.error, cfg.contact), false); return; }
+        $('[data-hs-sudo-text]').textContent = (sudo.dataset.sent ?? '').replace('{e}', email);
+        $('[data-hs-sudo-step]').hidden = false;
+        sudo.classList.add('is-sent');
+        ($('[data-hs-sudo-code]') as HTMLInputElement).value = '';
+        ($('[data-hs-sudo-code]') as HTMLInputElement).focus();
+        let left = status === 429 && j.wait ? Number(j.wait) : 60;
+        clearInterval(sudoTimer);
+        const tick = () => {
+          if (left <= 0) { clearInterval(sudoTimer); b.disabled = false; b.textContent = b.dataset.label ?? ''; return; }
+          b.textContent = (sudo.dataset.wait ?? '').replace('{s}', String(left)); left -= 1;
+        };
+        b.dataset.label = b.dataset.label || (b.textContent ?? '');
+        tick(); sudoTimer = window.setInterval(tick, 1000);
+      };
+      const sudoGo = async () => {
+        const code = ($('[data-hs-sudo-code]') as HTMLInputElement).value.replace(/\D/g, '');
+        if (code.length !== 6) return;
+        const { ok, j } = await authed('twoFactor', { action: 'confirmCheck', code, lang: pageLang });
+        if (!ok) { sudoNote(j.error === 'wrong' ? sudo.dataset.wrong ?? '' : sudo.dataset.expired ?? '', false); return; }
+        sudo.close();
+        const fn = sudoThen; sudoThen = null;
+        fn?.();
+      };
+      $('[data-hs-sudo-send]').addEventListener('click', () => { void sudoSend(); });
+      $('[data-hs-sudo-go]').addEventListener('click', () => { void sudoGo(); });
+      $('[data-hs-sudo-code]').addEventListener('input', (e) => { if ((e.target as HTMLInputElement).value.replace(/\D/g, '').length === 6) void sudoGo(); });
+      $('[data-hs-sudo-close]').addEventListener('click', () => sudo.close());
+      sudo.addEventListener('click', (e) => { if (e.target === sudo) sudo.close(); });
+      const tfaErr = (status: number, j: { error?: string }) => j.error === 'confirm' ? void confirmFirst(() => tfaMsg('')) : tfaMsg(status === 429 ? tfaBox.dataset.locked ?? '' : j.error === 'expired' ? tfaBox.dataset.expired ?? '' : j.error === 'wrong' ? tfaBox.dataset.wrong ?? '' : fill(t.error, cfg.contact), false);
       const tfaShowOn = (since: number | null) => {
         tfaPart('on');
         $('[data-hs-tfa-offrow]').hidden = true; $('[data-hs-tfa-off-start]').hidden = false;
@@ -976,21 +1044,22 @@ const fields = [
       const loadTfa = async () => {
         try { const { ok, j } = await authed('twoFactor', { action: 'status' }); if (ok) { if (j.on) tfaShowOn(j.since); else tfaPart('off'); } } catch { /* stays as is */ }
       };
-      $('[data-hs-tfa-start]').addEventListener('click', async () => {
+      const tfaSetup = async () => {
         tfaMsg('');
-        const { ok, status, j } = await authed('twoFactor', { action: 'setup' });
+        const { ok, status, j } = await authed('twoFactor', { action: 'setup', lang: pageLang });
         if (!ok) { tfaErr(status, j); return; }
         $('[data-hs-tfa-qr]').innerHTML = j.qr;
         $('[data-hs-tfa-key]').textContent = j.secret;
         ($('[data-hs-tfa-code]') as HTMLInputElement).value = '';
         tfaPart('setup');
         ($('[data-hs-tfa-code]') as HTMLInputElement).focus();
-      });
+      };
+      $('[data-hs-tfa-start]').addEventListener('click', () => { void confirmFirst(() => { void tfaSetup(); }); });
       $('[data-hs-tfa-cancel]').addEventListener('click', () => { tfaMsg(''); tfaPart('off'); });
       const enableTfa = async () => {
         const code = ($('[data-hs-tfa-code]') as HTMLInputElement).value.replace(/\D/g, '');
         if (code.length !== 6) return;
-        const { ok, status, j } = await authed('twoFactor', { action: 'enable', code });
+        const { ok, status, j } = await authed('twoFactor', { action: 'enable', code, lang: pageLang });
         if (!ok) { tfaErr(status, j); return; }
         tfaMsg('');
         if (j.token) { try { await signInWithCustomToken(auth, j.token); } catch { /* the next sign-in asks for the code */ } }
@@ -1007,14 +1076,16 @@ const fields = [
       });
       $('[data-hs-tfa-saved]').addEventListener('click', () => { void loadTfa(); });
       $('[data-hs-tfa-off-start]').addEventListener('click', () => {
-        $('[data-hs-tfa-offrow]').hidden = false; $('[data-hs-tfa-off-start]').hidden = true;
-        ($('[data-hs-tfa-offcode]') as HTMLInputElement).focus();
+        void confirmFirst(() => {
+          $('[data-hs-tfa-offrow]').hidden = false; $('[data-hs-tfa-off-start]').hidden = true;
+          ($('[data-hs-tfa-offcode]') as HTMLInputElement).focus();
+        });
       });
       const disableTfa = async () => {
         const v = ($('[data-hs-tfa-offcode]') as HTMLInputElement).value.trim();
         if (!v) return;
         const body = /^\d{6}$/.test(v.replace(/\s/g, '')) ? { code: v.replace(/\s/g, '') } : { backup: v };
-        const { ok, status, j } = await authed('twoFactor', { action: 'disable', ...body });
+        const { ok, status, j } = await authed('twoFactor', { action: 'disable', lang: pageLang, ...body });
         if (!ok) { tfaErr(status, j); return; }
         ($('[data-hs-tfa-offcode]') as HTMLInputElement).value = '';
         tfaMsg(''); tfaPart('off');
@@ -3301,6 +3372,23 @@ const fields = [
   .hd-tfa-copy { color: #6a3eec; font-weight: 600; }
   .hd-tfa-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 11ch)); gap: 8px 28px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.98rem; color: #16181d; }
   .ha-tfa [data-ha-tfa-boxes][hidden] { display: none; }
+  .hd-sudo { box-sizing: border-box; border: 0; border-radius: 22px; padding: 26px 24px 22px; width: min(380px, calc(100vw - 32px)); box-shadow: 0 24px 60px rgba(22, 24, 29, 0.22); color: #16181d; }
+  .hd-sudo::backdrop { background: rgba(22, 24, 29, 0.35); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .hd-sudo[open] { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .hd-sudo p { overflow-wrap: anywhere; }
+  .hd-sudo.is-sent .hd-sudo-code { order: 1; }
+  .hd-sudo.is-sent .hd-sudo-note, .hd-sudo.is-sent [data-hs-sudo-note] { order: 2; }
+  .hd-sudo.is-sent .hd-sudo-send { order: 3; background: none; color: var(--color-text-muted); font-weight: 500; padding: 4px 0; }
+  .hd-sudo.is-sent .hd-sudo-send:not(:disabled):hover { color: #16181d; }
+  .hd-sudo h3 { margin: 4px 0 0; font-size: 1.3rem; }
+  .hd-sudo p { margin: 0; font-size: 0.92rem; line-height: 1.5; color: var(--color-text-muted); }
+  .hd-sudo-icon { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: rgba(106, 62, 236, 0.1); color: #6a3eec; }
+  .hd-sudo-x { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(36, 39, 46, 0.06); font-size: 1.2rem; line-height: 1; cursor: pointer; color: #16181d; }
+  .hd-sudo-x:hover { background: rgba(36, 39, 46, 0.12); }
+  .hd-sudo .hd-sudo-send { justify-content: center; width: 100%; }
+  .hd-sudo-code { display: flex; gap: 10px; align-items: center; min-width: 0; }
+  .hd-sudo-code[hidden] { display: none; }
+  .ha .hd-sudo-code input.hd-tfa-input:not([type='checkbox']) { flex: 1; min-width: 0; width: auto; font: inherit; font-size: 1.1rem; letter-spacing: 0.18em; padding: 10px 14px; border-radius: 16px; border: 1px solid rgba(36, 39, 46, 0.12); background: #fff; }
   .ha-tfa-backup { display: grid; gap: 10px; }
   .ha-tfa-backup[hidden] { display: none; }
   .ha-tfa-backup input { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-align: center; letter-spacing: 0.08em; }
