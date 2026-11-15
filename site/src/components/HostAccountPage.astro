@@ -214,6 +214,7 @@ const fields = [
 
     <!-- Signed in. -->
     <div class="ha-app" data-ha-app hidden>
+      <p class="ha-back" data-ha-back hidden role="status">{lang === 'de' ? 'Willkommen zurück! Dein Konto ist wieder aktiv. Deine Seite ist bis morgen früh wieder auf Twiggli zu sehen.' : "Welcome back! Your account is active again. Your page will be back on Twiggli by tomorrow morning."}</p>
       <header class="hd-top">
         <nav class="ha-tabs" role="tablist" data-ha-tabs hidden>
           <button type="button" role="tab" aria-selected="true" data-ha-tab="overview"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>{t.tabOverview}</button>
@@ -435,15 +436,34 @@ const fields = [
             <ul class="hd-dev-list" data-hs-dev-list></ul>
             <p class="hd-set-sub">{lang === 'de' ? 'Du erkennst etwas nicht?' : "See something you don't recognise?"} <button type="button" class="hd-dev-all" data-hs-dev-all>{lang === 'de' ? 'Von allen anderen Geräten abmelden' : 'Sign out of all other devices'}</button></p>
           </div>
+          <div class="hd-set-block" data-hs-pause>
+            <h2>{lang === 'de' ? 'Konto pausieren' : 'Pause account'}</h2>
+            <p class="hd-set-sub">{lang === 'de' ? 'Deine Seite, Termine und Bewertungen sind dann für Gäste und Suchmaschinen nicht mehr zu finden. Alles bleibt gespeichert: Sobald du dich wieder anmeldest, ist alles wieder da.' : "Your page, dates and reviews can then no longer be found by guests or search engines. Everything stays saved: as soon as you sign in again, it's all back."}</p>
+            <button type="button" class="hd-pause-btn" data-hs-pause-open><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg>{lang === 'de' ? 'Konto pausieren' : 'Pause account'}</button>
+            <dialog class="hd-sudo" data-hs-pause-dlg>
+              <span class="hd-sudo-icon hd-pause-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>
+              <h3>{lang === 'de' ? 'Konto pausieren' : 'Pause account'}</h3>
+              <p>{lang === 'de' ? 'Du wirst auf allen Geräten abgemeldet und deine Seite verschwindet von Twiggli. Melde dich einfach wieder an, dann ist alles wieder da.' : "You'll be signed out on all devices and your page disappears from Twiggli. Just sign in again and it's all back."}</p>
+              <div class="hd-dlg-row">
+                <button type="button" class="hd-set-save" data-hs-pause-go>{lang === 'de' ? 'Pausieren' : 'Pause'}</button>
+                <button type="button" class="hd-dlg-cancel" data-hs-pause-cancel>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+              </div>
+              <p class="ha-note" data-hs-pause-note role="status"></p>
+            </dialog>
+          </div>
           <div class="hd-set-block" data-hs-delete>
             <h2>{lang === 'de' ? 'Konto löschen' : 'Delete account'}</h2>
             <p class="hd-set-sub">{lang === 'de' ? 'Wenn du Twiggli nicht mehr nutzen möchtest, kannst du dein Konto endgültig löschen.' : 'If you no longer wish to use Twiggli, you can permanently delete your account.'}</p>
             <button type="button" class="hd-del-btn" data-hs-del><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>{lang === 'de' ? 'Mein Konto löschen' : 'Delete my account'}</button>
             <dialog class="hd-sudo" data-hs-del-dlg>
-              <button type="button" class="hd-sudo-x" data-hs-del-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>×</button>
-              <h3>{lang === 'de' ? 'Konto endgültig löschen?' : 'Permanently delete your account?'}</h3>
-              <p>{lang === 'de' ? 'Dein Login, Profil, Einstellungen und Foto werden gelöscht, und deine Seite, Termine und Bewertungen verschwinden von Twiggli. Das lässt sich nicht rückgängig machen.' : "Your login, profile, settings and photo will be deleted, and your page, dates and reviews disappear from Twiggli. This can't be undone."}</p>
-              <button type="button" class="hd-del-btn hd-del-go" data-hs-del-go>{lang === 'de' ? 'Ja, Konto löschen' : 'Yes, delete my account'}</button>
+              <span class="hd-sudo-icon hd-del-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></span>
+              <h3>{lang === 'de' ? 'Konto löschen' : 'Delete account'}</h3>
+              <p>{lang === 'de' ? 'Möchtest du das Konto mit ' : 'Are you sure you want to delete the account linked to '}<b data-hs-del-email></b>{lang === 'de' ? ' wirklich löschen? Dein Login, Profil, Einstellungen und Foto werden gelöscht, und deine Seite, Termine und Bewertungen verschwinden von Twiggli.' : '? Your login, profile, settings and photo will be deleted, and your page, dates and reviews disappear from Twiggli.'}</p>
+              <label class="hd-del-check"><input type="checkbox" data-hs-del-ok /><span>{lang === 'de' ? 'Ich verstehe, dass ich mein Konto nicht wiederherstellen kann.' : "I understand that I won't be able to recover my account."}</span></label>
+              <div class="hd-dlg-row">
+                <button type="button" class="hd-del-btn hd-del-go" data-hs-del-go disabled>{lang === 'de' ? 'Löschen' : 'Delete'}</button>
+                <button type="button" class="hd-dlg-cancel" data-hs-del-close>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+              </div>
               <p class="ha-note" data-hs-del-note role="status"></p>
             </dialog>
           </div>
@@ -1157,9 +1177,29 @@ const fields = [
         void loadDevices();
       });
       const delDlg = $<HTMLDialogElement>('[data-hs-del-dlg]');
-      $('[data-hs-del]').addEventListener('click', () => { $('[data-hs-del-note]').textContent = ''; delDlg.showModal(); });
+      const delOk = $<HTMLInputElement>('[data-hs-del-ok]');
+      const delGo = $<HTMLButtonElement>('[data-hs-del-go]');
+      delOk.addEventListener('change', () => { delGo.disabled = !delOk.checked; });
+      $('[data-hs-del]').addEventListener('click', () => {
+        $('[data-hs-del-note]').textContent = ''; $('[data-hs-del-email]').textContent = email;
+        delOk.checked = false; delGo.disabled = true;
+        delDlg.showModal();
+      });
+      // Pause (Jirel 15.11.26): hidden from guests and search engines, back on the next sign-in.
+      const pauseDlg = $<HTMLDialogElement>('[data-hs-pause-dlg]');
+      $('[data-hs-pause-open]').addEventListener('click', () => { $('[data-hs-pause-note]').textContent = ''; pauseDlg.showModal(); });
+      $('[data-hs-pause-cancel]').addEventListener('click', () => pauseDlg.close());
+      $('[data-hs-pause-go]').addEventListener('click', async () => {
+        const b = $<HTMLButtonElement>('[data-hs-pause-go]'); b.disabled = true;
+        const { ok } = await authed('accountDevices', { action: 'pause' });
+        if (!ok) { b.disabled = false; $('[data-hs-pause-note]').textContent = fill(t.error, cfg.contact); return; }
+        try { await signOut(auth); } catch { /* already out */ }
+        rememberSignedIn(false);
+        location.href = root.dataset.lang === 'de' ? '/de/' : '/';
+      });
       $('[data-hs-del-close]').addEventListener('click', () => delDlg.close());
       $('[data-hs-del-go]').addEventListener('click', () => {
+        if (!delOk.checked) return;
         delDlg.close();
         void confirmFirst(async () => {
           const { ok } = await authed('accountDevices', { action: 'delete' });
@@ -2761,6 +2801,7 @@ const fields = [
         // Say hello for "Active devices"; a device signed out elsewhere leaves here.
         void authed('accountDevices', { action: 'touch', device: deviceId }).then(async ({ j }) => {
           if (j?.signOut) { await signOut(auth); rememberSignedIn(false); location.reload(); return; }
+          if (j?.unpaused) { const n = $('[data-ha-back]'); n.hidden = false; setTimeout(() => { n.hidden = true; }, 9000); }
           void loadDevices();
         }).catch(() => {});
         $('[data-ha-menu-name]').textContent = auth.currentUser?.displayName || email.split('@')[0];
@@ -3456,7 +3497,20 @@ const fields = [
   .hd-dev-all:hover { color: #16181d; }
   .hd-del-btn { justify-self: start; display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 600; font-size: 0.92rem; color: #fff; background: #e5484d; border: 0; border-radius: 12px; padding: 10px 16px; cursor: pointer; transition: transform .15s ease, opacity .15s ease; }
   .hd-del-btn:hover { transform: translateY(-1px); opacity: .92; }
-  .hd-del-go { width: 100%; justify-content: center; }
+  .hd-del-go { flex: 1; justify-content: center; }
+  .hd-del-go:disabled { opacity: .45; cursor: default; transform: none; }
+  .hd-sudo-icon.hd-del-icon { background: rgba(229, 72, 77, 0.12); color: #e5484d; }
+  .hd-sudo-icon.hd-pause-icon { background: rgba(36, 39, 46, 0.07); color: #16181d; }
+  .hd-del-check { display: flex !important; gap: 10px; align-items: flex-start; color: #e5484d; font-size: 0.92rem; line-height: 1.45; cursor: pointer; }
+  .ha .hd-del-check input[type='checkbox'] { width: 18px; height: 18px; margin: 1px 0 0; accent-color: #e5484d; flex: none; }
+  .hd-dlg-row { display: flex; gap: 10px; }
+  .hd-dlg-row .hd-set-save { flex: 1; justify-content: center; }
+  .hd-dlg-cancel { flex: 1; font: inherit; font-weight: 600; font-size: 0.92rem; border: 0; border-radius: 12px; padding: 10px 16px; background: rgba(36, 39, 46, 0.07); color: #16181d; cursor: pointer; }
+  .hd-dlg-cancel:hover { background: rgba(36, 39, 46, 0.12); }
+  .hd-pause-btn { justify-self: start; display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 600; font-size: 0.92rem; color: #16181d; background: #fff; border: 1px solid rgba(36, 39, 46, 0.16); border-radius: 12px; padding: 10px 16px; cursor: pointer; transition: transform .15s ease, border-color .15s ease; }
+  .hd-pause-btn:hover { transform: translateY(-1px); border-color: rgba(36, 39, 46, 0.35); }
+  .ha-back { margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: rgba(31, 122, 63, 0.1); color: #1f7a3f; font-weight: 600; font-size: 0.92rem; }
+  .ha-back[hidden] { display: none; }
   /* Two-factor (Jirel 15.11.26). */
   .hd-tfa-card { background: #fff; border-radius: 16px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); display: grid; gap: 12px; justify-items: start; }
   .hd-tfa-card p { margin: 0; display: flex; align-items: center; gap: 10px; }
