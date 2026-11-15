@@ -90,6 +90,20 @@ const hostContact = async (slug) => {
   }
   return null;
 };
+/** What a host chose in Einstellungen (userSettings of the accounts that
+ *  manage this page, hostMembers): { lang, notifyReviews, phone }, or {}. */
+const hostPrefs = async (slug) => {
+  try {
+    const members = await getFirestore().collection('hostMembers').where('slugs', 'array-contains', slug).limit(5).get();
+    for (const m of members.docs) {
+      let u;
+      try { u = await getAuth().getUserByEmail(m.id); } catch { continue; }
+      const st = (await getFirestore().doc(`userSettings/${u.uid}`).get()).data();
+      if (st) return { lang: st.langAt && /^(de|en)$/.test(st.lang) ? st.lang : '', notifyReviews: st.notifyReviews ?? 'on', phone: st.phone ?? '' };
+    }
+  } catch (err) { console.error('hostPrefs', slug, err?.message); }
+  return {};
+};
 // May open every host's account without approval, and approves the others.
 const ADMINS = String(process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
@@ -840,7 +854,8 @@ const notifyHostRequest = async (doc, email, f) => {
     return `NOT sent: could not read 'Hosts & Emails' (${String(err?.message ?? err).slice(0, 80)}). Please forward by hand.`;
   }
   if (!who) return `NOT sent: no email for "${slug}" in 'Hosts & Emails'`;
-  const lang = who.lang || HOST_LANG[slug] || 'de';
+  // Their own choice in Einstellungen → Präferenzen wins over column L.
+  const lang = (await hostPrefs(slug)).lang || who.lang || HOST_LANG[slug] || 'de';
   const tomorrow = new Date(Date.now() + 86400000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
   const soon = iso === today ? 'today' : iso === tomorrow ? 'tomorrow' : '';
   const guest = String(f.Name ?? '').trim();
@@ -1594,7 +1609,37 @@ ${btn(pub, 'Publish on the host’s page', '#6a3eec', '#ffffff')}${btn(rej, 'Rej
   return res.status(200).json({ success: 'true', id: doc.id });
 });
 
-export const reviewDecide = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (req, res) => {
+/** "New review on your page" for the host, once Jirel publishes it
+ *  (Jirel 15.11.26), unless they switched it off in Einstellungen. */
+const tellHostReview = async (r) => {
+  if (r.test || !SLUG.test(String(r.host ?? ''))) return;
+  const prefs = await hostPrefs(r.host);
+  if (prefs.notifyReviews === 'off') return;
+  const who = await hostContact(r.host).catch(() => null);
+  if (!who?.emails?.length) return;
+  const de = (prefs.lang || who.lang || HOST_LANG[r.host] || 'de') !== 'en';
+  const stars = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
+  const page = `${SITE}${de ? '/de' : ''}/host/account/`;
+  const name = r.showName && r.name ? esc(r.name) : (de ? 'Ein Gast' : 'A guest');
+  const hi = de ? `Hallo${who.firstName ? ` ${esc(who.firstName)}` : ''},` : `Hi${who.firstName ? ` ${esc(who.firstName)}` : ''},`;
+  const lead = de ? `${name} hat dir eine Bewertung geschrieben${r.workshop ? ` zu <b>${esc(r.workshop)}</b>` : ''}. Sie ist jetzt auf deiner Seite zu sehen:` : `${name} left you a review${r.workshop ? ` for <b>${esc(r.workshop)}</b>` : ''}. It's now on your page:`;
+  const html = `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:560px">
+<p style="margin:0 0 14px">${hi}</p><p style="margin:0 0 10px">${lead}</p>
+<p style="margin:0 0 6px;font-size:22px;color:#ffb72b;letter-spacing:2px">${stars}</p>
+<p style="margin:0 0 16px;font-size:16px">“${esc(r.text)}”</p>
+<p style="margin:0 0 18px"><a href="${page}" style="color:#6a3eec;font-weight:bold;text-decoration:none">${de ? 'Zu deinem Twiggli-Konto' : 'Go to your Twiggli account'}</a></p>
+<p style="margin:0 0 4px">${de ? 'Herzlichen Glückwunsch und liebe Grüße' : 'Congratulations and warm wishes'} 💛</p>
+<p style="margin:0 0 18px">Jirel, ${de ? 'Gründerin' : 'Founder'} @ <b>Twiggli</b></p>
+<p style="margin:0;font-size:12px;color:#8a8a8a">${de ? 'Diese E-Mails kannst du in deinem Konto unter Einstellungen → Präferenzen ausschalten.' : 'You can turn these emails off in your account under Settings → Preferences.'}</p></div>`;
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: who.emails[0],
+    subject: de ? `Neue Bewertung ${stars} auf deiner Twiggli-Seite` : `New review ${stars} on your Twiggli page`,
+    text: `${de ? 'Neue Bewertung' : 'New review'} ${stars}\n"${r.text}"\n${page}`, html,
+  });
+};
+
+export const reviewDecide = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5 }, async (req, res) => {
   const id = String(req.query.id ?? '');
   const a = String(req.query.a ?? '');
   const sig = String(req.query.sig ?? '');
@@ -1607,7 +1652,9 @@ export const reviewDecide = onRequest({ region: 'europe-west3', maxInstances: 5 
   if (!snap.exists) return page('Already removed', '<p>This review no longer exists.</p>');
   const r = snap.data();
   if (a === 'delete') { await ref.delete(); return page('Review removed', `<p>The review from ${esc(r.name || 'a guest')} is deleted and no longer shown.</p>`); }
+  const first = r.status !== 'published' && a === 'publish';
   await ref.update({ status: a === 'publish' ? 'published' : 'rejected', decidedAt: FieldValue.serverTimestamp() });
+  if (first) { try { await tellHostReview(r); } catch (err) { console.error('review host mail', id, err?.message); } }
   return a === 'publish'
     ? page('Published 🎉', `<p>The review from ${esc(r.name || 'a guest')} is now on ${esc(r.hostName || r.host)}'s page.</p><p><a href="${SITE}/" style="color:#6a3eec;font-weight:bold">Open twiggli.com</a></p>`)
     : page('Rejected', '<p>This review will not be shown.</p>');
@@ -2091,16 +2138,25 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   const out = {
     first: clean(b.first, 40), last: clean(b.last, 40),
     bio: String(b.bio ?? '').trim().slice(0, 280),
-    lang: b.lang === 'en' ? 'en' : 'de',
     updatedAt: FieldValue.serverTimestamp(), email: user.email ?? '',
   };
+  // The language is only set when the host picks it in Präferenzen
+  // (langPick); langAt marks it as their own choice, which then also
+  // decides the language of the automatic booking emails (hostPrefs).
+  if (b.langPick === 'en' || b.langPick === 'de') { out.lang = b.langPick; out.langAt = Date.now(); }
+  // Phone: only Twiggli sees it (Jirel 15.11.26), for same-day requests.
+  const phone = clean(b.phone, 30);
+  out.phone = /^\+?[0-9][0-9 ()/.-]{5,28}$/.test(phone) ? phone : '';
+  // Email notifications that can be switched off. New requests always go out.
+  out.notifyReviews = b.notifyReviews === 'off' ? 'off' : 'on';
+  out.notifyNews = b.notifyNews === 'off' ? 'off' : 'on';
   for (const [k, re] of Object.entries(SOCIAL)) { const h = handle(b[k]); out[k] = re.test(h) ? h : ''; }
   const site = clean(b.website, 200);
   out.website = /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(site) ? (site.startsWith('http') ? site : `https://${site}`) : '';
   await ref.set(out, { merge: true });
   const name = `${out.first} ${out.last}`.trim();
   if (name) await getAuth().updateUser(user.uid, { displayName: name });
-  const { updatedAt, ...back } = out;
+  const { updatedAt, ...back } = (await ref.get()).data() ?? {};
   return res.status(200).json(back);
 });
 
