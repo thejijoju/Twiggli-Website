@@ -2319,7 +2319,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
       await ref.delete();
       tfaCache.delete(t.uid);
       await sudoRef.set({ until: 0 }, { merge: true });
-      await tell('off');
+      // No "turned off" email (Jirel 15.11.26): the email code to turn it off was enough.
     }
     return res.status(200).json({ ok: true });
   }
