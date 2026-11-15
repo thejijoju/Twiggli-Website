@@ -1456,7 +1456,8 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
     await Promise.all(old.docs.map((x) => x.ref.delete()));
   } catch (err) { console.error('purge deleted', err?.message); }
   // Hosts who deleted their account: off the site at the next build.
-  const gone = (await getFirestore().doc('_config/goneHosts').get()).data()?.slugs ?? [];
+  // Paused accounts too (Jirel 15.11.26): back once the host signs in again.
+  const gone = [...((await getFirestore().doc('_config/goneHosts').get()).data()?.slugs ?? []), ...((await getFirestore().doc('_config/pausedHosts').get()).data()?.slugs ?? [])];
   let updated = 0;
   const items = snap.docs.filter((d) => !gone.includes(d.data().slug)).map((d) => {
     const x = d.data();
@@ -2375,15 +2376,65 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
   const id = String(req.body?.device ?? '');
   const okId = /^[a-z0-9]{12,40}$/.test(id);
   const col = devicesCol(t.uid);
+  const db = getFirestore();
+  // The host pages only this account runs (pausing or deleting hides them).
+  const ownSlugs = async (email) => {
+    const mine = email ? ((await db.doc(`hostMembers/${email}`).get()).data()?.slugs ?? []) : [];
+    const out = [];
+    for (const slug of mine) {
+      const others = await db.collection('hostMembers').where('slugs', 'array-contains', slug).get();
+      if (!others.docs.some((x) => x.id !== email)) out.push(slug);
+    }
+    return out;
+  };
+  const note = async (subject, text) => {
+    try {
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      await mail.sendMail({ from: { name: 'Twiggli', address: INBOX }, to: INBOX, subject, text });
+    } catch (err) { console.error('account note', err?.message); }
+  };
+  if (action === 'pause') {
+    // Pause (Jirel 15.11.26): everything stays saved, but nothing of theirs
+    // is shown to guests or search engines until they sign in again.
+    const email = String(t.email ?? '').toLowerCase();
+    const slugs = await ownSlugs(email);
+    if (slugs.length) {
+      await db.doc('_config/pausedHosts').set({ slugs: FieldValue.arrayUnion(...slugs) }, { merge: true });
+      for (const slug of slugs) {
+        const rv = await db.collection('guestReviews').where('host', '==', slug).where('status', '==', 'published').get();
+        for (const x of rv.docs) await x.ref.update({ status: 'paused' });
+      }
+    }
+    await db.doc(`userSettings/${t.uid}`).set({ pausedAt: Date.now(), pausedSlugs: slugs }, { merge: true });
+    await getAuth().revokeRefreshTokens(t.uid);
+    await note(`Account paused: ${email}`, `${email} paused their Twiggli account.${slugs.length ? ` ${slugs.join(', ')}: off the site with the next build (daily 02:30), reviews hidden now.` : ''} Everything stays saved; it comes back when they sign in again.`);
+    return res.status(200).json({ ok: true });
+  }
   if (action === 'touch') {
     if (!okId) return res.status(400).json({ error: 'device' });
+    // Signing in again ends a pause: everything is shown again.
+    const st = (await db.doc(`userSettings/${t.uid}`).get()).data();
+    let unpaused = false;
+    if (st?.pausedAt) {
+      const slugs = st.pausedSlugs ?? [];
+      if (slugs.length) {
+        await db.doc('_config/pausedHosts').set({ slugs: FieldValue.arrayRemove(...slugs) }, { merge: true });
+        for (const slug of slugs) {
+          const rv = await db.collection('guestReviews').where('host', '==', slug).where('status', '==', 'paused').get();
+          for (const x of rv.docs) await x.ref.update({ status: 'published' });
+        }
+      }
+      await db.doc(`userSettings/${t.uid}`).set({ pausedAt: FieldValue.delete(), pausedSlugs: FieldValue.delete() }, { merge: true });
+      await note(`Account back: ${t.email}`, `${t.email} signed in again, their paused account is active again.${slugs.length ? ` ${slugs.join(', ')} back on the site with the next build (daily 02:30).` : ''}`);
+      unpaused = true;
+    }
     const ref = col.doc(id);
     const d = (await ref.get()).data();
     if (d?.revoked) { await ref.delete(); return res.status(200).json({ signOut: true }); }
     const city = String(req.get('x-client-geo-city') ?? req.get('x-appengine-city') ?? '').slice(0, 60);
     const country = String(req.get('x-client-geo-country') ?? req.get('x-appengine-country') ?? '').slice(0, 4);
     await ref.set({ ...deviceLabel(req.get('user-agent')), lastActive: Date.now(), ...(d ? {} : { since: Date.now() }), ...(city && city !== '?' ? { city } : {}), ...(country && country !== 'ZZ' ? { country } : {}) }, { merge: true });
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, unpaused });
   }
   if (action === 'list') {
     const snap = await col.orderBy('lastActive', 'desc').limit(20).get();
@@ -2409,17 +2460,11 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
     const sudo = (await tfaSudoDoc(t.uid).get()).data() ?? {};
     if (!((sudo.until ?? 0) > Date.now())) return res.status(403).json({ error: 'confirm' });
     const email = String(t.email ?? '').toLowerCase();
-    const db = getFirestore();
     // Their host pages: off the site, unless someone else still runs them.
     // What we may keep is held for 30 days in deletedAccounts/{uid} (not
     // public, not used), then purged; booking records stay for the tax
     // retention period (privacy policy, section on retention).
-    const mine = email ? ((await db.doc(`hostMembers/${email}`).get()).data()?.slugs ?? []) : [];
-    const gone = [];
-    for (const slug of mine) {
-      const others = await db.collection('hostMembers').where('slugs', 'array-contains', slug).get();
-      if (!others.docs.some((x) => x.id !== email)) gone.push(slug);
-    }
+    const gone = await ownSlugs(email);
     const held = [];
     for (const slug of gone) {
       for (const c of ['hostProfiles', 'hostSlots', 'hostListings', 'hostEvents']) {
