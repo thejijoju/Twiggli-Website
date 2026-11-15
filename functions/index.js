@@ -2313,18 +2313,21 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
     // This session just proved the app, so it may carry on.
     return res.status(200).json({ backup: codes, token: await getAuth().createCustomToken(t.uid, { mfa: Date.now() }) });
   }
-  if (action === 'verify' || action === 'disable') {
-    if (!snap.exists) return action === 'verify' ? res.status(200).json({ token: null }) : res.status(200).json({ ok: true });
-    const verdict = await check(d, await unseal(d.secret));
-    if (verdict !== 'ok') return res.status(verdict === 'locked' ? 429 : 401).json({ error: verdict });
-    if (usedBackup) await tell('backup');
-    if (action === 'disable') {
+  if (action === 'disable') {
+    // Like Luma: the email confirmation (checked above) is enough, one click.
+    if (snap.exists) {
       await ref.delete();
       tfaCache.delete(t.uid);
       await sudoRef.set({ until: 0 }, { merge: true });
       await tell('off');
-      return res.status(200).json({ ok: true });
     }
+    return res.status(200).json({ ok: true });
+  }
+  if (action === 'verify') {
+    if (!snap.exists) return res.status(200).json({ token: null });
+    const verdict = await check(d, await unseal(d.secret));
+    if (verdict !== 'ok') return res.status(verdict === 'locked' ? 429 : 401).json({ error: verdict });
+    if (usedBackup) await tell('backup');
     try {
       return res.status(200).json({ token: await getAuth().createCustomToken(t.uid, { mfa: Date.now() }) });
     } catch (err) {

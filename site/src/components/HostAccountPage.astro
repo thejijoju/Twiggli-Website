@@ -371,10 +371,6 @@ const fields = [
             <div class="hd-tfa-card" data-hs-tfa-on hidden>
               <p><b>{lang === 'de' ? 'Authenticator-App' : 'Authenticator app'}</b><span class="hd-set-pill hd-tfa-pill">{lang === 'de' ? 'Aktiv' : 'On'}</span></p>
               <p class="hd-set-sub" data-hs-tfa-since></p>
-              <div class="hd-tfa-row" data-hs-tfa-offrow hidden>
-                <input class="hd-tfa-input" data-hs-tfa-offcode type="text" autocomplete="one-time-code" maxlength="9" placeholder={lang === 'de' ? 'Code oder Backup-Code' : 'Code or backup code'} />
-                <button type="button" class="hd-set-save" data-hs-tfa-offgo>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
-              </div>
               <button type="button" class="hd-tfa-link" data-hs-tfa-off-start>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
             </div>
             <p class="ha-note" data-hs-tfa-note role="status"></p>
@@ -1055,7 +1051,6 @@ const fields = [
       const tfaErr = (status: number, j: { error?: string }) => j.error === 'confirm' ? void confirmFirst(() => tfaMsg('')) : tfaMsg(status === 429 ? tfaBox.dataset.locked ?? '' : j.error === 'expired' ? tfaBox.dataset.expired ?? '' : j.error === 'wrong' ? tfaBox.dataset.wrong ?? '' : fill(t.error, cfg.contact), false);
       const tfaShowOn = (since: number | null) => {
         tfaPart('on');
-        $('[data-hs-tfa-offrow]').hidden = true; $('[data-hs-tfa-off-start]').hidden = false;
         const d = since ? new Date(since).toLocaleDateString(root.dataset.lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
         $('[data-hs-tfa-since]').textContent = d ? (tfaBox.dataset.since ?? '').replace('{d}', d) : '';
       };
@@ -1098,23 +1093,15 @@ const fields = [
         try { await navigator.clipboard.writeText(`Twiggli backup codes\n${codes}`); const was = b.textContent; b.textContent = b.dataset.done ?? ''; setTimeout(() => { b.textContent = was; }, 1600); } catch { /* select by hand */ }
       });
       $('[data-hs-tfa-saved]').addEventListener('click', () => { void loadTfa(); });
+      // Turning it off: confirm by email, then it's off (one click, like Luma).
       $('[data-hs-tfa-off-start]').addEventListener('click', () => {
-        void confirmFirst(() => {
-          $('[data-hs-tfa-offrow]').hidden = false; $('[data-hs-tfa-off-start]').hidden = true;
-          ($('[data-hs-tfa-offcode]') as HTMLInputElement).focus();
-        }, 'off');
+        void confirmFirst(() => { void disableTfa(); }, 'off');
       });
       const disableTfa = async () => {
-        const v = ($('[data-hs-tfa-offcode]') as HTMLInputElement).value.trim();
-        if (!v) return;
-        const body = /^\d{6}$/.test(v.replace(/\s/g, '')) ? { code: v.replace(/\s/g, '') } : { backup: v };
-        const { ok, status, j } = await authed('twoFactor', { action: 'disable', lang: pageLang, ...body });
+        const { ok, status, j } = await authed('twoFactor', { action: 'disable', lang: pageLang });
         if (!ok) { tfaErr(status, j); return; }
-        ($('[data-hs-tfa-offcode]') as HTMLInputElement).value = '';
         tfaMsg(''); tfaPart('off');
       };
-      $('[data-hs-tfa-offgo]').addEventListener('click', () => { void disableTfa(); });
-      $('[data-hs-tfa-offcode]').addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') { e.preventDefault(); void disableTfa(); } });
       $('[data-hs-signout]').addEventListener('click', () => $('[data-ha-signout]').click());
       // ── Settings (Jirel 14.11.26, like Luma): tabs, profile form, language ──
       let us: Record<string, string> = {};
@@ -3387,7 +3374,6 @@ const fields = [
   .hd-tfa-key { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92rem; letter-spacing: 0.04em; background: rgba(106, 62, 236, 0.07); color: #16181d; border-radius: 10px; padding: 8px 12px; user-select: all; word-break: break-all; }
   .ha .hd-tfa-card input.hd-tfa-input:not([type='checkbox']) { font: inherit; font-size: 1.1rem; letter-spacing: 0.18em; width: 12ch; padding: 10px 14px; border-radius: 16px; border: 1px solid rgba(36, 39, 46, 0.12); background: #fff; }
   .ha .hd-tfa-input:focus { outline: none; border-color: rgba(106, 62, 236, 0.55); box-shadow: 0 0 0 4px rgba(106, 62, 236, 0.12); }
-  .ha .hd-tfa-card input[data-hs-tfa-offcode]:not([type='checkbox']) { width: 18ch; letter-spacing: 0.04em; }
   .hd-tfa-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
   .hd-tfa-row[hidden] { display: none; }
   .hd-tfa-link, .hd-tfa-copy { font: inherit; font-size: 0.9rem; background: none; border: 0; padding: 4px 0; color: var(--color-text-muted); cursor: pointer; transition: color .15s ease; }
