@@ -1253,11 +1253,8 @@ const fields = [
       const loadSettings = () => api('userSettings', { action: 'get' }).then((d) => {
         us = d ?? {};
         // The account opens in the language the host chose (Präferenzen), like Luma.
-        if (us.langAt && us.lang && us.lang !== root.dataset.lang && ['en', 'de', 'fr'].includes(us.lang)) {
-          location.replace(`${us.lang === 'en' ? '' : `/${us.lang}`}/host/account/${location.search}`);
-          return;
-        }
         fillSettings(); renderProfile();
+        if (us.langAt && us.lang && us.lang !== root.dataset.lang && ['en', 'de', 'fr'].includes(us.lang)) void switchLang(us.lang);
       }).catch(() => fillSettings());
       root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((tb) => tb.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((x) => x.setAttribute('aria-selected', String(x === tb)));
@@ -1320,10 +1317,61 @@ const fields = [
         } catch { n.textContent = fill(t.error, cfg.contact); }
         btn.disabled = false;
       });
+      // Changing the language swaps the words in place, no new page and no
+      // reload (Jirel 15.11.26, like Luma): the same page in the other
+      // language is fetched, and every word that is still the page's own
+      // (not something filled in since) is replaced; the copy the script
+      // uses is swapped too, and the open view is drawn again.
+      const pageFor = (l: string) => `${l === 'en' ? '' : `/${l}`}/host/account/`;
+      const fetchDoc = async (l: string) => new DOMParser().parseFromString(await (await fetch(pageFor(l), { cache: 'force-cache' })).text(), 'text/html');
+      const ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+      const sync = (live: Element, was: Element, now: Element) => {
+        for (const a of now.getAttributeNames()) {
+          if (!(ATTRS.includes(a) || a.startsWith('data-')) || a === 'data-config' || a === 'data-hosts') continue;
+          const v = now.getAttribute(a) ?? '';
+          if (was.getAttribute(a) !== v && live.getAttribute(a) === was.getAttribute(a)) live.setAttribute(a, v);
+        }
+        const wn = [...was.childNodes];
+        const nn = [...now.childNodes];
+        const ln = [...live.childNodes];
+        if (wn.length !== nn.length) return;
+        if (ln.length === wn.length && ln.every((x, i) => x.nodeType === wn[i].nodeType && (x.nodeType !== 1 || (x as Element).tagName === (wn[i] as Element).tagName))) {
+          ln.forEach((x, i) => {
+            if (x.nodeType === 3) { if (x.textContent === wn[i].textContent && wn[i].textContent !== nn[i].textContent) x.textContent = nn[i].textContent; }
+            else if (x.nodeType === 1 && nn[i].nodeType === 1) sync(x as Element, wn[i] as Element, nn[i] as Element);
+          });
+        }
+      };
+      const switchLang = async (want: string) => {
+        const from = root.dataset.lang || 'en';
+        if (want === from) return;
+        try {
+          const [was, now] = await Promise.all([fetchDoc(from), fetchDoc(want)]);
+          const wRoot = was.querySelector('[data-ha]');
+          const nRoot = now.querySelector('[data-ha]');
+          if (!wRoot || !nRoot) throw new Error('page');
+          sync(root, wRoot, nRoot);
+          Object.assign(t, JSON.parse(nRoot.getAttribute('data-copy') || '{}'));
+          root.dataset.lang = want;
+          document.documentElement.lang = want;
+          document.title = now.title;
+          history.replaceState(history.state, '', pageFor(want) + location.search + location.hash);
+          root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === want)));
+          // Draw what the script filled in again, in the new words.
+          const again = (fn: () => unknown) => { try { void fn(); } catch { /* drawn again next time */ } };
+          again(fillSettings); again(renderProfile); again(paintStats);
+          const open = root.querySelector<HTMLElement>('[data-ha-tab][aria-selected="true"]')?.dataset.haTab;
+          if (open && root.querySelector(`[data-ha-panel="${open}"]:not([hidden])`)) again(() => showTab(open));
+          again(loadTfa); again(loadDevices);
+        } catch {
+          location.href = pageFor(want);
+        }
+      };
       root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((b) => b.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
         const want = b.dataset.v || 'de';
-        void saveSettings({ langPick: want }).then(() => { if (want !== root.dataset.lang) location.href = `${want === 'en' ? '' : `/${want}`}/host/account/`; }).catch(() => {});
+        void switchLang(want);
+        void saveSettings({ langPick: want }).catch(() => {});
       }));
       $('[data-ha-signout]').addEventListener('click', async () => {
         await signOut(auth);
