@@ -99,7 +99,7 @@ const hostPrefs = async (slug) => {
       let u;
       try { u = await getAuth().getUserByEmail(m.id); } catch { continue; }
       const st = (await getFirestore().doc(`userSettings/${u.uid}`).get()).data();
-      if (st) return { lang: st.langAt && /^(de|en)$/.test(st.lang) ? st.lang : '', notifyReviews: st.notifyReviews ?? 'on', phone: st.phone ?? '' };
+      if (st) return { lang: st.langAt && /^(de|en|fr)$/.test(st.lang) ? st.lang : '', notifyReviews: st.notifyReviews ?? 'on', phone: st.phone ?? '' };
     }
   } catch (err) { console.error('hostPrefs', slug, err?.message); }
   return {};
@@ -1626,25 +1626,30 @@ const tellHostReview = async (r) => {
   if (prefs.notifyReviews === 'off') return;
   const who = await hostContact(r.host).catch(() => null);
   if (!who?.emails?.length) return;
-  const de = (prefs.lang || who.lang || HOST_LANG[r.host] || 'de') !== 'en';
+  const L = prefs.lang || who.lang || HOST_LANG[r.host] || 'de';
+  const de = L === 'de';
+  const fr = L === 'fr';
+  const x = (d, e, f) => (de ? d : fr ? f : e);
   const stars = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
-  const page = `${SITE}${de ? '/de' : ''}/host/account/`;
-  const name = r.showName && r.name ? esc(r.name) : (de ? 'Ein Gast' : 'A guest');
-  const hi = de ? `Hallo${who.firstName ? ` ${esc(who.firstName)}` : ''},` : `Hi${who.firstName ? ` ${esc(who.firstName)}` : ''},`;
-  const lead = de ? `${name} hat dir eine Bewertung geschrieben${r.workshop ? ` zu <b>${esc(r.workshop)}</b>` : ''}. Sie ist jetzt auf deiner Seite zu sehen:` : `${name} left you a review${r.workshop ? ` for <b>${esc(r.workshop)}</b>` : ''}. It's now on your page:`;
+  const page = `${SITE}${x('/de', '', '/fr')}/host/account/`;
+  const name = r.showName && r.name ? esc(r.name) : x('Ein Gast', 'A guest', 'Un·e participant·e');
+  const fn = who.firstName ? ` ${esc(who.firstName)}` : '';
+  const hi = x(`Hallo${fn},`, `Hi${fn},`, `Coucou${fn},`);
+  const w = r.workshop ? esc(r.workshop) : '';
+  const lead = x(`${name} hat dir eine Bewertung geschrieben${w ? ` zu <b>${w}</b>` : ''}. Sie ist jetzt auf deiner Seite zu sehen:`, `${name} left you a review${w ? ` for <b>${w}</b>` : ''}. It's now on your page:`, `${name} t’a laissé un avis${w ? ` sur <b>${w}</b>` : ''}. Il est maintenant visible sur ta page :`);
   const html = `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:560px">
 <p style="margin:0 0 14px">${hi}</p><p style="margin:0 0 10px">${lead}</p>
 <p style="margin:0 0 6px;font-size:22px;color:#ffb72b;letter-spacing:2px">${stars}</p>
 <p style="margin:0 0 16px;font-size:16px">“${esc(r.text)}”</p>
-<p style="margin:0 0 18px"><a href="${page}" style="color:#6a3eec;font-weight:bold;text-decoration:none">${de ? 'Zu deinem Twiggli-Konto' : 'Go to your Twiggli account'}</a></p>
-<p style="margin:0 0 4px">${de ? 'Herzlichen Glückwunsch und liebe Grüße' : 'Congratulations and warm wishes'} 💛</p>
-<p style="margin:0 0 18px">Jirel, ${de ? 'Gründerin' : 'Founder'} @ <b>Twiggli</b></p>
-<p style="margin:0;font-size:12px;color:#8a8a8a">${de ? 'Diese E-Mails kannst du in deinem Konto unter Einstellungen → Präferenzen ausschalten.' : 'You can turn these emails off in your account under Settings → Preferences.'}</p></div>`;
+<p style="margin:0 0 18px"><a href="${page}" style="color:#6a3eec;font-weight:bold;text-decoration:none">${x('Zu deinem Twiggli-Konto', 'Go to your Twiggli account', 'Aller sur ton compte Twiggli')}</a></p>
+<p style="margin:0 0 4px">${x('Herzlichen Glückwunsch und liebe Grüße', 'Congratulations and warm wishes', 'Félicitations et à bientôt')} 💛</p>
+<p style="margin:0 0 18px">Jirel, ${x('Gründerin', 'Founder', 'Fondatrice')} @ <b>Twiggli</b></p>
+<p style="margin:0;font-size:12px;color:#8a8a8a">${x('Diese E-Mails kannst du in deinem Konto unter Einstellungen → Präferenzen ausschalten.', 'You can turn these emails off in your account under Settings → Preferences.', 'Tu peux désactiver ces e-mails dans ton compte, sous Réglages → Préférences.')}</p></div>`;
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
     from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: who.emails[0],
-    subject: de ? `Neue Bewertung ${stars} auf deiner Twiggli-Seite` : `New review ${stars} on your Twiggli page`,
-    text: `${de ? 'Neue Bewertung' : 'New review'} ${stars}\n"${r.text}"\n${page}`, html,
+    subject: x(`Neue Bewertung ${stars} auf deiner Twiggli-Seite`, `New review ${stars} on your Twiggli page`, `Nouvel avis ${stars} sur ta page Twiggli`),
+    text: `${x('Neue Bewertung', 'New review', 'Nouvel avis')} ${stars}\n"${r.text}"\n${page}`, html,
   });
 };
 
@@ -2005,13 +2010,24 @@ const codeMail = (lang, code, link, kind = 'signin') => {
   const t0 = de
     ? { subject: `${code} ist dein Twiggli-Anmeldecode`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf unserer Website ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
     : { subject: `${code} is your Twiggli sign-in code`, head: 'Your sign-in code', lede: 'Enter this code on twiggli.com to sign in.', or: 'Or sign in directly:', btn: 'Sign in to Twiggli', safe: 'Never share this code or enter it anywhere other than our website. We will never ask you for it by phone, chat or email.', foot: "Didn't ask for a code? You can safely ignore this email." };
-  const t = { ...t0, ...confirm };
+  let t = { ...t0, ...confirm };
+  // French (Jirel 15.11.26: emails in the language the host chose).
+  if (lang === 'fr') {
+    const fr0 = { subject: `${code} est ton code de connexion Twiggli`, head: 'Ton code de connexion', lede: 'Saisis ce code sur twiggli.com pour te connecter.', or: 'Ou connecte-toi directement :', btn: 'Se connecter à Twiggli', safe: 'Ne partage jamais ce code et ne le saisis que sur notre site. Nous ne te le demanderons jamais par téléphone, chat ou e-mail.', foot: "Tu n'as pas demandé de code ? Tu peux ignorer cet e-mail." };
+    const notme = `Tu ne reconnais pas cet e-mail et penses que quelqu'un se fait passer pour toi ? Écris-nous à ${SENDER}.`;
+    const frc = del
+      ? { subject: `Code pour supprimer ton compte : ${code}`, head: 'Code pour supprimer ton compte Twiggli', lede: 'Voici ton code de confirmation Twiggli pour supprimer définitivement ton compte.', foot: notme }
+      : kind.startsWith('confirm')
+        ? { subject: `Code pour ${off ? 'désactiver' : 'activer'} la 2FA : ${code}`, head: `Code pour ${off ? 'désactiver' : 'activer'} l’authentification à deux facteurs`, lede: `Voici ton code de confirmation Twiggli pour ${off ? 'désactiver' : 'activer'} l’authentification à deux facteurs.`, foot: notme }
+        : {};
+    t = { ...fr0, ...frc };
+  }
   const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#fff;border-radius:24px;padding:32px 28px;text-align:center">
 <tr><td><img src="${SITE}/img/logo.png" width="44" height="44" alt="Twiggli" style="display:block;margin:0 auto 18px"></td></tr>
 <tr><td style="font-size:20px;font-weight:bold;padding-bottom:8px">${t.head}</td></tr>
-<tr><td style="font-size:14px;line-height:1.5;color:#5b5f6b;padding-bottom:22px">${t.lede.replace('twiggli.com', `<a href="${SITE}${de ? '/de' : ''}/host/account/" style="color:#6A3EEC;text-decoration:none;font-weight:bold">twiggli.com</a>`)}</td></tr>
+<tr><td style="font-size:14px;line-height:1.5;color:#5b5f6b;padding-bottom:22px">${t.lede.replace('twiggli.com', `<a href="${SITE}${de ? '/de' : lang === 'fr' ? '/fr' : ''}/host/account/" style="color:#6A3EEC;text-decoration:none;font-weight:bold">twiggli.com</a>`)}</td></tr>
 <tr><td style="padding-bottom:24px;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:40px;font-weight:bold;line-height:1.1;color:#24272e;-webkit-user-select:all;user-select:all">${code}</td></tr>
 ${link ? `<tr><td style="font-size:13px;color:#5b5f6b;padding-bottom:10px">${t.or}</td></tr>
 <tr><td style="padding-bottom:22px"><a href="${link}" style="display:inline-block;background:#6A3EEC;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;border-radius:999px;padding:12px 24px">${t.btn}</a></td></tr>` : ''}
@@ -2026,7 +2042,7 @@ export const signinCode = onRequest({ region: 'europe-west3', secrets: [GMAIL_AP
   if (!allow(req, res)) return;
   const email = String(req.body?.email ?? '').trim().toLowerCase();
   if (!isEmail(email) || email.length > 200) return res.status(400).json({ error: 'email' });
-  const lang = req.body?.lang === 'de' ? 'de' : 'en';
+  const lang = ['de', 'fr'].includes(req.body?.lang) ? req.body.lang : 'en';
   const ref = codeDoc(email);
   const now = Date.now();
   const prev = (await ref.get()).data();
@@ -2166,7 +2182,7 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   // The language is only set when the host picks it in Präferenzen
   // (langPick); langAt marks it as their own choice, which then also
   // decides the language of the automatic booking emails (hostPrefs).
-  if (b.langPick === 'en' || b.langPick === 'de') { out.lang = b.langPick; out.langAt = Date.now(); }
+  if (['en', 'de', 'fr'].includes(b.langPick)) { out.lang = b.langPick; out.langAt = Date.now(); }
   // Phone: only Twiggli sees it (Jirel 15.11.26), for same-day requests.
   const phone = clean(b.phone, 30);
   out.phone = /^\+?[0-9][0-9 ()/.-]{5,28}$/.test(phone) ? phone : '';
@@ -2219,6 +2235,16 @@ const securityMail = (lang, event) => {
     at: `On ${when} (Berlin time)`, notyou: `Wasn't you? Write to us right away at <a href="mailto:${SENDER}" style="color:#6A3EEC;text-decoration:none;font-weight:bold">${SENDER}</a> and we'll secure your account.`,
     subject: { on: 'Two-factor authentication turned on', off: 'Two-factor authentication turned off', backup: 'Backup code used on your Twiggli account' },
   };
+  if (lang === 'fr') {
+    const quand = new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Berlin', dateStyle: 'long', timeStyle: 'short' });
+    Object.assign(T, {
+      on: ['L’authentification à deux facteurs est activée', 'Désormais, nous te demanderons aussi le code de ton application d’authentification à la connexion.'],
+      off: ['L’authentification à deux facteurs est désactivée', 'À la connexion, nous ne te demanderons plus que le code par e-mail.'],
+      backup: ['Un code de secours a été utilisé', 'Quelqu’un s’est connecté avec l’un de tes codes de secours. Ce code ne fonctionne plus.'],
+      at: `Le ${quand} (heure de Berlin)`, notyou: `Ce n’était pas toi ? Écris-nous tout de suite à <a href="mailto:${SENDER}" style="color:#6A3EEC;text-decoration:none;font-weight:bold">${SENDER}</a> et nous sécuriserons ton compte.`,
+      subject: { on: 'Authentification à deux facteurs activée', off: 'Authentification à deux facteurs désactivée', backup: 'Code de secours utilisé sur ton compte Twiggli' },
+    });
+  }
   const [head, lede] = T[event];
   const html = `<!doctype html><html><body style="margin:0;background:#f6f3ff;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
@@ -2247,7 +2273,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   try { t = m ? await getAuth().verifyIdToken(m[1], true) : null; } catch { t = null; }
   if (!t?.uid || !t.email) return res.status(401).json({ error: 'Sign in first' });
   const action = String(req.body?.action ?? 'status');
-  const lang = req.body?.lang === 'en' ? 'en' : 'de';
+  const lang = ['en', 'fr'].includes(req.body?.lang) ? req.body.lang : 'de';
   const ref = tfaDoc(t.uid);
   const sudoRef = tfaSudoDoc(t.uid);
   const sudo = (await sudoRef.get()).data() ?? {};
