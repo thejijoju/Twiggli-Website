@@ -147,8 +147,15 @@ service cloud.firestore {
     function signedIn() {
       return request.auth != null && request.auth.token.email_verified == true;
     }
+    // Two-factor (15.11.26): while twoFactor/{uid} exists, the session must
+    // have passed the authenticator step (claim mfa, set by the twoFactor
+    // function).
+    function mfaOk() {
+      return !exists(/databases/$(database)/documents/twoFactor/$(request.auth.uid))
+        || 'mfa' in request.auth.token;
+    }
     function member(slug) {
-      return signedIn()
+      return signedIn() && mfaOk()
         && exists(/databases/$(database)/documents/hostMembers/$(email()))
         && slug in get(/databases/$(database)/documents/hostMembers/$(email())).data.slugs;
     }
