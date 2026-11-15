@@ -368,31 +368,6 @@ const fields = [
               <p class="hd-set-sub">{lang === 'de' ? 'Schütze dein Konto zusätzlich mit einer Authenticator-App, z. B. Google Authenticator, 1Password oder Apple Passwörter. Beim Anmelden fragen wir dann nach einem zweiten Code.' : 'Protect your account with an authenticator app as well, such as Google Authenticator, 1Password or Apple Passwords. When you sign in, we then ask for a second code.'}</p>
               <button type="button" class="hd-set-save" data-hs-tfa-start><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>{lang === 'de' ? 'Einrichten' : 'Set up'}</button>
             </div>
-            <div class="hd-tfa-card" data-hs-tfa-setup hidden>
-              <ol class="hd-tfa-steps">
-                <li><b>{lang === 'de' ? 'Scanne den QR-Code mit deiner Authenticator-App.' : 'Scan the QR code with your authenticator app.'}</b>
-                  <div class="hd-tfa-qr" data-hs-tfa-qr></div>
-                  <span class="hd-set-sub">{lang === 'de' ? 'Oder gib diesen Schlüssel von Hand ein:' : 'Or type in this key by hand:'}</span>
-                  <code class="hd-tfa-key" data-hs-tfa-key></code>
-                </li>
-                <li><b>{lang === 'de' ? 'Gib den 6-stelligen Code aus der App ein.' : 'Enter the 6-digit code from the app.'}</b>
-                  <input class="hd-tfa-input" data-hs-tfa-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
-                </li>
-              </ol>
-              <div class="hd-tfa-row">
-                <button type="button" class="hd-set-save" data-hs-tfa-enable>{lang === 'de' ? 'Aktivieren' : 'Turn on'}</button>
-                <button type="button" class="hd-tfa-link" data-hs-tfa-cancel>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
-              </div>
-            </div>
-            <div class="hd-tfa-card" data-hs-tfa-codes hidden>
-              <p><b>{lang === 'de' ? 'Deine Backup-Codes' : 'Your backup codes'}</b></p>
-              <p class="hd-set-sub">{lang === 'de' ? 'Falls du dein Handy einmal nicht hast: Jeder Code funktioniert genau einmal. Bewahre sie sicher auf, z. B. in deinem Passwort-Manager.' : "In case you don't have your phone: each code works exactly once. Keep them somewhere safe, such as your password manager."}</p>
-              <ul class="hd-tfa-list" data-hs-tfa-list></ul>
-              <div class="hd-tfa-row">
-                <button type="button" class="hd-tfa-copy" data-hs-tfa-copy data-done={lang === 'de' ? 'Kopiert ✓' : 'Copied ✓'}>{lang === 'de' ? 'Codes kopieren' : 'Copy codes'}</button>
-                <button type="button" class="hd-set-save" data-hs-tfa-saved>{lang === 'de' ? 'Ich habe sie gespeichert' : "I've saved them"}</button>
-              </div>
-            </div>
             <div class="hd-tfa-card" data-hs-tfa-on hidden>
               <p><b>{lang === 'de' ? 'Authenticator-App' : 'Authenticator app'}</b><span class="hd-set-pill hd-tfa-pill">{lang === 'de' ? 'Aktiv' : 'On'}</span></p>
               <p class="hd-set-sub" data-hs-tfa-since></p>
@@ -403,6 +378,37 @@ const fields = [
               <button type="button" class="hd-tfa-link" data-hs-tfa-off-start>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
             </div>
             <p class="ha-note" data-hs-tfa-note role="status"></p>
+            <!-- Setting up happens in a pop-up (Jirel 15.11.26): QR code, then the backup codes. -->
+            <dialog class="hd-sudo hd-tfa-modal" data-hs-tfa-modal>
+              <button type="button" class="hd-sudo-x" data-hs-tfa-modal-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>×</button>
+              <div class="hd-tfa-card" data-hs-tfa-setup hidden>
+                <h3 class="hd-tfa-title">{lang === 'de' ? 'Zwei-Faktor einrichten' : 'Set up two-factor'}</h3>
+                <ol class="hd-tfa-steps">
+                  <li><b>{lang === 'de' ? 'Scanne den QR-Code mit deiner Authenticator-App.' : 'Scan the QR code with your authenticator app.'}</b>
+                    <div class="hd-tfa-qr" data-hs-tfa-qr></div>
+                    <span class="hd-set-sub">{lang === 'de' ? 'Oder gib diesen Schlüssel von Hand ein:' : 'Or type in this key by hand:'}</span>
+                    <code class="hd-tfa-key" data-hs-tfa-key></code>
+                  </li>
+                  <li><b>{lang === 'de' ? 'Gib den 6-stelligen Code aus der App ein.' : 'Enter the 6-digit code from the app.'}</b>
+                    <input class="hd-tfa-input" data-hs-tfa-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
+                  </li>
+                </ol>
+                <div class="hd-tfa-row">
+                  <button type="button" class="hd-set-save" data-hs-tfa-enable>{lang === 'de' ? 'Aktivieren' : 'Turn on'}</button>
+                  <button type="button" class="hd-tfa-link" data-hs-tfa-cancel>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+                </div>
+              </div>
+              <div class="hd-tfa-card" data-hs-tfa-codes hidden>
+                <p><b>{lang === 'de' ? 'Deine Backup-Codes' : 'Your backup codes'}</b></p>
+                <p class="hd-set-sub">{lang === 'de' ? 'Falls du dein Handy einmal nicht hast: Jeder Code funktioniert genau einmal. Bewahre sie sicher auf, z. B. in deinem Passwort-Manager.' : "In case you don't have your phone: each code works exactly once. Keep them somewhere safe, such as your password manager."}</p>
+                <ul class="hd-tfa-list" data-hs-tfa-list></ul>
+                <div class="hd-tfa-row">
+                  <button type="button" class="hd-tfa-copy" data-hs-tfa-copy data-done={lang === 'de' ? 'Kopiert ✓' : 'Copied ✓'}>{lang === 'de' ? 'Codes kopieren' : 'Copy codes'}</button>
+                  <button type="button" class="hd-set-save" data-hs-tfa-saved>{lang === 'de' ? 'Ich habe sie gespeichert' : "I've saved them"}</button>
+                </div>
+              </div>
+              <p class="ha-note" data-hs-tfa-modal-note role="status"></p>
+            </dialog>
             <!-- "Confirm it's you" before any change to two-factor (Jirel 15.11.26, like Luma). -->
             <dialog class="hd-sudo" data-hs-sudo
               data-wait={lang === 'de' ? 'Neuer Code in {s} s' : 'New code in {s}s'}
@@ -979,10 +985,20 @@ const fields = [
 
       // Settings: turn two-factor on or off.
       const tfaBox = $('[data-hs-tfa]');
+      const tfaModal = $<HTMLDialogElement>('[data-hs-tfa-modal]');
       const tfaPart = (name: 'off' | 'setup' | 'codes' | 'on') => {
-        for (const n of ['off', 'setup', 'codes', 'on']) tfaBox.querySelector<HTMLElement>(`[data-hs-tfa-${n}]`)!.hidden = n !== name;
+        const inModal = name === 'setup' || name === 'codes';
+        tfaBox.querySelector<HTMLElement>('[data-hs-tfa-off]')!.hidden = name !== 'off' && name !== 'setup';
+        tfaBox.querySelector<HTMLElement>('[data-hs-tfa-on]')!.hidden = name !== 'on' && name !== 'codes';
+        tfaBox.querySelector<HTMLElement>('[data-hs-tfa-setup]')!.hidden = name !== 'setup';
+        tfaBox.querySelector<HTMLElement>('[data-hs-tfa-codes]')!.hidden = name !== 'codes';
+        if (inModal && !tfaModal.open) tfaModal.showModal();
+        if (!inModal && tfaModal.open) tfaModal.close();
       };
-      const tfaMsg = (msg: string, ok = true) => { const n = $('[data-hs-tfa-note]'); n.textContent = msg; n.dataset.ok = String(ok); };
+      const tfaMsg = (msg: string, ok = true) => {
+        const n = $(document.querySelector('[data-hs-tfa-modal]')?.hasAttribute('open') ? '[data-hs-tfa-modal-note]' : '[data-hs-tfa-note]');
+        n.textContent = msg; n.dataset.ok = String(ok);
+      };
       const pageLang = root.dataset.lang === 'en' ? 'en' : 'de';
       const sudo = $<HTMLDialogElement>('[data-hs-sudo]');
       const sudoNote = (m: string, ok = true) => { const n = $('[data-hs-sudo-note]'); n.textContent = m; n.dataset.ok = String(ok); };
@@ -1056,6 +1072,11 @@ const fields = [
       };
       $('[data-hs-tfa-start]').addEventListener('click', () => { void confirmFirst(() => { void tfaSetup(); }); });
       $('[data-hs-tfa-cancel]').addEventListener('click', () => { tfaMsg(''); tfaPart('off'); });
+      $('[data-hs-tfa-modal-close]').addEventListener('click', () => {
+        // Closing on the backup codes counts as "saved"; during setup it cancels.
+        if (!tfaBox.querySelector<HTMLElement>('[data-hs-tfa-codes]')!.hidden) void loadTfa(); else tfaPart('off');
+      });
+      tfaModal.addEventListener('cancel', (e) => { e.preventDefault(); $('[data-hs-tfa-modal-close]').click(); });
       const enableTfa = async () => {
         const code = ($('[data-hs-tfa-code]') as HTMLInputElement).value.replace(/\D/g, '');
         if (code.length !== 6) return;
@@ -3375,6 +3396,12 @@ const fields = [
   .hd-sudo { box-sizing: border-box; border: 0; border-radius: 22px; padding: 26px 24px 22px; width: min(380px, calc(100vw - 32px)); box-shadow: 0 24px 60px rgba(22, 24, 29, 0.22); color: #16181d; }
   .hd-sudo::backdrop { background: rgba(22, 24, 29, 0.35); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
   .hd-sudo[open] { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .hd-tfa-modal { width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; }
+  .hd-tfa-modal .hd-tfa-card { box-shadow: none; padding: 0; background: none; }
+  .hd-tfa-modal .hd-tfa-steps { padding-left: 1.1em; }
+  .hd-tfa-modal .hd-tfa-qr { justify-self: center; }
+  .hd-tfa-title { margin: 0; font-size: 1.3rem; }
+  .hd-tfa-modal [data-hs-tfa-codes] > p:first-child b { font-size: 1.3rem; }
   .hd-sudo p { overflow-wrap: anywhere; }
   .hd-sudo.is-sent .hd-sudo-code { order: 1; }
   .hd-sudo.is-sent .hd-sudo-note, .hd-sudo.is-sent [data-hs-sudo-note] { order: 2; }
