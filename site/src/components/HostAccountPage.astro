@@ -23,6 +23,8 @@ import { href, withBase, type Lang } from '../lib/url.ts';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = hostAccountCopy(lang);
+/** German, English or French (Jirel 15.11.26: the account in the host's language). */
+const L = <T,>(de: T, en: T, fr: T): T => (lang === 'de' ? de : lang === 'fr' ? fr : en);
 
 /* What the site shows today for every host, so the form opens with it
    when the host has not saved anything yet. Public data anyway. */
@@ -89,7 +91,7 @@ const fields = [
 ] as const;
 ---
 
-<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="ha-page" noindex translations={['en', 'de']} bare>
+<Base title={t.pageTitle} description={t.lede} lang={lang} pageClass="ha-page" noindex translations={['en', 'de', 'fr']} bare>
   {/* The wash at the top follows the time of day (Jirel 14.11.26, like Luma):
       dawn, day (the purple-to-yellow she loves), dusk, night blue, and late
       at night a deep blue with stars. ?daypart=night etc. to preview. */}
@@ -110,7 +112,7 @@ const fields = [
       puts the cursor in the email field (Jirel 13.11.26). */}
   <label class="social-bar-signin ha-top-signin" for="ha-email">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" /><path d="M5 20c.6-3.6 3.4-5.8 7-5.8s6.4 2.2 7 5.8" /></svg>
-    <span class="social-bar-signin-label">{lang === 'de' ? 'Anmelden' : 'Sign in'}</span>
+    <span class="social-bar-signin-label">{L('Anmelden', 'Sign in', 'Se connecter')}</span>
   </label>
   <section
     class="ha container"
@@ -130,7 +132,7 @@ const fields = [
 
     <!-- Signed out: one field, one button. -->
     <form class="ha-signin" data-ha-signin hidden
-      data-timedout={lang === 'de' ? 'Du wurdest nach 7 Stunden automatisch abgemeldet. Melde dich einfach wieder an.' : 'You were signed out automatically after 7 hours. Just sign in again.'}>
+      data-timedout={L('Du wurdest nach 7 Stunden automatisch abgemeldet. Melde dich einfach wieder an.', 'You were signed out automatically after 7 hours. Just sign in again.', 'Tu as été déconnecté·e automatiquement après 7 heures. Reconnecte-toi simplement.')}>
       <span class="ha-wave" aria-hidden="true"><span class="ha-wave-hand">👋</span></span>
       <h2>{t.welcomeTitle}</h2>
       <p class="ha-sub">{t.welcomeLede}</p>
@@ -146,58 +148,58 @@ const fields = [
         <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
         {t.google}
       </button>
-      <p class="ha-apply">{lang === 'de' ? 'Noch kein Host?' : 'Not a host yet?'} <a href={`${href(lang, '/host/')}#apply`}>{lang === 'de' ? 'Hier bewerben' : 'Apply here'} →</a></p>
+      <p class="ha-apply">{L('Noch kein Host?', 'Not a host yet?', 'Pas encore hôte ?')} <a href={`${href(lang, '/host/')}#apply`}>{L('Hier bewerben', 'Apply here', 'Postule ici')} →</a></p>
     </form>
 
     <!-- Step 2: the 6-digit code from the email (Jirel 13.11.26, like Luma). -->
     <form class="ha-signin ha-code" data-ha-code hidden novalidate
-      data-wait={lang === 'de' ? 'Neuer Code in {s} s' : 'Resend code in {s}s'}
-      data-wrong={lang === 'de' ? 'Der Code stimmt nicht. Versuch es noch einmal.' : "That code isn't right. Try again."}
-      data-expired={lang === 'de' ? 'Der Code ist abgelaufen. Fordere einfach einen neuen an.' : 'That code has expired. Just request a new one.'}
-      data-resent={lang === 'de' ? 'Neuer Code ist unterwegs.' : 'A new code is on its way.'}
-      data-checking={lang === 'de' ? 'Wird geprüft …' : 'Checking …'}>
-      <button type="button" class="ha-code-back" data-ha-code-back aria-label={lang === 'de' ? 'Zurück' : 'Back'}>
+      data-wait={L('Neuer Code in {s} s', 'Resend code in {s}s', 'Nouveau code dans {s} s')}
+      data-wrong={L('Der Code stimmt nicht. Versuch es noch einmal.', "That code isn't right. Try again.", 'Ce code n’est pas bon. Réessaie.')}
+      data-expired={L('Der Code ist abgelaufen. Fordere einfach einen neuen an.', 'That code has expired. Just request a new one.', 'Ce code a expiré. Demandes-en simplement un nouveau.')}
+      data-resent={L('Neuer Code ist unterwegs.', 'A new code is on its way.', 'Un nouveau code est en route.')}
+      data-checking={L('Wird geprüft …', 'Checking …', 'Vérification …')}>
+      <button type="button" class="ha-code-back" data-ha-code-back aria-label={L('Zurück', 'Back', 'Retour')}>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
       </button>
       <span class="ha-code-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>
-      <h2>{lang === 'de' ? 'Code eingeben' : 'Enter code'}</h2>
-      <p class="ha-sub">{lang === 'de' ? 'Wir haben dir einen 6-stelligen Code geschickt an' : 'We sent a 6-digit code to'}<br /><b data-ha-code-to></b></p>
-      <div class="ha-code-boxes" data-ha-code-boxes role="group" aria-label={lang === 'de' ? '6-stelliger Code' : '6-digit code'}>
+      <h2>{L('Code eingeben', 'Enter code', 'Saisis le code')}</h2>
+      <p class="ha-sub">{L('Wir haben dir einen 6-stelligen Code geschickt an', 'We sent a 6-digit code to', 'On a envoyé un code à 6 chiffres à')}<br /><b data-ha-code-to></b></p>
+      <div class="ha-code-boxes" data-ha-code-boxes role="group" aria-label={L('6-stelliger Code', '6-digit code', 'Code à 6 chiffres')}>
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`${lang === 'de' ? 'Ziffer' : 'Digit'} ${i + 1}`} />
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`${L('Ziffer', 'Digit', 'Chiffre')} ${i + 1}`} />
         ))}
       </div>
       <p class="ha-note" data-ha-code-note role="status"></p>
       <div class="ha-code-row">
         <button type="button" class="ha-code-paste" data-ha-code-paste>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h1.5A1.5 1.5 0 0 1 19 6.5v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H8"/></svg>
-          {lang === 'de' ? 'Code einfügen' : 'Paste code'}
+          {L('Code einfügen', 'Paste code', 'Coller le code')}
         </button>
-        <button type="button" class="ha-code-resend" data-ha-code-resend disabled>{lang === 'de' ? 'Code erneut senden' : 'Resend code'}</button>
+        <button type="button" class="ha-code-resend" data-ha-code-resend disabled>{L('Code erneut senden', 'Resend code', 'Renvoyer le code')}</button>
       </div>
     </form>
 
     <!-- Step 3, only with two-factor on (Jirel 15.11.26): the code from the
          authenticator app, or one of the backup codes. -->
     <form class="ha-signin ha-code ha-tfa" data-ha-tfa hidden novalidate
-      data-wrong={lang === 'de' ? 'Der Code stimmt nicht. Versuch es noch einmal.' : "That code isn't right. Try again."}
-      data-locked={lang === 'de' ? 'Zu viele Versuche. Warte 10 Minuten und versuch es dann noch einmal.' : 'Too many tries. Wait 10 minutes, then try again.'}
-      data-checking={lang === 'de' ? 'Wird geprüft …' : 'Checking …'}>
+      data-wrong={L('Der Code stimmt nicht. Versuch es noch einmal.', "That code isn't right. Try again.", 'Ce code n’est pas bon. Réessaie.')}
+      data-locked={L('Zu viele Versuche. Warte 10 Minuten und versuch es dann noch einmal.', 'Too many tries. Wait 10 minutes, then try again.', 'Trop de tentatives. Attends 10 minutes, puis réessaie.')}
+      data-checking={L('Wird geprüft …', 'Checking …', 'Vérification …')}>
       <span class="ha-code-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
-      <h2>{lang === 'de' ? 'Bestätigungscode' : 'Verification code'}</h2>
-      <p class="ha-sub" data-ha-tfa-sub>{lang === 'de' ? 'Öffne deine Authenticator-App und gib den 6-stelligen Code für Twiggli ein.' : 'Open your authenticator app and enter the 6-digit code for Twiggli.'}</p>
-      <div class="ha-code-boxes" data-ha-tfa-boxes role="group" aria-label={lang === 'de' ? '6-stelliger Code' : '6-digit code'}>
+      <h2>{L('Bestätigungscode', 'Verification code', 'Code de vérification')}</h2>
+      <p class="ha-sub" data-ha-tfa-sub>{L('Öffne deine Authenticator-App und gib den 6-stelligen Code für Twiggli ein.', 'Open your authenticator app and enter the 6-digit code for Twiggli.', 'Ouvre ton app d’authentification et saisis le code à 6 chiffres pour Twiggli.')}</p>
+      <div class="ha-code-boxes" data-ha-tfa-boxes role="group" aria-label={L('6-stelliger Code', '6-digit code', 'Code à 6 chiffres')}>
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`${lang === 'de' ? 'Ziffer' : 'Digit'} ${i + 1}`} />
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`${L('Ziffer', 'Digit', 'Chiffre')} ${i + 1}`} />
         ))}
       </div>
       <div class="ha-tfa-backup" data-ha-tfa-backup hidden>
-        <input type="text" name="backup" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="abcd-efgh" aria-label={lang === 'de' ? 'Backup-Code' : 'Backup code'} />
-        <button type="submit" class="ha-btn">{lang === 'de' ? 'Bestätigen' : 'Confirm'}</button>
+        <input type="text" name="backup" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="abcd-efgh" aria-label={L('Backup-Code', 'Backup code', 'Code de secours')} />
+        <button type="submit" class="ha-btn">{L('Bestätigen', 'Confirm', 'Confirmer')}</button>
       </div>
       <p class="ha-note" data-ha-tfa-note role="status"></p>
       <div class="ha-code-row">
-        <button type="button" class="ha-code-paste" data-ha-tfa-switch data-other={lang === 'de' ? 'Code aus der App verwenden' : 'Use the code from the app'}>{lang === 'de' ? 'Backup-Code verwenden' : 'Use a backup code'}</button>
+        <button type="button" class="ha-code-paste" data-ha-tfa-switch data-other={L('Code aus der App verwenden', 'Use the code from the app', 'Utiliser le code de l’app')}>{L('Backup-Code verwenden', 'Use a backup code', 'Utiliser un code de secours')}</button>
         <button type="button" class="ha-code-resend" data-ha-tfa-out>{t.signOut}</button>
       </div>
     </form>
@@ -207,14 +209,14 @@ const fields = [
       <div class="ha-welcome-glow" aria-hidden="true"></div>
       <div class="ha-welcome-in">
         <span class="ha-welcome-avatar" data-ha-welcome-avatar></span>
-        <h2>{lang === 'de' ? 'Willkommen bei Twiggli' : 'Welcome to Twiggli'}</h2>
+        <h2>{L('Willkommen bei Twiggli', 'Welcome to Twiggli', 'Bienvenue sur Twiggli')}</h2>
         <p data-ha-welcome-name></p>
       </div>
     </div>
 
     <!-- Signed in. -->
     <div class="ha-app" data-ha-app hidden>
-      <p class="ha-back" data-ha-back hidden role="status">{lang === 'de' ? 'Willkommen zurück! Dein Konto ist wieder aktiv. Deine Seite ist bis morgen früh wieder auf Twiggli zu sehen.' : "Welcome back! Your account is active again. Your page will be back on Twiggli by tomorrow morning."}</p>
+      <p class="ha-back" data-ha-back hidden role="status">{L('Willkommen zurück! Dein Konto ist wieder aktiv. Deine Seite ist bis morgen früh wieder auf Twiggli zu sehen.', "Welcome back! Your account is active again. Your page will be back on Twiggli by tomorrow morning.", 'Bon retour ! Ton compte est de nouveau actif. Ta page sera de retour sur Twiggli d’ici demain matin.')}</p>
       <header class="hd-top">
         <nav class="ha-tabs" role="tablist" data-ha-tabs hidden>
           <button type="button" role="tab" aria-selected="true" data-ha-tab="overview"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>{t.tabOverview}</button>
@@ -232,8 +234,8 @@ const fields = [
                 <span class="hd-menu-av" data-ha-menu-av aria-hidden="true">🙂</span>
                 <div class="hd-menu-id"><b data-ha-menu-name></b><p class="hd-who" data-ha-who></p></div>
               </div>
-              <button type="button" class="hd-item" data-ha-go="profile">{lang === 'de' ? 'Profil' : 'Profile'}</button>
-              <button type="button" class="hd-item" data-ha-go="settings">{lang === 'de' ? 'Einstellungen' : 'Settings'}</button>
+              <button type="button" class="hd-item" data-ha-go="profile">{L('Profil', 'Profile', 'Profil')}</button>
+              <button type="button" class="hd-item" data-ha-go="settings">{L('Einstellungen', 'Settings', 'Réglages')}</button>
               <label class="ha-pick" data-ha-pick-wrap hidden>
                 <span>{t.hostPick}</span>
                 <select data-ha-pick></select>
@@ -274,9 +276,9 @@ const fields = [
         <header class="hd-prof-head">
           <div class="hd-prof-avwrap">
             <span class="hd-prof-av" data-ha-prof-av aria-hidden="true">🙂</span>
-            <label class="hd-prof-cam" data-ha-prof-cam title={lang === 'de' ? 'Profilfoto ändern' : 'Change profile photo'}>
+            <label class="hd-prof-cam" data-ha-prof-cam title={L('Profilfoto ändern', 'Change profile photo', 'Changer la photo de profil')}>
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
-              <span class="sr-only">{lang === 'de' ? 'Profilfoto ändern' : 'Change profile photo'}</span>
+              <span class="sr-only">{L('Profilfoto ändern', 'Change profile photo', 'Changer la photo de profil')}</span>
               <input type="file" accept="image/*" data-ha-prof-file hidden />
             </label>
           </div>
@@ -284,7 +286,7 @@ const fields = [
             <div class="hd-prof-titles">
               <h1 data-ha-prof-name></h1>
               <p class="hd-prof-studio" data-ha-prof-studio hidden></p>
-              <button type="button" class="hd-prof-addname" data-ha-go="settings" data-ha-prof-addname hidden>{lang === 'de' ? '+ Deinen Namen hinzufügen' : '+ Add your name'}</button>
+              <button type="button" class="hd-prof-addname" data-ha-go="settings" data-ha-prof-addname hidden>{L('+ Deinen Namen hinzufügen', '+ Add your name', '+ Ajoute ton nom')}</button>
             </div>
             <p class="hd-prof-bio" data-ha-prof-bio hidden></p>
             <ul class="hd-prof-facts">
@@ -292,177 +294,177 @@ const fields = [
               <li data-ha-prof-cityrow hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span data-ha-prof-city></span></li>
             </ul>
             <div class="hd-prof-stats">
-              <span><b data-ha-prof-hosted>–</b>{lang === 'de' ? 'Veranstaltet' : 'Hosted'}</span>
-              <span><b data-ha-prof-attended>–</b>{lang === 'de' ? 'Besucht' : 'Attended'}</span>
+              <span><b data-ha-prof-hosted>–</b>{L('Veranstaltet', 'Hosted', 'Organisés')}</span>
+              <span><b data-ha-prof-attended>–</b>{L('Besucht', 'Attended', 'Suivis')}</span>
             </div>
             <p class="hd-prof-note" data-ha-prof-note role="status"></p>
             <div class="hd-prof-social" data-ha-prof-social hidden></div>
             <div class="hd-prof-actions">
-              <a class="hd-prof-pub" data-ha-view target="_blank" rel="noopener">{lang === 'de' ? 'Öffentliche Seite ansehen' : 'View public page'}</a>
+              <a class="hd-prof-pub" data-ha-view target="_blank" rel="noopener">{L('Öffentliche Seite ansehen', 'View public page', 'Voir la page publique')}</a>
             </div>
           </div>
         </header>
         <div class="hd-prof-list" data-ha-prof-list></div>
-        <p class="hd-prof-empty" data-ha-prof-empty hidden>{lang === 'de' ? 'Noch keine Workshops auf deiner Seite.' : 'No workshops on your page yet.'}</p>
+        <p class="hd-prof-empty" data-ha-prof-empty hidden>{L('Noch keine Workshops auf deiner Seite.', 'No workshops on your page yet.', 'Pas encore d’ateliers sur ta page.')}</p>
       </section>
 
       <section class="hd-set" data-ha-panel="settings" hidden>
-        <h1>{lang === 'de' ? 'Einstellungen' : 'Settings'}</h1>
+        <h1>{L('Einstellungen', 'Settings', 'Réglages')}</h1>
         <nav class="hd-set-tabs" role="tablist">
-          <button type="button" role="tab" aria-selected="true" data-hs-tab="account">{lang === 'de' ? 'Konto' : 'Account'}</button>
-          <button type="button" role="tab" aria-selected="false" data-hs-tab="prefs">{lang === 'de' ? 'Präferenzen' : 'Preferences'}</button>
-          <button type="button" role="tab" aria-selected="false" data-hs-tab="pay">{lang === 'de' ? 'Zahlungen' : 'Payment'}</button>
+          <button type="button" role="tab" aria-selected="true" data-hs-tab="account">{L('Konto', 'Account', 'Compte')}</button>
+          <button type="button" role="tab" aria-selected="false" data-hs-tab="prefs">{L('Präferenzen', 'Preferences', 'Préférences')}</button>
+          <button type="button" role="tab" aria-selected="false" data-hs-tab="pay">{L('Zahlungen', 'Payment', 'Paiement')}</button>
         </nav>
 
         <div class="hd-set-pane" data-hs-pane="account">
           <form class="hd-set-form" data-hs-form novalidate>
-            <h2>{lang === 'de' ? 'Dein Profil' : 'Your profile'}</h2>
+            <h2>{L('Dein Profil', 'Your profile', 'Ton profil')}</h2>
             <div class="hd-set-two">
-              <label><span>{lang === 'de' ? 'Vorname' : 'First name'}</span><input name="first" autocomplete="given-name" maxlength="40" /></label>
-              <label><span>{lang === 'de' ? 'Nachname' : 'Last name'}</span><input name="last" autocomplete="family-name" maxlength="40" /></label>
+              <label><span>{L('Vorname', 'First name', 'Prénom')}</span><input name="first" autocomplete="given-name" maxlength="40" /></label>
+              <label><span>{L('Nachname', 'Last name', 'Nom')}</span><input name="last" autocomplete="family-name" maxlength="40" /></label>
             </div>
-            <label class="hd-set-phone"><span>{lang === 'de' ? 'Telefon' : 'Phone'}</span><input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+49 170 1234567" /><small>{lang === 'de' ? 'Sieht nur Twiggli, damit wir dich bei kurzfristigen Anfragen erreichen.' : 'Only Twiggli sees this, so we can reach you about last-minute requests.'}</small></label>
-            <label class="hd-set-bio"><span>{lang === 'de' ? 'Kurzbio' : 'Bio'}</span><textarea name="bio" rows="2" maxlength="160" data-hs-bio placeholder={lang === 'de' ? 'Erzähl kurz etwas über dich und dein Handwerk.' : 'Share a little about you and your craft.'}></textarea><small class="hd-set-count" data-hs-bio-count aria-live="polite">0/160</small></label>
-            <span class="hd-set-lbl">{lang === 'de' ? 'Social Links' : 'Social links'}</span>
+            <label class="hd-set-phone"><span>{L('Telefon', 'Phone', 'Téléphone')}</span><input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+49 170 1234567" /><small>{L('Sieht nur Twiggli, damit wir dich bei kurzfristigen Anfragen erreichen.', 'Only Twiggli sees this, so we can reach you about last-minute requests.', 'Visible uniquement par Twiggli, pour te joindre en cas de demande de dernière minute.')}</small></label>
+            <label class="hd-set-bio"><span>{L('Kurzbio', 'Bio', 'Bio')}</span><textarea name="bio" rows="2" maxlength="160" data-hs-bio placeholder={L('Erzähl kurz etwas über dich und dein Handwerk.', 'Share a little about you and your craft.', 'Parle un peu de toi et de ton savoir-faire.')}></textarea><small class="hd-set-count" data-hs-bio-count aria-live="polite">0/160</small></label>
+            <span class="hd-set-lbl">{L('Social Links', 'Social links', 'Réseaux sociaux')}</span>
             <div class="hd-set-social">
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg><span class="hd-set-pre">instagram.com/</span><input name="instagram" placeholder="username" /></label>
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.3 5 4.5"/></svg><span class="hd-set-pre">tiktok.com/@</span><input name="tiktok" placeholder="username" /></label>
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg><span class="hd-set-pre">youtube.com/@</span><input name="youtube" placeholder="username" /></label>
             </div>
             <div class="hd-set-actions">
-              <button type="submit" class="hd-set-save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.3 4.6-4.8"/></svg>{lang === 'de' ? 'Änderungen speichern' : 'Save changes'}</button>
+              <button type="submit" class="hd-set-save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.3 4.6-4.8"/></svg>{L('Änderungen speichern', 'Save changes', 'Enregistrer')}</button>
               <small class="hd-set-note" data-hs-note role="status"></small>
             </div>
           </form>
           <form class="hd-set-block hd-set-form" data-hs-studio hidden novalidate>
-            <h2>{lang === 'de' ? 'Dein Studio' : 'Your studio'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'So steht es auf deiner Seite. Wir prüfen Änderungen kurz, bevor sie online gehen.' : "This is how it shows on your page. We check changes briefly before they go live."}</p>
-            <label><span>{lang === 'de' ? 'Name des Studios' : 'Studio name'}</span><input name="studio" maxlength="80" /></label>
-            <label><span>{lang === 'de' ? 'Adresse' : 'Address'}</span><input name="place" maxlength="120" autocomplete="street-address" placeholder={lang === 'de' ? 'Straße Nr., PLZ Ort' : 'Street no., postcode city'} /></label>
+            <h2>{L('Dein Studio', 'Your studio', 'Ton studio')}</h2>
+            <p class="hd-set-sub">{L('So steht es auf deiner Seite. Wir prüfen Änderungen kurz, bevor sie online gehen.', "This is how it shows on your page. We check changes briefly before they go live.", 'C’est ce qui apparaît sur ta page. On vérifie rapidement les changements avant leur mise en ligne.')}</p>
+            <label><span>{L('Name des Studios', 'Studio name', 'Nom du studio')}</span><input name="studio" maxlength="80" /></label>
+            <label><span>{L('Adresse', 'Address', 'Adresse')}</span><input name="place" maxlength="120" autocomplete="street-address" placeholder={L('Straße Nr., PLZ Ort', 'Street no., postcode city', 'N° et rue, code postal ville')} /></label>
             <div class="hd-set-actions">
-              <button type="submit" class="hd-set-save">{lang === 'de' ? 'Studio speichern' : 'Save studio'}</button>
+              <button type="submit" class="hd-set-save">{L('Studio speichern', 'Save studio', 'Enregistrer le studio')}</button>
               <span class="hd-set-note" data-hs-studio-note role="status"></span>
             </div>
           </form>
           <div class="hd-set-block" data-hs-page hidden>
-            <h2>{lang === 'de' ? 'Deine Seite' : 'Your page'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'Teile sie auf Instagram, in deiner Bio oder per WhatsApp.' : 'Share it on Instagram, in your bio or on WhatsApp.'}</p>
+            <h2>{L('Deine Seite', 'Your page', 'Ta page')}</h2>
+            <p class="hd-set-sub">{L('Teile sie auf Instagram, in deiner Bio oder per WhatsApp.', 'Share it on Instagram, in your bio or on WhatsApp.', 'Partage-la sur Instagram, dans ta bio ou sur WhatsApp.')}</p>
             <div class="hd-set-url">
               <a data-hs-page-url target="_blank" rel="noopener"></a>
-              <button type="button" data-hs-page-copy data-done={lang === 'de' ? 'Kopiert ✓' : 'Copied ✓'}><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>{lang === 'de' ? 'Kopieren' : 'Copy'}</span></button>
+              <button type="button" data-hs-page-copy data-done={L('Kopiert ✓', 'Copied ✓', 'Copié ✓')}><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>{L('Kopieren', 'Copy', 'Copier')}</span></button>
             </div>
           </div>
           <div class="hd-set-block">
-            <h2>{lang === 'de' ? 'E-Mail' : 'Email'}</h2>
+            <h2>{L('E-Mail', 'Email', 'E-mail')}</h2>
             <div class="hd-set-mail">
-              <p><b data-hs-email></b><span class="hd-set-pill">{lang === 'de' ? 'Haupt-E-Mail' : 'Primary'}</span></p>
-              <p class="hd-set-sub">{lang === 'de' ? 'Hier bekommst du Anfragen und deinen Anmeldecode. Anmelden kannst du dich auch mit Google.' : 'Requests and your sign-in code arrive here. You can also sign in with Google.'}</p>
+              <p><b data-hs-email></b><span class="hd-set-pill">{L('Haupt-E-Mail', 'Primary', 'Principal')}</span></p>
+              <p class="hd-set-sub">{L('Hier bekommst du Anfragen und deinen Anmeldecode. Anmelden kannst du dich auch mit Google.', 'Requests and your sign-in code arrive here. You can also sign in with Google.', 'Tu reçois ici les demandes et ton code de connexion. Tu peux aussi te connecter avec Google.')}</p>
             </div>
           </div>
           <div class="hd-set-block hd-tfa" data-hs-tfa
-            data-wrong={lang === 'de' ? 'Der Code stimmt nicht. Versuch es noch einmal.' : "That code isn't right. Try again."}
-            data-locked={lang === 'de' ? 'Zu viele Versuche. Warte 10 Minuten.' : 'Too many tries. Wait 10 minutes.'}
-            data-expired={lang === 'de' ? 'Das hat zu lange gedauert. Starte die Einrichtung bitte neu.' : 'That took too long. Please start the setup again.'}
-            data-since={lang === 'de' ? 'Aktiv seit {d}' : 'On since {d}'}>
-            <h2>{lang === 'de' ? 'Zwei-Faktor-Authentifizierung' : 'Two-factor authentication'}</h2>
+            data-wrong={L('Der Code stimmt nicht. Versuch es noch einmal.', "That code isn't right. Try again.", 'Ce code n’est pas bon. Réessaie.')}
+            data-locked={L('Zu viele Versuche. Warte 10 Minuten.', 'Too many tries. Wait 10 minutes.', 'Trop de tentatives. Attends 10 minutes.')}
+            data-expired={L('Das hat zu lange gedauert. Starte die Einrichtung bitte neu.', 'That took too long. Please start the setup again.', 'Ça a pris trop de temps. Recommence la configuration.')}
+            data-since={L('Aktiv seit {d}', 'On since {d}', 'Activée depuis le {d}')}>
+            <h2>{L('Zwei-Faktor-Authentifizierung', 'Two-factor authentication', 'Authentification à deux facteurs')}</h2>
             <div class="hd-tfa-card" data-hs-tfa-off>
-              <p class="hd-set-sub">{lang === 'de' ? 'Schütze dein Konto zusätzlich mit einer Authenticator-App, z. B. Google Authenticator, 1Password oder Apple Passwörter. Beim Anmelden fragen wir dann nach einem zweiten Code.' : 'Protect your account with an authenticator app as well, such as Google Authenticator, 1Password or Apple Passwords. When you sign in, we then ask for a second code.'}</p>
-              <button type="button" class="hd-set-save" data-hs-tfa-start><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>{lang === 'de' ? 'Einrichten' : 'Set up'}</button>
+              <p class="hd-set-sub">{L('Schütze dein Konto zusätzlich mit einer Authenticator-App, z. B. Google Authenticator, 1Password oder Apple Passwörter. Beim Anmelden fragen wir dann nach einem zweiten Code.', 'Protect your account with an authenticator app as well, such as Google Authenticator, 1Password or Apple Passwords. When you sign in, we then ask for a second code.', 'Protège aussi ton compte avec une app d’authentification, comme Google Authenticator, 1Password ou Mots de passe d’Apple. À la connexion, on te demandera alors un deuxième code.')}</p>
+              <button type="button" class="hd-set-save" data-hs-tfa-start><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>{L('Einrichten', 'Set up', 'Configurer')}</button>
             </div>
             <div class="hd-tfa-card" data-hs-tfa-on hidden>
-              <p><b>{lang === 'de' ? 'Authenticator-App' : 'Authenticator app'}</b><span class="hd-set-pill hd-tfa-pill">{lang === 'de' ? 'Aktiv' : 'On'}</span></p>
+              <p><b>{L('Authenticator-App', 'Authenticator app', 'App d’authentification')}</b><span class="hd-set-pill hd-tfa-pill">{L('Aktiv', 'On', 'Activée')}</span></p>
               <p class="hd-set-sub" data-hs-tfa-since></p>
-              <button type="button" class="hd-tfa-link" data-hs-tfa-off-start>{lang === 'de' ? 'Ausschalten' : 'Turn off'}</button>
+              <button type="button" class="hd-tfa-link" data-hs-tfa-off-start>{L('Ausschalten', 'Turn off', 'Désactiver')}</button>
             </div>
             <p class="ha-note" data-hs-tfa-note role="status"></p>
             <!-- Setting up happens in a pop-up (Jirel 15.11.26): QR code, then the backup codes. -->
             <dialog class="hd-sudo hd-tfa-modal" data-hs-tfa-modal>
-              <button type="button" class="hd-sudo-x" data-hs-tfa-modal-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>×</button>
+              <button type="button" class="hd-sudo-x" data-hs-tfa-modal-close aria-label={L('Schließen', 'Close', 'Fermer')}>×</button>
               <div class="hd-tfa-card" data-hs-tfa-setup hidden>
-                <h3 class="hd-tfa-title">{lang === 'de' ? 'Zwei-Faktor einrichten' : 'Set up two-factor'}</h3>
+                <h3 class="hd-tfa-title">{L('Zwei-Faktor einrichten', 'Set up two-factor', 'Configurer la double authentification')}</h3>
                 <ol class="hd-tfa-steps">
-                  <li><b>{lang === 'de' ? 'Scanne den QR-Code mit deiner Authenticator-App.' : 'Scan the QR code with your authenticator app.'}</b>
+                  <li><b>{L('Scanne den QR-Code mit deiner Authenticator-App.', 'Scan the QR code with your authenticator app.', 'Scanne le QR code avec ton app d’authentification.')}</b>
                     <div class="hd-tfa-qr" data-hs-tfa-qr></div>
-                    <span class="hd-set-sub">{lang === 'de' ? 'Oder gib diesen Schlüssel von Hand ein:' : 'Or type in this key by hand:'}</span>
+                    <span class="hd-set-sub">{L('Oder gib diesen Schlüssel von Hand ein:', 'Or type in this key by hand:', 'Ou saisis cette clé à la main :')}</span>
                     <code class="hd-tfa-key" data-hs-tfa-key></code>
                   </li>
-                  <li><b>{lang === 'de' ? 'Gib den 6-stelligen Code aus der App ein.' : 'Enter the 6-digit code from the app.'}</b>
+                  <li><b>{L('Gib den 6-stelligen Code aus der App ein.', 'Enter the 6-digit code from the app.', 'Saisis le code à 6 chiffres de l’app.')}</b>
                     <input class="hd-tfa-input" data-hs-tfa-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
                   </li>
                 </ol>
                 <div class="hd-tfa-row">
-                  <button type="button" class="hd-set-save" data-hs-tfa-enable>{lang === 'de' ? 'Aktivieren' : 'Turn on'}</button>
-                  <button type="button" class="hd-tfa-link" data-hs-tfa-cancel>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+                  <button type="button" class="hd-set-save" data-hs-tfa-enable>{L('Aktivieren', 'Turn on', 'Activer')}</button>
+                  <button type="button" class="hd-tfa-link" data-hs-tfa-cancel>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
                 </div>
               </div>
               <div class="hd-tfa-card" data-hs-tfa-codes hidden>
-                <p><b>{lang === 'de' ? 'Deine Backup-Codes' : 'Your backup codes'}</b></p>
-                <p class="hd-set-sub">{lang === 'de' ? 'Falls du dein Handy einmal nicht hast: Jeder Code funktioniert genau einmal. Bewahre sie sicher auf, z. B. in deinem Passwort-Manager.' : "In case you don't have your phone: each code works exactly once. Keep them somewhere safe, such as your password manager."}</p>
+                <p><b>{L('Deine Backup-Codes', 'Your backup codes', 'Tes codes de secours')}</b></p>
+                <p class="hd-set-sub">{L('Falls du dein Handy einmal nicht hast: Jeder Code funktioniert genau einmal. Bewahre sie sicher auf, z. B. in deinem Passwort-Manager.', "In case you don't have your phone: each code works exactly once. Keep them somewhere safe, such as your password manager.", 'Si tu n’as pas ton téléphone : chaque code ne fonctionne qu’une seule fois. Garde-les en lieu sûr, par exemple dans ton gestionnaire de mots de passe.')}</p>
                 <ul class="hd-tfa-list" data-hs-tfa-list></ul>
                 <div class="hd-tfa-row">
-                  <button type="button" class="hd-tfa-copy" data-hs-tfa-copy data-done={lang === 'de' ? 'Kopiert ✓' : 'Copied ✓'}>{lang === 'de' ? 'Codes kopieren' : 'Copy codes'}</button>
-                  <button type="button" class="hd-set-save" data-hs-tfa-saved>{lang === 'de' ? 'Ich habe sie gespeichert' : "I've saved them"}</button>
+                  <button type="button" class="hd-tfa-copy" data-hs-tfa-copy data-done={L('Kopiert ✓', 'Copied ✓', 'Copié ✓')}>{L('Codes kopieren', 'Copy codes', 'Copier les codes')}</button>
+                  <button type="button" class="hd-set-save" data-hs-tfa-saved>{L('Ich habe sie gespeichert', "I've saved them", 'Je les ai enregistrés')}</button>
                 </div>
               </div>
               <p class="ha-note" data-hs-tfa-modal-note role="status"></p>
             </dialog>
             <!-- "Confirm it's you" before any change to two-factor (Jirel 15.11.26, like Luma). -->
             <dialog class="hd-sudo" data-hs-sudo
-              data-wait={lang === 'de' ? 'Neuer Code in {s} s' : 'New code in {s}s'}
-              data-sent={lang === 'de' ? 'Wir haben einen 6-stelligen Code an {e} geschickt.' : 'We sent a 6-digit code to {e}.'}
-              data-wrong={lang === 'de' ? 'Der Code stimmt nicht.' : "That code isn't right."}
-              data-expired={lang === 'de' ? 'Der Code ist abgelaufen. Fordere einfach einen neuen an.' : 'That code has expired. Just ask for a new one.'}>
-              <button type="button" class="hd-sudo-x" data-hs-sudo-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>×</button>
+              data-wait={L('Neuer Code in {s} s', 'New code in {s}s', 'Nouveau code dans {s} s')}
+              data-sent={L('Wir haben einen 6-stelligen Code an {e} geschickt.', 'We sent a 6-digit code to {e}.', 'On a envoyé un code à 6 chiffres à {e}.')}
+              data-wrong={L('Der Code stimmt nicht.', "That code isn't right.", 'Ce code n’est pas bon.')}
+              data-expired={L('Der Code ist abgelaufen. Fordere einfach einen neuen an.', 'That code has expired. Just ask for a new one.', 'Ce code a expiré. Demandes-en simplement un nouveau.')}>
+              <button type="button" class="hd-sudo-x" data-hs-sudo-close aria-label={L('Schließen', 'Close', 'Fermer')}>×</button>
               <span class="hd-sudo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
-              <h3>{lang === 'de' ? 'Bestätige, dass du es bist' : "Confirm it's you"}</h3>
-              <p data-hs-sudo-text>{lang === 'de' ? 'Das ist eine sensible Änderung. Dafür brauchen wir eine kurze Bestätigung per E-Mail.' : 'This is a sensitive change, so we need a quick confirmation by email.'}</p>
-              <button type="button" class="hd-set-save hd-sudo-send" data-hs-sudo-send>{lang === 'de' ? 'Code per E-Mail senden' : 'Send email code'}</button>
+              <h3>{L('Bestätige, dass du es bist', "Confirm it's you", 'Confirme que c’est bien toi')}</h3>
+              <p data-hs-sudo-text>{L('Das ist eine sensible Änderung. Dafür brauchen wir eine kurze Bestätigung per E-Mail.', 'This is a sensitive change, so we need a quick confirmation by email.', 'C’est un changement sensible, on a donc besoin d’une petite confirmation par e-mail.')}</p>
+              <button type="button" class="hd-set-save hd-sudo-send" data-hs-sudo-send>{L('Code per E-Mail senden', 'Send email code', 'Envoyer le code par e-mail')}</button>
               <div class="hd-sudo-code" data-hs-sudo-step hidden>
                 <input class="hd-tfa-input" data-hs-sudo-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
-                <button type="button" class="hd-set-save" data-hs-sudo-go>{lang === 'de' ? 'Bestätigen' : 'Confirm'}</button>
+                <button type="button" class="hd-set-save" data-hs-sudo-go>{L('Bestätigen', 'Confirm', 'Confirmer')}</button>
               </div>
               <p class="ha-note" data-hs-sudo-note role="status"></p>
             </dialog>
           </div>
           <div class="hd-set-block" data-hs-devices
-            data-now={lang === 'de' ? 'Dieses Gerät' : 'This device'}
-            data-today={lang === 'de' ? 'Heute aktiv' : 'Active today'}
-            data-yesterday={lang === 'de' ? 'Gestern aktiv' : 'Active yesterday'}
-            data-ago={lang === 'de' ? 'Aktiv vor {n} Tagen' : 'Active {n} days ago'}
-            data-on={lang === 'de' ? '{b} auf {o}' : '{b} on {o}'}
-            data-out={lang === 'de' ? 'Abmelden' : 'Sign out'}>
-            <h2>{lang === 'de' ? 'Aktive Geräte' : 'Active devices'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'Auf diesen Geräten bist du gerade bei Twiggli angemeldet.' : 'You are currently signed in to Twiggli on these devices.'}</p>
+            data-now={L('Dieses Gerät', 'This device', 'Cet appareil')}
+            data-today={L('Heute aktiv', 'Active today', 'Actif aujourd’hui')}
+            data-yesterday={L('Gestern aktiv', 'Active yesterday', 'Actif hier')}
+            data-ago={L('Aktiv vor {n} Tagen', 'Active {n} days ago', 'Actif il y a {n} jours')}
+            data-on={L('{b} auf {o}', '{b} on {o}', '{b} sur {o}')}
+            data-out={L('Abmelden', 'Sign out', 'Se déconnecter')}>
+            <h2>{L('Aktive Geräte', 'Active devices', 'Appareils actifs')}</h2>
+            <p class="hd-set-sub">{L('Auf diesen Geräten bist du gerade bei Twiggli angemeldet.', 'You are currently signed in to Twiggli on these devices.', 'Tu es actuellement connecté·e à Twiggli sur ces appareils.')}</p>
             <ul class="hd-dev-list" data-hs-dev-list></ul>
-            <p class="hd-set-sub">{lang === 'de' ? 'Du erkennst etwas nicht?' : "See something you don't recognise?"} <button type="button" class="hd-dev-all" data-hs-dev-all>{lang === 'de' ? 'Von allen anderen Geräten abmelden' : 'Sign out of all other devices'}</button></p>
+            <p class="hd-set-sub">{L('Du erkennst etwas nicht?', "See something you don't recognise?", 'Tu ne reconnais pas quelque chose ?')} <button type="button" class="hd-dev-all" data-hs-dev-all>{L('Von allen anderen Geräten abmelden', 'Sign out of all other devices', 'Se déconnecter de tous les autres appareils')}</button></p>
           </div>
           <div class="hd-set-block" data-hs-pause>
-            <h2>{lang === 'de' ? 'Konto pausieren' : 'Pause account'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'Deine Seite, Termine und Bewertungen sind dann für Gäste und Suchmaschinen nicht mehr zu finden. Alles bleibt gespeichert: Sobald du dich wieder anmeldest, ist alles wieder da.' : "Your page, dates and reviews can then no longer be found by guests or search engines. Everything stays saved: as soon as you sign in again, it's all back."}</p>
-            <button type="button" class="hd-pause-btn" data-hs-pause-open><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg>{lang === 'de' ? 'Konto pausieren' : 'Pause account'}</button>
+            <h2>{L('Konto pausieren', 'Pause account', 'Mettre le compte en pause')}</h2>
+            <p class="hd-set-sub">{L('Deine Seite, Termine und Bewertungen sind dann für Gäste und Suchmaschinen nicht mehr zu finden. Alles bleibt gespeichert: Sobald du dich wieder anmeldest, ist alles wieder da.', "Your page, dates and reviews can then no longer be found by guests or search engines. Everything stays saved: as soon as you sign in again, it's all back.", 'Ta page, tes dates et tes avis ne seront alors plus visibles pour les participants ni les moteurs de recherche. Tout reste enregistré : dès que tu te reconnectes, tout revient.')}</p>
+            <button type="button" class="hd-pause-btn" data-hs-pause-open><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg>{L('Konto pausieren', 'Pause account', 'Mettre le compte en pause')}</button>
             <dialog class="hd-sudo" data-hs-pause-dlg>
               <span class="hd-sudo-icon hd-pause-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>
-              <h3>{lang === 'de' ? 'Konto pausieren' : 'Pause account'}</h3>
-              <p>{lang === 'de' ? 'Du wirst auf allen Geräten abgemeldet und deine Seite verschwindet von Twiggli. Melde dich einfach wieder an, dann ist alles wieder da.' : "You'll be signed out on all devices and your page disappears from Twiggli. Just sign in again and it's all back."}</p>
+              <h3>{L('Konto pausieren', 'Pause account', 'Mettre le compte en pause')}</h3>
+              <p>{L('Du wirst auf allen Geräten abgemeldet und deine Seite verschwindet von Twiggli. Melde dich einfach wieder an, dann ist alles wieder da.', "You'll be signed out on all devices and your page disappears from Twiggli. Just sign in again and it's all back.", 'Tu seras déconnecté·e sur tous tes appareils et ta page disparaîtra de Twiggli. Reconnecte-toi simplement et tout revient.')}</p>
               <div class="hd-dlg-row">
-                <button type="button" class="hd-set-save" data-hs-pause-go>{lang === 'de' ? 'Pausieren' : 'Pause'}</button>
-                <button type="button" class="hd-dlg-cancel" data-hs-pause-cancel>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+                <button type="button" class="hd-set-save" data-hs-pause-go>{L('Pausieren', 'Pause', 'Mettre en pause')}</button>
+                <button type="button" class="hd-dlg-cancel" data-hs-pause-cancel>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
               </div>
               <p class="ha-note" data-hs-pause-note role="status"></p>
             </dialog>
           </div>
           <div class="hd-set-block" data-hs-delete>
-            <h2>{lang === 'de' ? 'Konto löschen' : 'Delete account'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'Wenn du Twiggli nicht mehr nutzen möchtest, kannst du dein Konto endgültig löschen.' : 'If you no longer wish to use Twiggli, you can permanently delete your account.'}</p>
-            <button type="button" class="hd-del-btn" data-hs-del><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>{lang === 'de' ? 'Mein Konto löschen' : 'Delete my account'}</button>
+            <h2>{L('Konto löschen', 'Delete account', 'Supprimer le compte')}</h2>
+            <p class="hd-set-sub">{L('Wenn du Twiggli nicht mehr nutzen möchtest, kannst du dein Konto endgültig löschen.', 'If you no longer wish to use Twiggli, you can permanently delete your account.', 'Si tu ne veux plus utiliser Twiggli, tu peux supprimer définitivement ton compte.')}</p>
+            <button type="button" class="hd-del-btn" data-hs-del><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>{L('Mein Konto löschen', 'Delete my account', 'Supprimer mon compte')}</button>
             <dialog class="hd-sudo" data-hs-del-dlg>
               <span class="hd-sudo-icon hd-del-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></span>
-              <h3>{lang === 'de' ? 'Konto löschen' : 'Delete account'}</h3>
-              <p>{lang === 'de' ? 'Möchtest du das Konto mit ' : 'Are you sure you want to delete the account linked to '}<b data-hs-del-email></b>{lang === 'de' ? ' wirklich löschen? Dein Login, Profil, Einstellungen und Foto werden gelöscht, und deine Seite, Termine und Bewertungen verschwinden von Twiggli.' : '? Your login, profile, settings and photo will be deleted, and your page, dates and reviews disappear from Twiggli.'}</p>
-              <label class="hd-del-check"><input type="checkbox" data-hs-del-ok /><span>{lang === 'de' ? 'Ich verstehe, dass ich mein Konto nicht wiederherstellen kann.' : "I understand that I won't be able to recover my account."}</span></label>
+              <h3>{L('Konto löschen', 'Delete account', 'Supprimer le compte')}</h3>
+              <p>{L('Möchtest du das Konto mit ', 'Are you sure you want to delete the account linked to ', 'Tu veux vraiment supprimer le compte associé à ')}<b data-hs-del-email></b>{L(' wirklich löschen? Dein Login, Profil, Einstellungen und Foto werden gelöscht, und deine Seite, Termine und Bewertungen verschwinden von Twiggli.', '? Your login, profile, settings and photo will be deleted, and your page, dates and reviews disappear from Twiggli.', ' ? Ton identifiant, ton profil, tes réglages et ta photo seront supprimés, et ta page, tes dates et tes avis disparaîtront de Twiggli.')}</p>
+              <label class="hd-del-check"><input type="checkbox" data-hs-del-ok /><span>{L('Ich verstehe, dass ich mein Konto nicht wiederherstellen kann.', "I understand that I won't be able to recover my account.", 'Je comprends que je ne pourrai pas récupérer mon compte.')}</span></label>
               <div class="hd-dlg-row">
-                <button type="button" class="hd-del-btn hd-del-go" data-hs-del-go disabled>{lang === 'de' ? 'Löschen' : 'Delete'}</button>
-                <button type="button" class="hd-dlg-cancel" data-hs-del-close>{lang === 'de' ? 'Abbrechen' : 'Cancel'}</button>
+                <button type="button" class="hd-del-btn hd-del-go" data-hs-del-go disabled>{L('Löschen', 'Delete', 'Supprimer')}</button>
+                <button type="button" class="hd-dlg-cancel" data-hs-del-close>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
               </div>
               <p class="ha-note" data-hs-del-note role="status"></p>
             </dialog>
@@ -471,22 +473,23 @@ const fields = [
 
         <div class="hd-set-pane" data-hs-pane="prefs" hidden>
           <div class="hd-set-block">
-            <h2>{lang === 'de' ? 'Sprache' : 'Language'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'In welcher Sprache sollen wir dir schreiben? Das gilt auch für die automatischen Buchungsanfragen.' : 'Which language should we write to you in? This also applies to the automatic booking requests.'}</p>
+            <h2>{L('Sprache', 'Language', 'Langue')}</h2>
+            <p class="hd-set-sub">{L('In welcher Sprache sollen wir dir schreiben? Das gilt auch für die automatischen Buchungsanfragen.', 'Which language should we write to you in? This also applies to the automatic booking requests.', 'Dans quelle langue veux-tu qu’on t’écrive ? Ça vaut aussi pour les demandes de réservation automatiques.')}</p>
             <div class="hd-set-seg" data-hs-lang>
               <button type="button" data-v="de">Deutsch</button>
               <button type="button" data-v="en">English</button>
+              <button type="button" data-v="fr">Français</button>
             </div>
           </div>
           <div class="hd-set-block" data-hs-notify>
-            <h2>{lang === 'de' ? 'E-Mail-Benachrichtigungen' : 'Email notifications'}</h2>
-            <label class="hd-sw-row"><span><b>{lang === 'de' ? 'Neue Anfragen' : 'New requests'}</b><small>{lang === 'de' ? 'Buchungs-, Gruppen- und Terminanfragen. Immer an, damit dir kein Gast verloren geht.' : "Booking, group and date requests. Always on, so you never miss a guest."}</small></span><input type="checkbox" class="hd-sw" checked disabled /></label>
-            <label class="hd-sw-row"><span><b>{lang === 'de' ? 'Neue Bewertungen' : 'New reviews'}</b><small>{lang === 'de' ? 'Wenn eine Bewertung auf deiner Seite erscheint.' : 'When a review appears on your page.'}</small></span><input type="checkbox" class="hd-sw" name="notifyReviews" checked /></label>
-            <label class="hd-sw-row"><span><b>{lang === 'de' ? 'Neuigkeiten von Twiggli' : 'News from Twiggli'}</b><small>{lang === 'de' ? 'Ab und zu Tipps für mehr Buchungen und Neues auf Twiggli.' : 'Now and then, tips for more bookings and news about Twiggli.'}</small></span><input type="checkbox" class="hd-sw" name="notifyNews" checked /></label>
+            <h2>{L('E-Mail-Benachrichtigungen', 'Email notifications', 'Notifications par e-mail')}</h2>
+            <label class="hd-sw-row"><span><b>{L('Neue Anfragen', 'New requests', 'Nouvelles demandes')}</b><small>{L('Buchungs-, Gruppen- und Terminanfragen. Immer an, damit dir kein Gast verloren geht.', "Booking, group and date requests. Always on, so you never miss a guest.", 'Demandes de réservation, de groupe et de date. Toujours activé, pour ne jamais rater un participant.')}</small></span><input type="checkbox" class="hd-sw" checked disabled /></label>
+            <label class="hd-sw-row"><span><b>{L('Neue Bewertungen', 'New reviews', 'Nouveaux avis')}</b><small>{L('Wenn eine Bewertung auf deiner Seite erscheint.', 'When a review appears on your page.', 'Quand un avis apparaît sur ta page.')}</small></span><input type="checkbox" class="hd-sw" name="notifyReviews" checked /></label>
+            <label class="hd-sw-row"><span><b>{L('Neuigkeiten von Twiggli', 'News from Twiggli', 'Nouvelles de Twiggli')}</b><small>{L('Ab und zu Tipps für mehr Buchungen und Neues auf Twiggli.', 'Now and then, tips for more bookings and news about Twiggli.', 'De temps en temps, des astuces pour plus de réservations et des nouvelles de Twiggli.')}</small></span><input type="checkbox" class="hd-sw" name="notifyNews" checked /></label>
           </div>
           <div class="hd-set-block" data-hs-emoji-block>
-            <h2>{lang === 'de' ? 'Profil-Emoji' : 'Profile emoji'}</h2>
-            <p class="hd-set-sub">{lang === 'de' ? 'Erscheint, solange du kein Profilfoto hast.' : 'Shown as long as you have no profile photo.'}</p>
+            <h2>{L('Profil-Emoji', 'Profile emoji', 'Emoji de profil')}</h2>
+            <p class="hd-set-sub">{L('Erscheint, solange du kein Profilfoto hast.', 'Shown as long as you have no profile photo.', 'Affiché tant que tu n’as pas de photo de profil.')}</p>
             <div class="hd-emojis" data-ha-emojis>
               {['🏺', '🎨', '🕯️', '🧵', '🌿', '🍳', '🍺', '🥃', '📷', '🪵', '💍', '📚', '🌸', '🥁', '✨', '🙂'].map((e) => <button type="button">{e}</button>)}
             </div>
@@ -495,9 +498,9 @@ const fields = [
 
         <div class="hd-set-pane" data-hs-pane="pay" hidden>
           <div class="hd-set-block">
-            <h2>{lang === 'de' ? 'Auszahlungen' : 'Payouts'}</h2>
-            <p class="hd-set-sub" data-hs-pay>{lang === 'de' ? 'Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.' : 'Connect Stripe so guests can pay you directly.'}</p>
-            <button type="button" class="hd-set-btn" data-hs-pay-btn>{lang === 'de' ? 'Stripe verbinden' : 'Connect Stripe'}</button>
+            <h2>{L('Auszahlungen', 'Payouts', 'Versements')}</h2>
+            <p class="hd-set-sub" data-hs-pay>{L('Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.', 'Connect Stripe so guests can pay you directly.', 'Connecte Stripe pour que les participants te paient directement.')}</p>
+            <button type="button" class="hd-set-btn" data-hs-pay-btn>{L('Stripe verbinden', 'Connect Stripe', 'Connecter Stripe')}</button>
           </div>
         </div>
 
@@ -845,7 +848,7 @@ const fields = [
       };
       const post = (fn: string, body: object) => fetch(`${functionsBase}/${fn}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const sendCode = async (addr: string) => {
-        const r = await post('signinCode', { email: addr, lang: root.dataset.lang === 'de' ? 'de' : 'en' });
+        const r = await post('signinCode', { email: addr, lang: root.dataset.lang });
         if (r.ok) return 60;
         const j = await r.json().catch(() => ({}));
         if (r.status === 429 && j.wait) return Number(j.wait);
@@ -970,7 +973,7 @@ const fields = [
         tfaBoxes.forEach((b) => { b.disabled = true; });
         tfaSay(tfaForm.dataset.checking ?? '');
         try {
-          const { ok, status, j } = await authed('twoFactor', { action: 'verify', lang: root.dataset.lang === 'en' ? 'en' : 'de', ...body });
+          const { ok, status, j } = await authed('twoFactor', { action: 'verify', lang: root.dataset.lang, ...body });
           if (ok && j.token) {
             await signInWithCustomToken(auth, j.token);
             rememberSignedIn(true);
@@ -1038,7 +1041,7 @@ const fields = [
         const n = $(document.querySelector('[data-hs-tfa-modal]')?.hasAttribute('open') ? '[data-hs-tfa-modal-note]' : '[data-hs-tfa-note]');
         n.textContent = msg; n.dataset.ok = String(ok);
       };
-      const pageLang = root.dataset.lang === 'en' ? 'en' : 'de';
+      const pageLang = root.dataset.lang || 'en';
       const sudo = $<HTMLDialogElement>('[data-hs-sudo]');
       const sudoNote = (m: string, ok = true) => { const n = $('[data-hs-sudo-note]'); n.textContent = m; n.dataset.ok = String(ok); };
       let sudoThen: (() => void) | null = null;
@@ -1094,7 +1097,7 @@ const fields = [
       const tfaErr = (status: number, j: { error?: string }) => j.error === 'confirm' ? void confirmFirst(() => tfaMsg('')) : tfaMsg(status === 429 ? tfaBox.dataset.locked ?? '' : j.error === 'expired' ? tfaBox.dataset.expired ?? '' : j.error === 'wrong' ? tfaBox.dataset.wrong ?? '' : fill(t.error, cfg.contact), false);
       const tfaShowOn = (since: number | null) => {
         tfaPart('on');
-        const d = since ? new Date(since).toLocaleDateString(root.dataset.lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+        const d = since ? new Date(since).toLocaleDateString(({ de: 'de-DE', fr: 'fr-FR' } as Record<string, string>)[root.dataset.lang ?? ''] ?? 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
         $('[data-hs-tfa-since]').textContent = d ? (tfaBox.dataset.since ?? '').replace('{d}', d) : '';
       };
       const loadTfa = async () => {
@@ -1195,7 +1198,7 @@ const fields = [
         if (!ok) { b.disabled = false; $('[data-hs-pause-note]').textContent = fill(t.error, cfg.contact); return; }
         try { await signOut(auth); } catch { /* already out */ }
         rememberSignedIn(false);
-        location.href = root.dataset.lang === 'de' ? '/de/' : '/';
+        location.href = root.dataset.lang === 'en' ? '/' : `/${root.dataset.lang}/`;
       });
       $('[data-hs-del-close]').addEventListener('click', () => delDlg.close());
       $('[data-hs-del-go]').addEventListener('click', () => {
@@ -1206,7 +1209,7 @@ const fields = [
           if (!ok) { delDlg.showModal(); $('[data-hs-del-note]').textContent = fill(t.error, cfg.contact); return; }
           try { await signOut(auth); } catch { /* already gone */ }
           rememberSignedIn(false);
-          location.href = root.dataset.lang === 'de' ? '/de/' : '/';
+          location.href = root.dataset.lang === 'en' ? '/' : `/${root.dataset.lang}/`;
         }, 'delete');
       });
 
@@ -1244,10 +1247,18 @@ const fields = [
         }
         bioFit();
         root.querySelectorAll<HTMLInputElement>('[data-hs-notify] input[name]').forEach((x) => { x.checked = us[x.name] !== 'off'; });
-        const lg = us.lang || (document.documentElement.lang === 'en' ? 'en' : 'de');
+        const lg = (us.langAt && us.lang) || root.dataset.lang || 'en';
         root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === lg)));
       };
-      const loadSettings = () => api('userSettings', { action: 'get' }).then((d) => { us = d ?? {}; fillSettings(); renderProfile(); }).catch(() => fillSettings());
+      const loadSettings = () => api('userSettings', { action: 'get' }).then((d) => {
+        us = d ?? {};
+        // The account opens in the language the host chose (Präferenzen), like Luma.
+        if (us.langAt && us.lang && us.lang !== root.dataset.lang && ['en', 'de', 'fr'].includes(us.lang)) {
+          location.replace(`${us.lang === 'en' ? '' : `/${us.lang}`}/host/account/${location.search}`);
+          return;
+        }
+        fillSettings(); renderProfile();
+      }).catch(() => fillSettings());
       root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((tb) => tb.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((x) => x.setAttribute('aria-selected', String(x === tb)));
         root.querySelectorAll<HTMLElement>('[data-hs-pane]').forEach((p) => { p.hidden = p.dataset.hsPane !== tb.dataset.hsTab; });
@@ -1305,13 +1316,14 @@ const fields = [
           }
           if (textLang) showText();
           tellUs('studio name / address');
-          n.textContent = root.dataset.lang === 'de' ? 'Gespeichert ✓' : 'Saved ✓';
+          n.textContent = ({ de: 'Gespeichert ✓', fr: 'Enregistré ✓' } as Record<string, string>)[root.dataset.lang ?? ''] ?? 'Saved ✓';
         } catch { n.textContent = fill(t.error, cfg.contact); }
         btn.disabled = false;
       });
       root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((b) => b.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-lang] button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-        void saveSettings({ langPick: b.dataset.v || 'de' }).catch(() => {});
+        const want = b.dataset.v || 'de';
+        void saveSettings({ langPick: want }).then(() => { if (want !== root.dataset.lang) location.href = `${want === 'en' ? '' : `/${want}`}/host/account/`; }).catch(() => {});
       }));
       $('[data-ha-signout]').addEventListener('click', async () => {
         await signOut(auth);
@@ -1758,7 +1770,7 @@ const fields = [
       const waiting = (r: Req) => r.status === 'pending';
       const unread = (r: Req) => !seen.has(r.id) && waiting(r);
       const firstName = (r: Req) => (r.fields.Name || r.fields.Email || t.guest).trim().split(/\s+/)[0];
-      const fmtDay = (iso: string) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString(document.documentElement.lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+      const fmtDay = (iso: string) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString(({ de: 'de-DE', fr: 'fr-FR' } as Record<string, string>)[document.documentElement.lang] ?? 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
       let openId = '';
       const row = (r: Req) => {
         const li = el('li', `ha-msg${r.id === openId ? ' is-open' : ''}${unread(r) ? ' is-unread' : ''}`);
@@ -1800,7 +1812,7 @@ const fields = [
       $('[data-ib-todo]').addEventListener('click', () => { showTab('create'); showStripe(); });
 
       // ── Overview: greeting, waiting requests, four numbers, dates by day ──
-      const locale = document.documentElement.lang === 'de' ? 'de-DE' : 'en-GB';
+      const locale = ({ de: 'de-DE', fr: 'fr-FR' } as Record<string, string>)[document.documentElement.lang] ?? 'en-GB';
       const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       const euro = (n: number) => `€ ${Math.round(n).toLocaleString(locale)}`;
       const priceOf = (r: Req) => Number(String(r.fields.Price ?? '').replace(/[^\d.,]/g, '').replace(',', '.')) || 0;

@@ -22,7 +22,7 @@ const { lang } = Astro.props;
 const c = authCopy[lang];
 const hostHref = `${href(lang, '/host/')}#apply`;
 // The account page exists in English and German only.
-const accountHref = href(lang === 'de' ? 'de' : 'en', '/host/account/');
+const accountHref = href(lang === 'de' || lang === 'fr' ? lang : 'en', '/host/account/');
 ---
 
 <dialog
