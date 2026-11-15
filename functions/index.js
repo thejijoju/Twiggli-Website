@@ -1980,10 +1980,13 @@ const signinHash = (key, email, code) => createHmac('sha256', key).update(`code\
 
 const codeMail = (lang, code, link, kind = 'signin') => {
   const de = lang === 'de';
-  const confirm = kind === 'confirm'
+  // kind 'confirm-on' / 'confirm-off': the code to turn two-factor on or off,
+  // and the email says so (Jirel 15.11.26).
+  const off = kind === 'confirm-off';
+  const confirm = kind.startsWith('confirm')
     ? (de
-      ? { subject: `${code} ist dein Twiggli-Bestätigungscode`, head: 'Bestätige, dass du es bist', lede: 'Gib diesen Code auf twiggli.com ein, um eine Sicherheitseinstellung in deinem Konto zu ändern.', foot: 'Du wolltest nichts ändern? Dann ignoriere diese E-Mail und schreib uns kurz, wir schauen uns dein Konto an.' }
-      : { subject: `${code} is your Twiggli confirmation code`, head: "Confirm it's you", lede: 'Enter this code on twiggli.com to change a security setting in your account.', foot: "Didn't try to change anything? Ignore this email and let us know, we'll look into your account." })
+      ? { subject: `Code zum ${off ? 'Ausschalten' : 'Einschalten'} der 2FA: ${code}`, head: `Code zum ${off ? 'Ausschalten' : 'Einschalten'} der Zwei-Faktor-Authentifizierung`, lede: `Das ist dein Twiggli-Bestätigungscode, um die Zwei-Faktor-Authentifizierung ${off ? 'auszuschalten' : 'einzuschalten'}.`, foot: `Du erkennst diese E-Mail nicht und glaubst, jemand gibt sich als du aus? Schreib uns an ${SENDER}.` }
+      : { subject: `Code to turn ${off ? 'off' : 'on'} 2FA: ${code}`, head: `Code to turn ${off ? 'off' : 'on'} two-factor authentication`, lede: `This is your Twiggli confirmation code to turn ${off ? 'off' : 'on'} two-factor authentication.`, foot: `Don't recognise this email and think someone may be impersonating you? Write to us at ${SENDER}.` })
     : {};
   const t0 = de
     ? { subject: `${code} ist dein Twiggli-Anmeldecode`, head: 'Dein Anmeldecode', lede: 'Gib diesen Code auf twiggli.com ein, um dich anzumelden.', or: 'Oder melde dich direkt an:', btn: 'Bei Twiggli anmelden', safe: 'Teile diesen Code mit niemandem und gib ihn nur auf unserer Website ein. Wir fragen dich nie per Telefon, Chat oder E-Mail danach.', foot: 'Du hast keinen Code angefordert? Dann kannst du diese E-Mail einfach ignorieren.' }
@@ -2243,7 +2246,7 @@ export const twoFactor = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
     if (hour.length >= 6) return res.status(429).json({ error: 'hour' });
     const code = String(randomInt(0, 1e6)).padStart(6, '0');
     await sudoRef.set({ hash: signinHash(await approveKey(), `sudo:${t.uid}`, code), expires: now + CODE_TTL, tries: 0, lastSent: now, sent: [...hour, now], until: 0 });
-    const ok = await systemMail(t.email, codeMail(lang, code, '', 'confirm'), 'confirm-code');
+    const ok = await systemMail(t.email, codeMail(lang, code, '', req.body?.purpose === 'off' ? 'confirm-off' : 'confirm-on'), 'confirm-code');
     return ok ? res.status(200).json({ ok: true, to: t.email }) : res.status(502).json({ error: 'mail' });
   }
   if (action === 'confirmCheck') {
