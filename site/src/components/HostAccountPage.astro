@@ -511,14 +511,13 @@ const fields = [
           </div>
           <div class="hd-set-block" data-hs-notify>
             <h2>{L('Benachrichtigungen', 'Notifications', 'Notifications')}</h2>
-            <p class="hd-set-sub">{L('Wähle für jedes Thema, ob wir dir per E-Mail, in der App oder beides Bescheid geben.', 'For each topic, choose whether we tell you by email, in the app, or both.', 'Pour chaque sujet, choisis si on te prévient par e-mail, dans l’app, ou les deux.')}</p>
             {NOTIFY.map((g) => (
               <section class="hd-nt-group">
-                <h3>{g.group[li]}<small>{g.hint[li]}</small></h3>
+                <h3>{g.group[li]}</h3>
                 <ul class="hd-nt-list">
                   {g.items.map((it) => (
                     <li data-nt={it.key}>
-                      <span class="hd-nt-txt"><b>{it.t[li]}</b><small>{it.d[li]}</small></span>
+                      <span class="hd-nt-txt"><b>{it.t[li]}</b></span>
                       <span class="hd-nt-ch">
                         <button type="button" class="hd-nt-chip" data-ch="email" aria-pressed="true" disabled={it.lock} title={it.lock ? L('Immer an', 'Always on', 'Toujours activé') : undefined}><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg><span>{L('E-Mail', 'Email', 'E-mail')}</span></button>
                         <button type="button" class="hd-nt-chip" data-ch="push" aria-pressed="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.75" width="11" height="18.5" rx="2.5"/><path d="M10.5 18h3"/></svg><span>App</span></button>
@@ -528,7 +527,6 @@ const fields = [
                 </ul>
               </section>
             ))}
-            <p class="hd-set-sub hd-nt-note">{L('Sicherheits-E-Mails wie Anmeldecodes bekommst du immer. App-Benachrichtigungen kommen, sobald du die Twiggli-App nutzt.', 'Security emails such as sign-in codes always reach you. App notifications arrive once you use the Twiggli app.', 'Les e-mails de sécurité comme les codes de connexion te parviennent toujours. Les notifications de l’app arrivent dès que tu utilises l’app Twiggli.')}</p>
           </div>
           <div class="hd-set-block" data-hs-emoji-block>
             <h2>{L('Profil-Emoji', 'Profile emoji', 'Emoji de profil')}</h2>
@@ -3705,17 +3703,19 @@ const fields = [
   .hd-nt-group h3 { margin: 6px 0 0; font-size: 1rem; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
   .hd-nt-group h3 small { font-size: 0.84rem; font-weight: 400; color: var(--color-text-muted); }
   .hd-nt-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-  .hd-nt-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border-radius: 16px; padding: 12px 16px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.07); }
+  .hd-nt-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border-radius: 16px; padding: 10px 16px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.07); }
   .hd-nt-txt { display: grid; gap: 2px; min-width: 0; }
-  .hd-nt-txt b { font-size: 0.95rem; color: #16181d; font-weight: 600; }
+  .hd-nt-txt b { font-size: 0.95rem; color: #16181d; font-weight: 500; }
   .hd-nt-txt small { font-size: 0.84rem; color: var(--color-text-muted); }
   .hd-nt-ch { display: flex; gap: 6px; flex: none; }
-  .hd-nt-chip { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 0.82rem; font-weight: 600; border-radius: 999px; padding: 6px 12px; border: 1px solid rgba(36, 39, 46, 0.14); background: #fff; color: var(--color-text-muted); cursor: pointer; transition: background .15s ease, color .15s ease, border-color .15s ease; }
-  .hd-nt-chip[aria-pressed='true'] { background: rgba(106, 62, 236, 0.1); border-color: rgba(106, 62, 236, 0.35); color: #6a3eec; }
-  .hd-nt-chip:not(:disabled):hover { border-color: rgba(106, 62, 236, 0.55); }
-  .hd-nt-chip:disabled { cursor: default; opacity: .7; }
+  .hd-nt-chip { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 0.8rem; font-weight: 500; border-radius: 999px; padding: 5px 10px; border: 1px solid rgba(36, 39, 46, 0.1); background: none; color: rgba(36, 39, 46, 0.35); cursor: pointer; transition: color .15s ease, border-color .15s ease; }
+  .hd-nt-chip svg { color: rgba(36, 39, 46, 0.3); transition: color .15s ease; }
+  .hd-nt-chip[aria-pressed='true'] { color: var(--color-text-muted); }
+  .hd-nt-chip[aria-pressed='true'] svg { color: #6a3eec; }
+  .hd-nt-chip:not(:disabled):hover { border-color: rgba(36, 39, 46, 0.25); color: #16181d; }
+  .hd-nt-chip:disabled { cursor: default; }
   .hd-nt-note { margin-top: 4px; font-size: 0.82rem; }
-  @media (max-width: 560px) { .hd-nt-list li { flex-direction: column; align-items: flex-start; } }
+
   /* Two-factor (Jirel 15.11.26). */
   .hd-tfa-card { background: #fff; border-radius: 16px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.08); display: grid; gap: 12px; justify-items: start; }
   .hd-tfa-card p { margin: 0; display: flex; align-items: center; gap: 10px; }
