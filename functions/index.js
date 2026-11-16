@@ -2187,8 +2187,14 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   const phone = clean(b.phone, 30);
   out.phone = /^\+?[0-9][0-9 ()/.-]{5,28}$/.test(phone) ? phone : '';
   // Email notifications that can be switched off. New requests always go out.
-  out.notifyReviews = b.notifyReviews === 'off' ? 'off' : 'on';
-  out.notifyNews = b.notifyNews === 'off' ? 'off' : 'on';
+  // Notifications per topic and channel (Jirel 16.11.26): { key: { email, push } }.
+  const NT = ['h_requests', 'h_bookings', 'h_messages', 'h_reminders', 'h_reviews', 'h_payouts', 'g_booking', 'g_changes', 'g_reminders', 'g_messages', 'g_waitlist', 'g_feedback', 't_news', 't_ideas'];
+  const LOCKED = ['h_requests', 'h_bookings', 'g_booking', 'g_changes'];
+  let nt = {};
+  try { nt = JSON.parse(String(b.notifyJson ?? '{}')); } catch { nt = {}; }
+  out.notify = Object.fromEntries(NT.map((k) => [k, { email: LOCKED.includes(k) || nt?.[k]?.email !== false, push: nt?.[k]?.push !== false }]));
+  out.notifyReviews = out.notify.h_reviews.email ? 'on' : 'off';
+  out.notifyNews = out.notify.t_news.email ? 'on' : 'off';
   for (const [k, re] of Object.entries(SOCIAL)) { const h = handle(b[k]); out[k] = re.test(h) ? h : ''; }
   const site = clean(b.website, 200);
   out.website = /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(site) ? (site.startsWith('http') ? site : `https://${site}`) : '';
