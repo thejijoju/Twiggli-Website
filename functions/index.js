@@ -2468,6 +2468,21 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
     await ref.set({ ...deviceLabel(req.get('user-agent')), lastActive: Date.now(), ...(d ? {} : { since: Date.now() }), ...(city && city !== '?' ? { city } : {}), ...(country && country !== 'ZZ' ? { country } : {}) }, { merge: true });
     return res.status(200).json({ ok: true, unpaused });
   }
+  if (action === 'payments') {
+    // Payment history (Jirel 16.11.26): workshops booked and paid, and
+    // vouchers bought, with this account's email. Newest first.
+    const email = String(t.email ?? '').toLowerCase();
+    const ms = (v) => v?.toMillis?.() ?? (typeof v === 'number' ? v : 0);
+    const [bk, vc] = await Promise.all([
+      getFirestore().collection('bookings').where('email', '==', email).limit(50).get().catch(() => ({ docs: [] })),
+      getFirestore().collection('vouchers').where('buyer', '==', email).limit(50).get().catch(() => ({ docs: [] })),
+    ]);
+    const items = [
+      ...bk.docs.map((x) => x.data()).filter((x) => x.status === 'paid').map((x) => ({ kind: 'booking', title: x.title, date: x.date, start: x.start, people: x.people, amount: x.amount ?? 0, voucher: x.paidBy === 'voucher', at: ms(x.paidAt) || ms(x.createdAt) })),
+      ...vc.docs.map((x) => x.data()).map((x) => ({ kind: 'voucher', title: x.host || '', amount: x.amount ?? 0, at: ms(x.buyerConfirmedAt) || ms(x.createdAt) })),
+    ].sort((a, b) => b.at - a.at);
+    return res.status(200).json({ items });
+  }
   if (action === 'list') {
     const snap = await col.orderBy('lastActive', 'desc').limit(20).get();
     return res.status(200).json({ devices: snap.docs.filter((x) => !x.data().revoked).map((x) => ({ id: x.id, ...x.data(), current: x.id === id })) });
