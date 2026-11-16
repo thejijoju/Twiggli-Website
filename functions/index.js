@@ -324,10 +324,18 @@ const confirmGuest = async (to, f) => {
   const icon = f.Studio ? '🏠' : emojiFor(what);
   const host = String(f.Host ?? '').trim();
   const when = [String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1'), f.Time].filter(Boolean).join(', ');
+  // A request for no host in particular (group, team, Christmas party…):
+  // we look for the hosts who fit first (Jirel 16.11.26).
+  const general = !host && !f.Studio;
+  const pref = String(f['Preferred date'] ?? '').match(/^(\d{4})-(\d\d)-(\d\d)/);
+  const prefDate = pref ? new Date(`${pref[0]}T12:00:00`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const where = String(f.Where ?? '');
   const rows = [
     [de ? 'Gastgeber:in' : 'Host', host],
-    [de ? 'Wann' : 'When', when],
-    [de ? 'Personen' : 'People', f.People],
+    [de ? 'Wann' : 'When', when || prefDate],
+    [de ? 'Personen' : 'People', f.People || f['Group size']],
+    [de ? 'Budget p. P.' : 'Budget pp', f['Budget per person'] ? `€${String(f['Budget per person']).replace(/[^\d.,]/g, '')}` : ''],
+    [de ? 'Wo' : 'Where', general ? (/studio/i.test(where) ? (de ? 'In einem Atelier' : 'At a studio') : where) : ''],
   ].filter(([, v]) => v);
   const runs = String(f['Runs from'] ?? '').match(/\d+/)?.[0];
   const runsNote = !runs ? '' : de
@@ -342,6 +350,10 @@ const confirmGuest = async (to, f) => {
     next: `${host ? esc(host) : 'Der Gastgeber'} meldet sich direkt bei dir per E-Mail, meist innerhalb von 1–2 Tagen, um zu bestätigen oder einen anderen Termin vorzuschlagen. Du musst nichts weiter tun.`,
     q: 'Fragen? Antworte einfach auf diese E-Mail.', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
     subject: `Deine Anfrage bei Twiggli: ${what} ${icon}`,
+    ...(general ? {
+      intro: 'Deine Anfrage bei <b>Twiggli</b> ist gut angekommen. Wir schauen jetzt, welche unserer Gastgeber:innen sie erfüllen können: an deinem Termin, für deine Gruppengröße, in deinem Budget und am passenden Ort.',
+      next: 'Wir melden uns innerhalb von 1–2 Tagen mit den passenden Vorschlägen bei dir. Du musst nichts weiter tun.',
+    } : {}),
   } : {
     kicker: 'Request received', head: `Thank you${name ? `, ${esc(name)}` : ''}! ${icon}`,
     intro: `Your request on <b>Twiggli</b> has reached us, and we've passed it straight on to ${host ? esc(host) : 'the host'}.`,
@@ -349,6 +361,10 @@ const confirmGuest = async (to, f) => {
     next: `${host ? esc(host) : 'The host'} will get in touch with you directly by email, usually within 1–2 days, to confirm or suggest another date. There is nothing else you need to do.`,
     q: 'Questions? Just reply to this email.', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
     subject: `Your Twiggli request: ${what} ${icon}`,
+    ...(general ? {
+      intro: 'Your request on <b>Twiggli</b> has reached us. We’re now checking which of our hosts can make it happen: on your date, for your group size, within your budget and in the right place.',
+      next: 'We’ll get back to you within 1–2 days with the hosts who fit. There is nothing else you need to do.',
+    } : {}),
   };
   const cell = 'padding:9px 0;border-bottom:1px solid #efe9e2;font-size:14px';
   const table = rows.map(([k, v]) => `<tr><td style="${cell};color:#6b7076">${esc(k)}</td><td align="right" style="${cell};font-weight:bold">${esc(v)}</td></tr>`).join('');
