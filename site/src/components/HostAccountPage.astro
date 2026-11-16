@@ -1371,9 +1371,22 @@ const fields = [
         btn.disabled = false;
       });
       let ntTimer = 0;
+      // Hover text says what a click does: "An – klicken zum Ausschalten".
+      const NT_T: Record<string, [string, string]> = {
+        de: ['An · klicken zum Ausschalten', 'Aus · klicken zum Einschalten'],
+        fr: ['Activé · clique pour désactiver', 'Désactivé · clique pour activer'],
+        en: ['On · click to turn off', 'Off · click to turn on'],
+      };
+      const ntTitle = (b: HTMLButtonElement) => {
+        if (b.disabled) return;
+        const t2 = NT_T[root.dataset.lang ?? 'en'] ?? NT_T.en;
+        b.title = b.getAttribute('aria-pressed') === 'true' ? t2[0] : t2[1];
+      };
+      root.querySelectorAll<HTMLButtonElement>('[data-nt] [data-ch]').forEach((b) => b.addEventListener('mouseenter', () => ntTitle(b)));
       root.querySelectorAll<HTMLButtonElement>('[data-nt] [data-ch]').forEach((b) => b.addEventListener('click', () => {
         if (b.disabled) return;
         b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+        ntTitle(b);
         clearTimeout(ntTimer);
         ntTimer = window.setTimeout(() => { void saveSettings().catch(() => {}); }, 600);
       }));
@@ -3700,7 +3713,10 @@ const fields = [
   .hd-blank h2 { margin: 8px 0 0; font-size: clamp(1.7rem, 4vw, 2.1rem); letter-spacing: -0.02em; }
   /* Notifications: topic rows with an Email and an App chip (Jirel 16.11.26). */
   .hd-nt-group { display: grid; gap: 10px; margin-top: 8px; }
-  .hd-nt-group h3 { margin: 6px 0 0; font-size: 1rem; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .hd-nt-group h3 { margin: 6px 0 0; font-size: 0.92rem; font-weight: 600; color: #9b94ad; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; transition: color .15s ease; }
+  /* Hover on text: a light purple-grey (Jirel 16.11.26). */
+  .hd-nt-group h3:hover, .hd-nt-txt b:hover { color: #8f84b3; }
+  .hd-nt-txt b { transition: color .15s ease; }
   .hd-nt-group h3 small { font-size: 0.84rem; font-weight: 400; color: var(--color-text-muted); }
   .hd-nt-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
   .hd-nt-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border-radius: 16px; padding: 10px 16px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.07); }
@@ -3708,11 +3724,16 @@ const fields = [
   .hd-nt-txt b { font-size: 0.95rem; color: #16181d; font-weight: 500; }
   .hd-nt-txt small { font-size: 0.84rem; color: var(--color-text-muted); }
   .hd-nt-ch { display: flex; gap: 6px; flex: none; }
-  .hd-nt-chip { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 0.8rem; font-weight: 500; border-radius: 999px; padding: 5px 10px; border: 1px solid rgba(36, 39, 46, 0.1); background: none; color: rgba(36, 39, 46, 0.35); cursor: pointer; transition: color .15s ease, border-color .15s ease; }
-  .hd-nt-chip svg { color: rgba(36, 39, 46, 0.3); transition: color .15s ease; }
-  .hd-nt-chip[aria-pressed='true'] { color: var(--color-text-muted); }
+  /* On / off must be obvious (Jirel 16.11.26): on = soft lavender with a
+     violet icon and a tick; off = empty, pale, crossed out. */
+  .hd-nt-chip { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 0.8rem; font-weight: 500; border-radius: 999px; padding: 5px 10px; border: 1px dashed rgba(36, 39, 46, 0.18); background: none; color: rgba(36, 39, 46, 0.32); cursor: pointer; transition: color .15s ease, border-color .15s ease, background .15s ease; }
+  .hd-nt-chip span { text-decoration: line-through; text-decoration-color: rgba(36, 39, 46, 0.3); }
+  .hd-nt-chip svg { color: rgba(36, 39, 46, 0.28); transition: color .15s ease; }
+  .hd-nt-chip[aria-pressed='true'] { border: 1px solid rgba(106, 62, 236, 0.18); background: #f5f2fd; color: #5f5875; }
+  .hd-nt-chip[aria-pressed='true'] span { text-decoration: none; }
   .hd-nt-chip[aria-pressed='true'] svg { color: #6a3eec; }
-  .hd-nt-chip:not(:disabled):hover { border-color: rgba(36, 39, 46, 0.25); color: #16181d; }
+  .hd-nt-chip[aria-pressed='true']::after { content: '✓'; font-size: 0.72rem; color: #6a3eec; margin-left: 1px; }
+  .hd-nt-chip:not(:disabled):hover { border-color: rgba(106, 62, 236, 0.4); color: #8f84b3; }
   .hd-nt-chip:disabled { cursor: default; }
   .hd-nt-note { margin-top: 4px; font-size: 0.82rem; }
 
