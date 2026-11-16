@@ -564,7 +564,6 @@ const fields = [
         <h3 class="hd-pay-title" id="hd-pay-title">{t.stripeTitle}</h3>
         <p class="hd-pay-body" data-ha-stripe-body>{t.stripeBody}</p>
         <button type="button" class="hd-pay-btn" data-ha-stripe-go>{t.stripeBtn}</button>
-        <button type="button" class="hd-pay-link" data-ha-stripe-link>{t.stripeLinkBtn}</button>
       </dialog>
 
       <div data-ha-editor hidden>
@@ -2633,6 +2632,7 @@ const fields = [
       // Payouts, as on Luma: touching the price without a connected Stripe
       // account opens the "accept payments" dialog (functions hostStripe).
       let stripeReady: boolean | null = null;
+      let stripeStarted = false; // an account exists, set-up not finished
       const stripeBox = $<HTMLDialogElement>('[data-ha-stripe]');
       const stripeBody = $('[data-ha-stripe-body]');
       const stripeGo = $<HTMLButtonElement>('[data-ha-stripe-go]');
@@ -2642,11 +2642,11 @@ const fields = [
         stripeBox.showModal();
       };
       stripeBox.addEventListener('click', (e) => { if (e.target === stripeBox) stripeBox.close(); });
-      $('[data-hs-pay-btn]').addEventListener('click', () => { if (!stripeBox.open) stripeBox.showModal(); });
       const loadStripe = async () => {
         try {
           const s = await api('hostStripe', { action: 'status' });
           stripeReady = !!s.chargesEnabled;
+          stripeStarted = !!s.connected && !s.chargesEnabled;
           renderTodo();
           const hl = document.documentElement.lang;
           if (stripeReady) {
@@ -2660,28 +2660,28 @@ const fields = [
       };
       fld('price').addEventListener('focus', showStripe);
       fld('price').addEventListener('pointerdown', (e) => { if (stripeReady !== true) { e.preventDefault(); showStripe(); } });
-      const stripeLink = $<HTMLButtonElement>('[data-ha-stripe-link]');
-      stripeLink.addEventListener('click', async () => {
-        stripeLink.disabled = true;
+      // One button (Jirel 16.11.26): Stripe's own page lets the host pick an
+      // existing account or create a new one. A host who started setting up
+      // an account here and didn't finish goes back to that set-up instead.
+      const openStripe = async (btn: HTMLButtonElement) => {
+        btn.disabled = true; btn.textContent = t.stripeWait;
+        const lang = document.documentElement.lang;
+        const go = (action: string) => api('hostStripe', { action, lang }).then((x) => x.url as string);
         try {
-          const { url } = await api('hostStripe', { action: 'link', lang: document.documentElement.lang });
-          location.href = url;
-        } catch (err) {
-          stripeBody.textContent = /link-not-configured/.test((err as Error).message) ? t.stripeLinkOff : `${t.stripeFail} (${(err as Error).message})`;
-          stripeLink.disabled = false;
-        }
-      });
-      stripeGo.addEventListener('click', async () => {
-        stripeGo.disabled = true; stripeGo.textContent = t.stripeWait;
-        try {
-          const { url } = await api('hostStripe', { action: 'connect', lang: document.documentElement.lang });
-          location.href = url;
+          location.href = stripeStarted
+            ? await go('connect').catch(() => go('link'))
+            : await go('link').catch((e) => { if (/link-not-configured/.test((e as Error).message)) return go('connect'); throw e; });
         } catch (err) {
           // Stripe's own reason, small, so a host can tell us what went wrong.
           stripeBody.textContent = `${t.stripeFail} (${(err as Error).message})`;
-          stripeGo.disabled = false; stripeGo.textContent = t.stripeBtn;
+          if (!stripeBox.open) stripeBox.showModal();
+          btn.disabled = false; btn.textContent = t.stripeBtn;
         }
-      });
+      };
+      stripeGo.addEventListener('click', () => openStripe(stripeGo));
+      // In Settings the button goes straight to Stripe, no pop-up first.
+      const payBtn = $<HTMLButtonElement>('[data-hs-pay-btn]');
+      payBtn.addEventListener('click', () => openStripe(payBtn));
       /** The dates a date falls on within the next `days` days. */
       const occurrences = (ev: Ev, days: number): string[] => {
         const out: string[] = [];
