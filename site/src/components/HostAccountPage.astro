@@ -3716,6 +3716,7 @@ const fields = [
   .hd-nt-group h3 { margin: 6px 0 0; font-size: 0.92rem; font-weight: 600; color: #9b94ad; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; transition: color .15s ease; }
   /* Hover on text: a light purple-grey (Jirel 16.11.26). */
   .hd-nt-group h3:hover, .hd-nt-txt b:hover { color: #8f84b3; }
+  .ha [data-hs-notify] > h2:hover { color: #3b2580; opacity: 1; }
   .hd-nt-txt b { transition: color .15s ease; }
   .hd-nt-group h3 small { font-size: 0.84rem; font-weight: 400; color: var(--color-text-muted); }
   .hd-nt-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
@@ -3726,11 +3727,9 @@ const fields = [
   .hd-nt-ch { display: flex; gap: 6px; flex: none; }
   /* On / off must be obvious (Jirel 16.11.26): on = soft lavender with a
      violet icon and a tick; off = empty, pale, crossed out. */
-  .hd-nt-chip { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 0.8rem; font-weight: 500; border-radius: 999px; padding: 5px 10px; border: 1px dashed rgba(36, 39, 46, 0.18); background: none; color: rgba(36, 39, 46, 0.32); cursor: pointer; transition: color .15s ease, border-color .15s ease, background .15s ease; }
-  .hd-nt-chip span { text-decoration: line-through; text-decoration-color: rgba(36, 39, 46, 0.3); }
+  .hd-nt-chip { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 0.8rem; font-weight: 500; border-radius: 999px; padding: 5px 10px; border: 1px solid rgba(36, 39, 46, 0.1); background: none; color: rgba(36, 39, 46, 0.32); cursor: pointer; transition: color .15s ease, border-color .15s ease, background .15s ease; }
   .hd-nt-chip svg { color: rgba(36, 39, 46, 0.28); transition: color .15s ease; }
   .hd-nt-chip[aria-pressed='true'] { border: 1px solid rgba(106, 62, 236, 0.18); background: #f5f2fd; color: #5f5875; }
-  .hd-nt-chip[aria-pressed='true'] span { text-decoration: none; }
   .hd-nt-chip[aria-pressed='true'] svg { color: #6a3eec; }
   .hd-nt-chip[aria-pressed='true']::after { content: '✓'; font-size: 0.72rem; color: #6a3eec; margin-left: 1px; }
   .hd-nt-chip:not(:disabled):hover { border-color: rgba(106, 62, 236, 0.4); color: #8f84b3; }
