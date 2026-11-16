@@ -254,7 +254,13 @@ const fields = [
         </nav>
         <div class="hd-right">
           <button type="button" class="hd-add" data-ha-new data-ha-hostonly hidden>+ {t.addDate}</button>
-          <button type="button" class="hd-bell" data-ha-go="messages" aria-label={t.notifications}><svg class="hd-i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><i data-ha-dot hidden></i></button>
+          <div class="nt-wrap">
+            <button type="button" class="hd-bell" data-ha-bell aria-haspopup="true" aria-expanded="false" aria-label={t.notifications}><svg class="hd-i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><i data-ha-dot hidden></i></button>
+            <div class="nt" data-ha-nt hidden role="dialog" aria-label={t.notifications}>
+              <div class="nt-head"><b>{t.notifications}</b><button type="button" class="nt-all" data-ha-nt-all>{L('Alle gelesen', 'Mark all read', 'Tout marquer lu')}</button></div>
+              <ul class="nt-list" data-ha-nt-list></ul>
+            </div>
+          </div>
           <div class="hd-me">
             <button type="button" class="hd-avatar" data-ha-avatar aria-haspopup="true" aria-label={t.profile}>🙂</button>
             <div class="hd-menu" data-ha-menu hidden>
@@ -1699,6 +1705,122 @@ const fields = [
       const avatar = $<HTMLButtonElement>('[data-ha-avatar]');
       avatar.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden = !menu.hidden; });
       document.addEventListener('click', (e) => { if (!menu.contains(e.target as Node)) menu.hidden = true; });
+      // ── Notifications (Jirel 16.11.26): the bell opens a list. For now these
+      // are examples, one of each kind a host or guest can get, until the real
+      // events (requests, bookings, reviews, followers…) feed it.
+      type Nt = { id: string; kind: string; who?: string; ws?: string; meta?: string[]; earn?: string; quote?: string; ago: number; go?: string };
+      const NT_DEMO: Nt[] = [
+        { id: 'd1', kind: 'request', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['date:2026-11-21T15:00', 'people:2', 'price:60'], ago: 4, go: 'messages' },
+        { id: 'd2', kind: 'booked', who: 'Annika', ws: 'Duftöl-Roll-on Workshop', meta: ['date:2026-11-28T11:00'], earn: '76.50', ago: 38, go: 'calendar' },
+        { id: 'd3', kind: 'message', who: 'Tom', quote: 'Geht das auch für 3 Personen?', ago: 95, go: 'messages' },
+        { id: 'd4', kind: 'invite', who: 'Mara', ws: 'Siebdruck-Abend', meta: ['date:2026-12-03T19:00'], ago: 180 },
+        { id: 'd5', kind: 'approved', ws: 'Töpfern an der Drehscheibe', meta: ['date:2026-11-29T14:00'], ago: 300 },
+        { id: 'd6', kind: 'review', who: 'Lena', ws: 'Kerzengießen in Glasvotivkerzen', quote: 'Ein wunderschöner Nachmittag, Laura erklärt alles so liebevoll.', meta: ['stars:5'], ago: 60 * 7, go: 'profile' },
+        { id: 'd7', kind: 'follower', who: 'Sophie', ago: 60 * 9, go: 'profile' },
+        { id: 'd8', kind: 'confirmed', ws: 'Kimchi selber machen', meta: ['date:2026-12-05T12:00'], ago: 60 * 20 },
+        { id: 'd9', kind: 'writeReview', who: 'Annika', ws: 'Kerzengießen in Glasvotivkerzen', ago: 60 * 26, go: 'messages' },
+        { id: 'd10', kind: 'expired', who: 'Jonas', ws: 'Duftöl-Roll-on Workshop', ago: 60 * 30, go: 'messages' },
+        { id: 'd11', kind: 'cancelled', who: 'Paul', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['date:2026-11-21T15:00', 'seats:2'], ago: 60 * 40, go: 'calendar' },
+        { id: 'd12', kind: 'reminder', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['time:15:00', 'people:4'], ago: 60 * 50, go: 'calendar' },
+        { id: 'd13', kind: 'voucher', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['seats:2', 'price:60'], ago: 60 * 72 },
+        { id: 'd14', kind: 'waitlist', ws: 'Töpfern an der Drehscheibe', meta: ['date:2026-12-12T10:00'], ago: 60 * 96 },
+        { id: 'd15', kind: 'payout', earn: '245.00', ago: 60 * 120, go: 'settings/payments' },
+      ];
+      const ntBox = $('[data-ha-nt]');
+      const ntBell = $<HTMLButtonElement>('[data-ha-bell]');
+      const ntList = $('[data-ha-nt-list]');
+      const NT_READ = 'twiggli-nt-read';
+      const ntRead = (): string[] => { try { return JSON.parse(localStorage.getItem(NT_READ) || '[]'); } catch { return []; } };
+      const ntSave = (ids: string[]) => { try { localStorage.setItem(NT_READ, JSON.stringify(ids)); } catch { /* private window */ } };
+      let hasPending = false;
+      // The first four count as new until opened.
+      const ntUnread = () => { const r = ntRead(); return NT_DEMO.slice(0, 4).filter((n) => !r.includes(n.id)); };
+      const paintDot = () => { $('[data-ha-dot]').hidden = !hasPending && !ntUnread().length; };
+      const ntEsc = (x: string) => x.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+      const ICON: Record<string, string> = {
+        approved: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+        confirmed: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+        expired: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 2"/>',
+        reminder: '<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
+        voucher: '<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9zm0 0c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9z"/>',
+        waitlist: '<path d="M8 4h8M8 20h8M9 4c0 4 6 4 6 8s-6 4-6 8M15 4c0 4-6 4-6 8s6 4 6 8"/>',
+        payout: '<path d="M16.5 7.5A6 6 0 1 0 16.5 16.5M5 10.5h8M5 13.5h8"/>',
+        writeReview: '<path d="m12 4 2.4 5 5.3.6-4 3.6 1.1 5.3L12 15.8 7.2 18.5l1.1-5.3-4-3.6 5.3-.6z"/>',
+      };
+      const ntText = (n: Nt) => {
+        const lang = document.documentElement.lang === 'de' ? 'de' : document.documentElement.lang === 'fr' ? 'fr' : 'en';
+        const loc = lang === 'de' ? 'de-DE' : lang === 'fr' ? 'fr-FR' : 'en-GB';
+        const x = (de: string, en: string, fr: string) => (lang === 'de' ? de : lang === 'fr' ? fr : en);
+        const w = n.ws ? `<b>${ntEsc(n.ws)}</b>` : '';
+        const who = n.who ? ntEsc(n.who) : '';
+        const money = (v: string) => new Intl.NumberFormat(loc, { style: 'currency', currency: 'EUR' }).format(Number(v));
+        const m = Object.fromEntries((n.meta ?? []).map((k) => [k.slice(0, k.indexOf(':')), k.slice(k.indexOf(':') + 1)]));
+        const day = m.date ? new Date(m.date).toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + m.date.slice(11, 16) : '';
+        const line: Record<string, string> = {
+          request: x(`Neue Buchungsanfrage für ${w}`, `New booking request for ${w}`, `Nouvelle demande de réservation pour ${w}`),
+          booked: x(`${who} hat ${w} gebucht`, `${who} booked ${w}`, `${who} a réservé ${w}`),
+          message: x(`Neue Nachricht von ${who}`, `New message from ${who}`, `Nouveau message de ${who}`),
+          invite: x(`${who} hat dich zu ${w} eingeladen`, `${who} invited you to ${w}`, `${who} t’a invité·e à ${w}`),
+          approved: x(`Deine Anfrage für ${w} wurde angenommen`, `Your request for ${w} was approved`, `Ta demande pour ${w} a été acceptée`),
+          review: x(`${who} hat ${w} bewertet`, `${who} reviewed ${w}`, `${who} a laissé un avis sur ${w}`),
+          follower: x(`${who} folgt jetzt deiner Seite`, `${who} now follows your page`, `${who} suit maintenant ta page`),
+          confirmed: x(`Deine Buchung für ${w} ist bestätigt`, `Your booking for ${w} is confirmed`, `Ta réservation pour ${w} est confirmée`),
+          writeReview: x(`Wie war’s mit ${who} bei ${w}? Schreib eine kurze Bewertung`, `How was it with ${who} at ${w}? Write a short review`, `C’était comment avec ${who} à ${w} ? Écris un petit avis`),
+          expired: x(`Deine Vorab-Zusage für ${who} (${w}) ist abgelaufen`, `Your pre-approval for ${who} (${w}) expired`, `Ta pré-approbation pour ${who} (${w}) a expiré`),
+          cancelled: x(`${who} hat ${w} storniert`, `${who} cancelled ${w}`, `${who} a annulé ${w}`),
+          reminder: x(`Morgen: ${w}`, `Tomorrow: ${w}`, `Demain : ${w}`),
+          voucher: x(`Gutschein für ${w} gekauft`, `Voucher bought for ${w}`, `Bon cadeau acheté pour ${w}`),
+          waitlist: x(`Ein Platz bei ${w} ist frei geworden`, `A place opened up at ${w}`, `Une place s’est libérée pour ${w}`),
+          payout: x(`Auszahlung von ${money(n.earn ?? '0')} ist unterwegs`, `Payout of ${money(n.earn ?? '0')} is on its way`, `Versement de ${money(n.earn ?? '0')} en route`),
+        };
+        const bits: string[] = [];
+        if (day) bits.push(day);
+        if (m.time) bits.push(x(`${m.time} Uhr`, m.time, m.time));
+        if (m.people) bits.push(x(`${m.people} Pers.`, `${m.people} ${m.people === '1' ? 'person' : 'people'}`, `${m.people} pers.`));
+        if (m.seats) bits.push(x(`${m.seats} Plätze`, `${m.seats} places`, `${m.seats} places`));
+        if (m.price) bits.push(x(`${money(m.price)} p. P.`, `${money(m.price)} pp`, `${money(m.price)} / pers.`));
+        if (m.stars) bits.push('★'.repeat(Number(m.stars)));
+        if (n.kind === 'cancelled') bits.push(x('Plätze wieder frei', 'places free again', 'places à nouveau libres'));
+        if (n.kind === 'payout') bits.push(x('auf dein Bankkonto', 'to your bank account', 'vers ton compte bancaire'));
+        if (n.kind === 'expired') bits.push(x('Die Person hat nicht rechtzeitig gebucht', 'They didn’t book in time', 'La personne n’a pas réservé à temps'));
+        const earn = n.earn && n.kind === 'booked' ? `<span class="nt-earn">+ ${money(n.earn)} ${x('verdient', 'earned', 'gagnés')}</span>` : '';
+        const quote = n.quote ? `<span class="nt-quote">${x('„', '“', '« ')}${ntEsc(n.quote)}${x('“', '”', ' »')}</span>` : '';
+        const ago = new Intl.RelativeTimeFormat(loc, { numeric: 'auto', style: 'short' });
+        const when = n.ago < 60 ? ago.format(-n.ago, 'minute') : n.ago < 1440 ? ago.format(-Math.round(n.ago / 60), 'hour') : ago.format(-Math.round(n.ago / 1440), 'day');
+        return `<span class="nt-line">${line[n.kind] ?? ''}</span>${quote}<span class="nt-meta">${bits.map(ntEsc).join(' · ')}${earn ? `${bits.length ? ' · ' : ''}${earn}` : ''}</span><span class="nt-when">${ntEsc(when)}</span>`;
+      };
+      const ntPaint = () => {
+        const unread = ntUnread().map((n) => n.id);
+        ntList.innerHTML = '';
+        for (const n of NT_DEMO) {
+          const li = document.createElement('li');
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'nt-item'; if (unread.includes(n.id)) b.classList.add('is-new');
+          const av = n.who ? `<span class="nt-av" aria-hidden="true">${ntEsc(n.who[0])}</span>`
+            : `<span class="nt-av nt-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICON[n.kind] ?? ICON.reminder}</svg></span>`;
+          b.innerHTML = `${av}<span class="nt-txt">${ntText(n)}</span>`;
+          b.addEventListener('click', () => {
+            ntSave([...new Set([...ntRead(), n.id])]);
+            ntBox.hidden = true; ntBell.setAttribute('aria-expanded', 'false'); paintDot();
+            if (n.go) { openView(n.go); setPath(); }
+          });
+          li.append(b); ntList.append(li);
+        }
+      };
+      ntBell.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = ntBox.hidden;
+        if (open) { ntPaint(); menu.hidden = true; }
+        ntBox.hidden = !open; ntBell.setAttribute('aria-expanded', String(open));
+      });
+      $('[data-ha-nt-all]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        ntSave(NT_DEMO.map((n) => n.id)); ntPaint(); paintDot();
+      });
+      document.addEventListener('click', (e) => { if (!ntBox.hidden && !ntBox.contains(e.target as Node)) { ntBox.hidden = true; ntBell.setAttribute('aria-expanded', 'false'); } });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ntBox.hidden) { ntBox.hidden = true; ntBell.focus(); } });
+      paintDot();
+
       const EMOJI_KEY = 'twiggli-host-emoji';
       // The Google profile photo when there is one, else the chosen emoji (Jirel 14.11.26).
       const paintAvatars = () => {
@@ -2017,7 +2139,7 @@ const fields = [
         root.querySelector<HTMLElement>('[data-ib-g="recent"]')!.hidden = !rest.length;
         $('[data-ha-msgs-empty]').hidden = shown.length > 0;
         const pending = reqs.filter(waiting);
-        $('[data-ha-dot]').hidden = !pending.length;
+        hasPending = pending.length > 0; paintDot();
         const count = $('[data-ha-count]');
         count.textContent = String(pending.length);
         count.hidden = !pending.length;
@@ -4106,4 +4228,30 @@ const fields = [
     .hd-create { grid-template-columns: minmax(0, 1fr); }
     .hd-cal { width: min(300px, calc(100vw - 48px)); }
   }
+
+  /* Notifications (Jirel 16.11.26): a list under the bell; hover tints the text, no grey box. */
+  .nt-wrap { position: relative; display: grid; }
+  .nt { position: absolute; right: -8px; top: 42px; z-index: 45; width: 380px; max-height: min(560px, 75vh); display: grid; grid-template-rows: auto minmax(0, 1fr); border-radius: 18px; background: #fff; box-shadow: 0 24px 60px rgba(36, 39, 46, 0.16), 0 0 0 1px rgba(36, 39, 46, 0.06); overflow: hidden; }
+  .nt[hidden] { display: none; }
+  .nt-head { display: flex; align-items: baseline; justify-content: space-between; padding: 16px 18px 10px; }
+  .nt-head b { font-size: 1.05rem; font-weight: 600; color: #16181d; transition: color .15s ease; }
+  .nt-head b:hover { color: #3b2580; }
+  .nt-all { border: 0; background: none; padding: 0; font: inherit; font-size: 0.85rem; font-weight: 600; color: #6A3EEC; cursor: pointer; }
+  .nt-all:hover { color: #3b2580; }
+  .nt-list { list-style: none; margin: 0; padding: 0 6px 8px; overflow-y: auto; }
+  .nt-item { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; width: 100%; padding: 11px 26px 11px 12px; border: 0; background: none; text-align: left; font: inherit; color: #16181d; cursor: pointer; }
+  .nt-item + .nt-item, li + li .nt-item { border-top: 1px solid rgba(36, 39, 46, 0.06); }
+  .nt-item:hover .nt-line, .nt-item:hover .nt-line b { color: #8f84b3; }
+  .nt-item.is-new::after { content: ''; position: absolute; right: 10px; top: 18px; width: 8px; height: 8px; border-radius: 50%; background: #6A3EEC; }
+  .nt-av { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #efeaff; color: #6A3EEC; font-weight: 600; font-size: 0.95rem; }
+  .nt-ic { background: #f3f1f6; }
+  .nt-txt { display: grid; gap: 3px; min-width: 0; }
+  .nt-line { font-size: 0.92rem; line-height: 1.4; transition: color .15s ease; }
+  .nt-line b { font-weight: 600; transition: color .15s ease; }
+  .nt-quote { font-size: 0.85rem; line-height: 1.4; color: #5b5f6b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nt-meta { font-size: 0.82rem; color: #6b6f7b; }
+  .nt-meta:empty { display: none; }
+  .nt-earn { color: #1f8a4c; font-weight: 600; }
+  .nt-when { font-size: 0.78rem; color: #9a9da6; }
+  @media (max-width: 560px) { .nt { position: fixed; left: 16px; right: 16px; top: 64px; width: auto; } }
 </style>
