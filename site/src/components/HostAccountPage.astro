@@ -543,6 +543,15 @@ const fields = [
             <p class="hd-set-sub" data-hs-pay>{L('Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.', 'Connect Stripe so guests can pay you directly.', 'Connecte Stripe pour que les participants te paient directement.')}</p>
             <button type="button" class="hd-set-btn" data-hs-pay-btn>{L('Stripe verbinden', 'Connect Stripe', 'Connecter Stripe')}</button>
           </div>
+          <div class="hd-set-block" data-hs-paid
+            data-voucher={L('Gutschein', 'Voucher', 'Bon cadeau')}
+            data-for={L('für {h}', 'for {h}', 'pour {h}')}
+            data-people={L('{n} Pers.', '{n} people', '{n} pers.')}
+            data-byvoucher={L('mit Gutschein', 'with voucher', 'avec bon cadeau')}>
+            <h2>{L('Zahlungsverlauf', 'Payment history', 'Historique des paiements')}</h2>
+            <ul class="hd-pay-list" data-hs-paid-list></ul>
+            <p class="hd-set-sub" data-hs-paid-empty>{L('Noch keine Zahlungen.', 'No payments yet.', 'Aucun paiement pour l’instant.')}</p>
+          </div>
         </div>
 
       </section>
@@ -1275,6 +1284,33 @@ const fields = [
           location.href = root.dataset.lang === 'en' ? '/' : `/${root.dataset.lang}/`;
         }, 'delete');
       });
+
+      // Payment history (Jirel 16.11.26).
+      const paidBox = $('[data-hs-paid]');
+      const loadPayments = async () => {
+        const { ok, j } = await authed('accountDevices', { action: 'payments' });
+        if (!ok) return;
+        const loc = ({ de: 'de-DE', fr: 'fr-FR' } as Record<string, string>)[root.dataset.lang ?? ''] ?? 'en-GB';
+        const eur = (n: number) => new Intl.NumberFormat(loc, { style: 'currency', currency: 'EUR' }).format(n);
+        const items = (j.items ?? []) as { kind: string; title: string; date?: string; start?: string; people?: number; amount: number; voucher?: boolean; at: number }[];
+        $('[data-hs-paid-empty]').hidden = items.length > 0;
+        $('[data-hs-paid-list]').replaceChildren(...items.map((x) => {
+          const li = document.createElement('li');
+          const left = document.createElement('span'); left.className = 'hd-pay-l';
+          const b = document.createElement('b');
+          b.textContent = x.kind === 'voucher' ? `${paidBox.dataset.voucher}${x.title ? ` ${(paidBox.dataset.for ?? '').replace('{h}', x.title)}` : ''}` : x.title;
+          const sm = document.createElement('small');
+          const when = x.kind === 'booking' && x.date ? new Date(`${x.date}T12:00:00`).toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' }) + (x.start ? `, ${x.start}` : '') : '';
+          sm.textContent = [when, x.people ? (paidBox.dataset.people ?? '').replace('{n}', String(x.people)) : '', x.voucher ? paidBox.dataset.byvoucher : ''].filter(Boolean).join(' · ');
+          left.append(b, sm);
+          const right = document.createElement('span'); right.className = 'hd-pay-r';
+          const amt = document.createElement('b'); amt.textContent = eur(x.amount);
+          const d = document.createElement('small'); d.textContent = x.at ? new Date(x.at).toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+          right.append(amt, d);
+          li.append(left, right);
+          return li;
+        }));
+      };
 
       // Turning it off: one click, done (Jirel 15.11.26).
       $('[data-hs-tfa-off-start]').addEventListener('click', () => { void disableTfa(); });
@@ -2991,6 +3027,7 @@ const fields = [
         void loadStats();
         void loadSettings();
         void loadTfa();
+        void loadPayments();
         // Say hello for "Active devices"; a device signed out elsewhere leaves here.
         void authed('accountDevices', { action: 'touch', device: deviceId }).then(async ({ j }) => {
           if (j?.signOut) { await signOut(auth); rememberSignedIn(false); location.reload(); return; }
@@ -3711,6 +3748,16 @@ const fields = [
   .ha-back[hidden] { display: none; }
   [data-ha-old] { display: none !important; }
   .hd-blank h2 { margin: 8px 0 0; font-size: clamp(1.7rem, 4vw, 2.1rem); letter-spacing: -0.02em; }
+  /* Payment history (Jirel 16.11.26). */
+  .hd-pay-list { list-style: none; margin: 0; padding: 0; background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px rgba(36, 39, 46, 0.07); }
+  .hd-pay-list:empty { display: none; }
+  .hd-pay-list li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 16px; }
+  .hd-pay-list li + li { border-top: 1px solid rgba(36, 39, 46, 0.07); }
+  .hd-pay-l, .hd-pay-r { display: grid; gap: 2px; min-width: 0; }
+  .hd-pay-r { text-align: right; flex: none; }
+  .hd-pay-list b { font-weight: 500; color: #16181d; font-size: 0.95rem; }
+  .hd-pay-list small { font-size: 0.82rem; color: var(--color-text-muted); }
+  .hd-pay-list small:empty { display: none; }
   /* Notifications: topic rows with an Email and an App chip (Jirel 16.11.26). */
   .hd-nt-group { display: grid; gap: 10px; margin-top: 8px; }
   .hd-nt-group h3 { margin: 6px 0 0; font-size: 0.92rem; font-weight: 600; color: #9b94ad; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; transition: color .15s ease; }
