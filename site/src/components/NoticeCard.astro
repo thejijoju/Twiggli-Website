@@ -1,0 +1,111 @@
+---
+/**
+ * The card a guest sees at the top of a workshop page when they come from a
+ * notification (Jirel 16.11.26, Luma's flow in Twiggli's look): invited,
+ * request approved, booking confirmed (or "thanks for coming" once it's
+ * over), a waiting-list place free. Read from ?n=…&d=…&t=…&who=… for now;
+ * the real bookings will feed it later.
+ */
+import type { Lang } from '../lib/url.ts';
+import { href } from '../lib/url.ts';
+interface Props { lang: Lang; slug: string; title: string; place?: string }
+const { lang, slug, title, place } = Astro.props;
+const l = lang === 'de' || lang === 'fr' ? lang : 'en';
+const review = `${href(lang === 'de' ? 'de' : 'en', '/review/')}?h=${encodeURIComponent(slug)}&w=${encodeURIComponent(title)}`;
+---
+<div class="nc" data-nc data-lang={l} data-title={title} data-place={place ?? ''} data-review={review} hidden>
+  <span class="nc-day" aria-hidden="true"><small data-nc-mon></small><b data-nc-dom></b></span>
+  <div class="nc-body">
+    <p class="nc-kick" data-nc-kick></p>
+    <h2 class="nc-title" data-nc-title></h2>
+    <p class="nc-sub" data-nc-sub></p>
+    <div class="nc-act">
+      <a class="nc-btn" data-nc-btn href="#dates"></a>
+      <a class="nc-link" data-nc-link hidden></a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-nc]');
+  const q = new URLSearchParams(location.search);
+  const kind = q.get('n') ?? '';
+  if (box && ['invite', 'approved', 'confirmed', 'waitlist'].includes(kind)) {
+    const lang = box.dataset.lang as 'de' | 'en' | 'fr';
+    const x = (de: string, en: string, fr: string) => (lang === 'de' ? de : lang === 'fr' ? fr : en);
+    const loc = x('de-DE', 'en-GB', 'fr-FR');
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(q.get('d') ?? '') ? q.get('d')! : '';
+    const time = /^\d{2}:\d{2}$/.test(q.get('t') ?? '') ? q.get('t')! : '';
+    const who = (q.get('who') ?? '').slice(0, 40);
+    const at = d ? new Date(`${d}T${time || '12:00'}:00`) : null;
+    const past = at ? at.getTime() + 3 * 3600e3 < Date.now() : false;
+    const day = at ? at.toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long' }) + (time ? x(`, ${time} Uhr`, `, ${time}`, `, ${time}`) : '') : '';
+    const set = (sel: string, text: string) => { box.querySelector(sel)!.textContent = text; };
+    if (at) {
+      set('[data-nc-mon]', at.toLocaleDateString(loc, { month: 'short' }).replace('.', ''));
+      set('[data-nc-dom]', String(at.getDate()));
+    } else box.querySelector<HTMLElement>('.nc-day')!.hidden = true;
+    const btn = box.querySelector<HTMLAnchorElement>('[data-nc-btn]')!;
+    const link = box.querySelector<HTMLAnchorElement>('[data-nc-link]')!;
+    // The booking button of that date, so "book" / "pay" opens the usual booking form.
+    const row = d ? document.querySelector<HTMLAnchorElement>(`.date-book[data-book-date="${d}"]${time ? `[data-book-time="${time}"]` : ''}`) : null;
+    const toBooking = () => btn.addEventListener('click', (e) => { if (row) { e.preventDefault(); row.click(); } });
+    if (kind === 'invite') {
+      set('[data-nc-kick]', x('Einladung', 'Invitation', 'Invitation'));
+      set('[data-nc-title]', who ? x(`${who} hat dich eingeladen`, `${who} invited you`, `${who} t’a invité·e`) : x('Du bist eingeladen', 'You’re invited', 'Tu es invité·e'));
+      set('[data-nc-sub]', day);
+      set('[data-nc-btn]', x('Platz sichern', 'Save my place', 'Réserver ma place'));
+      toBooking();
+    } else if (kind === 'approved') {
+      set('[data-nc-kick]', x('Anfrage angenommen', 'Request approved', 'Demande acceptée'));
+      set('[data-nc-title]', x('Du bist dabei, fast!', 'You’re in, almost!', 'Tu y es presque !'));
+      set('[data-nc-sub]', `${day}${day ? ' · ' : ''}${x('Bezahl jetzt, dann ist dein Platz sicher.', 'Pay now to lock in your place.', 'Paie maintenant pour garder ta place.')}`);
+      set('[data-nc-btn]', x('Jetzt bezahlen', 'Pay now', 'Payer maintenant'));
+      toBooking();
+    } else if (kind === 'waitlist') {
+      set('[data-nc-kick]', x('Warteliste', 'Waiting list', 'Liste d’attente'));
+      set('[data-nc-title]', x('Ein Platz ist frei geworden', 'A place just opened up', 'Une place vient de se libérer'));
+      set('[data-nc-sub]', `${day}${day ? ' · ' : ''}${x('Wer zuerst bucht, ist dabei.', 'First to book gets it.', 'Premier arrivé, premier servi.')}`);
+      set('[data-nc-btn]', x('Jetzt buchen', 'Book now', 'Réserver'));
+      toBooking();
+    } else if (past) {
+      set('[data-nc-kick]', x('Danke fürs Mitmachen', 'Thanks for joining', 'Merci d’être venu·e'));
+      set('[data-nc-title]', x('Wir hoffen, es war schön!', 'We hope you loved it!', 'On espère que tu as adoré !'));
+      set('[data-nc-sub]', x('Ein paar Worte helfen kleinen Studios, gefunden zu werden.', 'A few words help small studios get found.', 'Quelques mots aident les petits ateliers à être trouvés.'));
+      set('[data-nc-btn]', x('Bewertung schreiben', 'Write a review', 'Laisser un avis'));
+      btn.href = box.dataset.review!;
+    } else {
+      set('[data-nc-kick]', x('Bestätigt', 'Confirmed', 'Confirmé'));
+      set('[data-nc-title]', x('Du bist dabei 🎉', 'You’re going 🎉', 'Tu y vas 🎉'));
+      set('[data-nc-sub]', `${day}${box.dataset.place ? ` · ${box.dataset.place}` : ''}`);
+      set('[data-nc-btn]', x('Zum Kalender hinzufügen', 'Add to calendar', 'Ajouter au calendrier'));
+      if (at) {
+        const f = (t: Date) => t.toISOString().replace(/[-:]|\.\d{3}/g, '');
+        const end = new Date(at.getTime() + 2 * 3600e3);
+        btn.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(box.dataset.title!)}&dates=${f(at)}/${f(end)}&location=${encodeURIComponent(box.dataset.place ?? '')}`;
+        btn.target = '_blank'; btn.rel = 'noopener';
+      } else btn.hidden = true;
+    }
+    box.hidden = false;
+  }
+</script>
+
+<style>
+  .nc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: start; margin: 0 0 28px; padding: 20px 22px; border-radius: 20px; background: rgba(255, 255, 255, 0.72); box-shadow: 0 0 0 1px rgba(106, 62, 236, 0.12), 0 18px 36px -24px rgba(106, 62, 236, 0.45); }
+  .nc[hidden] { display: none; }
+  .nc-day { display: grid; justify-items: center; width: 54px; padding: 6px 0 8px; border: 1.5px solid #16181d; border-radius: 12px; background: #fff; box-shadow: 3px 3px 0 #c9bff5; }
+  .nc-day[hidden] { display: none; }
+  .nc-day small { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #6A3EEC; }
+  .nc-day b { font-size: 1.45rem; line-height: 1; font-weight: 700; color: #16181d; }
+  .nc-body { min-width: 0; }
+  .nc-kick { margin: 0 0 4px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-style: italic; color: #6A3EEC; }
+  .nc-title { margin: 0 0 6px; font-size: 1.35rem; line-height: 1.25; font-weight: 700; color: #16181d; }
+  .nc-sub { margin: 0 0 16px; font-size: 0.95rem; line-height: 1.5; color: #5b5f6b; }
+  .nc-sub:empty { display: none; }
+  .nc-act { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .nc-btn { display: inline-flex; align-items: center; padding: 11px 20px; border-radius: 999px; background: #6A3EEC; color: #fff; font-weight: 600; text-decoration: none; transition: background-color .15s ease; }
+  .nc-btn:hover { background: #3b2580; color: #fff; }
+  .nc-btn[hidden] { display: none; }
+  .nc-link { color: #6A3EEC; font-weight: 700; text-decoration: none; }
+  @media (max-width: 560px) { .nc { padding: 16px; gap: 14px; } .nc-title { font-size: 1.2rem; } }
+</style>

@@ -81,6 +81,7 @@ const schema = {
   ],
 };
 import Voucher from './Voucher.astro';
+import NoticeCard from './NoticeCard.astro';
 import { bookingCopy } from '../data/bookingCopy.ts';
 import { href } from '../lib/url.ts';
 const bc = bookingCopy[lang];
@@ -112,6 +113,7 @@ const wishAttrs = {
       <p class="page-lede">{lede}</p>
       {next.usp && <p class="page-facts">{next.usp}</p>}
     </section>
+    <NoticeCard lang={lang} slug={host.slug} title={w.title} place={host.studio ?? host.place} />
 
     <hr class="rule" />
 

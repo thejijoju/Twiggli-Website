@@ -1708,22 +1708,22 @@ const fields = [
       // ── Notifications (Jirel 16.11.26): the bell opens a list. For now these
       // are examples, one of each kind a host or guest can get, until the real
       // events (requests, bookings, reviews, followers…) feed it.
-      type Nt = { id: string; kind: string; who?: string; ws?: string; meta?: string[]; earn?: string; quote?: string; ago: number; go?: string };
+      type Nt = { id: string; kind: string; page?: string; who?: string; ws?: string; meta?: string[]; earn?: string; quote?: string; ago: number; go?: string };
       const NT_DEMO: Nt[] = [
         { id: 'd1', kind: 'request', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['date:2026-11-21T15:00', 'people:2', 'price:60'], ago: 4, go: 'messages' },
         { id: 'd2', kind: 'booked', who: 'Annika', ws: 'Duftöl-Roll-on Workshop', meta: ['date:2026-11-28T11:00'], earn: '76.50', ago: 38, go: 'calendar' },
         { id: 'd3', kind: 'message', who: 'Tom', quote: 'Geht das auch für 3 Personen?', ago: 95, go: 'messages' },
-        { id: 'd4', kind: 'invite', who: 'Mara', ws: 'Siebdruck-Abend', meta: ['date:2026-12-03T19:00'], ago: 180 },
-        { id: 'd5', kind: 'approved', ws: 'Töpfern an der Drehscheibe', meta: ['date:2026-11-29T14:00'], ago: 300 },
+        { id: 'd4', kind: 'invite', who: 'Mara', ws: 'Basis-Siebdruckworkshop', meta: ['date:2026-12-05T15:00'], ago: 180, page: '/workshops/art/druckrausch/basis-siebdruckworkshop/' },
+        { id: 'd5', kind: 'approved', ws: 'Töpferkurs ohne Drehscheibe', meta: ['date:2026-11-28T15:00'], ago: 300, page: '/workshops/ceramics/concreare/toepferkurs-ohne-drehscheibe/' },
         { id: 'd6', kind: 'review', who: 'Lena', ws: 'Kerzengießen in Glasvotivkerzen', quote: 'Ein wunderschöner Nachmittag, Laura erklärt alles so liebevoll.', meta: ['stars:5'], ago: 60 * 7, go: 'profile' },
         { id: 'd7', kind: 'follower', who: 'Sophie', ago: 60 * 9, go: 'profile' },
-        { id: 'd8', kind: 'confirmed', ws: 'Kimchi selber machen', meta: ['date:2026-12-05T12:00'], ago: 60 * 20 },
+        { id: 'd8', kind: 'confirmed', ws: 'Let’s make Kimchi!', meta: ['date:2026-11-20T18:00'], ago: 60 * 20, page: '/workshops/food/jem/let-s-make-kimchi/' },
         { id: 'd9', kind: 'writeReview', who: 'Annika', ws: 'Kerzengießen in Glasvotivkerzen', ago: 60 * 26, go: 'messages' },
         { id: 'd10', kind: 'expired', who: 'Jonas', ws: 'Duftöl-Roll-on Workshop', ago: 60 * 30, go: 'messages' },
         { id: 'd11', kind: 'cancelled', who: 'Paul', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['date:2026-11-21T15:00', 'seats:2'], ago: 60 * 40, go: 'calendar' },
         { id: 'd12', kind: 'reminder', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['time:15:00', 'people:4'], ago: 60 * 50, go: 'calendar' },
         { id: 'd13', kind: 'voucher', ws: 'Kerzengießen in Glasvotivkerzen', meta: ['seats:2', 'price:60'], ago: 60 * 72 },
-        { id: 'd14', kind: 'waitlist', ws: 'Töpfern an der Drehscheibe', meta: ['date:2026-12-12T10:00'], ago: 60 * 96 },
+        { id: 'd14', kind: 'waitlist', ws: 'Basis-Siebdruckworkshop', meta: ['date:2026-12-16T18:30'], ago: 60 * 96, page: '/workshops/art/druckrausch/basis-siebdruckworkshop/' },
         { id: 'd15', kind: 'payout', earn: '245.00', ago: 60 * 120, go: 'settings/payments' },
       ];
       const ntBox = $('[data-ha-nt]');
@@ -1802,7 +1802,14 @@ const fields = [
           b.addEventListener('click', () => {
             ntSave([...new Set([...ntRead(), n.id])]);
             ntBox.hidden = true; ntBell.setAttribute('aria-expanded', 'false'); paintDot();
-            if (n.go) { openView(n.go); setPath(); }
+            if (n.page) {
+              // Guest notifications open the workshop page itself, with the status card on top.
+              const lang = document.documentElement.lang;
+              const dt = (n.meta ?? []).find((k) => k.startsWith('date:'))?.slice(5) ?? '';
+              const q = new URLSearchParams({ n: n.kind, d: dt.slice(0, 10), t: dt.slice(11, 16) });
+              if (n.who) q.set('who', n.who);
+              location.href = `${lang === 'de' ? '/de' : lang === 'fr' ? '/fr' : ''}${n.page}?${q}`;
+            } else if (n.go) { openView(n.go); setPath(); }
           });
           li.append(b); ntList.append(li);
         }
