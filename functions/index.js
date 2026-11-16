@@ -1537,8 +1537,7 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, 
   // (Connect OAuth) links the host's existing Standard account as it is.
   if (action === 'link') {
     if (!STRIPE_CONNECT_CLIENT_ID) return res.status(503).json({ error: 'link-not-configured' });
-    const lang = req.body?.lang === 'en' ? 'en' : 'de';
-    const state = await oauthState(email, lang);
+    const state = await oauthState(email, stripeLang(req.body?.lang));
     const q = new URLSearchParams({ response_type: 'code', client_id: STRIPE_CONNECT_CLIENT_ID, scope: 'read_write', state,
       redirect_uri: `${FUNCTIONS_URL}/hostStripeOAuth`, stripe_landing: 'login', 'stripe_user[email]': email });
     return res.status(200).json({ url: `https://connect.stripe.com/oauth/authorize?${q}` });
@@ -1553,8 +1552,7 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, 
     accountId = a.id;
     await memberRef.set({ stripe: { accountId, chargesEnabled: false, createdAt: FieldValue.serverTimestamp() } }, { merge: true });
   }
-  // The dashboard exists in English and German only.
-  const back = `${SITE}${req.body?.lang === 'en' ? '' : '/de'}/host/account/`;
+  const back = stripeBack(stripeLang(req.body?.lang));
   const p = new URLSearchParams({ account: accountId, type: 'account_onboarding', return_url: `${back}?stripe=return`, refresh_url: `${back}?stripe=refresh` });
   const r = await stripe(key, 'account_links', p);
   const link = await r.json();
@@ -1940,7 +1938,10 @@ export const voucherIssuePending = onRequest({ region: 'europe-west3', secrets: 
 // ── Linking an existing Stripe account (Connect OAuth, Standard) ──
 // The Connect client id of the "Twiggli app" Stripe account (public, it
 // appears in Stripe's sign-in address). Empty: the button says it's not set up.
-const STRIPE_CONNECT_CLIENT_ID = process.env.STRIPE_CONNECT_CLIENT_ID || '';
+const STRIPE_CONNECT_CLIENT_ID = process.env.STRIPE_CONNECT_CLIENT_ID || 'ca_QaWbR04JTLWo9PD1cyxjKX34tkG9H1Xg';
+/** Back to the payments tab of the account, in the host's language. */
+const stripeBack = (lang) => `${SITE}${lang === 'en' ? '' : lang === 'fr' ? '/fr' : '/de'}/host/account/settings/payments/`;
+const stripeLang = (l) => (l === 'en' || l === 'fr' ? l : 'de');
 /** Who started the linking, signed, so the way back can't be forged. */
 const oauthState = async (email, lang) => {
   const raw = Buffer.from(JSON.stringify({ e: email, l: lang, t: Date.now() })).toString('base64url');
@@ -1955,7 +1956,7 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
     const want = createHmac('sha256', await approveKey()).update(`stripe-oauth\n${raw}`).digest('base64url');
     if (want.length === sig.length && timingSafeEqual(Buffer.from(want), Buffer.from(sig))) st = JSON.parse(Buffer.from(raw, 'base64url').toString());
   } catch { st = null; }
-  const back = (lang, how) => res.redirect(302, `${SITE}${lang === 'en' ? '' : '/de'}/host/account/?stripe=${how}`);
+  const back = (lang, how) => res.redirect(302, `${stripeBack(stripeLang(lang))}?stripe=${how}`);
   if (!st || Date.now() - st.t > 60 * 60 * 1000 || !isEmail(st.e)) return back('de', 'failed');
   if (req.query.error || !req.query.code) return back(st.l, 'cancelled');
   const r = await fetch('https://connect.stripe.com/oauth/token', {

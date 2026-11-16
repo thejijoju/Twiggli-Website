@@ -2663,7 +2663,7 @@ const fields = [
       stripeLink.addEventListener('click', async () => {
         stripeLink.disabled = true;
         try {
-          const { url } = await api('hostStripe', { action: 'link', lang: document.documentElement.lang === 'en' ? 'en' : 'de' });
+          const { url } = await api('hostStripe', { action: 'link', lang: document.documentElement.lang });
           location.href = url;
         } catch (err) {
           stripeBody.textContent = /link-not-configured/.test((err as Error).message) ? t.stripeLinkOff : `${t.stripeFail} (${(err as Error).message})`;
@@ -2673,7 +2673,7 @@ const fields = [
       stripeGo.addEventListener('click', async () => {
         stripeGo.disabled = true; stripeGo.textContent = t.stripeWait;
         try {
-          const { url } = await api('hostStripe', { action: 'connect', lang: document.documentElement.lang === 'en' ? 'en' : 'de' });
+          const { url } = await api('hostStripe', { action: 'connect', lang: document.documentElement.lang });
           location.href = url;
         } catch (err) {
           // Stripe's own reason, small, so a host can tell us what went wrong.
