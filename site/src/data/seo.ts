@@ -27,7 +27,7 @@ export const absolute = (path: string): string => new URL(path, SITE).href;
 /** The order the activities are listed in, everywhere. Same as the
  *  calendar's pills. */
 export const ACTIVITY_ORDER: ActivityKey[] = [
-  'ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music',
+  'ceramics', 'art', 'craft', 'plants', 'food', 'photography', 'wellbeing', 'music',
 ];
 
 export type ActivityCopy = {
@@ -85,6 +85,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       lede: 'Breathwork, movement, voice, meditation and creative writing — wellbeing sessions in Berlin for individuals and teams.',
       description: 'Wellbeing workshops in Berlin: breathwork, movement, voice, mindfulness and creative writing, for individuals and teams. Dates and booking.',
     },
+    plants: {
+      short: 'Plants',
+      title: 'Plant workshops in Berlin — terrariums, foraging & natural dyeing | Twiggli',
+      h1: 'Plant workshops in Berlin',
+      lede: 'Build your own terrarium, go foraging for wild herbs, dye fabric with plants — green, hands-on workshops in Berlin with upcoming dates.',
+      description: 'Plant workshops in Berlin: terrariums, foraging walks and natural dyeing with plants. Upcoming dates, prices and booking.',
+    },
     music: {
       short: 'Music & rhythm',
       title: 'Music & rhythm workshops in Berlin — handpan, cajon, percussion | Twiggli',
@@ -135,6 +142,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       h1: 'Achtsamkeits- & Wellbeing-Workshops in Berlin',
       lede: 'Atemarbeit, Bewegung, Stimme, Meditation und kreatives Schreiben — Wellbeing-Sessions in Berlin für Einzelne und Teams.',
       description: 'Wellbeing-Workshops in Berlin: Atemarbeit, Bewegung, Stimme, Achtsamkeit und kreatives Schreiben, für Einzelne und Teams. Termine und Buchung.',
+    },
+    plants: {
+      short: 'Pflanzen',
+      title: 'Pflanzen-Workshops in Berlin: Terrarium, Wildkräuter & Färben mit Pflanzen | Twiggli',
+      h1: 'Pflanzen-Workshops in Berlin',
+      lede: 'Dein eigenes Terrarium bauen, Wildkräuter sammeln, mit Pflanzen färben: grüne Workshops zum Mitmachen in Berlin, mit echten Terminen.',
+      description: 'Pflanzen-Workshops in Berlin: Terrarien, Kräuterwanderungen und Färben mit Pflanzen. Termine, Preise und Buchung.',
     },
     music: {
       short: 'Musik & Rhythmus',
@@ -187,6 +201,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       lede: 'Respiration, mouvement, voix, méditation et écriture créative — des sessions bien-être à Berlin pour particuliers et équipes.',
       description: 'Ateliers bien-être à Berlin : respiration, mouvement, voix, pleine conscience et écriture créative, pour particuliers et équipes. Dates et réservation.',
     },
+    plants: {
+      short: 'Plantes',
+      title: 'Ateliers plantes à Berlin : terrariums, cueillette & teinture végétale | Twiggli',
+      h1: 'Ateliers plantes à Berlin',
+      lede: 'Crée ton propre terrarium, pars cueillir des herbes sauvages, teins du tissu avec des plantes : des ateliers verts à Berlin, avec de vraies dates.',
+      description: 'Ateliers plantes à Berlin : terrariums, balades de cueillette et teinture végétale. Dates, prix et réservation.',
+    },
     music: {
       short: 'Musique & rythme',
       title: 'Ateliers musique & rythme à Berlin — handpan, cajón, percussions | Twiggli',
@@ -237,6 +258,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       h1: 'Talleres de bienestar & mindfulness en Berlín',
       lede: 'Respiración, movimiento, voz, meditación y escritura creativa — sesiones de bienestar en Berlín para particulares y equipos.',
       description: 'Talleres de bienestar en Berlín: respiración, movimiento, voz, mindfulness y escritura creativa, para particulares y equipos. Fechas y reserva.',
+    },
+    plants: {
+      short: 'Plantas',
+      title: 'Talleres de plantas en Berlín: terrarios, recolección y tinte natural | Twiggli',
+      h1: 'Talleres de plantas en Berlín',
+      lede: 'Monta tu propio terrario, sal a recolectar hierbas silvestres, tiñe tela con plantas: talleres verdes en Berlín con fechas reales.',
+      description: 'Talleres de plantas en Berlín: terrarios, paseos de recolección y tinte con plantas. Fechas, precios y reservas.',
     },
     music: {
       short: 'Música & ritmo',
@@ -289,6 +317,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       lede: 'Respiro, movimento, voce, meditazione e scrittura creativa — sessioni di benessere a Berlino per singoli e team.',
       description: 'Workshop di benessere a Berlino: respiro, movimento, voce, mindfulness e scrittura creativa, per singoli e team. Date e prenotazione.',
     },
+    plants: {
+      short: 'Piante',
+      title: 'Workshop sulle piante a Berlino: terrari, raccolta di erbe e tintura naturale | Twiggli',
+      h1: 'Workshop sulle piante a Berlino',
+      lede: 'Crea il tuo terrario, raccogli erbe selvatiche, tingi il tessuto con le piante: workshop verdi a Berlino con date reali.',
+      description: 'Workshop sulle piante a Berlino: terrari, passeggiate per raccogliere erbe e tintura con le piante. Date, prezzi e prenotazione.',
+    },
     music: {
       short: 'Musica & ritmo',
       title: 'Workshop di musica & ritmo a Berlino — handpan, cajón, percussioni | Twiggli',
@@ -339,6 +374,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       h1: 'Welzijns- & mindfulnessworkshops in Berlijn',
       lede: 'Ademwerk, beweging, stem, meditatie en creatief schrijven — welzijnssessies in Berlijn voor individuen en teams.',
       description: 'Welzijnsworkshops in Berlijn: ademwerk, beweging, stem, mindfulness en creatief schrijven, voor individuen en teams. Data en boeking.',
+    },
+    plants: {
+      short: 'Planten',
+      title: 'Plantenworkshops in Berlijn: terrariums, wilde kruiden & natuurlijk verven | Twiggli',
+      h1: 'Plantenworkshops in Berlijn',
+      lede: 'Bouw je eigen terrarium, ga wilde kruiden zoeken, verf stof met planten: groene workshops in Berlijn met echte data.',
+      description: 'Plantenworkshops in Berlijn: terrariums, kruidenwandelingen en verven met planten. Data, prijzen en boeken.',
     },
     music: {
       short: 'Muziek & ritme',
@@ -391,6 +433,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       lede: 'Praca z oddechem, ruch, głos, medytacja i pisanie kreatywne — sesje dobrostanu w Berlinie dla osób indywidualnych i zespołów.',
       description: 'Warsztaty dobrostanu w Berlinie: oddech, ruch, głos, uważność i pisanie kreatywne, dla osób indywidualnych i zespołów. Terminy i rezerwacja.',
     },
+    plants: {
+      short: 'Rośliny',
+      title: 'Warsztaty roślinne w Berlinie: terraria, zbieranie ziół i barwienie roślinami | Twiggli',
+      h1: 'Warsztaty roślinne w Berlinie',
+      lede: 'Zbuduj własne terrarium, zbieraj dzikie zioła, farbuj tkaniny roślinami: zielone warsztaty w Berlinie z prawdziwymi terminami.',
+      description: 'Warsztaty roślinne w Berlinie: terraria, spacery po dzikie zioła i barwienie roślinami. Terminy, ceny i rezerwacja.',
+    },
     music: {
       short: 'Muzyka & rytm',
       title: 'Warsztaty muzyczne & rytmiczne w Berlinie — handpan, cajon, perkusja | Twiggli',
@@ -441,6 +490,13 @@ export const activityCopy: Record<Lang, Record<ActivityKey, ActivityCopy>> = {
       h1: 'Berlin’de iyi yaşam & farkındalık atölyeleri',
       lede: 'Nefes çalışması, hareket, ses, meditasyon ve yaratıcı yazarlık — bireyler ve ekipler için Berlin’de iyi yaşam seansları.',
       description: 'Berlin’de iyi yaşam atölyeleri: bireyler ve ekipler için nefes, hareket, ses, farkındalık ve yaratıcı yazarlık. Tarihler ve rezervasyon.',
+    },
+    plants: {
+      short: 'Bitkiler',
+      title: 'Berlin\'de bitki atölyeleri: teraryum, yabani ot toplama ve doğal boyama | Twiggli',
+      h1: 'Berlin\'de bitki atölyeleri',
+      lede: 'Kendi teraryumunu yap, yabani ot topla, kumaşı bitkilerle boya: Berlin\'de gerçek tarihli yeşil atölyeler.',
+      description: 'Berlin\'de bitki atölyeleri: teraryumlar, ot toplama yürüyüşleri ve bitkilerle boyama. Tarihler, fiyatlar ve rezervasyon.',
     },
     music: {
       short: 'Müzik & ritim',

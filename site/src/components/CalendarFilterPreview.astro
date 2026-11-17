@@ -42,15 +42,15 @@ const HORIZON = 30;
 const STRIP = 14;
 const sessions = capPerHostPerDay(getSessions(lang)).filter((s) => s.dayOffset < HORIZON);
 
-const ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'];
+const ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'plants', 'food', 'photography', 'wellbeing', 'music'];
 const present = new Set(sessions.flatMap((s) => activitiesOf(s.host)));
 const acts = ORDER.filter((a) => present.has(a));
 const actLabel = filterCopy[lang].activities;
 const actIcon: Record<ActivityKey, string> = {
-  ceramics: '🏺', art: '🎨', craft: '🛠️', food: '🍳', photography: '📷', wellbeing: '🌿', music: '🥁',
+  ceramics: '🏺', art: '🎨', craft: '🛠️', plants: '🪴', food: '🍳', photography: '📷', wellbeing: '🌿', music: '🥁',
 };
 const actTint: Record<ActivityKey, string> = {
-  ceramics: '#ffe1d3', art: '#e6ddff', craft: '#ffe9a8', food: '#d9f3ea',
+  ceramics: '#ffe1d3', art: '#e6ddff', craft: '#ffe9a8', plants: '#dcf0d8', food: '#d9f3ea',
   photography: '#dbe8ff', wellbeing: '#e4f3d6', music: '#ffd9ee',
 };
 const actCount = (a: ActivityKey) => sessions.filter((s) => activitiesOf(s.host).includes(a)).length;
