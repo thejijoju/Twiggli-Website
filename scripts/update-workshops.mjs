@@ -643,19 +643,19 @@ const SOURCES = [
     district: 'Friedrichshain',
     seedRecurring: [
       // Her own schedule (email 27.10.26): Tue to Sat 18:30, Fri to Sun
-      // also 11:00 (Saturday 11:00 is the most popular slot). 6 places per
-      // workshop (Pia via Jirel, 11.11.26).
+      // also 11:00 (Saturday 11:00 is the most popular slot). 10 places per
+      // workshop (Pia, 17.11.26: "Group: Up to 10").
       { title: 'Vulva Painting Workshop', weekdays: ['tue', 'wed', 'thu', 'fri', 'sat'], time: '18:30',
-        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 6,
+        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 10,
         url: 'https://www.vulvas.berlin/' },
       { title: 'Vulva Painting Workshop', weekdays: ['fri', 'sat', 'sun'], time: '11:00',
-        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 6,
+        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 10,
         url: 'https://www.vulvas.berlin/' },
     ],
     seedOnRequest: [
       { title: 'Vulva Painting Workshop \u2014 private Gruppe',
         titleEn: 'Vulva Painting Workshop \u2014 private group',
-        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 6,
+        duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 10,
         url: 'https://www.vulvas.berlin/' },
     ] },
 
