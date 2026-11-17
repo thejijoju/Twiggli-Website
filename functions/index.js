@@ -1232,21 +1232,43 @@ export const hostClaim = onRequest(
   },
 );
 
-export const hostApprove = onRequest({ region: 'europe-west3', maxInstances: 5 }, async (req, res) => {
+export const hostApprove = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5 }, async (req, res) => {
   const email = String(req.query.e ?? '').toLowerCase();
   const slug = String(req.query.s ?? '');
   const k = String(req.query.k ?? '');
+  const decline = req.query.a === 'decline';
   const page = (msg) => res.status(200).set('Content-Type', 'text/html; charset=utf-8')
     .send(`<!doctype html><meta name="viewport" content="width=device-width"><body style="font-family:Tahoma,sans-serif;max-width:520px;margin:60px auto;padding:0 16px"><h2>Twiggli host accounts</h2><p>${msg}</p></body>`);
   if (!SLUG.test(slug) || !isEmail(email) || !/^[0-9a-f]{64}$/.test(k)) return page('This link is not valid.');
-  const want = Buffer.from(sign(await approveKey(), email, slug), 'hex');
+  const want = Buffer.from(sign(await approveKey(), email, decline ? `decline:${slug}` : slug), 'hex');
   if (!timingSafeEqual(want, Buffer.from(k, 'hex'))) return page('This link is not valid.');
+  const db = getFirestore();
+  const appRef = db.doc(`hostApplications/${email}`);
+  const application = (await appRef.get()).data();
+  const newHost = application?.slug === slug;
   // Opening the link only asks: mail scanners open links on their own, so
   // access is given by the button (a POST), never by the visit.
   if (req.method !== 'POST') {
-    return page(`Give <b>${esc(email)}</b> access to edit <b>${esc(slug)}</b>?<form method="post"><button style="font-size:16px;background:#1f6f43;color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer">Approve</button></form>`);
+    if (decline) return page(`Decline <b>${esc(application?.name ?? email)}</b> (${esc(email)})? Their workshop stays offline and they get a short, friendly email.<form method="post"><button style="font-size:16px;background:#b3261e;color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer">Decline</button></form>`);
+    return page(`${newHost ? `Approve <b>${esc(application.name)}</b> (${esc(email)}) as a new host? Their workshop goes live and they can post freely from now on.` : `Give <b>${esc(email)}</b> access to edit <b>${esc(slug)}</b>?`}<form method="post"><button style="font-size:16px;background:#1f6f43;color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer">Approve</button></form>`);
+  }
+  const waiting = newHost ? (await db.collection('hostEvents').where('slug', '==', slug).get()).docs.filter((d) => d.data().status === 'pending') : [];
+  if (decline) {
+    if (!newHost) return page('Nothing to decline.');
+    await appRef.set({ status: 'declined', decidedAt: FieldValue.serverTimestamp() }, { merge: true });
+    await Promise.all(waiting.map((d) => d.ref.set({ status: 'declined' }, { merge: true })));
+    try { await mailHostStatus(email, application.name, waiting[0]?.data().title ?? '', 'declined', application.lang); } catch (err) { console.error('decline mail', err?.message); }
+    return page(`Declined: <b>${esc(application.name)}</b> got a short, friendly email. Nothing of theirs is on Twiggli.`);
   }
   await grant(email, slug);
+  if (newHost) {
+    await db.doc(`pageOwners/${slug}`).set({ email, claimedAt: FieldValue.serverTimestamp() });
+    await appRef.set({ status: 'approved', decidedAt: FieldValue.serverTimestamp() }, { merge: true });
+    await Promise.all(waiting.map((d) => d.ref.set({ status: FieldValue.delete(), updatedAt: FieldValue.serverTimestamp() }, { merge: true })));
+    try { await mailHostStatus(email, application.name, waiting[0]?.data().title ?? '', 'approved', application.lang); } catch (err) { console.error('approve mail', err?.message); }
+    try { await mailJirel({ subject: `New host approved: ${application.name} (${slug})`, text: `${application.name} (${email}) is approved as "${slug}". Their page on twiggli.com still needs to be made from their first workshop (ask Claude).` }); } catch {}
+    return page(`Approved: <b>${esc(application.name)}</b> is a host now and their workshop is live. They got an email. Their own page on the website still needs to be made (ask Claude).`);
+  }
   await getFirestore().doc(`hostClaims/${email}__${slug}`).set({ status: 'approved', approvedAt: FieldValue.serverTimestamp() }, { merge: true });
   return page(`Approved: <b>${esc(email)}</b> can now edit <b>${esc(slug)}</b>. They see it the next time they open their account (twiggli.com/host/account/). Let them know it's ready.`);
 });
@@ -1361,7 +1383,7 @@ const YMD = /^\d{4}-\d\d-\d\d$/;
 const mayEdit = async (email, slug) => ADMINS.includes(email) || (await mySlugs(email)).includes(slug);
 
 /** A host's date, checked and trimmed; null when something is off. */
-const cleanEvent = (b) => {
+const cleanEvent = (b, uid = '') => {
   const slug = String(b.slug ?? '');
   const date = String(b.date ?? '');
   const start = String(b.start ?? '');
@@ -1379,7 +1401,9 @@ const cleanEvent = (b) => {
     media: (Array.isArray(b.media) ? b.media : []).slice(0, 12)
       .map((m) => ({ type: m?.type === 'video' ? 'video' : 'photo', url: String(m?.url ?? '') }))
       .filter((m) => /^\/img\/hosts\/[a-z0-9-]+\.(jpg|png|webp)$/.test(m.url)
-        || m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`hostMedia%2F${slug}%2F`)),
+        || m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`hostMedia%2F${slug}%2F`)
+        // Picked in the app: uploaded to the person's own app folder.
+        || (uid && m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`/o/users%2F${uid}%2F`))),
     location: text(b.location, 160),
     description: String(b.description ?? '').slice(0, 3000),
     price: num(b.price, 5000),
@@ -1395,11 +1419,127 @@ const cleanEvent = (b) => {
   };
 };
 
-export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 10, cors: false }, async (req, res) => {
+// ── New hosts (Jirel 17.11.26, "option B") ──
+// Anyone may put together a workshop in the app (or on the site), but to
+// publish they must have connected Stripe (no garbage postings), and their
+// first workshop waits for Jirel: she gets its pictures, text and the name
+// on the Stripe account with Approve / Decline. Approving gives them their
+// own page (hostMembers) and puts the workshop live; from then on they post
+// freely. Their workshops wait in hostEvents with status "pending".
+const slugify = (s) => String(s ?? '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
+  .replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+
+/** Stripe connected far enough to take payments (or at least set up). */
+const stripeReady = async (email) => {
+  const st = (await getFirestore().doc(`hostMembers/${email}`).get()).data()?.stripe;
+  return !!(st?.accountId && (st.chargesEnabled || st.detailsSubmitted));
+};
+
+const newHostEvent = async (req, res, email, uid, body) => {
+  const db = getFirestore();
+  if (!(await stripeReady(email))) return res.status(409).json({ error: 'stripe', message: 'Connect Stripe to publish' });
+  const name = text(body.hostName, 80);
+  if (!name) return res.status(400).json({ error: 'name', message: 'Please add your name or your studio’s name' });
+  const appRef = db.doc(`hostApplications/${email}`);
+  const app = (await appRef.get()).data();
+  if (app?.status === 'declined') return res.status(403).json({ error: 'declined' });
+  let slug = app?.slug;
+  if (!slug) {
+    const base = slugify(name) || 'host';
+    slug = base;
+    for (let i = 2; i < 50; i++) {
+      const taken = (await db.doc(`pageOwners/${slug}`).get()).exists
+        || !(await db.collection('hostApplications').where('slug', '==', slug).limit(1).get()).empty
+        || !(await db.collection('hostEvents').where('slug', '==', slug).limit(1).get()).empty;
+      if (!taken) break;
+      slug = `${base}-${i}`;
+    }
+  }
+  const ev = cleanEvent({ ...body, slug }, uid);
+  if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
+  const doc = await db.collection('hostEvents').add({ ...ev, status: 'pending', by: email, uid, hostName: name, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+  const first = !app;
+  await appRef.set({ email, uid, name, slug, status: 'pending', lang: text(body.lang, 5) || 'en', ...(first ? { createdAt: FieldValue.serverTimestamp() } : {}), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  if (first) {
+    // Who Stripe says they are, for Jirel's check.
+    let who = '';
+    try {
+      const acct = (await db.doc(`hostMembers/${email}`).get()).data()?.stripe?.accountId;
+      const r = await stripe(STRIPE_CONNECT_KEY.value(), `accounts/${acct}`);
+      const a = await r.json();
+      if (r.ok) {
+        who = [a.business_profile?.name, a.settings?.dashboard?.display_name, a.business_profile?.url, a.email, a.country,
+          a.charges_enabled ? 'payments on' : 'payments not yet on'].filter(Boolean).join(' · ');
+      }
+    } catch (err) { console.error('stripe lookup', err?.message); }
+    const key = await approveKey();
+    const approve = `${FUNCTIONS_URL}/hostApprove?e=${encodeURIComponent(email)}&s=${slug}&k=${sign(key, email, slug)}`;
+    const decline = `${FUNCTIONS_URL}/hostApprove?e=${encodeURIComponent(email)}&s=${slug}&a=decline&k=${sign(key, email, `decline:${slug}`)}`;
+    const pics = ev.media.map((m) => m.type === 'video'
+      ? `<p><a href="${esc(m.url)}">▶ Video</a></p>`
+      : `<img src="${esc(m.url)}" alt="" style="width:160px;height:160px;object-fit:cover;border-radius:10px;margin:0 6px 6px 0">`).join('');
+    try {
+      await mailJirel({
+        subject: `New host: ${name} wants to publish "${ev.title}"`,
+        replyTo: email,
+        text: `${name} (${email}) wants to publish "${ev.title}" on ${ev.date} at ${ev.start}, €${ev.price ?? 0}, ${ev.seats ?? '?'} places.\nStripe: ${who || 'connected'}\n\n${ev.description}\n\nApprove: ${approve}\nDecline: ${decline}`,
+        html: `<div style="font-family:Tahoma,sans-serif;font-size:15px;line-height:1.5;max-width:620px">
+<p style="color:#6A3EEC;font-weight:bold;margin:0">New host · waiting for you</p>
+<h2 style="margin:4px 0 12px">${esc(name)}: ${esc(ev.title)}</h2>
+<div>${pics}</div>
+<p><b>${esc(ev.date)} · ${esc(ev.start)}${ev.end ? `–${esc(ev.end)}` : ''}</b> · €${ev.price ?? 0} · ${ev.seats ?? '?'} places${ev.location ? ` · ${esc(ev.location)}` : ''}</p>
+<p style="white-space:pre-line">${esc(ev.description)}</p>
+<p><b>Email:</b> ${esc(email)}<br><b>Stripe:</b> ${esc(who || 'connected')}</p>
+<p><a href="${approve}" style="display:inline-block;background:#1f6f43;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Approve</a>
+&nbsp; <a href="${decline}" style="display:inline-block;background:#fff;color:#b3261e;border:1px solid #b3261e;padding:9px 18px;border-radius:8px;text-decoration:none">Decline</a></p>
+<p style="color:#777">Approving gives them their own host page and puts this workshop live; after that they post without approval.</p></div>`,
+      });
+    } catch (err) { console.error('new host mail failed', err?.message); }
+    try { await mailHostStatus(email, name, ev.title, 'pending', body.lang); } catch (err) { console.error('pending mail', err?.message); }
+  }
+  return res.status(200).json({ id: doc.id, status: 'pending' });
+};
+
+/** Short note to a new host: waiting, approved or declined (DE/EN/FR). */
+const mailHostStatus = async (to, name, title, state, lang) => {
+  const l = ['de', 'fr'].includes(lang) ? lang : 'en';
+  const first = String(name).split(' ')[0];
+  const T = {
+    pending: {
+      de: [`Danke, ${first}! Wir schauen uns „${title}“ an`, `Danke für deinen ersten Workshop auf Twiggli! Neue Gastgeber*innen schauen wir uns einmal kurz an, meist innerhalb eines Tages. Sobald er freigegeben ist, ist „${esc(title)}“ live und du bekommst eine Nachricht. Danach veröffentlichst du ohne Warten.`],
+      en: [`Thanks, ${first}! We’re having a look at “${title}”`, `Thanks for your first workshop on Twiggli! We take a quick look at every new host, usually within a day. As soon as it’s approved, “${esc(title)}” goes live and we’ll let you know. After that you publish without waiting.`],
+      fr: [`Merci, ${first} ! On regarde « ${title} »`, `Merci pour ton premier atelier sur Twiggli ! On regarde rapidement chaque nouvel·le hôte, en général sous un jour. Dès qu’il est validé, « ${esc(title)} » est en ligne et on te prévient. Ensuite, tu publies sans attendre.`],
+    },
+    approved: {
+      de: [`Du bist dabei, ${first}! „${title}“ ist live 🎉`, `Willkommen bei Twiggli! „${esc(title)}“ ist jetzt live, auf der Website und in der App. Ab jetzt kannst du neue Workshops und Termine direkt veröffentlichen.`],
+      en: [`You’re in, ${first}! “${title}” is live 🎉`, `Welcome to Twiggli! “${esc(title)}” is now live, on the website and in the app. From now on you can publish new workshops and dates straight away.`],
+      fr: [`C’est validé, ${first} ! « ${title} » est en ligne 🎉`, `Bienvenue sur Twiggli ! « ${esc(title)} » est maintenant en ligne, sur le site et dans l’app. Désormais, tu publies tes ateliers et tes dates directement.`],
+    },
+    declined: {
+      de: [`Zu deinem Workshop auf Twiggli`, `Danke für dein Interesse an Twiggli! Leider passt „${esc(title)}“ gerade nicht zu unserem Angebot, deshalb veröffentlichen wir ihn nicht. Wenn du Fragen hast, antworte einfach auf diese E-Mail.`],
+      en: [`About your workshop on Twiggli`, `Thanks for your interest in Twiggli! Unfortunately “${esc(title)}” isn’t a fit for Twiggli right now, so we won’t publish it. If you have any questions, just reply to this email.`],
+      fr: [`À propos de ton atelier sur Twiggli`, `Merci pour ton intérêt pour Twiggli ! Malheureusement, « ${esc(title)} » ne correspond pas à Twiggli pour le moment, donc on ne le publie pas. Si tu as des questions, réponds simplement à cet e-mail.`],
+    },
+  }[state][l];
+  const sig = l === 'de' ? 'Jirel, Gründerin @ Twiggli' : l === 'fr' ? 'Jirel, fondatrice @ Twiggli' : 'Jirel, Founder @ Twiggli';
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: SENDER }, to, subject: T[0].replace(/<[^>]+>/g, ''),
+    text: `${T[1].replace(/<[^>]+>/g, '')}\n\n💛\n${sig}`,
+    html: `<div style="font-family:Tahoma,sans-serif;font-size:15px;line-height:1.55;color:#1d1d1f;max-width:560px"><img src="${SITE}/img/logo.png" alt="Twiggli" width="110" style="display:block;margin-bottom:18px"><h2 style="font-size:20px;margin:0 0 12px">${esc(T[0])}</h2><p>${T[1]}</p><p>💛<br>${sig}</p></div>`,
+  });
+};
+
+export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD, STRIPE_CONNECT_KEY], maxInstances: 10, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
-  const email = await caller(req);
-  if (!email) return res.status(401).json({ error: 'Not signed in' });
-  const ev = cleanEvent(req.body ?? {});
+  const who = await callerIds(req);
+  if (!who) return res.status(401).json({ error: 'Not signed in' });
+  const { email, uid } = who;
+  const body = req.body ?? {};
+  // Someone without a host page yet (the app's Create, Jirel 17.11.26):
+  // their first workshop waits for Jirel's approval.
+  if (!body.slug && !ADMINS.includes(email) && !(await mySlugs(email)).length) return newHostEvent(req, res, email, uid, body);
+  const ev = cleanEvent(body, uid);
   if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
   if (!(await mayEdit(email, ev.slug))) return res.status(403).json({ error: 'Not your page' });
   // As on Luma: no money without a connected Stripe account (hostStripe).
@@ -1511,7 +1651,7 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   // Paused accounts too (Jirel 15.11.26): back once the host signs in again.
   const gone = [...((await getFirestore().doc('_config/goneHosts').get()).data()?.slugs ?? []), ...((await getFirestore().doc('_config/pausedHosts').get()).data()?.slugs ?? [])];
   let updated = 0;
-  const items = snap.docs.filter((d) => !gone.includes(d.data().slug)).map((d) => {
+  const items = snap.docs.filter((d) => !gone.includes(d.data().slug) && !['pending', 'declined'].includes(d.data().status)).map((d) => {
     const x = d.data();
     updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0);
     const { by: _by, createdAt: _c, updatedAt: _u, ...pub } = x;
@@ -1549,7 +1689,7 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, 
   const who = await callerIds(req);
   if (!who) return res.status(401).json({ error: 'Not signed in' });
   const { email, uid } = who;
-  if (!ADMINS.includes(email) && !(await mySlugs(email)).length) return res.status(403).json({ error: 'Hosts only' });
+  // Anyone signed in: new hosts connect Stripe before they can publish.
   const key = STRIPE_CONNECT_KEY.value();
   if (!key) return res.status(500).json({ error: 'Stripe key missing' });
   const db = getFirestore();
@@ -1604,7 +1744,8 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, 
     accountId = a.id;
     await memberRef.set({ stripe: { accountId, chargesEnabled: false, createdAt: FieldValue.serverTimestamp() } }, { merge: true });
   }
-  const back = stripeBack(stripeLang(req.body?.lang));
+  // From the app: a page saying "go back to the app".
+  const back = req.body?.app ? `${SITE}/stripe-connect-setup-completed/` : stripeBack(stripeLang(req.body?.lang));
   const p = new URLSearchParams({ account: accountId, type: 'account_onboarding', return_url: `${back}?stripe=return`, refresh_url: `${back}?stripe=refresh` });
   const r = await stripe(key, 'account_links', p);
   const link = await r.json();
