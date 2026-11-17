@@ -219,15 +219,15 @@ const SOURCES = [
     pagePattern: '/de-de/e/[a-z0-9-]*-x4m09x/?$', idFromUrl: true,
     requestBooking: true, infoUrl: 'https://www.coffeeandbananas.com/',
     district: 'Prenzlauer Berg',
-    // Angelo, email 08.11.26: no more Saturdays, Sundays now 11:00–13:00,
-    // €49, up to 8 bookings per date through Twiggli. Konfetti still lists
-    // the old slots, so they are corrected here.
+    // Angelo, emails 08.11. and 17.11.26: no more Saturdays; Thursdays and
+    // Fridays 17:30–19:30, Sundays 11:00–13:00; €49; 8 places per date
+    // through Twiggli (Konfetti shows its own, smaller counts). Konfetti
+    // still lists other slots, so they are corrected or dropped here.
     adjust: (w) => {
       const day = new Date(`${w.date}T12:00:00Z`).getUTCDay();
-      if (day === 6) return null;
-      const out = { ...w, price: '€49', spots: Math.min(w.spots ?? 8, 8) };
-      if (day === 0) Object.assign(out, { time: '11:00', duration: '2 h' });
-      return out;
+      if (day === 0) return { ...w, price: '€49', spots: 8, time: '11:00', duration: '2 h' };
+      if ((day === 4 || day === 5) && w.time === '17:30') return { ...w, price: '€49', spots: 8, duration: '2 h' };
+      return null;
     } },
   // Squarespace site booking through Konfetti — the sitemap finds every
   // course page, each page's embedded widget names its Konfetti event, and
