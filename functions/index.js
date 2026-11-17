@@ -320,19 +320,27 @@ const emojiFor = (title) => EMOJI.find(([re]) => re.test(String(title ?? '')))?.
 const confirmGuest = async (to, f) => {
   const de = String(f.Language ?? '').startsWith('de');
   const name = String(f.Name ?? '').trim().split(/\s+/)[0];
-  const what = f.Workshop || f.Studio || f.Type;
+  const what = /any space|beliebiges Studio|tout atelier/i.test(String(f.Studio ?? '')) ? (de ? 'Raum in Berlin' : 'Studio space in Berlin') : (f.Workshop || f.Studio || f.Type);
   const icon = f.Studio ? '🏠' : emojiFor(what);
   const host = String(f.Host ?? '').trim();
   const when = [String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1'), f.Time].filter(Boolean).join(', ');
   // A request for no host in particular (group, team, Christmas party…):
   // we look for the hosts who fit first (Jirel 16.11.26).
   const general = !host && !f.Studio;
+  // A studio request (Jirel 17.11.26): it goes to whoever runs the room,
+  // or, for "any space", we look for one that fits.
+  const room = f.Studio ? String(f.Studio).trim() : '';
+  const anyRoom = /any space|beliebiges Studio|tout atelier/i.test(room);
   const pref = String(f['Preferred date'] ?? '').match(/^(\d{4})-(\d\d)-(\d\d)/);
   const prefDate = pref ? new Date(`${pref[0]}T12:00:00`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const where = String(f.Where ?? '');
+  const anyDate = String(f.Date ?? '').match(/(\d{4})-(\d\d)-(\d\d)/);
+  const roomDate = room && anyDate ? new Date(`${anyDate[0]}T12:00:00`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const rows = [
     [de ? 'Gastgeber:in' : 'Host', host],
-    [de ? 'Wann' : 'When', when || prefDate],
+    [de ? 'Wann' : 'When', room ? roomDate : (when || prefDate)],
+    [de ? 'Beginn' : 'Start', room ? f['Start time'] : ''],
+    [de ? 'Stunden' : 'Hours', room ? f.Hours : ''],
     [de ? 'Personen' : 'People', f.People || f['Group size']],
     [de ? 'Budget p. P.' : 'Budget pp', f['Budget per person'] ? `€${String(f['Budget per person']).replace(/[^\d.,]/g, '')}` : ''],
     [de ? 'Wo' : 'Where', general ? (/studio/i.test(where) ? (de ? 'In einem Atelier' : 'At a studio') : where) : ''],
@@ -350,6 +358,15 @@ const confirmGuest = async (to, f) => {
     next: `${host ? esc(host) : 'Der Gastgeber'} meldet sich direkt bei dir per E-Mail, meist innerhalb von 1–2 Tagen, um zu bestätigen oder einen anderen Termin vorzuschlagen. Du musst nichts weiter tun.`,
     q: 'Fragen? Antworte einfach auf diese E-Mail.', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
     subject: `Deine Anfrage bei Twiggli: ${what} ${icon}`,
+    ...(room ? {
+      kicker: 'Raumanfrage erhalten',
+      intro: anyRoom
+        ? 'Deine Raumanfrage bei <b>Twiggli</b> ist gut angekommen. Wir schauen jetzt, welcher unserer Räume an deinem Termin frei ist und zu deiner Gruppe passt.'
+        : `Deine Raumanfrage bei <b>Twiggli</b> ist gut angekommen. Wir haben sie direkt an ${esc(room)} weitergegeben.`,
+      next: anyRoom
+        ? 'Wir melden uns innerhalb von 1–2 Tagen mit passenden Räumen bei dir. Du musst nichts weiter tun.'
+        : 'Wer den Raum betreut, meldet sich direkt bei dir per E-Mail mit Verfügbarkeit und Preis, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.',
+    } : {}),
     ...(general ? {
       intro: 'Deine Anfrage bei <b>Twiggli</b> ist gut angekommen. Wir schauen jetzt, welche unserer Gastgeber:innen sie erfüllen können: an deinem Termin, für deine Gruppengröße, in deinem Budget und am passenden Ort.',
       next: 'Wir melden uns innerhalb von 1–2 Tagen mit den passenden Vorschlägen bei dir. Du musst nichts weiter tun.',
@@ -361,6 +378,15 @@ const confirmGuest = async (to, f) => {
     next: `${host ? esc(host) : 'The host'} will get in touch with you directly by email, usually within 1–2 days, to confirm or suggest another date. There is nothing else you need to do.`,
     q: 'Questions? Just reply to this email.', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
     subject: `Your Twiggli request: ${what} ${icon}`,
+    ...(room ? {
+      kicker: 'Studio request received',
+      intro: anyRoom
+        ? 'Your studio request on <b>Twiggli</b> has reached us. We’re now checking which of our spaces is free on your date and fits your group.'
+        : `Your studio request on <b>Twiggli</b> has reached us, and we've passed it straight on to ${esc(room)}.`,
+      next: anyRoom
+        ? 'We’ll get back to you within 1–2 days with spaces that fit. There is nothing else you need to do.'
+        : 'Whoever runs the space will get in touch with you directly by email with availability and price, usually within 1–2 days. There is nothing else you need to do.',
+    } : {}),
     ...(general ? {
       intro: 'Your request on <b>Twiggli</b> has reached us. We’re now checking which of our hosts can make it happen: on your date, for your group size, within your budget and in the right place.',
       next: 'We’ll get back to you within 1–2 days with the hosts who fit. There is nothing else you need to do.',
@@ -858,10 +884,12 @@ const notifyHostRequest = async (doc, email, f) => {
   const data = (await doc.get()).data() ?? {};
   const slug = String(data.hostSlug ?? '');
   const type = String(f.Type ?? '');
-  if (!SLUG.test(slug) || !/^(Booking request|Group booking request|Date request)$/.test(type)) return '';
+  if (!SLUG.test(slug) || !/^(Booking request|Group booking request|Date request|Studio rental request)$/.test(type)) return '';
+  // Studio requests go to whoever runs the room, the same way (Jirel 17.11.26).
+  const studio = type === 'Studio rental request';
   if (data.hostMailedAt) return 'already sent';
   if (ARCHIVED_HOSTS.has(slug)) return 'NOT sent: host has left Twiggli';
-  const iso = String(f.Date ?? '').match(/^(\d{4}-\d\d-\d\d)/)?.[1] ?? '';
+  const iso = String(f.Date ?? '').match(/(\d{4}-\d\d-\d\d)/)?.[1] ?? '';
   const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
   if (iso && iso < today) return 'NOT sent: date is in the past';
   let who = null;
@@ -876,58 +904,65 @@ const notifyHostRequest = async (doc, email, f) => {
   const soon = iso === today ? 'today' : iso === tomorrow ? 'tomorrow' : '';
   const guest = String(f.Name ?? '').trim();
   const gFirst = guest.split(/\s+/)[0] || guest;
-  const what = String(f.Workshop ?? '').trim();
+  const what = String((studio ? f.Studio : f.Workshop) ?? '').trim();
   const people = Number(String(f.People ?? '').match(/\d+/)?.[0] ?? 0);
   const prices = String(f.Price ?? '').replace(/\./g, '').match(/\d+(?:,\d+)?/g)?.map((x) => Number(x.replace(',', '.'))) ?? [];
   const one = prices.length === 1 ? prices[0] : 0;
   const eur = (n) => `€${(Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, '')}`;
-  const when = String(f.Date ?? '').replace(/^\d{4}-\d\d-\d\d \((.*)\)$/, '$1');
+  const when = String(f.Date ?? '').replace(/^(?:preferred: )?\d{4}-\d\d-\d\d \((.*?)\)$/, '$1').replace(/^flexible: /, '');
+  const often = /regular/i.test(String(f['How often'] ?? ''));
   const T = {
     de: {
-      kicker: `Neue ${type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
+      kicker: `Neue ${studio ? 'Raumanfrage' : type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
       head: `Antworte auf ${esc(gFirst)}s Anfrage`,
       hi: `Hallo${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
         ? `${esc(guest)} möchte ${soon === 'today' ? '<b>heute</b>' : '<b>morgen</b>'} zu dir kommen. Bitte ruf an oder schreib so schnell wie möglich, am besten mit Antwort auf diese E-Mail (ich bin in CC).`
+        : studio ? `${esc(guest)} möchte über <b>Twiggli</b> deinen Raum mieten. Bitte melde dich direkt bei ${esc(gFirst)} mit Verfügbarkeit und Preis, am einfachsten mit Antwort auf diese E-Mail (ich bin in CC).`
         : `${esc(guest)} hat über <b>Twiggli</b> bei dir angefragt. Bitte melde dich direkt bei ${esc(gFirst)}, am einfachsten mit Antwort auf diese E-Mail (ich bin in CC).`,
       date: type === 'Date request' ? `${esc(gFirst)} hat keinen passenden Termin gefunden. Magst du einen öffnen oder einen anderen vorschlagen?` : '',
-      rows: [['Workshop', what], ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
+      rows: studio ? [['Raum', what], ['Datum', when], ['Beginn', f['Start time']], ['Stunden', f.Hours], ['Wie oft', often ? 'Regelmäßig' : 'Einmalig'], ['Personen', f.People]]
+        : [['Workshop', what], ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
       msg: 'Nachricht', earn: 'Mögliche Einnahmen', earnNote: (g) => `${eur(g)} gesamt, ${eur(g * 0.85)} nach 15 % Twiggli-Provision (falls für dich vereinbart)`,
       contact: 'Kontakt', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
-      subject: `Neue Anfrage über Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'Person' : 'Personen'})` : ''}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''} 💌`,
+      subject: `Neue ${studio ? 'Raumanfrage' : 'Anfrage'} über Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'Person' : 'Personen'})` : ''}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''} 💌`,
     },
     en: {
-      kicker: `New ${type === 'Group booking request' ? 'group request' : type === 'Date request' ? 'date request' : 'booking request'}${soon === 'today' ? ' · today' : soon === 'tomorrow' ? ' · tomorrow' : ''}`,
+      kicker: `New ${studio ? 'studio request' : type === 'Group booking request' ? 'group request' : type === 'Date request' ? 'date request' : 'booking request'}${soon === 'today' ? ' · today' : soon === 'tomorrow' ? ' · tomorrow' : ''}`,
       head: `Reply to ${esc(gFirst)}'s request`,
       hi: `Hi${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
         ? `${esc(guest)} would like to come <b>${soon}</b>. Please call or write as soon as you can, easiest by replying to this email (I'm in CC).`
+        : studio ? `${esc(guest)} would like to rent your space through <b>Twiggli</b>. Please get in touch with ${esc(gFirst)} directly with availability and price, easiest by replying to this email (I'm in CC).`
         : `${esc(guest)} sent you a request on <b>Twiggli</b>. Please get in touch with ${esc(gFirst)} directly, easiest by replying to this email (I'm in CC).`,
       date: type === 'Date request' ? `${esc(gFirst)} didn't find a date that works. Could you open one, or suggest another?` : '',
-      rows: [['Workshop', what], ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
+      rows: studio ? [['Space', what], ['Date', when], ['Start', f['Start time']], ['Hours', f.Hours], ['How often', often ? 'Regularly' : 'One time'], ['People', f.People]]
+        : [['Workshop', what], ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
       msg: 'Message', earn: 'Your earnings', earnNote: (g) => `${eur(g)} in total, ${eur(g * 0.85)} after the 15% Twiggli commission (where agreed with you)`,
       contact: 'Contact', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
-      subject: `New request via Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'person' : 'people'})` : ''}${soon ? ` · ${soon}` : ''} 💌`,
+      subject: `New ${studio ? 'studio request' : 'request'} via Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'person' : 'people'})` : ''}${soon ? ` · ${soon}` : ''} 💌`,
     },
     fr: {
-      kicker: `Nouvelle demande${soon === 'today' ? ' · aujourd’hui' : soon === 'tomorrow' ? ' · demain' : ''}`,
+      kicker: `Nouvelle demande${studio ? ' de location' : ''}${soon === 'today' ? ' · aujourd’hui' : soon === 'tomorrow' ? ' · demain' : ''}`,
       head: `Réponds à la demande de ${esc(gFirst)}`,
       hi: `Coucou${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
         ? `${esc(guest)} aimerait venir <b>${soon === 'today' ? 'aujourd’hui' : 'demain'}</b>. Appelle ou écris dès que possible, le plus simple en répondant à ce mail (je suis en copie).`
+        : studio ? `${esc(guest)} aimerait louer ton espace via <b>Twiggli</b>. Contacte ${esc(gFirst)} directement avec tes disponibilités et ton prix, le plus simple en répondant à ce mail (je suis en copie).`
         : `${esc(guest)} t’a envoyé une demande sur <b>Twiggli</b>. Contacte ${esc(gFirst)} directement, le plus simple en répondant à ce mail (je suis en copie).`,
       date: type === 'Date request' ? `${esc(gFirst)} n’a pas trouvé de date qui convient. Tu peux en ouvrir une ou en proposer une autre ?` : '',
-      rows: [['Atelier', what], ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
+      rows: studio ? [['Espace', what], ['Date', when], ['Début', f['Start time']], ['Heures', f.Hours], ['Fréquence', often ? 'Régulièrement' : 'Une fois'], ['Personnes', f.People]]
+        : [['Atelier', what], ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
       msg: 'Message', earn: 'Revenus possibles', earnNote: (g) => `${eur(g)} au total, ${eur(g * 0.85)} après la commission Twiggli de 15 % (si convenue avec toi)`,
       contact: 'Contact', bye: 'Bises', sig: 'Jirel, fondatrice @ <b>Twiggli</b>',
-      subject: `Nouvelle demande via Twiggli : ${what}${when ? `, ${when}` : ''}${people ? ` (${people} pers.)` : ''} 💌`,
+      subject: `Nouvelle ${studio ? 'demande de location' : 'demande'} via Twiggli : ${what}${when ? `, ${when}` : ''}${people ? ` (${people} pers.)` : ''} 💌`,
     },
   }[lang] ?? null;
   if (!T) return '';
-  const gross = one && people ? one * people : 0;
+  const gross = !studio && one && people ? one * people : 0;
   const cell = 'padding:9px 0;border-bottom:1px solid #efe9e2;font-size:14px';
   const table = T.rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="${cell};color:#6b7076">${esc(k)}</td><td align="right" style="${cell};font-weight:bold">${esc(v)}</td></tr>`).join('');
-  const message = String(f.Message ?? '').trim();
+  const message = String((studio ? f['Special notes'] : f.Message) ?? '').trim();
   const contact = [guest && `<b>${esc(guest)}</b>`, isEmail(email) && `<a href="mailto:${esc(email)}" style="color:#6a3eec">${esc(email)}</a>`, f.Phone && `<a href="tel:${esc(String(f.Phone).replace(/\s/g, ''))}" style="color:#6a3eec">${esc(f.Phone)}</a>`].filter(Boolean).join('<br>');
   const html = `<div style="padding:24px 0;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table width="600" align="center" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;border-radius:14px;overflow:hidden">
