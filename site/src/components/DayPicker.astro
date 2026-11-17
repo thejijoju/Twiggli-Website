@@ -39,7 +39,7 @@ const onRequest = getOnRequest(lang);
 const days = Array.from({ length: DAYS_AHEAD }, (_, i) => i);
 
 // Only activities that actually have sessions get a pill — no dead filters.
-const ACTIVITY_ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'food', 'photography', 'wellbeing', 'music'];
+const ACTIVITY_ORDER: ActivityKey[] = ['ceramics', 'art', 'craft', 'plants', 'food', 'photography', 'wellbeing', 'music'];
 const present = new Set(sessions.flatMap((s) => activitiesOf(s.host)));
 const activities = ACTIVITY_ORDER.filter((a) => present.has(a));
 const activityLabels = filterCopy[lang].activities;
@@ -47,7 +47,7 @@ const activityLabels = filterCopy[lang].activities;
 /** A small emoji inside each activity pill — recognisable at a glance
  *  without reading, kept discreet by size and opacity in the CSS. */
 const activityIcons: Record<ActivityKey, string> = {
-  ceramics: '🏺', art: '🎨', craft: '🛠️', food: '🍳',
+  ceramics: '🏺', art: '🎨', craft: '🛠️', plants: '🪴', food: '🍳',
   photography: '📷', wellbeing: '🌿', music: '🥁',
 };
 
@@ -235,7 +235,7 @@ const kalCopyAll = {
 const k = lang === 'de' ? kalCopyAll.de : kalCopyAll.en;
 /** The chips' soft grounds, the home page's tints (homeData.ts). */
 const activityTints: Record<ActivityKey, string> = {
-  ceramics: '#ffe1d3', art: '#e6ddff', craft: '#ffe9a8', food: '#d9f3ea',
+  ceramics: '#ffe1d3', art: '#e6ddff', craft: '#ffe9a8', plants: '#dcf0d8', food: '#d9f3ea',
   photography: '#dbe8ff', wellbeing: '#e4f3d6', music: '#ffd9ee',
 };
 /** A day's name as the build sees it; the script writes the visitor's own

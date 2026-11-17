@@ -165,7 +165,7 @@ export type Host = {
 };
 
 export type ActivityKey =
-  | 'ceramics' | 'art' | 'craft' | 'food' | 'photography' | 'wellbeing' | 'music';
+  | 'ceramics' | 'art' | 'craft' | 'plants' | 'food' | 'photography' | 'wellbeing' | 'music';
 
 /** Every activity a host is listed under: their own first, then `alsoIn`. */
 export const activitiesOf = (h: Pick<Host, 'activity' | 'alsoIn'>): ActivityKey[] => [h.activity, ...(h.alsoIn ?? [])];
@@ -246,7 +246,7 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // Laura, 15.10.26: 1–20 in the studio, 20–100 at the client's; from 40 pp.
   munio:        { activity: 'craft',       groupRange: [1, 100],  hourRange: [1, 2], groupPrice: 40 },
   // Walks run from 10 people; no published cap ("kleine Gruppen").
-  'monk-garden': { activity: 'food',       groupRange: [10, 20],  hourRange: [2.5, 3] },
+  'monk-garden': { activity: 'food',       alsoIn: ['plants'], groupRange: [10, 20],  hourRange: [2.5, 3] },
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
   bumerang:      { activity: 'craft',      groupRange: [1, 10],   hourRange: [7, 7] },
   'ceramic-kingdom': { activity: 'ceramics', groupRange: [1, 7],  hourRange: [2, 4] },
@@ -278,11 +278,12 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   // room is small, so these are deliberately modest.
   cateduckwall:     { activity: 'craft',     groupRange: [1, 10], hourRange: [2, 2] },
   'smell-lab':      { activity: 'craft',     groupRange: [1, 40], hourRange: [1.5, 3], groupPrice: 79 },
-  yurika:           { activity: 'craft',     groupRange: [1, 12], hourRange: [1.5, 2], groupPrice: [45, 72] },
+  yurika:           { activity: 'craft',     alsoIn: ['plants'], groupRange: [1, 12], hourRange: [1.5, 2], groupPrice: [45, 72] },
   // Her team formats, 16.10.26: M from 7 (2 h), S from 10 (1.5 h), XS from
   // 15 (1 h); up to 20 in the studio, up to 150 on-site. Net prices per
   // person for companies: XS 35, S 55, M 75.
-  petitejungle:     { activity: 'craft',     groupRange: [7, 150], hourRange: [1, 2], groupPrice: [35, 75] },
+  // Plants (Aurélie, 17.11.26: "that's how my participants search").
+  petitejungle:     { activity: 'craft',     alsoIn: ['plants'], groupRange: [7, 150], hourRange: [1, 2], groupPrice: [35, 75] },
   // Anna, call of 22.10.26: company and group bookings for 7–20 people at
   // €57 per person, materials included; her public sessions run 2 h.
   'anna-malerlebnisse': { activity: 'art', groupRange: [7, 20], hourRange: [2, 2], groupPrice: 57 },
@@ -1704,7 +1705,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     empty: 'No host matches every filter. Try widening one.',
     filters: 'Filters', show: (c) => `Show ${c}`,
     activities: {
-      ceramics: 'Ceramics', art: 'Art & print', craft: 'Craft & making',
+      ceramics: 'Ceramics', art: 'Art & print', craft: 'Craft & making', plants: 'Plants',
       food: 'Food & drink', photography: 'Photography', wellbeing: 'Wellbeing',
       music: 'Music & rhythm',
     },
@@ -1720,7 +1721,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filter', show: (c) => `${c} anzeigen`,
     empty: 'Kein Gastgeber passt zu allen Filtern. Erweitere einen davon.',
     activities: {
-      ceramics: 'Keramik', art: 'Kunst & Druck', craft: 'Handwerk',
+      ceramics: 'Keramik', art: 'Kunst & Druck', craft: 'Handwerk', plants: 'Pflanzen',
       food: 'Essen & Trinken', photography: 'Fotografie', wellbeing: 'Wohlbefinden',
       music: 'Musik & Rhythmus',
     },
@@ -1736,7 +1737,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filtres', show: (c) => `Afficher ${c}`,
     empty: 'Aucun hôte ne correspond à tous les filtres. Élargissez-en un.',
     activities: {
-      ceramics: 'Céramique', art: 'Art & gravure', craft: 'Artisanat & DIY',
+      ceramics: 'Céramique', art: 'Art & gravure', craft: 'Artisanat & DIY', plants: 'Plantes',
       food: 'Cuisine & boissons', photography: 'Photographie', wellbeing: 'Bien-être',
       music: 'Musique & rythme',
     },
@@ -1752,7 +1753,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filtros', show: (c) => `Ver ${c}`,
     empty: 'Ningún anfitrión cumple todos los filtros. Prueba a ampliar alguno.',
     activities: {
-      ceramics: 'Cerámica', art: 'Arte & grabado', craft: 'Artesanía & DIY',
+      ceramics: 'Cerámica', art: 'Arte & grabado', craft: 'Artesanía & DIY', plants: 'Plantas',
       food: 'Comida & bebida', photography: 'Fotografía', wellbeing: 'Bienestar',
       music: 'Música & ritmo',
     },
@@ -1768,7 +1769,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filtri', show: (c) => `Mostra ${c}`,
     empty: 'Nessun host corrisponde a tutti i filtri. Prova ad allargarne uno.',
     activities: {
-      ceramics: 'Ceramica', art: 'Arte & stampa', craft: 'Artigianato & fai da te',
+      ceramics: 'Ceramica', art: 'Arte & stampa', craft: 'Artigianato & fai da te', plants: 'Piante',
       food: 'Cibo & bevande', photography: 'Fotografia', wellbeing: 'Benessere',
       music: 'Musica & ritmo',
     },
@@ -1784,7 +1785,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filters', show: (c) => `${c} tonen`,
     empty: 'Geen enkele host past bij alle filters. Verruim er eentje.',
     activities: {
-      ceramics: 'Keramiek', art: 'Kunst & druk', craft: 'Ambacht & DIY',
+      ceramics: 'Keramiek', art: 'Kunst & druk', craft: 'Ambacht & DIY', plants: 'Planten',
       food: 'Eten & drinken', photography: 'Fotografie', wellbeing: 'Welzijn',
       music: 'Muziek & ritme',
     },
@@ -1800,7 +1801,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filtry', show: (c) => `Pokaż ${c}`,
     empty: 'Żaden prowadzący nie pasuje do wszystkich filtrów. Poluzuj jeden z nich.',
     activities: {
-      ceramics: 'Ceramika', art: 'Sztuka & grafika', craft: 'Rękodzieło & DIY',
+      ceramics: 'Ceramika', art: 'Sztuka & grafika', craft: 'Rękodzieło & DIY', plants: 'Rośliny',
       food: 'Jedzenie & napoje', photography: 'Fotografia', wellbeing: 'Dobrostan',
       music: 'Muzyka & rytm',
     },
@@ -1816,7 +1817,7 @@ export const filterCopy: Record<Lang, FilterCopy> = {
     filters: 'Filtreler', show: (c) => `${c} göster`,
     empty: 'Tüm filtrelere uyan eğitmen yok. Birini genişletmeyi dene.',
     activities: {
-      ceramics: 'Seramik', art: 'Sanat & baskı', craft: 'El sanatları & DIY',
+      ceramics: 'Seramik', art: 'Sanat & baskı', craft: 'El sanatları & DIY', plants: 'Bitkiler',
       food: 'Yemek & içecek', photography: 'Fotoğraf', wellbeing: 'İyi yaşam',
       music: 'Müzik & ritim',
     },
