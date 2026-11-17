@@ -708,7 +708,6 @@ const fields = [
           </div>
           <div class="hd-create-main">
             <div class="hd-create-chips">
-              <span class="hd-chip" data-ha-create-host></span>
               <label class="hd-chip"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5z"/></svg><select name="visibility"><option value="public">{t.vPublic}</option><option value="private">{t.vPrivate}</option></select></label>
             </div>
             <input class="hd-title" name="title" maxlength="120" placeholder={t.titlePh} required />
@@ -3042,7 +3041,6 @@ const fields = [
         fld<HTMLSelectElement>('cancel').value = ev?.cancel ?? '7d';
         fld<HTMLSelectElement>('visibility').value = ev?.visibility ?? 'public';
         media = ev?.media?.length ? [...ev.media] : (h?.photos?.[0] ? [{ type: 'photo', url: h.photos[0] }] : []);
-        $('[data-ha-create-host]').textContent = h?.name ?? slug;
         createForm.querySelector<HTMLButtonElement>('.hd-publish')!.textContent = ev?.id ? t.saveChanges : t.publish;
         $('[data-ha-create-note]').textContent = t.publishNote;
         closePops();
