@@ -21,6 +21,7 @@
 // See README.md here for setup and deploy.
 
 import { onRequest } from 'firebase-functions/v2/https';
+import { onSchedule as onCron } from 'firebase-functions/v2/scheduler';
 import { defineSecret } from 'firebase-functions/params';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
@@ -2607,4 +2608,106 @@ ${gone.length ? `- Add ${gone.join(', ')} to site/src/data/hosts/archived.ts and
     return res.status(200).json({ ok: true });
   }
   return res.status(400).json({ error: 'action' });
+});
+
+
+// ── "How was it?": the review email, 24 hours after a workshop (Jirel
+// 05.11.26, automated on the website 17.11.26 so its link goes straight
+// to twiggli.com; Gmail's own sending turned links into redirects).
+// Every hour from 9 to 20 o'clock: paid bookings, and requests a host got
+// for one date, whose start is 24 h to 10 days past. Skipped: requests the
+// host declined, duplicates, spam, tests, and anyone the 'booking requests'
+// sheet marks as lost, cancelled, ill or on the waiting list. One ask per
+// guest and host (reviewAsks), never more than two per guest in all.
+const REVIEW_FROM = '2026-11-18'; // earlier ones were asked by hand
+const reviewSheetText = async () => {
+  const tok = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token?scopes=https://www.googleapis.com/auth/spreadsheets.readonly', { headers: { 'Metadata-Flavor': 'Google' } });
+  if (!tok.ok) throw new Error(`token ${tok.status}`);
+  const { access_token: token } = await tok.json();
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${HOST_SHEET}/values/${encodeURIComponent("'booking requests'!A1:AN400")}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`sheet ${res.status}`);
+  return ((await res.json()).values ?? []).map((r) => r.join(' | '));
+};
+const hostCard = async (slug) => {
+  const tok = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token?scopes=https://www.googleapis.com/auth/spreadsheets.readonly', { headers: { 'Metadata-Flavor': 'Google' } });
+  const { access_token: token } = await tok.json();
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${HOST_SHEET}/values/${encodeURIComponent("'Hosts & Emails'!A2:K400")}`, { headers: { Authorization: `Bearer ${token}` } });
+  for (const r of (await res.json()).values ?? []) {
+    if (String(r[10] ?? '').toLowerCase().split(/[\s,;]+/).includes(slug)) return { first: String(r[0] ?? '').trim().split(/\s+/)[0], studio: String(r[1] ?? '').trim() };
+  }
+  return { first: '', studio: '' };
+};
+const reviewMail = ({ lang, first, workshop, hostLabel, hostFirst, studio, slug }) => {
+  const de = lang === 'de';
+  const link = `${SITE}${de ? '/de' : ''}/review/?${new URLSearchParams({ h: slug, n: first, w: workshop.slice(0, 60) })}`;
+  const a = (t) => `<a href="${esc(link)}" style="color:#6A3EEC;font-weight:bold;text-decoration:none">${t}</a>`;
+  const at = hostFirst && studio && studio !== hostFirst ? (de ? ` mit ${esc(hostFirst)} bei ${esc(studio)}` : ` with ${esc(hostFirst)} at ${esc(studio)}`) : hostFirst ? (de ? ` mit ${esc(hostFirst)}` : ` with ${esc(hostFirst)}`) : '';
+  const subject = de ? `Wie war's bei ${hostLabel}? ⭐` : `How was it at ${hostLabel}? ⭐`;
+  const html = `<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.6;color:#24272e;max-width:560px">
+<p>${de ? 'Hallo' : 'Hi'} ${esc(first)},</p>
+<p>${de ? `ich hoffe, es war schön bei <b>${esc(workshop)}</b>${at}!` : `I hope you had a lovely time at <b>${esc(workshop)}</b>${at}!`}</p>
+<p>${de ? 'Magst du uns kurz erzählen, wie es war?' : 'Would you tell us briefly how it was?'}</p>
+<ol style="padding-left:20px;margin:0 0 14px">
+<li>${de ? 'Wie viele Sterne gibst du, 1 bis 5 ⭐?' : 'How many stars would you give, 1 to 5 ⭐?'}</li>
+<li>${de ? 'Was hat dir am besten gefallen?' : 'What did you like most?'}</li>
+<li>${de ? `Ein, zwei Sätze, die wir auf ${esc(hostLabel)}s Profil veröffentlichen dürfen?` : `One or two sentences we may publish on ${esc(hostLabel)}'s profile?`}</li>
+</ol>
+<p>${de ? `Antworte einfach auf diese E-Mail, oder schreib es ${a('hier')}.` : `Just reply to this email, or write it ${a('here')}.`}</p>
+<p>${de ? 'Bewertungen sind Gold für kleine Studios und helfen ihnen, gefunden zu werden.' : 'Reviews are gold for small studios and help them get found.'}</p>
+<p>${de ? 'Danke dir und liebe Grüße 💛<br>Jirel, Gründerin @ <b>Twiggli</b>' : 'Thank you and warm regards 💛<br>Jirel, Founder @ <b>Twiggli</b>'}</p>
+<p style="font-size:12px;color:#8a8d96">${de ? 'Falls es doch nicht geklappt hat, antworte einfach kurz auf diese E-Mail, dann finden wir einen neuen Termin.' : "If it didn't work out in the end, just reply to this email and we'll find you a new date."}</p>
+</div>`;
+  const text = `${de ? 'Hallo' : 'Hi'} ${first},\n\n${html.replace(/<li>/g, '- ').replace(/<br>/g, '\n').replace(/<\/p>|<\/li>/g, '\n').replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').split('\n').slice(2).join('\n').trim()}\n\n${link}`;
+  return { subject, html, text };
+};
+export const reviewAsk = onCron({ schedule: 'every 60 minutes', timeZone: 'Europe/Berlin', region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 1 }, async () => {
+  const hour = Number(new Date().toLocaleString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hour12: false }));
+  if (hour < 9 || hour > 20) return;
+  const db = getFirestore();
+  const now = Date.now();
+  const startOf = (iso, hm) => new Date(`${iso}T${/^\d\d:\d\d$/.test(hm ?? '') ? hm : '12:00'}:00+01:00`).getTime();
+  const due = (t) => t <= now - 24 * 3600e3 && t >= now - 10 * 24 * 3600e3;
+  const isTest = (e, n) => /(^|[^a-z])test([^a-z]|$)/i.test(`${n} ${e}`) || /jirel|twiggli\.com$/i.test(e);
+  const todo = [];
+  // Requests one host got (booking, group or date request)
+  const since = new Date(now - 60 * 24 * 3600e3);
+  const reqs = await db.collection('formRequests').where('createdAt', '>=', since).get();
+  for (const d of reqs.docs) {
+    const x = d.data();
+    if (!x.hostSlug || x.spam || x.duplicateOf || x.reviewAskedAt || x.status === 'declined') continue;
+    const f = x.fields ?? {};
+    if (!/^(Booking request|Group booking request|Date request)$/.test(String(f.Type ?? ''))) continue;
+    const iso = String(f.Date ?? '').match(/^(\d{4}-\d\d-\d\d)/)?.[1];
+    if (!iso || iso < REVIEW_FROM || !due(startOf(iso, f.Time)) || !isEmail(x.email) || isTest(x.email, f.Name)) continue;
+    todo.push({ ref: d.ref, email: String(x.email).toLowerCase(), slug: x.hostSlug, name: String(f.Name ?? '').trim(), workshop: String(f.Workshop ?? '').trim(), hostLabel: String(f.Host ?? '').trim(), lang: String(f.Language ?? '').startsWith('de') ? 'de' : 'en' });
+  }
+  // Paid bookings
+  const paid = await db.collection('bookings').where('status', '==', 'paid').get();
+  for (const d of paid.docs) {
+    const b = d.data();
+    if (b.reviewAskedAt || !(String(b.date ?? '') >= REVIEW_FROM) || !due(startOf(b.date, b.start)) || !isEmail(b.email) || isTest(b.email, b.name)) continue;
+    todo.push({ ref: d.ref, email: String(b.email).toLowerCase(), slug: b.slug, name: String(b.name ?? '').trim(), workshop: String(b.title ?? '').trim(), hostLabel: '', lang: b.lang === 'de' ? 'de' : 'en' });
+  }
+  if (!todo.length) return;
+  let sheet = [];
+  try { sheet = await reviewSheetText(); } catch (err) { console.error('reviewAsk: sheet unreadable, waiting', err?.message); return; }
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  for (const t of todo.slice(0, 20)) {
+    const rows = sheet.filter((r) => r.toLowerCase().includes(t.email));
+    if (rows.some((r) => /\blost\b|verloren|cancel|abgesagt|storniert|did not happen|nicht stattgefunden|waiting list|warteliste|\bill\b|krank|rescheduled|verschoben/i.test(r))) { await t.ref.update({ reviewAskedAt: 'skipped' }); continue; }
+    const key = createHash('sha256').update(`${t.email}|${t.slug}`).digest('hex').slice(0, 32);
+    const askRef = db.doc(`reviewAsks/${key}`);
+    if ((await askRef.get()).exists) { await t.ref.update({ reviewAskedAt: 'already' }); continue; }
+    if ((await db.collection('reviewAsks').where('email', '==', t.email).get()).size >= 2) { await t.ref.update({ reviewAskedAt: 'limit' }); continue; }
+    let card = { first: '', studio: '' };
+    try { card = await hostCard(t.slug); } catch { /* the email works without */ }
+    const first = t.name.split(/\s+/)[0] || (t.lang === 'de' ? 'du' : 'there');
+    const hostLabel = t.hostLabel || card.studio || card.first || t.slug;
+    const m = reviewMail({ lang: t.lang, first, workshop: t.workshop || hostLabel, hostLabel, hostFirst: card.first, studio: card.studio, slug: t.slug });
+    try {
+      await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: t.email, subject: m.subject, text: m.text, html: m.html });
+      await askRef.set({ email: t.email, slug: t.slug, at: FieldValue.serverTimestamp() });
+      await t.ref.update({ reviewAskedAt: FieldValue.serverTimestamp() });
+    } catch (err) { console.error('reviewAsk: send failed', t.email, err?.message); }
+  }
 });
