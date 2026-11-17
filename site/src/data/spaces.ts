@@ -17,6 +17,9 @@ export type Space = {
   slug?: string;
   /** Who runs the room, by first name, where that is not a host of ours. */
   manager?: string;
+  /** Where studio requests go when no host page owns the room: the key in
+   *  column K of 'Hosts & Emails' (Jirel 17.11.26: sent automatically). */
+  contact?: string;
   /** What the space is called, where the host names it separately. */
   name: string;
   address: string;
@@ -125,6 +128,7 @@ export const spaces: Space[] = [
     // hosts teach here (Alessia, Rebeca, Cate, Maximiliana). Rate, size,
     // inventory, access and photos are as she gave them to us.
     manager: 'Alice',
+    contact: 'heartspace',
     name: 'Kunstraum Heartspace',
     address: 'Danziger Straße 172, 10407 Berlin',
     district: 'Prenzlauer Berg',
@@ -189,6 +193,7 @@ export const spaces: Space[] = [
     // Named for the place rather than the artist, so the booking comes
     // through us.
     manager: 'Ari',
+    contact: 'aria',
     name: 'Atelier Friedrichshagen',
     address: 'Fürstenwalder Damm 424, 12587 Berlin',
     district: 'Friedrichshagen',
@@ -352,6 +357,7 @@ export const spaces: Space[] = [
     // and website info may be used, with copyright named. Size, capacity
     // and terms are from their AGB; no public rate, so "on request".
     manager: 'Katharina',
+    contact: 'k26',
     name: 'K26 – Raum für Ideen',
     address: 'Kolonnenstraße 26, 10829 Berlin',
     district: 'Schöneberg',

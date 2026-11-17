@@ -167,6 +167,7 @@ const marks = spaces.map((space) => ({
                 href={`${href(lang, '/contact/')}?space=${encodeURIComponent(space.name)}`}
                 data-book="studio"
                 data-book-title={space.name}
+                data-book-slug={space.slug ?? space.contact}
                 data-book-host={space.district}
                 data-book-where={space.address}
                 data-book-keeper={host ? (host.firstName ?? host.name) : (space.manager ?? undefined)}
