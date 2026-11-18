@@ -2143,7 +2143,8 @@ const stripeAs = (key, account, path, params) =>
 const onSchedule = (ev, date) => {
   if (!YMD.test(date) || date < ev.date) return false;
   const first = new Date(`${ev.date}T00:00:00Z`);
-  const until = ev.until ? new Date(`${ev.until}T00:00:00Z`) : new Date(first.getTime() + 84 * 86400000);
+  // No end date: the series runs on (Jirel 18.11.26), like Luma and Google Calendar.
+  const until = ev.until ? new Date(`${ev.until}T00:00:00Z`) : new Date(Date.UTC(9999, 0, 1));
   const d = new Date(`${date}T00:00:00Z`);
   if (d > until) return false;
   const days = Math.round((d - first) / 86400000);

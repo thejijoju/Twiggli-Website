@@ -3020,7 +3020,7 @@ const fields = [
         const out: string[] = [];
         const today = iso(new Date());
         const last = new Date(); last.setDate(last.getDate() + days);
-        const until = ev.until || iso(new Date(new Date(ev.date).getTime() + 84 * 86400000));
+        const until = ev.until || '9999-12-31'; // no end date: runs on (Jirel 18.11.26)
         for (let d = new Date(`${ev.date}T12:00:00`); iso(d) <= until && d <= last;) {
           if (iso(d) >= today) out.push(iso(d));
           if (ev.repeat === 'weekly') d.setDate(d.getDate() + 7);
@@ -3433,7 +3433,7 @@ const fields = [
       /** A date series' dates between from and to (yyyy-mm-dd), cancelled single dates left out. */
       const calOcc = (ev: Ev, from: string, to: string): string[] => {
         const out: string[] = [];
-        const until = ev.until || iso(new Date(new Date(`${ev.date}T12:00:00`).getTime() + 84 * 86400000));
+        const until = ev.until || '9999-12-31'; // no end date: runs on (Jirel 18.11.26)
         // Local noon and whole days only: no shift around midnight or DST, in any time zone.
         const [y0, m0, d0] = ev.date.split('-').map(Number);
         const step = ev.repeat === 'weekly' ? 7 : ev.repeat === 'biweekly' ? 14 : 0;
@@ -4372,7 +4372,7 @@ const fields = [
         $('[data-ha-menu-name]').textContent = 'Pia';
         $('[data-cal-demo]').hidden = false;
         const VULVA = 'Vulva painting';
-        const base = { slug: 'pia', price: 40, seats: 10, location: 'Friedrichshain', approve: true, until: '2027-01-31', cancel: '7d', visibility: 'public', media: [{ type: 'photo', url: '/video/pia-vulva-poster.jpg' }] };
+        const base = { slug: 'pia', price: 40, seats: 10, location: 'Friedrichshain', approve: true, cancel: '7d', visibility: 'public', media: [{ type: 'photo', url: '/video/pia-vulva-poster.jpg' }] };
         ownEvents = [
           { ...base, id: 'demoTuesday01', title: VULVA, date: '2026-11-03', start: '18:30', end: '21:00', repeat: 'weekly', exceptions: ['2026-12-22'] },
           { ...base, id: 'demoFriday001', title: VULVA, date: '2026-11-06', start: '18:30', end: '21:00', repeat: 'weekly', seatsByDate: { '2026-12-18': 12 } },

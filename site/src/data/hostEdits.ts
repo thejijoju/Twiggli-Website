@@ -113,7 +113,7 @@ const hours = (start: string, end?: string): string | undefined => {
 };
 
 /** Every dated session from hosts' dashboard dates within `daysAhead`,
- *  repeats expanded (12 weeks unless the host set an end). They are booked
+ *  repeats expanded (up to the host's end date, or on and on without one). They are booked
  *  through our request form, like any date without a booking page. */
 export function accountDates(daysAhead = 100): {
   slug: string; title: string; titleEn?: string; date: string; time: string; duration?: string; price?: string;
@@ -126,7 +126,7 @@ export function accountDates(daysAhead = 100): {
   const out: ReturnType<typeof accountDates> = [];
   for (const e of events) {
     const first = new Date(`${e.date}T00:00:00Z`);
-    const until = e.until ? new Date(`${e.until}T00:00:00Z`) : new Date(first.getTime() + 84 * 86400000);
+    const until = e.until ? new Date(`${e.until}T00:00:00Z`) : last; // no end date: runs on (Jirel 18.11.26)
     const step = (d: Date): Date => {
       const n = new Date(d);
       if (e.repeat === 'weekly') n.setUTCDate(n.getUTCDate() + 7);
