@@ -188,14 +188,6 @@ const SOURCES = [
   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
     price: '€55', district: 'Kaulsdorf' },
-  // Shopify catalog + Cowlendar booking modal ("you only see the dates
-  // after clicking Book") — but Cowlendar's availability API answers plain
-  // GETs, so every slot reads without a browser. Sessions run near-daily;
-  // maxDays keeps the volume sane.
-  { slug: 'munio', name: 'The Munio — workshops', mode: 'shopify-cowlendar',
-    base: 'https://themunio.de', collection: 'workshops',
-    url: 'https://themunio.de/collections/workshops',
-    district: 'Schöneberg', maxDays: 45 },
   // Pasta Madre's Wix calendar renders every course server-side as
   // h2-titled blocks; the three solidarity prices (Tulpe/Lilie/Rose)
   // surface as a €76–100 range.
@@ -344,7 +336,6 @@ const SOURCES = [
     district: 'Mitte',
     routes: [
       { match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' },
-      { match: "The Munio", slug: 'munio', district: 'Schöneberg' },
       // Yurika teaches hers at the Craftkai venue, so it keeps that district.
       { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' },
     ] },
@@ -1289,8 +1280,8 @@ function fromTitledDateBlocks(html, source) {
  *  products.json lists the workshops (title, price, variant); each product
  *  page embeds its Cowlendar calendar id, and Cowlendar's availability
  *  endpoint answers plain unauthenticated GETs with every bookable slot
- *  (start, duration, spots left) — verified live against The Munio's
- *  booking modal. Sessions run near-daily, so source.maxDays keeps the
+ *  (start, duration, spots left) — verified live against a host's
+ *  booking modal (Oct 2026). Sessions run near-daily, so source.maxDays keeps the
  *  horizon short enough not to drown the rest of the calendar. */
 async function fromShopifyCowlendar(source) {
   const res = await fetch(`${source.base}/collections/${source.collection}/products.json?limit=250`, {
@@ -4764,7 +4755,7 @@ if (process.env.PARSE_TEST) {
       : process.env.PARSE_TEST_MODE === 'titled-date-blocks'
         ? fromTitledDateBlocks
       : process.env.PARSE_TEST_MODE === 'craftkai'
-        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'The Munio', slug: 'munio', district: 'Schöneberg' }, { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' }] })
+        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' }] })
       : process.env.PARSE_TEST_MODE === 'shopify'
         ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json', productType: process.env.PARSE_TEST_TYPE, bodyNumericDate: !!process.env.PARSE_TEST_NUMERIC })
       : process.env.PARSE_TEST_MODE === 'shopify-when'

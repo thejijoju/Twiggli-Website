@@ -56,7 +56,6 @@ export const voucherHostsAgreed: string[] = [
   'himapan-berlin',
   'petitejungle', 'rebeca',
   'evelyn', 'nina', 'helka',
-  'munio',
 ];
 
 /** Live: only hosts who confirmed the voucher terms in writing by email
