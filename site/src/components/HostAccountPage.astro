@@ -17,7 +17,10 @@ import { firebaseConfig, firebaseReady, functionsBase } from '../data/firebase.t
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
 import { workshopsFor, onRequestFor } from '../data/seo.ts';
-import { previewSessionsFor } from '../data/sessions.ts';
+import { previewSessionsFor, slugify, DAYS_AHEAD } from '../data/sessions.ts';
+import { hostDates } from '../data/hostDates.ts';
+import { availabilityNotes } from '../data/availability.ts';
+import { withHostSlots } from '../data/hostEdits.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
 /** view: the part of the account the address opens (settings/preferences …), see pages/host/account/[...view].astro. */
@@ -60,6 +63,33 @@ const pick = (h: Record<string, unknown>) => ({
   duration: h.duration ?? '', place: h.place ?? '', languages: h.languages ?? '', price_note: h.priceNote ?? '',
 });
 const de = new Map(getHosts('de', { withPreview: true }).map((h) => [h.slug, h]));
+/* The dates the public site shows for a host, from the site's own data, for
+   the Calendar tab (Jirel 18.11.26): weekly classes (live-workshops.json
+   "recurring") and dates they sent us (hostDates.ts) can be taken over and
+   edited there (functions REPLACES); dates read from their own booking page
+   (live-workshops.json "workshops", refreshed by the weekly scrape) are
+   shown read-only. Places booked that we know of come from availability.ts. */
+type SiteRow = { title: string; titleEn?: string; time?: string; duration?: string; price?: string; spots?: number; district?: string; url?: string; request?: boolean };
+const berlinToday = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
+const lastDay = new Date(Date.parse(berlinToday) + (DAYS_AHEAD - 1) * 86400000).toISOString().slice(0, 10);
+const feedRows = ((liveData as { workshops?: (SiteRow & { slug: string; date: string; soldOut?: boolean })[] }).workshops ?? []);
+const inFeed = new Set(feedRows.map((w) => `${w.slug}|${w.date}|${w.time}`));
+const pickRow = (r: SiteRow) => ({
+  title: r.title, ...(r.titleEn ? { titleEn: r.titleEn } : {}), time: r.time ?? '', ...(r.duration ? { duration: r.duration } : {}),
+  ...(r.price ? { price: r.price } : {}), ...(typeof r.spots === 'number' ? { spots: r.spots } : {}), ...(r.district ? { district: r.district } : {}),
+  ...(r.url ? { url: r.url } : {}), ...(r.request ? { request: true } : {}),
+});
+const siteFor = (slug: string) => ({
+  series: withHostSlots(recurring as (SiteRow & { slug: string; weekdays: string[]; time: string })[])
+    .filter((r) => r.slug === slug)
+    .map((r) => ({ key: `rec|${slug}|${slugify(r.title)}|${r.time}`, weekdays: r.weekdays, ...pickRow(r) })),
+  dates: hostDates.filter((d) => d.slug === slug && d.date >= berlinToday && d.date <= lastDay && !inFeed.has(`${d.slug}|${d.date}|${d.time}`))
+    .map((d) => ({ key: `date|${slug}|${d.date}|${d.time ?? ''}`, date: d.date, ...pickRow({ ...d, request: !d.onHostSite }) })),
+  synced: feedRows.filter((w) => w.slug === slug && w.date >= berlinToday && w.date <= lastDay)
+    .map((w) => ({ date: w.date, ...pickRow(w), ...(w.soldOut ? { soldOut: true } : {}) })),
+  notes: Object.fromEntries(Object.entries(availabilityNotes).filter(([k]) => k.startsWith(`${slug}|`))
+    .map(([k, v]) => [k.slice(slug.length + 1), v.booked ?? v.going ?? 0])),
+});
 const recurring = (liveData as { recurring?: { slug: string; title: string; weekdays: string[]; time: string; duration?: string; price?: string }[] }).recurring ?? [];
 const hosts = Object.fromEntries(
   getHosts('en', { withPreview: true }).map((h) => [h.slug, {
@@ -85,6 +115,7 @@ const hosts = Object.fromEntries(
       } catch { /* a host without listings: own dates only */ }
       return out;
     })(),
+    site: siteFor(h.slug),
     en: pick(h as unknown as Record<string, unknown>),
     de: pick((de.get(h.slug) ?? h) as unknown as Record<string, unknown>),
     slots: recurring.filter((r) => r.slug === h.slug).map((r) => ({
@@ -274,6 +305,11 @@ const fields = [
                 <span>{t.hostPick}</span>
                 <select data-ha-pick></select>
               </label>
+              {/* Jirel only: the personal invite link for the host picked above (functions hostInviteLinks). */}
+              <div class="ha-adm-invite" data-ha-invite-admin hidden>
+                <button type="button" class="hd-item" data-ha-invite-copy>{t.cal.inviteBtn}</button>
+                <p class="ha-adm-note" data-ha-invite-msg role="status"></p>
+              </div>
               <hr class="hd-menu-sep" />
               <button type="button" class="hd-item hd-out" data-ha-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56z"/></svg></button>
             </div>
@@ -578,7 +614,75 @@ const fields = [
         <!-- Calendar, messages and listings are being rebuilt from scratch
              (Jirel 15.11.26): the old panels stay in the code, hidden
              (data-ha-old), until the new ones replace them. -->
-        <section class="hd-blank" data-ha-panel="calendar" hidden><h2>{t.tabCalendar}</h2></section>
+        <!-- Calendar: one calendar per workshop (Jirel 18.11.26). -->
+        <section class="cal" data-ha-panel="calendar" data-cal-panel hidden>
+          <h2 class="cal-h">{t.tabCalendar}</h2>
+          <p class="ha-sub cal-lede">{t.cal.sub}</p>
+          <p class="cal-demo" data-cal-demo hidden>{t.cal.demo}</p>
+          <div class="cal-pills" data-cal-pills></div>
+          <div class="cal-card cal-first" data-cal-first hidden>
+            <span class="cal-first-ic" aria-hidden="true">🗓️</span>
+            <h3>{t.cal.firstTitle}</h3>
+            <p>{t.cal.firstSub}</p>
+            <button type="button" class="cal-btn">{t.cal.firstBtn}</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-card cal-month">
+              <div class="cal-mh">
+                <b data-cal-mname></b>
+                <span class="cal-mnav"><button type="button" data-cal-mprev data-cal-f="m-" aria-label={t.cal.prev}>‹</button><button type="button" data-cal-mnext data-cal-f="m+" aria-label={t.cal.next}>›</button></span>
+                <span class="cal-sp"></span>
+                <span class="cal-seg"><button type="button" data-cal-view="week" aria-pressed="false">{t.cal.week}</button><button type="button" data-cal-view="month" aria-pressed="true">{t.cal.month}</button></span>
+                <button type="button" class="cal-btn" data-cal-add>{t.cal.addDate}</button>
+              </div>
+              <div class="cal-wd" data-cal-wd></div>
+              <div class="cal-days" data-cal-days></div>
+              <div class="cal-wkv" data-cal-wkv></div>
+              <div class="cal-list" data-cal-list></div>
+              <p class="cal-saved" data-cal-note role="status"></p>
+            </div>
+            <aside class="cal-card cal-side" data-cal-side aria-label={t.cal.panel}></aside>
+          </div>
+          <div class="cal-scrim" data-cal-scrim hidden></div>
+          <!-- The whole workshop (listing), for the host and for Jirel acting as them (functions hostListing edit). -->
+          <dialog class="cal-ws" data-cal-ws aria-labelledby="cal-ws-title">
+            <form method="dialog" class="cal-ws-form" data-cal-ws-form novalidate>
+              <header class="cal-ws-head">
+                <h2 id="cal-ws-title">{t.cal.wsTitle}</h2>
+                <button type="button" class="cal-x" data-cal-ws-close aria-label={t.cal.close}>×</button>
+              </header>
+              <p class="cal-ws-sub">{t.cal.wsSub}</p>
+              <label class="cal-f"><span>{t.cal.wsName}</span><input name="title" maxlength="120" required /></label>
+              <label class="cal-f"><span>{t.cal.wsDesc}</span><textarea name="description" rows="6" maxlength="3000" placeholder={t.cal.wsDescPh}></textarea></label>
+              <div class="cal-f-row">
+                <label class="cal-f"><span>{t.cal.wsDuration}</span><input name="duration" maxlength="12" placeholder="2.5 h" inputmode="decimal" /></label>
+                <label class="cal-f"><span>{t.cal.wsPrice}</span><input name="price" type="number" min="1" max="5000" step="1" placeholder="40" /></label>
+                <label class="cal-f"><span>{t.cal.wsSeats}</span><input name="seats" type="number" min="1" max="500" step="1" placeholder="10" /></label>
+              </div>
+              <label class="cal-f"><span>{t.cal.wsNote}</span><input name="note" maxlength="220" placeholder={t.cal.wsNotePh} /></label>
+              <fieldset class="cal-f">
+                <legend>{t.cal.wsMedia}</legend>
+                <p class="cal-ws-hint">{t.cal.wsMediaHint}</p>
+                <div class="cal-ws-media" data-cal-ws-media></div>
+                <div class="cal-ws-up">
+                  <label class="cal-btn2">{t.cal.wsUpPhotos}<input type="file" accept="image/*" multiple data-cal-ws-up="photo" hidden /></label>
+                  <label class="cal-btn2">{t.cal.wsUpVideo}<input type="file" accept="video/*" data-cal-ws-up="video" hidden /></label>
+                </div>
+                <p class="cal-ws-hint" data-cal-ws-up-note role="status"></p>
+              </fieldset>
+              <fieldset class="cal-f">
+                <legend>{t.cal.wsBooking}</legend>
+                <label class="cal-radio"><input type="radio" name="booking" value="request" /><span><b>{t.cal.wsReq}</b><small>{t.cal.wsReqHint}</small></span></label>
+                <label class="cal-radio"><input type="radio" name="booking" value="instant" /><span><b>{t.cal.wsInstant}</b><small>{t.cal.wsInstantHint}</small></span></label>
+              </fieldset>
+              <p class="cal-msg" data-cal-ws-note role="status" hidden></p>
+              <footer class="cal-ws-foot">
+                <button type="button" class="cal-btn2" data-cal-ws-close>{t.cal.wsCancel}</button>
+                <button type="submit" class="cal-btn" data-cal-ws-save>{t.cal.wsSave}</button>
+              </footer>
+            </form>
+          </dialog>
+        </section>
         <section class="hd-blank" data-ha-panel="messages" hidden><h2>{t.tabMessages}</h2></section>
         <section class="hd-blank" data-ha-panel="listings" hidden><h2>{t.tabListings}</h2></section>
 
@@ -838,6 +942,9 @@ const fields = [
     const $ = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
     const fill = (s: string, email: string) => s.replace('{email}', email);
     const signin = $<HTMLFormElement>('[data-ha-signin]');
+    // ?demo=calendar: the Calendar tab with made-up data, no sign-in, no saves (startDemo).
+    // ?demo=site&host=<slug>: that host's real dates from the site's own data, nothing saved.
+    const DEMO = ['calendar', 'site'].includes(new URLSearchParams(location.search).get('demo') ?? '');
 
     if (!cfg.ready) {
       // Accounts open once Firebase is set up; until then, say so.
@@ -1663,6 +1770,7 @@ const fields = [
         root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== name; });
         window.scrollTo({ top: 0 });
         if (name === 'listings') void renderListings();
+        if (name === 'calendar') { renderCal(); void calLoadListings(); }
         if (name === 'profile') renderProfile();
         setPath();
       };
@@ -2097,6 +2205,7 @@ const fields = [
       let when = 'upcoming';
       let whenChosen = false; // until the host picks a tab, open requests come first
       const api = async (name: string, body: Record<string, unknown>) => {
+        if (DEMO) throw new Error('demo');
         const token = await auth.currentUser?.getIdToken();
         const res = await fetch(`${cfg.functions}/${name}`, {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body),
@@ -2292,10 +2401,11 @@ const fields = [
         $('[data-ha-today-empty]').hidden = items.length > 0;
       };
       const loadInbox = async () => {
-        try { ownEvents = (await api('hostEvents', { slug })).items ?? []; } catch { ownEvents = []; }
+        try { const r = await api('hostEvents', { slug }); ownEvents = r.items ?? []; calBookings = r.bookings ?? []; calReplaced = new Set(r.replaced ?? []); } catch { ownEvents = []; calBookings = []; }
         renderOwnDates();
         try { reqs = (await api('hostInbox', { slug })).items ?? []; } catch { reqs = []; }
         renderMsgs();
+        renderCal();
       };
       // Saved replies, kept on this device; three starters until the host saves their own.
       const SAVED = `twiggli-replies-${slug}`;
@@ -2754,6 +2864,13 @@ const fields = [
         id?: string; slug: string; title: string; date: string; start: string; end?: string; repeat?: string; until?: string;
         price?: number | null; seats?: number | null; minGuests?: number | null; approve?: boolean; languages?: string;
         cancel?: string; location?: string; description?: string; visibility?: string; media?: { type: string; url: string }[];
+        seatsByDate?: Record<string, number>; exceptions?: string[];
+        titleEn?: string; request?: boolean; replaces?: string; decideHours?: number;
+        /** Calendar tab: a date of the site's own schedule, not taken over yet
+         *  (vid: its id in the calendar; the first change turns it into dashboard dates). */
+        vid?: string; virtual?: { key: string };
+        /** Calendar tab: read from the host's own booking page; shown, not edited. */
+        synced?: { url: string; left?: number; soldOut?: boolean };
       };
       let ownEvents: Ev[] = [];
       let media: { type: string; url: string }[] = [];
@@ -3109,6 +3226,781 @@ const fields = [
         $('[data-ha-own-empty]').hidden = ownEvents.length > 0;
       };
 
+      // ── Calendar: one calendar per workshop (Jirel 18.11.26) ──
+      // Workshops are the host's listings plus the titles of their own dates
+      // (hostEvents), matched by title. Each date shows places booked (paid
+      // bookings + accepted requests) and open requests; a full date's open
+      // requests are its waiting list. ?demo=calendar shows made-up data and
+      // saves nothing.
+      type Bk = { eventId?: string; date: string; start?: string; title?: string; people: number; name?: string; amount?: number };
+      type Ws = { title: string; key: string; image: string; color: string; price?: string; alias?: string[]; booking?: string };
+      type CalSlot = {
+        key: string; date: string; start: string; end?: string; title: string; ev?: Ev; seats: number | null; booked: number;
+        amount: number; waiting: Req[]; requests: Req[]; accepted: Req[]; bookings: Bk[]; known: number;
+      };
+      const CAL_COLORS = ['#6A3EEC', '#FD6F31', '#1F9D8A', '#E0A800', '#2F6FED', '#7F14A0'];
+      let calBookings: Bk[] = [];
+      type WsEdit = { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string };
+      let calListings: { slug: string; items: { key: string; title: string; status: string; image: string; price: string; edit: WsEdit | null }[] } = { slug: '', items: [] };
+      let calDemo: { workshops: Ws[] | null } | null = null;
+      // Site entries the host took over (hostEvents "replaced"), and the site's own dates as calendar dates.
+      let calReplaced = new Set<string>();
+      let calVirtualFor = '';
+      let calVirtual: Ev[] = [];
+      let calSel = ''; // the selected workshop's key (lower-case title)
+      let calSlot = ''; // the selected date's key
+      // Workshops happen in Berlin: "today" is Berlin's date, whatever the viewer's clock says.
+      const calToday = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+      const calNoon = (day: string) => new Date(`${day}T12:00:00`);
+      const monday = (d: Date) => { const m = new Date(d.getFullYear(), d.getMonth(), d.getDate()); m.setDate(m.getDate() - ((m.getDay() + 6) % 7)); return m; };
+      let calWeek = monday(calNoon(calToday()));
+      let calMon = new Date(calNoon(calToday()).getFullYear(), calNoon(calToday()).getMonth(), 1);
+      /** A title as the site's workshop key (sessions.ts slugify), so dates, listings and requests meet. */
+      const calKey = (title: string): string => title.toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/, '') || 'workshop';
+      const reqDay = (r: Req) => /\d{4}-\d\d-\d\d/.exec(r.fields.Date || '')?.[0] ?? '';
+      const reqTime = (r: Req) => /\b([01]?\d|2[0-3]):[0-5]\d\b/.exec(r.fields.Time || r.fields.Date || '')?.[0]?.padStart(5, '0') ?? '';
+      const evSeats = (ev: Ev, date: string) => { const v = ev.seatsByDate?.[date]; return typeof v === 'number' ? v : (ev.seats ?? null); };
+      const calWorkshops = (): Ws[] => {
+        if (calDemo?.workshops) return calDemo.workshops;
+        const out: Ws[] = [];
+        const find = (title: string) => { const k = calKey(title); return out.find((w) => w.key === k || w.alias?.includes(k)); };
+        const add = (title: string, image: string, price = '', key = '', more: string[] = []) => {
+          const k = key || calKey(title);
+          const had = out.find((w) => w.key === k) ?? find(title);
+          if (had) { had.alias = [...new Set([...(had.alias ?? []), calKey(title), ...more.map(calKey)])]; return; }
+          out.push({ title, key: k, image, price, alias: [calKey(title), ...more.map(calKey)], color: CAL_COLORS[out.length % CAL_COLORS.length] });
+        };
+        const state = calListings.slug === slug ? calListings.items : [];
+        for (const w of hosts[slug]?.workshops ?? []) {
+          const st = state.find((x) => x.key && x.key === w.key);
+          if (st?.status === 'deleted') continue;
+          add(st?.edit?.title || w.title, (st?.edit?.media ?? []).find((m) => m.type === 'photo')?.url || w.image, w.price, w.key, [w.title]);
+          const ws = out.find((x) => x.key === (w.key || calKey(w.title)));
+          if (ws && st?.edit?.booking) ws.booking = st.edit.booking;
+        }
+        for (const x of state) if (x.status === 'paused') add(x.edit?.title || x.title, x.image, x.price, x.key, [x.title]);
+        const site = hosts[slug]?.site;
+        for (const r of [...(site?.series ?? []), ...(site?.dates ?? []), ...(site?.synced ?? [])]) add(r.title, '', r.price ?? '', '', r.titleEn ? [r.titleEn] : []);
+        for (const ev of ownEvents) add(ev.title, '', '', '', ev.titleEn ? [ev.titleEn] : []);
+        // No picture from the listing: the first photo of its dates, else the host's first photo.
+        for (const w of out) if (!w.image) {
+          const m = ownEvents.find((e) => calKey(e.title) === w.key && e.media?.some((x) => x.type !== 'video'))?.media?.find((x) => x.type !== 'video');
+          w.image = m?.url || hosts[slug]?.photos?.[0] || '';
+        }
+        return out;
+      };
+      const calNum = (price?: string) => { const m = /\d+(?:[.,]\d+)?/.exec(price ?? ''); return m ? Math.round(Number(m[0].replace(',', '.'))) : null; };
+      const calEnd = (start: string, duration?: string) => {
+        const m = /^(\d+(?:[.,]\d+)?)\s*(h|min)/.exec(duration ?? '');
+        if (!m || !Number.isFinite(mins(start))) return '';
+        return hm(mins(start) + Math.round(Number(m[1].replace(',', '.')) * (m[2] === 'h' ? 60 : 1)));
+      };
+      /** The site's own dates for this host (frontmatter siteFor), made once per host: weekly
+       *  classes as one weekly series per weekday, hostDates.ts dates as single dates, and
+       *  dates read from the host's booking page, marked synced. */
+      const calSiteEvents = (): Ev[] => {
+        if (calDemo?.workshops) return []; // the made-up demo stands on its own
+        if (calVirtualFor !== slug) {
+          calVirtualFor = slug;
+          const site = hosts[slug]?.site;
+          const today = calToday();
+          const end = iso(new Date(calNoon(today).getTime() + 99 * 86400000));
+          const WDS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+          const common = (r: { title: string; titleEn?: string; time?: string; duration?: string; price?: string; spots?: number; district?: string; request?: boolean }) => ({
+            slug, title: r.title, titleEn: r.titleEn, start: r.time ?? '', end: calEnd(r.time ?? '', r.duration), price: calNum(r.price), seats: r.spots ?? null,
+            location: r.district ?? '', approve: true, visibility: 'public', cancel: '7d', media: [] as { type: string; url: string }[],
+          });
+          calVirtual = [
+            ...(site?.series ?? []).flatMap((r) => r.weekdays.map((wd) => {
+              const d = calNoon(today);
+              while (WDS[d.getDay()] !== wd) d.setDate(d.getDate() + 1);
+              return { ...common(r), date: iso(d), repeat: 'weekly', until: end, vid: `v:${r.key}:${wd}`, virtual: { key: r.key } } as Ev;
+            })),
+            ...(site?.dates ?? []).map((r) => ({ ...common(r), date: r.date, repeat: 'once', vid: `v:${r.key}`, virtual: { key: r.key } }) as Ev),
+            ...(site?.synced ?? []).map((r, i) => ({ ...common(r), date: r.date, repeat: 'once', vid: `s:${i}`, seats: null,
+              synced: { url: r.url ?? '', ...(typeof r.spots === 'number' ? { left: r.spots } : {}), ...(r.soldOut ? { soldOut: true } : {}) } }) as Ev),
+          ];
+        }
+        return calVirtual.filter((e) => !e.virtual || !calReplaced.has(e.virtual.key));
+      };
+      /** A date series' dates between from and to (yyyy-mm-dd), cancelled single dates left out. */
+      const calOcc = (ev: Ev, from: string, to: string): string[] => {
+        const out: string[] = [];
+        const until = ev.until || iso(new Date(new Date(`${ev.date}T12:00:00`).getTime() + 84 * 86400000));
+        // Local noon and whole days only: no shift around midnight or DST, in any time zone.
+        const [y0, m0, d0] = ev.date.split('-').map(Number);
+        const step = ev.repeat === 'weekly' ? 7 : ev.repeat === 'biweekly' ? 14 : 0;
+        for (let i = 0; i < 520; i++) {
+          let d: Date;
+          if (ev.repeat === 'monthly') {
+            d = new Date(y0, m0 - 1 + i, d0, 12);
+            if (d.getDate() !== d0) continue; // no 31 September: that month is skipped
+          } else d = new Date(y0, m0 - 1, d0 + i * step, 12);
+          const day = iso(d);
+          if (day > until || day > to) break;
+          if (day >= from && !ev.exceptions?.includes(day)) out.push(day);
+          if (!step && ev.repeat !== 'monthly') break;
+        }
+        return out;
+      };
+      /** All dates of one workshop (or of all, with no key) between from and to. */
+      const calSlots = (wkey: string | null, from: string, to: string): CalSlot[] => {
+        const ws = calWorkshops();
+        const keyOf = (title: string) => { const k = calKey(title); return ws.find((w) => w.key === k || w.alias?.includes(k))?.key ?? k; };
+        const mine = (title: string) => wkey === null || keyOf(title) === wkey;
+        const slots: CalSlot[] = [];
+        const notes = hosts[slug]?.site?.notes ?? {};
+        for (const ev of [...ownEvents, ...calSiteEvents()]) if (mine(ev.title) || (ev.titleEn && mine(ev.titleEn))) for (const date of calOcc(ev, from, to)) {
+          const bookings = calBookings.filter((b) => b.date === date && (b.eventId ? b.eventId === ev.id : calKey(b.title || '') === calKey(ev.title) && (!b.start || b.start === ev.start)));
+          slots.push({ key: `${ev.id ?? ev.vid ?? ev.title}|${date}|${ev.start}`, date, start: ev.start, end: ev.end, title: ev.title, ev, seats: ev.synced ? null : evSeats(ev, date), booked: 0, amount: 0, waiting: [], requests: [], accepted: [], bookings, known: notes[`${date}|${ev.start}`] ?? 0 });
+        }
+        // Requests: onto the date of their workshop that day (the same time first), else a date of their own.
+        for (const r of reqs) {
+          const date = reqDay(r);
+          const title = (r.fields.Workshop || r.subject || '').trim();
+          if (!date || date < from || date > to || !mine(title) || !['pending', 'accepted'].includes(r.status)) continue;
+          const time = reqTime(r);
+          const same = slots.filter((s) => s.date === date && keyOf(s.title) === keyOf(title));
+          let s = same.find((x) => x.start === time) ?? (same.length === 1 || !time ? same[0] : undefined);
+          if (!s) {
+            s = slots.find((x) => !x.ev && x.date === date && x.start === time && keyOf(x.title) === keyOf(title));
+            if (!s) { s = { key: `r|${calKey(title)}|${date}|${time}`, date, start: time, title, seats: null, booked: 0, amount: 0, waiting: [], requests: [], accepted: [], bookings: [], known: 0 }; slots.push(s); }
+          }
+          (r.status === 'accepted' ? s.accepted : s.requests).push(r);
+        }
+        for (const s of slots) {
+          // Paid bookings, plus confirmed requests or the count Jirel keeps for the date
+          // (availability.ts "booked"/"going"), whichever is higher: they are mostly the same people.
+          s.booked = s.bookings.reduce((a, b) => a + (b.people || 1), 0) + Math.max(s.accepted.reduce((a, r) => a + peopleOf(r), 0), s.known);
+          if (s.ev?.synced?.soldOut) s.seats = s.booked || null;
+          s.amount = s.bookings.reduce((a, b) => a + (b.amount ?? (s.ev?.price ?? 0) * (b.people || 1)), 0)
+            + s.accepted.reduce((a, r) => a + (priceOf(r) || s.ev?.price || 0) * peopleOf(r), 0);
+          // A full date's open requests are its waiting list.
+          if (s.seats && s.booked >= s.seats) { s.waiting = s.requests; s.requests = []; }
+        }
+        return slots.sort((a, b) => `${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`));
+      };
+      const calNames = (rs: Req[]) => { const n = rs.map(firstName); return n.length > 1 ? `${n.slice(0, -1).join(', ')} ${t.cal.and} ${n[n.length - 1]}` : n[0] ?? ''; };
+      const calPeople = (n: number) => (n === 1 ? t.cal.person1 : say(t.cal.personN, { n: String(n) }));
+      const calHours = (a: string, b?: string) => { if (!b) return ''; const d = (mins(b) - mins(a)) / 60; return d > 0 ? `${d.toLocaleString(locale, { maximumFractionDigits: 1 })} h` : ''; };
+      const calPic = (w: Ws | undefined, cls = 'cal-pic') => {
+        if (w?.image) { const i = document.createElement('img'); i.className = cls; i.src = w.image; i.alt = ''; i.style.borderColor = w.color; return i; }
+        const s = el('span', `${cls} cal-pic-ph`, (w?.title || '?').charAt(0).toUpperCase()); s.style.borderColor = w?.color ?? CAL_COLORS[0]; return s;
+      };
+      const calBtn = (cls: string, text: string, on: () => void) => { const b = el('button', cls, text) as HTMLButtonElement; b.type = 'button'; b.addEventListener('click', on); return b; };
+      const calPayload = (ev: Ev) => ({
+        id: ev.id, slug: ev.slug || slug, title: ev.title, date: ev.date, start: ev.start, end: ev.end ?? '', repeat: ev.repeat ?? 'once', until: ev.until ?? '',
+        price: ev.price ?? null, seats: ev.seats ?? null, minGuests: ev.minGuests ?? null, decideHours: (ev as { decideHours?: number }).decideHours, approve: ev.approve !== false,
+        languages: ev.languages ?? '', cancel: ev.cancel ?? '7d', location: ev.location ?? '', description: ev.description ?? '', visibility: ev.visibility ?? 'public', media: ev.media ?? [],
+        seatsByDate: ev.seatsByDate ?? {}, exceptions: ev.exceptions ?? [],
+        ...(ev.titleEn ? { titleEn: ev.titleEn } : {}), ...(typeof ev.request === 'boolean' ? { request: ev.request } : {}),
+      });
+      // Taking over a series of the site's own schedule: all its weekdays become
+      // dashboard dates at once (functions hostEventSave adopt), marked with the
+      // site entry they replace. One at a time per series.
+      const calAdopting = new Map<string, Promise<Ev | undefined>>();
+      const calAdopt = (target: Ev): Promise<Ev | undefined> => {
+        const key = target.virtual!.key;
+        const running = calAdopting.get(key);
+        if (running) return running.then(() => ownEvents.find((e) => e.replaces === key && e.date === target.date && e.start === target.start));
+        const group = calVirtual.filter((e) => e.virtual?.key === key);
+        const run = (async () => {
+          // Weekly classes run on: two years ahead, not the usual 12 weeks.
+          const until = (e: Ev) => (e.repeat === 'weekly' ? iso(new Date(calNoon(e.date).getTime() + 730 * 86400000)) : '');
+          const body = group.map((e) => ({ ...calPayload(e), id: undefined, until: until(e), replaces: key }));
+          let items: Ev[];
+          if (calDemo) {
+            await new Promise((r) => setTimeout(r, 350));
+            if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail');
+            items = body.map((x, i) => ({ ...x, id: `demo${Date.now()}${i}` }) as Ev);
+          } else {
+            items = (await api('hostEventSave', { slug, replaces: key, adopt: body })).items ?? [];
+          }
+          if (!calReplaced.has(key)) ownEvents = [...ownEvents, ...items];
+          calReplaced.add(key);
+          // The selected date keeps its place: its key now carries the new id.
+          for (const g of group) {
+            const it = items.find((x) => x.date === g.date && x.start === g.start);
+            if (it && calSlot.startsWith(`${g.vid}|`)) calSlot = `${it.id}|${calSlot.slice(g.vid!.length + 1)}`;
+          }
+          return items.find((x) => x.date === target.date && x.start === target.start);
+        })();
+        calAdopting.set(key, run);
+        run.finally(() => calAdopting.delete(key)).catch(() => {});
+        return run;
+      };
+      // Changes show at once and are saved shortly after (the stepper waits
+      // for the last click); while a save runs, that series' controls are
+      // off, so nothing is sent twice. A failed save puts everything back
+      // and says so.
+      const calBusy = new Set<Ev>();
+      const calPending = new Map<Ev, { before: Partial<Ev>; timer: number }>();
+      let calMsg: { text: string; ok: boolean } | null = null;
+      let calMsgTimer = 0;
+      const calNote = (text: string, ok = true) => {
+        calMsg = { text, ok };
+        window.clearTimeout(calMsgTimer);
+        calMsgTimer = window.setTimeout(() => { calMsg = null; renderCal(); }, ok ? 2500 : 7000);
+        renderCal();
+      };
+      const calSnap = (ev: Ev): Partial<Ev> => ({ seats: ev.seats, approve: ev.approve, request: ev.request, seatsByDate: { ...(ev.seatsByDate ?? {}) }, exceptions: [...(ev.exceptions ?? [])] });
+      const calIsBusy = (ev: Ev) => calBusy.has(ev) || (!!ev.virtual && calAdopting.has(ev.virtual.key));
+      const calFailText = (err: unknown) => (/409/.test(String((err as Error)?.message ?? err)) ? t.cal.needStripe : t.cal.fail);
+      const calFlush = async (ev: Ev) => {
+        const p = calPending.get(ev);
+        if (!p) return;
+        calPending.delete(ev);
+        calBusy.add(ev);
+        renderCal();
+        try {
+          if (ev.virtual) {
+            // The first change to the site's own schedule: the series is taken over with it.
+            if (!(await calAdopt(ev))) throw new Error('not taken over');
+            Object.assign(ev, p.before); // the site's entry itself stays as it was
+          } else if (calDemo) {
+            await new Promise((r) => setTimeout(r, 350));
+            if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail');
+          } else await api('hostEventSave', calPayload(ev));
+          calBusy.delete(ev);
+          calNote(ev.virtual ? t.cal.takenOver : t.cal.saved);
+        } catch (err) {
+          Object.assign(ev, p.before);
+          calBusy.delete(ev);
+          calNote(calFailText(err), false);
+        }
+      };
+      const calSave = (ev: Ev, change: Partial<Ev>, wait = 0) => {
+        if (calIsBusy(ev) || ev.synced) return;
+        const p = calPending.get(ev) ?? { before: calSnap(ev), timer: 0 };
+        window.clearTimeout(p.timer);
+        Object.assign(ev, change);
+        p.timer = window.setTimeout(() => { void calFlush(ev); }, wait);
+        calPending.set(ev, p);
+        renderCal();
+      };
+      const calPhone = window.matchMedia('(max-width: 700px)');
+      // Week or month, remembered in this browser; month on a computer, week on a phone.
+      const CAL_VIEW = 'twiggli-cal-view';
+      let calView: 'week' | 'month' = (() => {
+        try { const v = localStorage.getItem(CAL_VIEW); if (v === 'week' || v === 'month') return v; } catch { /* storage off */ }
+        return calPhone.matches ? 'week' : 'month';
+      })();
+      const calOpenSheet = (open: boolean) => {
+        const side = $('[data-cal-side]');
+        const was = side.classList.contains('is-open');
+        side.classList.toggle('is-open', open);
+        $('[data-cal-scrim]').hidden = !open;
+        // On a phone the panel is a sheet over the list: focus goes into it.
+        if (open && !was && calPhone.matches) window.setTimeout(() => side.querySelector<HTMLElement>('.cal-x')?.focus({ preventScroll: true }), 50);
+      };
+      const renderCalSide = (s: CalSlot | undefined, w: Ws | undefined) => {
+        const side = $('[data-cal-side]');
+        side.replaceChildren();
+        if (!s) {
+          side.append(el('p', 'cal-pick', t.cal.pick));
+          if (calMsg) { const m = el('p', `cal-msg${calMsg.ok ? '' : ' is-bad'}`, calMsg.text); m.setAttribute('role', calMsg.ok ? 'status' : 'alert'); side.append(m); }
+          calOpenSheet(false);
+          return;
+        }
+        const close = calBtn('cal-x', '×', () => calClose());
+        close.dataset.calF = 'x';
+        close.setAttribute('aria-label', t.cal.close);
+        const head = el('div', 'cal-side-head');
+        head.append(calPic(w, 'cal-pic cal-pic-sm'), el('span', '', w?.title ?? s.title), close);
+        const d = new Date(`${s.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'long' });
+        side.append(head, el('h3', '', [d, s.start].filter(Boolean).join(' · ')));
+        const ev = s.ev;
+        const busy = !!ev && calIsBusy(ev);
+        const area = ev?.location || hosts[slug]?.place || '';
+        side.append(el('p', 'cal-meta', ev ? [calHours(ev.start, ev.end), area, ev.price ? `€${ev.price}` : ''].filter(Boolean).join(' · ') : t.cal.request));
+        const row = (label: string, right: Node | string) => { const r = el('div', 'cal-row'); r.append(el('span', '', label), typeof right === 'string' ? el('b', '', right) : right); side.append(r); return r; };
+        const full = !!s.seats && s.booked >= s.seats;
+        if (ev?.synced) {
+          // From the host's own booking page: shown here, changed there.
+          const sy = ev.synced;
+          row(t.cal.places, sy.soldOut ? t.cal.soldOut : typeof sy.left === 'number' ? say(t.cal.leftN, { n: String(sy.left) }) : '–');
+          const box = el('div', 'cal-sync');
+          let host = '';
+          try { host = sy.url ? new URL(sy.url).hostname.replace(/^www\./, '') : ''; } catch { /* not a url */ }
+          box.append(el('b', '', `↻ ${t.cal.synced}`), el('p', '', say(t.cal.syncedNote, { site: host || t.cal.yourSite })));
+          if (sy.url) { const a = document.createElement('a'); a.href = sy.url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'cal-btn2'; a.textContent = t.cal.syncedOpen; box.append(a); }
+          side.append(box);
+        } else if (ev || s.booked) {
+          const v = el('span', 'cal-val');
+          v.append(el('b', '', s.seats ? say(t.cal.booked, { b: String(s.booked), s: String(s.seats) }) : say(t.cal.bookedOpen, { b: String(s.booked) })));
+          if (full) v.append(' ', el('span', 'cal-full', t.cal.full));
+          row(t.cal.places, v);
+          if (s.seats) { const bar = el('div', 'cal-bar'); const i = el('i'); i.style.width = `${Math.min(100, (s.booked / s.seats) * 100)}%`; bar.append(i); side.append(bar); }
+        }
+        if (ev && !ev.synced && ev.start) {
+          if (ev.virtual) side.append(el('p', 'cal-from', t.cal.fromSite));
+          // Places on this one date: a series keeps it per date (seatsByDate).
+          const step = el('span', 'cal-step');
+          const n = el('b', '', s.seats != null ? String(s.seats) : '–');
+          const setSeats = (delta: number) => {
+            const cur = s.seats ?? Math.max(s.booked, 10);
+            const next = Math.max(1, Math.min(500, cur + delta));
+            if (next === s.seats) return;
+            if (!ev.repeat || ev.repeat === 'once') calSave(ev, { seats: next }, 700);
+            else calSave(ev, { seatsByDate: { ...(ev.seatsByDate ?? {}), [s.date]: next } }, 700);
+          };
+          const minus = calBtn('cal-stepb', '–', () => setSeats(-1)); minus.setAttribute('aria-label', `${t.cal.placesDate} −1`); minus.dataset.calF = 's-';
+          const plus = calBtn('cal-stepb', '+', () => setSeats(1)); plus.setAttribute('aria-label', `${t.cal.placesDate} +1`); plus.dataset.calF = 's+';
+          minus.disabled = busy || (s.seats ?? 2) <= 1; plus.disabled = busy;
+          step.append(minus, n, plus);
+          row(t.cal.placesDate, step);
+          // Booked straight away (paid on the spot, needs a price and Stripe) or as a request
+          // the host confirms. The date's own choice, else the workshop's (listing edit).
+          const wsBooking = w?.booking;
+          // As the build decides (sessions.ts takesRequests), and only where Stripe can take it.
+          const choice = ev.request === false ? true : ev.request === true ? false : wsBooking === 'request' ? false : wsBooking === 'instant' ? true : !(ev.virtual || ev.replaces);
+          const auto = choice && (ev.price ?? 0) > 0;
+          const tg = document.createElement('input'); tg.type = 'checkbox'; tg.className = 'cal-toggle'; tg.checked = auto;
+          tg.setAttribute('role', 'switch'); tg.setAttribute('aria-label', t.cal.auto);
+          tg.dataset.calF = 'tg';
+          tg.disabled = busy;
+          tg.addEventListener('change', () => {
+            if (tg.checked && !((ev.price ?? 0) > 0)) { tg.checked = false; calNote(t.cal.autoNeedsPrice, false); return; }
+            calSave(ev, tg.checked ? { request: false, approve: false } : { request: true, approve: true });
+          });
+          row(t.cal.auto, tg);
+          if (auto && stripeReady !== true) side.append(el('p', 'cal-from', t.cal.untilStripe));
+        }
+        if (s.waiting.length) {
+          const ppl = s.waiting.reduce((a, r) => a + peopleOf(r), 0);
+          row(t.cal.waitList, calPeople(ppl));
+          const box = el('div', 'cal-req');
+          const [pre, post] = (s.waiting.length === 1 ? t.cal.waitName1 : t.cal.waitNames).split('{names}');
+          const p = el('p'); p.append('👥 ', pre, el('b', '', calNames(s.waiting)), post ?? '');
+          box.append(p, el('small', '', say(t.cal.waitHint, { n: String(ppl) })));
+          side.append(box);
+        }
+        if (s.requests.length) {
+          side.append(el('p', 'cal-sub-h', t.cal.reqs));
+          for (const r of s.requests) {
+            const b = calBtn('cal-req cal-req-btn', '', () => { if (calDemo) return; calOpenSheet(false); showTab('messages'); openDetail(r); });
+            b.append(el('b', '', r.fields.Name || firstName(r)), el('span', '', ` · ${calPeople(peopleOf(r))}${reqTime(r) && !ev ? ` · ${reqTime(r)}` : ''}`));
+            side.append(b);
+          }
+        }
+        if (s.accepted.length || s.bookings.length) {
+          const names = [...s.bookings.map((b) => `${b.name || t.guest} (${b.people || 1})`), ...s.accepted.map((r) => `${firstName(r)} (${peopleOf(r)})`)];
+          side.append(el('p', 'cal-guests', names.join(' · ')));
+        }
+        const acts = el('div', 'cal-acts');
+        if (ev && !ev.synced && ev.start) {
+          const edit = calBtn('cal-btn', t.cal.editDate, async () => {
+            if (calIsBusy(ev)) return;
+            // A date of the site's own schedule is taken over first, so the form edits the dashboard's copy.
+            if (ev.virtual) {
+              try { const real = await calAdopt(ev); renderCal(); if (real) { calOpenSheet(false); openCreate(real); } else calNote(t.cal.fail, false); } catch (err) { calNote(calFailText(err), false); }
+              return;
+            }
+            calOpenSheet(false); openCreate(ev);
+          });
+          const cancel = calBtn('cal-btn2', t.cal.cancelDate, async () => {
+            if (calIsBusy(ev)) return;
+            const series = ev.repeat && ev.repeat !== 'once';
+            if (!window.confirm(series ? say(t.cal.cancelOneQ, { date: d }) : t.cal.cancelQ)) return;
+            // A series, or a date from the site (kept, so the site's entry stays replaced): one date off.
+            if (series || ev.virtual || ev.replaces) { calSlot = ''; calSave(ev, { exceptions: [...new Set([...(ev.exceptions ?? []), s.date])].sort() }); return; }
+            // A single date: gone at once, back if the server says no.
+            const was = ownEvents;
+            calBusy.add(ev);
+            ownEvents = ownEvents.filter((x) => x !== ev);
+            calSlot = '';
+            renderCal();
+            try {
+              if (calDemo) { await new Promise((r) => setTimeout(r, 350)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); }
+              else await api('hostEventDelete', { id: ev.id });
+              calBusy.delete(ev);
+              calNote(t.cal.saved);
+              if (!calDemo) void loadInbox();
+            } catch { calBusy.delete(ev); ownEvents = was; calNote(t.cal.fail, false); }
+          });
+          edit.disabled = busy; cancel.disabled = busy;
+          acts.append(edit, cancel);
+        } else if (s.requests.length && !calDemo) {
+          acts.append(calBtn('cal-btn', t.cal.reply, () => { calOpenSheet(false); showTab('messages'); openDetail(s.requests[0]); }));
+        }
+        side.append(acts);
+        if (calMsg) { const m = el('p', `cal-msg${calMsg.ok ? '' : ' is-bad'}`, calMsg.text); m.setAttribute('role', calMsg.ok ? 'status' : 'alert'); side.append(m); }
+        calOpenSheet(true);
+      };
+      const renderCal = () => {
+        const panel = root.querySelector<HTMLElement>('[data-cal-panel]');
+        if (!panel) return;
+        const focusKey = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('[data-cal-panel] [data-cal-f]')?.dataset.calF;
+        paintCal(panel);
+        if (focusKey) panel.querySelector<HTMLElement>(`[data-cal-f="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
+      };
+      const calClose = () => {
+        const back = calSlot;
+        calSlot = '';
+        renderCal();
+        if (back) root.querySelector<HTMLElement>(`[data-cal-f="${CSS.escape(`c:${back}`)}"]`)?.focus({ preventScroll: true });
+      };
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape' || !calSlot || root.querySelector<HTMLElement>('[data-cal-panel]')?.hidden) return;
+        calClose();
+      });
+      const paintCal = (panel: HTMLElement) => {
+        const ws = calWorkshops();
+        if (!ws.some((w) => w.key === calSel)) {
+          const today = calToday();
+          const next = calSlots(null, today, iso(new Date(Date.now() + 120 * 86400000)))[0];
+          calSel = (next && ws.find((w) => w.key === calKey(next.title))?.key) || ws[0]?.key || '';
+        }
+        const w = ws.find((x) => x.key === calSel);
+        // Pills, one per workshop, then "+ New workshop".
+        const pills = $('[data-cal-pills]');
+        pills.replaceChildren(...ws.map((x) => {
+          const b = calBtn('cal-pill', '', () => { calSel = x.key; calSlot = ''; renderCal(); });
+          b.setAttribute('aria-pressed', String(x.key === calSel));
+          b.dataset.calF = `p:${x.key}`;
+          b.append(calPic(x), el('span', '', x.title));
+          return b;
+        }), ...(w ? [(() => { const b = calBtn('cal-pill cal-pill-edit', `✎ ${t.cal.editWs}`, () => calEditWs(w)); b.dataset.calF = 'ews'; return b; })()] : []),
+        calBtn('cal-pill cal-pill-new', t.cal.newWorkshop, () => openCreate()));
+        // No workshop and no date yet: one friendly way in.
+        const empty = !ws.length;
+        panel.classList.toggle('is-empty', empty);
+        const first = $('[data-cal-first]');
+        first.hidden = !empty;
+        const today = calToday();
+        const week = calView === 'week';
+        const phone = calPhone.matches;
+        panel.classList.toggle('is-week', week);
+        panel.classList.toggle('is-phone', phone);
+        // The header: the month, or the week ("23 – 29 November 2026").
+        const y = calMon.getFullYear(); const m = calMon.getMonth();
+        const wEnd = new Date(calWeek); wEnd.setDate(wEnd.getDate() + 6);
+        let range = '';
+        try { range = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).formatRange(calWeek, wEnd); } catch { /* old browser */ }
+        if (!range) range = `${calWeek.toLocaleDateString(locale, { day: 'numeric', month: 'long' })} – ${wEnd.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        $('[data-cal-mname]').textContent = week ? range.replace(/\s*[–-]\s*/, ' – ') : calMon.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+        $('[data-cal-mprev]').setAttribute('aria-label', week ? t.cal.prevWeek : t.cal.prevMonth);
+        $('[data-cal-mnext]').setAttribute('aria-label', week ? t.cal.nextWeek : t.cal.nextMonth);
+        const gridStart = week ? new Date(calWeek) : monday(calMon);
+        const lastDay = new Date(y, m + 1, 0);
+        const gridEnd = week ? new Date(wEnd) : new Date(lastDay);
+        if (!week) gridEnd.setDate(gridEnd.getDate() + (6 - ((lastDay.getDay() + 6) % 7)));
+        const slots = w ? calSlots(w.key, iso(gridStart), iso(gridEnd)) : [];
+        const sel = slots.find((s) => s.key === calSlot);
+        const full = (s: CalSlot) => !!s.seats && s.booked >= s.seats;
+        const places = (s: CalSlot) => (s.ev?.synced ? (s.ev.synced.soldOut ? t.cal.full : typeof s.ev.synced.left === 'number' ? say(t.cal.leftShort, { n: String(s.ev.synced.left) }) : '↻')
+          : s.ev ? (s.seats ? `${s.booked}/${s.seats}` : String(s.booked)) : `👥 ${s.requests.concat(s.accepted).reduce((a, r) => a + peopleOf(r), 0)}`);
+        const kind = (s: CalSlot) => `${full(s) || s.ev?.synced?.soldOut ? ' is-full' : ''}${s.ev ? '' : ' is-req'}${s.ev?.synced ? ' is-sync' : ''}`;
+        const label = (s: CalSlot) => `${new Date(`${s.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })} ${s.start}${s.end ? `–${s.end}` : ''}, ${s.ev?.synced ? `${t.cal.synced}, ${places(s)}` : s.ev ? (s.seats ? say(t.cal.booked, { b: String(s.booked), s: String(s.seats) }) : say(t.cal.bookedOpen, { b: String(s.booked) })) : t.cal.request}${full(s) ? `, ${t.cal.full}` : ''}`;
+        const pick = (b: HTMLElement, s: CalSlot) => {
+          b.dataset.calF = `c:${s.key}`;
+          b.setAttribute('aria-label', label(s));
+          b.setAttribute('aria-pressed', String(s.key === calSlot));
+          if (s.key === calSlot) b.classList.add('is-sel');
+        };
+        const chip = (s: CalSlot, inRow = false) => {
+          const cls = `cal-chip${kind(s)}`;
+          const b = inRow ? el('span', cls) : calBtn(cls, '', () => { calSlot = s.key; renderCal(); });
+          if (!inRow) pick(b, s);
+          b.append(el('b', '', s.start || '–'), el('span', '', places(s)));
+          return b;
+        };
+        const notes = (s: CalSlot) => {
+          const out: HTMLElement[] = [];
+          if (s.waiting.length) out.push(el('small', 'cal-note', say(t.cal.waiting, { n: String(s.waiting.reduce((a, r) => a + peopleOf(r), 0)) })));
+          if (s.requests.length && s.ev) out.push(el('small', 'cal-note', s.requests.length === 1 ? t.cal.request1 : say(t.cal.requestN, { n: String(s.requests.length) })));
+          return out;
+        };
+        const plus = (day: string) => {
+          const b = calBtn('cal-plus', '+', () => calAdd(day));
+          b.dataset.calF = `+:${day}`;
+          b.setAttribute('aria-label', `${t.cal.addDate.replace(/^\+\s*/, '')}: ${new Date(`${day}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}`);
+          return b;
+        };
+        const days = $('[data-cal-days]');
+        const wkv = $('[data-cal-wkv]');
+        const list = $('[data-cal-list]');
+        days.replaceChildren(); wkv.replaceChildren(); list.replaceChildren();
+        const hasDates = ownEvents.some((e) => calKey(e.title) === calSel);
+        const dayList: string[] = [];
+        for (let d = new Date(gridStart); d <= gridEnd; d.setDate(d.getDate() + 1)) dayList.push(iso(d));
+        const dayName = (day: string, o: Intl.DateTimeFormatOptions) => new Date(`${day}T12:00:00`).toLocaleDateString(locale, o);
+        if (!week && !phone) {
+          // Month grid.
+          days.replaceChildren(...dayList.map((day) => {
+            const c = el('div', `cal-day${Number(day.slice(5, 7)) !== m + 1 ? ' is-other' : ''}${day < today ? ' is-past' : ''}${day === today ? ' is-today' : ''}${sel?.date === day ? ' is-sel' : ''}`);
+            c.append(el('span', 'cal-n', String(Number(day.slice(8)))));
+            for (const s of slots.filter((x) => x.date === day)) c.append(chip(s), ...notes(s));
+            return c;
+          }));
+        } else if (!week) {
+          // Month on a phone: the dates as a list.
+          const inMonth = slots.filter((s) => s.date.startsWith(`${y}-${String(m + 1).padStart(2, '0')}`) && s.date >= today);
+          list.replaceChildren(...inMonth.map((s) => {
+            const r = calBtn(`cal-li${s.key === calSlot ? ' is-sel' : ''}`, '', () => { calSlot = s.key; renderCal(); });
+            pick(r, s);
+            const txt = el('span', 'cal-li-t');
+            txt.append(el('b', '', dayName(s.date, { weekday: 'short', day: 'numeric', month: 'short' })), ...notes(s));
+            r.append(txt, chip(s, true));
+            return r;
+          }));
+          if (!inMonth.length && hasDates) list.append(el('p', 'cal-empty', t.cal.listEmpty));
+        } else if (phone) {
+          // Week on a phone: one row per day, its dates or a faint "+".
+          wkv.replaceChildren(...dayList.map((day) => {
+            const row = el('div', `cal-ag${day < today ? ' is-past' : ''}${day === today ? ' is-today' : ''}`);
+            const head = el('div', 'cal-ag-d');
+            head.append(el('small', '', dayName(day, { weekday: 'short' }).replace('.', '')), el('b', '', String(Number(day.slice(8)))));
+            const body = el('div', 'cal-ag-b');
+            const mine = slots.filter((x) => x.date === day);
+            for (const s of mine) {
+              const b = calBtn(`cal-blk${kind(s)}`, '', () => { calSlot = s.key; renderCal(); });
+              pick(b, s);
+              b.append(el('b', '', `${s.start}${s.end ? `–${s.end}` : ''}`), el('span', '', places(s)));
+              const wrap = el('div', 'cal-ag-s');
+              wrap.append(b, ...notes(s));
+              body.append(wrap);
+            }
+            if (!mine.length && day >= today) body.append(plus(day));
+            row.append(head, body);
+            return row;
+          }));
+        } else {
+          // Week on a computer: Mon–Sun columns, hours down the side,
+          // each date placed by its start and sized by its length (2 h when unknown).
+          const HOUR = 44;
+          const start = (s: CalSlot) => { const v = mins(s.start); return Number.isFinite(v) ? v : 12 * 60; };
+          const len = (s: CalSlot) => { const e = s.end ? mins(s.end) : NaN; const d = Number.isFinite(e) ? e - start(s) : 120; return d > 0 ? d : 120; };
+          let h0 = 9; let h1 = 21;
+          for (const s of slots) { h0 = Math.min(h0, Math.floor(start(s) / 60)); h1 = Math.max(h1, Math.min(24, Math.ceil((start(s) + len(s)) / 60))); }
+          const grid = el('div', 'cal-wg');
+          grid.style.setProperty('--hours', String(h1 - h0));
+          grid.style.setProperty('--hour', `${HOUR}px`);
+          grid.append(el('span', 'cal-wg-corner'));
+          for (const day of dayList) {
+            const h = el('div', `cal-wg-h${day === today ? ' is-today' : ''}${day < today ? ' is-past' : ''}`);
+            h.append(el('small', '', dayName(day, { weekday: 'short' }).replace('.', '')), el('b', '', String(Number(day.slice(8)))));
+            grid.append(h);
+          }
+          const hours = el('div', 'cal-wg-hours');
+          for (let h = h0; h < h1; h++) hours.append(el('span', '', `${String(h).padStart(2, '0')}:00`));
+          grid.append(hours);
+          for (const day of dayList) {
+            const col = el('div', `cal-wg-col${day === today ? ' is-today' : ''}${day < today ? ' is-past' : ''}`);
+            const mine = slots.filter((x) => x.date === day).sort((a, b) => start(a) - start(b));
+            // Dates at the same time sit side by side.
+            const lanes: number[] = [];
+            const lane = new Map<CalSlot, number>();
+            for (const s of mine) {
+              let i = lanes.findIndex((end) => end <= start(s));
+              if (i < 0) { i = lanes.length; lanes.push(0); }
+              lanes[i] = start(s) + len(s);
+              lane.set(s, i);
+            }
+            for (const s of mine) {
+              const b = calBtn(`cal-blk${kind(s)}`, '', () => { calSlot = s.key; renderCal(); });
+              pick(b, s);
+              const n = lanes.length || 1;
+              b.style.top = `${((start(s) - h0 * 60) / 60) * HOUR}px`;
+              b.style.height = `${Math.max(40, (len(s) / 60) * HOUR - 3)}px`;
+              b.style.left = `calc(${(lane.get(s)! / n) * 100}% + 3px)`;
+              b.style.width = `calc(${100 / n}% - 6px)`;
+              b.append(el('b', '', `${s.start}${s.end ? `–${s.end}` : ''}`), el('span', '', places(s)), ...notes(s));
+              col.append(b);
+            }
+            if (!mine.length && day >= today) col.append(plus(day));
+            grid.append(col);
+          }
+          wkv.append(grid);
+        }
+        if (!hasDates && !slots.length) list.replaceChildren(el('p', 'cal-empty', t.cal.none));
+        root.querySelectorAll<HTMLButtonElement>('[data-cal-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.calView === calView)));
+        // A workshop without any date: say so above the empty calendar too.
+        panel.classList.toggle('no-dates', !hasDates && !slots.length);
+        renderCalSide(sel, w);
+      };
+      // ── The whole workshop: title, description, length, price, places, pictures and
+      //    video, and how guests book (functions hostListing edit, Jirel 18.11.26) ──
+      const wsDlg = $<HTMLDialogElement>('[data-cal-ws]');
+      const wsForm = $<HTMLFormElement>('[data-cal-ws-form]');
+      const wsF = <T extends HTMLElement = HTMLInputElement>(n: string) => wsForm.elements.namedItem(n) as unknown as T;
+      let wsCur: Ws | null = null;
+      let wsMedia: { type: string; url: string }[] = [];
+      let wsBusy = false;
+      const wsNote = (text: string, ok = true) => { const n = $('[data-cal-ws-note]'); n.textContent = text; n.hidden = !text; n.classList.toggle('is-bad', !ok); };
+      /** "2,5", "2.5 h", "90 min" → "2.5 h" / "90 min"; '' when it can't be read. */
+      const wsDuration = (v: string) => {
+        const m = /^\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*(h|std\.?|hours?|stunden?|heures?|min)?\s*$/i.exec(v);
+        if (!m) return '';
+        const n = m[1].replace(',', '.');
+        return /^min/i.test(m[2] ?? '') ? `${n} min` : `${n} h`;
+      };
+      const wsDrawMedia = () => {
+        const box = $('[data-cal-ws-media]');
+        const page = (hosts[slug]?.photos ?? []).map((url) => ({ type: 'photo', url }));
+        const all = [...wsMedia, ...page.filter((p) => !wsMedia.some((m) => m.url === p.url))];
+        box.replaceChildren(...all.map((m) => {
+          const on = wsMedia.findIndex((x) => x.url === m.url);
+          const b = calBtn(`cal-ws-pic${on >= 0 ? ' is-on' : ''}`, '', () => {
+            wsMedia = on >= 0 ? wsMedia.filter((x) => x.url !== m.url) : [...wsMedia, m].slice(0, 12);
+            wsDrawMedia();
+          });
+          b.setAttribute('aria-pressed', String(on >= 0));
+          b.setAttribute('aria-label', `${m.type === 'video' ? 'Video' : t.cal.wsPhoto} ${on >= 0 ? on + 1 : ''}`.trim());
+          if (m.type === 'video') { const v = document.createElement('video'); v.src = m.url; v.muted = true; v.preload = 'metadata'; b.append(v, el('span', 'cal-ws-vid', '▶')); }
+          else { const i = document.createElement('img'); i.src = m.url; i.alt = ''; i.loading = 'lazy'; b.append(i); }
+          if (on >= 0) b.append(el('span', 'cal-ws-n', on === 0 ? t.cal.wsCover : String(on + 1)));
+          return b;
+        }));
+      };
+      root.querySelectorAll<HTMLInputElement>('[data-cal-ws-up]').forEach((inp) => inp.addEventListener('change', async () => {
+        const files = inp.files;
+        const note = $('[data-cal-ws-up-note]');
+        if (!files?.length) return;
+        note.textContent = t.uploading;
+        try {
+          if (calDemo || !cfg.firebase.storageBucket) throw new Error('no bucket');
+          const store = getStorage(app0);
+          for (const f of Array.from(files).slice(0, 8)) {
+            const r = storageRef(store, `hostMedia/${slug}/${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`);
+            await uploadBytes(r, f, { contentType: f.type });
+            wsMedia.push({ type: inp.dataset.calWsUp === 'video' ? 'video' : 'photo', url: await getDownloadURL(r) });
+          }
+          note.textContent = t.uploadDone;
+          wsDrawMedia();
+        } catch { note.textContent = fill(t.uploadFail, cfg.contact); }
+        inp.value = '';
+      }));
+      const calEditWs = (w: Ws) => {
+        wsCur = w;
+        wsForm.reset();
+        wsNote('');
+        $('[data-cal-ws-up-note]').textContent = '';
+        const st = (calListings.slug === slug ? calListings.items : []).find((x) => x.key === w.key);
+        const e = (st?.edit ?? {}) as { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string };
+        const evs = [...ownEvents, ...calSiteEvents()].filter((x) => calKey(x.title) === w.key || w.alias?.includes(calKey(x.title)));
+        const first = evs.find((x) => !x.synced) ?? evs[0];
+        wsF('title').value = e.title || w.title;
+        wsF<HTMLTextAreaElement>('description').value = e.description ?? '';
+        wsF('duration').value = e.duration || (first ? calHours(first.start, first.end).replace(/\s/g, ' ') : '');
+        wsF('price').value = String(e.price ?? (first?.price ?? calNum(w.price) ?? '') ?? '');
+        wsF('seats').value = String(e.seats ?? first?.seats ?? '');
+        wsF('note').value = e.note ?? '';
+        wsMedia = e.media?.length ? [...e.media] : (w.image ? [{ type: 'photo', url: w.image }] : []);
+        const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || (first?.price ?? 0) > 0 ? 'instant' : 'request');
+        (wsForm.querySelector<HTMLInputElement>(`[name="booking"][value="${booking}"]`))!.checked = true;
+        wsDrawMedia();
+        wsDlg.showModal();
+        wsF('title').focus();
+      };
+      root.querySelectorAll<HTMLElement>('[data-cal-ws-close]').forEach((b) => b.addEventListener('click', () => wsDlg.close()));
+      wsForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!wsCur || wsBusy) return;
+        const title = wsF('title').value.trim();
+        const durRaw = wsF('duration').value.trim();
+        const duration = durRaw ? wsDuration(durRaw) : '';
+        if (!title) { wsNote(t.cal.wsNeedName, false); wsF('title').focus(); return; }
+        if (durRaw && !duration) { wsNote(t.cal.wsBadDuration, false); wsF('duration').focus(); return; }
+        const booking = wsForm.querySelector<HTMLInputElement>('[name="booking"]:checked')?.value ?? '';
+        const body = {
+          slug, action: 'edit', key: wsCur.key, title: wsCur.title, newTitle: title,
+          price: Number(wsF('price').value) || null, seats: Number(wsF('seats').value) || null, note: wsF('note').value.trim(),
+          description: wsF<HTMLTextAreaElement>('description').value.trim(), duration, media: wsMedia, booking,
+        };
+        const btn = $<HTMLButtonElement>('[data-cal-ws-save]');
+        wsBusy = true; btn.disabled = true;
+        wsNote(t.saving);
+        try {
+          if (calDemo) {
+            await new Promise((r) => setTimeout(r, 350));
+            if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail');
+          } else await api('hostListing', body);
+          // Guests book and pay straight away: the site's own dates of this workshop
+          // become dashboard dates (taken over), the only ones a guest can pay for.
+          if (booking === 'instant') {
+            for (const v of calSiteEvents().filter((x) => x.virtual && (calKey(x.title) === wsCur!.key || wsCur!.alias?.includes(calKey(x.title))))) {
+              if (!calReplaced.has(v.virtual!.key)) await calAdopt(v);
+            }
+          }
+          // Shown at once here; the public page follows with the next hourly build.
+          const items = calListings.slug === slug ? calListings.items : [];
+          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking };
+          const had = items.find((x) => x.key === wsCur!.key);
+          if (had) had.edit = edit;
+          else items.push({ key: wsCur.key, title: wsCur.title, status: 'live', image: wsCur.image, price: wsCur.price ?? '', edit });
+          calListings = { slug, items };
+          if (calDemo?.workshops) { const x = calDemo.workshops.find((w) => w.key === wsCur!.key); if (x) { x.title = title; x.booking = booking; const ph = wsMedia.find((m) => m.type === 'photo'); if (ph) x.image = ph.url; } }
+          wsDlg.close();
+          calNote(t.cal.wsSaved);
+        } catch {
+          wsNote(t.cal.wsFail, false);
+        }
+        wsBusy = false; btn.disabled = false;
+      });
+      const calLoadListings = async () => {
+        if (calDemo || !slug || calListings.slug === slug) return;
+        const s = slug;
+        try { calListings = { slug: s, items: (await api('hostListing', { slug: s, action: 'list' })).items ?? [] }; } catch { calListings = { slug: s, items: [] }; }
+        renderCal();
+      };
+      {
+        const wd = $('[data-cal-wd]');
+        const mon = new Date(2024, 0, 1); // a Monday
+        wd.replaceChildren(...Array.from({ length: 7 }, (_, i) => { const d = new Date(mon); d.setDate(d.getDate() + i); return el('span', '', d.toLocaleDateString(locale, { weekday: 'short' }).replace('.', '')); }));
+        const move = (step: number) => {
+          if (calView === 'week') {
+            calWeek.setDate(calWeek.getDate() + 7 * step);
+            const thu = new Date(calWeek); thu.setDate(thu.getDate() + 3);
+            calMon = new Date(thu.getFullYear(), thu.getMonth(), 1);
+          } else {
+            calMon = new Date(calMon.getFullYear(), calMon.getMonth() + step, 1);
+            const t0 = calNoon(calToday());
+            calWeek = monday(t0.getFullYear() === calMon.getFullYear() && t0.getMonth() === calMon.getMonth() ? t0 : calMon);
+          }
+          renderCal();
+        };
+        $('[data-cal-mprev]').addEventListener('click', () => move(-1));
+        $('[data-cal-mnext]').addEventListener('click', () => move(1));
+        root.querySelectorAll<HTMLButtonElement>('[data-cal-view]').forEach((b) => b.addEventListener('click', () => {
+          calView = b.dataset.calView === 'week' ? 'week' : 'month';
+          try { localStorage.setItem(CAL_VIEW, calView); } catch { /* storage off */ }
+          // The week shown is in the month shown, and the other way round.
+          if (calView === 'week') {
+            const sel = calSlot.split('|').find((x) => /^\d{4}-\d\d-\d\d$/.test(x));
+            const t0 = calNoon(calToday());
+            const inMon = (d: Date) => d.getFullYear() === calMon.getFullYear() && d.getMonth() === calMon.getMonth();
+            const wk = new Date(calWeek); wk.setDate(wk.getDate() + 3);
+            if (sel && /^\d{4}-\d\d-\d\d$/.test(sel)) calWeek = monday(calNoon(sel));
+            else if (!inMon(wk)) calWeek = monday(inMon(t0) ? t0 : calMon);
+          } else {
+            const thu = new Date(calWeek); thu.setDate(thu.getDate() + 3);
+            calMon = new Date(thu.getFullYear(), thu.getMonth(), 1);
+          }
+          renderCal();
+        }));
+        calPhone.addEventListener('change', () => renderCal());
+        $('[data-cal-scrim]').addEventListener('click', () => calClose());
+        $('[data-cal-first] button').addEventListener('click', () => openCreate());
+        $('[data-cal-add]').addEventListener('click', () => calAdd());
+      }
+      /** "+ Add date": the new-date form with the selected workshop (and day) filled in. */
+      function calAdd(day = '') {
+        {
+          const w = calWorkshops().find((x) => x.key === calSel);
+          const last = [...ownEvents].reverse().find((e) => calKey(e.title) === calSel);
+          const sel = day || (calSlot.split('|').find((x) => /^\d{4}-\d\d-\d\d$/.test(x)) ?? '');
+          openCreate({
+            slug, title: w?.title ?? '', date: sel && sel >= calToday() ? sel : '', start: last?.start ?? '', end: last?.end,
+            price: last?.price ?? (Number(String(w?.price ?? '').replace(/[^\d]/g, '')) || null), seats: last?.seats ?? null, location: last?.location,
+            approve: last?.approve, media: last?.media ?? (w?.image?.startsWith('/img/hosts/') ? [{ type: 'photo', url: w.image }] : undefined),
+          } as Ev);
+        }
+      }
+
       /** Asks for a page (functions/index.js hostClaim): 'granted' for
        *  admins, 'pending' for everyone else until Jirel approves. */
       const claim = async (s: string, name: string, note: string, invite = ''): Promise<string> => {
@@ -3199,6 +4091,7 @@ const fields = [
           pick.replaceChildren(...all.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
           $('[data-ha-pick-wrap] span').textContent = document.documentElement.lang === 'en' ? 'Open a host' : 'Host öffnen';
           $('[data-ha-pick-wrap]').dataset.admin = '1';
+          $('[data-ha-invite-admin]').hidden = false;
           pick.addEventListener('change', async () => {
             try { if (!slugs.includes(pick.value) && (await claim(pick.value, '', '')) === 'granted') slugs.push(pick.value); } catch (err) { console.warn('admin claim', pick.value, err); }
             openHost(pick.value).catch(failed);
@@ -3242,7 +4135,101 @@ const fields = [
         box.textContent = `${fill(t.error, cfg.contact)} (${why})`;
         box.hidden = false;
       };
-      finishSignIn().finally(() => {
+      // ?demo=calendar: the Calendar tab with made-up dates for Pia, to look
+      // at without signing in. Nothing is loaded from or saved to the server
+      // (api() refuses in demo mode).
+      // Jirel: copy the personal invite link (?invite=…&page=slug) for the host in the picker.
+      const inviteMsg = $('[data-ha-invite-msg]');
+      $('[data-ha-invite-copy]').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const s = pick.value || slug;
+        inviteMsg.textContent = t.saving;
+        try {
+          const q = new URLSearchParams(location.search);
+          const link: { slug: string; invite: string; claimedBy?: string } | undefined = DEMO
+            ? { slug: s, invite: 'demo-signature', claimedBy: q.get('claimed') ?? '' }
+            : (await api('hostInviteLinks', { slugs: [s] })).links?.[0];
+          if (!link?.invite) throw new Error('no link');
+          const url = `https://www.twiggli.com${pageFor(root.dataset.lang || 'en')}?invite=${encodeURIComponent(link.invite)}&page=${encodeURIComponent(link.slug)}`;
+          let copied = true;
+          try { await navigator.clipboard.writeText(url); } catch { copied = false; }
+          inviteMsg.replaceChildren(
+            el('span', link.claimedBy ? 'is-warn' : '', link.claimedBy ? say(t.cal.inviteClaimed, { who: link.claimedBy }) : say(copied ? t.cal.inviteCopied : t.cal.inviteHere, { name: hosts[s]?.name ?? s })),
+            el('code', '', url),
+          );
+        } catch { inviteMsg.textContent = t.cal.inviteFail; }
+      });
+      const startDemo = () => {
+        slug = hosts.pia ? 'pia' : '';
+        const q = new URLSearchParams(location.search);
+        if (q.get('admin')) {
+          const s = hosts[q.get('host') ?? ''] ? q.get('host')! : slug;
+          pick.replaceChildren(new Option(`${hosts[s]?.name ?? s} · ${hosts[s]?.en.specialty ?? ''}`, s));
+          pick.value = s;
+          $('[data-ha-pick-wrap]').hidden = false;
+          $('[data-ha-invite-admin]').hidden = false;
+        }
+        if (q.get('demo') === 'site') {
+          // That host's real dates from the site's own data; no dashboard dates, nothing saved.
+          slug = hosts[q.get('host') ?? ''] ? q.get('host')! : slug;
+          signin.hidden = true; app.hidden = false; editor.hidden = false;
+          $('[data-ha-tabs]').hidden = false;
+          root.classList.add('is-in');
+          const first = (hosts[slug]?.name ?? '').split(' ')[0];
+          $('[data-ha-hello]').textContent = `${t.hello} ${first} 👋`;
+          $('[data-ha-menu-name]').textContent = hosts[slug]?.name ?? '';
+          $('[data-cal-demo]').hidden = false;
+          ownEvents = []; reqs = []; calBookings = [];
+          calDemo = { workshops: null };
+          showTab('calendar');
+          return;
+        }
+        signin.hidden = true;
+        app.hidden = false;
+        editor.hidden = false;
+        $('[data-ha-tabs]').hidden = false;
+        root.classList.add('is-in');
+        $('[data-ha-hello]').textContent = `${t.hello} Pia 👋`;
+        $('[data-ha-menu-name]').textContent = 'Pia';
+        $('[data-cal-demo]').hidden = false;
+        const VULVA = 'Vulva painting';
+        const base = { slug: 'pia', price: 40, seats: 10, location: 'Friedrichshain', approve: true, until: '2027-01-31', cancel: '7d', visibility: 'public', media: [{ type: 'photo', url: '/video/pia-vulva-poster.jpg' }] };
+        ownEvents = [
+          { ...base, id: 'demoTuesday01', title: VULVA, date: '2026-11-03', start: '18:30', end: '21:00', repeat: 'weekly', exceptions: ['2026-12-22'] },
+          { ...base, id: 'demoFriday001', title: VULVA, date: '2026-11-06', start: '18:30', end: '21:00', repeat: 'weekly', seatsByDate: { '2026-12-18': 12 } },
+          { ...base, id: 'demoSaturday1', title: VULVA, date: '2026-11-07', start: '11:00', end: '13:30', repeat: 'weekly' },
+          { ...base, id: 'demoSunday001', title: VULVA, date: '2026-11-08', start: '11:00', end: '13:30', repeat: 'biweekly', until: '2027-04-30' },
+          { slug: 'pia', id: 'demoOffice001', title: 'At your office', date: '2026-12-09', start: '14:00', end: '16:30', repeat: 'once', price: 45, seats: 12, location: 'Your office, Berlin', approve: true, media: [{ type: 'photo', url: '/img/hosts/pia-6.jpg' }] },
+        ];
+        const bk = (date: string, start: string, people: number, name: string, id = '') => ({ eventId: id, date, start, title: VULVA, people, name, amount: people * 40 });
+        calBookings = [
+          bk('2026-11-13', '18:30', 9, 'Lea'), bk('2026-11-14', '11:00', 6, 'Tom'), bk('2026-11-17', '18:30', 7, 'Nora'),
+          bk('2026-11-20', '18:30', 4, 'Ida'), bk('2026-11-21', '11:00', 5, 'Ben'), bk('2026-11-21', '11:00', 3, 'Kim'),
+          bk('2026-11-24', '18:30', 6, 'Sara'), bk('2026-11-27', '18:30', 6, 'Julia'), bk('2026-11-27', '18:30', 4, 'Paula'),
+          bk('2026-11-28', '11:00', 3, 'Emma'), bk('2026-12-01', '18:30', 2, 'Clara'), bk('2026-12-04', '18:30', 5, 'Nina'),
+          bk('2026-12-05', '11:00', 8, 'Marie'), bk('2026-12-11', '18:30', 4, 'Lina'), bk('2026-12-19', '11:00', 2, 'Zoe'),
+        ];
+        const rq = (id: string, name: string, workshop: string, date: string, time: string, people: number, status = 'pending') =>
+          ({ id, subject: workshop, status, thread: [], createdAt: Date.now() - 5 * 3600000, fields: { Name: name, Workshop: workshop, Date: date, Time: time, People: String(people) } });
+        reqs = [
+          rq('demoAnna', 'Anna', VULVA, '2026-11-27', '18:30', 1), rq('demoMia', 'Mia', VULVA, '2026-11-27', '18:30', 1),
+          rq('demoLena', 'Lena', VULVA, '2026-12-05', '11:00', 2),
+          rq('demoJonas', 'Jonas', 'Private group', '2026-12-12', '15:00', 8),
+          rq('demoSophie', 'Sophie', 'At your office', '2026-12-09', '14:00', 12, 'accepted'),
+        ];
+        calDemo = { workshops: [
+          { title: VULVA, key: calKey(VULVA), image: '/video/pia-vulva-poster.jpg', color: CAL_COLORS[0], price: '€40' },
+          { title: 'Private group', key: calKey('Private group'), image: '/img/hosts/pia-3.jpg', color: CAL_COLORS[1], price: '€40' },
+          { title: 'At your office', key: calKey('At your office'), image: '/img/hosts/pia-6.jpg', color: CAL_COLORS[2], price: '€45' },
+        ] };
+        const variant = new URLSearchParams(location.search).get('case');
+        if (variant === 'one') { calDemo.workshops = calDemo.workshops.slice(0, 1); ownEvents = ownEvents.filter((e) => e.title === VULVA); reqs = reqs.filter((r) => r.fields.Workshop === VULVA); }
+        if (variant === 'empty') { calDemo.workshops = []; ownEvents = []; reqs = []; calBookings = []; }
+        calSel = calKey(VULVA);
+        showTab('calendar');
+      };
+      if (DEMO) startDemo();
+      else finishSignIn().finally(() => {
         let once = false;
         // Sessions end on their own after SESSION_HOURS (lib/auth.ts), also
         // in a tab left open: then the page signs out and reloads.
@@ -4261,4 +5248,202 @@ const fields = [
   .nt-earn { color: #1f8a4c; font-weight: 600; }
   .nt-when { font-size: 0.78rem; color: #9a9da6; }
   @media (max-width: 560px) { .nt { position: fixed; left: 16px; right: 16px; top: 64px; width: auto; } }
+  /* ── Calendar: one calendar per workshop (Jirel 18.11.26) ── */
+  /* The calendar needs room: the account is wider while it is open. */
+  .ha.is-in:has([data-cal-panel]:not([hidden])) { max-width: 1240px; }
+  .cal { --cal-line: #e6dff2; --cal-grad: linear-gradient(90deg, #fd6f31, #f4c424, #7f14a0); }
+  .cal button { font-family: inherit; color: inherit; cursor: pointer; }
+  .cal-h { margin: 8px 0 2px; font-size: clamp(1.7rem, 4vw, 2.1rem); letter-spacing: -0.02em; }
+  .cal-lede { margin: 0 0 16px; }
+  .cal-demo { display: inline-block; margin: 0 0 14px; padding: 6px 12px; border-radius: 999px; background: #fff7f2; color: #c2541f; font-size: 0.82rem; font-weight: 600; }
+  .cal-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .cal-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px 6px 6px; border-radius: 999px; border: 1.5px solid var(--cal-line); background: #fff; font-size: 0.88rem; font-weight: 600; white-space: nowrap; transition: border-color .15s ease, background-color .15s ease; }
+  .cal-pill:hover { border-color: rgba(106, 62, 236, 0.45); }
+  .cal-pill[aria-pressed='true'] { border-color: #6a3eec; color: #6a3eec; background: #f3eeff; }
+  .cal-pill-new { padding: 8px 16px; border-style: dashed; }
+  .cal-pic { width: 30px; height: 30px; flex: none; border-radius: 50%; object-fit: cover; border: 2px solid #6a3eec; box-sizing: border-box; background: #f3eeff; }
+  .cal-pic-ph { display: inline-grid; place-items: center; font-size: 0.8rem; font-weight: 700; color: #6a3eec; }
+  .cal-pic-sm { width: 26px; height: 26px; }
+  .cal-card { background: #fff; border-radius: 20px; border: 1px solid var(--cal-line); box-shadow: 0 8px 10px -8px rgba(60, 30, 120, 0.18); }
+  .cal-mnav button { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--cal-line); background: #fff; font-size: 1.1rem; line-height: 1; display: grid; place-items: center; padding: 0; }
+  .cal-mnav button:hover { border-color: #6a3eec; color: #6a3eec; }
+  .cal-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
+  .cal-month { padding: 18px; min-width: 0; }
+  .cal-mh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .cal-mh > b { display: inline-block; font-size: 1.15rem; }
+  .cal-mh > b::first-letter { text-transform: uppercase; }
+  .cal-mnav { display: flex; gap: 4px; }
+  .cal-mnav button { width: 28px; height: 28px; font-size: 0.95rem; }
+  .cal-sp { flex: 1; }
+  .cal-seg { display: flex; gap: 6px; }
+  .cal-seg button { padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--cal-line); background: #fff; font-size: 0.85rem; font-weight: 600; }
+  .cal-seg button[aria-pressed='true'] { border-color: #6a3eec; color: #6a3eec; background: #f3eeff; }
+  .cal-btn { padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; border: 2px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--cal-grad) border-box; white-space: nowrap; transition: transform .15s ease; }
+  .cal-btn:hover { transform: translateY(-1px); }
+  .cal-btn2 { padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; border: 1.5px solid var(--cal-line); background: #fff; white-space: nowrap; }
+  .cal-btn2:hover { border-color: #c0392b; color: #c0392b; }
+  .cal-wd, .cal-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .cal-wd span { font-size: 0.75rem; color: var(--color-text-muted); text-align: center; padding-bottom: 4px; text-transform: capitalize; }
+  .cal-day { min-height: 86px; border-radius: 12px; background: #fbf9fe; padding: 6px; display: flex; flex-direction: column; gap: 4px; min-width: 0; box-sizing: border-box; }
+  .cal-day.is-other { background: #fdfcff; }
+  .cal-day.is-other .cal-n { color: var(--color-text-muted); }
+  .cal-day.is-past { opacity: 0.45; }
+  .cal-day.is-today .cal-n { color: #6a3eec; }
+  .cal-day.is-sel { outline: 2px solid #6a3eec; background: #f3eeff; }
+  .cal-n { font-weight: 600; font-size: 13px; padding-left: 2px; }
+  .cal-chip { display: flex; justify-content: space-between; align-items: center; gap: 4px; width: 100%; border: 0; border-radius: 8px; padding: 4px 7px; font-size: 12px; line-height: 1.35; background: #6a3eec; color: #fff !important; text-align: left; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
+  .cal-chip span { opacity: 0.92; overflow: hidden; text-overflow: ellipsis; }
+  .cal-chip.is-full { background: #3b2580; }
+  .cal-chip.is-req { background: #fff7f2; color: #c2541f !important; box-shadow: inset 0 0 0 1.5px #fd6f31; }
+  .cal-chip:hover { filter: brightness(1.08); }
+  .cal-note { font-size: 11px; font-weight: 600; color: #fd6f31; line-height: 1.2; padding-left: 2px; }
+  .cal-list { display: grid; gap: 8px; }
+  .cal-list:empty { display: none; }
+  .cal.is-week .cal-wd, .cal.is-week .cal-days, .cal.is-phone .cal-wd, .cal.is-phone .cal-days { display: none; }
+  /* Week: Mon–Sun columns, hours down the side. */
+  .cal-wg { display: grid; grid-template-columns: 48px repeat(7, minmax(0, 1fr)); grid-template-rows: auto calc(var(--hours) * var(--hour)); column-gap: 4px; }
+  .cal-wg-corner { grid-row: 1; }
+  .cal-wg-h { display: grid; justify-items: center; gap: 2px; padding-bottom: 8px; }
+  .cal-wg-h small { font-size: 0.75rem; color: var(--color-text-muted); text-transform: capitalize; }
+  .cal-wg-h b { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; font-size: 0.95rem; }
+  .cal-wg-h.is-today b { background: #6a3eec; color: #fff; }
+  .cal-wg-h.is-past { opacity: 0.5; }
+  .cal-wg-hours { grid-row: 2; grid-column: 1; display: grid; grid-auto-rows: var(--hour); }
+  .cal-wg-hours span { font-size: 0.7rem; color: var(--color-text-muted); transform: translateY(-0.6em); }
+  .cal-wg-col { grid-row: 2; position: relative; border-radius: 10px; background: repeating-linear-gradient(to bottom, #fbf9fe 0, #fbf9fe calc(var(--hour) - 1px), #f1eef6 calc(var(--hour) - 1px), #f1eef6 var(--hour)); }
+  .cal-wg-col.is-today { background: repeating-linear-gradient(to bottom, #f3eeff 0, #f3eeff calc(var(--hour) - 1px), #e6dff2 calc(var(--hour) - 1px), #e6dff2 var(--hour)); }
+  .cal-wg-col.is-past > .cal-blk { opacity: 0.45; }
+  .cal-blk { position: absolute; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; overflow: hidden; box-sizing: border-box; border: 0; border-radius: 8px; padding: 4px 7px; font-size: 12px; line-height: 1.3; text-align: left; background: #6a3eec; color: #fff !important; }
+  .cal-blk b { white-space: nowrap; }
+  .cal-blk span { opacity: 0.92; white-space: nowrap; }
+  .cal-blk.is-full { background: #3b2580; }
+  .cal-blk.is-req { background: #fff7f2; color: #c2541f !important; box-shadow: inset 0 0 0 1.5px #fd6f31; }
+  .cal-blk.is-sel { outline: 2px solid #fd6f31; outline-offset: 1px; }
+  .cal-blk:hover { filter: brightness(1.08); }
+  .cal-blk .cal-note { margin-top: 2px; padding: 0 6px; border-radius: 999px; background: #fff; color: #fd6f31; }
+  .cal-plus { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; border-radius: 50%; border: 1.5px dashed #d9d4e3; background: transparent; color: #b9b2c7 !important; font-size: 1.1rem; line-height: 1; padding: 0; display: grid; place-items: center; opacity: 0.7; transition: opacity .15s ease, border-color .15s ease, color .15s ease; }
+  .cal-plus:hover, .cal-plus:focus-visible { opacity: 1; border-color: #6a3eec; color: #6a3eec !important; }
+  /* Week on a phone: one row per day. */
+  .cal-ag { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; align-items: start; padding: 8px 0; border-bottom: 1px solid #f1eef6; }
+  .cal-ag:last-child { border-bottom: 0; }
+  .cal-ag.is-past { opacity: 0.5; }
+  .cal-ag-d { display: grid; justify-items: center; gap: 1px; }
+  .cal-ag-d small { font-size: 0.72rem; color: var(--color-text-muted); text-transform: capitalize; }
+  .cal-ag-d b { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; font-size: 0.92rem; }
+  .cal-ag.is-today .cal-ag-d b { background: #6a3eec; color: #fff; }
+  .cal-ag-b { display: grid; gap: 6px; min-height: 36px; align-content: center; }
+  .cal-ag-s { display: grid; gap: 3px; justify-items: start; }
+  .cal-ag-b .cal-blk { position: static; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; padding: 8px 12px; font-size: 13px; }
+  .cal-ag-b .cal-plus { position: static; transform: none; }
+  .cal.no-dates .cal-list { display: grid; margin-bottom: 8px; }
+  .cal.no-dates .cal-list .cal-empty { padding: 4px 4px 10px; }
+  .cal-li { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 12px; border-radius: 12px; border: 0; background: #fbf9fe; text-align: left; }
+  .cal-li.is-past { opacity: 0.5; }
+  .cal-li.is-sel { outline: 2px solid #6a3eec; background: #f3eeff; }
+  .cal-li .cal-chip { width: auto; min-width: 104px; font-size: 0.82rem; padding: 5px 10px; }
+  .cal-li-t { display: grid; gap: 2px; }
+  .cal-li-t b { font-size: 0.92rem; text-transform: capitalize; }
+  .cal-empty { color: var(--color-text-muted); font-size: 0.92rem; padding: 18px 4px; margin: 0; }
+  .cal-saved { margin: 8px 0 0; min-height: 1em; font-size: 0.82rem; color: #1f9d8a; }
+  .cal-side { padding: 20px; position: sticky; top: 16px; }
+  .cal-pick { margin: 0; padding: 40px 8px; text-align: center; color: var(--color-text-muted); font-size: 0.92rem; }
+  .cal-side-head { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--color-text-muted); }
+  .cal-side-head > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cal-x { width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(36, 39, 46, 0.06); font-size: 1.1rem; line-height: 1; display: grid; place-items: center; padding: 0; }
+  .cal-side h3 { margin: 6px 0 2px; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .cal-meta { margin: 0 0 6px; font-size: 0.85rem; color: var(--color-text-muted); }
+  .cal-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1eef6; font-size: 0.9rem; }
+  .cal-full { color: #c0392b; font-weight: 600; }
+  .cal-bar { height: 6px; border-radius: 9px; background: #efeaf7; overflow: hidden; margin: 2px 0 2px; }
+  .cal-bar i { display: block; height: 100%; background: #6a3eec; border-radius: 9px; }
+  .cal-step { display: inline-flex; align-items: center; gap: 6px; }
+  .cal-step b { min-width: 2ch; text-align: center; }
+  .cal-stepb { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--cal-line); background: #fff; padding: 0; font-size: 1rem; line-height: 1; display: grid; place-items: center; }
+  .cal-stepb:hover { border-color: #6a3eec; color: #6a3eec; }
+  .cal-toggle { appearance: none; -webkit-appearance: none; flex: none; width: 40px; height: 24px; margin: 0; border-radius: 99px; background: #d9d4e3; position: relative; cursor: pointer; transition: background-color .15s ease; }
+  .cal-toggle::after { content: ''; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s ease; }
+  .cal-toggle:checked { background: #6a3eec; }
+  .cal-toggle:checked::after { transform: translateX(16px); }
+  .cal-req { display: block; width: 100%; box-sizing: border-box; background: #fff7f2; border: 0; border-radius: 12px; padding: 10px 12px; margin-top: 10px; font-size: 0.85rem; text-align: left; }
+  .cal-req p { margin: 0; }
+  .cal-req small { color: var(--color-text-muted); font-size: 0.82rem; }
+  .cal-req-btn { margin-top: 6px; }
+  .cal-req-btn:hover { background: #ffeee3; }
+  .cal-sub-h { margin: 14px 0 0; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); }
+  .cal-guests { margin: 10px 0 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .cal-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .cal-scrim { display: none; }
+  .ha-adm-invite { display: grid; gap: 4px; }
+  .ha-adm-note { margin: 0 12px 6px; font-size: 0.78rem; color: var(--color-text-muted); display: grid; gap: 4px; }
+  .ha-adm-note:empty { display: none; }
+  .ha-adm-note .is-warn { color: #b3261e; font-weight: 600; }
+  .ha-adm-note code { font-size: 0.72rem; word-break: break-all; background: rgba(106, 62, 236, 0.07); border-radius: 8px; padding: 4px 6px; user-select: all; }
+  .cal-chip.is-sync, .cal-blk.is-sync { background: #fff; color: #4b2bbf !important; box-shadow: inset 0 0 0 1.5px #b9a6f5; }
+  .cal-chip.is-sync.is-full, .cal-blk.is-sync.is-full { background: #f1eef6; color: #5b5f6b !important; box-shadow: inset 0 0 0 1.5px #d9d4e3; }
+  .cal-sync { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #f3eeff; font-size: 0.85rem; display: grid; gap: 6px; justify-items: start; }
+  .cal-sync b { color: #4b2bbf; }
+  .cal-sync p { margin: 0; color: var(--color-text); }
+  .cal-sync a { text-decoration: none; font-size: 0.82rem; padding: 6px 14px; }
+  .cal-from { margin: 10px 0 0; padding: 8px 12px; border-radius: 10px; background: #f6f4fa; color: var(--color-text-muted); font-size: 0.8rem; line-height: 1.4; }
+  .cal-pill-edit { padding: 8px 16px; color: #6a3eec; }
+  /* The whole workshop: a dialog on a computer, a full sheet on a phone. */
+  .cal-ws { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px); border: 0; border-radius: 24px; padding: 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); color: var(--color-text); }
+  .cal-ws::backdrop { background: rgba(22, 24, 29, 0.4); }
+  .cal-ws-form { display: grid; gap: 14px; padding: 22px 24px 18px; font-family: inherit; }
+  .cal-ws-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .cal-ws-head h2 { margin: 0; font-size: 1.3rem; }
+  .cal-ws .cal-x { display: grid; }
+  .cal-ws-sub, .cal-ws-hint { margin: 0; font-size: 0.85rem; color: var(--color-text-muted); }
+  .cal-f { display: grid; gap: 6px; min-width: 0; border: 0; padding: 0; margin: 0; }
+  .cal-f > span, .cal-f legend { font-size: 0.82rem; font-weight: 600; padding: 0; }
+  .cal-f input:not([type=radio]), .cal-f textarea { font: inherit; font-size: 0.92rem; width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1.5px solid #e6dff2; border-radius: 12px; background: #fff; color: inherit; }
+  .cal-f input:focus, .cal-f textarea:focus { outline: 2px solid rgba(106, 62, 236, 0.35); border-color: #6a3eec; }
+  .cal-f textarea { resize: vertical; min-height: 120px; line-height: 1.45; }
+  .cal-f-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .cal-ws-media { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+  .cal-ws-pic { position: relative; aspect-ratio: 1; padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: #f3eeff; opacity: 0.55; }
+  .cal-ws-pic.is-on { border-color: #6a3eec; opacity: 1; }
+  .cal-ws-pic img, .cal-ws-pic video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cal-ws-n { position: absolute; left: 4px; top: 4px; padding: 1px 7px; border-radius: 999px; background: #6a3eec; color: #fff; font-size: 0.7rem; font-weight: 600; }
+  .cal-ws-vid { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 1.2rem; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
+  .cal-ws-up { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cal-ws-up label { cursor: pointer; font-size: 0.82rem; padding: 7px 14px; }
+  .cal-radio { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1.5px solid #e6dff2; border-radius: 12px; cursor: pointer; }
+  .cal-radio:has(input:checked) { border-color: #6a3eec; background: #f8f5ff; }
+  .cal-radio input { margin-top: 4px; accent-color: #6a3eec; }
+  .cal-radio span { display: grid; gap: 2px; font-size: 0.9rem; }
+  .cal-radio small { color: var(--color-text-muted); font-size: 0.8rem; }
+  .cal-ws-foot { display: flex; justify-content: flex-end; gap: 8px; position: sticky; bottom: 0; background: #fff; padding-top: 8px; }
+  .cal-ws-foot button:disabled { opacity: 0.5; }
+
+  .cal-msg { margin: 12px 0 0; padding: 8px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; background: #e8f6f3; color: #157a6b; }
+  .cal-msg.is-bad { background: #fdecea; color: #b3261e; }
+  .cal button:disabled, .cal input:disabled { opacity: 0.45; cursor: default; }
+  .cal button:focus-visible, .cal input:focus-visible { outline: 2px solid #6a3eec; outline-offset: 2px; }
+  .cal-first { text-align: center; padding: 36px 20px; margin-bottom: 16px; }
+  .cal-first-ic { font-size: 34px; }
+  .cal-first h3 { margin: 8px 0 4px; font-size: 1.2rem; }
+  .cal-first p { margin: 0 auto 16px; max-width: 420px; color: var(--color-text-muted); font-size: 0.92rem; }
+  .cal.is-empty .cal-grid { display: none; }
+  @media (max-width: 1020px) {
+    .cal-grid { grid-template-columns: minmax(0, 1fr) 300px; }
+  }
+  @media (max-width: 700px) {
+    .cal-pills { flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding: 2px 16px 4px; scrollbar-width: none; }
+    .cal-pills::-webkit-scrollbar { display: none; }
+    .cal-pill { flex: none; }
+    .cal-grid { grid-template-columns: minmax(0, 1fr); }
+    .cal-month { padding: 14px; }
+    .cal-mh .cal-btn { order: 5; width: 100%; }
+    .cal-side { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 60; border-radius: 22px 22px 0 0; max-height: 82vh; overflow-y: auto; padding: 20px 18px calc(20px + env(safe-area-inset-bottom)); transform: translateY(105%); transition: transform .25s ease; box-shadow: 0 -12px 40px rgba(22, 24, 29, 0.2); }
+    .cal-side.is-open { transform: none; }
+    .cal-scrim:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 59; background: rgba(22, 24, 29, 0.35); }
+  }
+  @media (min-width: 701px) { .cal-side .cal-x { display: none; } }
+  @media (max-width: 700px) {
+    .cal-ws { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 0; }
+    .cal-ws-form { padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); }
+    .cal-f-row { grid-template-columns: 1fr 1fr; }
+    .cal-f-row .cal-f:first-child { grid-column: 1 / -1; }
+  }
 </style>

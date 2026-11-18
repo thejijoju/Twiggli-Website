@@ -12,7 +12,7 @@ import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
-import { withHostSlots, accountDates, isHiddenListing, listingEdit } from './hostEdits.ts';
+import { withHostSlots, accountDates, isHiddenListing, isReplaced, listingEdit } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 
 /** Places left on a date: the feed's or the host's count (or one the host
@@ -103,6 +103,12 @@ export type Session = {
   usp?: string;
   /** A day at a host's own stations rather than a class (see OPEN_STUDIO). */
   openStudio?: boolean;
+  /** The host's own words about this workshop (dashboard listing edit). */
+  description?: string;
+  /** Where the date comes from: the booking-page feed, hostDates.ts, the
+   *  host's dashboard, or a weekly class. Only the feed's place counts are
+   *  live counts of places left. */
+  source?: 'feed' | 'manual' | 'account' | 'recurring';
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -136,6 +142,9 @@ type LiveWorkshop = {
   request?: boolean;
   /** Firestore id of a priced dashboard date (hostEdits accountDates). */
   eventId?: string;
+  /** Dashboard dates: their own booking choice, and whether taken over from the site (takesRequests). */
+  reqChoice?: boolean;
+  adopted?: boolean;
   /** True for workshops designed for children (flagged by the scrape from
    *  the title, or per-source). */
   kids?: boolean;
@@ -248,7 +257,7 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
   // A host's own title, price and line for the workshop (dashboard edit).
   return out.map((o) => {
     const e = o.key ? listingEdit(o.host.slug, o.key) : undefined;
-    return e ? { ...o, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}) } : o;
+    return e ? { ...o, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}), ...(e.duration ? { duration: e.duration } : {}) } : o;
   });
 }
 
@@ -400,6 +409,18 @@ const workingDaysBetween = (todayMs: number, dateMs: number): number => {
   return n;
 };
 
+/** A dashboard date that takes requests rather than payment on the spot:
+ *  its own choice (Calendar tab), else its workshop's ("how guests book",
+ *  listing edit), else as before: dates taken over from the site's own
+ *  schedule keep taking requests, the host's own priced dates are paid. */
+const takesRequests = (w: { slug: string; title: string; reqChoice?: boolean; adopted?: boolean }): boolean => {
+  if (typeof w.reqChoice === 'boolean') return w.reqChoice;
+  const booking = listingEdit(w.slug, slugify(w.title))?.booking;
+  if (booking === 'request') return true;
+  if (booking === 'instant') return false;
+  return !!w.adopted;
+};
+
 /** Real sessions scraped weekly from hosts' public schedules — see
  *  scripts/update-workshops.mjs. A host with real sessions in the window
  *  drops out of the placeholder rotation entirely, and their Book button
@@ -414,13 +435,17 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   // Dates hosts sent us themselves; the feed's own entry wins on a clash.
   const inFeed = new Set(feed.map((w) => `${w.slug}|${w.date}|${w.time}`));
   const offSite = new Set<LiveWorkshop>();
+  const source = new Map<LiveWorkshop, Session['source']>();
   const workshops = [
     ...feed,
     ...hostDates
       .filter((d) => !inFeed.has(`${d.slug}|${d.date}|${d.time}`))
+      // Taken over in the host's Calendar tab: the dashboard date stands in for it.
+      .filter((d) => !isReplaced(`date|${d.slug}|${d.date}|${d.time ?? ''}`))
       .map((d) => {
         const w = { ...d, sourceUrl: d.url } as LiveWorkshop;
         if (!d.onHostSite) offSite.add(w);
+        source.set(w, 'manual');
         return w;
       }),
     // Dates hosts created in their dashboard: always our request form.
@@ -429,6 +454,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       .map((d) => {
         const w = { ...d, sourceUrl: '' } as LiveWorkshop;
         offSite.add(w);
+        source.set(w, 'account');
         return w;
       }),
   ];
@@ -463,13 +489,14 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...(w.image ? { image: w.image } : {}),
       ...(w.minGuests ? { minGuests: w.minGuests } : {}),
       ...(w.request ? { request: true } : {}),
-      ...(w.eventId ? { payEventId: w.eventId } : {}),
+      ...(w.eventId && !takesRequests(w) ? { payEventId: w.eventId } : {}),
       ...(w.kids ? { kids: true } : {}),
       ...(w.soldOut || placesLeft(w) === 0 ? { soldOut: true } : {}),
       ...(w.waitingList || (!w.soldOut && placesLeft(w) === 0) ? { waitingList: true } : {}),
       ...(!w.soldOut && placesLeft(w) !== 0 && availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.almostFull ? { almostFull: true } : {}),
       ...((availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ?? availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.booked) ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going ?? availabilityNotes[`${w.slug}|${w.date}|${w.time}`].booked } : {}),
       ...(partnerCodes[w.slug] && !offSite.has(w) && !w.request ? { partner: partnerCodes[w.slug] } : {}),
+      source: source.get(w) ?? 'feed',
       ...((w as { openStudio?: boolean }).openStudio ? { usp: EXPERIENCED[lang], openStudio: true }
         : usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
@@ -481,6 +508,8 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
   for (const r of withHostSlots((liveData as { recurring?: LiveRecurring[] }).recurring ?? [])) {
     const host = bySlug.get(r.slug);
     if (!host) continue;
+    // Taken over in the host's Calendar tab: its dates come from the dashboard now.
+    if (isReplaced(`rec|${r.slug}|${slugify(r.title)}|${r.time}`)) continue;
     const wanted = new Set(r.weekdays.map((d) => WEEKDAY_INDEX[d]));
     let occurrence = 0;
     for (let dayOffset = 0; dayOffset < DAYS_AHEAD; dayOffset++) {
@@ -509,16 +538,45 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
           return left !== undefined ? { spots: left } : {};
         })(),
         ...(usp(r.slug, r.title) ? { usp: usp(r.slug, r.title) } : {}),
+        source: 'recurring',
       });
     }
   }
   // Workshops the host paused or deleted in their dashboard stay off the site.
   // and their own title, price and line for a workshop go over the scraped ones.
-  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey)).map((s) => {
-    const e = listingEdit(s.host.slug, s.workshopKey);
-    if (!e) return s;
-    return { ...s, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}) };
-  });
+  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey)).map((s) => withListingEdit(s, today));
+}
+
+/** A host's own edit of a workshop (dashboard, hostListing edit) laid over
+ *  each of its dates: title, price, line, description, length, places,
+ *  pictures and video, and request-only booking. A date's own places
+ *  (set on that date in the dashboard) and the feed's live counts win
+ *  over the workshop's places. */
+function withListingEdit(s: Session, today: number): Session {
+  const e = listingEdit(s.host.slug, s.workshopKey);
+  if (!e) return s;
+  const out: Session = { ...s };
+  if (e.title) out.title = e.title;
+  if (e.price) out.price = `€${e.price}`;
+  if (e.note) out.usp = e.note;
+  if (e.description) out.description = e.description;
+  if (e.duration) out.duration = e.duration;
+  if (e.seats && s.source !== 'feed' && !(s.source === 'account' && typeof s.spots === 'number')) {
+    const left = placesLeft({ slug: s.host.slug, date: new Date(today + s.dayOffset * 86400000).toISOString().slice(0, 10), time: s.time, spots: e.seats });
+    if (left !== undefined) out.spots = left;
+    if (left === 0) { out.soldOut = true; out.waitingList = true; }
+  }
+  const photo = e.media?.find((m) => m.type === 'photo')?.url;
+  const video = e.media?.find((m) => m.type === 'video')?.url;
+  if (photo) out.image = photo;
+  if (video) out.host = { ...out.host, video, poster: photo ?? out.host.poster };
+  // Request-only workshop: its other dates take requests too (dashboard
+  // dates decided this already, with their own choice first).
+  if (e.booking === 'request' && s.source !== 'account') {
+    out.request = true;
+    delete out.partner;
+  }
+  return out;
 }
 
 /** The feed carries only real sessions — dated ones scraped or entered
