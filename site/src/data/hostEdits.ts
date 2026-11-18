@@ -29,7 +29,8 @@ export const isHiddenListing = (slug: string, key: string): boolean => hidden.ha
 export type ListingEdit = {
   slug: string; key: string; title?: string; price?: number | null; note?: string;
   description?: string; duration?: string; seats?: number | null;
-  media?: { type: string; url: string }[]; booking?: '' | 'request' | 'instant';
+  /** thumb: Bunny Stream's thumbnail of a video uploaded there (functions hostVideo). */
+  media?: { type: string; url: string; thumb?: string }[]; booking?: '' | 'request' | 'instant';
 };
 const listingEdits = new Map(((edits as { listingEdits?: ListingEdit[] }).listingEdits ?? []).map((e) => [`${e.slug}|${e.key}`, e]));
 /** A host's own title, price per person and short line for a workshop. */

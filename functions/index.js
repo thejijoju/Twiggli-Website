@@ -45,6 +45,11 @@ const STRIPE_CONNECT_KEY = defineSecret('STRIPE_CONNECT_KEY');
 // go out through Brevo from no-reply@twiggli.com, so mail apps treat them as
 // system mail (Jirel 14.11.26). Gmail stays the fallback.
 const BREVO_API_KEY = defineSecret('BREVO_API_KEY');
+// Bunny Stream's API key (Secret Manager BUNNY_STREAM_API_KEY): hosts'
+// videos go to Bunny Stream (Jirel 18.11.26), photos stay on Firebase
+// Storage. The key never leaves this function: the browser and the app only
+// get a signature for one upload (hostVideo).
+const BUNNY_STREAM_API_KEY = defineSecret('BUNNY_STREAM_API_KEY');
 // No address is written in this repo (Jirel, 31.10.26): they come from
 // functions/.env, which deploy-firebase.yml writes from encrypted GitHub
 // secrets (INBOX_EMAIL, SENDER_EMAIL, ADMIN_EMAILS) and never commits.
@@ -1382,16 +1387,51 @@ const YMD = /^\d{4}-\d\d-\d\d$/;
 /** The caller may edit this host page (or is Jirel). */
 const mayEdit = async (email, slug) => ADMINS.includes(email) || (await mySlugs(email)).includes(slug);
 
+// ── Videos on Bunny Stream (Jirel 18.11.26) ──
+// Library and CDN are not secret (they are in every playback address).
+const BUNNY_LIBRARY = '813734';
+const BUNNY_CDN = 'vz-079644c8-c93.b-cdn.net';
+const BUNNY_GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const BUNNY_PLAY = new RegExp(`^https://${BUNNY_CDN.replace(/\./g, '\\.')}/([0-9a-f-]{36})/playlist\\.m3u8$`);
+const bunnyPlay = (id) => `https://${BUNNY_CDN}/${id}/playlist.m3u8`;
+const bunnyThumb = (id) => `https://${BUNNY_CDN}/${id}/thumbnail.jpg`;
+/** The Bunny video id of a playback address, or ''. */
+const bunnyId = (url) => { const m = BUNNY_PLAY.exec(String(url ?? '')); return m && BUNNY_GUID.test(m[1]) ? m[1] : ''; };
+
+/** Which Bunny videos in `list` this caller may put on a page: ones they
+ *  uploaded (hostVideo create, hostVideos/{id}), ones uploaded for this
+ *  page (the caller's right to the page is checked by the function that
+ *  saves), or any for an admin. A Set of video ids, for cleanMedia. */
+const bunnyAllowed = async (list, { email = '', uid = '', slug = '' } = {}) => {
+  const ids = [...new Set((Array.isArray(list) ? list : []).slice(0, 12).map((m) => bunnyId(m?.url)).filter(Boolean))];
+  if (!ids.length) return new Set();
+  const docs = await Promise.all(ids.map((id) => getFirestore().doc(`hostVideos/${id}`).get().catch(() => null)));
+  return new Set(ids.filter((id, i) => {
+    const v = docs[i]?.data();
+    if (!v) return false;
+    return ADMINS.includes(email) || (uid && v.uid === uid) || (email && v.email === email) || (slug && v.slug === slug);
+  }));
+};
+
 /** Photos and a video for a date or a workshop: the host's page pictures
- *  and reels already on the site, or files they uploaded to Firebase
- *  Storage (hostMedia/<slug>/…, or their own app folder). */
-const cleanMedia = (list, slug, uid = '') => (Array.isArray(list) ? list : []).slice(0, 12)
-  .map((m) => ({ type: m?.type === 'video' ? 'video' : 'photo', url: String(m?.url ?? '') }))
-  .filter((m) => /^\/img\/hosts\/[a-z0-9-]+\.(jpg|png|webp)$/.test(m.url)
+ *  and reels already on the site, files they uploaded to Firebase Storage
+ *  (hostMedia/<slug>/…, or their own app folder; photos, and videos saved
+ *  before Bunny), or a video on Bunny Stream they uploaded (`bunny`, from
+ *  bunnyAllowed), with Bunny's thumbnail as its poster. */
+const cleanMedia = (list, slug, uid = '', bunny = new Set()) => (Array.isArray(list) ? list : []).slice(0, 12)
+  .map((m) => {
+    const type = m?.type === 'video' ? 'video' : 'photo';
+    const url = String(m?.url ?? '');
+    const id = type === 'video' ? bunnyId(url) : '';
+    if (id) return { type, url, ...(String(m?.thumb ?? '') === bunnyThumb(id) ? { thumb: bunnyThumb(id) } : {}), bunny: bunny.has(id) };
+    return { type, url };
+  })
+  .filter((m) => (m.bunny !== undefined ? m.bunny : /^\/img\/hosts\/[a-z0-9-]+\.(jpg|png|webp)$/.test(m.url)
     || /^\/video\/[a-z0-9-]+\.(mp4|jpg)$/.test(m.url)
     || m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`hostMedia%2F${slug}%2F`)
     // Picked in the app: uploaded to the person's own app folder.
-    || (uid && m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`/o/users%2F${uid}%2F`)));
+    || (uid && m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`/o/users%2F${uid}%2F`))))
+  .map(({ bunny: _b, ...m }) => m);
 
 /** Which site entry a dashboard date takes over (Calendar tab, Jirel 18.11.26):
  *  "rec|<slug>|<workshop key>|<HH:MM>" for a weekly class from
@@ -1400,7 +1440,7 @@ const cleanMedia = (list, slug, uid = '') => (Array.isArray(list) ? list : []).s
 const REPLACES = /^(rec\|[a-z0-9-]{1,60}\|[a-z0-9-]{1,80}\|([01]\d|2[0-3]):[0-5]\d|date\|[a-z0-9-]{1,60}\|\d{4}-\d\d-\d\d\|(([01]\d|2[0-3]):[0-5]\d)?)$/;
 
 /** A host's date, checked and trimmed; null when something is off. */
-const cleanEvent = (b, uid = '') => {
+const cleanEvent = (b, uid = '', bunny = new Set()) => {
   const slug = String(b.slug ?? '');
   const date = String(b.date ?? '');
   const start = String(b.start ?? '');
@@ -1415,7 +1455,7 @@ const cleanEvent = (b, uid = '') => {
     until: YMD.test(until) ? until : '',
     // A video and/or photos: their page's own pictures, or files they
     // uploaded to Firebase Storage (hostMedia/<slug>/…).
-    media: cleanMedia(b.media, slug, uid),
+    media: cleanMedia(b.media, slug, uid, bunny),
     location: text(b.location, 160),
     description: String(b.description ?? '').slice(0, 3000),
     price: num(b.price, 5000),
@@ -1488,7 +1528,7 @@ const newHostEvent = async (req, res, email, uid, body) => {
       slug = `${base}-${i}`;
     }
   }
-  const ev = cleanEvent({ ...body, slug }, uid);
+  const ev = cleanEvent({ ...body, slug }, uid, await bunnyAllowed(body.media, { email, uid }));
   if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
   const doc = await db.collection('hostEvents').add({ ...ev, status: 'pending', by: email, uid, hostName: name, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
   const first = !app;
@@ -1509,7 +1549,10 @@ const newHostEvent = async (req, res, email, uid, body) => {
     const approve = `${FUNCTIONS_URL}/hostApprove?e=${encodeURIComponent(email)}&s=${slug}&k=${sign(key, email, slug)}`;
     const decline = `${FUNCTIONS_URL}/hostApprove?e=${encodeURIComponent(email)}&s=${slug}&a=decline&k=${sign(key, email, `decline:${slug}`)}`;
     const pics = ev.media.map((m) => m.type === 'video'
-      ? `<p><a href="${esc(m.url)}">▶ Video</a></p>`
+      ? (bunnyId(m.url)
+        // Bunny's own player page, which plays HLS in any mail client's browser.
+        ? `<p><a href="https://iframe.mediadelivery.net/play/${BUNNY_LIBRARY}/${bunnyId(m.url)}"><img src="${esc(bunnyThumb(bunnyId(m.url)))}" alt="▶ Video" style="width:160px;height:160px;object-fit:cover;border-radius:10px"><br>▶ Video</a></p>`
+        : `<p><a href="${esc(m.url)}">▶ Video</a></p>`)
       : `<img src="${esc(m.url)}" alt="" style="width:160px;height:160px;object-fit:cover;border-radius:10px;margin:0 6px 6px 0">`).join('');
     try {
       await mailJirel({
@@ -1578,7 +1621,8 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
   // marked with the entry they replace, in one go; the build then drops the
   // site's entry, so the public page never shows a date twice.
   if (Array.isArray(body.adopt)) {
-    const evs = body.adopt.slice(0, 7).map((x) => cleanEvent({ ...x, slug: body.slug, replaces: body.replaces }, uid));
+    const bunny = await bunnyAllowed(body.adopt.slice(0, 7).flatMap((x) => (Array.isArray(x?.media) ? x.media : [])), { email, uid, slug: String(body.slug ?? '') });
+    const evs = body.adopt.slice(0, 7).map((x) => cleanEvent({ ...x, slug: body.slug, replaces: body.replaces }, uid, bunny));
     if (!evs.length || evs.some((x) => !x || !x.replaces)) return res.status(400).json({ error: 'Bad dates' });
     if (!(await mayEdit(email, evs[0].slug))) return res.status(403).json({ error: 'Not your page' });
     const owner = await pageOwner(evs[0].slug, email);
@@ -1594,7 +1638,7 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
     });
     return res.status(200).json({ items });
   }
-  const ev = cleanEvent(body, uid);
+  const ev = cleanEvent(body, uid, await bunnyAllowed(body.media, { email, uid, slug: String(body.slug ?? '') }));
   if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
   if (!(await mayEdit(email, ev.slug))) return res.status(403).json({ error: 'Not your page' });
   const owner = await pageOwner(ev.slug, email);
@@ -1698,7 +1742,7 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
       description: String(b.description ?? '').replace(/\r/g, '').trim().slice(0, 3000),
       duration: /^\d{1,2}([.,]\d{1,2})?\s?(h|min)$/.test(text(b.duration, 12)) ? text(b.duration, 12).replace(',', '.') : '',
       seats: Number.isFinite(seats) && seats >= 1 && seats <= 500 ? seats : null,
-      media: cleanMedia(b.media, slug),
+      media: cleanMedia(b.media, slug, '', await bunnyAllowed(b.media, { email, slug })),
       booking: ['request', 'instant'].includes(b.booking) ? b.booking : '',
     };
     const prev = (await ref.get()).data();
@@ -1720,6 +1764,99 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
     await mailJirel({ subject: `${slug}: "${title || key}" ${what}`, text: `${email} set "${title || key}" (${slug}) to ${what}. The site follows with the next deploy.` });
   } catch (err) { console.error('listing note failed', err?.message); }
   return res.status(200).json({ ok: true });
+});
+
+// ── hostVideo: a host's video goes straight to Bunny Stream (Jirel 18.11.26) ──
+// The dashboard and the app ask for one upload at a time:
+//   { action: 'create', slug?, title? } → creates the video in Bunny's library
+//     and returns what a TUS upload to https://video.bunnycdn.com/tusupload
+//     needs: { videoId, libraryId, expires, signature } (signature =
+//     SHA256(libraryId + key + expires + videoId), good for 2 hours), plus
+//     the playback and thumbnail addresses. hostVideos/{videoId} records who
+//     uploaded it, so cleanMedia only takes a video its uploader (or the
+//     page's host, or an admin) puts on a page.
+//   { action: 'status', videoId } → Bunny's encoding state for its uploader.
+// Any signed-in person may upload (new hosts in the app have no page yet),
+// at most VIDEO_HOUR an hour and VIDEO_DAY a day.
+const VIDEO_HOUR = 10;
+const VIDEO_DAY = 30;
+const BUNNY_STATES = ['created', 'uploaded', 'processing', 'transcoding', 'finished', 'error', 'uploadFailed', 'jitSegmenting', 'jitPlaylistsCreated'];
+const bunnyApi = (path, init = {}) => fetch(`https://video.bunnycdn.com/library/${BUNNY_LIBRARY}${path}`, {
+  ...init, headers: { AccessKey: BUNNY_STREAM_API_KEY.value(), accept: 'application/json', 'content-type': 'application/json', ...(init.headers ?? {}) },
+});
+
+export const hostVideo = onRequest({ region: 'europe-west3', secrets: [BUNNY_STREAM_API_KEY], maxInstances: 10, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const who = await callerIds(req);
+  if (!who) return res.status(401).json({ error: 'Not signed in' });
+  const { email, uid } = who;
+  const b = req.body ?? {};
+  const db = getFirestore();
+  if (!BUNNY_STREAM_API_KEY.value()) return res.status(500).json({ error: 'Video uploads are not set up' });
+
+  if (b.action === 'create') {
+    const slug = String(b.slug ?? '');
+    if (slug && (!SLUG.test(slug) || !(await mayEdit(email, slug)))) return res.status(403).json({ error: 'Not your page' });
+    if (!ADMINS.includes(email)) {
+      const now = Date.now();
+      const quota = db.doc(`hostVideoQuota/${uid}`);
+      const over = await db.runTransaction(async (t) => {
+        const sent = ((await t.get(quota)).data()?.sent ?? []).filter((x) => now - x < 86400e3);
+        if (sent.filter((x) => now - x < 3600e3).length >= VIDEO_HOUR || sent.length >= VIDEO_DAY) return true;
+        t.set(quota, { sent: [...sent, now] });
+        return false;
+      });
+      if (over) return res.status(429).json({ error: 'Too many videos', message: 'Too many videos for now, please try again later' });
+    }
+    const title = text(b.title, 120) || `${slug || email.split('@')[0]} ${new Date().toISOString().slice(0, 10)}`;
+    let video;
+    try {
+      const r = await bunnyApi('/videos', { method: 'POST', body: JSON.stringify({ title }) });
+      video = await r.json().catch(() => ({}));
+      if (!r.ok || !BUNNY_GUID.test(String(video.guid ?? ''))) throw new Error(`bunny ${r.status}`);
+    } catch (err) {
+      console.error('hostVideo create', err?.message);
+      return res.status(502).json({ error: 'Video service did not answer' });
+    }
+    const videoId = video.guid;
+    await db.doc(`hostVideos/${videoId}`).set({ email, uid, slug, title, status: 'created', createdAt: FieldValue.serverTimestamp() });
+    const expires = Math.floor(Date.now() / 1000) + 2 * 3600;
+    const signature = createHash('sha256').update(`${BUNNY_LIBRARY}${BUNNY_STREAM_API_KEY.value()}${expires}${videoId}`).digest('hex');
+    return res.status(200).json({
+      videoId, libraryId: BUNNY_LIBRARY, expires, signature,
+      tusEndpoint: 'https://video.bunnycdn.com/tusupload',
+      url: bunnyPlay(videoId), thumb: bunnyThumb(videoId),
+    });
+  }
+
+  if (b.action === 'status') {
+    const videoId = String(b.videoId ?? '');
+    if (!BUNNY_GUID.test(videoId)) return res.status(400).json({ error: 'Bad video' });
+    const ref = db.doc(`hostVideos/${videoId}`);
+    const v = (await ref.get()).data();
+    const mine = v && (v.uid === uid || v.email === email || ADMINS.includes(email) || (v.slug && await mayEdit(email, v.slug)));
+    if (!mine) return res.status(404).json({ error: 'Not found' });
+    let x;
+    try {
+      const r = await bunnyApi(`/videos/${videoId}`);
+      x = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(`bunny ${r.status}`);
+    } catch (err) {
+      console.error('hostVideo status', err?.message);
+      return res.status(502).json({ error: 'Video service did not answer' });
+    }
+    const code = Number(x.status);
+    const status = BUNNY_STATES[code] ?? 'unknown';
+    // Playable once encoded (4), or as soon as the first resolution is out.
+    const ready = code === 4 || (code === 3 && !!String(x.availableResolutions ?? '').trim());
+    const failed = code === 5 || code === 6;
+    if (status !== v.status) await ref.set({ status, updatedAt: FieldValue.serverTimestamp() }, { merge: true }).catch(() => {});
+    return res.status(200).json({
+      videoId, status, code, percent: Math.max(0, Math.min(100, Number(x.encodeProgress) || 0)), ready, failed,
+      length: Number(x.length) || 0, url: bunnyPlay(videoId), thumb: bunnyThumb(videoId),
+    });
+  }
+  return res.status(400).json({ error: 'Bad action' });
 });
 
 /** Public: every public date (no personal data), for the website build. */

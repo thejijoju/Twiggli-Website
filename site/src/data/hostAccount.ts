@@ -48,6 +48,13 @@ export interface HostAccountCopy {
   uploading: string;
   uploadDone: string;
   uploadFail: string;
+  /** A video on its way to Bunny Stream (functions hostVideo): {pct} is a number. */
+  vidPrep: string;
+  vidUp: string;
+  vidProc: string;
+  vidDone: string;
+  vidFail: string;
+  vidBusy: string;
   vPublic: string;
   vPrivate: string;
   titlePh: string;
@@ -310,6 +317,12 @@ const en: HostAccountCopy = {
   uploading: 'Uploading…',
   uploadDone: 'Uploaded.',
   uploadFail: 'Upload isn’t switched on yet. Pick a photo from your page for now, or send the video to {email}.',
+  vidPrep: 'Getting the upload ready…',
+  vidUp: 'Uploading video… {pct} %',
+  vidProc: 'Video uploaded. Preparing it for playback… {pct} %',
+  vidDone: 'Video ready.',
+  vidFail: 'The video didn’t upload. Please try again, or send it to {email}.',
+  vidBusy: 'Preparing',
   vPublic: 'Public',
   vPrivate: 'Only with the link',
   titlePh: 'What’s your workshop called?',
@@ -530,6 +543,12 @@ const de: HostAccountCopy = {
   uploading: 'Lädt hoch…',
   uploadDone: 'Hochgeladen.',
   uploadFail: 'Hochladen ist noch nicht freigeschaltet. Wähl solange ein Foto deiner Seite, oder schick das Video an {email}.',
+  vidPrep: 'Upload wird vorbereitet…',
+  vidUp: 'Video lädt hoch… {pct} %',
+  vidProc: 'Video hochgeladen. Es wird fürs Abspielen vorbereitet… {pct} %',
+  vidDone: 'Video fertig.',
+  vidFail: 'Das Video wurde nicht hochgeladen. Versuch es bitte noch einmal, oder schick es an {email}.',
+  vidBusy: 'Wird vorbereitet',
   vPublic: 'Öffentlich',
   vPrivate: 'Nur mit Link',
   titlePh: 'Wie heißt dein Workshop?',
@@ -750,6 +769,12 @@ const fr: HostAccountCopy = {
   uploading: 'Import…',
   uploadDone: 'Importé.',
   uploadFail: 'L’import n’est pas encore activé. Choisis une photo de ta page pour l’instant, ou envoie la vidéo à {email}.',
+  vidPrep: 'Préparation de l’import…',
+  vidUp: 'Import de la vidéo… {pct} %',
+  vidProc: 'Vidéo importée. Préparation pour la lecture… {pct} %',
+  vidDone: 'Vidéo prête.',
+  vidFail: 'La vidéo n’a pas été importée. Réessaie, ou envoie-la à {email}.',
+  vidBusy: 'En préparation',
   vPublic: 'Public',
   vPrivate: 'Uniquement avec le lien',
   titlePh: 'Comment s’appelle ton atelier ?',

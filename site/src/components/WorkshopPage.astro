@@ -2,6 +2,7 @@
 /** One class's page — "Try the wheel" under Ceramic Kingdom — with every
  *  upcoming date of it. The long tail: someone who has heard the name of a
  *  class, or searches the exact thing a host calls theirs. */
+import { videoSrc } from '../lib/videoSrc.ts';
 import { priceSummary } from '../data/priceFilter.ts';
 import Base from '../layouts/Base.astro';
 import DateRows from './DateRows.astro';
@@ -120,7 +121,7 @@ const wishAttrs = {
     <section class="section host-body">
       <div class="host-media">
         {media.video ? (
-          <video class="host-video" src={media.video} poster={media.poster} muted loop playsinline autoplay preload="metadata" aria-label={`${w.title} — ${host.name}`}></video>
+          <video class="host-video" {...videoSrc(media.video)} poster={media.poster} muted loop playsinline autoplay preload="metadata" aria-label={`${w.title} — ${host.name}`}></video>
         ) : (next.image ?? host.photo) ? (
           <img src={next.image ?? host.photo} alt={`${w.title} — ${host.name}`} loading="lazy" decoding="async" />
         ) : (

@@ -1,4 +1,5 @@
 ---
+import { videoSrc } from '../lib/videoSrc.ts';
 import { getSessions, berlinTodayMs, type Session } from '../data/sessions.ts';
 import RatingTag from './RatingTag.astro';
 import { filterCopy } from '../data/content.ts';
@@ -84,7 +85,7 @@ const when = (s: Session, withDay: boolean) =>
                 {s.host.video ? (
                   <>
                     <img class="tt-still" src={s.host.poster} alt="" loading="lazy" decoding="async" />
-                    <video class="tt-video" src={s.host.video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                    <video class="tt-video" {...videoSrc(s.host.video)} muted loop playsinline preload="none" aria-hidden="true"></video>
                   </>
                 ) : s.host.photo ? (
                   <img class="tt-still" src={s.host.photo} alt="" loading="lazy" decoding="async" />

@@ -6,6 +6,7 @@
  *  text. A host running many classes that day is still one card: the next
  *  open one leads, and a line under it counts the rest. Used by the
  *  occasion, activity and district pages. */
+import { videoSrc } from '../lib/videoSrc.ts';
 import type { Session } from '../data/sessions.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
 import { byDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
@@ -78,7 +79,7 @@ import Voucher from './Voucher.astro';
             </div>
             <a class="dl-media" href={workshopHref(lang, s.host, s.workshopKey)} tabindex="-1" aria-hidden="true" style={lqipStyle(s.host.poster)}>
               {(s.host.poster ?? s.host.photo) && <img src={s.host.poster ?? s.host.photo} alt="" loading="lazy" decoding="async" />}
-              {s.host.video && <video class="dl-video" src={s.host.video} muted loop playsinline preload="none"></video>}
+              {s.host.video && <video class="dl-video" {...videoSrc(s.host.video)} muted loop playsinline preload="none"></video>}
               <Voucher kind="badge" host={s.host} lang={lang} />
             </a>
           </li>

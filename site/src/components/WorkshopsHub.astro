@@ -1,4 +1,5 @@
 ---
+import { videoSrc } from '../lib/videoSrc.ts';
 import { filterCopy } from '../data/content.ts';
 import RatingTag from './RatingTag.astro';
 import PageCircles from './PageCircles.astro';
@@ -138,7 +139,7 @@ import Voucher from './Voucher.astro';
                 <a href={hostHref(lang, host)}>
                   <span class="hub-card-media" style={lqipStyle(host.poster)}>
                     {still && <img src={still} alt="" loading="lazy" decoding="async" />}
-                    {host.video && <video class="hub-card-video" src={host.video} muted loop playsinline preload="none"></video>}
+                    {host.video && <video class="hub-card-video" {...videoSrc(host.video)} muted loop playsinline preload="none"></video>}
                     <span class="hub-card-date">{n ? formatDay(n.dayOffset, lang) : h.onRequest}</span>
                     <Voucher kind="badge" host={host} lang={lang} />
                   </span>

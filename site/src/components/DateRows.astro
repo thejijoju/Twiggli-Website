@@ -3,6 +3,7 @@
  *  for the host and activity pages. Server-rendered text, one row per
  *  date, no filters and no script: what a searcher and a crawler both want
  *  from "when does this run". The calendar keeps its richer cards. */
+import { videoSrc } from '../lib/videoSrc.ts';
 import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
@@ -65,7 +66,7 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
       {withThumb && (
         <a class="date-thumb" href={workshopHref(lang, s.host, s.workshopKey)} tabindex="-1" aria-hidden="true" style={lqipStyle(s.host.poster)}>
           {thumbFor(s) && <img src={thumbFor(s)} alt="" loading="lazy" decoding="async" />}
-          {s.host.video && <video class="date-thumb-video" src={s.host.video} muted loop playsinline preload="none"></video>}
+          {s.host.video && <video class="date-thumb-video" {...videoSrc(s.host.video)} muted loop playsinline preload="none"></video>}
         </a>
       )}
       <span class="date-when">
