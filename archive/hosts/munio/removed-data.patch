@@ -1,0 +1,3871 @@
+diff --git a/scripts/update-workshops.mjs b/scripts/update-workshops.mjs
+index f2552bd..40e847a 100644
+--- a/scripts/update-workshops.mjs
++++ b/scripts/update-workshops.mjs
+@@ -188,14 +188,6 @@ const SOURCES = [
+   { slug: 'kohfink', name: 'Imkerei Kohfink — Back-Kurse', mode: 'eventfrog',
+     url: 'https://imkerei-kohfink.de/BACK-KURSE/',
+     price: '€55', district: 'Kaulsdorf' },
+-  // Shopify catalog + Cowlendar booking modal ("you only see the dates
+-  // after clicking Book") — but Cowlendar's availability API answers plain
+-  // GETs, so every slot reads without a browser. Sessions run near-daily;
+-  // maxDays keeps the volume sane.
+-  { slug: 'munio', name: 'The Munio — workshops', mode: 'shopify-cowlendar',
+-    base: 'https://themunio.de', collection: 'workshops',
+-    url: 'https://themunio.de/collections/workshops',
+-    district: 'Schöneberg', maxDays: 45 },
+   // Pasta Madre's Wix calendar renders every course server-side as
+   // h2-titled blocks; the three solidarity prices (Tulpe/Lilie/Rose)
+   // surface as a €76–100 range.
+@@ -344,7 +336,6 @@ const SOURCES = [
+     district: 'Mitte',
+     routes: [
+       { match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' },
+-      { match: "The Munio", slug: 'munio', district: 'Schöneberg' },
+       // Yurika teaches hers at the Craftkai venue, so it keeps that district.
+       { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' },
+     ] },
+@@ -1289,8 +1280,8 @@ function fromTitledDateBlocks(html, source) {
+  *  products.json lists the workshops (title, price, variant); each product
+  *  page embeds its Cowlendar calendar id, and Cowlendar's availability
+  *  endpoint answers plain unauthenticated GETs with every bookable slot
+- *  (start, duration, spots left) — verified live against The Munio's
+- *  booking modal. Sessions run near-daily, so source.maxDays keeps the
++ *  (start, duration, spots left) — verified live against a host's
++ *  booking modal (Oct 2026). Sessions run near-daily, so source.maxDays keeps the
+  *  horizon short enough not to drown the rest of the calendar. */
+ async function fromShopifyCowlendar(source) {
+   const res = await fetch(`${source.base}/collections/${source.collection}/products.json?limit=250`, {
+@@ -4764,7 +4755,7 @@ if (process.env.PARSE_TEST) {
+       : process.env.PARSE_TEST_MODE === 'titled-date-blocks'
+         ? fromTitledDateBlocks
+       : process.env.PARSE_TEST_MODE === 'craftkai'
+-        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'The Munio', slug: 'munio', district: 'Schöneberg' }, { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' }] })
++        ? (h, src) => fromCraftkai(h, { ...src, district: 'Mitte', routes: [{ match: 'Anybody Can Whittle', slug: 'whittle', district: 'Charlottenburg' }, { match: 'Kusaki-zome|Yurika Saito', slug: 'yurika' }] })
+       : process.env.PARSE_TEST_MODE === 'shopify'
+         ? (h, src) => fromShopify(h, { ...src, url: 'https://shop.example/products.json', productType: process.env.PARSE_TEST_TYPE, bodyNumericDate: !!process.env.PARSE_TEST_NUMERIC })
+       : process.env.PARSE_TEST_MODE === 'shopify-when'
+diff --git a/site/src/components/ActivityLinks.astro b/site/src/components/ActivityLinks.astro
+index 7760574..3e54bf7 100644
+--- a/site/src/components/ActivityLinks.astro
++++ b/site/src/components/ActivityLinks.astro
+@@ -37,7 +37,7 @@ const quick = [
+   { label: occ.kids.short, href: occasionHref(lang, 'kids'), tint: '#ffd9ee', icon: '🧸' },
+   { label: c.team, href: href(lang, '/corporatebookings/'), tint: '#d9f3ea', icon: '🙌' },
+ ];
+-const faces = ['munio', 'smell-lab', 'pausify'];
++const faces = ['galleria-lucia', 'smell-lab', 'pausify'];
+ ---
+ 
+ <section class="section activity-band band-seam" id="workshops">
+diff --git a/site/src/components/HomePage.astro b/site/src/components/HomePage.astro
+index 17b92a4..ed3d6e3 100644
+--- a/site/src/components/HomePage.astro
++++ b/site/src/components/HomePage.astro
+@@ -256,7 +256,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
+   <div class="container">
+     <a class="find-solo hd-solo" href={calendarHref}>
+       <span class="find-solo-faces" aria-hidden="true">
+-        {['munio', 'smell-lab', 'pausify'].map((p) => <img src={mail(p)} alt="" loading="lazy" decoding="async" />)}
++        {['galleria-lucia', 'smell-lab', 'pausify'].map((p) => <img src={mail(p)} alt="" loading="lazy" decoding="async" />)}
+       </span>
+       <span class="find-solo-text">
+         <strong>{find.soloTitle}</strong>
+diff --git a/site/src/components/HomeSplits.astro b/site/src/components/HomeSplits.astro
+index b55b323..b458b68 100644
+--- a/site/src/components/HomeSplits.astro
++++ b/site/src/components/HomeSplits.astro
+@@ -25,7 +25,7 @@ const img = (name: string) => withBase(`/img/mail/${name}.jpg`);
+       </div>
+     </div>
+     <div class="home-split-collage" aria-hidden="true">
+-      <img class="home-split-card" src={img('munio')} alt="" loading="lazy" />
++      <img class="home-split-card" src={img('galleria-lucia')} alt="" loading="lazy" />
+       <figure class="home-split-pic is-taped is-top">
+         <div class="home-split-paper"><img src={img('jem-kimchi')} alt="" loading="lazy" /><figcaption>{teams.pics[0]}</figcaption></div>
+         <span class="home-split-tape is-tl"></span><span class="home-split-tape is-br"></span>
+diff --git a/site/src/components/ReviewPage.astro b/site/src/components/ReviewPage.astro
+index 7820f8c..39bd024 100644
+--- a/site/src/components/ReviewPage.astro
++++ b/site/src/components/ReviewPage.astro
+@@ -3,7 +3,7 @@
+  * Where guests leave a review after their workshop (review emails of
+  * 05.11.26). The link in the email carries the host (h), the guest's first
+  * name (n), the workshop (w) and, when they tapped a star in the email, the
+- * stars (s): /review/?h=the-munio&n=Steven&w=Kerzen-Workshop&s=5. The review
++ * stars (s): /review/?h=galleria-lucia&n=Steven&w=Kerzen-Workshop&s=5. The review
+  * goes through formRequest (Type "Review"), so it lands in Firestore and in
+  * Jirel's inbox; it is shown on the site only after Jirel adds it to
+  * trust.ts `reviews`, and only with the first name when the guest agreed.
+diff --git a/site/src/data/birthday.ts b/site/src/data/birthday.ts
+index 313e7b9..86b63c8 100644
+--- a/site/src/data/birthday.ts
++++ b/site/src/data/birthday.ts
+@@ -7,7 +7,6 @@ import type { HenCopy } from './henParty.ts';
+  *  (Jirel, 26.10). */
+ export const birthdayPicks: { slug: string; image: string; price?: number; area?: string }[] = [
+   { slug: 'ceramic-kingdom', image: 'ceramic-kingdom' },
+-  { slug: 'munio', image: 'munio' },
+   { slug: 'studio32', image: 'studio32' },
+   { slug: 'galleria-lucia', image: 'galleria-lucia-dipdye' },
+   { slug: 'jem', image: 'jem-sushi' },
+@@ -34,7 +33,6 @@ export const birthdayCopy: Record<'en' | 'de', HenCopy> = {
+     pickedSub: 'Alle privat für eure Gruppe, mit echten Berliner Maker*innen. Preise pro Person, direkt von den Gastgeber*innen.',
+     picks: [
+       { title: 'Töpfern an der Drehscheibe', tag: 'Der Klassiker' },
+-      { title: 'Kerzen mit getrockneten Blumen', tag: 'Gemütlich' },
+       { title: 'Zusammen kochen & backen', tag: 'Für Genießer*innen' },
+       { title: 'Teppich tuften', tag: 'Etwas ganz Neues' },
+       { title: 'Kerzen färben (Dip-Dye)', tag: 'Bunt & fotogen' },
+@@ -90,7 +88,6 @@ export const birthdayCopy: Record<'en' | 'de', HenCopy> = {
+     pickedSub: 'All private for your group, with real Berlin makers. Prices per person, straight from the hosts.',
+     picks: [
+       { title: 'Pottery on the wheel', tag: 'The classic' },
+-      { title: 'Candles with dried flowers', tag: 'Cosy' },
+       { title: 'Cooking & baking together', tag: 'For foodies' },
+       { title: 'Rug tufting', tag: 'Something new' },
+       { title: 'Dip-dye candles', tag: 'Colourful & photogenic' },
+diff --git a/site/src/data/content.ts b/site/src/data/content.ts
+index e681a36..ebc8158 100644
+--- a/site/src/data/content.ts
++++ b/site/src/data/content.ts
+@@ -243,8 +243,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
+   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
+   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
+   pastamadre:   { activity: 'food',        groupRange: [1, 12],   hourRange: [3, 5] },
+-  // Laura, 15.10.26: 1–20 in the studio, 20–100 at the client's; from 40 pp.
+-  munio:        { activity: 'craft',       groupRange: [1, 100],  hourRange: [1, 2], groupPrice: 40 },
+   // Walks run from 10 people; no published cap ("kleine Gruppen").
+   'monk-garden': { activity: 'food',       alsoIn: ['plants'], groupRange: [10, 20],  hourRange: [2.5, 3] },
+   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
+@@ -428,10 +426,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
+     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, sourdough & fermentation', studio: 'Pastamadre',
+       blurb: 'Homemade Italian pasta, sourdough bread and pizza, and vegetable fermentation with Maria-Lucrezia and Frank in their Wedding kitchen — most workshops end around the dinner table. Solidarity pricing: pay the full Rose price, or the reduced Tulpe price when money is tight. Ingredients are organic, regional and largely from the SUPERCOOP co-op.',
+       group: 'Small groups', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+-    // Copy from themunio.de; photos to follow.
+-    { slug: 'munio', name: 'The Munio', specialty: 'Candle & fragrance making', studio: 'The Munio Studio',
+-      blurb: 'A Latvian candle-maker’s Berlin studio on Akazienstraße. Pour your own natural soy-wax candle with dried flowers, blend fragrance-oil roll-ons from their scent library, or make scented wax melts — short, relaxed sessions in the store, most days of the week.',
+-      group: 'Up to 20 in the studio · 20–100 on-site', duration: '1–2 h', place: 'Akazienstr. 30, Berlin / on-site', languages: 'EN · DE', priceNote: 'starting price' },
+     // Copy from beat-etage.de; photos to follow.
+     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
+       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
+@@ -642,9 +636,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
+     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
+       blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
+       group: '≤ 17', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
+-    { slug: 'munio', name: 'The Munio', specialty: 'Kerzen & Duft-Workshops', studio: 'The Munio Studio',
+-      blurb: 'Das Berliner Studio einer lettischen Kerzenmanufaktur in der Akazienstraße. Gieße deine eigene Sojawachskerze mit Trockenblumen, mische Duftöl-Roll-ons aus ihrer Duftbibliothek oder stelle Duftwachs her — kurze, entspannte Sessions im Store, fast jeden Tag.',
+-      group: 'Bis 20 im Studio · 20–100 vor Ort', duration: '1–2 Std.', place: 'Akazienstr. 30, Berlin / vor Ort', languages: 'EN · DE', priceNote: 'Einstiegspreis' },
+     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, Sauerteig & Fermentation', studio: 'Pastamadre',
+       blurb: 'Hausgemachte italienische Pasta, Sauerteigbrot und -pizza und Gemüsefermentation mit Maria-Lucrezia und Frank in ihrer Küche im Wedding — die meisten Workshops enden am Esstisch. Solidarisches Preismodell: voller Rose-Preis oder reduzierter Tulpe-Preis, wenn das Budget knapp ist. Zutaten bio, regional und größtenteils von der SUPERCOOP-Genossenschaft.',
+       group: 'Kleine Gruppen', duration: '3–5 Std.', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+@@ -816,12 +807,6 @@ const reels: Record<string, { video: string; poster: string }> = {
+      between them are used; painting them out was tried and the box is too
+      wide a share of the frame for it. Audio stripped. */
+   pastamadre: { video: '/video/pastamadre.mp4', poster: '/video/pastamadre-poster.jpg' },
+-  /* The Munio's own, from the second half of their clip: the wax poured from
+-     the jug, the trays of dried botanicals and scent jars down the middle of
+-     the table, and the candles the group set flowers into. The opening — the
+-     shop, the introductions, the scent testing — is left off; the making is
+-     what a card has room to say. No caption anywhere in it. Audio stripped. */
+-  munio: { video: '/video/munio.mp4', poster: '/video/munio-poster.jpg' },
+   /* Aurélie's own clip, 16.10.26: the trays of soil and gravel, the jars
+      being layered round the table, the moss and plants going in, and the
+      finished 5-litre jar held up. Its opening caption ("terrarium workshop,
+@@ -1601,7 +1586,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
+   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
+   maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },
+   faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Prenzlauer Berg' },
+-  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg', onSite: true },
++  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' },
+   'beat-etage': { area: 'Treptow' }, bumerang: { area: 'Lichtenberg' },
+   'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau', onSite: true },
+   schmiede: { area: 'Blankenburg' }, daisuki: { area: 'Charlottenburg' },
+diff --git a/site/src/data/henParty.ts b/site/src/data/henParty.ts
+index 53cb7f1..e44f7e1 100644
+--- a/site/src/data/henParty.ts
++++ b/site/src/data/henParty.ts
+@@ -5,7 +5,6 @@
+  *  vulva painting has its own €40 ticket). */
+ export const henPicks: { slug: string; image: string; price?: number; area?: string }[] = [
+   { slug: 'pia', image: 'pia-vulva', price: 40, area: 'Friedrichshain' },
+-  { slug: 'munio', image: 'munio' },
+   { slug: 'galleria-lucia', image: 'galleria-lucia-dipdye' },
+   { slug: 'celina', image: 'celina' },
+   { slug: 'karen-rose', image: 'karen-rose-naturkosmetik' },
+@@ -51,7 +50,6 @@ export const henCopy: Record<'en' | 'de', HenCopy> = {
+     pickedSub: 'Alle privat für eure Gruppe, mit echten Berliner Maker*innen. Preise pro Person, direkt von den Gastgeberinnen.',
+     picks: [
+       { title: 'Vulva Painting', tag: 'Der JGA-Hit' },
+-      { title: 'Kerzen mit getrockneten Blumen', tag: 'Romantisch' },
+       { title: 'Kerzen färben (Dip-Dye)', tag: 'Bunt & fotogen' },
+       { title: 'Mosaik oder Drink & Paint im Atelier', tag: 'Eigenes Atelier' },
+       { title: 'Naturkosmetik & Seife rühren', tag: 'Wellness-Vibes' },
+@@ -107,7 +105,6 @@ export const henCopy: Record<'en' | 'de', HenCopy> = {
+     pickedSub: 'All private for your group, with real Berlin makers. Prices per person, straight from the hosts.',
+     picks: [
+       { title: 'Vulva painting', tag: 'The hen party hit' },
+-      { title: 'Candles with dried flowers', tag: 'Romantic' },
+       { title: 'Dip-dye candles', tag: 'Colourful & photogenic' },
+       { title: 'Mosaic or drink & paint at the studio', tag: 'Your own studio' },
+       { title: 'Natural cosmetics & soap', tag: 'Spa vibes' },
+diff --git a/site/src/data/hosts/es.ts b/site/src/data/hosts/es.ts
+index cc4cea3..54ff9f1 100644
+--- a/site/src/data/hosts/es.ts
++++ b/site/src/data/hosts/es.ts
+@@ -94,9 +94,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, masa madre & fermentación', studio: 'Pastamadre',
+     blurb: 'Pasta italiana casera, pan y pizza de masa madre, y fermentación de verduras con Maria-Lucrezia y Frank en su cocina de Wedding; la mayoría de los talleres terminan alrededor de la mesa. Precios solidarios: paga el precio completo Rose, o el precio reducido Tulpe cuando el dinero no llega. Los ingredientes son ecológicos, de la región y en gran parte de la cooperativa SUPERCOOP.',
+     group: 'Grupos pequeños', duration: '3–5 h', place: 'Groninger Str. 48, Berlín', languages: 'DE · EN' },
+-  { slug: 'munio', name: 'The Munio', specialty: 'Elaboración de velas & fragancias', studio: 'The Munio Studio',
+-    blurb: 'El estudio berlinés de una fabricante de velas letona en la Akazienstraße. Vierte tu propia vela natural de cera de soja con flores secas, mezcla roll-ons de aceites aromáticos de su biblioteca de aromas o haz wax melts perfumados: sesiones cortas y relajadas en la tienda, casi todos los días de la semana.',
+-    group: 'Hasta 20 en el estudio · 20–100 in situ', duration: '1–2 h', place: 'Akazienstr. 30, Berlín', languages: 'EN · DE', priceNote: 'precio inicial' },
+   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percusión & tambores', studio: 'Percussionstudio Beat-Etage',
+     blurb: 'Un estudio de percusión en una antigua nave industrial de Treptow. Sumérgete en los ritmos de África Occidental con djembés y dunduns en los talleres mensuales de fin de semana, o prueba el cajón y el handpan: dos horas de percusión práctica, instrumentos incluidos, sin necesidad de experiencia.',
+     group: 'Grupos pequeños', duration: '2 h', place: 'Bouchéstr. 12, Berlín', languages: 'DE' },
+diff --git a/site/src/data/hosts/fr.ts b/site/src/data/hosts/fr.ts
+index 299b7b4..0f839da 100644
+--- a/site/src/data/hosts/fr.ts
++++ b/site/src/data/hosts/fr.ts
+@@ -94,9 +94,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pâtes, levain & fermentation', studio: 'Pastamadre',
+     blurb: 'Pâtes italiennes maison, pain au levain et pizza, et fermentation de légumes avec Maria-Lucrezia et Frank dans leur cuisine de Wedding — la plupart des ateliers se terminent autour de la table du dîner. Tarification solidaire : payez le plein tarif Rose, ou le tarif réduit Tulpe quand l’argent manque. Les ingrédients sont bio, régionaux et proviennent en grande partie de la coopérative SUPERCOOP.',
+     group: 'Petits groupes', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+-  { slug: 'munio', name: 'The Munio', specialty: 'Fabrication de bougies & de parfums', studio: 'The Munio Studio',
+-    blurb: 'Le studio berlinois d’une fabricante de bougies lettone, sur l’Akazienstraße. Coulez votre propre bougie naturelle en cire de soja avec des fleurs séchées, composez des roll-ons d’huiles parfumées à partir de leur bibliothèque de senteurs, ou fabriquez des fondants parfumés — des séances courtes et détendues en boutique, presque tous les jours de la semaine.',
+-    group: 'Jusqu’à 20 en atelier · 20–100 sur site', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'tarif de départ' },
+   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussions & tambours', studio: 'Percussionstudio Beat-Etage',
+     blurb: 'Un studio de percussions dans une ancienne halle d’usine de Treptow. Plongez dans les rythmes ouest-africains sur djembés et dunduns lors des ateliers mensuels du week-end, ou essayez le cajón et le handpan — deux heures de percussions pratiques, instruments fournis, aucune expérience requise.',
+     group: 'Petits groupes', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
+diff --git a/site/src/data/hosts/it.ts b/site/src/data/hosts/it.ts
+index fa9ec60..3f93780 100644
+--- a/site/src/data/hosts/it.ts
++++ b/site/src/data/hosts/it.ts
+@@ -94,9 +94,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, lievito madre & fermentazione', studio: 'Pastamadre',
+     blurb: 'Pasta italiana fatta in casa, pane e pizza a lievito madre, e fermentazione di verdure con Maria-Lucrezia e Frank nella loro cucina a Wedding — la maggior parte dei workshop finisce intorno alla tavola apparecchiata. Prezzi solidali: paghi il prezzo pieno Rose, oppure il prezzo ridotto Tulpe quando i soldi sono pochi. Gli ingredienti sono biologici, regionali e in gran parte dalla cooperativa SUPERCOOP.',
+     group: 'Piccoli gruppi', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+-  { slug: 'munio', name: 'The Munio', specialty: 'Candele & profumi artigianali', studio: 'The Munio Studio',
+-    blurb: 'Lo studio berlinese di una produttrice di candele lettone sulla Akazienstraße. Cola la tua candela naturale in cera di soia con fiori secchi, componi roll-on di oli profumati dalla loro libreria di fragranze, oppure realizza wax melt profumati — sessioni brevi e rilassate in negozio, quasi tutti i giorni della settimana.',
+-    group: 'Fino a 20 in studio · 20–100 in sede', duration: '1–2 h', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'prezzo di partenza' },
+   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussioni & tamburi', studio: 'Percussionstudio Beat-Etage',
+     blurb: 'Uno studio di percussioni in una vecchia fabbrica di Treptow. Immergiti nei ritmi dell’Africa occidentale su djembe e dundun nei workshop mensili del fine settimana, oppure prova cajón e handpan — due ore di percussioni pratiche, strumenti forniti, nessuna esperienza necessaria.',
+     group: 'Piccoli gruppi', duration: '2 h', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
+diff --git a/site/src/data/hosts/nl.ts b/site/src/data/hosts/nl.ts
+index 0033234..c0b8356 100644
+--- a/site/src/data/hosts/nl.ts
++++ b/site/src/data/hosts/nl.ts
+@@ -94,9 +94,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, zuurdesem & fermentatie', studio: 'Pastamadre',
+     blurb: 'Zelfgemaakte Italiaanse pasta, zuurdesembrood en pizza, en het fermenteren van groenten met Maria-Lucrezia en Frank in hun keuken in Wedding — de meeste workshops eindigen rond de eettafel. Solidaire prijzen: betaal de volle Rose-prijs, of de gereduceerde Tulpe-prijs als het geld krap is. De ingrediënten zijn biologisch, regionaal en komen grotendeels van de SUPERCOOP-coöperatie.',
+     group: 'Kleine groepen', duration: '3–5 u', place: 'Groninger Str. 48, Berlijn', languages: 'DE · EN' },
+-  { slug: 'munio', name: 'The Munio', specialty: 'Kaarsen & geuren maken', studio: 'The Munio Studio',
+-    blurb: 'De Berlijnse studio van een Letse kaarsenmaker aan de Akazienstraße. Giet je eigen natuurlijke sojawaskaars met gedroogde bloemen, meng geurolie-roll-ons uit hun geurbibliotheek, of maak geurende waxmelts — korte, ontspannen sessies in de winkel, op de meeste dagen van de week.',
+-    group: 'Tot 20 in de studio · 20–100 op locatie', duration: '1–2 u', place: 'Akazienstr. 30, Berlijn', languages: 'EN · DE', priceNote: 'vanafprijs' },
+   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussie & drummen', studio: 'Percussionstudio Beat-Etage',
+     blurb: 'Een percussiestudio in een oude fabriekshal in Treptow. Duik in West-Afrikaanse ritmes op djembés en dunduns tijdens de maandelijkse weekendworkshops, of probeer cajon en handpan — twee uur hands-on drummen, instrumenten aanwezig, geen ervaring nodig.',
+     group: 'Kleine groepen', duration: '2 u', place: 'Bouchéstr. 12, Berlijn', languages: 'DE' },
+diff --git a/site/src/data/hosts/pl.ts b/site/src/data/hosts/pl.ts
+index 825dc33..b6b38ab 100644
+--- a/site/src/data/hosts/pl.ts
++++ b/site/src/data/hosts/pl.ts
+@@ -94,9 +94,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Makaron, zakwas & fermentacja', studio: 'Pastamadre',
+     blurb: 'Domowy włoski makaron, chleb i pizza na zakwasie oraz fermentacja warzyw z Marią-Lucrezią i Frankiem w ich kuchni w Wedding — większość warsztatów kończy się przy wspólnym stole. Ceny solidarnościowe: płacisz pełną cenę „Rose” albo obniżoną cenę „Tulpe”, gdy z pieniędzmi jest krucho. Składniki są ekologiczne, regionalne i w dużej mierze pochodzą ze spółdzielni SUPERCOOP.',
+     group: 'Małe grupy', duration: '3–5 godz.', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+-  { slug: 'munio', name: 'The Munio', specialty: 'Wyrób świec & zapachów', studio: 'The Munio Studio',
+-    blurb: 'Berlińskie studio łotewskiej manufaktury świec przy Akazienstraße. Odlej własną naturalną świecę z wosku sojowego z suszonymi kwiatami, skomponuj zapachowe roll-ony z olejków z ich biblioteki zapachów albo zrób woski zapachowe do kominka — krótkie, luźne sesje w sklepie, przez większość dni tygodnia.',
+-    group: 'Do 20 osób w pracowni · 20–100 na miejscu', duration: '1–2 godz.', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'cena wyjściowa' },
+   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Perkusja & bębny', studio: 'Percussionstudio Beat-Etage',
+     blurb: 'Studio perkusyjne w starej hali fabrycznej w Treptow. Zanurz się w zachodnioafrykańskich rytmach na djembe i dundunach podczas comiesięcznych warsztatów weekendowych albo spróbuj cajonu i handpana — dwie godziny praktycznego bębnienia, instrumenty zapewnione, doświadczenie nie jest potrzebne.',
+     group: 'Małe grupy', duration: '2 godz.', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
+diff --git a/site/src/data/hosts/tr.ts b/site/src/data/hosts/tr.ts
+index dac8675..22f740b 100644
+--- a/site/src/data/hosts/tr.ts
++++ b/site/src/data/hosts/tr.ts
+@@ -94,9 +94,6 @@ export const hosts: HostCopy[] = [
+   { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Makarna, ekşi maya & fermantasyon', studio: 'Pastamadre',
+     blurb: 'Maria-Lucrezia ve Frank ile Wedding’deki mutfaklarında ev yapımı İtalyan makarnası, ekşi mayalı ekmek ve pizza, bir de sebze fermantasyonu — atölyelerin çoğu akşam yemeği masasında bitiyor. Dayanışma fiyatlandırması: tam Rose fiyatını ya da bütçe darsa indirimli Tulpe fiyatını öde. Malzemeler organik, yerel ve büyük ölçüde SUPERCOOP kooperatifinden.',
+     group: 'Küçük gruplar', duration: '3–5 sa', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
+-  { slug: 'munio', name: 'The Munio', specialty: 'Mum & koku yapımı', studio: 'The Munio Studio',
+-    blurb: 'Letonyalı bir mum yapımcısının Akazienstraße’deki Berlin stüdyosu. Kuru çiçeklerle kendi doğal soya mumunu dök, koku kütüphanelerinden roll-on koku yağları harmanla ya da kokulu mum eriyikleri yap — mağazada haftanın çoğu günü kısa, rahat seanslar.',
+-    group: 'Stüdyoda en fazla 20 · yerinde 20–100', duration: '1–2 sa', place: 'Akazienstr. 30, Berlin', languages: 'EN · DE', priceNote: 'başlangıç fiyatı' },
+   { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Perküsyon & davul', studio: 'Percussionstudio Beat-Etage',
+     blurb: 'Treptow’da eski bir fabrika salonunda bir perküsyon stüdyosu. Aylık hafta sonu atölyelerinde djembe ve dundunlarla Batı Afrika ritimlerine dal ya da cajon ve handpan dene — iki saat uygulamalı davul, enstrümanlar sağlanıyor, deneyim gerekmiyor.',
+     group: 'Küçük gruplar', duration: '2 sa', place: 'Bouchéstr. 12, Berlin', languages: 'DE' },
+diff --git a/site/src/data/hosts/translation-state.json b/site/src/data/hosts/translation-state.json
+index 1d0a7a3..f5d5d07 100644
+--- a/site/src/data/hosts/translation-state.json
++++ b/site/src/data/hosts/translation-state.json
+@@ -29,7 +29,6 @@
+     "galleria-lucia": "d10bed74f3e179a6",
+     "kohfink": "fc6ecbfd5ba4c2a1",
+     "pastamadre": "ab33a0d40b7f5913",
+-    "munio": "2406751370e9632a",
+     "beat-etage": "5f8a2ef4398f8ab3",
+     "monk-garden": "82c8387cfbbaeeae",
+     "bumerang": "ad3ad90cc5e6775a",
+@@ -89,7 +88,6 @@
+     "galleria-lucia": "d10bed74f3e179a6",
+     "kohfink": "fc6ecbfd5ba4c2a1",
+     "pastamadre": "ab33a0d40b7f5913",
+-    "munio": "2406751370e9632a",
+     "beat-etage": "5f8a2ef4398f8ab3",
+     "monk-garden": "82c8387cfbbaeeae",
+     "bumerang": "ad3ad90cc5e6775a",
+@@ -149,7 +147,6 @@
+     "galleria-lucia": "d10bed74f3e179a6",
+     "kohfink": "fc6ecbfd5ba4c2a1",
+     "pastamadre": "ab33a0d40b7f5913",
+-    "munio": "2406751370e9632a",
+     "beat-etage": "5f8a2ef4398f8ab3",
+     "monk-garden": "82c8387cfbbaeeae",
+     "bumerang": "ad3ad90cc5e6775a",
+@@ -209,7 +206,6 @@
+     "galleria-lucia": "d10bed74f3e179a6",
+     "kohfink": "fc6ecbfd5ba4c2a1",
+     "pastamadre": "ab33a0d40b7f5913",
+-    "munio": "2406751370e9632a",
+     "beat-etage": "5f8a2ef4398f8ab3",
+     "monk-garden": "82c8387cfbbaeeae",
+     "bumerang": "ad3ad90cc5e6775a",
+@@ -269,7 +265,6 @@
+     "galleria-lucia": "d10bed74f3e179a6",
+     "kohfink": "fc6ecbfd5ba4c2a1",
+     "pastamadre": "ab33a0d40b7f5913",
+-    "munio": "2406751370e9632a",
+     "beat-etage": "5f8a2ef4398f8ab3",
+     "monk-garden": "82c8387cfbbaeeae",
+     "bumerang": "ad3ad90cc5e6775a",
+@@ -329,7 +324,6 @@
+     "galleria-lucia": "d10bed74f3e179a6",
+     "kohfink": "fc6ecbfd5ba4c2a1",
+     "pastamadre": "ab33a0d40b7f5913",
+-    "munio": "2406751370e9632a",
+     "beat-etage": "5f8a2ef4398f8ab3",
+     "monk-garden": "82c8387cfbbaeeae",
+     "bumerang": "ad3ad90cc5e6775a",
+diff --git a/site/src/data/live-workshops.json b/site/src/data/live-workshops.json
+index 61a3e6e..5b7852d 100644
+--- a/site/src/data/live-workshops.json
++++ b/site/src/data/live-workshops.json
+@@ -145,12 +145,6 @@
+       "status": "ok",
+       "count": 6
+     },
+-    {
+-      "slug": "munio",
+-      "url": "https://themunio.de/collections/workshops",
+-      "status": "ok",
+-      "count": 220
+-    },
+     {
+       "slug": "pastamadre",
+       "url": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -880,45 +874,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-18",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-18",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-18",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -943,45 +898,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-18",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-18",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-18",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "schmiede",
+       "sourceUrl": "https://www.schmiedekurse-berlin.de/sch%C3%A4rfkurse-messersch%C3%A4rfkurse/",
+@@ -1053,58 +969,6 @@
+       "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/94064612/calendar/11221316",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-19",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-19",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-19",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-19",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "lama",
+       "sourceUrl": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+@@ -1118,58 +982,6 @@
+       "url": "https://lamaleathergoods.com/design-and-craft-your-own-leather-earrings/",
+       "image": "https://lamaleathergoods.com/wp-content/uploads/2022/01/DSC05935-copy.jpg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-19",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-19",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-19",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-19",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -1183,19 +995,6 @@
+       "url": "https://www.coffeeandbananas.com/",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-19",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -1208,19 +1007,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-19",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "ceramic-kingdom",
+       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
+@@ -1247,19 +1033,6 @@
+       "district": "Blankenburg",
+       "image": "https://image.jimcdn.com/app/cms/image/transf/dimension=2000x1500:format=jpg/path/s670a799786839477/backgroundarea/i6038267879300c95/version/1507885810/image.jpg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-20",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -1271,45 +1044,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-20",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-20",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-20",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "landsinn",
+       "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+@@ -1348,58 +1082,6 @@
+       "url": "https://lamaleathergoods.com/make-your-pet-a-collar-name-tag/",
+       "image": "https://lamaleathergoods.com/wp-content/uploads/2018/11/COLLAR_CHOCOLATE_0_2.jpg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-20",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-20",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-20",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-20",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -1425,19 +1107,6 @@
+       "district": "Kaulsdorf",
+       "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-20",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 8,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "jem",
+       "sourceUrl": "https://www.fischtal-foodlab.com/event-pages-sitemap.xml",
+@@ -1598,19 +1267,6 @@
+       "image": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1184376404%2F1615024444013%2F1%2Foriginal.20260512-085831?crop=focalpoint&fit=crop&w=640&auto=format%2Ccompress&q=75&sharp=10&fp-x=0.5&fp-y=0.5&s=acdfb557c74021ce7bc64053eb3158ec",
+       "url": "https://www.eventbrite.de/e/barista-workshop-tickets-1989293102219"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-21",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 6,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "landsinn",
+       "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+@@ -1635,45 +1291,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-21",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-21",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-21",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -1698,58 +1315,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-21",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-21",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-21",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-21",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "faye",
+       "sourceUrl": "https://www.senle.studio/scheduling",
+@@ -1775,19 +1340,6 @@
+       "district": "Kaulsdorf",
+       "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-21",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 6,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "celina",
+       "sourceUrl": "https://www.gestaltwandel.com/booking",
+@@ -2097,45 +1649,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-25",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-25",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-25",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -2149,54 +1662,15 @@
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
++      "slug": "rebeca",
++      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
++      "title": "Anatomy Course - Eyes & Nose",
+       "date": "2026-11-25",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-25",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-25",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "rebeca",
+-      "sourceUrl": "https://www.tickettailor.com/events/turnedartist",
+-      "title": "Anatomy Course - Eyes & Nose",
+-      "date": "2026-11-25",
+-      "time": "17:15",
+-      "duration": "1 h",
+-      "district": "Prenzlauer Berg",
+-      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_618,q_100,w_618,x_72,y_52/c_scale,h_250,q_85,w_250/v1/production/userfiles/nvnznshot0441qjogufy.jpg?_a=BAAHWXDQ",
+-      "url": "https://www.tickettailor.com/events/turnedartist/2348242"
++      "time": "17:15",
++      "duration": "1 h",
++      "district": "Prenzlauer Berg",
++      "image": "https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_618,q_100,w_618,x_72,y_52/c_scale,h_250,q_85,w_250/v1/production/userfiles/nvnznshot0441qjogufy.jpg?_a=BAAHWXDQ",
++      "url": "https://www.tickettailor.com/events/turnedartist/2348242"
+     },
+     {
+       "slug": "sina",
+@@ -2270,110 +1744,6 @@
+       "image": "https://images.squarespace-cdn.com/content/v1/5f9830493072fd086f78f444/a4dc9bcb-0365-4a7f-b03d-ee0bf0242894/20-04-Lisa-Kosak-0282_compressed.jpg",
+       "url": "https://www.helkaceramics.com/pottery-classes-workshops/p/evening-workshop"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-26",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-26",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-26",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-26",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-26",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-26",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-26",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-26",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -2387,19 +1757,6 @@
+       "url": "https://www.coffeeandbananas.com/",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-26",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "faye",
+       "sourceUrl": "https://www.senle.studio/scheduling",
+@@ -2425,19 +1782,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-26",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "ceramic-kingdom",
+       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
+@@ -2464,19 +1808,6 @@
+       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
+       "district": "Neukölln"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-27",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -2488,45 +1819,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-27",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-27",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-27",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "landsinn",
+       "sourceUrl": "https://landsinn-potsdam.de/workshops-2/",
+@@ -2539,58 +1831,6 @@
+       "district": "Potsdam",
+       "image": "https://calla.elated-themes.com/wp-content/uploads/2018/03/faq-title-img1.jpg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-27",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-27",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-27",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-27",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -2604,19 +1844,6 @@
+       "url": "https://www.coffeeandbananas.com/",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-27",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -2742,19 +1969,6 @@
+       "district": "Charlottenburg",
+       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=e6e6c91e-77c0-4b86-992a-ec9bb8417b2e&c_type=OCCURRING_SERVICES"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-28",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 6,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "beat-etage",
+       "sourceUrl": "https://beat-etage.de/workshops/",
+@@ -2815,45 +2029,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-28",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-28",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-28",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -2879,71 +2054,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-11-28",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-11-28",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-11-28",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-11-28",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-11-28",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "celina",
+       "sourceUrl": "https://www.gestaltwandel.com/booking",
+@@ -3264,45 +2374,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-02",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-02",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-02",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -3316,45 +2387,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-02",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-02",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-02",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "celina",
+       "sourceUrl": "https://www.gestaltwandel.com/booking",
+@@ -3428,113 +2460,9 @@
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-03",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-03",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-03",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-03",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-03",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-03",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-03",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-03",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "angelo",
+-      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+-      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
++      "slug": "angelo",
++      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
++      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+       "date": "2026-12-03",
+       "time": "17:30",
+       "duration": "2 h",
+@@ -3556,19 +2484,6 @@
+       "district": "Kaulsdorf",
+       "image": "https://res.eventfrog.net/production_res_public/pxl-20250918-182040536-ZMAZVFBY.webp"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-03",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -3581,19 +2496,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+       "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-03",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 8,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "ceramic-kingdom",
+       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
+@@ -3607,19 +2509,6 @@
+       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
+       "district": "Neukölln"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-04",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -3631,97 +2520,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-04",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-04",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-04",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-04",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-04",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-04",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-04",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -3735,19 +2533,6 @@
+       "url": "https://www.coffeeandbananas.com/",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-04",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -3910,19 +2695,6 @@
+       "district": "Neukölln",
+       "image": "https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/S7wzFHeQ4OnxSJYfWg7k_img6321.jpeg?width=1200&height=900&mode=crop"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-05",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 8,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -3947,45 +2719,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-05",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-05",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-05",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -4022,58 +2755,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-05",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 7,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-05",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-05",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-05",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "faye",
+       "sourceUrl": "https://www.senle.studio/scheduling",
+@@ -4099,19 +2780,6 @@
+       "district": "Kaulsdorf",
+       "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-05",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "celina",
+       "sourceUrl": "https://www.gestaltwandel.com/booking",
+@@ -4386,45 +3054,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-09",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-09",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-09",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -4437,45 +3066,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-09",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-09",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-09",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "celina",
+       "sourceUrl": "https://www.gestaltwandel.com/booking",
+@@ -4586,164 +3176,34 @@
+       "district": "Prenzlauer Berg"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-10",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
++      "slug": "angelo",
++      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
++      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+       "date": "2026-12-10",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
++      "time": "17:30",
++      "duration": "2 h",
++      "price": "€49",
++      "spots": 8,
++      "request": true,
++      "url": "https://www.coffeeandbananas.com/",
++      "district": "Prenzlauer Berg"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
++      "slug": "kohfink",
++      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
++      "title": "Honiglebkuchen backen",
+       "date": "2026-12-10",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
++      "time": "18:00",
++      "duration": "4 h",
++      "price": "€55",
++      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7504521817408703502.html",
++      "district": "Kaulsdorf",
++      "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-10",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-10",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-10",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-10",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-10",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "angelo",
+-      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+-      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+-      "date": "2026-12-10",
+-      "time": "17:30",
+-      "duration": "2 h",
+-      "price": "€49",
+-      "spots": 8,
+-      "request": true,
+-      "url": "https://www.coffeeandbananas.com/",
+-      "district": "Prenzlauer Berg"
+-    },
+-    {
+-      "slug": "kohfink",
+-      "sourceUrl": "https://imkerei-kohfink.de/BACK-KURSE/",
+-      "title": "Honiglebkuchen backen",
+-      "date": "2026-12-10",
+-      "time": "18:00",
+-      "duration": "4 h",
+-      "price": "€55",
+-      "url": "https://eventfrog.de/de/p/essen-trinken/workshop-honiglebkuchen-backen-7504521817408703502.html",
+-      "district": "Kaulsdorf",
+-      "image": "https://res.eventfrog.net/pxl-20250918-182040536-ZMAZVFBY.webp"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-10",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-10",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "ceramic-kingdom",
+-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
+-      "title": "Wheel Throwing | Evening Course (WEEK 49)",
++      "slug": "ceramic-kingdom",
++      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
++      "title": "Wheel Throwing | Evening Course (WEEK 49)",
+       "date": "2026-12-10",
+       "time": "19:30",
+       "spots": 7,
+@@ -4753,19 +3213,6 @@
+       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
+       "district": "Neukölln"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-11",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -4777,97 +3224,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-11",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-11",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-11",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-11",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-11",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-11",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-11",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -4893,19 +3249,6 @@
+       "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410863/calendar/11221316",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-11",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -5045,19 +3388,6 @@
+       "url": "https://www.ariahart.de/",
+       "district": "Friedrichshagen"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-12",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "qian",
+       "sourceUrl": "https://www.claygarden.studio/pottery-classes",
+@@ -5095,45 +3425,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-12",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-12",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-12",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -5159,58 +3450,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-12",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-12",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-12",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-12",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "faye",
+       "sourceUrl": "https://www.senle.studio/scheduling",
+@@ -5224,19 +3463,6 @@
+       "district": "Friedrichshain",
+       "image": "https://static1.squarespace.com/static/69137ad9b2540232654c7fd7/t/69adc7ab3f194d3ad4ef9843/1772996523694/3.jpg?format=1500w"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-12",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 6,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "ceramic-kingdom",
+       "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml",
+@@ -5587,45 +3813,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-16",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-16",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-16",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -5638,45 +3825,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/files/2_59ba0dc9-d886-4665-b74a-9320e41479d6.png?v=1700519954",
+       "url": "https://mampe.berlin/de-engl/products/grosse-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-16",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-16",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-16",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "petitejungle",
+       "sourceUrl": "https://www.petitejungle.de/products.json?limit=250",
+@@ -5738,159 +3886,29 @@
+       "district": "Prenzlauer Berg"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
++      "slug": "angelo",
++      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
++      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+       "date": "2026-12-17",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
++      "time": "17:30",
++      "duration": "2 h",
++      "price": "€49",
++      "spots": 8,
++      "request": true,
++      "url": "https://www.coffeeandbananas.com/",
++      "district": "Prenzlauer Berg"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
++      "slug": "galleria-lucia",
++      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
++      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+       "date": "2026-12-17",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-17",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-17",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-17",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-17",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-17",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-17",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "angelo",
+-      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+-      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+-      "date": "2026-12-17",
+-      "time": "17:30",
+-      "duration": "2 h",
+-      "price": "€49",
+-      "spots": 8,
+-      "request": true,
+-      "url": "https://www.coffeeandbananas.com/",
+-      "district": "Prenzlauer Berg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-17",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "galleria-lucia",
+-      "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+-      "title": "Design your own scented candle with crystals, Workshop in Berlin",
+-      "date": "2026-12-17",
+-      "time": "18:30",
+-      "duration": "1.5–2 h",
+-      "price": "€62",
+-      "district": "Prenzlauer Berg",
+-      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
+-      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-17",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
++      "time": "18:30",
++      "duration": "1.5–2 h",
++      "price": "€62",
++      "district": "Prenzlauer Berg",
++      "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/Scented-candle-workshop.jpg?v=1790080457",
++      "url": "https://www.gallerialucia.com/products/premium-scented-candle-workshop-in-berlin"
+     },
+     {
+       "slug": "ceramic-kingdom",
+@@ -5905,19 +3923,6 @@
+       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
+       "district": "Neukölln"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-18",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -5929,97 +3934,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0954/0671/9311/files/dip-dye_candle_workshop.jpg?v=1773246443",
+       "url": "https://www.gallerialucia.com/products/dip-dye-design-taper-candle-workshop-in-berlin"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-18",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-18",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-18",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-18",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 5,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-18",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-18",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-18",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "pastamadre",
+       "sourceUrl": "https://www.pastamadre.de/calendar-kurstermine",
+@@ -6057,19 +3971,6 @@
+       "url": "https://app.acuityscheduling.com/schedule/d340338d/appointment/89410282/calendar/11221316",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-18",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "galleria-lucia",
+       "sourceUrl": "https://www.gallerialucia.com/collections/workshops/products.json?limit=250",
+@@ -6183,19 +4084,6 @@
+       "url": "https://www.ariahart.de/",
+       "district": "Friedrichshagen"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-19",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "aria",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/atelier-aria-hart-xley9w/",
+@@ -6271,110 +4159,6 @@
+       "image": "https://cdn.shopify.com/s/files/1/0478/0290/8823/products/Mampe_Kleine_Schnapsgeschichten.png?v=1756723689",
+       "url": "https://mampe.berlin/de-engl/products/kleine-schnapsgeschichten"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-19",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-19",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-19",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-19",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-19",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-19",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-19",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-19",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "mampe",
+       "sourceUrl": "https://mampe.berlin/de-engl/collections/events/products.json?limit=250",
+@@ -6557,84 +4341,6 @@
+       "price": "€20",
+       "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/70300735/calendar/10021038"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-23",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-23",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-23",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-23",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-23",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-23",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "druckrausch",
+       "sourceUrl": "https://www.druckrausch.com/termine",
+@@ -6670,152 +4376,22 @@
+       "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/70300735/calendar/10021038"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-24",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
++      "slug": "angelo",
++      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
++      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+       "date": "2026-12-24",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
++      "time": "17:30",
++      "duration": "2 h",
++      "price": "€49",
++      "spots": 8,
++      "request": true,
++      "url": "https://www.coffeeandbananas.com/",
++      "district": "Prenzlauer Berg"
+     },
+     {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-24",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-24",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-24",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-24",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-24",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-24",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "angelo",
+-      "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+-      "title": "Kaffeekurs: Kaffee selber rösten in Berlin",
+-      "date": "2026-12-24",
+-      "time": "17:30",
+-      "duration": "2 h",
+-      "price": "€49",
+-      "spots": 8,
+-      "request": true,
+-      "url": "https://www.coffeeandbananas.com/",
+-      "district": "Prenzlauer Berg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-24",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-24",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "ceramic-kingdom",
+-      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
+-      "title": "Wheel Throwing | Evening Course (WEEK 51)",
++      "slug": "ceramic-kingdom",
++      "sourceUrl": "https://www.ceramickingdomberlin.com/sitemap.xml#acuity",
++      "title": "Wheel Throwing | Evening Course (WEEK 51)",
+       "date": "2026-12-24",
+       "time": "19:30",
+       "spots": 7,
+@@ -6825,110 +4401,6 @@
+       "image": "https://static1.squarespace.com/static/596ce7eea5790aaa89e37cf0/t/5e32e7f9f8043d075010e386/1580394479998/_DSC8033.jpg?format=1500w",
+       "district": "Neukölln"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-25",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-25",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-25",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-25",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-25",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-25",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-25",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-25",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -6942,136 +4414,6 @@
+       "url": "https://www.coffeeandbananas.com/",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-25",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-26",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-26",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-26",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-26",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-26",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-26",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-26",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-26",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-26",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "drawingwalks",
+       "sourceUrl": "https://www.drawingwalks.art/join-a-walk",
+@@ -7107,84 +4449,6 @@
+       "price": "€20",
+       "url": "https://app.acuityscheduling.com/schedule/cbc24dcd/appointment/70300735/calendar/10021038"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-30",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-30",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-30",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-30",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-30",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-30",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "whittle",
+       "sourceUrl": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES",
+@@ -7197,110 +4461,6 @@
+       "district": "Charlottenburg",
+       "url": "https://www.anybodycanwhittle.com/booking-checkout/?c_id=0627c12f-893a-4ee8-999e-1f225e507395&c_type=OCCURRING_SERVICES"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-31",
+-      "time": "13:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-31",
+-      "time": "15:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-31",
+-      "time": "15:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-31",
+-      "time": "15:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-31",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzen und Wachspättchen Workshop",
+-      "date": "2026-12-31",
+-      "time": "17:00",
+-      "duration": "1.5 h",
+-      "price": "€50",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleandroundsworkshop_1_034c0b99-0df0-44c7-a892-68ed2b617045.jpg?v=1746728064",
+-      "url": "https://themunio.de/products/candle-and-scented-wax-rounds-workshop-1-5h",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Körperpeeling & Badesalz Workshop",
+-      "date": "2026-12-31",
+-      "time": "17:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Bodyscrubworkshop1.png?v=1746728073",
+-      "url": "https://themunio.de/products/body-scrub-bath-salt-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Kerzengießen in Glasvotivkerzen-Workshop",
+-      "date": "2026-12-31",
+-      "time": "17:00",
+-      "duration": "0.5 h",
+-      "price": "€30",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Candleworkshop_1.jpg?v=1746728067",
+-      "url": "https://themunio.de/products/candle-workshop-30min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+@@ -7314,32 +4474,6 @@
+       "url": "https://www.coffeeandbananas.com/",
+       "district": "Prenzlauer Berg"
+     },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Duftöl-Roll-on Workshop",
+-      "date": "2026-12-31",
+-      "time": "18:00",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Fragrance_oils_mood_2.jpg?v=1772723245",
+-      "url": "https://themunio.de/products/workshop-zur-herstellung-von-duftol-roll-ons-60-minuten",
+-      "district": "Schöneberg"
+-    },
+-    {
+-      "slug": "munio",
+-      "sourceUrl": "https://themunio.de/collections/workshops",
+-      "title": "Einzigartiger Kerzen-Workshop mit getrockneten Blumen",
+-      "date": "2026-12-31",
+-      "time": "18:30",
+-      "duration": "1 h",
+-      "price": "€45",
+-      "spots": 10,
+-      "image": "https://cdn.shopify.com/s/files/1/0937/7906/7215/files/Munio_Candle_workshop_2.jpg?v=1772721975",
+-      "url": "https://themunio.de/products/einzigartige-kerzen-mit-trockenblumen-workshop-60min",
+-      "district": "Schöneberg"
+-    },
+     {
+       "slug": "angelo",
+       "sourceUrl": "https://gokonfetti.com/de-de/p/ten-farmers-and-bananas-wj84jx/",
+diff --git a/site/src/data/makerPictures.ts b/site/src/data/makerPictures.ts
+index 06a1361..2ab7f1c 100644
+--- a/site/src/data/makerPictures.ts
++++ b/site/src/data/makerPictures.ts
+@@ -17,7 +17,7 @@ export const makerPictures: Record<string, 'photo' | 'reel'> = {
+   'norbert-bildhauerei': 'photo', // "Photos from his site cyclop-art.de, with his consent"
+   // Reels noted as the host's own footage.
+   alessia: 'reel', olivia: 'reel', helka: 'reel', lama: 'reel', blauhaus: 'reel',
+-  pausify: 'reel', lomu: 'reel', pastamadre: 'reel', munio: 'reel',
++  pausify: 'reel', lomu: 'reel', pastamadre: 'reel',
+   petitejungle: 'reel', 'anna-malerlebnisse': 'reel', chelti: 'reel', 'beat-etage': 'reel',
+   'monk-garden': 'reel', bumerang: 'reel', druckrausch: 'reel', daisuki: 'reel', dirt: 'reel',
+   arcoiris: 'reel', mampe: 'reel', 'smell-lab': 'reel', yurika: 'reel', sabine: 'reel',
+diff --git a/site/src/data/posterLqip.json b/site/src/data/posterLqip.json
+index 1a9d129..53c7d34 100644
+--- a/site/src/data/posterLqip.json
++++ b/site/src/data/posterLqip.json
+@@ -44,7 +44,6 @@
+  "/video/mampe-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABoAAEBAQAAAAAAAAAAAAAAAAAFAgYBAQEAAAAAAAAAAAAAAAAAAAUGEAACAAQFBQEBAAAAAAAAAAABAgARIQMxIlFBEoJxsZEEMhMRAQACAAcBAAAAAAAAAAAAAAEAAkEhURNhEQMx/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AIsqjDM3EYqdiIu+ptMAooVVqz3jM/wB7VxW4T5KhOZqSE6CQxA13iR911wGeyrzFG1Vco9SlAT43XsUNGUG7UAyeZmUoWGqlT1AwcCZYmEl/R7jwYMEN4sGfhP/Z",
+  "/video/maximiliana-poster.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAIQAgAAD//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABoAAEBAQEBAAAAAAAAAAAAAAAHBgIFAwEBAQAAAAAAAAAAAAAAAAAAAgEQAAEDAwICCwEAAAAAAAAAAAERAwIABCExEiIysoKRoXMTcVJRQcFhEQEBAQEAAAAAAAAAAAAAAAABABEx/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AubWbLVtEiIag2CCPYRruXK/ZOVrRjbz4tjTi53YK9leFuxN1o+bEwjMQWMeaW0BSQeVSNdSulcs3T9uTBq2ZEAcDK9bIWXyaLkwXjlYOASRVx/UX1Sie7vHLh6ZaEYxiTDiOSY6nAI76WpftCTfM94znSorQv//Z",
+  "/video/monk-garden-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABoAAEBAQAAAAAAAAAAAAAAAAAFBgQBAQEBAAAAAAAAAAAAAAAAAAQCAxABAAECBQMEAwEAAAAAAAAAAQIRA0ExACEEIhIFwbGRgVETcWERAAICAwEAAAAAAAAAAAAAAAAREgECcVEx/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AwcnyVlt3LVH9u8RLZJJfmrhhtvqYs+Q5nDgQhNhF6gYjnjuOn3jWeFybYty5Ngr090JLih1UrpWMArW4O+3dEi/Dv9ujyXlPYmOXUMQtMMqI4qkn+p6aLnCrusf8hJpnnqiMj69tDTz+fd1jRVn/2Q==",
+- "/video/munio-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABqAAEBAQAAAAAAAAAAAAAAAAAGBAUBAQEAAAAAAAAAAAAAAAAAAAIEEAABAgUBBgYDAQAAAAAAAAABAgMAIRExBCISQYEFYZHCEzNCFHE0MlHwEQEBAAMBAAAAAAAAAAAAAAAAARIRUSH/wAARCAAWAAwDASIAAhEAAxEA/9oADAMBAAIRAxEAPwDAxuXlvHUtQIWo0MtTYEj0nc/URLGM0QA44sEVBTtUpan6GcpwtS4lFdRSkGi71I30B7SioIxHdfxGXibuHSVEClSLDhKJ8uqvdEjbOPnY4dSjyyodJdoNOrTjnYJXb20pcjfT+Qo5R+A3/t0CuYetw8SoNGP/2Q==",
+  "/video/nicole-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABmAAEBAQAAAAAAAAAAAAAAAAAFBgQBAQEAAAAAAAAAAAAAAAAAAAQDEAACAAUCBAcBAAAAAAAAAAABAgBRBAMRQSESEyIFYZKRwTEyoRQRAQEBAQEBAAAAAAAAAAAAAAEAAhFRQf/AABEIABYADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AK01Q4Q3JXqAIHMHF5SPWDGrd+ime4NSGUAHUbjfE4l1qrVy8GuMwXH1AbeQ8FnqYe/sptHAEuG57CB9H7MOko3YqM7lWGZMYzjsdMowDcwJsT+xdv8AAjMYvoI2dPt//9k=",
+  "/video/nina-klang-farbe-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABvAAEBAQEAAAAAAAAAAAAAAAAFBAMGAQEBAQAAAAAAAAAAAAAAAAADBAUQAQABAwEHAwUBAAAAAAAAAAECAAMhBMExMyISERNxYfCxQZEFgTIRAAIBAwUBAAAAAAAAAAAAAAECACEiEpGx8DFBcf/AABEIABYADAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AO4ux81meWPVjBnD8+9FXNNC7OUpynHu4OlwVpLyP+QXKxl1c3sI4fUathclchGXMdwwoJ7O7dRMqnvcxMi3h5pJtLejqbZLsn4aD1d2TdQUIgbdtV/quAehRWp40/59CpnNJqoLj8n/2Q==",
+  "/video/nina-klangentspannung-poster.jpg": "data:image/jpeg;base64,/9j//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgQEBMQExYWFhYWFhoYGhsbGxoaGhobGxsdHR0iIiIdHR0bGx0dICAiIiUmJSMjIiMmJigoKDAwLi44ODpFRVP/xABlAAEBAQEAAAAAAAAAAAAAAAAFBgQHAQEBAAAAAAAAAAAAAAAAAAACBBAAAgEDAwIHAQAAAAAAAAAAAgEDABEhBBKBMWFiUTIiBeGRExEAAwEBAQAAAAAAAAAAAAAAAAEh8UEC/8AAEQgAFgAMAwEiAAIRAAMRAP/aAAwDAQACEQMRAD8AFegm25Y2v6r2suVa/lVgtYowjjTMf5gI+3a0Vlkv3HFb5YJJQYiexvwpp9n9ZqNfxU44ekM+8WoaB8Fdqh4nSh3TqQqn42kPSghpoOlFBZ//2Q==",
+diff --git a/site/src/data/removed-hosts.json b/site/src/data/removed-hosts.json
+index cb113aa..1adff01 100644
+--- a/site/src/data/removed-hosts.json
++++ b/site/src/data/removed-hosts.json
+@@ -8,6 +8,7 @@
+     { "slug": "craftkai", "activity": "craft", "removed": "2026-11-06", "workshops": ["art-piece-weaving", "chopstick-making-with-shintaro-oku", "contemporary-ikebana", "create-your-own-hanko", "kintsugi-atelier-berlin", "kintsugi-france-studio-circolo", "miso-workshop-ferment-your-own-cedar-barrel-miso", "mizuhiki", "paint-your-own-tote-bag-with-tokyo-yuzen", "your-own-japanese-hanging-scroll-with-hokusai-s-mount-fuji"] },
+     { "slug": "celia", "activity": "craft", "removed": "2026-11-09", "workshops": ["knit-club"] },
+     { "slug": "tufttuft", "activity": "craft", "removed": "2026-11-11", "workshops": ["beginner-cyanotype-by-valeryia-pankova", "hot-desk", "open-studio", "the-3d-one-30-x-40", "the-big-one-50-x-50cm", "the-og-30-x-40cm", "the-weekday-mini-25-x-25-cm"] },
+-    { "slug": "dirt", "activity": "ceramics", "removed": "2026-11-14", "workshops": ["express-wheel-throwing-3-termine-14-and-15-and-22-11", "intensive-wheel-throwing-for-beginners-5-termine", "mini-wheel-throwing", "toepfern-fuer-kinder-matsch-love-drop-in"] }
++    { "slug": "dirt", "activity": "ceramics", "removed": "2026-11-14", "workshops": ["express-wheel-throwing-3-termine-14-and-15-and-22-11", "intensive-wheel-throwing-for-beginners-5-termine", "mini-wheel-throwing", "toepfern-fuer-kinder-matsch-love-drop-in"] },
++    { "slug": "munio", "activity": "craft", "removed": "2026-11-18", "workshops": ["duftoel-roll-on-workshop", "einzigartiger-kerzen-workshop-mit-getrockneten-blumen", "kerzen-und-wachspaettchen-workshop", "kerzengiessen-in-glasvotivkerzen-workshop", "koerperpeeling-and-badesalz-workshop"] }
+   ]
+ }
+diff --git a/site/src/data/videoPages.ts b/site/src/data/videoPages.ts
+index 9d86850..1ebb9ea 100644
+--- a/site/src/data/videoPages.ts
++++ b/site/src/data/videoPages.ts
+@@ -15,7 +15,6 @@ export type VideoEntry = { slug: string; seconds: number; uploaded: string };
+ export const videoEntries: VideoEntry[] = [
+   { slug: 'pia', seconds: 7, uploaded: '2026-10-12' },
+   { slug: 'angelo', seconds: 42, uploaded: '2026-10-12' },
+-  { slug: 'munio', seconds: 15, uploaded: '2026-10-12' },
+   { slug: 'pigi', seconds: 29, uploaded: '2026-11-03' },
+   { slug: 'ceramic-kingdom', seconds: 22, uploaded: '2026-10-12' },
+   { slug: 'druckrausch', seconds: 17, uploaded: '2026-10-12' },
+diff --git a/site/src/data/vouchers.ts b/site/src/data/vouchers.ts
+index 0ebe5ee..86b05f6 100644
+--- a/site/src/data/vouchers.ts
++++ b/site/src/data/vouchers.ts
+@@ -56,7 +56,6 @@ export const voucherHostsAgreed: string[] = [
+   'himapan-berlin',
+   'petitejungle', 'rebeca',
+   'evelyn', 'nina', 'helka',
+-  'munio',
+ ];
+ 
+ /** Live: only hosts who confirmed the voucher terms in writing by email

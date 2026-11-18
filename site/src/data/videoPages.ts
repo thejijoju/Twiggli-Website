@@ -15,7 +15,6 @@ export type VideoEntry = { slug: string; seconds: number; uploaded: string };
 export const videoEntries: VideoEntry[] = [
   { slug: 'pia', seconds: 7, uploaded: '2026-10-12' },
   { slug: 'angelo', seconds: 42, uploaded: '2026-10-12' },
-  { slug: 'munio', seconds: 15, uploaded: '2026-10-12' },
   { slug: 'pigi', seconds: 29, uploaded: '2026-11-03' },
   { slug: 'ceramic-kingdom', seconds: 22, uploaded: '2026-10-12' },
   { slug: 'druckrausch', seconds: 17, uploaded: '2026-10-12' },

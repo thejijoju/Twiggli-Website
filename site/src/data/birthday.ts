@@ -7,7 +7,6 @@ import type { HenCopy } from './henParty.ts';
  *  (Jirel, 26.10). */
 export const birthdayPicks: { slug: string; image: string; price?: number; area?: string }[] = [
   { slug: 'ceramic-kingdom', image: 'ceramic-kingdom' },
-  { slug: 'munio', image: 'munio' },
   { slug: 'studio32', image: 'studio32' },
   { slug: 'galleria-lucia', image: 'galleria-lucia-dipdye' },
   { slug: 'jem', image: 'jem-sushi' },
@@ -34,7 +33,6 @@ export const birthdayCopy: Record<'en' | 'de', HenCopy> = {
     pickedSub: 'Alle privat für eure Gruppe, mit echten Berliner Maker*innen. Preise pro Person, direkt von den Gastgeber*innen.',
     picks: [
       { title: 'Töpfern an der Drehscheibe', tag: 'Der Klassiker' },
-      { title: 'Kerzen mit getrockneten Blumen', tag: 'Gemütlich' },
       { title: 'Zusammen kochen & backen', tag: 'Für Genießer*innen' },
       { title: 'Teppich tuften', tag: 'Etwas ganz Neues' },
       { title: 'Kerzen färben (Dip-Dye)', tag: 'Bunt & fotogen' },
@@ -90,7 +88,6 @@ export const birthdayCopy: Record<'en' | 'de', HenCopy> = {
     pickedSub: 'All private for your group, with real Berlin makers. Prices per person, straight from the hosts.',
     picks: [
       { title: 'Pottery on the wheel', tag: 'The classic' },
-      { title: 'Candles with dried flowers', tag: 'Cosy' },
       { title: 'Cooking & baking together', tag: 'For foodies' },
       { title: 'Rug tufting', tag: 'Something new' },
       { title: 'Dip-dye candles', tag: 'Colourful & photogenic' },

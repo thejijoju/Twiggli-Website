@@ -5,7 +5,6 @@
  *  vulva painting has its own €40 ticket). */
 export const henPicks: { slug: string; image: string; price?: number; area?: string }[] = [
   { slug: 'pia', image: 'pia-vulva', price: 40, area: 'Friedrichshain' },
-  { slug: 'munio', image: 'munio' },
   { slug: 'galleria-lucia', image: 'galleria-lucia-dipdye' },
   { slug: 'celina', image: 'celina' },
   { slug: 'karen-rose', image: 'karen-rose-naturkosmetik' },
@@ -51,7 +50,6 @@ export const henCopy: Record<'en' | 'de', HenCopy> = {
     pickedSub: 'Alle privat für eure Gruppe, mit echten Berliner Maker*innen. Preise pro Person, direkt von den Gastgeberinnen.',
     picks: [
       { title: 'Vulva Painting', tag: 'Der JGA-Hit' },
-      { title: 'Kerzen mit getrockneten Blumen', tag: 'Romantisch' },
       { title: 'Kerzen färben (Dip-Dye)', tag: 'Bunt & fotogen' },
       { title: 'Mosaik oder Drink & Paint im Atelier', tag: 'Eigenes Atelier' },
       { title: 'Naturkosmetik & Seife rühren', tag: 'Wellness-Vibes' },
@@ -107,7 +105,6 @@ export const henCopy: Record<'en' | 'de', HenCopy> = {
     pickedSub: 'All private for your group, with real Berlin makers. Prices per person, straight from the hosts.',
     picks: [
       { title: 'Vulva painting', tag: 'The hen party hit' },
-      { title: 'Candles with dried flowers', tag: 'Romantic' },
       { title: 'Dip-dye candles', tag: 'Colourful & photogenic' },
       { title: 'Mosaic or drink & paint at the studio', tag: 'Your own studio' },
       { title: 'Natural cosmetics & soap', tag: 'Spa vibes' },

@@ -243,8 +243,6 @@ const facets: Record<string, Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | '
   kohfink:      { activity: 'food',        groupRange: [1, 20],   hourRange: [3, 4] },
   'beat-etage': { activity: 'music',       groupRange: [1, 12],   hourRange: [2, 3] },
   pastamadre:   { activity: 'food',        groupRange: [1, 12],   hourRange: [3, 5] },
-  // Laura, 15.10.26: 1–20 in the studio, 20–100 at the client's; from 40 pp.
-  munio:        { activity: 'craft',       groupRange: [1, 100],  hourRange: [1, 2], groupPrice: 40 },
   // Walks run from 10 people; no published cap ("kleine Gruppen").
   'monk-garden': { activity: 'food',       alsoIn: ['plants'], groupRange: [10, 20],  hourRange: [2.5, 3] },
   // PLACEHOLDER group range — "begrenzte Platzzahl", no published cap.
@@ -428,10 +426,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, sourdough & fermentation', studio: 'Pastamadre',
       blurb: 'Homemade Italian pasta, sourdough bread and pizza, and vegetable fermentation with Maria-Lucrezia and Frank in their Wedding kitchen — most workshops end around the dinner table. Solidarity pricing: pay the full Rose price, or the reduced Tulpe price when money is tight. Ingredients are organic, regional and largely from the SUPERCOOP co-op.',
       group: 'Small groups', duration: '3–5 h', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
-    // Copy from themunio.de; photos to follow.
-    { slug: 'munio', name: 'The Munio', specialty: 'Candle & fragrance making', studio: 'The Munio Studio',
-      blurb: 'A Latvian candle-maker’s Berlin studio on Akazienstraße. Pour your own natural soy-wax candle with dried flowers, blend fragrance-oil roll-ons from their scent library, or make scented wax melts — short, relaxed sessions in the store, most days of the week.',
-      group: 'Up to 20 in the studio · 20–100 on-site', duration: '1–2 h', place: 'Akazienstr. 30, Berlin / on-site', languages: 'EN · DE', priceNote: 'starting price' },
     // Copy from beat-etage.de; photos to follow.
     { slug: 'beat-etage', name: 'Beat-Etage', specialty: 'Percussion & drumming', studio: 'Percussionstudio Beat-Etage',
       blurb: 'A percussion studio in an old Treptow factory hall. Dive into West African rhythms on djembes and dunduns at the monthly weekend workshops, or try cajon and handpan — two hours of hands-on drumming, instruments provided, no experience needed.',
@@ -642,9 +636,6 @@ const hostsCopyWritten: Record<'en' | 'de', HostCopy[]> = {
     { slug: 'kohfink', name: 'Imkerei am Pflanzgarten', specialty: 'Imkerkurse & Honig-Backkurse', studio: 'Imkerei am Pflanzgarten',
       blurb: 'Imkern lernen in der Bioland-Berufsimkerei in Berlin-Kaulsdorf: praktische Einsteigerkurse an bis zu 20 echten Bienenvölkern, Theorie-Vorlesung und Honiglebkuchen-Backkurse — traditionelle Lebkuchen mit Honig backen und die eigenen Kreationen mitnehmen.',
       group: '≤ 17', duration: '3–4 Std.', place: 'Karlsburger Weg 38, Berlin', languages: 'DE' },
-    { slug: 'munio', name: 'The Munio', specialty: 'Kerzen & Duft-Workshops', studio: 'The Munio Studio',
-      blurb: 'Das Berliner Studio einer lettischen Kerzenmanufaktur in der Akazienstraße. Gieße deine eigene Sojawachskerze mit Trockenblumen, mische Duftöl-Roll-ons aus ihrer Duftbibliothek oder stelle Duftwachs her — kurze, entspannte Sessions im Store, fast jeden Tag.',
-      group: 'Bis 20 im Studio · 20–100 vor Ort', duration: '1–2 Std.', place: 'Akazienstr. 30, Berlin / vor Ort', languages: 'EN · DE', priceNote: 'Einstiegspreis' },
     { slug: 'pastamadre', name: 'Pasta Madre', specialty: 'Pasta, Sauerteig & Fermentation', studio: 'Pastamadre',
       blurb: 'Hausgemachte italienische Pasta, Sauerteigbrot und -pizza und Gemüsefermentation mit Maria-Lucrezia und Frank in ihrer Küche im Wedding — die meisten Workshops enden am Esstisch. Solidarisches Preismodell: voller Rose-Preis oder reduzierter Tulpe-Preis, wenn das Budget knapp ist. Zutaten bio, regional und größtenteils von der SUPERCOOP-Genossenschaft.',
       group: 'Kleine Gruppen', duration: '3–5 Std.', place: 'Groninger Str. 48, Berlin', languages: 'DE · EN' },
@@ -816,12 +807,6 @@ const reels: Record<string, { video: string; poster: string }> = {
      between them are used; painting them out was tried and the box is too
      wide a share of the frame for it. Audio stripped. */
   pastamadre: { video: '/video/pastamadre.mp4', poster: '/video/pastamadre-poster.jpg' },
-  /* The Munio's own, from the second half of their clip: the wax poured from
-     the jug, the trays of dried botanicals and scent jars down the middle of
-     the table, and the candles the group set flowers into. The opening — the
-     shop, the introductions, the scent testing — is left off; the making is
-     what a card has room to say. No caption anywhere in it. Audio stripped. */
-  munio: { video: '/video/munio.mp4', poster: '/video/munio-poster.jpg' },
   /* Aurélie's own clip, 16.10.26: the trays of soil and gravel, the jars
      being layered round the table, the moss and plants going in, and the
      finished 5-litre jar held up. Its opening caption ("terrarium workshop,
@@ -1601,7 +1586,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   jem: { area: 'Zehlendorf', onSite: true }, 'loom-lab': { area: 'Berlin' },
   maximiliana: { area: 'Prenzlauer Berg' }, sabine: { area: 'Lichtenberg', onSite: true },
   faye: { area: 'Friedrichshain' }, 'galleria-lucia': { area: 'Prenzlauer Berg' },
-  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' }, munio: { area: 'Schöneberg', onSite: true },
+  kohfink: { area: 'Kaulsdorf' }, pastamadre: { area: 'Wedding' },
   'beat-etage': { area: 'Treptow' }, bumerang: { area: 'Lichtenberg' },
   'ceramic-kingdom': { area: 'Neukölln' }, druckrausch: { area: 'Friedenau', onSite: true },
   schmiede: { area: 'Blankenburg' }, daisuki: { area: 'Charlottenburg' },
