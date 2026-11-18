@@ -69,7 +69,7 @@ const de = new Map(getHosts('de', { withPreview: true }).map((h) => [h.slug, h])
    edited there (functions REPLACES); dates read from their own booking page
    (live-workshops.json "workshops", refreshed by the weekly scrape) are
    shown read-only. Places booked that we know of come from availability.ts. */
-type SiteRow = { title: string; titleEn?: string; time?: string; duration?: string; price?: string; spots?: number; district?: string; url?: string; request?: boolean };
+type SiteRow = { title: string; titleEn?: string; key?: string; time?: string; duration?: string; price?: string; spots?: number; district?: string; url?: string; request?: boolean };
 const berlinToday = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
 const lastDay = new Date(Date.parse(berlinToday) + (DAYS_AHEAD - 1) * 86400000).toISOString().slice(0, 10);
 const feedRows = ((liveData as { workshops?: (SiteRow & { slug: string; date: string; soldOut?: boolean })[] }).workshops ?? []);
@@ -82,7 +82,7 @@ const pickRow = (r: SiteRow) => ({
 const siteFor = (slug: string) => ({
   series: withHostSlots(recurring as (SiteRow & { slug: string; weekdays: string[]; time: string })[])
     .filter((r) => r.slug === slug)
-    .map((r) => ({ key: `rec|${slug}|${slugify(r.title)}|${r.time}`, weekdays: r.weekdays, ...pickRow(r) })),
+    .map((r) => ({ key: `rec|${slug}|${r.key ?? slugify(r.title)}|${r.time}`, wkey: r.key ?? slugify(r.title), weekdays: r.weekdays, ...pickRow(r) })),
   dates: hostDates.filter((d) => d.slug === slug && d.date >= berlinToday && d.date <= lastDay && !inFeed.has(`${d.slug}|${d.date}|${d.time}`))
     .map((d) => ({ key: `date|${slug}|${d.date}|${d.time ?? ''}`, date: d.date, ...pickRow({ ...d, request: !d.onHostSite }) })),
   synced: feedRows.filter((w) => w.slug === slug && w.date >= berlinToday && w.date <= lastDay)
@@ -639,6 +639,7 @@ const fields = [
               <div class="cal-days" data-cal-days></div>
               <div class="cal-wkv" data-cal-wkv></div>
               <div class="cal-list" data-cal-list></div>
+              <p class="cal-legend" data-cal-legend hidden><i aria-hidden="true"></i>{t.cal.onReqLegend}</p>
               <p class="cal-saved" data-cal-note role="status"></p>
             </div>
             <aside class="cal-card cal-side" data-cal-side aria-label={t.cal.panel}></aside>
@@ -2952,6 +2953,8 @@ const fields = [
         /** Calendar tab: a date of the site's own schedule, not taken over yet
          *  (vid: its id in the calendar; the first change turns it into dashboard dates). */
         vid?: string; virtual?: { key: string };
+        /** The workshop's page key; and a weekly slot guests can ask for ("on request"), not a booked date. */
+        wkey?: string; onRequest?: boolean;
         /** Calendar tab: read from the host's own booking page; shown, not edited. */
         synced?: { url: string; left?: number; soldOut?: boolean };
       };
@@ -3383,8 +3386,8 @@ const fields = [
         }
         for (const x of state) if (x.status === 'paused') add(x.edit?.title || x.title, x.image, x.price, x.key, [x.title]);
         const site = hosts[slug]?.site;
-        for (const r of [...(site?.series ?? []), ...(site?.dates ?? []), ...(site?.synced ?? [])]) add(r.title, '', r.price ?? '', '', r.titleEn ? [r.titleEn] : []);
-        for (const ev of ownEvents) add(ev.title, '', '', '', ev.titleEn ? [ev.titleEn] : []);
+        for (const r of [...(site?.series ?? []), ...(site?.dates ?? []), ...(site?.synced ?? [])]) add(r.title, '', r.price ?? '', (r as { wkey?: string }).wkey ?? '', r.titleEn ? [r.titleEn] : []);
+        for (const ev of ownEvents) add(ev.title, '', '', ev.wkey ?? '', ev.titleEn ? [ev.titleEn] : []);
         // No picture from the listing: the first photo of its dates, else the host's first photo.
         for (const w of out) if (!w.image) {
           const m = ownEvents.find((e) => calKey(e.title) === w.key && e.media?.some((x) => x.type !== 'video'))?.media?.find((x) => x.type !== 'video');
@@ -3417,7 +3420,8 @@ const fields = [
             ...(site?.series ?? []).flatMap((r) => r.weekdays.map((wd) => {
               const d = calNoon(today);
               while (WDS[d.getDay()] !== wd) d.setDate(d.getDate() + 1);
-              return { ...common(r), date: iso(d), repeat: 'weekly', until: end, vid: `v:${r.key}:${wd}`, virtual: { key: r.key } } as Ev;
+              // A weekly class that takes requests is a slot guests can ask for, not a booked date.
+              return { ...common(r), date: iso(d), repeat: 'weekly', until: end, vid: `v:${r.key}:${wd}`, virtual: { key: r.key }, wkey: r.wkey, ...(r.request ? { onRequest: true } : {}) } as Ev;
             })),
             ...(site?.dates ?? []).map((r) => ({ ...common(r), date: r.date, repeat: 'once', vid: `v:${r.key}`, virtual: { key: r.key } }) as Ev),
             ...(site?.synced ?? []).map((r, i) => ({ ...common(r), date: r.date, repeat: 'once', vid: `s:${i}`, seats: null,
@@ -3453,7 +3457,7 @@ const fields = [
         const mine = (title: string) => wkey === null || keyOf(title) === wkey;
         const slots: CalSlot[] = [];
         const notes = hosts[slug]?.site?.notes ?? {};
-        for (const ev of [...ownEvents, ...calSiteEvents()]) if (mine(ev.title) || (ev.titleEn && mine(ev.titleEn))) for (const date of calOcc(ev, from, to)) {
+        for (const ev of [...ownEvents, ...calSiteEvents()]) if ((ev.wkey && (wkey === null || ev.wkey === wkey)) || (!ev.wkey && (mine(ev.title) || (ev.titleEn && mine(ev.titleEn))))) for (const date of calOcc(ev, from, to)) {
           const bookings = calBookings.filter((b) => b.date === date && (b.eventId ? b.eventId === ev.id : calKey(b.title || '') === calKey(ev.title) && (!b.start || b.start === ev.start)));
           slots.push({ key: `${ev.id ?? ev.vid ?? ev.title}|${date}|${ev.start}`, date, start: ev.start, end: ev.end, title: ev.title, ev, seats: ev.synced ? null : evSeats(ev, date), booked: 0, amount: 0, waiting: [], requests: [], accepted: [], bookings, known: notes[`${date}|${ev.start}`] ?? 0 });
         }
@@ -3497,6 +3501,7 @@ const fields = [
         languages: ev.languages ?? '', cancel: ev.cancel ?? '7d', location: ev.location ?? '', description: ev.description ?? '', visibility: ev.visibility ?? 'public', media: ev.media ?? [],
         seatsByDate: ev.seatsByDate ?? {}, exceptions: ev.exceptions ?? [],
         ...(ev.titleEn ? { titleEn: ev.titleEn } : {}), ...(typeof ev.request === 'boolean' ? { request: ev.request } : {}),
+        ...(ev.wkey ? { wkey: ev.wkey } : {}), ...(ev.onRequest ? { onRequest: true } : {}),
       });
       // Taking over a series of the site's own schedule: all its weekdays become
       // dashboard dates at once (functions hostEventSave adopt), marked with the
@@ -3572,6 +3577,49 @@ const fields = [
           calNote(calFailText(err), false);
         }
       };
+      /** On-request slot actions (Jirel 18.11.26): 'day' removes one day, 'weekly' this weekday's
+       *  whole slot, 'fix' turns the day into a real date with places. Optimistic, undone on failure. */
+      const calSlotAction = async (ev: Ev, date: string, what: 'day' | 'weekly' | 'fix', confirmText = '') => {
+        if (calIsBusy(ev)) return;
+        if (what === 'day' && !window.confirm(say(t.cal.removeSlotQ, { date: confirmText }))) return;
+        if (what === 'weekly' && !window.confirm(confirmText)) return;
+        const fake = async () => { await new Promise((r) => setTimeout(r, 350)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); };
+        const before = { own: ownEvents, replaced: new Set(calReplaced), slot: calSlot, snap: calSnap(ev) };
+        calBusy.add(ev);
+        renderCal();
+        try {
+          const real = ev.virtual ? await calAdopt(ev) : ev;
+          if (!real) throw new Error('not taken over');
+          if (what === 'weekly') {
+            if (calDemo) await fake(); else await api('hostEventDelete', { id: real.id });
+            ownEvents = ownEvents.filter((x) => x !== real && x.id !== real.id);
+            calSlot = '';
+          } else {
+            const ex = [...new Set([...(real.exceptions ?? []), date])].sort();
+            if (calDemo) await fake(); else await api('hostEventSave', calPayload({ ...real, exceptions: ex }));
+            real.exceptions = ex;
+            calSlot = '';
+            if (what === 'fix') {
+              const body = { ...calPayload(real), id: undefined, date, repeat: 'once', until: '', exceptions: [], seatsByDate: {}, seats: real.seats ?? 10, replaces: undefined, onRequest: false, wkey: real.wkey };
+              let id = `demo${Date.now()}`;
+              if (!calDemo) id = (await api('hostEventSave', body)).id;
+              else await fake();
+              const made = { ...body, id, slug } as Ev;
+              delete made.onRequest; delete made.replaces;
+              ownEvents = [...ownEvents, made];
+              calSlot = `${id}|${date}|${made.start}`;
+            }
+          }
+          calBusy.delete(ev);
+          calNote(what === 'fix' ? t.cal.fixed : t.cal.saved);
+        } catch (err) {
+          calBusy.delete(ev);
+          // Partly saved (taken over, then the second step failed): reload what the server has.
+          if (!calDemo && (ownEvents !== before.own || calReplaced.size !== before.replaced.size)) void loadInbox();
+          else { ownEvents = before.own; calReplaced = before.replaced; calSlot = before.slot; Object.assign(ev, before.snap); }
+          calNote(calFailText(err), false);
+        }
+      };
       const calSave = (ev: Ev, change: Partial<Ev>, wait = 0) => {
         if (calIsBusy(ev) || ev.synced) return;
         const p = calPending.get(ev) ?? { before: calSnap(ev), timer: 0 };
@@ -3618,7 +3666,13 @@ const fields = [
         side.append(el('p', 'cal-meta', ev ? [calHours(ev.start, ev.end), area, ev.price ? `€${ev.price}` : ''].filter(Boolean).join(' · ') : t.cal.request));
         const row = (label: string, right: Node | string) => { const r = el('div', 'cal-row'); r.append(el('span', '', label), typeof right === 'string' ? el('b', '', right) : right); side.append(r); return r; };
         const full = !!s.seats && s.booked >= s.seats;
-        if (ev?.synced) {
+        if (ev?.onRequest) {
+          // A weekly slot guests can ask for: nothing booked yet, so no places count.
+          const box = el('div', 'cal-slot');
+          box.append(el('b', '', t.cal.onReq), el('p', '', t.cal.onReqNote));
+          side.append(box);
+          if (s.booked) row(t.cal.places, say(t.cal.bookedOpen, { b: String(s.booked) }));
+        } else if (ev?.synced) {
           // From the host's own booking page: shown here, changed there.
           const sy = ev.synced;
           row(t.cal.places, sy.soldOut ? t.cal.soldOut : typeof sy.left === 'number' ? say(t.cal.leftN, { n: String(sy.left) }) : '–');
@@ -3635,7 +3689,7 @@ const fields = [
           row(t.cal.places, v);
           if (s.seats) { const bar = el('div', 'cal-bar'); const i = el('i'); i.style.width = `${Math.min(100, (s.booked / s.seats) * 100)}%`; bar.append(i); side.append(bar); }
         }
-        if (ev && !ev.synced && ev.start) {
+        if (ev && !ev.synced && !ev.onRequest && ev.start) {
           if (ev.virtual) side.append(el('p', 'cal-from', t.cal.fromSite));
           // Places on this one date: a series keeps it per date (seatsByDate).
           const step = el('span', 'cal-step');
@@ -3691,7 +3745,16 @@ const fields = [
           side.append(el('p', 'cal-guests', names.join(' · ')));
         }
         const acts = el('div', 'cal-acts');
-        if (ev && !ev.synced && ev.start) {
+        if (ev?.onRequest && ev.start) {
+          // Remove this day, make it a real date with places, or drop the weekday altogether.
+          // All three take the series over first, so they hold on the public page too.
+          const wdName = new Date(`${s.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'long' });
+          const fix = calBtn('cal-btn', t.cal.fixDate, () => void calSlotAction(ev, s.date, 'fix'));
+          const one = calBtn('cal-btn2', t.cal.removeSlot, () => void calSlotAction(ev, s.date, 'day', d));
+          const all = calBtn('cal-btn2', say(t.cal.removeWeekly, { day: wdName, time: ev.start }), () => void calSlotAction(ev, s.date, 'weekly', say(t.cal.removeWeeklyQ, { day: wdName, time: ev.start })));
+          fix.disabled = busy; one.disabled = busy; all.disabled = busy;
+          acts.append(fix, one, all);
+        } else if (ev && !ev.synced && ev.start) {
           const edit = calBtn('cal-btn', t.cal.editDate, async () => {
             if (calIsBusy(ev)) return;
             // A date of the site's own schedule is taken over first, so the form edits the dashboard's copy.
@@ -3791,10 +3854,10 @@ const fields = [
         const slots = w ? calSlots(w.key, iso(gridStart), iso(gridEnd)) : [];
         const sel = slots.find((s) => s.key === calSlot);
         const full = (s: CalSlot) => !!s.seats && s.booked >= s.seats;
-        const places = (s: CalSlot) => (s.ev?.synced ? (s.ev.synced.soldOut ? t.cal.full : typeof s.ev.synced.left === 'number' ? say(t.cal.leftShort, { n: String(s.ev.synced.left) }) : '↻')
+        const places = (s: CalSlot) => (s.ev?.onRequest && !s.booked ? t.cal.onReq : s.ev?.synced ? (s.ev.synced.soldOut ? t.cal.full : typeof s.ev.synced.left === 'number' ? say(t.cal.leftShort, { n: String(s.ev.synced.left) }) : '↻')
           : s.ev ? (s.seats ? `${s.booked}/${s.seats}` : String(s.booked)) : `👥 ${s.requests.concat(s.accepted).reduce((a, r) => a + peopleOf(r), 0)}`);
-        const kind = (s: CalSlot) => `${full(s) || s.ev?.synced?.soldOut ? ' is-full' : ''}${s.ev ? '' : ' is-req'}${s.ev?.synced ? ' is-sync' : ''}`;
-        const label = (s: CalSlot) => `${new Date(`${s.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })} ${s.start}${s.end ? `–${s.end}` : ''}, ${s.ev?.synced ? `${t.cal.synced}, ${places(s)}` : s.ev ? (s.seats ? say(t.cal.booked, { b: String(s.booked), s: String(s.seats) }) : say(t.cal.bookedOpen, { b: String(s.booked) })) : t.cal.request}${full(s) ? `, ${t.cal.full}` : ''}`;
+        const kind = (s: CalSlot) => `${full(s) || s.ev?.synced?.soldOut ? ' is-full' : ''}${s.ev ? '' : ' is-req'}${s.ev?.synced ? ' is-sync' : ''}${s.ev?.onRequest ? ' is-slot' : ''}`;
+        const label = (s: CalSlot) => `${new Date(`${s.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })} ${s.start}${s.end ? `–${s.end}` : ''}, ${s.ev?.onRequest ? t.cal.onReq : s.ev?.synced ? `${t.cal.synced}, ${places(s)}` : s.ev ? (s.seats ? say(t.cal.booked, { b: String(s.booked), s: String(s.seats) }) : say(t.cal.bookedOpen, { b: String(s.booked) })) : t.cal.request}${full(s) ? `, ${t.cal.full}` : ''}`;
         const pick = (b: HTMLElement, s: CalSlot) => {
           b.dataset.calF = `c:${s.key}`;
           b.setAttribute('aria-label', label(s));
@@ -3805,7 +3868,8 @@ const fields = [
           const cls = `cal-chip${kind(s)}`;
           const b = inRow ? el('span', cls) : calBtn(cls, '', () => { calSlot = s.key; renderCal(); });
           if (!inRow) pick(b, s);
-          b.append(el('b', '', s.start || '–'), el('span', '', places(s)));
+          // In the month grid an on-request slot shows just its time (dashed; the legend says what it is).
+          b.append(el('b', '', s.start || '–'), ...(s.ev?.onRequest && !inRow && !s.booked ? [] : [el('span', '', places(s))]));
           return b;
         };
         const notes = (s: CalSlot) => {
@@ -3916,6 +3980,7 @@ const fields = [
           }
           wkv.append(grid);
         }
+        $('[data-cal-legend]').hidden = !(slots.some((x) => x.ev?.onRequest) && !week && !phone);
         if (!hasDates && !slots.length) list.replaceChildren(el('p', 'cal-empty', t.cal.none));
         root.querySelectorAll<HTMLButtonElement>('[data-cal-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.calView === calView)));
         // A workshop without any date: say so above the empty calendar too.
@@ -3995,7 +4060,7 @@ const fields = [
         $('[data-cal-ws-up-note]').textContent = '';
         const st = (calListings.slug === slug ? calListings.items : []).find((x) => x.key === w.key);
         const e = (st?.edit ?? {}) as { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string };
-        const evs = [...ownEvents, ...calSiteEvents()].filter((x) => calKey(x.title) === w.key || w.alias?.includes(calKey(x.title)));
+        const evs = [...ownEvents, ...calSiteEvents()].filter((x) => x.wkey === w.key || calKey(x.title) === w.key || w.alias?.includes(calKey(x.title)));
         const first = evs.find((x) => !x.synced) ?? evs[0];
         wsF('title').value = e.title || w.title;
         wsF<HTMLTextAreaElement>('description').value = e.description ?? '';
@@ -4036,7 +4101,7 @@ const fields = [
           // Guests book and pay straight away: the site's own dates of this workshop
           // become dashboard dates (taken over), the only ones a guest can pay for.
           if (booking === 'instant') {
-            for (const v of calSiteEvents().filter((x) => x.virtual && (calKey(x.title) === wsCur!.key || wsCur!.alias?.includes(calKey(x.title))))) {
+            for (const v of calSiteEvents().filter((x) => x.virtual && (x.wkey === wsCur!.key || calKey(x.title) === wsCur!.key || wsCur!.alias?.includes(calKey(x.title))))) {
               if (!calReplaced.has(v.virtual!.key)) await calAdopt(v);
             }
           }
@@ -5492,6 +5557,17 @@ const fields = [
   .ha-adm-note:empty { display: none; }
   .ha-adm-note .is-warn { color: #b3261e; font-weight: 600; }
   .ha-adm-note code { font-size: 0.72rem; word-break: break-all; background: rgba(106, 62, 236, 0.07); border-radius: 8px; padding: 4px 6px; user-select: all; }
+  /* On-request weekly slots: lighter, dashed, "On request" instead of a count. */
+  .cal-chip.is-slot, .cal-blk.is-slot { background: #faf8ff; color: #6a3eec !important; box-shadow: none; outline: 1.5px dashed #b9a6f5; outline-offset: -1.5px; font-weight: 500; }
+  .cal-chip.is-slot b, .cal-blk.is-slot b { font-weight: 600; }
+  .cal-chip.is-slot span, .cal-blk.is-slot span { opacity: 0.8; font-size: 0.92em; }
+  .cal-chip.is-slot.is-sel, .cal-blk.is-slot.is-sel { outline: 2px solid #6a3eec; background: #f3eeff; }
+  .cal-legend { display: flex; align-items: center; gap: 8px; margin: 10px 2px 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .cal-legend i { width: 26px; height: 14px; border-radius: 5px; background: #faf8ff; outline: 1.5px dashed #b9a6f5; outline-offset: -1.5px; flex: none; }
+  .cal-legend[hidden] { display: none; }
+  .cal-slot { margin-top: 12px; padding: 12px 14px; border-radius: 12px; border: 1.5px dashed #b9a6f5; background: #faf8ff; font-size: 0.85rem; display: grid; gap: 4px; }
+  .cal-slot b { color: #6a3eec; }
+  .cal-slot p { margin: 0; }
   .cal-chip.is-sync, .cal-blk.is-sync { background: #fff; color: #4b2bbf !important; box-shadow: inset 0 0 0 1.5px #b9a6f5; }
   .cal-chip.is-sync.is-full, .cal-blk.is-sync.is-full { background: #f1eef6; color: #5b5f6b !important; box-shadow: inset 0 0 0 1.5px #d9d4e3; }
   .cal-sync { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #f3eeff; font-size: 0.85rem; display: grid; gap: 6px; justify-items: start; }

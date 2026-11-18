@@ -557,7 +557,9 @@
     {
       "slug": "pia",
       "sourceUrl": "https://www.vulvas.berlin/",
-      "title": "Vulva Painting Workshop",
+      "title": "Vulva Painting mit Pia",
+      "titleEn": "Vulva painting with Pia",
+      "key": "vulva-painting-workshop",
       "weekdays": [
         "tue",
         "wed",
@@ -570,13 +572,15 @@
       "price": "€40",
       "district": "Friedrichshain",
       "request": true,
-      "url": "https://www.vulvas.berlin/",
-      "spots": 6
+      "spots": 10,
+      "url": "https://www.vulvas.berlin/"
     },
     {
       "slug": "pia",
       "sourceUrl": "https://www.vulvas.berlin/",
-      "title": "Vulva Painting Workshop",
+      "title": "Vulva Painting mit Pia",
+      "titleEn": "Vulva painting with Pia",
+      "key": "vulva-painting-workshop",
       "weekdays": [
         "fri",
         "sat",
@@ -587,8 +591,8 @@
       "price": "€40",
       "district": "Friedrichshain",
       "request": true,
-      "url": "https://www.vulvas.berlin/",
-      "spots": 6
+      "spots": 10,
+      "url": "https://www.vulvas.berlin/"
     },
     {
       "slug": "techno",
@@ -760,6 +764,7 @@
       "price": "€40",
       "district": "Friedrichshain",
       "request": true,
+      "spots": 10,
       "url": "https://www.vulvas.berlin/"
     },
     {

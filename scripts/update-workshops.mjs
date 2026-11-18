@@ -639,10 +639,14 @@ const SOURCES = [
       // Her own schedule (email 27.10.26): Tue to Sat 18:30, Fri to Sun
       // also 11:00 (Saturday 11:00 is the most popular slot). 10 places per
       // workshop (Pia, 17.11.26: "Group: Up to 10").
-      { title: 'Vulva Painting Workshop', weekdays: ['tue', 'wed', 'thu', 'fri', 'sat'], time: '18:30',
+      // Her name for it (17.11.26), as her page's heading; `key` keeps the
+      // workshop's page address (/vulva-painting-workshop/) and the dashboard's keys.
+      { title: 'Vulva Painting mit Pia', titleEn: 'Vulva painting with Pia', key: 'vulva-painting-workshop',
+        weekdays: ['tue', 'wed', 'thu', 'fri', 'sat'], time: '18:30',
         duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 10,
         url: 'https://www.vulvas.berlin/' },
-      { title: 'Vulva Painting Workshop', weekdays: ['fri', 'sat', 'sun'], time: '11:00',
+      { title: 'Vulva Painting mit Pia', titleEn: 'Vulva painting with Pia', key: 'vulva-painting-workshop',
+        weekdays: ['fri', 'sat', 'sun'], time: '11:00',
         duration: '2.5 h', price: '\u20ac40', district: 'Friedrichshain', request: true, spots: 10,
         url: 'https://www.vulvas.berlin/' },
     ],
