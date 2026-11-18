@@ -364,6 +364,7 @@ const fields = [
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg><span class="hd-set-pre">instagram.com/</span><input name="instagram" placeholder="username" /></label>
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.3 5 4.5"/></svg><span class="hd-set-pre">tiktok.com/@</span><input name="tiktok" placeholder="username" /></label>
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg><span class="hd-set-pre">youtube.com/@</span><input name="youtube" placeholder="username" /></label>
+              <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 10.5V16M8 7.8v.1M11.5 16v-3.2c0-1.4 1-2.3 2.2-2.3s2 .9 2 2.3V16M11.5 10.5V16"/></svg><span class="hd-set-pre">linkedin.com/</span><input name="linkedin" placeholder="in/name" /></label>
             </div>
             <div class="hd-set-actions">
               <button type="submit" class="hd-set-save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.3 4.6-4.8"/></svg>{L('Änderungen speichern', 'Save changes', 'Enregistrer')}</button>
@@ -1346,7 +1347,7 @@ const fields = [
       const fillSettings = () => {
         const u = auth.currentUser;
         const [f0, ...rest] = (u?.displayName || '').split(' ');
-        for (const k of ['first', 'last', 'bio', 'phone', 'instagram', 'tiktok', 'youtube']) {
+        for (const k of ['first', 'last', 'bio', 'phone', 'instagram', 'tiktok', 'youtube', 'linkedin']) {
           const el = sForm.elements.namedItem(k) as HTMLInputElement | null;
           if (el) el.value = us[k] ?? (k === 'first' ? f0 : k === 'last' ? rest.join(' ') : '');
         }
@@ -1386,7 +1387,7 @@ const fields = [
         });
         data.notifyJson = JSON.stringify(nts);
         delete data.notify;
-        for (const k of ['first', 'last', 'bio', 'phone', 'instagram', 'tiktok', 'youtube']) data[k] = (sForm.elements.namedItem(k) as HTMLInputElement).value;
+        for (const k of ['first', 'last', 'bio', 'phone', 'instagram', 'tiktok', 'youtube', 'linkedin']) data[k] = (sForm.elements.namedItem(k) as HTMLInputElement).value;
         us = await api('userSettings', { action: 'save', ...data });
         await auth.currentUser?.reload();
         fillSettings(); renderProfile();
@@ -1869,6 +1870,7 @@ const fields = [
         if (us?.instagram) links.push(['Instagram', `https://instagram.com/${us.instagram}`]);
         if (us?.tiktok) links.push(['TikTok', `https://tiktok.com/@${us.tiktok}`]);
         if (us?.youtube) links.push(['YouTube', `https://youtube.com/@${us.youtube}`]);
+        if (us?.linkedin) links.push(['LinkedIn', `https://www.linkedin.com/${us.linkedin}`]);
         soc.replaceChildren(...links.map(([label, url]) => { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = label; return a; }));
         soc.hidden = !links.length;
         const since = u?.metadata.creationTime ? new Date(u.metadata.creationTime) : null;

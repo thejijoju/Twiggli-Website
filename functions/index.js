@@ -2355,7 +2355,7 @@ export const profilePhoto = onRequest({ region: 'europe-west3', maxInstances: 5,
 // ── Account settings (Jirel 14.11.26, like Luma): first/last name, a short
 // bio and social links, plus the email language. Kept in Firestore
 // userSettings/{uid}; the name also becomes the account's displayName.
-const SOCIAL = { instagram: /^[A-Za-z0-9._]{1,30}$/, tiktok: /^[A-Za-z0-9._]{1,30}$/, youtube: /^[A-Za-z0-9._-]{1,60}$/ };
+const SOCIAL = { instagram: /^[A-Za-z0-9._]{1,30}$/, tiktok: /^[A-Za-z0-9._]{1,30}$/, youtube: /^[A-Za-z0-9._-]{1,60}$/, linkedin: /^(in|company)\/[A-Za-z0-9_%-]{2,100}$/ };
 export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
   const m = /^Bearer (.+)$/.exec(req.get('authorization') ?? '');
