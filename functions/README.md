@@ -24,7 +24,14 @@ Replaces Supabase. Everything runs in the Firebase project the Twiggli app alrea
 5. **Stripe key.** Store the key in Secret Manager, never in the repo or in a chat. On your own computer, run:
    `npx firebase-tools functions:secrets:set STRIPE_SECRET_KEY --project <projectId>`
    Paste the `sk_live_…` key when it asks.
-6. **Deploy access for GitHub.**
+6. **Bunny Stream key (hosts' videos, function `hostVideo`).** Hosts' videos go to Bunny Stream (library 813734), photos stay on Firebase Storage. The key is a secret like the Stripe key: never in the repo, the site or the app.
+   - In Bunny: Stream → the library → API → copy the API key (rotate it first if it was ever shipped in the app).
+   - On your own computer, run:
+     `npx firebase-tools functions:secrets:set BUNNY_STREAM_API_KEY --project twiggli-production`
+     Paste the key when it asks.
+   - Do this **before** the next functions deploy: a deploy fails when a function names a secret that does not exist yet.
+   - After rotating the key later, run the same command again and redeploy the functions (or re-run "Deploy Firebase" in GitHub Actions), so they pick up the new version.
+7. **Deploy access for GitHub.**
    - Go to Google Cloud console → IAM → Service accounts → create one.
    - Give it the roles Firebase Admin, Cloud Functions Admin, Service Account User and Secret Manager Secret Accessor.
    - Create a JSON key for it.

@@ -201,6 +201,24 @@ const clubPopup = CLUB_POPUP_ON && !chromeless && !noindex && !/^\/(club|impress
       import { startSeen } from '../lib/seen.ts';
       startSeen();
     </script>
+    <script>
+      // Hosts' own videos on Bunny Stream are HLS (<video data-hls>, see
+      // lib/videoSrc.ts). lib/hls.ts, and hls.js behind it, load only on a
+      // page that has one, also one added later (a dialog, a filter).
+      const pick = 'video[data-hls]';
+      let on = false;
+      const go = () => {
+        if (on) return;
+        on = true;
+        watch.disconnect();
+        import('../lib/hls.ts').then((m) => m.wireHls()).catch(() => {});
+      };
+      const watch = new MutationObserver((list) => {
+        for (const m of list) for (const n of m.addedNodes) if (n instanceof Element && (n.matches(pick) || n.querySelector(pick))) return go();
+      });
+      if (document.querySelector(pick)) go();
+      else watch.observe(document.body, { childList: true, subtree: true });
+    </script>
 
     <script>
       // The header paints nothing at rest — the page shows through it. Once

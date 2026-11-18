@@ -4,6 +4,7 @@
  *  workshops of the day with each start time as a button that books it,
  *  and a link to the host for the rest. A host running twenty classes on a
  *  Saturday is one card rather than twenty rows of the same reel. */
+import { videoSrc } from '../lib/videoSrc.ts';
 import { priceSummary } from '../data/priceFilter.ts';
 import type { Session } from '../data/sessions.ts';
 import { berlinTodayMs } from '../data/sessions.ts';
@@ -72,7 +73,7 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
       <a class="hd-media" href={hostHref(lang, host)} tabindex="-1" aria-hidden="true" style={lqipStyle(host.poster)}>
         {fadePhotos(host).length > 1 ? <PhotoFade photos={fadePhotos(host)} alt="" />
           : (host.poster ?? host.photo) && <img src={host.poster ?? host.photo} alt="" loading="lazy" decoding="async" />}
-        {host.video && <video class="hd-video" src={host.video} muted loop playsinline preload="none"></video>}
+        {host.video && <video class="hd-video" {...videoSrc(host.video)} muted loop playsinline preload="none"></video>}
         <span class="hd-count">{c.classes(count)}</span>
       </a>
       <p class="hd-host"><a href={hostHref(lang, host)}>{host.name}</a> · {workshops[0][0].district}</p>

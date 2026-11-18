@@ -13,6 +13,7 @@
  *  (/happening-today/?activity=…&date=…&district=…&price=…), whose own filter
  *  pills read them — see the end of DayPicker.astro. Without scripting the
  *  form still lands on the calendar, unfiltered. */
+import { videoSrc } from '../lib/videoSrc.ts';
 import Base from '../layouts/Base.astro';
 import RatingTag from './RatingTag.astro';
 import Newsletter from './Newsletter.astro';
@@ -146,7 +147,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                   {cardMedia(s).video ? (
                     <>
                       <img class="maker-still" src={cardMedia(s).poster} alt="" loading={ri === 0 ? undefined : 'lazy'} decoding="async" />
-                      <video class="maker-video" src={cardMedia(s).video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                      <video class="maker-video" {...videoSrc(cardMedia(s).video)} muted loop playsinline preload="none" aria-hidden="true"></video>
                     </>
                   ) : (cardMedia(s).stills?.length ?? 0) > 1 ? (
                     <PhotoFade photos={cardMedia(s).stills!} alt="" />

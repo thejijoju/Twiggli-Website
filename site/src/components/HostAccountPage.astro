@@ -929,6 +929,8 @@ const fields = [
     collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where, writeBatch,
   } from 'firebase/firestore';
   import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+  import { playHls } from '../lib/hls.ts';
+  import { isHls } from '../lib/videoSrc.ts';
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
@@ -2219,6 +2221,87 @@ const fields = [
       const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested, offered: t.ib.offer };
       const dateOf = (r: Req) => (r.fields.Date || '').slice(0, 10);
       const el = (tag: string, cls = '', text = '') => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
+      // ── Videos go to Bunny Stream (functions hostVideo, Jirel 18.11.26): the
+      //    function creates the video and signs one upload, the file goes from
+      //    the browser straight to Bunny over TUS (tus-js-client), then Bunny
+      //    encodes it ("processing") until it plays. Photos stay on Firebase
+      //    Storage. In demo mode (?demo=…) all of it is made up, nothing is
+      //    sent; &videofail=upload or &videofail=encode shows a failure. ──
+      type Media = { type: string; url: string; thumb?: string };
+      type VidState = 'prep' | 'up' | 'proc' | 'done' | 'fail';
+      /** Playback addresses Bunny is still encoding: their tiles say so. */
+      const encoding = new Set<string>();
+      const DEMO_HLS = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      /** The upload's state in a status line, with a bar while it moves. */
+      const vidSay = (note: HTMLElement, st: VidState, pct = 0) => {
+        const msg = { prep: t.vidPrep, up: t.vidUp, proc: t.vidProc, done: t.vidDone, fail: fill(t.vidFail, cfg.contact) }[st].replace('{pct}', String(Math.round(pct)));
+        note.dataset.ok = String(st !== 'fail');
+        note.dataset.vid = st;
+        if (st === 'up' || st === 'proc') {
+          const bar = document.createElement('progress');
+          bar.className = 'ha-vid-bar'; bar.max = 100; bar.value = pct;
+          note.replaceChildren(document.createTextNode(msg), bar);
+        } else note.textContent = msg;
+      };
+      /** One video file to Bunny. `added` gets the media item as soon as the
+       *  file is up (it can be saved while Bunny still encodes); resolves
+       *  once it plays, throws when the upload or the encoding failed. */
+      const videoUp = async (f: File, say: (st: VidState, pct?: number) => void, added: (m: Media) => void) => {
+        say('prep');
+        const failAt = new URLSearchParams(location.search).get('videofail') ?? '';
+        const title = f.name.replace(/\.[^.]+$/, '').slice(0, 120);
+        let c: { videoId: string; libraryId: string | number; expires: number; signature: string; tusEndpoint?: string; url: string; thumb: string };
+        if (DEMO) {
+          await sleep(500);
+          c = { videoId: `demo-${Date.now()}`, libraryId: '0', expires: 0, signature: '', url: DEMO_HLS, thumb: '/video/pia-vulva-poster.jpg' };
+          for (let p = 0; p <= 100; p += 10) {
+            say('up', p); await sleep(260);
+            if (failAt === 'upload' && p >= 60) throw new Error('demo upload failed');
+          }
+        } else {
+          c = await api('hostVideo', { action: 'create', ...(slug ? { slug } : {}), title });
+          const { Upload } = await import('tus-js-client');
+          await new Promise<void>((ok, bad) => {
+            const up = new Upload(f, {
+              endpoint: c.tusEndpoint || 'https://video.bunnycdn.com/tusupload',
+              retryDelays: [0, 3000, 5000, 10000, 20000, 60000],
+              storeFingerprintForResuming: false,
+              headers: { AuthorizationSignature: c.signature, AuthorizationExpire: String(c.expires), VideoId: c.videoId, LibraryId: String(c.libraryId) },
+              metadata: { filetype: f.type || 'video/mp4', title },
+              onProgress: (sent, total) => say('up', total ? (sent / total) * 100 : 0),
+              onSuccess: () => ok(),
+              onError: (err) => bad(err),
+            });
+            up.start();
+          });
+        }
+        const m: Media = { type: 'video', url: c.url, thumb: c.thumb };
+        encoding.add(m.url);
+        added(m);
+        say('proc', 0);
+        try {
+          // Bunny encodes a phone clip in a minute or two; after half an hour
+          // stop asking (it keeps going, and the saved address plays once done).
+          for (let i = 0; i < 360; i++) {
+            await sleep(DEMO ? 400 : 5000);
+            const st = DEMO
+              ? { ready: i >= 9 && failAt !== 'encode', failed: failAt === 'encode' && i >= 5, percent: Math.min(100, i * 11) }
+              : await api('hostVideo', { action: 'status', videoId: c.videoId }).catch(() => ({ ready: false, failed: false, percent: 0 }));
+            if (st.failed) throw Object.assign(new Error('encoding failed'), { media: m });
+            if (st.ready) { encoding.delete(m.url); say('done'); return m; }
+            say('proc', st.percent ?? 0);
+          }
+          encoding.delete(m.url);
+          return m;
+        } catch (err) { encoding.delete(m.url); throw err; }
+      };
+      /** A video tile for the previews: Bunny's thumbnail, or "Preparing" while it encodes. */
+      const vidThumb = (m: Media, cls: string) => {
+        if (encoding.has(m.url)) return [el('span', `${cls} is-busy`, t.vidBusy)];
+        if (m.thumb) { const i = document.createElement('img'); i.src = m.thumb; i.alt = ''; i.loading = 'lazy'; return [i]; }
+        return [];
+      };
       // Read state stays on this device (no extra writes for a click).
       const SEEN = `twiggli-seen-${slug}`;
       const seen = new Set<string>((() => { try { return JSON.parse(localStorage.getItem(SEEN) ?? '[]'); } catch { return []; } })());
@@ -2873,7 +2956,7 @@ const fields = [
         synced?: { url: string; left?: number; soldOut?: boolean };
       };
       let ownEvents: Ev[] = [];
-      let media: { type: string; url: string }[] = [];
+      let media: { type: string; url: string; thumb?: string }[] = [];
       const createForm = $<HTMLFormElement>('[data-ha-panel="create"]');
       const fld = <T extends HTMLElement = HTMLInputElement>(n: string) => createForm.elements.namedItem(n) as unknown as T;
       // Payouts, as on Luma: touching the price without a connected Stripe
@@ -2950,21 +3033,26 @@ const fields = [
         cover.replaceChildren();
         if (!first) { cover.append(el('span', 'hd-ph', t.mediaNone)); }
         else if (first.type === 'video') {
-          const v = document.createElement('video');
-          Object.assign(v, { src: first.url, muted: true, autoplay: true, loop: true, playsInline: true });
-          cover.append(v);
+          if (encoding.has(first.url)) cover.append(el('span', 'hd-ph', t.vidBusy));
+          else {
+            const v = document.createElement('video');
+            Object.assign(v, { muted: true, autoplay: true, loop: true, playsInline: true });
+            if (first.thumb) v.poster = first.thumb;
+            playHls(v, first.url, { eager: true });
+            cover.append(v);
+          }
         } else {
           const i = document.createElement('img'); i.src = first.url; i.alt = ''; cover.append(i);
         }
         const thumbs = $('[data-ha-thumbs]');
         const pagePhotos = hosts[slug]?.photos ?? [];
-        const all = [...media.filter((m) => !pagePhotos.includes(m.url)), ...pagePhotos.map((url) => ({ type: 'photo', url }))];
+        const all: Media[] = [...media.filter((m) => !pagePhotos.includes(m.url)), ...pagePhotos.map((url) => ({ type: 'photo', url }))];
         thumbs.replaceChildren(...all.map((m) => {
           const b = el('button', 'hd-thumb') as HTMLButtonElement;
           b.type = 'button';
           const on = media.some((x) => x.url === m.url);
           b.setAttribute('aria-pressed', String(on));
-          if (m.type === 'video') b.append(el('span', 'hd-thumb-v', '▶'));
+          if (m.type === 'video') b.append(...vidThumb(m, 'hd-thumb-busy'), el('span', 'hd-thumb-v', '▶'));
           else { const i = document.createElement('img'); i.src = m.url; i.alt = ''; b.append(i); }
           b.addEventListener('click', () => {
             media = on ? media.filter((x) => x.url !== m.url) : [...media, m];
@@ -2976,6 +3064,18 @@ const fields = [
       const upload = async (files: FileList | null, type: string) => {
         if (!files?.length) return;
         const note = $('[data-ha-up-note]');
+        if (type === 'video') {
+          let mine: Media | null = null;
+          try {
+            await videoUp(files[0], (st, pct) => vidSay(note, st, pct), (m) => { mine = m; media.push(m); showMedia(); });
+          } catch {
+            // Encoding failed: the half-made video comes off the date again.
+            if (mine) media = media.filter((x) => x !== mine);
+            vidSay(note, 'fail');
+          }
+          showMedia();
+          return;
+        }
         note.textContent = t.uploading; note.dataset.ok = 'true';
         try {
           if (!cfg.firebase.storageBucket) throw new Error('no bucket');
@@ -2991,7 +3091,7 @@ const fields = [
           note.textContent = fill(t.uploadFail, cfg.contact); note.dataset.ok = 'false';
         }
       };
-      $<HTMLInputElement>('[data-ha-up-video]').addEventListener('change', (e) => upload((e.target as HTMLInputElement).files, 'video'));
+      $<HTMLInputElement>('[data-ha-up-video]').addEventListener('change', (e) => { const inp = e.target as HTMLInputElement; upload(inp.files, 'video').finally(() => { inp.value = ''; }); });
       $<HTMLInputElement>('[data-ha-up-photos]').addEventListener('change', (e) => upload((e.target as HTMLInputElement).files, 'photo'));
       createForm.querySelectorAll<HTMLInputElement>('[name="repeat"]').forEach((r) => r.addEventListener('change', () => {
         $('[data-ha-until]').hidden = fld<HTMLInputElement>('repeat') && (createForm.querySelector<HTMLInputElement>('[name="repeat"]:checked')?.value ?? 'once') === 'once';
@@ -3828,7 +3928,7 @@ const fields = [
       const wsForm = $<HTMLFormElement>('[data-cal-ws-form]');
       const wsF = <T extends HTMLElement = HTMLInputElement>(n: string) => wsForm.elements.namedItem(n) as unknown as T;
       let wsCur: Ws | null = null;
-      let wsMedia: { type: string; url: string }[] = [];
+      let wsMedia: { type: string; url: string; thumb?: string }[] = [];
       let wsBusy = false;
       const wsNote = (text: string, ok = true) => { const n = $('[data-cal-ws-note]'); n.textContent = text; n.hidden = !text; n.classList.toggle('is-bad', !ok); };
       /** "2,5", "2.5 h", "90 min" → "2.5 h" / "90 min"; '' when it can't be read. */
@@ -3841,7 +3941,7 @@ const fields = [
       const wsDrawMedia = () => {
         const box = $('[data-cal-ws-media]');
         const page = (hosts[slug]?.photos ?? []).map((url) => ({ type: 'photo', url }));
-        const all = [...wsMedia, ...page.filter((p) => !wsMedia.some((m) => m.url === p.url))];
+        const all: Media[] = [...wsMedia, ...page.filter((p) => !wsMedia.some((m) => m.url === p.url))];
         box.replaceChildren(...all.map((m) => {
           const on = wsMedia.findIndex((x) => x.url === m.url);
           const b = calBtn(`cal-ws-pic${on >= 0 ? ' is-on' : ''}`, '', () => {
@@ -3850,7 +3950,9 @@ const fields = [
           });
           b.setAttribute('aria-pressed', String(on >= 0));
           b.setAttribute('aria-label', `${m.type === 'video' ? 'Video' : t.cal.wsPhoto} ${on >= 0 ? on + 1 : ''}`.trim());
-          if (m.type === 'video') { const v = document.createElement('video'); v.src = m.url; v.muted = true; v.preload = 'metadata'; b.append(v, el('span', 'cal-ws-vid', '▶')); }
+          // Bunny's videos (HLS) show their thumbnail; older ones a frame of the file.
+          if (m.type === 'video' && (isHls(m.url) || encoding.has(m.url))) b.append(...vidThumb(m, 'cal-ws-busy'), el('span', 'cal-ws-vid', '▶'));
+          else if (m.type === 'video') { const v = document.createElement('video'); v.src = m.url; v.muted = true; v.preload = 'metadata'; b.append(v, el('span', 'cal-ws-vid', '▶')); }
           else { const i = document.createElement('img'); i.src = m.url; i.alt = ''; i.loading = 'lazy'; b.append(i); }
           if (on >= 0) b.append(el('span', 'cal-ws-n', on === 0 ? t.cal.wsCover : String(on + 1)));
           return b;
@@ -3860,6 +3962,18 @@ const fields = [
         const files = inp.files;
         const note = $('[data-cal-ws-up-note]');
         if (!files?.length) return;
+        if (inp.dataset.calWsUp === 'video') {
+          let mine: Media | null = null;
+          try {
+            await videoUp(files[0], (st, pct) => vidSay(note, st, pct), (m) => { mine = m; wsMedia = [...wsMedia, m].slice(0, 12); wsDrawMedia(); });
+          } catch {
+            if (mine) wsMedia = wsMedia.filter((x) => x !== mine);
+            vidSay(note, 'fail');
+          }
+          wsDrawMedia();
+          inp.value = '';
+          return;
+        }
         note.textContent = t.uploading;
         try {
           if (calDemo || !cfg.firebase.storageBucket) throw new Error('no bucket');
@@ -5405,6 +5519,16 @@ const fields = [
   .cal-ws-pic.is-on { border-color: #6a3eec; opacity: 1; }
   .cal-ws-pic img, .cal-ws-pic video { width: 100%; height: 100%; object-fit: cover; display: block; }
   .cal-ws-n { position: absolute; left: 4px; top: 4px; padding: 1px 7px; border-radius: 999px; background: #6a3eec; color: #fff; font-size: 0.7rem; font-weight: 600; }
+  .ha-vid-bar { display: block; width: 100%; max-width: 280px; height: 6px; margin-top: 6px; border: 0; border-radius: 99px; overflow: hidden; background: #ece6dc; accent-color: var(--color-accent); appearance: none; }
+  .ha-vid-bar::-webkit-progress-bar { background: #ece6dc; border-radius: 99px; }
+  .ha-vid-bar::-webkit-progress-value { background: var(--color-accent); border-radius: 99px; transition: width 0.25s; }
+  .ha-vid-bar::-moz-progress-bar { background: var(--color-accent); border-radius: 99px; }
+  .hd-thumb { position: relative; }
+  .hd-thumb .hd-thumb-v { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
+  .hd-thumb-busy, .cal-ws-busy { display: grid; place-items: center; width: 100%; height: 100%; padding: 4px; font-size: 0.62rem; line-height: 1.15; text-align: center; color: var(--color-text-muted); background: repeating-linear-gradient(-45deg, #f4efe6 0 8px, #ebe3d6 8px 16px); background-size: 200% 200%; animation: ha-busy 2.4s linear infinite; }
+  .hd-thumb-busy + .hd-thumb-v, .cal-ws-busy + .cal-ws-vid { display: none; }
+  @keyframes ha-busy { to { background-position: 100% 100%; } }
+  @media (prefers-reduced-motion: reduce) { .hd-thumb-busy, .cal-ws-busy { animation: none; } }
   .cal-ws-vid { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 1.2rem; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
   .cal-ws-up { display: flex; flex-wrap: wrap; gap: 8px; }
   .cal-ws-up label { cursor: pointer; font-size: 0.82rem; padding: 7px 14px; }

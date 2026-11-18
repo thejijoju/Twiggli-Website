@@ -567,9 +567,11 @@ function withListingEdit(s: Session, today: number): Session {
     if (left === 0) { out.soldOut = true; out.waitingList = true; }
   }
   const photo = e.media?.find((m) => m.type === 'photo')?.url;
-  const video = e.media?.find((m) => m.type === 'video')?.url;
+  const clip = e.media?.find((m) => m.type === 'video');
+  const video = clip?.url;
   if (photo) out.image = photo;
-  if (video) out.host = { ...out.host, video, poster: photo ?? out.host.poster };
+  // A video on Bunny Stream (HLS, lib/videoSrc.ts) brings its own frame as the poster.
+  if (video) out.host = { ...out.host, video, poster: clip?.thumb ?? photo ?? out.host.poster };
   // Request-only workshop: its other dates take requests too (dashboard
   // dates decided this already, with their own choice first).
   if (e.booking === 'request' && s.source !== 'account') {
