@@ -1481,6 +1481,10 @@ const cleanEvent = (b, uid = '', bunny = new Set()) => {
     ...(typeof b.replaces === 'string' && REPLACES.test(b.replaces) ? { replaces: b.replaces } : {}),
     ...(b.titleEn !== undefined ? { titleEn: text(b.titleEn, 120) } : {}),
     ...(typeof b.request === 'boolean' ? { request: b.request } : {}),
+    // The workshop's page key (its title may differ), and whether this is a
+    // weekly "on request" slot taken over from the site (guests ask; never paid on the spot).
+    ...(typeof b.wkey === 'string' && LISTING_KEY.test(b.wkey) ? { wkey: b.wkey } : {}),
+    ...(typeof b.onRequest === 'boolean' ? { onRequest: b.onRequest } : {}),
   };
 };
 
@@ -2185,7 +2189,7 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   const db = getFirestore();
   const evSnap = await db.doc(`hostEvents/${eventId}`).get();
   const ev = evSnap.data();
-  if (!evSnap.exists || ev.visibility === 'private' || ev.request === true || ev.status === 'deleted' || !(ev.price > 0) || !onSchedule(ev, date)) return res.status(404).json({ error: 'not-bookable' });
+  if (!evSnap.exists || ev.visibility === 'private' || ev.request === true || ev.onRequest === true || ev.status === 'deleted' || !(ev.price > 0) || !onSchedule(ev, date)) return res.status(404).json({ error: 'not-bookable' });
   if (new Date(`${date}T${ev.start}:00+01:00`).getTime() < Date.now()) return res.status(409).json({ error: 'past' });
   const member = (await db.doc(`hostMembers/${ev.by}`).get()).data() ?? {};
   const account = member.stripe?.accountId;

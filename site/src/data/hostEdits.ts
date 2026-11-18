@@ -97,6 +97,8 @@ type EventRow = {
   replaces?: string;
   /** publicEvents: the host's Stripe can take payments now. */
   payable?: boolean;
+  /** The workshop's page key (Calendar tab), and whether it is an on-request weekly slot. */
+  wkey?: string; onRequest?: boolean;
   /** Single dates of a series the host cancelled, and places changed for one date (Calendar tab). */
   exceptions?: string[]; seatsByDate?: Record<string, number>;
 };
@@ -117,7 +119,7 @@ export function accountDates(daysAhead = 100): {
   slug: string; title: string; titleEn?: string; date: string; time: string; duration?: string; price?: string;
   spots?: number; minGuests?: number; languages?: string; district?: string; url: string; request: true; eventId?: string;
   /** The date's own booking choice, and whether it was taken over from the site (sessions.ts decides with the workshop's). */
-  reqChoice?: boolean; adopted?: boolean;
+  reqChoice?: boolean; adopted?: boolean; key?: string; onRequest?: boolean;
 }[] {
   const today = new Date(); today.setUTCHours(0, 0, 0, 0);
   const last = new Date(today.getTime() + daysAhead * 86400000);
@@ -156,6 +158,9 @@ export function accountDates(daysAhead = 100): {
         ...(typeof e.price === 'number' && e.price > 0 && e.id && e.payable !== false ? { eventId: e.id } : {}),
         ...(typeof e.request === 'boolean' ? { reqChoice: e.request } : {}),
         ...(e.replaces ? { adopted: true } : {}),
+        // The workshop it belongs to: its own key, else the taken-over class's (rec|slug|KEY|time).
+        ...(e.wkey || /^rec\|/.test(e.replaces ?? '') ? { key: e.wkey || e.replaces!.split('|')[2] } : {}),
+        ...(e.onRequest ? { onRequest: true } : {}),
         url: '',
         request: true,
       });

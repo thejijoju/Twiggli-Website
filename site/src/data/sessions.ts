@@ -142,6 +142,11 @@ type LiveWorkshop = {
   request?: boolean;
   /** Firestore id of a priced dashboard date (hostEdits accountDates). */
   eventId?: string;
+  /** The workshop's page key when the title is not its source (a renamed
+   *  workshop keeps its address); else slugify(title). */
+  key?: string;
+  /** A dashboard date that is an on-request weekly slot (taken over from the site). */
+  onRequest?: boolean;
   /** Dashboard dates: their own booking choice, and whether taken over from the site (takesRequests). */
   reqChoice?: boolean;
   adopted?: boolean;
@@ -413,9 +418,11 @@ const workingDaysBetween = (todayMs: number, dateMs: number): number => {
  *  its own choice (Calendar tab), else its workshop's ("how guests book",
  *  listing edit), else as before: dates taken over from the site's own
  *  schedule keep taking requests, the host's own priced dates are paid. */
-const takesRequests = (w: { slug: string; title: string; reqChoice?: boolean; adopted?: boolean }): boolean => {
+const takesRequests = (w: { slug: string; title: string; key?: string; reqChoice?: boolean; adopted?: boolean; onRequest?: boolean }): boolean => {
+  // A weekly "on request" slot is a day guests can ask for, never paid on the spot.
+  if (w.onRequest) return true;
   if (typeof w.reqChoice === 'boolean') return w.reqChoice;
-  const booking = listingEdit(w.slug, slugify(w.title))?.booking;
+  const booking = listingEdit(w.slug, w.key ?? slugify(w.title))?.booking;
   if (booking === 'request') return true;
   if (booking === 'instant') return false;
   return !!w.adopted;
@@ -470,7 +477,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     if (lead && workingDaysBetween(today, Date.parse(w.date)) < lead) continue;
     sessions.push({
       id: `live-${w.slug}-${w.date}-${w.time ?? 'tba'}`,
-      workshopKey: slugify(w.title),
+      workshopKey: w.key ?? slugify(w.title),
       dayOffset,
       time: w.time,
       host: withWorkshopReel(host, w.slug, w.title, ordinals.get(w) ?? 0),
@@ -509,7 +516,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
     const host = bySlug.get(r.slug);
     if (!host) continue;
     // Taken over in the host's Calendar tab: its dates come from the dashboard now.
-    if (isReplaced(`rec|${r.slug}|${slugify(r.title)}|${r.time}`)) continue;
+    if (isReplaced(`rec|${r.slug}|${r.key ?? slugify(r.title)}|${r.time}`)) continue;
     const wanted = new Set(r.weekdays.map((d) => WEEKDAY_INDEX[d]));
     let occurrence = 0;
     for (let dayOffset = 0; dayOffset < DAYS_AHEAD; dayOffset++) {
@@ -517,7 +524,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       if (!wanted.has(dow)) continue;
       sessions.push({
         id: `rec-${r.slug}-${hash(r.title)}-${dayOffset}`,
-        workshopKey: slugify(r.title),
+        workshopKey: r.key ?? slugify(r.title),
         dayOffset,
         time: r.time,
         // Post-increment: the first occurrence in the window is 0, so a
