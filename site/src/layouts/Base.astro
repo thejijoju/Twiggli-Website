@@ -60,7 +60,9 @@ const available = alternates.map((a) => a.lang);
 // The Twiggli Club invitation (ClubPopup.astro) shows everywhere except on
 // the club page itself, the legal pages, the newsletter and payment
 // landing pages, and anything kept out of search.
-const clubPopup = !chromeless && !noindex && !/^\/(club|impressum|privacy-policy|terms-of-service|paymentcanceled|stripe-connect-setup-completed|newsletter|404)(\/|$)/.test(bare);
+// Off for now (Jirel 18.11.26): set CLUB_POPUP_ON to true to bring it back.
+const CLUB_POPUP_ON = false;
+const clubPopup = CLUB_POPUP_ON && !chromeless && !noindex && !/^\/(club|impressum|privacy-policy|terms-of-service|paymentcanceled|stripe-connect-setup-completed|newsletter|404)(\/|$)/.test(bare);
 ---
 
 <!doctype html>
