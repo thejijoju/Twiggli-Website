@@ -6,7 +6,7 @@
 import { videoSrc } from '../lib/videoSrc.ts';
 import type { Session } from '../data/sessions.ts';
 import { formatDay, hostHref, pageCopy, workshopHref } from '../data/seo.ts';
-import { berlinTodayMs, EXACT_LATER } from '../data/sessions.ts';
+import { berlinTodayMs } from '../data/sessions.ts';
 import { almostFullLabel, spotsText } from '../data/availability.ts';
 import { partnerBook, partnerCopied, partnerNote } from '../data/partners.ts';
 import type { Lang } from '../lib/url.ts';
@@ -83,7 +83,7 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
           {withHost && <a class="date-host" href={hostHref(lang, s.host)}>{s.host.name}</a>}
           {withHost && ' · '}
           {s.duration ?? s.host.duration} · {s.where ?? s.district} · {s.languages ?? s.host.languages}
-          {s.exactLater && <span class="date-addr"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>{EXACT_LATER[lang]}</span>}
+          
         </span>
         {s.partner && <span class="date-code">{partnerNote[lang](s.partner.percent, s.partner.code)}</span>}
       </span>
@@ -125,5 +125,4 @@ const bookAttrs = (s: Session) => (s.partner && !s.soldOut
 </script>
 
 <style>
-  .date-addr { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 0.78rem; font-weight: 500; color: var(--color-accent); }
 </style>

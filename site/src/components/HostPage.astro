@@ -1,6 +1,5 @@
 ---
 import { studioOf } from '../data/hostEdits.ts';
-import { EXACT_LATER } from '../data/sessions.ts';
 /** One host's page: the search phrase in the title and heading, the reel,
  *  the blurb and the practical facts, then every upcoming date and time
  *  they have published, and the other hosts in the same activity. */
@@ -225,7 +224,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
           {host.studio && <div><dt>{t.studio}</dt><dd>{host.studio}</dd></div>}
           <div><dt>{t.group}</dt><dd>{hostGroupText(host, lang)}</dd></div>
           <div><dt>{t.duration}</dt><dd>{hostDurationText(host, lang)}</dd></div>
-          <div><dt>{t.place}</dt><dd>{host.place}{studioOf(host.slug) && !studioOf(host.slug)!.exact && <span class="addr-later"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>{EXACT_LATER[lang]}</span>}</dd></div>
+          <div><dt>{t.place}</dt><dd>{host.place}</dd></div>
           <div><dt>{t.languages}</dt><dd>{hostLanguagesText(host, lang)}</dd></div>
           <div><dt>{t.price}</dt><dd>{priceText}{host.priceNote ? ` · ${host.priceNote}` : ''}</dd></div>
         </dl>
@@ -525,5 +524,4 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
   .hw-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 12px; align-items: center; }
   .hw-gift { display: inline-block; }
   @media (max-width: 900px) { .hw-grid { grid-template-columns: minmax(0, 1fr); } .hw-media { aspect-ratio: 16 / 11; } }
-  .addr-later { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 0.78rem; font-weight: 500; color: var(--color-accent); }
 </style>
