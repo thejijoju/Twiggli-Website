@@ -17,9 +17,9 @@ export const firebaseConfig = {
   authDomain: 'www.twiggli.com',
   projectId: 'twiggli-production',
   appId: '1:496068250761:web:b6bf4daace44dab40a4a58',
-  // Where hosts' videos and photos for new dates go (Firebase Storage).
-  // Empty until set: uploads then say so and hosts pick page photos.
-  storageBucket: '',
+  // Where hosts' videos and photos go (Firebase Storage, the app's bucket;
+  // path hostMedia/<slug>/…, allowed by storage.rules, pasted in the console).
+  storageBucket: 'twiggli-production.firebasestorage.app',
 };
 
 /** The host account page opens once sign-in by email link is enabled and
