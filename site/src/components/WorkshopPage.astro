@@ -128,7 +128,8 @@ const wishAttrs = {
         )}
       </div>
       <div class="host-facts">
-        <p class="host-blurb">{host.blurb}</p>
+        {/* The host's own words about this workshop (dashboard edit), else their general blurb. */}
+        <p class="host-blurb" style={next.description ? 'white-space: pre-line' : undefined}>{next.description || host.blurb}</p>
         <dl class="maker-meta">
           {host.studio && <div><dt>{t.studio}</dt><dd>{host.studio}</dd></div>}
           <div><dt>{t.duration}</dt><dd>{spellDuration(next.duration ?? host.duration, lang)}</dd></div>

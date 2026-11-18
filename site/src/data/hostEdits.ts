@@ -23,11 +23,25 @@ const hidden = new Set(((edits as { hidden?: { slug: string; key: string }[] }).
 export const goneSlugs = new Set<string>((edits as { gone?: string[] }).gone ?? []);
 /** Whether a host took this workshop (its page key) off the site. */
 export const isHiddenListing = (slug: string, key: string): boolean => hidden.has(`${slug}|${key}`);
-type ListingEdit = { slug: string; key: string; title?: string; price?: number | null; note?: string };
+/** A host's edit of a workshop (hostListing edit): title, price, line, and
+ *  (Jirel 18.11.26) description, length, places per date, pictures/video and
+ *  how guests book ('request': they send a request; 'instant': unchanged). */
+export type ListingEdit = {
+  slug: string; key: string; title?: string; price?: number | null; note?: string;
+  description?: string; duration?: string; seats?: number | null;
+  media?: { type: string; url: string }[]; booking?: '' | 'request' | 'instant';
+};
 const listingEdits = new Map(((edits as { listingEdits?: ListingEdit[] }).listingEdits ?? []).map((e) => [`${e.slug}|${e.key}`, e]));
 /** A host's own title, price per person and short line for a workshop. */
 export const listingEdit = (slug: string, key: string): ListingEdit | undefined => listingEdits.get(`${slug}|${key}`);
 const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.active !== false);
+/** Entries of the site's own schedule a host took over in the Calendar tab
+ *  (functions REPLACES): "rec|<slug>|<workshop key>|<HH:MM>" for a weekly
+ *  class, "date|<slug>|<YYYY-MM-DD>|<HH:MM>" for a hostDates.ts date. Their
+ *  dates now come from the host's dashboard (accountDates), so the site's
+ *  entry is left out: one source per date, never shown twice. */
+const replaced = new Set<string>((edits as { replaced?: string[] }).replaced ?? []);
+export const isReplaced = (key: string): boolean => replaced.has(key);
 
 /** Account field → HostCopy field. */
 const FIELDS = {
@@ -75,7 +89,15 @@ type EventRow = {
   id: string; slug: string; title: string; date: string; start: string; end?: string;
   repeat?: 'once' | 'weekly' | 'biweekly' | 'monthly'; until?: string;
   price?: number | null; seats?: number | null; minGuests?: number | null;
-  languages?: string; location?: string;
+  languages?: string; location?: string; titleEn?: string;
+  /** The date's own choice: true = guests send a request, false = they book and pay straight away. */
+  request?: boolean;
+  /** Taken over from the site's own schedule (functions REPLACES). */
+  replaces?: string;
+  /** publicEvents: the host's Stripe can take payments now. */
+  payable?: boolean;
+  /** Single dates of a series the host cancelled, and places changed for one date (Calendar tab). */
+  exceptions?: string[]; seatsByDate?: Record<string, number>;
 };
 const events = ((edits as { events?: EventRow[] }).events ?? []);
 
@@ -91,8 +113,10 @@ const hours = (start: string, end?: string): string | undefined => {
  *  repeats expanded (12 weeks unless the host set an end). They are booked
  *  through our request form, like any date without a booking page. */
 export function accountDates(daysAhead = 100): {
-  slug: string; title: string; date: string; time: string; duration?: string; price?: string;
+  slug: string; title: string; titleEn?: string; date: string; time: string; duration?: string; price?: string;
   spots?: number; minGuests?: number; languages?: string; district?: string; url: string; request: true; eventId?: string;
+  /** The date's own booking choice, and whether it was taken over from the site (sessions.ts decides with the workshop's). */
+  reqChoice?: boolean; adopted?: boolean;
 }[] {
   const today = new Date(); today.setUTCHours(0, 0, 0, 0);
   const last = new Date(today.getTime() + daysAhead * 86400000);
@@ -104,21 +128,33 @@ export function accountDates(daysAhead = 100): {
       const n = new Date(d);
       if (e.repeat === 'weekly') n.setUTCDate(n.getUTCDate() + 7);
       else if (e.repeat === 'biweekly') n.setUTCDate(n.getUTCDate() + 14);
-      else if (e.repeat === 'monthly') n.setUTCMonth(n.getUTCMonth() + 1);
+      else if (e.repeat === 'monthly') {
+        // The same day of the month (as functions onSchedule): months without it are skipped.
+        const day = first.getUTCDate();
+        let k = (n.getUTCFullYear() - first.getUTCFullYear()) * 12 + n.getUTCMonth() - first.getUTCMonth();
+        do { k++; n.setTime(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + k, day)); } while (n.getUTCDate() !== day && k < 240);
+      }
       else n.setUTCFullYear(9999);
       return n;
     };
     for (let d = first; d <= until && d <= last; d = step(d)) {
-      if (d < today) continue;
+      const day = d.toISOString().slice(0, 10);
+      if (d < today || e.exceptions?.includes(day)) continue;
+      const seats = typeof e.seatsByDate?.[day] === 'number' ? e.seatsByDate[day] : e.seats;
       out.push({
-        slug: e.slug, title: e.title, date: d.toISOString().slice(0, 10), time: e.start,
+        slug: e.slug, title: e.title, ...(e.titleEn ? { titleEn: e.titleEn } : {}), date: day, time: e.start,
         ...(hours(e.start, e.end) ? { duration: hours(e.start, e.end) } : {}),
         ...(typeof e.price === 'number' && e.price > 0 ? { price: `€${e.price}` } : {}),
-        ...(typeof e.seats === 'number' && e.seats > 0 ? { spots: e.seats } : {}),
+        ...(typeof seats === 'number' && seats > 0 ? { spots: seats } : {}),
         ...(typeof e.minGuests === 'number' && e.minGuests > 1 ? { minGuests: e.minGuests } : {}),
         ...(e.languages ? { languages: e.languages } : {}),
         // Priced: paid on the spot through the host's Stripe (DateRows, BookingDialog).
-        ...(typeof e.price === 'number' && e.price > 0 && e.id ? { eventId: e.id } : {}),
+        // Priced, and the host's Stripe can take it (publicEvents "payable";
+        // absent in older data: as before): payable on the spot, unless the
+        // date or its workshop takes requests (sessions.ts).
+        ...(typeof e.price === 'number' && e.price > 0 && e.id && e.payable !== false ? { eventId: e.id } : {}),
+        ...(typeof e.request === 'boolean' ? { reqChoice: e.request } : {}),
+        ...(e.replaces ? { adopted: true } : {}),
         url: '',
         request: true,
       });

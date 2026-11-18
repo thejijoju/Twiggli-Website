@@ -142,6 +142,8 @@ export interface HostAccountCopy {
   back: string;
   /** The messages view, Airbnb-style (three columns): list, conversation, request. */
   ib: Record<string, string>;
+  /** Calendar tab: one calendar per workshop (Jirel 18.11.26). */
+  cal: Record<string, string>;
   welcomeTitle: string;
   welcomeLede: string;
   claimLede: string;
@@ -240,6 +242,25 @@ const en: HostAccountCopy = {
   people: 'People',
   phone: 'Phone',
   back: '← All messages',
+  cal: {
+    sub: 'Each workshop has its own calendar. Pick one to see and edit its dates.', newWorkshop: '+ New workshop',
+    request1: '1 request', requestN: '{n} requests',
+    waitList: 'Waiting list', person1: '1 person', personN: '{n} people', week: 'Week', month: 'Month', prevMonth: 'Previous month', nextMonth: 'Next month', addDate: '+ Add date',
+    places: 'Places', booked: '{b} / {s} booked', bookedOpen: '{b} booked', full: 'Full', placesDate: 'Places on this date', auto: 'Accept bookings automatically',
+    waiting: '{n} waiting', waitNames: '{names} are waiting for a place.', waitName1: '{names} is waiting for a place.', firstTitle: 'No dates yet', firstSub: 'Add your first date and guests can book it on Twiggli. Each workshop then gets its own calendar here.', firstBtn: '+ Add your first date', panel: 'Selected date', prevWeek: 'Previous week', nextWeek: 'Next week', waitHint: 'Add {n} places and they’re asked first.', reqs: 'Requests for this date',
+    editDate: 'Edit date', cancelDate: 'Cancel date', cancelQ: 'Cancel this date? Please let guests who already booked know.', cancelOneQ: 'Cancel only {date}? The other dates of this series stay.',
+    pick: 'Pick a date to see its bookings.', none: 'No dates for this workshop yet. Add one with “+ Add date”.', listEmpty: 'No dates this month.',
+    reply: 'Answer in messages', saved: 'Saved', fail: 'Couldn’t save, so your change was undone. Please try again.', close: 'Close', prev: 'Previous', next: 'Next',
+    demo: 'Demo: nothing you change here is saved.',
+    synced: 'Synced from your booking page', syncedNote: 'This date comes from {site}. Change it there: the next sync would overwrite changes made here.', syncedOpen: 'Open your booking page', yourSite: 'your booking page',
+    leftN: '{n} places left', leftShort: '{n} left', soldOut: 'Sold out', fromSite: 'From your Twiggli page. Your first change here saves this series as your own dates, and the page keeps showing it once.',
+    takenOver: 'Saved. These dates are now yours to edit here.', needStripe: 'To take bookings straight away, connect Stripe in Settings → Payments.', autoNeedsPrice: 'Set a price on this date first: guests then book and pay straight away.',
+    editWs: 'Edit workshop', wsTitle: 'Edit workshop', wsSub: 'This is what guests see on Twiggli. The page address stays the same; changes show within the hour.', wsName: 'Title', wsDesc: 'Description', wsDescPh: 'What happens, what guests take home, who it is for…',
+    wsDuration: 'Length', wsPrice: 'Price per person (€)', wsSeats: 'Places per date', wsNote: 'One line about it (optional)', wsNotePh: 'e.g. Everyone takes home their own painting.',
+    wsMedia: 'Photos and video', wsMediaHint: 'Tap to choose; the first one is the cover.', wsPhoto: 'Photo', wsCover: 'Cover', wsUpPhotos: '+ Upload photos', wsUpVideo: '+ Upload a video',
+    wsBooking: 'How guests book', wsReq: 'Guests send a request', wsReqHint: 'You confirm each booking; they pay once you accept.', wsInstant: 'Guests book and pay straight away', wsInstantHint: 'For dates with a price you manage here; needs Stripe (Settings → Payments). You can still change it per date.',
+    inviteBtn: 'Copy invite link', inviteCopied: 'Invite link for {name} copied.', inviteHere: 'Invite link for {name}:', inviteClaimed: 'Already claimed by {who}. Link copied anyway:', inviteFail: 'Couldn’t get the link. Please try again.', untilStripe: 'Takes requests until Stripe is connected (Settings → Payments).', wsCancel: 'Cancel', wsSave: 'Save', wsSaved: 'Workshop saved: the page shows it within the hour.', wsFail: 'That didn’t work, nothing was changed. Please try again.', wsNeedName: 'Please give it a title.', wsBadDuration: 'Write the length like “2.5 h” or “90 min”.', and: '&', guests1: '1 person', guestsN: '{n} people', request: 'Request',
+  },
   ib: {
     details: 'Request details', unread: 'Unread',
     oTitle: 'Send {name} an offer', oSub: '{name} will have 48 hours to book. Your dates stay open in the meantime.', oTrip: 'Workshop details', oWorkshop: 'Workshop', oDate: 'Date', oDatePick: 'Choose a date', oAsked: 'Guest’s preferred date', oSubtotalLine: 'Total', oFee: 'Service fee (host, {pct} %)', oTime: 'Time', oGuests: 'People',
@@ -441,6 +462,25 @@ const de: HostAccountCopy = {
   people: 'Personen',
   phone: 'Telefon',
   back: '← Alle Nachrichten',
+  cal: {
+    sub: 'Jeder Workshop hat seinen eigenen Kalender. Wähle einen aus, um seine Termine zu sehen und zu bearbeiten.', newWorkshop: '+ Neuer Workshop',
+    request1: '1 Anfrage', requestN: '{n} Anfragen',
+    waitList: 'Warteliste', person1: '1 Person', personN: '{n} Personen', week: 'Woche', month: 'Monat', prevMonth: 'Voriger Monat', nextMonth: 'Nächster Monat', addDate: '+ Termin hinzufügen',
+    places: 'Plätze', booked: '{b} / {s} gebucht', bookedOpen: '{b} gebucht', full: 'Voll', placesDate: 'Plätze an diesem Termin', auto: 'Buchungen automatisch annehmen',
+    waiting: '{n} warten', waitNames: '{names} warten auf einen Platz.', waitName1: '{names} wartet auf einen Platz.', firstTitle: 'Noch keine Termine', firstSub: 'Füge deinen ersten Termin hinzu, dann können Gäste ihn auf Twiggli buchen. Jeder Workshop bekommt hier seinen eigenen Kalender.', firstBtn: '+ Ersten Termin hinzufügen', panel: 'Ausgewählter Termin', prevWeek: 'Vorige Woche', nextWeek: 'Nächste Woche', waitHint: 'Füge {n} Plätze hinzu, dann werden sie zuerst gefragt.', reqs: 'Anfragen für diesen Termin',
+    editDate: 'Termin bearbeiten', cancelDate: 'Termin absagen', cancelQ: 'Diesen Termin absagen? Bitte sag Gästen Bescheid, die schon gebucht haben.', cancelOneQ: 'Nur den {date} absagen? Die anderen Termine der Reihe bleiben.',
+    pick: 'Wähle einen Termin, um seine Buchungen zu sehen.', none: 'Für diesen Workshop gibt es noch keine Termine. Füge einen mit „+ Termin hinzufügen“ hinzu.', listEmpty: 'Keine Termine in diesem Monat.',
+    reply: 'In Nachrichten antworten', saved: 'Gespeichert', fail: 'Konnte nicht speichern, deine Änderung ist zurückgesetzt. Bitte versuch es noch einmal.', close: 'Schließen', prev: 'Zurück', next: 'Weiter',
+    demo: 'Demo: Was du hier änderst, wird nicht gespeichert.',
+    synced: 'Aus deiner Buchungsseite', syncedNote: 'Dieser Termin kommt von {site}. Ändere ihn dort: Der nächste Abgleich würde Änderungen von hier überschreiben.', syncedOpen: 'Buchungsseite öffnen', yourSite: 'deiner Buchungsseite',
+    leftN: 'Noch {n} Plätze frei', leftShort: '{n} frei', soldOut: 'Ausgebucht', fromSite: 'Von deiner Twiggli-Seite. Mit deiner ersten Änderung hier wird diese Reihe zu deinen eigenen Terminen, und die Seite zeigt sie weiter genau einmal.',
+    takenOver: 'Gespeichert. Diese Termine kannst du jetzt hier bearbeiten.', needStripe: 'Um Buchungen direkt anzunehmen, verbinde Stripe unter Einstellungen → Zahlungen.', autoNeedsPrice: 'Lege zuerst einen Preis für diesen Termin fest: Dann buchen und zahlen Gäste direkt.',
+    editWs: 'Workshop bearbeiten', wsTitle: 'Workshop bearbeiten', wsSub: 'So sehen Gäste ihn auf Twiggli. Die Adresse bleibt gleich; Änderungen sind innerhalb einer Stunde zu sehen.', wsName: 'Titel', wsDesc: 'Beschreibung', wsDescPh: 'Was passiert, was Gäste mitnehmen, für wen es ist…',
+    wsDuration: 'Dauer', wsPrice: 'Preis pro Person (€)', wsSeats: 'Plätze pro Termin', wsNote: 'Ein Satz dazu (optional)', wsNotePh: 'z. B. Alle nehmen ihr eigenes Bild mit nach Hause.',
+    wsMedia: 'Fotos und Video', wsMediaHint: 'Antippen zum Auswählen; das erste ist das Titelbild.', wsPhoto: 'Foto', wsCover: 'Titelbild', wsUpPhotos: '+ Fotos hochladen', wsUpVideo: '+ Video hochladen',
+    wsBooking: 'Wie Gäste buchen', wsReq: 'Gäste senden eine Anfrage', wsReqHint: 'Du bestätigst jede Buchung; sie zahlen, sobald du annimmst.', wsInstant: 'Gäste buchen und zahlen direkt', wsInstantHint: 'Für Termine mit Preis, die du hier verwaltest; braucht Stripe (Einstellungen → Zahlungen). Pro Termin kannst du es weiter ändern.',
+    inviteBtn: 'Einladungslink kopieren', inviteCopied: 'Einladungslink für {name} kopiert.', inviteHere: 'Einladungslink für {name}:', inviteClaimed: 'Schon übernommen von {who}. Link trotzdem kopiert:', inviteFail: 'Link nicht bekommen. Bitte versuch es noch einmal.', untilStripe: 'Nimmt Anfragen an, bis Stripe verbunden ist (Einstellungen → Zahlungen).', wsCancel: 'Abbrechen', wsSave: 'Speichern', wsSaved: 'Workshop gespeichert: Innerhalb einer Stunde ist es auf der Seite.', wsFail: 'Das hat nicht geklappt, es wurde nichts geändert. Bitte versuch es noch einmal.', wsNeedName: 'Bitte gib ihm einen Titel.', wsBadDuration: 'Schreib die Dauer wie „2,5 h“ oder „90 min“.', and: '&', guests1: '1 Person', guestsN: '{n} Personen', request: 'Anfrage',
+  },
   ib: {
     details: 'Anfragedetails', unread: 'Ungelesen',
     oTitle: 'Sende {name} ein Angebot', oSub: '{name} hat 48 Stunden Zeit zu buchen. Deine Termine bleiben in der Zeit offen.', oTrip: 'Workshop-Details', oWorkshop: 'Workshop', oDate: 'Datum', oDatePick: 'Datum wählen', oAsked: 'Wunschtermin des Gastes', oSubtotalLine: 'Gesamt', oFee: 'Servicegebühr (Gastgeber, {pct} %)', oTime: 'Uhrzeit', oGuests: 'Personen',
@@ -642,6 +682,25 @@ const fr: HostAccountCopy = {
   people: 'Personnes',
   phone: 'Téléphone',
   back: '← Tous les messages',
+  cal: {
+    sub: 'Chaque atelier a son propre calendrier. Choisis-en un pour voir et modifier ses dates.', newWorkshop: '+ Nouvel atelier',
+    request1: '1 demande', requestN: '{n} demandes',
+    waitList: 'Liste d’attente', person1: '1 personne', personN: '{n} personnes', week: 'Semaine', month: 'Mois', prevMonth: 'Mois précédent', nextMonth: 'Mois suivant', addDate: '+ Ajouter une date',
+    places: 'Places', booked: '{b} / {s} réservées', bookedOpen: '{b} réservées', full: 'Complet', placesDate: 'Places à cette date', auto: 'Accepter les réservations automatiquement',
+    waiting: '{n} en attente', waitNames: '{names} attendent une place.', waitName1: '{names} attend une place.', firstTitle: 'Pas encore de dates', firstSub: 'Ajoute ta première date et les participants pourront la réserver sur Twiggli. Chaque atelier aura ici son propre calendrier.', firstBtn: '+ Ajouter ta première date', panel: 'Date choisie', prevWeek: 'Semaine précédente', nextWeek: 'Semaine suivante', waitHint: 'Ajoute {n} places et on leur propose en premier.', reqs: 'Demandes pour cette date',
+    editDate: 'Modifier la date', cancelDate: 'Annuler la date', cancelQ: 'Annuler cette date ? Préviens les participants qui ont déjà réservé.', cancelOneQ: 'Annuler seulement le {date} ? Les autres dates de la série restent.',
+    pick: 'Choisis une date pour voir ses réservations.', none: 'Pas encore de dates pour cet atelier. Ajoutes-en une avec « + Ajouter une date ».', listEmpty: 'Aucune date ce mois-ci.',
+    reply: 'Répondre dans les messages', saved: 'Enregistré', fail: 'Impossible d’enregistrer, ton changement a été annulé. Réessaie.', close: 'Fermer', prev: 'Précédent', next: 'Suivant',
+    demo: 'Démo : rien de ce que tu changes ici n’est enregistré.',
+    synced: 'Synchronisé depuis ta page de réservation', syncedNote: 'Cette date vient de {site}. Modifie-la là-bas : la prochaine synchronisation écraserait les changements faits ici.', syncedOpen: 'Ouvrir ta page de réservation', yourSite: 'ta page de réservation',
+    leftN: 'Encore {n} places', leftShort: '{n} libres', soldOut: 'Complet', fromSite: 'Depuis ta page Twiggli. Ton premier changement ici enregistre cette série comme tes propres dates, et la page continue de l’afficher une seule fois.',
+    takenOver: 'Enregistré. Tu peux maintenant modifier ces dates ici.', needStripe: 'Pour accepter les réservations directement, connecte Stripe dans Réglages → Paiements.', autoNeedsPrice: 'Fixe d’abord un prix pour cette date : les participants réservent et paient alors directement.',
+    editWs: 'Modifier l’atelier', wsTitle: 'Modifier l’atelier', wsSub: 'C’est ce que les participants voient sur Twiggli. L’adresse ne change pas ; les changements apparaissent d’ici une heure.', wsName: 'Titre', wsDesc: 'Description', wsDescPh: 'Ce qui se passe, ce que les participants emportent, pour qui c’est…',
+    wsDuration: 'Durée', wsPrice: 'Prix par personne (€)', wsSeats: 'Places par date', wsNote: 'Une phrase pour le décrire (facultatif)', wsNotePh: 'ex. Chacun repart avec sa propre peinture.',
+    wsMedia: 'Photos et vidéo', wsMediaHint: 'Touche pour choisir ; la première est la couverture.', wsPhoto: 'Photo', wsCover: 'Couverture', wsUpPhotos: '+ Ajouter des photos', wsUpVideo: '+ Ajouter une vidéo',
+    wsBooking: 'Comment on réserve', wsReq: 'Les participants envoient une demande', wsReqHint: 'Tu confirmes chaque réservation ; ils paient quand tu acceptes.', wsInstant: 'Les participants réservent et paient directement', wsInstantHint: 'Pour les dates avec un prix que tu gères ici ; nécessite Stripe (Réglages → Paiements). Tu peux toujours le changer par date.',
+    inviteBtn: 'Copier le lien d’invitation', inviteCopied: 'Lien d’invitation pour {name} copié.', inviteHere: 'Lien d’invitation pour {name} :', inviteClaimed: 'Déjà pris par {who}. Lien copié quand même :', inviteFail: 'Impossible d’obtenir le lien. Réessaie.', untilStripe: 'Prend des demandes tant que Stripe n’est pas connecté (Réglages → Paiements).', wsCancel: 'Annuler', wsSave: 'Enregistrer', wsSaved: 'Atelier enregistré : visible sur la page d’ici une heure.', wsFail: 'Ça n’a pas marché, rien n’a été changé. Réessaie.', wsNeedName: 'Donne-lui un titre.', wsBadDuration: 'Écris la durée comme « 2,5 h » ou « 90 min ».', and: '&', guests1: '1 personne', guestsN: '{n} personnes', request: 'Demande',
+  },
   ib: {
     details: 'Détails de la demande', unread: 'Non lu',
     oTitle: 'Envoyer une offre à {name}', oSub: '{name} aura 48 heures pour réserver. Tes dates restent ouvertes en attendant.', oTrip: 'Détails de l’atelier', oWorkshop: 'Atelier', oDate: 'Date', oDatePick: 'Choisis une date', oAsked: 'Date souhaitée par le participant', oSubtotalLine: 'Total', oFee: 'Frais de service (hôte, {pct} %)', oTime: 'Heure', oGuests: 'Personnes',

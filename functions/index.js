@@ -1382,6 +1382,23 @@ const YMD = /^\d{4}-\d\d-\d\d$/;
 /** The caller may edit this host page (or is Jirel). */
 const mayEdit = async (email, slug) => ADMINS.includes(email) || (await mySlugs(email)).includes(slug);
 
+/** Photos and a video for a date or a workshop: the host's page pictures
+ *  and reels already on the site, or files they uploaded to Firebase
+ *  Storage (hostMedia/<slug>/…, or their own app folder). */
+const cleanMedia = (list, slug, uid = '') => (Array.isArray(list) ? list : []).slice(0, 12)
+  .map((m) => ({ type: m?.type === 'video' ? 'video' : 'photo', url: String(m?.url ?? '') }))
+  .filter((m) => /^\/img\/hosts\/[a-z0-9-]+\.(jpg|png|webp)$/.test(m.url)
+    || /^\/video\/[a-z0-9-]+\.(mp4|jpg)$/.test(m.url)
+    || m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`hostMedia%2F${slug}%2F`)
+    // Picked in the app: uploaded to the person's own app folder.
+    || (uid && m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`/o/users%2F${uid}%2F`)));
+
+/** Which site entry a dashboard date takes over (Calendar tab, Jirel 18.11.26):
+ *  "rec|<slug>|<workshop key>|<HH:MM>" for a weekly class from
+ *  live-workshops.json, "date|<slug>|<YYYY-MM-DD>|<HH:MM>" for a date in
+ *  hostDates.ts. The build leaves that entry out (publicEvents "replaced"). */
+const REPLACES = /^(rec\|[a-z0-9-]{1,60}\|[a-z0-9-]{1,80}\|([01]\d|2[0-3]):[0-5]\d|date\|[a-z0-9-]{1,60}\|\d{4}-\d\d-\d\d\|(([01]\d|2[0-3]):[0-5]\d)?)$/;
+
 /** A host's date, checked and trimmed; null when something is off. */
 const cleanEvent = (b, uid = '') => {
   const slug = String(b.slug ?? '');
@@ -1398,12 +1415,7 @@ const cleanEvent = (b, uid = '') => {
     until: YMD.test(until) ? until : '',
     // A video and/or photos: their page's own pictures, or files they
     // uploaded to Firebase Storage (hostMedia/<slug>/…).
-    media: (Array.isArray(b.media) ? b.media : []).slice(0, 12)
-      .map((m) => ({ type: m?.type === 'video' ? 'video' : 'photo', url: String(m?.url ?? '') }))
-      .filter((m) => /^\/img\/hosts\/[a-z0-9-]+\.(jpg|png|webp)$/.test(m.url)
-        || m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`hostMedia%2F${slug}%2F`)
-        // Picked in the app: uploaded to the person's own app folder.
-        || (uid && m.url.startsWith(`https://firebasestorage.googleapis.com/v0/b/`) && m.url.includes(`/o/users%2F${uid}%2F`))),
+    media: cleanMedia(b.media, slug, uid),
     location: text(b.location, 160),
     description: String(b.description ?? '').slice(0, 3000),
     price: num(b.price, 5000),
@@ -1416,7 +1428,28 @@ const cleanEvent = (b, uid = '') => {
     languages: text(b.languages, 60),
     cancel: CANCELS.includes(b.cancel) ? b.cancel : '7d',
     visibility: b.visibility === 'private' ? 'private' : 'public',
+    // Calendar tab: places changed for one date of a series, and single
+    // dates of a series the host cancelled. Only when sent, so the
+    // edit form (which doesn't send them) keeps what is saved.
+    ...(b.seatsByDate && typeof b.seatsByDate === 'object' && !Array.isArray(b.seatsByDate) ? {
+      seatsByDate: Object.fromEntries(Object.entries(b.seatsByDate).filter(([k]) => YMD.test(k)).slice(0, 200)
+        .map(([k, v]) => [k, num(v, 500)]).filter(([, v]) => v !== null)),
+    } : {}),
+    ...(Array.isArray(b.exceptions) ? { exceptions: [...new Set(b.exceptions.map(String).filter((x) => YMD.test(x)))].sort().slice(-200) } : {}),
+    // Taken over from the site's own schedule (see REPLACES), its English
+    // title, and whether guests only send a request (no paying on the spot).
+    ...(typeof b.replaces === 'string' && REPLACES.test(b.replaces) ? { replaces: b.replaces } : {}),
+    ...(b.titleEn !== undefined ? { titleEn: text(b.titleEn, 120) } : {}),
+    ...(typeof b.request === 'boolean' ? { request: b.request } : {}),
   };
+};
+
+/** The host's own account for a page, for dates an admin creates for them:
+ *  payments go to the host's Stripe (bookingCheckout reads `by`), not Jirel's. */
+const pageOwner = async (slug, email) => {
+  if (!ADMINS.includes(email)) return email;
+  const m = await getFirestore().collection('hostMembers').where('slugs', 'array-contains', slug).limit(5).get().catch(() => ({ docs: [] }));
+  return m.docs.map((d) => d.id).find((e) => !ADMINS.includes(e)) ?? email;
 };
 
 // ── New hosts (Jirel 17.11.26, "option B") ──
@@ -1539,23 +1572,54 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
   // Someone without a host page yet (the app's Create, Jirel 17.11.26):
   // their first workshop waits for Jirel's approval.
   if (!body.slug && !ADMINS.includes(email) && !(await mySlugs(email)).length) return newHostEvent(req, res, email, uid, body);
+  const col = getFirestore().collection('hostEvents');
+  // Calendar tab: the first change to a date from the site's own schedule
+  // turns that whole series into dashboard dates (one per weekday), all
+  // marked with the entry they replace, in one go; the build then drops the
+  // site's entry, so the public page never shows a date twice.
+  if (Array.isArray(body.adopt)) {
+    const evs = body.adopt.slice(0, 7).map((x) => cleanEvent({ ...x, slug: body.slug, replaces: body.replaces }, uid));
+    if (!evs.length || evs.some((x) => !x || !x.replaces)) return res.status(400).json({ error: 'Bad dates' });
+    if (!(await mayEdit(email, evs[0].slug))) return res.status(403).json({ error: 'Not your page' });
+    const owner = await pageOwner(evs[0].slug, email);
+    const items = await getFirestore().runTransaction(async (t) => {
+      // Taken over already (a second tab, a double click): hand back what is there.
+      const had = await t.get(col.where('slug', '==', evs[0].slug).where('replaces', '==', evs[0].replaces));
+      if (!had.empty) return had.docs.map((d) => ({ id: d.id, ...d.data(), createdAt: undefined, updatedAt: undefined }));
+      return evs.map((x) => {
+        const ref = col.doc();
+        t.set(ref, { ...x, by: owner, editedBy: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+        return { id: ref.id, ...x, by: owner };
+      });
+    });
+    return res.status(200).json({ items });
+  }
   const ev = cleanEvent(body, uid);
   if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
   if (!(await mayEdit(email, ev.slug))) return res.status(403).json({ error: 'Not your page' });
+  const owner = await pageOwner(ev.slug, email);
   // As on Luma: no money without a connected Stripe account (hostStripe).
-  if (ev.price > 0 && !(await getFirestore().doc(`hostMembers/${email}`).get()).data()?.stripe?.chargesEnabled) {
+  // Dates that only take requests are paid later, through the offer.
+  const id = String(req.body?.id ?? '');
+  // The edit form doesn't send `request`: a request-only date stays one.
+  const prev = /^[A-Za-z0-9]{10,40}$/.test(id) ? (await col.doc(id).get()).data() : undefined;
+  const reqOnly = ev.request ?? prev?.request;
+  // Dates taken over from the site's schedule, without a choice of their own,
+  // follow the workshop's setting and take requests until Stripe is connected
+  // (publicEvents "payable"), so editing them never needs Stripe first.
+  const followsWorkshop = reqOnly === undefined && !!(ev.replaces || prev?.replaces);
+  if (ev.price > 0 && reqOnly !== true && !followsWorkshop && !(await getFirestore().doc(`hostMembers/${owner}`).get()).data()?.stripe?.chargesEnabled) {
     return res.status(409).json({ error: 'stripe', message: 'Connect Stripe before you set a price' });
   }
-  const col = getFirestore().collection('hostEvents');
-  const id = String(req.body?.id ?? '');
   if (id) {
     if (!/^[A-Za-z0-9]{10,40}$/.test(id)) return res.status(400).json({ error: 'Bad id' });
     const old = await col.doc(id).get();
     if (!old.exists || old.data().slug !== ev.slug) return res.status(404).json({ error: 'Not found' });
-    await col.doc(id).set({ ...ev, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    // The date stays the host's (payments, bookingCheckout), whoever edits it.
+    await col.doc(id).set({ ...ev, by: old.data().by || owner, editedBy: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     return res.status(200).json({ id });
   }
-  const doc = await col.add({ ...ev, by: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+  const doc = await col.add({ ...ev, by: owner, editedBy: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
   try {
     await mailJirel({ subject: `New date from ${ev.slug}: ${ev.title}, ${ev.date} ${ev.start}`, text: `${email} added "${ev.title}" on ${ev.date} at ${ev.start} (${ev.repeat}), ${ev.seats ?? '?'} seats, €${ev.price ?? '?'}${ev.minGuests ? `, runs from ${ev.minGuests}` : ''}.` });
   } catch (err) { console.error('event note failed', err?.message); }
@@ -1571,7 +1635,10 @@ export const hostEventDelete = onRequest({ region: 'europe-west3', maxInstances:
   const ref = getFirestore().doc(`hostEvents/${id}`);
   const snap = await ref.get();
   if (!snap.exists || !(await mayEdit(email, snap.data().slug))) return res.status(403).json({ error: 'Not your date' });
-  await ref.delete();
+  // One that took over a date of the site's own schedule stays, marked
+  // deleted, so that date does not come back from the site's data.
+  if (snap.data().replaces) await ref.set({ status: 'deleted', editedBy: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  else await ref.delete();
   return res.status(200).json({ ok: true });
 });
 
@@ -1582,9 +1649,15 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
   const slug = String(req.body?.slug ?? '');
   if (!SLUG.test(slug) || !(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
   const snap = await getFirestore().collection('hostEvents').where('slug', '==', slug).get();
-  const items = snap.docs.map((d) => ({ id: d.id, ...d.data(), createdAt: undefined, updatedAt: undefined }))
+  const all = snap.docs.map((d) => ({ id: d.id, ...d.data(), createdAt: undefined, updatedAt: undefined }));
+  const items = all.filter((x) => x.status !== 'deleted')
     .sort((a, b) => `${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`));
-  return res.status(200).json({ items });
+  // Site entries the host took over (also when they deleted them since).
+  const replaced = [...new Set(all.map((x) => x.replaces).filter(Boolean))];
+  // Paid bookings per date, for the Calendar tab (no guest contact details).
+  const paid = await getFirestore().collection('bookings').where('slug', '==', slug).where('status', '==', 'paid').get().catch(() => ({ docs: [] }));
+  const bookings = paid.docs.map((d) => { const x = d.data(); return { eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100 }; });
+  return res.status(200).json({ items, bookings, replaced });
 });
 
 // ── Listings: a host pauses or deletes a workshop ──
@@ -1616,7 +1689,18 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
   // workshop, laid over what the site shows (the page address stays).
   if (b.action === 'edit') {
     const n = Math.round(Number(b.price));
-    const edit = { title: text(b.newTitle, 120), price: Number.isFinite(n) && n > 0 && n <= 5000 ? n : null, note: text(b.note, 220) };
+    const seats = Math.round(Number(b.seats));
+    // Title, price and line (as before), and now the rest of the workshop
+    // (Jirel 18.11.26): what it is, how long, places per date, pictures and
+    // video, and whether guests book straight away or send a request.
+    const edit = {
+      title: text(b.newTitle, 120), price: Number.isFinite(n) && n > 0 && n <= 5000 ? n : null, note: text(b.note, 220),
+      description: String(b.description ?? '').replace(/\r/g, '').trim().slice(0, 3000),
+      duration: /^\d{1,2}([.,]\d{1,2})?\s?(h|min)$/.test(text(b.duration, 12)) ? text(b.duration, 12).replace(',', '.') : '',
+      seats: Number.isFinite(seats) && seats >= 1 && seats <= 500 ? seats : null,
+      media: cleanMedia(b.media, slug),
+      booking: ['request', 'instant'].includes(b.booking) ? b.booking : '',
+    };
     const prev = (await ref.get()).data();
     await ref.set({ slug, key, title, status: prev?.status ?? 'live', edit, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     try {
@@ -1651,11 +1735,20 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   // Paused accounts too (Jirel 15.11.26): back once the host signs in again.
   const gone = [...((await getFirestore().doc('_config/goneHosts').get()).data()?.slugs ?? []), ...((await getFirestore().doc('_config/pausedHosts').get()).data()?.slugs ?? [])];
   let updated = 0;
-  const items = snap.docs.filter((d) => !gone.includes(d.data().slug) && !['pending', 'declined'].includes(d.data().status)).map((d) => {
+  // Site entries hosts took over in the Calendar tab (any visibility, deleted ones too).
+  const taken = await getFirestore().collection('hostEvents').where('replaces', '>', '').get().catch(() => ({ docs: [] }));
+  const replaced = [...new Set(taken.docs.map((d) => { updated = Math.max(updated, d.data().updatedAt?.toMillis?.() ?? 0); return d.data().replaces; }))];
+  const live = snap.docs.filter((d) => !gone.includes(d.data().slug) && !['pending', 'declined', 'deleted'].includes(d.data().status));
+  // Whether the date's host can take payments now (Stripe connected): if not,
+  // the site takes requests for it instead of a checkout that would fail.
+  const owners = [...new Set(live.map((d) => d.data().by).filter(Boolean))];
+  const ready = new Set((await Promise.all(owners.map(async (e) => ((await getFirestore().doc(`hostMembers/${e}`).get()).data()?.stripe?.chargesEnabled ? e : ''))
+    .map((p) => p.catch(() => '')))).filter(Boolean));
+  const items = live.map((d) => {
     const x = d.data();
     updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0);
-    const { by: _by, createdAt: _c, updatedAt: _u, ...pub } = x;
-    return { id: d.id, ...pub };
+    const { by, createdAt: _c, updatedAt: _u, editedBy: _e, ...pub } = x;
+    return { id: d.id, ...pub, payable: ready.has(by) };
   });
   // Workshops hosts paused or deleted (hostListing), left out of the site.
   const listings = (await getFirestore().collection('hostListings').get()).docs
@@ -1663,7 +1756,7 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   const hidden = listings.filter((x) => LISTING_STATES.includes(x.status)).map(({ slug, key, status }) => ({ slug, key, status }));
   // And the hosts' own title, price and line for a workshop (hostListing edit).
   const edits = listings.filter((x) => x.edit && !LISTING_STATES.includes(x.status)).map(({ slug, key, edit }) => ({ slug, key, ...edit }));
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone });
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
@@ -1913,6 +2006,7 @@ const onSchedule = (ev, date) => {
   const d = new Date(`${date}T00:00:00Z`);
   if (d > until) return false;
   const days = Math.round((d - first) / 86400000);
+  if (Array.isArray(ev.exceptions) && ev.exceptions.includes(date)) return false;
   if (!ev.repeat || ev.repeat === 'once') return days === 0;
   if (ev.repeat === 'weekly') return days % 7 === 0;
   if (ev.repeat === 'biweekly') return days % 14 === 0;
@@ -1954,13 +2048,14 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   const db = getFirestore();
   const evSnap = await db.doc(`hostEvents/${eventId}`).get();
   const ev = evSnap.data();
-  if (!evSnap.exists || ev.visibility === 'private' || !(ev.price > 0) || !onSchedule(ev, date)) return res.status(404).json({ error: 'not-bookable' });
+  if (!evSnap.exists || ev.visibility === 'private' || ev.request === true || ev.status === 'deleted' || !(ev.price > 0) || !onSchedule(ev, date)) return res.status(404).json({ error: 'not-bookable' });
   if (new Date(`${date}T${ev.start}:00+01:00`).getTime() < Date.now()) return res.status(409).json({ error: 'past' });
   const member = (await db.doc(`hostMembers/${ev.by}`).get()).data() ?? {};
   const account = member.stripe?.accountId;
   if (!account || !member.stripe?.chargesEnabled) return res.status(409).json({ error: 'host-not-ready' });
-  if (ev.seats) {
-    const left = ev.seats - (await placesTaken(eventId, date));
+  const seats = Number.isInteger(ev.seatsByDate?.[date]) ? ev.seatsByDate[date] : ev.seats;
+  if (seats) {
+    const left = seats - (await placesTaken(eventId, date));
     if (people > left) return res.status(409).json({ error: 'full', left: Math.max(0, left) });
   }
   const pct = Number.isFinite(member.commissionPct) ? Math.max(0, Math.min(30, member.commissionPct)) : DEFAULT_COMMISSION;
