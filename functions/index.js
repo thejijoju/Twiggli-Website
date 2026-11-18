@@ -354,7 +354,7 @@ const confirmGuest = async (to, f) => {
   const runs = String(f['Runs from'] ?? '').match(/\d+/)?.[0];
   const runsNote = !runs ? '' : de
     ? `Dieser Kurs findet ab ${runs} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald ${runs} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.`
-    : `This class runs from ${runs} participants. Your request is confirmed as soon as ${runs} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.`;
+    : `This class runs from ${runs} participants. Your request is confirmed as soon as ${runs} spots are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.`;
   // Designed like the host's "New booking request" email (Jirel 09.11.26):
   // logo, purple kicker, one big line, a details card, what happens next.
   const t = de ? {
@@ -609,7 +609,7 @@ const notifyVoucherHost = async (piId, m, code, amount) => {
     en: {
       subject: 'Congrats! Someone bought a voucher for you 🎁',
       hi: `Hey ${who.firstName}!`, congrats: 'Congrats! 🎉 Someone just bought a <b>Twiggli</b> voucher for your workshop:',
-      rows: [['Workshop', m.workshop], ['Bought by', m.buyer_name], ['For', recipient], ['Places', String(people)], ['Value', eur(amount)], ['Voucher code', code]],
+      rows: [['Workshop', m.workshop], ['Bought by', m.buyer_name], ['For', recipient], ['Spots', String(people)], ['Value', eur(amount)], ['Voucher code', code]],
       next: `There's nothing you need to do now. ${recipientFirst || 'They'} redeem${recipientFirst ? 's' : ''} the voucher when booking on your <b>Twiggli</b> page. As soon as that happens, I'll let you know: the booking arrives by email and in your dashboard, marked "paid with voucher", and you confirm it as usual.`,
       pay: `After the workshop, you get the amount by the 10th of the following month, minus 15% commission (for ${eur(amount)} that's ${eur(keep)} for you).`,
     },
@@ -1353,13 +1353,48 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   // decides about that), so she passes it on until then.
   try {
     const guest = x.fields?.Name || x.email || 'the guest';
+    // Accepted: the full address to pass on (the workshop's own place, else the studio).
+    let where = '';
+    if (action === 'accept') {
+      try {
+        const key = slugify(x.fields?.Workshop || '');
+        const listing = key ? (await getFirestore().doc(`hostListings/${x.hostSlug}__${key}`).get()).data()?.edit : null;
+        where = whereBox(await fullAddressFor(x.hostSlug, listing?.where ? listing : null), false).text;
+      } catch (err) { console.error('accept address', err?.message); }
+    }
     await mailJirel({
       subject: `Host ${ACTIONS[action] || 'wrote'}: ${x.subject}`,
       replyTo: isEmail(x.email) ? x.email : undefined,
-      text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.workshop ? `\nWorkshop: ${entry.workshop}` : ''}${entry.people ? `\nPeople: ${entry.people}` : ''}${entry.extras?.length ? `\nExtras: ${entry.extras.map((x) => `${x.name || 'extra'} €${x.amt}`).join(', ')}` : ''}${entry.total ? `\nOffered total: €${entry.total}` : ''}${entry.price ? ` (€${entry.price} per person)` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}`,
+      text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.workshop ? `\nWorkshop: ${entry.workshop}` : ''}${entry.people ? `\nPeople: ${entry.people}` : ''}${entry.extras?.length ? `\nExtras: ${entry.extras.map((x) => `${x.name || 'extra'} €${x.amt}`).join(', ')}` : ''}${entry.total ? `\nOffered total: €${entry.total}` : ''}${entry.price ? ` (€${entry.price} per person)` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}${where ? `\n\nFor the guest (full address, only now they are booked):\n${where}` : ''}`,
     });
   } catch (err) { console.error('hostReply note failed', err?.message); }
   return res.status(200).json({ status: ACTIONS[action] });
+});
+
+/** The studio address (Settings → Your studio): full address private
+ *  (hostPrivate/{slug}), and only what guests may see goes on the page
+ *  (hostProfiles place). For the host and for an admin acting as them. */
+export const hostAddress = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const b = req.body ?? {};
+  const slug = String(b.slug ?? '');
+  if (!SLUG.test(slug) || !(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
+  const ref = getFirestore().doc(`hostPrivate/${slug}`);
+  if (b.action === 'get') return res.status(200).json({ studio: (await ref.get()).data()?.studio ?? null });
+  const studio = cleanAddress({ ...b, howTo: b.howTo ?? '' });
+  delete studio.name;
+  if (!studio.district) return res.status(400).json({ error: 'district' });
+  const visible = visibleAddress(studio);
+  await ref.set({ slug, studio, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  // The page shows only the visible part (and the studio's name, if any).
+  const name = b.studioName !== undefined ? text(b.studioName, 80) : undefined;
+  for (const lang of ['en', 'de']) {
+    await getFirestore().doc(`hostProfiles/${slug}_${lang}`).set({ slug, lang, place: visible, ...(name !== undefined ? { studio: name } : {}), updated_at: new Date().toISOString(), updated_by: email }, { merge: true });
+  }
+  try { await mailJirel({ subject: `${slug}: studio address changed`, text: `${email} changed the studio address of ${slug}. Guests now see: "${visible}" (${studio.vis}).` }); } catch (err) { console.error('address note failed', err?.message); }
+  return res.status(200).json({ studio, visible });
 });
 
 /** Jirel only: every page's personal invite link, to email to the hosts. */
@@ -1439,6 +1474,58 @@ const cleanMedia = (list, slug, uid = '', bunny = new Set()) => (Array.isArray(l
  *  hostDates.ts. The build leaves that entry out (publicEvents "replaced"). */
 const REPLACES = /^(rec\|[a-z0-9-]{1,60}\|[a-z0-9-]{1,80}\|([01]\d|2[0-3]):[0-5]\d|date\|[a-z0-9-]{1,60}\|\d{4}-\d\d-\d\d\|(([01]\d|2[0-3]):[0-5]\d)?)$/;
 
+// ── Where a workshop happens, and what guests see of it (Jirel 18.11.26) ──
+// A host enters her studio's full address once (hostAddress → Firestore
+// hostPrivate/{slug}, which no client may read). She picks what guests see
+// before booking: the district, the street without number, or the full
+// address. A date can be somewhere else (its own address and choice, kept on
+// the hostEvents doc, which no client reads either) or at the guest's. Only
+// the visible part ever leaves the functions (publicEvents, hostProfiles);
+// booked guests get the full address in their confirmation.
+const VIS = ['district', 'street', 'full'];
+const WHERE = ['studio', 'other', 'guest'];
+/** An address as entered, checked and trimmed. */
+const cleanAddress = (a) => {
+  const zip = String(a?.zip ?? '').trim();
+  return {
+    ...(a?.name !== undefined ? { name: text(a.name, 80) } : {}),
+    street: text(a?.street, 120), zip: /^\d{5}$/.test(zip) ? zip : '', district: text(a?.district, 60),
+    vis: VIS.includes(a?.vis) ? a.vis : 'district',
+    ...(a?.howTo !== undefined ? { howTo: text(a.howTo, 200) } : {}),
+  };
+};
+/** What guests see before booking: "Friedrichshain", "Boxhagener Str., Friedrichshain"
+ *  or "Boxhagener Str. 12, 10245 Berlin" (with a venue's name in front, if any). */
+const visibleAddress = (a) => {
+  if (!a) return '';
+  const noNumber = (a.street ?? '').replace(/\s+\d+\s*[a-zA-Z]?(\s*[-–/]\s*\d+\s*[a-zA-Z]?)?$/, '').trim();
+  const parts = a.vis === 'full' ? [a.name, a.street, a.zip ? `${a.zip} Berlin` : ''] : a.vis === 'street' ? [a.name, noNumber, a.district] : [a.name, a.district];
+  return parts.filter(Boolean).join(', ');
+};
+/** A host's studio address (private), or null. */
+const studioOf = async (slug) => (await getFirestore().doc(`hostPrivate/${slug}`).get()).data()?.studio ?? null;
+/** The full address for a booked guest: the date's own place, else the studio; none at the guest's. */
+const fullAddressFor = async (slug, ev) => {
+  if (ev?.where === 'guest') return null;
+  const a = ev?.where === 'other' ? ev.place : await studioOf(slug);
+  if (!a?.street) return null;
+  const studio = ev?.where === 'other' ? null : await studioOf(slug);
+  return { name: a.name || '', street: a.street, zip: a.zip, district: a.district, howTo: (ev?.where === 'other' ? '' : studio?.howTo) || '' };
+};
+/** "📍 Where to go" for a confirmation email (and the same lines as text). */
+const whereBox = (a, de) => {
+  if (!a) return { html: '', text: '' };
+  const city = [a.zip, 'Berlin'].filter(Boolean).join(' ') + (a.district ? ` (${a.district})` : '');
+  const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.street}, ${a.zip} Berlin`)}`;
+  const html = `<div style="border:1px solid #e6dff2;border-radius:12px;padding:14px 16px;margin:0 0 18px;background:#faf8ff">`
+    + `<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#6a3eec;font-weight:bold;margin-bottom:4px">📍 ${de ? 'So findest du hin' : 'Where to go'}</div>`
+    + `<div style="font-size:15px">${a.name ? `<b>${esc(a.name)}</b><br>` : ''}${esc(a.street)}<br>${esc(city)}</div>`
+    + `${a.howTo ? `<div style="font-size:13px;color:#5b5f6b;margin-top:6px">${esc(a.howTo)}</div>` : ''}`
+    + `<div style="margin-top:10px"><a href="${maps}" style="display:inline-block;background:#6a3eec;color:#fff;text-decoration:none;padding:7px 14px;border-radius:999px;font-size:13px">${de ? 'In Karten öffnen' : 'Open in Maps'}</a></div>`
+    + `<div style="font-size:12px;color:#8b87a0;margin-top:10px">${de ? 'Die Adresse ist nur für dich und deine Gruppe: bitte nicht öffentlich teilen.' : 'This address is just for you and your group: please don’t share it publicly.'}</div></div>`;
+  return { html, text: `${de ? 'So findest du hin' : 'Where to go'}: ${[a.name, a.street, city].filter(Boolean).join(', ')}${a.howTo ? ` (${a.howTo})` : ''}\n${maps}` };
+};
+
 /** A host's date, checked and trimmed; null when something is off. */
 const cleanEvent = (b, uid = '', bunny = new Set()) => {
   const slug = String(b.slug ?? '');
@@ -1485,7 +1572,16 @@ const cleanEvent = (b, uid = '', bunny = new Set()) => {
     // weekly "on request" slot taken over from the site (guests ask; never paid on the spot).
     ...(typeof b.wkey === 'string' && LISTING_KEY.test(b.wkey) ? { wkey: b.wkey } : {}),
     ...(typeof b.onRequest === 'boolean' ? { onRequest: b.onRequest } : {}),
+    // Where: the studio, somewhere else (its own address, private) or at the guest's.
+    ...(WHERE.includes(b.where) ? { where: b.where, place: b.where === 'other' ? cleanAddress(b.place) : null } : {}),
   };
+};
+/** The public line for a date (location) from where it is: worked out here, never typed by the client. */
+const placeLine = async (ev) => {
+  if (ev.where === 'guest') return { location: '', locExact: true, district: '' };
+  const a = ev.where === 'other' ? ev.place : ev.where === 'studio' ? await studioOf(ev.slug) : null;
+  if (!a) return ev.where ? { location: ev.location || '', locExact: false, district: '' } : {};
+  return { location: visibleAddress(a) || ev.location || '', locExact: a.vis === 'full', district: a.district || '' };
 };
 
 /** The host's own account for a page, for dates an admin creates for them:
@@ -1562,12 +1658,12 @@ const newHostEvent = async (req, res, email, uid, body) => {
       await mailJirel({
         subject: `New host: ${name} wants to publish "${ev.title}"`,
         replyTo: email,
-        text: `${name} (${email}) wants to publish "${ev.title}" on ${ev.date} at ${ev.start}, €${ev.price ?? 0}, ${ev.seats ?? '?'} places.\nStripe: ${who || 'connected'}\n\n${ev.description}\n\nApprove: ${approve}\nDecline: ${decline}`,
+        text: `${name} (${email}) wants to publish "${ev.title}" on ${ev.date} at ${ev.start}, €${ev.price ?? 0}, ${ev.seats ?? '?'} spots.\nStripe: ${who || 'connected'}\n\n${ev.description}\n\nApprove: ${approve}\nDecline: ${decline}`,
         html: `<div style="font-family:Tahoma,sans-serif;font-size:15px;line-height:1.5;max-width:620px">
 <p style="color:#6A3EEC;font-weight:bold;margin:0">New host · waiting for you</p>
 <h2 style="margin:4px 0 12px">${esc(name)}: ${esc(ev.title)}</h2>
 <div>${pics}</div>
-<p><b>${esc(ev.date)} · ${esc(ev.start)}${ev.end ? `–${esc(ev.end)}` : ''}</b> · €${ev.price ?? 0} · ${ev.seats ?? '?'} places${ev.location ? ` · ${esc(ev.location)}` : ''}</p>
+<p><b>${esc(ev.date)} · ${esc(ev.start)}${ev.end ? `–${esc(ev.end)}` : ''}</b> · €${ev.price ?? 0} · ${ev.seats ?? '?'} spots${ev.location ? ` · ${esc(ev.location)}` : ''}</p>
 <p style="white-space:pre-line">${esc(ev.description)}</p>
 <p><b>Email:</b> ${esc(email)}<br><b>Stripe:</b> ${esc(who || 'connected')}</p>
 <p><a href="${approve}" style="display:inline-block;background:#1f6f43;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Approve</a>
@@ -1645,6 +1741,7 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
   const ev = cleanEvent(body, uid, await bunnyAllowed(body.media, { email, uid, slug: String(body.slug ?? '') }));
   if (!ev) return res.status(400).json({ error: 'Please fill in title, date and time' });
   if (!(await mayEdit(email, ev.slug))) return res.status(403).json({ error: 'Not your page' });
+  if (ev.where) Object.assign(ev, await placeLine(ev));
   const owner = await pageOwner(ev.slug, email);
   // As on Luma: no money without a connected Stripe account (hostStripe).
   // Dates that only take requests are paid later, through the offer.
@@ -1748,6 +1845,8 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
       seats: Number.isFinite(seats) && seats >= 1 && seats <= 500 ? seats : null,
       media: cleanMedia(b.media, slug, '', await bunnyAllowed(b.media, { email, slug })),
       booking: ['request', 'instant'].includes(b.booking) ? b.booking : '',
+      // Where it usually happens (dates can differ): its own address stays private (publicEvents).
+      ...(WHERE.includes(b.where) ? { where: b.where, place: b.where === 'other' ? cleanAddress(b.place) : null } : {}),
     };
     const prev = (await ref.get()).data();
     await ref.set({ slug, key, title, status: prev?.status ?? 'live', edit, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
@@ -1885,19 +1984,31 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   const owners = [...new Set(live.map((d) => d.data().by).filter(Boolean))];
   const ready = new Set((await Promise.all(owners.map(async (e) => ((await getFirestore().doc(`hostMembers/${e}`).get()).data()?.stripe?.chargesEnabled ? e : ''))
     .map((p) => p.catch(() => '')))).filter(Boolean));
+  // Studios: what guests see before booking (the full address never leaves here).
+  const privs = (await getFirestore().collection('hostPrivate').get().catch(() => ({ docs: [] }))).docs;
+  const studioBy = new Map(privs.map((d) => { updated = Math.max(updated, d.data().updatedAt?.toMillis?.() ?? 0); return [d.id, d.data().studio]; }));
+  const studios = [...studioBy].filter(([s, a]) => a && !gone.includes(s)).map(([slug, a]) => ({ slug, visible: visibleAddress(a), district: a.district || '', exact: a.vis === 'full' }));
+  const lineFor = (x) => {
+    if (x.where === 'guest') return { location: '', locExact: true, district: '' };
+    const a = x.where === 'other' ? x.place : x.where === 'studio' ? studioBy.get(x.slug) : null;
+    return a ? { location: visibleAddress(a), locExact: a.vis === 'full', district: a.district || '' } : {};
+  };
   const items = live.map((d) => {
     const x = d.data();
     updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0);
-    const { by, createdAt: _c, updatedAt: _u, editedBy: _e, ...pub } = x;
-    return { id: d.id, ...pub, payable: ready.has(by) };
+    const { by, createdAt: _c, updatedAt: _u, editedBy: _e, place: _p, ...pub } = x;
+    return { id: d.id, ...pub, ...lineFor(x), payable: ready.has(by) };
   });
   // Workshops hosts paused or deleted (hostListing), left out of the site.
   const listings = (await getFirestore().collection('hostListings').get()).docs
     .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, key: x.key, status: x.status, edit: x.edit ?? null }; });
   const hidden = listings.filter((x) => LISTING_STATES.includes(x.status)).map(({ slug, key, status }) => ({ slug, key, status }));
   // And the hosts' own title, price and line for a workshop (hostListing edit).
-  const edits = listings.filter((x) => x.edit && !LISTING_STATES.includes(x.status)).map(({ slug, key, edit }) => ({ slug, key, ...edit }));
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced });
+  const edits = listings.filter((x) => x.edit && !LISTING_STATES.includes(x.status)).map(({ slug, key, edit }) => {
+    const { place: _p, ...pub } = edit;
+    return { slug, key, ...pub, ...(edit.where ? lineFor({ ...edit, slug }) : {}) };
+  });
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
@@ -2220,7 +2331,7 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   const back = typeof b.back === 'string' && b.back.startsWith(SITE) ? b.back.slice(0, 400) : `${SITE}${de ? '/de' : ''}/`;
   const when = `${new Date(`${date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' })}, ${ev.start}`;
   const booking = {
-    eventId, date, start: ev.start, slug: ev.slug, title: ev.title, location: ev.location ?? '', cancel: ev.cancel ?? '7d',
+    eventId, date, start: ev.start, slug: ev.slug, title: ev.title, location: (await placeLine(ev)).location ?? ev.location ?? '', cancel: ev.cancel ?? '7d',
     people, name, email, phone: text(b.phone, 60), message: String(b.message ?? '').slice(0, 1000), lang,
     hostEmail: ev.by, account, amount: total, fee, commissionPct: pct, status: 'pending', createdAt: FieldValue.serverTimestamp(),
     ...(voucherCents ? { voucherHash, voucherCents } : {}),
@@ -2307,13 +2418,19 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY,
  *  note (Jirel in CC), with the voucher part shown where there is one. */
 const sendBookingMails = async (id, bk) => {
   const de = bk.lang === 'de';
+  // The full address, only now that the guest has booked (the date's own place, else the studio).
+  let where = { html: '', text: '' };
+  try {
+    const ev = bk.eventId ? (await getFirestore().doc(`hostEvents/${bk.eventId}`).get()).data() : null;
+    where = whereBox(await fullAddressFor(bk.slug, ev), de);
+  } catch (err) { console.error('booking address', id, err?.message); }
   const day = new Date(`${bk.date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
   const eur = (c) => `€${(c / 100).toFixed(2).replace(/\.00$/, '')}`;
   const cancel = (CANCEL_TEXT[bk.cancel] ?? CANCEL_TEXT['7d'])[de ? 0 : 1];
   const first_ = bk.name.split(/\s+/)[0];
   const vc = bk.voucherCents ?? 0;
   const charged = bk.amount - vc;
-  const rows = [[de ? 'Workshop' : 'Workshop', bk.title], [de ? 'Wann' : 'When', `${day}, ${bk.start}`], [de ? 'Wo' : 'Where', bk.location], [de ? 'Plätze' : 'Places', String(bk.people)],
+  const rows = [[de ? 'Workshop' : 'Workshop', bk.title], [de ? 'Wann' : 'When', `${day}, ${bk.start}`], [de ? 'Wo' : 'Where', bk.location], [de ? 'Plätze' : 'Spots', String(bk.people)],
     ...(vc ? [[de ? 'Gutschein' : 'Voucher', `−${eur(vc)}`]] : []),
     [de ? 'Bezahlt' : 'Paid', eur(charged)], [de ? 'Stornierung' : 'Cancellation', cancel]].filter(([, v]) => v);
   const table = rows.map(([k, v]) => `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">${esc(k)}</td><td style="padding:5px 0"><b>${esc(v)}</b></td></tr>`).join('');
@@ -2322,7 +2439,7 @@ const sendBookingMails = async (id, bk) => {
     await mail.sendMail({
       from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: bk.email,
       subject: de ? `Gebucht! ${bk.title} am ${day} ${emojiFor(bk.title)}` : `You're booked! ${bk.title} on ${day} ${emojiFor(bk.title)}`,
-      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? `Hallo ${esc(first_)},<br><br>dein Platz ist sicher, wir freuen uns auf dich! 🎉` : `Hi ${esc(first_)},<br><br>your place is booked, we can't wait to see you! 🎉`}<table style="margin:16px 0;font-size:14px">${table}</table>${charged && de ? 'Die Zahlungsbestätigung von Stripe kommt in einer eigenen E-Mail. Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : de ? 'Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : `${charged ? 'Your payment receipt from Stripe comes in a separate email. ' : ''}Questions, or need to change something? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`}</div>`,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? `Hallo ${esc(first_)},<br><br>dein Platz ist sicher, wir freuen uns auf dich! 🎉` : `Hi ${esc(first_)},<br><br>your spot is reserved, we can't wait to see you! 🎉`}<table style="margin:16px 0;font-size:14px">${table}</table>${where.html}${charged && de ? 'Die Zahlungsbestätigung von Stripe kommt in einer eigenen E-Mail. Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : de ? 'Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : `${charged ? 'Your payment receipt from Stripe comes in a separate email. ' : ''}Questions, or need to change something? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`}</div>`,
     });
   } catch (err) { console.error('booking guest mail failed', id, err?.message); }
   try {

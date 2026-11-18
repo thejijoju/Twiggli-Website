@@ -28,7 +28,7 @@ const en: CheckoutCopy = {
   hostTitle: 'Give this workshop', generalTitle: 'Twiggli gift voucher',
   lede: 'Pay securely right here. You get the voucher as a PDF.',
   wish: 'Other', wishHint: 'Amount in €, from 20', minNote: 'The smallest voucher is €20.', maxNote: 'For more than €2,000, please write to us.',
-  places: 'Places', perPerson: 'per person', less: 'One place fewer', more: 'One place more',
+  places: 'Spots', perPerson: 'per person', less: 'One spot fewer', more: 'One spot more',
   details: 'Your info', name: 'Name', email: 'Email',
   forWhom: 'Who is the voucher for?', recipient: 'For whom?', recipientPh: 'e.g. Lena', message: 'Message', messagePh: 'A few words for the voucher',
   deliver: 'Where should we send it?', toMe: 'To me', toThem: 'Straight to them', recipientEmail: 'Their email', recipientEmailPh: 'lena@example.com', needRecipientEmail: 'Please enter the recipient’s email address.',

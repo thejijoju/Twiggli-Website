@@ -860,7 +860,7 @@ export const retreats: Retreat[] = [
       tr: ['Caro ile hatha, vinyasa ve yin yoga', 'Nina ile sezgisel sanat oturumları, tüm malzemeler dahil', 'Rehberli meditasyon ve şarkı söyleyen kâseler', 'Finca’da ve havuz başında kendine zaman', 'En fazla dokuz kadın, deneyim gerekmez'],
     },
     bring: {
-      en: 'Not in the price: the flight and the transfer to the finca — a bus runs from the airport directly to the finca, or you can hire a car. A deposit of 50% secures the place; the rest is due before the trip. Booking together with a friend saves you €25 each.',
+      en: 'Not in the price: the flight and the transfer to the finca — a bus runs from the airport directly to the finca, or you can hire a car. A deposit of 50% secures your spot; the rest is due before the trip. Booking together with a friend saves you €25 each.',
       de: 'Nicht im Preis: Flug und Transfer zur Finca — vom Flughafen fährt ein Linienbus direkt zur Finca, oder du mietest dir ein Auto. 50 % Anzahlung sichern den Platz, der Rest ist vor Reisebeginn fällig. Meldest du dich mit einer Freundin an, spart ihr jeweils 25 €.',
       fr: 'Non compris : le vol et le transfert jusqu’à la finca — un bus relie directement l’aéroport à la finca, ou vous louez une voiture. Un acompte de 50 % réserve la place ; le solde est dû avant le départ. À deux amies, chacune économise 25 €.',
       es: 'No incluido: el vuelo y el traslado a la finca; un autobús va directamente del aeropuerto a la finca, o puedes alquilar un coche. Un depósito del 50 % asegura la plaza; el resto se paga antes del viaje. Si te apuntas con una amiga, cada una ahorra 25 €.',
@@ -1140,7 +1140,7 @@ export const retreatsCopy: Record<Lang, RetreatsCopy> = {
   en: {
     nav: 'Retreats',
     title: 'Retreats — meditation and yoga weekends with our teachers | Twiggli',
-    description: 'Small retreats with teachers we know: meditation, yoga and silence in quiet houses outside the city. Request a place and we arrange the rest.',
+    description: 'Small retreats with teachers we know: meditation, yoga and silence in quiet houses outside the city. Request a spot and we arrange the rest.',
     kicker: 'Retreats', h1: 'Time away, with a teacher',
     lede: 'Small retreats with teachers we know — in quiet houses outside the city or further afield: meditation, yoga, pottery and silence. Ask us for the details and we look after the rest.',
     view: 'Discover the retreat', all: 'All retreats',
@@ -1149,7 +1149,7 @@ export const retreatsCopy: Record<Lang, RetreatsCopy> = {
     weekend: 'The weekend', practice: 'What you practise', place: 'The house',
     goodToKnow: 'Good to know', bring: 'Please bring', provided: 'Already there',
     cta: 'Request information', ctaTitle: 'Join the retreat',
-    ctaNote: 'Tell us how many of you would like to come and anything you would like to know. We come back to you with all the details, and confirm your place when you are ready.',
+    ctaNote: 'Tell us how many of you would like to come and anything you would like to know. We come back to you with all the details, and confirm your spot when you are ready.',
     soon: 'More retreats are on their way.',
   },
   de: {

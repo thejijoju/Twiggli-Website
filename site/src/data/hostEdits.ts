@@ -31,6 +31,8 @@ export type ListingEdit = {
   description?: string; duration?: string; seats?: number | null;
   /** thumb: Bunny Stream's thumbnail of a video uploaded there (functions hostVideo). */
   media?: { type: string; url: string; thumb?: string }[]; booking?: '' | 'request' | 'instant';
+  /** Where it usually happens: 'other' with its visible line, or at the guest's. */
+  where?: 'studio' | 'other' | 'guest'; location?: string; locExact?: boolean; district?: string;
 };
 const listingEdits = new Map(((edits as { listingEdits?: ListingEdit[] }).listingEdits ?? []).map((e) => [`${e.slug}|${e.key}`, e]));
 /** A host's own title, price per person and short line for a workshop. */
@@ -43,6 +45,13 @@ const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.act
  *  entry is left out: one source per date, never shown twice. */
 const replaced = new Set<string>((edits as { replaced?: string[] }).replaced ?? []);
 export const isReplaced = (key: string): boolean => replaced.has(key);
+/** A host's studio as guests see it before booking (Settings → Your studio):
+ *  the visible line ("Friedrichshain", "Boxhagener Str., Friedrichshain" or
+ *  the full address), the district, and whether that is the exact address.
+ *  The full address itself never reaches the build. */
+export type Studio = { slug: string; visible: string; district: string; exact: boolean };
+const studios = new Map(((edits as { studios?: Studio[] }).studios ?? []).map((x) => [x.slug, x]));
+export const studioOf = (slug: string): Studio | undefined => studios.get(slug);
 
 /** Account field → HostCopy field. */
 const FIELDS = {
@@ -97,6 +106,8 @@ type EventRow = {
   replaces?: string;
   /** publicEvents: the host's Stripe can take payments now. */
   payable?: boolean;
+  /** Where (dashboard "Where?"): the visible line, whether it is exact, the district. */
+  where?: 'studio' | 'other' | 'guest'; locExact?: boolean; district?: string;
   /** The workshop's page key (Calendar tab), and whether it is an on-request weekly slot. */
   wkey?: string; onRequest?: boolean;
   /** Single dates of a series the host cancelled, and places changed for one date (Calendar tab). */
@@ -120,6 +131,9 @@ export function accountDates(daysAhead = 100): {
   spots?: number; minGuests?: number; languages?: string; district?: string; url: string; request: true; eventId?: string;
   /** The date's own booking choice, and whether it was taken over from the site (sessions.ts decides with the workshop's). */
   reqChoice?: boolean; adopted?: boolean; key?: string; onRequest?: boolean;
+  /** Set where the host chose where it is: the visible line, its district, and whether
+   *  "exact address after booking" applies; atGuest: at the guest's location. */
+  whereLine?: string; exactLater?: boolean; atGuest?: boolean;
 }[] {
   const today = new Date(); today.setUTCHours(0, 0, 0, 0);
   const last = new Date(today.getTime() + daysAhead * 86400000);
@@ -161,6 +175,7 @@ export function accountDates(daysAhead = 100): {
         // The workshop it belongs to: its own key, else the taken-over class's (rec|slug|KEY|time).
         ...(e.wkey || /^rec\|/.test(e.replaces ?? '') ? { key: e.wkey || e.replaces!.split('|')[2] } : {}),
         ...(e.onRequest ? { onRequest: true } : {}),
+        ...(e.where === 'guest' ? { atGuest: true } : e.where && e.location ? { whereLine: e.location, exactLater: !e.locExact, ...(e.district ? { district: e.district } : {}) } : {}),
         url: '',
         request: true,
       });

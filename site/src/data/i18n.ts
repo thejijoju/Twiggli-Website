@@ -136,7 +136,7 @@ const en = {
     elsewhereKicker: 'Elsewhere', elsewhere: 'We are on all the usual places, and we read our messages there too.',
     prefill: (host: string) => `Hi! I'd like to request an event with ${host}.`,
     prefillSpace: (host: string) => `Hi! I’d like to ask about renting ${host}.`,
-    prefillRetreat: (retreat: string) => `Hi! I’d like to request a place on ${retreat}.`,
+    prefillRetreat: (retreat: string) => `Hi! I’d like to request a spot on ${retreat}.`,
     subjectCorporate: 'Corporate request', subjectGeneral: 'Message from twiggli.com',
     bodyLabels: { name: 'Name', email: 'Email', topic: 'Topic', host: 'Host', message: 'Message' },
   },

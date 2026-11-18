@@ -54,17 +54,17 @@ const review = `${href(lang === 'de' ? 'de' : 'en', '/review/')}?h=${encodeURICo
       set('[data-nc-kick]', x('Einladung', 'Invitation', 'Invitation'));
       set('[data-nc-title]', who ? x(`${who} hat dich eingeladen`, `${who} invited you`, `${who} t’a invité·e`) : x('Du bist eingeladen', 'You’re invited', 'Tu es invité·e'));
       set('[data-nc-sub]', day);
-      set('[data-nc-btn]', x('Platz sichern', 'Save my place', 'Réserver ma place'));
+      set('[data-nc-btn]', x('Platz sichern', 'Save my spot', 'Réserver ma place'));
       toBooking();
     } else if (kind === 'approved') {
       set('[data-nc-kick]', x('Anfrage angenommen', 'Request approved', 'Demande acceptée'));
       set('[data-nc-title]', x('Du bist dabei, fast!', 'You’re in, almost!', 'Tu y es presque !'));
-      set('[data-nc-sub]', `${day}${day ? ' · ' : ''}${x('Bezahl jetzt, dann ist dein Platz sicher.', 'Pay now to lock in your place.', 'Paie maintenant pour garder ta place.')}`);
+      set('[data-nc-sub]', `${day}${day ? ' · ' : ''}${x('Bezahl jetzt, dann ist dein Platz sicher.', 'Pay now to lock in your spot.', 'Paie maintenant pour garder ta place.')}`);
       set('[data-nc-btn]', x('Jetzt bezahlen', 'Pay now', 'Payer maintenant'));
       toBooking();
     } else if (kind === 'waitlist') {
       set('[data-nc-kick]', x('Warteliste', 'Waiting list', 'Liste d’attente'));
-      set('[data-nc-title]', x('Ein Platz ist frei geworden', 'A place just opened up', 'Une place vient de se libérer'));
+      set('[data-nc-title]', x('Ein Platz ist frei geworden', 'A spot just opened up', 'Une place vient de se libérer'));
       set('[data-nc-sub]', `${day}${day ? ' · ' : ''}${x('Wer zuerst bucht, ist dabei.', 'First to book gets it.', 'Premier arrivé, premier servi.')}`);
       set('[data-nc-btn]', x('Jetzt buchen', 'Book now', 'Réserver'));
       toBooking();
