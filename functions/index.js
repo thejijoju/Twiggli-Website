@@ -2370,7 +2370,7 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   const handle = (v) => clean(v, 80).replace(/^https?:\/\/(www\.)?[^/]+\/@?/i, '').replace(/^@/, '').replace(/\/+$/, '');
   const out = {
     first: clean(b.first, 40), last: clean(b.last, 40),
-    bio: String(b.bio ?? '').trim().slice(0, 280),
+    bio: String(b.bio ?? '').trim().slice(0, 200),
     updatedAt: FieldValue.serverTimestamp(), email: user.email ?? '',
   };
   // The language is only set when the host picks it in Präferenzen

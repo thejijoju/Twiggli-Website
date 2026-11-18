@@ -358,7 +358,7 @@ const fields = [
               <label><span>{L('Nachname', 'Last name', 'Nom')}</span><input name="last" autocomplete="family-name" maxlength="40" /></label>
             </div>
             <label class="hd-set-phone"><span>{L('Telefon', 'Phone', 'Téléphone')}</span><input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+49 170 1234567" /><small>{L('Sieht nur Twiggli, damit wir dich bei kurzfristigen Anfragen erreichen.', 'Only Twiggli sees this, so we can reach you about last-minute requests.', 'Visible uniquement par Twiggli, pour te joindre en cas de demande de dernière minute.')}</small></label>
-            <label class="hd-set-bio"><span>{L('Kurzbio', 'Bio', 'Bio')}</span><textarea name="bio" rows="2" maxlength="160" data-hs-bio placeholder={L('Erzähl kurz etwas über dich und dein Handwerk.', 'Share a little about you and your craft.', 'Parle un peu de toi et de ton savoir-faire.')}></textarea><small class="hd-set-count" data-hs-bio-count aria-live="polite">0/160</small></label>
+            <label class="hd-set-bio"><span>{L('Kurzbio', 'Bio', 'Bio')}</span><textarea name="bio" rows="2" maxlength="200" data-hs-bio placeholder={L('Erzähl kurz etwas über dich und dein Handwerk.', 'Share a little about you and your craft.', 'Parle un peu de toi et de ton savoir-faire.')}></textarea><small class="hd-set-count" data-hs-bio-count aria-live="polite">0/200</small></label>
             <span class="hd-set-lbl">{L('Social Links', 'Social links', 'Réseaux sociaux')}</span>
             <div class="hd-set-social">
               <label><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg><span class="hd-set-pre">instagram.com/</span><input name="instagram" placeholder="username" /></label>
@@ -1334,8 +1334,8 @@ const fields = [
       const bioBox = $<HTMLTextAreaElement>('[data-hs-bio]');
       const bioCount = $('[data-hs-bio-count]');
       const bioFit = () => {
-        if (bioBox.value.length > 160) bioBox.value = bioBox.value.slice(0, 160);
-        bioCount.textContent = `${bioBox.value.length}/160`;
+        if (bioBox.value.length > 200) bioBox.value = bioBox.value.slice(0, 200);
+        bioCount.textContent = `${bioBox.value.length}/200`;
         bioCount.dataset.near = String(bioBox.value.length >= 140);
         if (!bioBox.offsetParent) return;
         bioBox.style.height = 'auto';
