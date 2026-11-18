@@ -28,10 +28,10 @@ export const bookingCopy: Record<Lang, {
   en: {
     wish: "Ask for a date", wishLede: "Tell us when would suit you. We pass it on to the host, who can open a date for you or suggest another one. Not binding, nothing to pay yet.", wishAsk: "Ask for a date", wishOther: "None of these dates work for you?", wishNone: "No dates open right now, but you can ask for one.", wishDates: "Dates that would suit you", wishRough: "Or roughly when?", wishDays: ["Weekdays", "Weekends"], wishTimes: ["Mornings", "Afternoons", "Evenings"],
     minPeople: 'Group requests from {n} people',
-    runsFrom: 'This class runs from {n} participants. Your request is confirmed as soon as {n} places are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.',
+    runsFrom: 'This class runs from {n} participants. Your request is confirmed as soon as {n} spots are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.',
     book: 'Booking request', request: 'Booking request', notify: 'Join the waiting list', retreat: 'Request information',
-    lede: 'Tell us who’s coming and we’ll confirm your place by email. Nothing to pay yet.',
-    notifyLede: 'This date is full. Leave your details and we’ll let you know as soon as a place opens. If another date would work too, add it below: the host may open an extra one.',
+    lede: 'Tell us who’s coming and we’ll confirm your spot by email. Nothing to pay yet.',
+    notifyLede: 'This date is full. Leave your details and we’ll let you know as soon as a spot opens. If another date would work too, add it below: the host may open an extra one.',
     groupLede: 'Tell us about your group and when suits you, and we’ll come back with dates and a quote. Nothing to pay yet.',
     studioLede: 'Tell us when you’d like the space, for how long and what for, and we’ll check with the host and come back with terms. Nothing to pay yet.',
     membershipLede: 'Tell us which option interests you (drop-in, time card or full membership) and we’ll come back to you with the details. Nothing to pay yet.',

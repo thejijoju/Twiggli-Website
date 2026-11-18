@@ -131,7 +131,7 @@ export const henCopy: Record<'en' | 'de', HenCopy> = {
     ],
     formTitle: 'Plan your hen party',
     formLede: 'Spring and summer Saturdays go fast. Send us your request and we’ll come back within 24 hours with ideas.',
-    bullets: ['For 4 to 20 people, bigger groups on request', 'At the studio or at your place / holiday flat', 'Bubbly, snacks and decorations often welcome*', 'Works as a surprise for the bride too'],
+    bullets: ['For 4 to 20 people, bigger groups on request', 'At the studio or at your home / holiday flat', 'Bubbly, snacks and decorations often welcome*', 'Works as a surprise for the bride too'],
     bride: 'Bride’s name', name: 'Your name', email: 'Email', emailPh: 'you@example.com', phone: 'Phone', optional: 'optional',
     date: 'Preferred date', size: 'Group size', sizePh: 'e.g. 8', workshop: 'Workshop', notSure: 'Not sure yet, suggest something',
     budget: 'Budget per person', budgetPh: 'e.g. €40–60', message: 'Anything else', messagePh: 'Time, theme, what the bride loves…',

@@ -1,4 +1,6 @@
 ---
+import { studioOf } from '../data/hostEdits.ts';
+import { EXACT_LATER } from '../data/sessions.ts';
 /** One class's page — "Try the wheel" under Ceramic Kingdom — with every
  *  upcoming date of it. The long tail: someone who has heard the name of a
  *  class, or searches the exact thing a host calls theirs. */
@@ -134,7 +136,7 @@ const wishAttrs = {
         <dl class="maker-meta">
           {host.studio && <div><dt>{t.studio}</dt><dd>{host.studio}</dd></div>}
           <div><dt>{t.duration}</dt><dd>{spellDuration(next.duration ?? host.duration, lang)}</dd></div>
-          <div><dt>{t.place}</dt><dd>{host.place}</dd></div>
+          <div><dt>{t.place}</dt><dd>{host.place}{studioOf(host.slug) && !studioOf(host.slug)!.exact && <span class="addr-later"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>{EXACT_LATER[lang]}</span>}</dd></div>
           <div><dt>{t.languages}</dt><dd>{spellLanguages(next.languages ?? host.languages, lang)}</dd></div>
           {next.price && <div><dt>{t.price}</dt><dd>{next.price} · {t.perPerson}</dd></div>}
         </dl>
@@ -177,3 +179,7 @@ const wishAttrs = {
   </div>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 </Base>
+
+<style>
+  .addr-later { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 0.78rem; font-weight: 500; color: var(--color-accent); }
+</style>

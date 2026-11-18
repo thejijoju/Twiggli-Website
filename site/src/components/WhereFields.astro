@@ -1,0 +1,42 @@
+---
+/** "Where?" for a date (new-date form) or a workshop (Edit workshop): the
+ *  host's studio, somewhere else with its own address and what guests see
+ *  before booking, or at the guest's location (Jirel 18.11.26). Wired up by
+ *  whereUI() in HostAccountPage's script; the address itself is only sent to
+ *  the functions, which keep it private. */
+import { berlinDistricts } from '../data/berlinPostcodes.ts';
+import type { Lang } from '../lib/url.ts';
+
+interface Props { lang: Lang; kind: 'date' | 'ws' }
+const { lang, kind } = Astro.props;
+const L = <T,>(de: T, en: T, fr: T): T => (lang === 'de' ? de : lang === 'fr' ? fr : en);
+const p = kind === 'date' ? 'd' : 'w';
+const vis = [['district', L('Bezirk', 'District', 'Quartier')], ['street', L('Straße', 'Street', 'Rue')], ['full', L('Ganze Adresse', 'Full address', 'Adresse complète')]];
+---
+<div class={`wh wh-${kind}`} data-wh={kind}
+  data-see={L('Gäste sehen:', 'Guests see:', 'On voit :')}
+  data-after={L('ganze Adresse nach der Buchung', 'full address after booking', 'adresse complète après la réservation')}
+  data-nostudio={L('Trag zuerst deine Studio-Adresse ein (Einstellungen → Dein Studio)', 'Add your studio address first (Settings → Your studio)', 'Ajoute d’abord l’adresse de ton studio (Réglages → Ton studio)')}>
+  {kind === 'date'
+    ? <div class="wh-h"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><b>{L('Wo?', 'Where?', 'Où ?')}</b></div>
+    : <span class="wh-legend">{L('Wo es stattfindet', 'Where it happens', 'Où ça se passe')}</span>}
+  <label class="wh-pick"><input type="radio" name={`${p}-where`} value="studio" checked /><span><b>{L('Mein Studio', 'My studio', 'Mon studio')}</b><small class="wh-line" data-wh-studio></small></span></label>
+  <label class="wh-pick"><input type="radio" name={`${p}-where`} value="other" /><span><b>{kind === 'date' ? L('Woanders, für diesen Termin', 'Somewhere else for this date', 'Ailleurs, pour cette date') : L('Ein anderer Ort', 'Another location', 'Un autre lieu')}</b><small>{L('z. B. ein Pop-up oder ein anderer Raum', 'e.g. a pop-up or another venue', 'p. ex. un pop-up ou une autre salle')}</small></span></label>
+  <div class="wh-other" data-wh-other hidden>
+    <input class="wh-in" data-wh-f="name" maxlength="80" autocomplete="off" placeholder={L('Name des Ortes (optional), z. B. Café Lotte', 'Name of the venue (optional), e.g. Café Lotte', 'Nom du lieu (facultatif), p. ex. Café Lotte')} />
+    <input class="wh-in" data-wh-f="street" maxlength="120" autocomplete="off" placeholder={L('Straße und Hausnummer', 'Street and number', 'Rue et numéro')} />
+    <div class="wh-row2">
+      <input class="wh-in" data-wh-f="zip" maxlength="5" inputmode="numeric" autocomplete="off" placeholder={L('PLZ', 'Postcode', 'Code postal')} />
+      <select class="wh-in" data-wh-f="district" aria-label={L('Bezirk', 'District', 'Quartier')}>
+        <option value="">{L('Bezirk', 'District', 'Quartier')}</option>
+        {berlinDistricts.map((d) => <option>{d}</option>)}
+      </select>
+    </div>
+    <div class="vis-pills" role="radiogroup" aria-label={L('Was Gäste vor der Buchung sehen', 'What guests see before booking', 'Ce que l’on voit avant de réserver')}>
+      {vis.map(([v, label], i) => <label><input type="radio" name={`${p}-pvis`} value={v} checked={i === 0} /><span>{label}</span></label>)}
+    </div>
+    <small class="vis-see" data-wh-see></small>
+  </div>
+  <label class="wh-pick"><input type="radio" name={`${p}-where`} value="guest" /><span><b>{L('Bei den Gästen vor Ort', 'At the guest’s location', 'Chez les participants')}</b><small>{L('Büro, Zuhause… Die Adresse kommt mit der Anfrage.', 'Office, home… The address comes with the request.', 'Bureau, domicile… L’adresse arrive avec la demande.')}</small></span></label>
+  {kind === 'ws' && <small class="wh-note">{L('Einzelne Termine können einen anderen Ort haben.', 'Single dates can be somewhere else.', 'Une date peut avoir un autre lieu.')}</small>}
+</div>

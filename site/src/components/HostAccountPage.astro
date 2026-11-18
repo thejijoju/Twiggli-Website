@@ -13,6 +13,8 @@
 import Base from '../layouts/Base.astro';
 import { getHosts } from '../data/content.ts';
 import { hostAccountCopy } from '../data/hostAccount.ts';
+import { berlinDistricts } from '../data/berlinPostcodes.ts';
+import WhereFields from './WhereFields.astro';
 import { firebaseConfig, firebaseReady, functionsBase } from '../data/firebase.ts';
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
@@ -44,7 +46,7 @@ const NOTIFY: { group: [string, string, string]; hint: [string, string, string];
     { key: 'g_changes', t: ['Änderungen & Absagen', 'Changes & cancellations', 'Changements & annulations'], d: ['Wenn sich Zeit oder Ort ändern oder ein Termin ausfällt.', 'When the time or place changes, or a date is cancelled.', 'Quand l’heure ou le lieu change, ou qu’une date est annulée.'], lock: true },
     { key: 'g_reminders', t: ['Erinnerungen', 'Reminders', 'Rappels'], d: ['Am Tag vor deinem Workshop.', 'The day before your workshop.', 'La veille de ton atelier.'] },
     { key: 'g_messages', t: ['Nachrichten von Hosts', 'Messages from hosts', 'Messages des hôtes'], d: ['Antworten auf deine Fragen.', 'Answers to your questions.', 'Réponses à tes questions.'] },
-    { key: 'g_waitlist', t: ['Warteliste', 'Waiting list', 'Liste d’attente'], d: ['Wenn ein Platz frei wird oder ein neuer Termin dazukommt.', 'When a place opens up or a new date is added.', 'Quand une place se libère ou qu’une nouvelle date est ajoutée.'] },
+    { key: 'g_waitlist', t: ['Warteliste', 'Waiting list', 'Liste d’attente'], d: ['Wenn ein Platz frei wird oder ein neuer Termin dazukommt.', 'When a spot opens up or a new date is added.', 'Quand une place se libère ou qu’une nouvelle date est ajoutée.'] },
     { key: 'g_feedback', t: ['Wie war’s?', 'How was it?', 'C’était comment ?'], d: ['Eine kurze Frage nach deinem Workshop.', 'A short question after your workshop.', 'Une petite question après ton atelier.'] },
   ] },
   { group: ['Von Twiggli', 'From Twiggli', 'De Twiggli'], hint: ['Ab und zu, nie zu viel.', 'Now and then, never too much.', 'De temps en temps, jamais trop.'], items: [
@@ -411,7 +413,28 @@ const fields = [
             <h2>{L('Dein Studio', 'Your studio', 'Ton studio')}</h2>
             <p class="hd-set-sub">{L('So steht es auf deiner Seite. Wir prüfen Änderungen kurz, bevor sie online gehen.', "This is how it shows on your page. We check changes briefly before they go live.", 'C’est ce qui apparaît sur ta page. On vérifie rapidement les changements avant leur mise en ligne.')}</p>
             <label><span>{L('Name des Studios', 'Studio name', 'Nom du studio')}</span><input name="studio" maxlength="80" /></label>
-            <label><span>{L('Adresse', 'Address', 'Adresse')}</span><input name="place" maxlength="120" autocomplete="street-address" placeholder={L('Straße Nr., PLZ Ort', 'Street no., postcode city', 'N° et rue, code postal ville')} /></label>
+            {/* The full address stays private (functions hostAddress); guests see only what the host picks (Jirel 18.11.26). */}
+            <label><span>{L('Straße und Hausnummer', 'Street and number', 'Rue et numéro')}</span><input name="street" maxlength="120" autocomplete="address-line1" /></label>
+            <div class="hd-set-two hs-two">
+              <label><span>{L('PLZ', 'Postcode', 'Code postal')}</span><input name="zip" maxlength="5" inputmode="numeric" autocomplete="postal-code" /></label>
+              <label><span>{L('Bezirk', 'District', 'Quartier')}</span>
+                <select name="district"><option value="">–</option>{berlinDistricts.map((d) => <option>{d}</option>)}</select>
+                <small class="hs-auto" data-hs-auto hidden>{L('Aus der PLZ ergänzt', 'Filled in from the postcode', 'Complété depuis le code postal')}</small>
+              </label>
+            </div>
+            <div class="hs-vis" data-hs-vis
+              data-see={L('Gäste sehen:', 'Guests see:', 'On voit :')}
+              data-after={L('ganze Adresse nach der Buchung', 'full address after booking', 'adresse complète après la réservation')}>
+              <span class="hd-set-lbl">{L('Was Gäste vor der Buchung sehen', 'What guests see before booking', 'Ce que l’on voit avant de réserver')}</span>
+              <div class="vis-pills" role="radiogroup" aria-label={L('Was Gäste vor der Buchung sehen', 'What guests see before booking', 'Ce que l’on voit avant de réserver')}>
+                <label><input type="radio" name="vis" value="district" checked /><span>{L('Bezirk', 'District', 'Quartier')}</span></label>
+                <label><input type="radio" name="vis" value="street" /><span>{L('Straße', 'Street', 'Rue')}</span></label>
+                <label><input type="radio" name="vis" value="full" /><span>{L('Ganze Adresse', 'Full address', 'Adresse complète')}</span></label>
+              </div>
+              <small class="vis-see" data-hs-see></small>
+            </div>
+            <label><span>{L('So findet man dich', 'How to find us', 'Comment nous trouver')} <small class="hs-opt">{L('(nur gebuchte Gäste sehen das)', '(only booked guests see this)', '(seuls les participants inscrits le voient)')}</small></span><input name="howTo" maxlength="200" placeholder={L('z. B. Klingel „Studio“, 2. Stock', 'e.g. Ring “Studio”, 2nd floor', 'p. ex. Sonner « Studio », 2e étage')} /></label>
+            <p class="hd-set-sub">{L('Gebuchte Gäste bekommen die ganze Adresse in ihrer Bestätigung.', 'Booked guests get the full address in their confirmation.', 'Les participants qui ont réservé reçoivent l’adresse complète dans leur confirmation.')}</p>
             <div class="hd-set-actions">
               <button type="submit" class="hd-set-save">{L('Studio speichern', 'Save studio', 'Enregistrer le studio')}</button>
               <span class="hd-set-note" data-hs-studio-note role="status"></span>
@@ -661,6 +684,7 @@ const fields = [
                 <label class="cal-f"><span>{t.cal.wsSeats}</span><input name="seats" type="number" min="1" max="500" step="1" placeholder="10" /></label>
               </div>
               <label class="cal-f"><span>{t.cal.wsNote}</span><input name="note" maxlength="220" placeholder={t.cal.wsNotePh} /></label>
+              <WhereFields lang={lang} kind="ws" />
               <fieldset class="cal-f">
                 <legend>{t.cal.wsMedia}</legend>
                 <p class="cal-ws-hint">{t.cal.wsMediaHint}</p>
@@ -859,7 +883,8 @@ const fields = [
               <div class="hd-pop hd-times" data-ha-times role="listbox" hidden></div>
             </div>
             <div class="hd-box">
-              <label class="hd-row"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><input name="location" maxlength="160" placeholder={t.locationPh} /></label>
+              <input type="hidden" name="location" />
+              <WhereFields lang={lang} kind="date" />
               <label class="hd-row hd-row-top"><svg class="hd-i" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 10h14M5 14h10M5 18h7"/></svg><textarea name="description" rows="3" placeholder={t.descPh}></textarea></label>
             </div>
             <p class="hd-sec">{t.bookingSec}</p>
@@ -930,6 +955,7 @@ const fields = [
     collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where, writeBatch,
   } from 'firebase/firestore';
   import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+  import { postcodeDistrict } from '../data/berlinPostcodes.ts';
   import { playHls } from '../lib/hls.ts';
   import { isHls } from '../lib/videoSrc.ts';
 
@@ -947,7 +973,7 @@ const fields = [
     const signin = $<HTMLFormElement>('[data-ha-signin]');
     // ?demo=calendar: the Calendar tab with made-up data, no sign-in, no saves (startDemo).
     // ?demo=site&host=<slug>: that host's real dates from the site's own data, nothing saved.
-    const DEMO = ['calendar', 'site'].includes(new URLSearchParams(location.search).get('demo') ?? '');
+    const DEMO = ['calendar', 'site', 'addr'].includes(new URLSearchParams(location.search).get('demo') ?? '');
 
     if (!cfg.ready) {
       // Accounts open once Firebase is set up; until then, say so.
@@ -1545,27 +1571,70 @@ const fields = [
       // "Dein Studio": the studio name and address on the host's page, for
       // both languages (the same fields as in the page text editor).
       const studioForm = $<HTMLFormElement>('[data-hs-studio]');
+      // The studio address (Jirel 18.11.26): full address private, guests see what the host picks.
+      type Addr = { name?: string; street: string; zip: string; district: string; vis: string; howTo?: string };
+      let myStudio: Addr | null = null;
+      const sf = <T extends HTMLElement = HTMLInputElement>(n: string) => studioForm.elements.namedItem(n) as unknown as T;
+      /** As the functions do it (visibleAddress): what guests see before booking. */
+      const visLine = (a: Addr | null | undefined) => {
+        if (!a) return '';
+        const noNumber = (a.street ?? '').replace(/\s+\d+\s*[a-zA-Z]?(\s*[-–/]\s*\d+\s*[a-zA-Z]?)?$/, '').trim();
+        const parts = a.vis === 'full' ? [a.name, a.street, a.zip ? `${a.zip} Berlin` : ''] : a.vis === 'street' ? [a.name, noNumber, a.district] : [a.name, a.district];
+        return parts.filter(Boolean).join(', ');
+      };
+      const seeLine = (box: HTMLElement, a: Addr) => `${box.dataset.see} ${visLine(a) || '–'}${a.vis === 'full' ? '' : ` · ${box.dataset.after}`}`;
+      const studioFromForm = (): Addr => ({
+        street: sf('street').value.trim(), zip: sf('zip').value.trim(), district: sf<HTMLSelectElement>('district').value,
+        vis: studioForm.querySelector<HTMLInputElement>('[name="vis"]:checked')?.value ?? 'district', howTo: sf('howTo').value.trim(),
+      });
+      const paintStudio = () => {
+        const auto = postcodeDistrict(sf('zip').value);
+        $('[data-hs-auto]').hidden = !(auto && sf<HTMLSelectElement>('district').value === auto);
+        $('[data-hs-see]').textContent = seeLine($('[data-hs-vis]'), studioFromForm());
+      };
+      sf('zip').addEventListener('input', () => { const d = postcodeDistrict(sf('zip').value); if (d) sf<HTMLSelectElement>('district').value = d; paintStudio(); });
+      studioForm.addEventListener('input', paintStudio);
+      studioForm.addEventListener('change', paintStudio);
+      const putStudio = (a: Addr | null) => {
+        sf('street').value = a?.street ?? '';
+        sf('zip').value = a?.zip ?? '';
+        sf<HTMLSelectElement>('district').value = a?.district ?? '';
+        sf('howTo').value = a?.howTo ?? '';
+        (studioForm.querySelector<HTMLInputElement>(`[name="vis"][value="${a?.vis ?? 'district'}"]`) ?? studioForm.querySelector<HTMLInputElement>('[name="vis"]'))!.checked = true;
+        paintStudio();
+      };
+      const loadStudio = async () => {
+        if (DEMO || !slug) return;
+        try { myStudio = (await api('hostAddress', { slug, action: 'get' })).studio ?? null; } catch { myStudio = null; }
+        putStudio(myStudio);
+        root.querySelectorAll<HTMLElement>('[data-wh]').forEach((b) => whereUI(b).paint());
+      };
       const fillStudio = () => {
         if (!slug) { studioForm.hidden = true; return; }
         studioForm.hidden = false;
         const src = texts.de.studio || texts.de.place ? texts.de : texts.en;
-        (studioForm.elements.namedItem('studio') as HTMLInputElement).value = src.studio ?? '';
-        (studioForm.elements.namedItem('place') as HTMLInputElement).value = src.place ?? '';
+        sf('studio').value = src.studio ?? '';
+        putStudio(myStudio);
+        void loadStudio();
       };
       studioForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const n = $('[data-hs-studio-note]');
         const btn = studioForm.querySelector<HTMLButtonElement>('.hd-set-save')!;
-        const studio = (studioForm.elements.namedItem('studio') as HTMLInputElement).value.trim();
-        const place = (studioForm.elements.namedItem('place') as HTMLInputElement).value.trim();
+        const studio = sf('studio').value.trim();
+        const addr = studioFromForm();
+        if (!addr.district) { n.textContent = ({ de: 'Bitte wähle den Bezirk.', fr: 'Choisis le quartier.' } as Record<string, string>)[root.dataset.lang ?? ''] ?? 'Please pick the district.'; sf<HTMLSelectElement>('district').focus(); return; }
         btn.disabled = true; n.textContent = '';
         try {
-          for (const l of ['en', 'de'] as const) {
-            texts[l] = { ...texts[l], studio, place };
-            await setDoc(doc(db, 'hostProfiles', `${slug}_${l}`), { slug, lang: l, ...texts[l], updated_at: new Date().toISOString(), updated_by: email });
-          }
+          // The full address goes to the functions only; the page gets what guests may see.
+          let place = visLine(addr);
+          if (DEMO) await new Promise((r) => setTimeout(r, 300));
+          else place = (await api('hostAddress', { slug, action: 'save', ...addr, studioName: studio })).visible ?? place;
+          myStudio = addr;
+          for (const l of ['en', 'de'] as const) texts[l] = { ...texts[l], studio, place };
+          root.querySelectorAll<HTMLElement>('[data-wh]').forEach((b) => whereUI(b).paint());
           if (textLang) showText();
-          tellUs('studio name / address');
+          // Jirel hears about it from the functions (hostAddress).
           n.textContent = ({ de: 'Gespeichert ✓', fr: 'Enregistré ✓' } as Record<string, string>)[root.dataset.lang ?? ''] ?? 'Saved ✓';
         } catch { n.textContent = fill(t.error, cfg.contact); }
         btn.disabled = false;
@@ -1881,17 +1950,17 @@ const fields = [
           cancelled: x(`${who} hat ${w} storniert`, `${who} cancelled ${w}`, `${who} a annulé ${w}`),
           reminder: x(`Morgen: ${w}`, `Tomorrow: ${w}`, `Demain : ${w}`),
           voucher: x(`Gutschein für ${w} gekauft`, `Voucher bought for ${w}`, `Bon cadeau acheté pour ${w}`),
-          waitlist: x(`Ein Platz bei ${w} ist frei geworden`, `A place opened up at ${w}`, `Une place s’est libérée pour ${w}`),
+          waitlist: x(`Ein Platz bei ${w} ist frei geworden`, `A spot opened up at ${w}`, `Une place s’est libérée pour ${w}`),
           payout: x(`Auszahlung von ${money(n.earn ?? '0')} ist unterwegs`, `Payout of ${money(n.earn ?? '0')} is on its way`, `Versement de ${money(n.earn ?? '0')} en route`),
         };
         const bits: string[] = [];
         if (day) bits.push(day);
         if (m.time) bits.push(x(`${m.time} Uhr`, m.time, m.time));
         if (m.people) bits.push(x(`${m.people} Pers.`, `${m.people} ${m.people === '1' ? 'person' : 'people'}`, `${m.people} pers.`));
-        if (m.seats) bits.push(x(`${m.seats} Plätze`, `${m.seats} places`, `${m.seats} places`));
+        if (m.seats) bits.push(x(`${m.seats} Plätze`, `${m.seats} spots`, `${m.seats} places`));
         if (m.price) bits.push(x(`${money(m.price)} p. P.`, `${money(m.price)} pp`, `${money(m.price)} / pers.`));
         if (m.stars) bits.push('★'.repeat(Number(m.stars)));
-        if (n.kind === 'cancelled') bits.push(x('Plätze wieder frei', 'places free again', 'places à nouveau libres'));
+        if (n.kind === 'cancelled') bits.push(x('Plätze wieder frei', 'spots free again', 'places à nouveau libres'));
         if (n.kind === 'payout') bits.push(x('auf dein Bankkonto', 'to your bank account', 'vers ton compte bancaire'));
         if (n.kind === 'expired') bits.push(x('Die Person hat nicht rechtzeitig gebucht', 'They didn’t book in time', 'La personne n’a pas réservé à temps'));
         const earn = n.earn && n.kind === 'booked' ? `<span class="nt-earn">+ ${money(n.earn)} ${x('verdient', 'earned', 'gagnés')}</span>` : '';
@@ -2950,6 +3019,8 @@ const fields = [
         cancel?: string; location?: string; description?: string; visibility?: string; media?: { type: string; url: string }[];
         seatsByDate?: Record<string, number>; exceptions?: string[];
         titleEn?: string; request?: boolean; replaces?: string; decideHours?: number;
+        /** Where (dashboard "Where?"): the studio, its own place (private address), or at the guest's. */
+        where?: string; place?: Addr | null;
         /** Calendar tab: a date of the site's own schedule, not taken over yet
          *  (vid: its id in the calendar; the first change turns it into dashboard dates). */
         vid?: string; virtual?: { key: string };
@@ -3237,6 +3308,47 @@ const fields = [
       createForm.querySelectorAll<HTMLInputElement>('[name="repeat"]').forEach((r) => r.addEventListener('change', () => {
         if (r.checked && r.value !== 'once' && !fld('until').value) renderWhen();
       }));
+      /** "Where?" (WhereFields.astro): read, fill and redraw one of the blocks. */
+      function whereUI(box: HTMLElement) {
+        const f = <T extends HTMLElement = HTMLInputElement>(k: string) => box.querySelector<T>(`[data-wh-f="${k}"]`)!;
+        const radios = () => [...box.querySelectorAll<HTMLInputElement>('input[type="radio"][name$="-where"]')];
+        const pick = () => radios().find((r) => r.checked)?.value ?? 'studio';
+        const otherAddr = (): Addr => ({ name: f('name').value.trim(), street: f('street').value.trim(), zip: f('zip').value.trim(), district: f<HTMLSelectElement>('district').value,
+          vis: box.querySelector<HTMLInputElement>('input[name$="-pvis"]:checked')?.value ?? 'district' });
+        const paint = () => {
+          const line = box.querySelector<HTMLElement>('[data-wh-studio]')!;
+          line.textContent = myStudio ? `${myStudio.street}, ${myStudio.zip} Berlin · ${seeLine(box, myStudio)}` : (box.dataset.nostudio ?? '');
+          line.classList.toggle('is-missing', !myStudio);
+          (box.querySelector('[data-wh-other]') as HTMLElement).hidden = pick() !== 'other';
+          (box.querySelector('[data-wh-see]') as HTMLElement).textContent = seeLine(box, otherAddr());
+        };
+        if (!box.dataset.whWired) {
+          box.dataset.whWired = '1';
+          box.addEventListener('change', paint);
+          box.addEventListener('input', paint);
+          f('zip').addEventListener('input', () => { const d = postcodeDistrict(f('zip').value); if (d) f<HTMLSelectElement>('district').value = d; paint(); });
+        }
+        return {
+          paint,
+          get: (): { where: string; place?: Addr; location: string } => {
+            const where = pick();
+            if (where === 'other') { const a = otherAddr(); return { where, place: a, location: visLine(a) || a.name || '' }; }
+            if (where === 'guest') return { where, location: '' };
+            return { where, location: visLine(myStudio) || hosts[slug]?.en.place || '' };
+          },
+          set: (v: { where?: string; place?: Addr | null; location?: string }) => {
+            // Dates from before (only the line guests saw): kept as a place of their own with that name.
+            const where = v.where ?? (v.location && v.location !== hosts[slug]?.en.place && v.location !== visLine(myStudio) ? 'other' : 'studio');
+            const a = v.place ?? (where === 'other' && !v.where ? { name: v.location ?? '', street: '', zip: '', district: '', vis: 'district' } : null);
+            (radios().find((r) => r.value === where) ?? radios()[0]).checked = true;
+            f('name').value = a?.name ?? ''; f('street').value = a?.street ?? ''; f('zip').value = a?.zip ?? '';
+            f<HTMLSelectElement>('district').value = a?.district ?? '';
+            const vr = box.querySelector<HTMLInputElement>(`input[name$="-pvis"][value="${a?.vis ?? 'district'}"]`);
+            if (vr) vr.checked = true;
+            paint();
+          },
+        };
+      }
       const openCreate = (ev?: Ev) => {
         createForm.reset();
         const h = hosts[slug];
@@ -3254,6 +3366,7 @@ const fields = [
         (createForm.querySelector<HTMLInputElement>(`[name="repeat"][value="${ev?.repeat ?? 'once'}"]`) ?? createForm.querySelector<HTMLInputElement>('[name="repeat"]'))!.checked = true;
         $('[data-ha-until]').hidden = (ev?.repeat ?? 'once') === 'once';
         fld('location').value = ev?.location ?? h?.en.place ?? '';
+        whereUI($('[data-wh="date"]')).set({ where: ev?.where, place: ev?.place, location: ev?.location });
         fld<HTMLTextAreaElement>('description').value = ev?.description ?? '';
         fld('price').value = ev?.price != null ? String(ev.price) : '';
         fld('seats').value = ev?.seats != null ? String(ev.seats) : '';
@@ -3279,7 +3392,8 @@ const fields = [
           id: fld('id').value || undefined, slug,
           title: fld('title').value.trim(), date: fld('date').value, start: fld('start').value, end: fld('end').value,
           repeat: createForm.querySelector<HTMLInputElement>('[name="repeat"]:checked')?.value ?? 'once', until: fld('until').value,
-          location: fld('location').value.trim(), description: fld<HTMLTextAreaElement>('description').value.trim(),
+          ...(() => { const w = whereUI($('[data-wh="date"]')).get(); fld('location').value = w.location; return w; })(),
+          description: fld<HTMLTextAreaElement>('description').value.trim(),
           price: num('price'), seats: num('seats'), minGuests: num('minGuests'), approve: fld('approve').checked,
           languages: fld('languages').value.trim(), cancel: fld<HTMLSelectElement>('cancel').value,
           visibility: fld<HTMLSelectElement>('visibility').value, media,
@@ -3343,7 +3457,7 @@ const fields = [
       };
       const CAL_COLORS = ['#6A3EEC', '#FD6F31', '#1F9D8A', '#E0A800', '#2F6FED', '#7F14A0'];
       let calBookings: Bk[] = [];
-      type WsEdit = { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string };
+      type WsEdit = { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string; where?: string; place?: Addr | null };
       let calListings: { slug: string; items: { key: string; title: string; status: string; image: string; price: string; edit: WsEdit | null }[] } = { slug: '', items: [] };
       let calDemo: { workshops: Ws[] | null } | null = null;
       // Site entries the host took over (hostEvents "replaced"), and the site's own dates as calendar dates.
@@ -4059,7 +4173,7 @@ const fields = [
         wsNote('');
         $('[data-cal-ws-up-note]').textContent = '';
         const st = (calListings.slug === slug ? calListings.items : []).find((x) => x.key === w.key);
-        const e = (st?.edit ?? {}) as { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string };
+        const e = (st?.edit ?? {}) as WsEdit;
         const evs = [...ownEvents, ...calSiteEvents()].filter((x) => x.wkey === w.key || calKey(x.title) === w.key || w.alias?.includes(calKey(x.title)));
         const first = evs.find((x) => !x.synced) ?? evs[0];
         wsF('title').value = e.title || w.title;
@@ -4072,6 +4186,7 @@ const fields = [
         const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || (first?.price ?? 0) > 0 ? 'instant' : 'request');
         (wsForm.querySelector<HTMLInputElement>(`[name="booking"][value="${booking}"]`))!.checked = true;
         wsDrawMedia();
+        whereUI($('[data-wh="ws"]')).set({ where: e.where ?? 'studio', place: e.place });
         wsDlg.showModal();
         wsF('title').focus();
       };
@@ -4089,6 +4204,7 @@ const fields = [
           slug, action: 'edit', key: wsCur.key, title: wsCur.title, newTitle: title,
           price: Number(wsF('price').value) || null, seats: Number(wsF('seats').value) || null, note: wsF('note').value.trim(),
           description: wsF<HTMLTextAreaElement>('description').value.trim(), duration, media: wsMedia, booking,
+          ...(() => { const w = whereUI($('[data-wh="ws"]')).get(); return { where: w.where, place: w.place ?? null }; })(),
         };
         const btn = $<HTMLButtonElement>('[data-cal-ws-save]');
         wsBusy = true; btn.disabled = true;
@@ -4107,7 +4223,7 @@ const fields = [
           }
           // Shown at once here; the public page follows with the next hourly build.
           const items = calListings.slug === slug ? calListings.items : [];
-          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking };
+          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, where: body.where, place: body.place };
           const had = items.find((x) => x.key === wsCur!.key);
           if (had) had.edit = edit;
           else items.push({ key: wsCur.key, title: wsCur.title, status: 'live', image: wsCur.image, price: wsCur.price ?? '', edit });
@@ -4176,6 +4292,7 @@ const fields = [
             slug, title: w?.title ?? '', date: sel && sel >= calToday() ? sel : '', start: last?.start ?? '', end: last?.end,
             price: last?.price ?? (Number(String(w?.price ?? '').replace(/[^\d]/g, '')) || null), seats: last?.seats ?? null, location: last?.location,
             approve: last?.approve, media: last?.media ?? (w?.image?.startsWith('/img/hosts/') ? [{ type: 'photo', url: w.image }] : undefined),
+            ...(() => { const ed = (calListings.slug === slug ? calListings.items : []).find((x) => x.key === calSel)?.edit; return ed?.where ? { where: ed.where, place: ed.place } : last?.where ? { where: last.where, place: last.place } : {}; })(),
           } as Ev);
         }
       }
@@ -4347,6 +4464,36 @@ const fields = [
           pick.value = s;
           $('[data-ha-pick-wrap]').hidden = false;
           $('[data-ha-invite-admin]').hidden = false;
+        }
+        if (q.get('demo') === 'addr') {
+          slug = hosts.pia ? 'pia' : slug;
+          signin.hidden = true; app.hidden = false; editor.hidden = false;
+          $('[data-ha-tabs]').hidden = false;
+          root.classList.add('is-in');
+          $('[data-ha-hello]').textContent = `${t.hello} Pia 👋`;
+          $('[data-ha-menu-name]').textContent = 'Pia';
+          ownEvents = []; reqs = []; calBookings = [];
+          calDemo = { workshops: null };
+          // Made up for the demo (no real address in this repo).
+          myStudio = { street: 'Musterstr. 12', zip: '10245', district: 'Friedrichshain', vis: q.get('vis') ?? 'district', howTo: 'Ring “Studio”, 2nd floor' };
+          const view = q.get('view') ?? 'settings';
+          if (view === 'settings') {
+            showTab('settings');
+            studioForm.hidden = false;
+            sf('studio').value = '';
+            putStudio(myStudio);
+            const f = $<HTMLFormElement>('[data-hs-form]');
+            (f.elements.namedItem('first') as HTMLInputElement).value = 'Pia';
+            $('[data-hs-email]').textContent = 'pia@example.com';
+          } else if (view === 'create') {
+            openCreate({ slug, title: 'Vulva painting with Pia', date: '2026-11-27', start: '18:30', end: '21:00', price: 40, seats: 10, ...(q.get('where') === 'other' ? { where: 'other', place: { name: 'Café Lotte', street: 'Beispielweg 4', zip: '12045', district: 'Neukölln', vis: 'street' } } : {}) } as Ev);
+          } else {
+            showTab('calendar');
+            const w = calWorkshops()[0];
+            if (w) calEditWs(w);
+          }
+          root.querySelectorAll<HTMLElement>('[data-wh]').forEach((b) => whereUI(b).paint());
+          return;
         }
         if (q.get('demo') === 'site') {
           // That host's real dates from the site's own data; no dashboard dates, nothing saved.
@@ -5552,6 +5699,39 @@ const fields = [
   .cal-guests { margin: 10px 0 0; font-size: 0.8rem; color: var(--color-text-muted); }
   .cal-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   .cal-scrim { display: none; }
+  /* Where it is, and what guests see before booking (Jirel 18.11.26). */
+  .hs-two select, .ha .wh-in { font: inherit; }
+  .hs-two select { font-size: 0.95rem; padding: 10px 12px; border: 1px solid rgba(36, 39, 46, 0.12); border-radius: 16px; background: #fff; color: inherit; }
+  .hs-auto { font-size: 0.75rem; color: #1f9d8a; }
+  .hs-auto[hidden] { display: none; }
+  .hs-opt { font-weight: 400; color: var(--color-text-muted); font-size: 0.78rem; }
+  .hs-vis { display: grid; gap: 8px; }
+  .vis-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .vis-pills label { display: inline-flex !important; cursor: pointer; }
+  .vis-pills input { position: absolute; opacity: 0; pointer-events: none; }
+  .vis-pills span { display: inline-block; padding: 4px 11px; border-radius: 999px; border: 1.5px solid #e6dff2; background: #fff; font-size: 12.5px; font-weight: 600; color: var(--color-text); line-height: 1.5; }
+  .vis-pills input:checked + span { border-color: #6a3eec; color: #6a3eec; background: #f3eeff; }
+  .vis-pills input:focus-visible + span { outline: 2px solid rgba(106, 62, 236, 0.4); outline-offset: 1px; }
+  .vis-see { display: block; font-size: 12.5px; color: #6a3eec; line-height: 1.4; }
+  .wh { display: grid; }
+  .wh-h { display: flex; align-items: center; gap: 12px; padding: 10px 14px 2px; font-size: 0.95rem; }
+  .wh-h .hd-i { color: #8a8e95; }
+  .wh-legend { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+  .ha .wh-pick { display: flex; align-items: flex-start; gap: 10px; padding: 8px 14px 8px 43px; cursor: pointer; border-bottom: 1px solid #f1ede6; }
+  .wh-ws .wh-pick { padding: 8px 0; }
+  .wh-pick input { accent-color: #6a3eec; margin: 4px 0 0; flex: none; }
+  .wh-pick span { display: grid; gap: 1px; min-width: 0; font-size: 0.92rem; }
+  .wh-pick b { font-weight: 600; }
+  .wh-pick small { font-size: 0.78rem; color: var(--color-text-muted); }
+  .wh-line { color: #6a3eec !important; font-size: 12.5px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wh-line.is-missing { color: #c2541f !important; white-space: normal; }
+  .wh-other { display: grid; gap: 8px; padding: 4px 14px 12px 43px; border-bottom: 1px solid #f1ede6; }
+  .wh-ws .wh-other { padding: 4px 0 12px 24px; }
+  .wh-other[hidden] { display: none; }
+  .ha .wh-in { font-size: 0.9rem; padding: 8px 10px; border: 1px solid #ebe6dc; border-radius: 10px; background: #fff; width: 100%; box-sizing: border-box; color: inherit; }
+  .wh-row2 { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 8px; }
+  .wh-note { font-size: 0.78rem; color: var(--color-text-muted); padding-top: 6px; }
+  .wh-ws .wh-pick:last-of-type { border-bottom: 0; }
   .ha-adm-invite { display: grid; gap: 4px; }
   .ha-adm-note { margin: 0 12px 6px; font-size: 0.78rem; color: var(--color-text-muted); display: grid; gap: 4px; }
   .ha-adm-note:empty { display: none; }

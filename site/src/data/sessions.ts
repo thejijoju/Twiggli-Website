@@ -12,7 +12,7 @@ import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
-import { withHostSlots, accountDates, isHiddenListing, isReplaced, listingEdit } from './hostEdits.ts';
+import { withHostSlots, accountDates, isHiddenListing, isReplaced, listingEdit, studioOf } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 
 /** Places left on a date: the feed's or the host's count (or one the host
@@ -109,6 +109,28 @@ export type Session = {
    *  host's dashboard, or a weekly class. Only the feed's place counts are
    *  live counts of places left. */
   source?: 'feed' | 'manual' | 'account' | 'recurring';
+  /** Where, as the host lets guests see it before booking (her studio, or the
+   *  date's own place): shown on the date's row instead of the district. */
+  where?: string;
+  /** The exact address only comes after booking: the row says so. */
+  exactLater?: boolean;
+};
+
+/** "At your location": a date at the guest's (office, home…). */
+const AT_GUEST: Record<Lang, string> = {
+  en: 'At your location', de: 'Bei euch vor Ort', fr: 'Chez vous', es: 'En vuestra ubicación',
+  it: 'Da voi', nl: 'Bij jullie op locatie', pl: 'U Was', tr: 'Sizin adresinizde',
+};
+/** The small note under a date whose exact address comes with the booking. */
+export const EXACT_LATER: Record<Lang, string> = {
+  en: 'Exact address after booking', de: 'Genaue Adresse nach der Buchung', fr: 'Adresse exacte après la réservation',
+  es: 'Dirección exacta tras la reserva', it: 'Indirizzo esatto dopo la prenotazione', nl: 'Exact adres na het boeken',
+  pl: 'Dokładny adres po rezerwacji', tr: 'Tam adres rezervasyondan sonra',
+};
+/** A date at the host's studio, as guests may see it (Settings → Your studio). */
+const atStudio = (slug: string) => {
+  const st = studioOf(slug);
+  return st ? { ...(st.district ? { district: st.district } : {}), where: st.visible, exactLater: !st.exact } : {};
 };
 
 /** Shapes written by scripts/update-workshops.mjs. */
@@ -147,6 +169,8 @@ type LiveWorkshop = {
   key?: string;
   /** A dashboard date that is an on-request weekly slot (taken over from the site). */
   onRequest?: boolean;
+  /** Dashboard dates: where (accountDates). */
+  whereLine?: string; exactLater?: boolean; atGuest?: boolean;
   /** Dashboard dates: their own booking choice, and whether taken over from the site (takesRequests). */
   reqChoice?: boolean;
   adopted?: boolean;
@@ -504,6 +528,10 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
       ...((availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.going ?? availabilityNotes[`${w.slug}|${w.date}|${w.time}`]?.booked) ? { going: availabilityNotes[`${w.slug}|${w.date}|${w.time}`].going ?? availabilityNotes[`${w.slug}|${w.date}|${w.time}`].booked } : {}),
       ...(partnerCodes[w.slug] && !offSite.has(w) && !w.request ? { partner: partnerCodes[w.slug] } : {}),
       source: source.get(w) ?? 'feed',
+      // Where: a dashboard date says so itself; weekly classes (and dates taken over from them) are at her studio.
+      ...(w.atGuest ? { where: AT_GUEST[lang] }
+        : w.whereLine ? { where: w.whereLine, exactLater: !!w.exactLater, ...(w.district ? { district: w.district } : {}) }
+        : source.get(w) === 'account' && w.adopted ? atStudio(w.slug) : {}),
       ...((w as { openStudio?: boolean }).openStudio ? { usp: EXPERIENCED[lang], openStudio: true }
         : usp(w.slug, w.title) ? { usp: usp(w.slug, w.title) } : {}),
     });
@@ -546,12 +574,13 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
         })(),
         ...(usp(r.slug, r.title) ? { usp: usp(r.slug, r.title) } : {}),
         source: 'recurring',
+        ...atStudio(r.slug),
       });
     }
   }
   // Workshops the host paused or deleted in their dashboard stay off the site.
   // and their own title, price and line for a workshop go over the scraped ones.
-  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey)).map((s) => withListingEdit(s, today));
+  return sessions.filter((s) => !isHiddenListing(s.host.slug, s.workshopKey)).map((s) => withListingEdit(s, today, lang));
 }
 
 /** A host's own edit of a workshop (dashboard, hostListing edit) laid over
@@ -559,7 +588,7 @@ function liveSessions(hosts: Host[], lang: Lang): Session[] {
  *  pictures and video, and request-only booking. A date's own places
  *  (set on that date in the dashboard) and the feed's live counts win
  *  over the workshop's places. */
-function withListingEdit(s: Session, today: number): Session {
+function withListingEdit(s: Session, today: number, lang: Lang): Session {
   const e = listingEdit(s.host.slug, s.workshopKey);
   if (!e) return s;
   const out: Session = { ...s };
@@ -577,6 +606,11 @@ function withListingEdit(s: Session, today: number): Session {
   const clip = e.media?.find((m) => m.type === 'video');
   const video = clip?.url;
   if (photo) out.image = photo;
+  // Where the workshop usually happens (not for dates the host placed herself, nor booking pages).
+  if (s.source === 'manual' || s.source === 'recurring') {
+    if (e.where === 'guest') { out.where = AT_GUEST[lang]; delete out.exactLater; }
+    else if (e.where === 'other' && e.location) { out.where = e.location; out.exactLater = !e.locExact; if (e.district) out.district = e.district; }
+  }
   // A video on Bunny Stream (HLS, lib/videoSrc.ts) brings its own frame as the poster.
   if (video) out.host = { ...out.host, video, poster: clip?.thumb ?? photo ?? out.host.poster };
   // Request-only workshop: its other dates take requests too (dashboard

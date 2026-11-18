@@ -128,7 +128,7 @@ export type AnswerCopy = {
 };
 
 const requestNote: Record<'en' | 'de', string> = {
-  en: 'Every date has a Request button: a short form, nothing to pay until the host confirms your place by email.',
+  en: 'Every date has a Request button: a short form, nothing to pay until the host confirms your spot by email.',
   de: 'Jeder Termin hat einen Anfragen-Button: ein kurzes Formular, bezahlt wird erst, wenn die Gastgeberin oder der Gastgeber deinen Platz per E-Mail bestätigt.',
 };
 
@@ -161,7 +161,7 @@ export function answerCopy(kind: AnswerKind, lang: Lang, list: Session[]): Answe
         short: de ? 'Heute' : 'Today',
         description: de
           ? `Kreative Workshops in Berlin heute, ${today}: Töpfern, Malen, Kerzen, Kochen und mehr, mit Uhrzeit, Preis und Ort. Täglich aktualisiert.`
-          : `Creative workshops in Berlin today, ${today}: pottery, painting, candle making, cooking and more, with times, prices and places. Updated every day.`,
+          : `Creative workshops in Berlin today, ${today}: pottery, painting, candle making, cooking and more, with times, prices and free spots. Updated every day.`,
         answer,
         empty: de ? 'Heute sind keine offenen Termine mehr frei.' : 'No open dates left for today.',
         faq: [
@@ -186,7 +186,7 @@ export function answerCopy(kind: AnswerKind, lang: Lang, list: Session[]): Answe
         short: de ? 'Heute Abend' : 'Tonight',
         description: de
           ? `Workshops heute Abend in Berlin (${today}): Malen, Töpfern, Tastings und mehr ab 17 Uhr, mit Preis und Ort.`
-          : `Workshops in Berlin tonight (${today}): painting, pottery, tastings and more from 5 pm, with prices and places.`,
+          : `Workshops in Berlin tonight (${today}): painting, pottery, tastings and more from 5 pm, with prices and free spots.`,
         answer,
         empty: de ? 'Heute Abend sind keine offenen Termine mehr frei.' : 'No open dates left tonight.',
         faq: [
@@ -211,7 +211,7 @@ export function answerCopy(kind: AnswerKind, lang: Lang, list: Session[]): Answe
         short: de ? 'Morgen' : 'Tomorrow',
         description: de
           ? `Kreative Workshops in Berlin morgen, ${tomorrow}: mit Uhrzeit, Preis und Ort. Täglich aktualisiert.`
-          : `Creative workshops in Berlin tomorrow, ${tomorrow}: with times, prices and places. Updated every day.`,
+          : `Creative workshops in Berlin tomorrow, ${tomorrow}: with times, prices and free spots. Updated every day.`,
         answer,
         empty: de ? 'Für morgen sind noch keine Termine eingetragen.' : 'No dates for tomorrow yet.',
         faq: [
@@ -236,7 +236,7 @@ export function answerCopy(kind: AnswerKind, lang: Lang, list: Session[]): Answe
         short: de ? 'Dieses Wochenende' : 'This weekend',
         description: de
           ? `Workshops in Berlin dieses Wochenende (${span}): Töpfern, Malen, Kerzen, Kochen und mehr, mit Uhrzeit, Preis und Ort.`
-          : `Workshops in Berlin this weekend (${span}): pottery, painting, candle making, cooking and more, with times, prices and places.`,
+          : `Workshops in Berlin this weekend (${span}): pottery, painting, candle making, cooking and more, with times, prices and free spots.`,
         answer,
         empty: de ? 'Für dieses Wochenende sind noch keine Termine eingetragen.' : 'No dates for this weekend yet.',
         faq: [
@@ -263,7 +263,7 @@ export function answerCopy(kind: AnswerKind, lang: Lang, list: Session[]): Answe
         faq: [
           { q: de ? 'Wie lerne ich in Berlin neue Leute kennen?' : 'How do I make friends in Berlin?', a: answer },
           { q: de ? 'Kann ich allein zu einem Workshop gehen?' : 'Can I go to a workshop on my own?',
-            a: de ? 'Ja, bei offenen Workshops kommen viele allein. Du buchst einen einzelnen Platz und sitzt mit den anderen Teilnehmenden zusammen.' : 'Yes, many people come alone to open workshops. You book a single place and sit together with the other guests.' },
+            a: de ? 'Ja, bei offenen Workshops kommen viele allein. Du buchst einen einzelnen Platz und sitzt mit den anderen Teilnehmenden zusammen.' : 'Yes, many people come alone to open workshops. You book a single spot and sit together with the other guests.' },
           { q: de ? 'Gibt es Workshops auf Englisch?' : 'Are there workshops in English?',
             a: de ? 'Ja, viele Gastgeber*innen unterrichten auf Englisch und Deutsch. Die Sprache steht bei jedem Workshop.' : 'Yes, many hosts teach in English as well as German. The language is listed on every workshop.' },
         ],
