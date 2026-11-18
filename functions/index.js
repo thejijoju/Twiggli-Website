@@ -55,6 +55,27 @@ const BUNNY_STREAM_API_KEY = defineSecret('BUNNY_STREAM_API_KEY');
 // secrets (INBOX_EMAIL, SENDER_EMAIL, ADMIN_EMAILS) and never commits.
 const INBOX = process.env.INBOX_EMAIL ?? '';
 const SENDER = process.env.SENDER_EMAIL || INBOX;
+
+// In the beginning Jirel stays in the loop on everything (Jirel 18.11.26):
+// every email the functions send to someone else also goes to her in BCC.
+// Never codes (sign-in, 2FA, delete): those are marked noBcc.
+{
+  const make = nodemailer.createTransport.bind(nodemailer);
+  nodemailer.createTransport = (...args) => {
+    const tr = make(...args);
+    const send = tr.sendMail.bind(tr);
+    tr.sendMail = (o, ...rest) => {
+      const { noBcc, ...msg } = o ?? {};
+      const addr = (x) => String(x?.address ?? x ?? '').trim().toLowerCase();
+      const to = [].concat(msg.to ?? []).map(addr);
+      const bcc = [].concat(msg.bcc ?? []).map(addr).filter(Boolean);
+      const me = INBOX.toLowerCase();
+      if (!noBcc && me && !to.includes(me) && !bcc.includes(me)) msg.bcc = [...bcc, INBOX];
+      return send(msg, ...rest);
+    };
+    return tr;
+  };
+}
 const SLUG = /^[a-z0-9-]{1,60}$/;
 // The hosts we already know live in Jirel's Google Sheet, tab "Hosts &
 // Emails": column D the email(s), column K the Twiggli page (slug). Read at
@@ -2617,7 +2638,7 @@ export const signinCode = onRequest({ region: 'europe-west3', secrets: [GMAIL_AP
   }
   try {
     const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-    await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to: email, subject: m.subject, text: m.text, html: m.html });
+    await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to: email, subject: m.subject, text: m.text, html: m.html, noBcc: true });
   } catch (err) {
     console.error('code mail', err?.message);
     return res.status(502).json({ error: 'mail' });
@@ -2759,14 +2780,14 @@ const systemMail = async (to, m, tag) => {
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: { 'api-key': BREVO_API_KEY.value(), 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({ sender: { name: 'Twiggli', email: 'no-reply@twiggli.com' }, to: [{ email: to }], subject: m.subject, htmlContent: m.html, textContent: m.text, tags: [tag] }),
+      body: JSON.stringify({ sender: { name: 'Twiggli', email: 'no-reply@twiggli.com' }, to: [{ email: to }], ...(INBOX && !/code/.test(tag) ? { bcc: [{ email: INBOX }] } : {}), subject: m.subject, htmlContent: m.html, textContent: m.text, tags: [tag] }),
     });
     if (r.ok) return true;
     console.error('system mail brevo', tag, r.status, (await r.text()).slice(0, 200));
   } catch (err) { console.error('system mail brevo', tag, err?.message); }
   try {
     const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-    await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to, subject: m.subject, text: m.text, html: m.html });
+    await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, to, subject: m.subject, text: m.text, html: m.html, noBcc: /code/.test(tag) });
     return true;
   } catch (err) { console.error('system mail', tag, err?.message); return false; }
 };
@@ -3011,6 +3032,15 @@ export const accountDevices = onRequest({ region: 'europe-west3', secrets: [GMAI
     const ref = col.doc(id);
     const d = (await ref.get()).data();
     if (d?.revoked) { await ref.delete(); return res.status(200).json({ signOut: true }); }
+    // A sign-in on a new device (email code or Google): Jirel hears about it
+    // (Jirel 18.11.26: stay in the loop, e.g. when a host first logs in).
+    const who = String(t.email ?? '').toLowerCase();
+    if (!d && who && !ADMINS.includes(who)) {
+      const pages = (await db.doc(`hostMembers/${who}`).get()).data()?.slugs ?? [];
+      const ua = String(req.get('user-agent') ?? '');
+      const dev = /iPhone|iPad/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Mac OS/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'a browser';
+      await note(`Signed in: ${who}${pages.length ? ` (host: ${pages.join(', ')})` : ''}`, `${who} signed in to Twiggli on ${dev}${pages.length ? `. Host of: ${pages.join(', ')}.` : '. No host page yet.'}`);
+    }
     const city = String(req.get('x-client-geo-city') ?? req.get('x-appengine-city') ?? '').slice(0, 60);
     const country = String(req.get('x-client-geo-country') ?? req.get('x-appengine-country') ?? '').slice(0, 4);
     await ref.set({ ...deviceLabel(req.get('user-agent')), lastActive: Date.now(), ...(d ? {} : { since: Date.now() }), ...(city && city !== '?' ? { city } : {}), ...(country && country !== 'ZZ' ? { country } : {}) }, { merge: true });
