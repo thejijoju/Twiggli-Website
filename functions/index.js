@@ -1853,7 +1853,9 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
   // Paid bookings per date, for the Calendar tab (no guest contact details).
   const paid = await getFirestore().collection('bookings').where('slug', '==', slug).where('status', '==', 'paid').get().catch(() => ({ docs: [] }));
   // The guest's first name and message, and the replies (no email or phone: the dashboard never needs them).
-  const bookings = paid.docs.map((d) => { const x = d.data(); return { id: d.id, eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100, message: x.message ?? '', thread: (x.thread ?? []).map((t) => ({ from: t.from, message: t.message, at: t.at })), paidAt: x.paidAt?.toMillis?.() ?? 0 }; });
+  const bookings = paid.docs.map((d) => { const x = d.data(); return { id: d.id, eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100, message: x.message ?? '', thread: (x.thread ?? []).map((t) => ({ from: t.from, message: t.message, at: t.at })), paidAt: x.paidAt?.toMillis?.() ?? 0,
+    // Twiggli's fee as bookingCheckout charged it (the host's rate then), and a voucher's part.
+    fee: (x.fee ?? 0) / 100, pct: Number.isFinite(x.commissionPct) ? x.commissionPct : null, voucher: (x.voucherCents ?? 0) / 100 }; });
   return res.status(200).json({ items, bookings, replaced });
 });
 

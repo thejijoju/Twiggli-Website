@@ -742,6 +742,8 @@ const fields = [
             <div class="ib-conv" data-ib-conv><p class="ib-pick">{t.ib.pick}</p></div>
             <aside class="ib-res" data-ib-res hidden></aside>
           </div>
+        </section>
+        {/* Accept, decline, suggest and offer pop-ups, used by the Messages tab, the Calendar and the Overview. */}
           <dialog class="ib-modal" data-ib-modal aria-labelledby="ib-modal-title">
             <div class="ib-modal-head">
               <h2 id="ib-modal-title">{t.ib.details}</h2>
@@ -757,7 +759,6 @@ const fields = [
             <button type="button" class="ib-modal-x ib-offer-x" aria-label={t.back} onclick="this.closest('dialog').close()">×</button>
             <div class="ib-modal-body" data-ib-offer-body></div>
           </dialog>
-        </section>
 
         <!-- Overview: the host's week at a glance (the first thing they see). -->
 
@@ -2278,6 +2279,8 @@ const fields = [
 
       // ── Messages and Today: the requests for this host (functions hostInbox) ──
       type Req = { id: string; subject: string; fields: Record<string, string>; status: string; thread: { action: string; when?: string; message?: string; at: number }[]; createdAt: number };
+      /** The thread to open in Messages (from the Calendar, the Overview or after an answer). */
+      let msgFocus = '';
       let reqs: Req[] = [];
       let filter = 'all';
       let when = 'upcoming';
@@ -2465,9 +2468,9 @@ const fields = [
             el('span', 'hd-req-n', [n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) }), r.fields.Workshop].filter(Boolean).join(' · ')));
           card.append(el('span', 'hd-req-av', firstName(r).charAt(0).toUpperCase()), txt, left);
           card.addEventListener('click', () => {
+            // The request with its money and buttons (Messages).
+            msgFocus = `r:${r.id}`;
             showTab('messages');
-            openDetail(r);
-            root.querySelector<HTMLButtonElement>('[data-ib-conv] .ib-respond')?.click();
           });
           return card;
         }));
@@ -2574,14 +2577,28 @@ const fields = [
       const send = async (r: Req, action: string, extra: Record<string, unknown>, note: HTMLElement, btns: HTMLButtonElement[]) => {
         btns.forEach((b) => { b.disabled = true; });
         try {
-          await api('hostReply', { id: r.id, action, ...extra });
+          if (DEMO) {
+            // Demo: as the server would (hostReply), nothing sent.
+            await new Promise((ok) => setTimeout(ok, 300));
+            if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail');
+            const STATUS: Record<string, string> = { accept: 'accepted', decline: 'declined', suggest: 'suggested', offer: 'offered' };
+            r.thread = [...(r.thread ?? []), { action, ...extra, at: Date.now() } as Req['thread'][number]];
+            if (STATUS[action]) r.status = STATUS[action];
+            const hold = (r as Req & { hold?: { settled?: string } }).hold;
+            if (hold && (action === 'accept' || action === 'decline')) hold.settled = action === 'accept' ? 'taken' : 'released';
+          } else {
+            await api('hostReply', { id: r.id, action, ...extra });
+            reqs = (await api('hostInbox', { slug })).items ?? reqs;
+          }
           note.textContent = t.ib.sent;
           const dlg = root.querySelector<HTMLDialogElement>('[data-ib-modal]');
           if (dlg?.open) dlg.close();
-          reqs = (await api('hostInbox', { slug })).items ?? reqs;
           renderMsgs();
+          msgFocus = `r:${r.id}`;
+          renderMsgPanel();
+          renderCal();
           const again = reqs.find((x) => x.id === r.id);
-          if (again) openDetail(again);
+          if (again && openId === r.id) openDetail(again);
         } catch (err) {
           // A voucher request whose card hold lapsed (7 days): say so plainly.
           note.textContent = /payment/.test(String((err as Error)?.message)) ? t.ib.holdLapsed : fill(t.error, cfg.contact);
@@ -3456,6 +3473,8 @@ const fields = [
       // requests are its waiting list. ?demo=calendar shows made-up data and
       // saves nothing.
       type Bk = { id?: string; eventId?: string; date: string; start?: string; title?: string; people: number; name?: string; amount?: number;
+        /** Twiggli's fee on it (€) and its rate, as bookingCheckout charged it; a voucher's part (€). */
+        fee?: number; pct?: number; voucher?: number;
         /** What the guest wrote with the booking, and the replies (hostEvents). */
         message?: string; thread?: { from: string; message: string; at: number }[]; paidAt?: number };
       type Ws = { title: string; key: string; image: string; color: string; price?: string; alias?: string[]; booking?: string };
@@ -3857,9 +3876,14 @@ const fields = [
         if (s.requests.length) {
           side.append(el('p', 'cal-sub-h', t.cal.reqs));
           for (const r of s.requests) {
-            const b = calBtn('cal-req cal-req-btn', '', () => { if (calDemo) return; calOpenSheet(false); showTab('messages'); openDetail(r); });
-            b.append(el('b', '', r.fields.Name || firstName(r)), el('span', '', ` · ${calPeople(peopleOf(r))}${reqTime(r) && !ev ? ` · ${reqTime(r)}` : ''}`));
-            side.append(b);
+            // Who, what they wrote, the money and the buttons: as in Messages.
+            const box = el('div', 'cal-reqcard');
+            const top = calBtn('cal-req cal-req-btn', '', () => { calOpenSheet(false); msgFocus = `r:${r.id}`; showTab('messages'); });
+            top.append(el('b', '', r.fields.Name || firstName(r)), el('span', '', ` · ${calPeople(peopleOf(r))}${reqTime(r) && !ev ? ` · ${reqTime(r)}` : ''}`));
+            box.append(top);
+            if (r.fields.Message) box.append(el('p', 'cal-reqmsg', `“${r.fields.Message}”`));
+            box.append(...reqParts(r));
+            side.append(box);
           }
         }
         if (s.accepted.length || s.bookings.length) {
@@ -3919,7 +3943,7 @@ const fields = [
           edit.disabled = busy; cancel.disabled = busy;
           acts.append(edit, cancel);
         } else if (s.requests.length && !calDemo) {
-          acts.append(calBtn('cal-btn', t.cal.reply, () => { calOpenSheet(false); showTab('messages'); openDetail(s.requests[0]); }));
+          acts.append(calBtn('cal-btn', t.cal.reply, () => { calOpenSheet(false); msgFocus = `r:${s.requests[0].id}`; showTab('messages'); }));
         }
         side.append(acts);
         if (calMsg) { const m = el('p', `cal-msg${calMsg.ok ? '' : ' is-bad'}`, calMsg.text); m.setAttribute('role', calMsg.ok ? 'status' : 'alert'); side.append(m); }
@@ -4257,44 +4281,195 @@ const fields = [
         wsBusy = false; btn.disabled = false;
       });
       // ── Messages: a few lines from guests, with every booking or request, and replies ──
-      let msgFocus = '';
       const msgSending = new Set<string>();
+      // ── The money and the buttons for a request (Messages, Calendar, Overview) ──
+      type Hold = { voucher: number; card: number; settled?: string };
+      const holdOf = (r: Req) => (r as Req & { hold?: Hold }).hold;
+      const eurC = (n: number) => `€${n.toLocaleString(locale, { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
+      /** Guest pays, Twiggli's fee, what the host receives: one rule, the host's own rate
+       *  (hostMembers commissionPct, else 15; 0 for a free first booking), as bookingCheckout charges.
+       *  Vouchers: 15 %, as the hold texts say (Twiggli pays the voucher part out). */
+      const moneyBox = (total: number, pct: number, extra: HTMLElement[] = []) => {
+        const box = el('div', 'msg-money');
+        const fee = Math.round(total * pct) / 100;
+        const row = (k: string, v: string, cls = '') => { const r = el('div', `msg-mrow${cls}`); r.append(el('span', '', k), el('b', '', v)); box.append(r); };
+        row(t.cal.mGuest, eurC(total));
+        row(pct ? say(t.cal.mFee, { pct: String(pct) }) : t.cal.mFeeFree, pct ? `−${eurC(fee)}` : '€0');
+        row(t.cal.mYou, eurC(total - fee), ' is-you');
+        box.append(...extra);
+        return box;
+      };
+      const lastOf = (r: Req, action: string) => [...(r.thread ?? [])].reverse().find((x) => x.action === action) as (Req['thread'][number] & { total?: number; price?: number; people?: number; date?: string; time?: string }) | undefined;
+      /** What a request shows under it: the money, where it stands, and its buttons. */
+      const reqParts = (r: Req): HTMLElement[] => {
+        const ppl = peopleOf(r);
+        const each = priceOf(r);
+        const hold = holdOf(r);
+        const out: HTMLElement[] = [];
+        if (hold) {
+          const loc = locale;
+          const eur2 = (n: number) => `€ ${n.toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          out.push(moneyBox(hold.voucher + hold.card, 15, [el('p', 'msg-mnote', hold.settled === 'taken' ? say(t.ib.holdTaken, { v: eur2(hold.voucher + hold.card) })
+            : say(hold.card ? t.ib.holdCard : t.ib.holdVoucher, { v: eur2(hold.voucher), c: eur2(hold.card) }))]));
+        } else if (r.status === 'offered' && lastOf(r, 'offer')?.total) out.push(moneyBox(lastOf(r, 'offer')!.total!, feePct)); // what the offer would bring
+        else if (each) out.push(moneyBox(each * ppl, feePct));
+        else out.push(el('p', 'msg-mnote', t.cal.mNoPrice));
+        // Where it stands.
+        const offer = lastOf(r, 'offer');
+        const sug = lastOf(r, 'suggest');
+        const stateLine = r.status === 'offered' && offer ? say(t.cal.mOffered, { what: [offer.total ? eurC(offer.total) : offer.price ? `${eurC(offer.price)} ${t.ib.perPerson}` : '', offer.when || [offer.date, offer.time].filter(Boolean).join(' ')].filter(Boolean).join(' · ') })
+          : r.status === 'suggested' && sug ? say(t.cal.mSuggested, { when: sug.when ?? '' })
+          : r.status === 'accepted' ? (hold ? t.cal.mApproved : t.ib.accepted) : r.status === 'declined' ? t.ib.declined : '';
+        if (stateLine) out.push(el('p', `msg-state${r.status === 'declined' ? ' is-off' : ''}`, `${stateLine}${['offered', 'suggested'].includes(r.status) ? ` ${say(t.cal.msgViaUs, { name: firstName(r) })}` : ''}`));
+        // The buttons for that state.
+        const note = el('p', 'msg-note'); note.setAttribute('role', 'status');
+        const mk = (label: string, cls = 'cal-btn2') => { const b = el('button', cls, label) as HTMLButtonElement; b.type = 'button'; return b; };
+        const acts = el('div', 'msg-acts');
+        if (r.status === 'pending' && hold && !hold.settled) {
+          const yes = mk(t.cal.mApprove, 'cal-btn'); const no = mk(t.cal.mRelease);
+          const all = [yes, no];
+          yes.addEventListener('click', () => askAccept(r, note, all, true));
+          no.addEventListener('click', () => askDecline(r, note, all));
+          acts.append(yes, no);
+        } else if (r.status === 'pending') {
+          const yes = mk(t.ib.accept, 'cal-btn'); const no = mk(t.ib.decline); const other = mk(t.suggest); const offerB = mk(t.ib.offer);
+          const all = [yes, no, other, offerB];
+          yes.addEventListener('click', () => askAccept(r, note, all, false));
+          no.addEventListener('click', () => askDecline(r, note, all));
+          other.addEventListener('click', () => askSuggest(r, note, all));
+          offerB.addEventListener('click', () => openOffer(r, note, all));
+          acts.append(yes, other, offerB, no);
+        } else if (r.status === 'offered' || r.status === 'suggested') {
+          const offerB = mk(t.cal.mNewOffer); const no = mk(t.ib.decline);
+          const all = [offerB, no];
+          offerB.addEventListener('click', () => openOffer(r, note, all));
+          no.addEventListener('click', () => askDecline(r, note, all));
+          acts.append(offerB, no);
+        }
+        if (acts.childElementCount) out.push(acts, note);
+        return out;
+      };
+      /** Accept (or approve a hold: card and voucher are charged), asked once more, with what it means. */
+      const askAccept = (r: Req, note: HTMLElement, all: HTMLButtonElement[], hold: boolean) => {
+        const dlg = $<HTMLDialogElement>('[data-ib-decline]');
+        const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
+        const name = firstName(r);
+        const ppl = peopleOf(r);
+        const each = priceOf(r);
+        const h = holdOf(r);
+        const total = h ? h.voucher + h.card : each * ppl;
+        const pct = h ? 15 : feePct;
+        const sumUp = el('div', 'ib-confirm-sum');
+        sumUp.append(el('span', '', [fmtDay(dateOf(r)), r.fields.Time].filter(Boolean).join(', ')), el('span', '', ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) })),
+          ...(total ? [el('b', '', say(t.ib.acEarn, { amt: eurC(total - Math.round(total * pct) / 100) }))] : []));
+        const yes = el('button', 'ib-act ib-act-main ib-act-grad', hold ? t.cal.mApprove : t.ib.acYes) as HTMLButtonElement; yes.type = 'button';
+        yes.addEventListener('click', () => { dlg.close(); void send(r, 'accept', {}, note, all); });
+        const no = el('button', 'ib-act', t.ib.acNo) as HTMLButtonElement; no.type = 'button'; no.addEventListener('click', () => dlg.close());
+        const btns = el('div', 'ib-confirm-acts'); btns.append(yes, no);
+        body.classList.add('is-confirm');
+        dlg.addEventListener('close', () => body.classList.remove('is-confirm'), { once: true });
+        body.replaceChildren(el('h2', 'ib-offer-h', say(t.ib.acTitle, { name })), el('p', 'ib-hint', hold ? t.cal.mApproveNote : say(t.ib.acNote, { name })), sumUp, btns);
+        dlg.showModal();
+      };
+      /** Decline (or release a hold), with a reason the guest never sees. */
+      const askDecline = (r: Req, note: HTMLElement, all: HTMLButtonElement[]) => {
+        const dlg = $<HTMLDialogElement>('[data-ib-decline]');
+        const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
+        const list = el('div', 'ib-reasons'); list.setAttribute('role', 'radiogroup');
+        ([['booked', t.ib.rBooked], ['size', t.ib.rSize], ['away', t.ib.rAway], ['fit', t.ib.rFit], ['other', t.ib.rOther]] as [string, string][]).forEach(([v, l], i) => {
+          const lab = el('label', 'ib-reason');
+          const inp = document.createElement('input'); inp.type = 'radio'; inp.name = 'ib-reason'; inp.value = v; if (i === 0) inp.checked = true;
+          lab.append(inp, el('span', '', l));
+          list.append(lab);
+        });
+        const m = document.createElement('textarea'); m.rows = 3; m.placeholder = t.ib.declinePh;
+        const mbox = el('label', 'ib-box'); mbox.append(el('small', '', t.replyMsg), m);
+        const go = el('button', 'ib-act ib-act-main ib-offer-send', t.ib.declineSend) as HTMLButtonElement; go.type = 'button';
+        go.addEventListener('click', () => { const reason = list.querySelector<HTMLInputElement>('input:checked')?.value ?? 'other'; dlg.close(); void send(r, 'decline', { reason, message: m.value.trim() }, note, all); });
+        body.replaceChildren(el('h2', 'ib-offer-h', say(t.ib.declineHead, { name: firstName(r) })), el('h3', 'ib-offer-sec', t.ib.declineTitle), el('p', 'ib-hint', t.ib.declineNote), list, mbox, go);
+        dlg.showModal();
+      };
+      /** Suggest another date and time, with a note. */
+      const askSuggest = (r: Req, note: HTMLElement, all: HTMLButtonElement[]) => {
+        const dlg = $<HTMLDialogElement>('[data-ib-decline]');
+        const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
+        const d = document.createElement('input'); d.type = 'date'; d.value = dateOf(r) || '';
+        const tm = document.createElement('input'); tm.type = 'time'; tm.step = '900'; tm.value = (r.fields.Time || '').slice(0, 5);
+        const m = document.createElement('textarea'); m.rows = 3; m.placeholder = say(t.cal.mSuggestPh, { name: firstName(r) });
+        const row = el('div', 'msg-sugrow');
+        const bd = el('label', 'ib-box'); bd.append(el('small', '', t.ib.oDate), d);
+        const bt = el('label', 'ib-box'); bt.append(el('small', '', t.ib.oTime), tm);
+        row.append(bd, bt);
+        const mbox = el('label', 'ib-box'); mbox.append(el('small', '', t.replyMsg), m);
+        const err = el('p', 'ha-note');
+        const go = el('button', 'ib-act ib-act-main ib-offer-send', t.ib.send) as HTMLButtonElement; go.type = 'button';
+        go.addEventListener('click', () => {
+          if (!d.value) { err.textContent = t.suggestWhen; d.focus(); return; }
+          const when = `${new Date(`${d.value}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' })}${tm.value ? ` ${tm.value}` : ''}`;
+          dlg.close();
+          void send(r, 'suggest', { when, message: m.value.trim() }, note, all);
+        });
+        body.replaceChildren(el('h2', 'ib-offer-h', t.suggest), el('p', 'ib-hint', t.suggestWhen), row, mbox, err, go);
+        dlg.showModal();
+        d.focus();
+      };
       const renderMsgPanel = () => {
         const list = root.querySelector<HTMLElement>('[data-msg-list]');
         if (!list) return;
-        type Th = { key: string; kind: 'booking' | 'request'; id: string; name: string; title: string; date: string; time: string; people: number; message: string; replies: { host: boolean; message: string; at: number }[]; at: number };
+        type Th = { key: string; kind: 'booking' | 'request'; id: string; name: string; title: string; date: string; time: string; people: number; message: string;
+          replies: { host: boolean; message: string; at: number; line?: string }[]; at: number; open: boolean; req?: Req; bk?: Bk };
+        const lineOf = (x: Req['thread'][number]) => x.action === 'suggest' ? say(t.ib.suggested, { when: x.when ?? '' }) : x.action === 'accept' ? t.ib.accepted : x.action === 'decline' ? t.ib.declined
+          : x.action === 'offer' ? (() => { const o = x as { total?: number; price?: number; when?: string }; return say(t.ib.offered, { what: [o.total ? eurC(o.total) : o.price ? `${eurC(o.price)} ${t.ib.perPerson}` : '', o.when].filter(Boolean).join(', ') }); })() : '';
         const items: Th[] = [
+          // Every request (with a hold or not), then paid bookings with a message.
+          ...reqs.map((r) => ({ key: `r:${r.id}`, kind: 'request' as const, id: r.id, name: firstName(r), title: r.fields.Workshop || r.subject, date: reqDay(r), time: reqTime(r), people: peopleOf(r),
+            message: r.fields.Message ?? '', replies: (r.thread ?? []).filter((x) => x.message || lineOf(x)).map((x) => ({ host: true, message: x.message ?? '', line: lineOf(x), at: x.at })),
+            at: Math.max(r.createdAt, ...(r.thread ?? []).map((x) => x.at)), open: r.status === 'pending', req: r })),
           ...calBookings.filter((b) => b.id && (b.message || b.thread?.length)).map((b) => ({ key: `b:${b.id}`, kind: 'booking' as const, id: b.id!, name: b.name || t.guest, title: b.title ?? '', date: b.date, time: b.start ?? '', people: b.people,
-            message: b.message ?? '', replies: (b.thread ?? []).map((r) => ({ host: r.from === 'host', message: r.message, at: r.at })), at: Math.max(b.paidAt ?? 0, ...(b.thread ?? []).map((r) => r.at)) })),
-          ...reqs.filter((r) => (r.fields.Message || r.thread?.some((x) => x.message)) && r.status !== 'declined').map((r) => ({ key: `r:${r.id}`, kind: 'request' as const, id: r.id, name: firstName(r), title: r.fields.Workshop || r.subject, date: reqDay(r), time: reqTime(r), people: peopleOf(r),
-            message: r.fields.Message ?? '', replies: (r.thread ?? []).filter((x) => x.message).map((x) => ({ host: true, message: x.message!, at: x.at })), at: Math.max(r.createdAt, ...(r.thread ?? []).map((x) => x.at)) })),
-        ].sort((a, b) => b.at - a.at);
+            message: b.message ?? '', replies: (b.thread ?? []).map((r) => ({ host: r.from === 'host', message: r.message, at: r.at })), at: Math.max(b.paidAt ?? 0, ...(b.thread ?? []).map((r) => r.at)), open: false, bk: b })),
+        ].sort((a, b) => Number(b.open) - Number(a.open) || b.at - a.at);
         if (!items.length) { list.replaceChildren(el('p', 'cal-empty', t.cal.msgEmpty)); return; }
         list.replaceChildren(...items.map((it) => {
-          const card = el('article', `msg-card${msgFocus === it.key ? ' is-focus' : ''}`);
+          const card = el('article', `msg-card${msgFocus === it.key ? ' is-focus' : ''}${it.open ? ' is-open' : ''}`);
           const head = el('header', 'msg-head');
           const who = el('div', 'msg-who');
           const when = it.date ? new Date(`${it.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
-          who.append(el('b', '', it.name), el('span', `msg-kind${it.kind === 'booking' ? ' is-paid' : ''}`, it.kind === 'booking' ? t.cal.msgPaid : t.cal.msgReq),
+          const hold = it.req ? holdOf(it.req) : undefined;
+          const kindLabel = it.kind === 'booking' ? t.cal.msgPaid : hold && !hold.settled ? t.cal.msgHold : t.cal.msgReq;
+          who.append(el('b', '', it.name), el('span', `msg-kind${it.kind === 'booking' ? ' is-paid' : hold && !hold.settled ? ' is-hold' : ''}`, kindLabel),
             el('small', '', [it.title, [when, it.time].filter(Boolean).join(' '), calPeople(it.people)].filter(Boolean).join(' · ')));
           head.append(el('span', 'msg-av', it.name.charAt(0).toUpperCase()), who);
           card.append(head);
-          if (it.message) card.append(el('p', 'msg-b', it.message));
-          for (const r of it.replies) card.append(el('p', `msg-b${r.host ? ' is-host' : ''}`, r.message));
+          // What they wrote comes first.
+          if (it.message) card.append(el('p', 'msg-b msg-first', it.message));
+          // The money and the buttons.
+          if (it.req) card.append(...reqParts(it.req));
+          if (it.bk) {
+            const b = it.bk;
+            const total = b.amount ?? 0;
+            const pct = typeof b.pct === 'number' ? b.pct : feePct;
+            card.append(moneyBox(total, pct, [el('p', 'msg-mnote', `✓ ${t.cal.mPaid}. ${t.cal.mStripe}`)]));
+          }
+          for (const r of it.replies) {
+            const bub = el('div', `msg-b${r.host ? ' is-host' : ''}`);
+            if (r.line) bub.append(el('small', 'msg-line', r.line));
+            if (r.message) bub.append(el('span', '', r.message));
+            card.append(bub);
+          }
           const form = document.createElement('form');
           form.className = 'msg-reply';
           const ta = document.createElement('textarea');
           ta.rows = 2; ta.maxLength = 2000; ta.placeholder = say(t.cal.msgWrite, { name: it.name });
           ta.setAttribute('aria-label', say(t.cal.msgWrite, { name: it.name }));
-          const send = el('button', 'cal-btn', t.cal.msgSend) as HTMLButtonElement; send.type = 'submit';
+          const sendB = el('button', 'cal-btn', t.cal.msgSend) as HTMLButtonElement; sendB.type = 'submit';
           const note = el('small', 'msg-note', it.kind === 'booking' ? say(t.cal.msgByEmail, { name: it.name }) : say(t.cal.msgViaUs, { name: it.name }));
-          send.disabled = msgSending.has(it.key);
-          form.append(ta, send, note);
+          sendB.disabled = msgSending.has(it.key);
+          form.append(ta, sendB, note);
           form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = ta.value.trim();
             if (!text || msgSending.has(it.key)) return;
-            msgSending.add(it.key); send.disabled = true;
+            msgSending.add(it.key); sendB.disabled = true;
             try {
               if (DEMO) { await new Promise((r) => setTimeout(r, 300)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); }
               else if (it.kind === 'booking') await api('hostBookingReply', { id: it.id, message: text });
@@ -4306,7 +4481,7 @@ const fields = [
               msgFocus = it.key;
               renderMsgPanel();
             } catch {
-              msgSending.delete(it.key); send.disabled = false;
+              msgSending.delete(it.key); sendB.disabled = false;
               note.textContent = t.cal.fail; note.classList.add('is-bad');
             }
           });
@@ -4316,7 +4491,6 @@ const fields = [
         if (msgFocus) {
           const card = list.querySelector<HTMLElement>('.msg-card.is-focus');
           card?.scrollIntoView({ block: 'center' });
-          card?.querySelector<HTMLTextAreaElement>('textarea')?.focus({ preventScroll: true });
         }
       };
       const calLoadListings = async () => {
@@ -4619,17 +4793,21 @@ const fields = [
           bk('2026-12-05', '11:00', 8, 'Marie'), bk('2026-12-11', '18:30', 4, 'Lina'), bk('2026-12-19', '11:00', 2, 'Zoe'),
         ];
         // A few lines from guests, as they come with a booking (and one answer).
-        calBookings = calBookings.map((b, i) => ({ ...b, id: `demoBk${i}`, paidAt: Date.now() - i * 3600000 }));
+        calBookings = calBookings.map((b, i) => ({ ...b, id: `demoBk${i}`, paidAt: Date.now() - i * 3600000, fee: Math.round((b.amount ?? 0) * 15) / 100, pct: 15 }));
         for (const b of calBookings) {
           if (b.name === 'Julia') b.message = 'Hi Pia! It’s my sister’s birthday, she’s one of the six. Could we sit together? 🎨';
           if (b.name === 'Marie') { b.message = 'Is there anything I should bring?'; b.thread = [{ from: 'host', message: 'Nothing at all, just come as you are! 😊', at: Date.now() - 1800000 }]; }
         }
         const rq = (id: string, name: string, workshop: string, date: string, time: string, people: number, status = 'pending') =>
-          ({ id, subject: workshop, status, thread: [], createdAt: Date.now() - 5 * 3600000, fields: { Name: name, Workshop: workshop, Date: date, Time: time, People: String(people) } });
+          ({ id, subject: workshop, status, thread: [], createdAt: Date.now() - 5 * 3600000, fields: { Name: name, Workshop: workshop, Date: date, Time: time, People: String(people), ...(workshop === VULVA ? { Price: '40' } : {}) } });
         reqs = [
           rq('demoAnna', 'Anna', VULVA, '2026-11-27', '18:30', 1), rq('demoMia', 'Mia', VULVA, '2026-11-27', '18:30', 1),
-          { ...rq('demoLena', 'Lena', VULVA, '2026-12-05', '11:00', 2), fields: { Name: 'Lena', Workshop: VULVA, Date: '2026-12-05', Time: '11:00', People: '2', Message: 'We’re two beginners, is that okay?' } },
-          rq('demoJonas', 'Jonas', 'Private group', '2026-12-12', '15:00', 8),
+          { ...rq('demoLena', 'Lena', VULVA, '2026-12-05', '11:00', 2), fields: { Name: 'Lena', Workshop: VULVA, Date: '2026-12-05', Time: '11:00', People: '2', Price: '40', Message: 'We’re two beginners, is that okay? We’d love to paint something for our flat.' } },
+          // Paid with a Twiggli voucher and a card, held until Pia approves.
+          { ...rq('demoTom', 'Tom', VULVA, '2026-12-11', '18:30', 2), fields: { Name: 'Tom', Workshop: VULVA, Date: '2026-12-11', Time: '18:30', People: '2', Price: '40', Message: 'A surprise for my girlfriend’s birthday 🎁' }, hold: { voucher: 50, card: 30, settled: '' } },
+          // A group asked; Pia sent an offer (Twiggli passes it on).
+          { ...rq('demoJonas', 'Jonas', 'Private group', '2026-12-12', '15:00', 8, 'offered'), fields: { Name: 'Jonas', Workshop: 'Private group', Date: '2026-12-12', Time: '15:00', People: '8', Message: 'Team event for 8, could we do it on a Saturday afternoon?' },
+            thread: [{ action: 'offer', at: Date.now() - 3 * 3600000, total: 320, when: 'Sat 12 Dec 15:00', people: 8, workshop: 'Private group', message: 'Happy to! Snacks included.' } as Req['thread'][number]] },
           rq('demoSophie', 'Sophie', 'At your office', '2026-12-09', '14:00', 12, 'accepted'),
         ];
         calDemo = { workshops: [
@@ -5799,6 +5977,27 @@ const fields = [
   .msg button { font-family: inherit; color: inherit; cursor: pointer; }
   .msg button:disabled { opacity: 0.5; cursor: default; }
   .msg-lede { margin: 0 0 16px; }
+  .msg-card.is-open { border-color: #d9ccfb; }
+  .msg-kind.is-hold { background: #f3eeff; color: #6a3eec; }
+  .msg-first { font-size: 0.98rem; }
+  .msg-money { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; background: #faf8ff; border: 1px solid #ece6f8; font-size: 0.88rem; }
+  .msg-mrow { display: flex; justify-content: space-between; gap: 12px; }
+  .msg-mrow span { color: var(--color-text-muted); }
+  .msg-mrow.is-you { padding-top: 4px; border-top: 1px solid #ece6f8; font-size: 0.95rem; }
+  .msg-mrow.is-you span { color: var(--color-text); font-weight: 600; }
+  .msg-mrow.is-you b { color: #157a6b; }
+  .msg-mnote { margin: 4px 0 0; font-size: 0.8rem; color: var(--color-text-muted); }
+  .msg-state { margin: 0; font-size: 0.85rem; font-weight: 600; color: #6a3eec; }
+  .msg-state.is-off { color: var(--color-text-muted); }
+  .msg-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .msg-acts .cal-btn, .msg-acts .cal-btn2 { font-size: 0.85rem; padding: 7px 14px; }
+  .msg-line { display: block; font-weight: 600; opacity: 0.85; margin-bottom: 2px; }
+  .msg-sugrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cal-reqcard { display: grid; gap: 6px; margin-top: 8px; }
+  .cal-reqcard .cal-req-btn { margin-top: 0; }
+  .cal-reqmsg { margin: 0; font-size: 0.85rem; font-style: italic; color: var(--color-text-muted); }
+  .cal-reqcard .msg-acts .cal-btn, .cal-reqcard .msg-acts .cal-btn2 { font-size: 0.8rem; padding: 6px 12px; }
+  .cal .msg-acts button, .msg .msg-acts button { font-family: inherit; }
   .msg-list { display: grid; gap: 12px; max-width: 760px; }
   .msg-card { background: #fff; border: 1px solid #e6dff2; border-radius: 18px; padding: 16px; display: grid; gap: 8px; }
   .msg-card.is-focus { border-color: #6a3eec; box-shadow: 0 0 0 3px rgba(106, 62, 236, 0.12); }
