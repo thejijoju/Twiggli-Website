@@ -708,7 +708,12 @@ const fields = [
             </form>
           </dialog>
         </section>
-        <section class="hd-blank" data-ha-panel="messages" hidden><h2>{t.tabMessages}</h2></section>
+        {/* Messages (Jirel 19.11.26): what guests wrote with a paid booking or a request, and the host's replies. */}
+        <section class="msg" data-ha-panel="messages" hidden>
+          <h2 class="cal-h">{t.tabMessages}</h2>
+          <p class="ha-sub msg-lede">{t.cal.msgLede}</p>
+          <div class="msg-list" data-msg-list></div>
+        </section>
         <section class="hd-blank" data-ha-panel="listings" hidden><h2>{t.tabListings}</h2></section>
 
         <!-- Messages, as on Airbnb (functions hostInbox / hostReply): the list
@@ -1842,6 +1847,7 @@ const fields = [
         root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== name; });
         window.scrollTo({ top: 0 });
         if (name === 'listings') void renderListings();
+        if (name === 'messages') renderMsgPanel();
         if (name === 'calendar') { renderCal(); void calLoadListings(); }
         if (name === 'profile') renderProfile();
         setPath();
@@ -3449,7 +3455,9 @@ const fields = [
       // bookings + accepted requests) and open requests; a full date's open
       // requests are its waiting list. ?demo=calendar shows made-up data and
       // saves nothing.
-      type Bk = { eventId?: string; date: string; start?: string; title?: string; people: number; name?: string; amount?: number };
+      type Bk = { id?: string; eventId?: string; date: string; start?: string; title?: string; people: number; name?: string; amount?: number;
+        /** What the guest wrote with the booking, and the replies (hostEvents). */
+        message?: string; thread?: { from: string; message: string; at: number }[]; paidAt?: number };
       type Ws = { title: string; key: string; image: string; color: string; price?: string; alias?: string[]; booking?: string };
       type CalSlot = {
         key: string; date: string; start: string; end?: string; title: string; ev?: Ev; seats: number | null; booked: number;
@@ -3857,6 +3865,16 @@ const fields = [
         if (s.accepted.length || s.bookings.length) {
           const names = [...s.bookings.map((b) => `${b.name || t.guest} (${b.people || 1})`), ...s.accepted.map((r) => `${firstName(r)} (${peopleOf(r)})`)];
           side.append(el('p', 'cal-guests', names.join(' · ')));
+          // What guests wrote with their booking, under it, with a way to answer.
+          for (const b of s.bookings.filter((x) => x.message || x.thread?.length)) {
+            const box = el('div', 'cal-gmsg');
+            box.append(el('b', '', `💬 ${b.name || t.guest}`));
+            if (b.message) box.append(el('p', '', b.message));
+            for (const r of b.thread ?? []) box.append(el('p', `cal-gmsg-r${r.from === 'host' ? ' is-host' : ''}`, `${r.from === 'host' ? `${t.cal.msgYou}: ` : ''}${r.message}`));
+            const go = calBtn('cal-link', t.cal.msgReply, () => { calOpenSheet(false); msgFocus = `b:${b.id}`; showTab('messages'); });
+            box.append(go);
+            side.append(box);
+          }
         }
         const acts = el('div', 'cal-acts');
         if (ev?.onRequest && ev.start) {
@@ -4238,6 +4256,69 @@ const fields = [
         }
         wsBusy = false; btn.disabled = false;
       });
+      // ── Messages: a few lines from guests, with every booking or request, and replies ──
+      let msgFocus = '';
+      const msgSending = new Set<string>();
+      const renderMsgPanel = () => {
+        const list = root.querySelector<HTMLElement>('[data-msg-list]');
+        if (!list) return;
+        type Th = { key: string; kind: 'booking' | 'request'; id: string; name: string; title: string; date: string; time: string; people: number; message: string; replies: { host: boolean; message: string; at: number }[]; at: number };
+        const items: Th[] = [
+          ...calBookings.filter((b) => b.id && (b.message || b.thread?.length)).map((b) => ({ key: `b:${b.id}`, kind: 'booking' as const, id: b.id!, name: b.name || t.guest, title: b.title ?? '', date: b.date, time: b.start ?? '', people: b.people,
+            message: b.message ?? '', replies: (b.thread ?? []).map((r) => ({ host: r.from === 'host', message: r.message, at: r.at })), at: Math.max(b.paidAt ?? 0, ...(b.thread ?? []).map((r) => r.at)) })),
+          ...reqs.filter((r) => (r.fields.Message || r.thread?.some((x) => x.message)) && r.status !== 'declined').map((r) => ({ key: `r:${r.id}`, kind: 'request' as const, id: r.id, name: firstName(r), title: r.fields.Workshop || r.subject, date: reqDay(r), time: reqTime(r), people: peopleOf(r),
+            message: r.fields.Message ?? '', replies: (r.thread ?? []).filter((x) => x.message).map((x) => ({ host: true, message: x.message!, at: x.at })), at: Math.max(r.createdAt, ...(r.thread ?? []).map((x) => x.at)) })),
+        ].sort((a, b) => b.at - a.at);
+        if (!items.length) { list.replaceChildren(el('p', 'cal-empty', t.cal.msgEmpty)); return; }
+        list.replaceChildren(...items.map((it) => {
+          const card = el('article', `msg-card${msgFocus === it.key ? ' is-focus' : ''}`);
+          const head = el('header', 'msg-head');
+          const who = el('div', 'msg-who');
+          const when = it.date ? new Date(`${it.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+          who.append(el('b', '', it.name), el('span', `msg-kind${it.kind === 'booking' ? ' is-paid' : ''}`, it.kind === 'booking' ? t.cal.msgPaid : t.cal.msgReq),
+            el('small', '', [it.title, [when, it.time].filter(Boolean).join(' '), calPeople(it.people)].filter(Boolean).join(' · ')));
+          head.append(el('span', 'msg-av', it.name.charAt(0).toUpperCase()), who);
+          card.append(head);
+          if (it.message) card.append(el('p', 'msg-b', it.message));
+          for (const r of it.replies) card.append(el('p', `msg-b${r.host ? ' is-host' : ''}`, r.message));
+          const form = document.createElement('form');
+          form.className = 'msg-reply';
+          const ta = document.createElement('textarea');
+          ta.rows = 2; ta.maxLength = 2000; ta.placeholder = say(t.cal.msgWrite, { name: it.name });
+          ta.setAttribute('aria-label', say(t.cal.msgWrite, { name: it.name }));
+          const send = el('button', 'cal-btn', t.cal.msgSend) as HTMLButtonElement; send.type = 'submit';
+          const note = el('small', 'msg-note', it.kind === 'booking' ? say(t.cal.msgByEmail, { name: it.name }) : say(t.cal.msgViaUs, { name: it.name }));
+          send.disabled = msgSending.has(it.key);
+          form.append(ta, send, note);
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = ta.value.trim();
+            if (!text || msgSending.has(it.key)) return;
+            msgSending.add(it.key); send.disabled = true;
+            try {
+              if (DEMO) { await new Promise((r) => setTimeout(r, 300)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); }
+              else if (it.kind === 'booking') await api('hostBookingReply', { id: it.id, message: text });
+              else await api('hostReply', { id: it.id, action: 'message', message: text });
+              const at = Date.now();
+              if (it.kind === 'booking') { const b = calBookings.find((x) => x.id === it.id); if (b) b.thread = [...(b.thread ?? []), { from: 'host', message: text, at }]; }
+              else { const r = reqs.find((x) => x.id === it.id); if (r) r.thread = [...(r.thread ?? []), { action: 'message', message: text, at }]; }
+              msgSending.delete(it.key);
+              msgFocus = it.key;
+              renderMsgPanel();
+            } catch {
+              msgSending.delete(it.key); send.disabled = false;
+              note.textContent = t.cal.fail; note.classList.add('is-bad');
+            }
+          });
+          card.append(form);
+          return card;
+        }));
+        if (msgFocus) {
+          const card = list.querySelector<HTMLElement>('.msg-card.is-focus');
+          card?.scrollIntoView({ block: 'center' });
+          card?.querySelector<HTMLTextAreaElement>('textarea')?.focus({ preventScroll: true });
+        }
+      };
       const calLoadListings = async () => {
         if (calDemo || !slug || calListings.slug === slug) return;
         const s = slug;
@@ -4537,11 +4618,17 @@ const fields = [
           bk('2026-11-28', '11:00', 3, 'Emma'), bk('2026-12-01', '18:30', 2, 'Clara'), bk('2026-12-04', '18:30', 5, 'Nina'),
           bk('2026-12-05', '11:00', 8, 'Marie'), bk('2026-12-11', '18:30', 4, 'Lina'), bk('2026-12-19', '11:00', 2, 'Zoe'),
         ];
+        // A few lines from guests, as they come with a booking (and one answer).
+        calBookings = calBookings.map((b, i) => ({ ...b, id: `demoBk${i}`, paidAt: Date.now() - i * 3600000 }));
+        for (const b of calBookings) {
+          if (b.name === 'Julia') b.message = 'Hi Pia! It’s my sister’s birthday, she’s one of the six. Could we sit together? 🎨';
+          if (b.name === 'Marie') { b.message = 'Is there anything I should bring?'; b.thread = [{ from: 'host', message: 'Nothing at all, just come as you are! 😊', at: Date.now() - 1800000 }]; }
+        }
         const rq = (id: string, name: string, workshop: string, date: string, time: string, people: number, status = 'pending') =>
           ({ id, subject: workshop, status, thread: [], createdAt: Date.now() - 5 * 3600000, fields: { Name: name, Workshop: workshop, Date: date, Time: time, People: String(people) } });
         reqs = [
           rq('demoAnna', 'Anna', VULVA, '2026-11-27', '18:30', 1), rq('demoMia', 'Mia', VULVA, '2026-11-27', '18:30', 1),
-          rq('demoLena', 'Lena', VULVA, '2026-12-05', '11:00', 2),
+          { ...rq('demoLena', 'Lena', VULVA, '2026-12-05', '11:00', 2), fields: { Name: 'Lena', Workshop: VULVA, Date: '2026-12-05', Time: '11:00', People: '2', Message: 'We’re two beginners, is that okay?' } },
           rq('demoJonas', 'Jonas', 'Private group', '2026-12-12', '15:00', 8),
           rq('demoSophie', 'Sophie', 'At your office', '2026-12-09', '14:00', 12, 'accepted'),
         ];
@@ -5701,6 +5788,33 @@ const fields = [
   .cal-guests { margin: 10px 0 0; font-size: 0.8rem; color: var(--color-text-muted); }
   .cal-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   .cal-scrim { display: none; }
+  /* What guests wrote, in the date panel and in Messages (Jirel 19.11.26). */
+  .cal-gmsg { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: #f3eeff; font-size: 0.85rem; display: grid; gap: 4px; justify-items: start; }
+  .cal-gmsg b { font-size: 0.8rem; color: #6a3eec; }
+  .cal-gmsg p { margin: 0; white-space: pre-line; }
+  .cal-gmsg-r { color: var(--color-text-muted); }
+  .cal-gmsg-r.is-host { color: #3b2580; }
+  .cal-link { border: 0; background: none; padding: 0; color: #6a3eec !important; font-weight: 600; font-size: 0.82rem; text-decoration: underline; }
+  .msg { --cal-line: #e6dff2; --cal-grad: linear-gradient(90deg, #fd6f31, #f4c424, #7f14a0); }
+  .msg button { font-family: inherit; color: inherit; cursor: pointer; }
+  .msg button:disabled { opacity: 0.5; cursor: default; }
+  .msg-lede { margin: 0 0 16px; }
+  .msg-list { display: grid; gap: 12px; max-width: 760px; }
+  .msg-card { background: #fff; border: 1px solid #e6dff2; border-radius: 18px; padding: 16px; display: grid; gap: 8px; }
+  .msg-card.is-focus { border-color: #6a3eec; box-shadow: 0 0 0 3px rgba(106, 62, 236, 0.12); }
+  .msg-head { display: flex; gap: 10px; align-items: center; }
+  .msg-av { width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center; background: #f3eeff; color: #6a3eec; font-weight: 700; }
+  .msg-who { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; min-width: 0; }
+  .msg-who small { flex-basis: 100%; color: var(--color-text-muted); font-size: 0.8rem; }
+  .msg-kind { font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #fff7f2; color: #c2541f; }
+  .msg-kind.is-paid { background: #e8f6f3; color: #157a6b; }
+  .msg-b { margin: 0; padding: 10px 12px; border-radius: 14px 14px 14px 4px; background: #f6f4fa; white-space: pre-line; font-size: 0.92rem; max-width: 88%; }
+  .msg-b.is-host { justify-self: end; border-radius: 14px 14px 4px 14px; background: #6a3eec; color: #fff; }
+  .msg-reply { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; margin-top: 4px; }
+  .msg-reply textarea { font: inherit; font-size: 0.9rem; padding: 8px 10px; border: 1.5px solid #e6dff2; border-radius: 12px; resize: vertical; min-height: 44px; }
+  .msg-reply textarea:focus { outline: 2px solid rgba(106, 62, 236, 0.35); border-color: #6a3eec; }
+  .msg-note { grid-column: 1 / -1; font-size: 0.75rem; color: var(--color-text-muted); }
+  .msg-note.is-bad { color: #b3261e; }
   /* Where it is, and what guests see before booking (Jirel 18.11.26). */
   .hs-two select, .ha .wh-in { font: inherit; }
   .hs-two select { font-size: 0.95rem; padding: 10px 12px; border: 1px solid rgba(36, 39, 46, 0.12); border-radius: 16px; background: #fff; color: inherit; }
