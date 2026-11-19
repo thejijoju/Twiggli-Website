@@ -3,7 +3,10 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 
-const previewSlugs = JSON.parse(readFileSync(new URL('./src/data/hosts/preview-slugs.json', import.meta.url), 'utf8'));
+// Less the drafts Jirel approved for going live (src/data/hosts/preview.ts).
+const publishedHosts = JSON.parse(readFileSync(new URL('./src/data/host-edits.json', import.meta.url), 'utf8')).published ?? [];
+const previewSlugs = JSON.parse(readFileSync(new URL('./src/data/hosts/preview-slugs.json', import.meta.url), 'utf8'))
+  .filter((/** @type {string} */ s) => !publishedHosts.includes(s));
 const removedHosts = JSON.parse(readFileSync(new URL('./src/data/removed-hosts.json', import.meta.url), 'utf8')).hosts;
 const liveFeed = JSON.parse(readFileSync(new URL('./src/data/live-workshops.json', import.meta.url), 'utf8')).workshops ?? [];
 
