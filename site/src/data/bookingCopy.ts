@@ -12,6 +12,8 @@ export const bookingCopy: Record<Lang, {
   runsFrom: string;
   lede: string; notifyLede: string; groupLede: string; studioLede: string; membershipLede: string; retreatLede: string; when: string;
   name: string; email: string; phone: string; people: string; message: string; messagePh: string;
+  /** The message box, to the host by first name ('{name}'): always there, whatever the booking mode (Jirel 19.11.26). */
+  messageTo: string; messageToPh: string;
   optional: string; send: string; sending: string;
   sentTitle: string; sentBody: string; error: string; close: string;
   studio: string; studioAsk: string; start: string; hours: string; often: string; once: string; regular: string; studioNotes: string; studioNotesPh: string;
@@ -37,7 +39,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Tell us which option interests you (drop-in, time card or full membership) and we’ll come back to you with the details. Nothing to pay yet.',
     retreatLede: 'Tell us how many of you would like to come and anything you would like to know about the retreat. We come back to you with all the details. Nothing to pay yet.',
     when: 'Preferred date',
-    name: 'Your name', email: 'Email', phone: 'Phone', people: 'People', message: 'Message', messagePh: 'Anything we should know?',
+    name: 'Your name', email: 'Email', phone: 'Phone', people: 'People', message: 'Message', messagePh: 'Anything we should know?', messageTo: 'A few lines for {name}', messageToPh: 'Say hi, tell {name} what you’d love to make, or ask a question.',
     optional: 'optional', send: 'Send request', sending: 'Sending…',
     sentTitle: 'Thank you!', sentBody: 'We have your request and will be in touch by email shortly.',
     error: 'That didn’t go through. Please try again, or write to us at {email}.', close: 'Close',
@@ -59,7 +61,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Sag uns, welches Modell dich interessiert (Drop-in, Time Card oder Full Membership), dann melden wir uns mit allen Details. Du zahlst noch nichts.',
     retreatLede: 'Schreib uns, mit wie vielen Personen du kommen möchtest und was du über das Retreat wissen willst. Wir melden uns mit allen Details. Du zahlst noch nichts.',
     when: 'Wunschtermin',
-    name: 'Dein Name', email: 'E-Mail', phone: 'Telefon', people: 'Personen', message: 'Nachricht', messagePh: 'Sollen wir noch etwas wissen?',
+    name: 'Dein Name', email: 'E-Mail', phone: 'Telefon', people: 'Personen', message: 'Nachricht', messagePh: 'Sollen wir noch etwas wissen?', messageTo: 'Ein paar Zeilen an {name}', messageToPh: 'Sag Hallo, erzähl {name}, was du gern machen möchtest, oder stell eine Frage.',
     optional: 'optional', send: 'Anfrage senden', sending: 'Wird gesendet…',
     sentTitle: 'Danke!', sentBody: 'Deine Anfrage ist bei uns. Wir melden uns in Kürze per E-Mail.',
     error: 'Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib uns an {email}.', close: 'Schließen',
@@ -81,7 +83,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Dites-nous quelle formule vous intéresse (accès ponctuel, carte de séances ou abonnement complet) et nous revenons vers vous avec les détails. Rien à payer pour l’instant.',
     retreatLede: 'Dites-nous combien vous seriez et ce que vous aimeriez savoir sur la retraite. Nous revenons vers vous avec tous les détails. Rien à payer pour l’instant.',
     when: 'Date souhaitée',
-    name: 'Votre nom', email: 'E-mail', phone: 'Téléphone', people: 'Personnes', message: 'Message', messagePh: 'Quelque chose à nous dire ?',
+    name: 'Votre nom', email: 'E-mail', phone: 'Téléphone', people: 'Personnes', message: 'Message', messagePh: 'Quelque chose à nous dire ?', messageTo: 'Quelques mots pour {name}', messageToPh: 'Dites bonjour, racontez à {name} ce que vous aimeriez créer, ou posez une question.',
     optional: 'facultatif', send: 'Envoyer la demande', sending: 'Envoi…',
     sentTitle: 'Merci !', sentBody: 'Nous avons bien reçu votre demande et revenons vers vous très vite par e-mail.',
     error: 'L’envoi a échoué. Réessayez, ou écrivez-nous à {email}.', close: 'Fermer',
@@ -103,7 +105,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Cuéntanos qué modalidad te interesa (drop-in, bono de visitas o membresía completa) y te escribimos con todos los detalles. Todavía no pagas nada.',
     retreatLede: 'Cuéntanos cuántas personas queréis venir y qué te gustaría saber del retiro. Te escribimos con todos los detalles. Todavía no pagas nada.',
     when: 'Fecha preferida',
-    name: 'Tu nombre', email: 'Email', phone: 'Teléfono', people: 'Personas', message: 'Mensaje', messagePh: '¿Algo que debamos saber?',
+    name: 'Tu nombre', email: 'Email', phone: 'Teléfono', people: 'Personas', message: 'Mensaje', messagePh: '¿Algo que debamos saber?', messageTo: 'Unas líneas para {name}', messageToPh: 'Saluda, cuéntale a {name} qué te gustaría hacer o hazle una pregunta.',
     optional: 'opcional', send: 'Enviar solicitud', sending: 'Enviando…',
     sentTitle: '¡Gracias!', sentBody: 'Hemos recibido tu solicitud y te escribiremos pronto.',
     error: 'No se ha podido enviar. Inténtalo de nuevo o escríbenos a {email}.', close: 'Cerrar',
@@ -125,7 +127,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Dicci quale formula ti interessa (ingresso singolo, carnet o abbonamento completo) e ti rispondiamo con tutti i dettagli. Per ora non paghi nulla.',
     retreatLede: 'Dicci in quanti vorreste venire e cosa ti piacerebbe sapere sul ritiro. Ti rispondiamo con tutti i dettagli. Per ora non paghi nulla.',
     when: 'Data preferita',
-    name: 'Il tuo nome', email: 'Email', phone: 'Telefono', people: 'Persone', message: 'Messaggio', messagePh: 'Qualcosa che dovremmo sapere?',
+    name: 'Il tuo nome', email: 'Email', phone: 'Telefono', people: 'Persone', message: 'Messaggio', messagePh: 'Qualcosa che dovremmo sapere?', messageTo: 'Due righe per {name}', messageToPh: 'Saluta, racconta a {name} cosa ti piacerebbe creare o fai una domanda.',
     optional: 'facoltativo', send: 'Invia richiesta', sending: 'Invio…',
     sentTitle: 'Grazie!', sentBody: 'Abbiamo ricevuto la tua richiesta e ti scriviamo a breve.',
     error: 'Invio non riuscito. Riprova o scrivici a {email}.', close: 'Chiudi',
@@ -147,7 +149,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Laat ons weten welke vorm je interesseert (losse sessie, strippenkaart of volledig lidmaatschap), dan sturen we je alle details. Je betaalt nog niets.',
     retreatLede: 'Laat ons weten met hoeveel je wilt komen en wat je over de retraite wilt weten. We sturen je alle details. Je betaalt nog niets.',
     when: 'Voorkeursdatum',
-    name: 'Je naam', email: 'E-mail', phone: 'Telefoon', people: 'Personen', message: 'Bericht', messagePh: 'Iets wat we moeten weten?',
+    name: 'Je naam', email: 'E-mail', phone: 'Telefoon', people: 'Personen', message: 'Bericht', messagePh: 'Iets wat we moeten weten?', messageTo: 'Een paar regels voor {name}', messageToPh: 'Zeg hoi, vertel {name} wat je graag wilt maken, of stel een vraag.',
     optional: 'optioneel', send: 'Aanvraag versturen', sending: 'Versturen…',
     sentTitle: 'Dank je!', sentBody: 'We hebben je aanvraag en mailen je snel terug.',
     error: 'Dat is niet gelukt. Probeer het opnieuw of mail ons op {email}.', close: 'Sluiten',
@@ -169,7 +171,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Napisz, która opcja cię interesuje (wejście jednorazowe, karnet czy pełne członkostwo), a odpiszemy ze wszystkimi szczegółami. Na razie nic nie płacisz.',
     retreatLede: 'Napisz, ile osób chce przyjechać i co chcesz wiedzieć o retreacie. Odpiszemy ze wszystkimi szczegółami. Na razie nic nie płacisz.',
     when: 'Preferowany termin',
-    name: 'Imię i nazwisko', email: 'E-mail', phone: 'Telefon', people: 'Osoby', message: 'Wiadomość', messagePh: 'Coś, o czym powinniśmy wiedzieć?',
+    name: 'Imię i nazwisko', email: 'E-mail', phone: 'Telefon', people: 'Osoby', message: 'Wiadomość', messagePh: 'Coś, o czym powinniśmy wiedzieć?', messageTo: 'Kilka słów do {name}', messageToPh: 'Przywitaj się, napisz {name}, co chcesz stworzyć, albo zadaj pytanie.',
     optional: 'opcjonalnie', send: 'Wyślij zapytanie', sending: 'Wysyłanie…',
     sentTitle: 'Dziękujemy!', sentBody: 'Mamy Twoje zapytanie i wkrótce odpiszemy mailowo.',
     error: 'Nie udało się wysłać. Spróbuj ponownie albo napisz do nas: {email}.', close: 'Zamknij',
@@ -191,7 +193,7 @@ export const bookingCopy: Record<Lang, {
     membershipLede: 'Hangi seçenekle ilgilendiğini yaz (tek giriş, kart ya da tam üyelik), tüm ayrıntılarla dönelim. Şimdilik bir şey ödemiyorsun.',
     retreatLede: 'Kaç kişi gelmek istediğinizi ve inziva hakkında neyi bilmek istediğini yaz. Tüm ayrıntılarla dönelim. Şimdilik bir şey ödemiyorsun.',
     when: 'Tercih edilen tarih',
-    name: 'Adın', email: 'E-posta', phone: 'Telefon', people: 'Kişi', message: 'Mesaj', messagePh: 'Bilmemiz gereken bir şey var mı?',
+    name: 'Adın', email: 'E-posta', phone: 'Telefon', people: 'Kişi', message: 'Mesaj', messagePh: 'Bilmemiz gereken bir şey var mı?', messageTo: '{name} için birkaç satır', messageToPh: "Merhaba de, {name}'e ne yapmak istediğini anlat ya da bir soru sor.",
     optional: 'isteğe bağlı', send: 'Talebi gönder', sending: 'Gönderiliyor…',
     sentTitle: 'Teşekkürler!', sentBody: 'Talebini aldık, kısa süre içinde e-postayla dönüş yapacağız.',
     error: 'Gönderilemedi. Tekrar dene ya da bize {email} adresinden yaz.', close: 'Kapat',

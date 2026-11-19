@@ -4833,6 +4833,9 @@ html.map-locked { overflow: hidden; }
 .bv-remove { width: 26px; height: 26px; border: 0; border-radius: 50%; background: none; color: inherit; font-size: 18px; line-height: 1; cursor: pointer; }
 .bv-remove:hover { background: rgba(106, 62, 236, 0.12); }
 .book-send { width: 100%; justify-content: center; margin-top: 18px; }
+/* The few lines for the host: a soft box right above the button. */
+.book-msg { margin-top: 4px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--color-accent) 7%, #fff); }
+.book-msg textarea { background: #fff; min-height: 76px; }
 .book-send:disabled { opacity: 0.6; cursor: wait; }
 .book-sent .book-lede { margin-bottom: 20px; }
 /* The sign-in card (SignInDialog.astro): narrower and centred, like Luma's. */

@@ -152,10 +152,6 @@ const vc = lang === 'de'
           </div>
         </fieldset>
       </div>
-      <label class="book-field book-field-wide">
-        <span><span data-book-message-label>{c.message}</span> <em>({c.optional})</em></span>
-        <textarea name="message" rows="3" placeholder={c.messagePh} data-book-message></textarea>
-      </label>
       {/* "Redeem a voucher", as Luma's "Add a coupon": only at hosts that
           take Twiggli vouchers; checked by functions voucherCheck. */}
       <div class="book-field book-field-wide bv" data-book-voucher hidden>
@@ -175,6 +171,12 @@ const vc = lang === 'de'
         <div class="bv-line bv-total" data-bv-tot-line hidden><span>{vc.voucherTotal}</span><b data-bv-total></b></div>
         <p class="bv-hold" data-bv-hold hidden>{vc.holdHint}</p>
       </div>
+      {/* A few lines for the host, in every mode (pay now, hold, request), right
+          above the button: always the chance to write (Jirel 19.11.26). */}
+      <label class="book-field book-field-wide book-msg">
+        <span><span data-book-message-label>{c.message}</span> <em>({c.optional})</em></span>
+        <textarea name="message" rows="3" maxlength="1000" placeholder={c.messagePh} data-book-message></textarea>
+      </label>
       {/* Left empty by people; a bot that fills it is ignored. */}
       <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
     </div>
@@ -417,8 +419,10 @@ const vc = lang === 'de'
       if (groupPlace) groupPlace.hidden = !group && !event;
       placeInputs.forEach((r) => { r.required = group; r.checked = false; });
       if (venueField) venueField.hidden = true;
-      if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : event ? copy.idea : copy.message;
-      if (message) message.placeholder = studio ? copy.studioNotesPh : event ? copy.ideaPh : copy.messagePh;
+      // To the host by first name, wherever there is one host (pay now, hold, request, notify, wish).
+      const hostFirst = !studio && !event && kind !== 'group' ? String(picked.bookHost ?? '').trim().split(/\s+/)[0] : '';
+      if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : event ? copy.idea : hostFirst ? String(copy.messageTo).replaceAll('{name}', hostFirst) : copy.message;
+      if (message) message.placeholder = studio ? copy.studioNotesPh : event ? copy.ideaPh : hostFirst ? String(copy.messageToPh).replaceAll('{name}', hostFirst) : copy.messagePh;
       // The hosts to choose from, as the button lists them.
       let names: string[] = [];
       try { names = event ? JSON.parse(picked.bookHosts || '[]') : []; } catch { names = []; }
@@ -549,7 +553,7 @@ const vc = lang === 'de'
             body: JSON.stringify({
               eventId: picked.bookPay, date: picked.bookDate, people: Number(data.get('people') || 1),
               name: String(data.get('name') ?? ''), email: String(data.get('email') ?? ''), phone: String(data.get('phone') ?? ''),
-              message: String(data.get('message') ?? ''), lang: dialog.dataset.lang === 'de' ? 'de' : 'en', back: location.href,
+              message: String(data.get('message') ?? ''), host: picked.bookHost ?? '', lang: dialog.dataset.lang === 'de' ? 'de' : 'en', back: location.href,
               ...(voucherOk ? { voucher: voucherOk.code } : {}),
             }),
           });

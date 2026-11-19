@@ -1392,6 +1392,36 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
   return res.status(200).json({ status: ACTIONS[action] });
 });
 
+/** A host's reply to a paid booking's guest (dashboard Messages and Calendar):
+ *  kept on the booking (thread) and emailed to the guest, who can answer by
+ *  email straight to the host (Jirel in BCC, as every email). */
+export const hostBookingReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const id = String(req.body?.id ?? '');
+  const message = String(req.body?.message ?? '').replace(/\r/g, '').trim().slice(0, 2000);
+  if (!/^(cs_(live|test)_\w{10,200}|vb[0-9a-f]{24})$/.test(id) || !message) return res.status(400).json({ error: 'Bad request' });
+  const ref = getFirestore().doc(`bookings/${id}`);
+  const bk = (await ref.get()).data();
+  if (!bk || bk.status !== 'paid' || !(await mayEdit(email, bk.slug))) return res.status(403).json({ error: 'Not your booking' });
+  const entry = { from: 'host', by: email, message, at: Date.now() };
+  await ref.update({ thread: FieldValue.arrayUnion(entry) });
+  const de = bk.lang === 'de';
+  const host = bk.hostName || (de ? 'Deine Gastgeberin' : 'Your host');
+  const first = String(bk.name ?? '').split(/\s+/)[0];
+  try {
+    const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+    await mail.sendMail({
+      from: { name: `${bk.hostName || 'Twiggli'} via Twiggli`, address: SENDER }, replyTo: bk.hostEmail || SENDER, to: bk.email,
+      subject: de ? `Nachricht von ${host}: ${bk.title}` : `Message from ${host}: ${bk.title}`,
+      text: `${de ? 'Hallo' : 'Hi'} ${first},\n\n${message}\n\n${host}\n\n(${bk.title}, ${bk.date} ${bk.start}. ${de ? 'Antworte einfach auf diese E-Mail.' : 'Just reply to this email.'})`,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? 'Hallo' : 'Hi'} ${esc(first)},<div style="margin:14px 0;padding:12px 14px;border-radius:12px;background:#f3eeff;white-space:pre-line">💬 ${esc(message)}</div>${esc(host)}<br><span style="color:#8b87a0;font-size:13px">${esc(bk.title)}, ${esc(bk.date)} ${esc(bk.start)} · ${de ? 'Antworte einfach auf diese E-Mail.' : 'Just reply to this email.'}</span></div>`,
+    });
+  } catch (err) { console.error('booking reply mail failed', id, err?.message); }
+  return res.status(200).json({ ok: true, entry: { from: 'host', message, at: entry.at } });
+});
+
 /** The studio address (Settings → Your studio): full address private
  *  (hostPrivate/{slug}), and only what guests may see goes on the page
  *  (hostProfiles place). For the host and for an admin acting as them. */
@@ -1822,7 +1852,8 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
   const replaced = [...new Set(all.map((x) => x.replaces).filter(Boolean))];
   // Paid bookings per date, for the Calendar tab (no guest contact details).
   const paid = await getFirestore().collection('bookings').where('slug', '==', slug).where('status', '==', 'paid').get().catch(() => ({ docs: [] }));
-  const bookings = paid.docs.map((d) => { const x = d.data(); return { eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100 }; });
+  // The guest's first name and message, and the replies (no email or phone: the dashboard never needs them).
+  const bookings = paid.docs.map((d) => { const x = d.data(); return { id: d.id, eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100, message: x.message ?? '', thread: (x.thread ?? []).map((t) => ({ from: t.from, message: t.message, at: t.at })), paidAt: x.paidAt?.toMillis?.() ?? 0 }; });
   return res.status(200).json({ items, bookings, replaced });
 });
 
@@ -2353,7 +2384,9 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   const when = `${new Date(`${date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' })}, ${ev.start}`;
   const booking = {
     eventId, date, start: ev.start, slug: ev.slug, title: ev.title, location: (await placeLine(ev)).location ?? ev.location ?? '', cancel: ev.cancel ?? '7d',
-    people, name, email, phone: text(b.phone, 60), message: String(b.message ?? '').slice(0, 1000), lang,
+    people, name, email, phone: text(b.phone, 60), message: String(b.message ?? '').replace(/\r/g, '').trim().slice(0, 1000), lang,
+    // The host's first name as the page showed it, for "Your message to Evelyn: …".
+    hostName: text(b.host, 80).split(' ')[0],
     hostEmail: ev.by, account, amount: total, fee, commissionPct: pct, status: 'pending', createdAt: FieldValue.serverTimestamp(),
     ...(voucherCents ? { voucherHash, voucherCents } : {}),
   };
@@ -2455,19 +2488,39 @@ const sendBookingMails = async (id, bk) => {
     ...(vc ? [[de ? 'Gutschein' : 'Voucher', `−${eur(vc)}`]] : []),
     [de ? 'Bezahlt' : 'Paid', eur(charged)], [de ? 'Stornierung' : 'Cancellation', cancel]].filter(([, v]) => v);
   const table = rows.map(([k, v]) => `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">${esc(k)}</td><td style="padding:5px 0"><b>${esc(v)}</b></td></tr>`).join('');
+  const msgBox = (label) => (bk.message ? `<div style="margin:0 0 18px;padding:12px 14px;border-radius:12px;background:#f3eeff;border-left:3px solid #6a3eec"><div style="font-size:13px;color:#6a3eec;font-weight:bold;margin-bottom:4px">💬 ${esc(label)}</div><div style="white-space:pre-line">${esc(bk.message)}</div></div>` : '');
+  // The guest sees their message arrived (the host's name as the page showed it).
+  const yourMsg = msgBox(de ? `Deine Nachricht an ${bk.hostName || 'die Gastgeberin'}:` : `Your message to ${bk.hostName || 'your host'}:`);
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   try {
     await mail.sendMail({
       from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: bk.email,
       subject: de ? `Gebucht! ${bk.title} am ${day} ${emojiFor(bk.title)}` : `You're booked! ${bk.title} on ${day} ${emojiFor(bk.title)}`,
-      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? `Hallo ${esc(first_)},<br><br>dein Platz ist sicher, wir freuen uns auf dich! 🎉` : `Hi ${esc(first_)},<br><br>your spot is reserved, we can't wait to see you! 🎉`}<table style="margin:16px 0;font-size:14px">${table}</table>${where.html}${charged && de ? 'Die Zahlungsbestätigung von Stripe kommt in einer eigenen E-Mail. Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : de ? 'Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : `${charged ? 'Your payment receipt from Stripe comes in a separate email. ' : ''}Questions, or need to change something? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`}</div>`,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${de ? `Hallo ${esc(first_)},<br><br>dein Platz ist sicher, wir freuen uns auf dich! 🎉` : `Hi ${esc(first_)},<br><br>your spot is reserved, we can't wait to see you! 🎉`}<table style="margin:16px 0;font-size:14px">${table}</table>${yourMsg}${where.html}${charged && de ? 'Die Zahlungsbestätigung von Stripe kommt in einer eigenen E-Mail. Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : de ? 'Fragen oder etwas ändern? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>' : `${charged ? 'Your payment receipt from Stripe comes in a separate email. ' : ''}Questions, or need to change something? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`}</div>`,
     });
   } catch (err) { console.error('booking guest mail failed', id, err?.message); }
+  // To the host, in the language she chose (Einstellungen → Präferenzen), else the one we write to her in.
+  const hl = (await hostPrefs(bk.slug)).lang || HOST_LANG[bk.slug] || 'de';
+  const HM = {
+    de: { subj: `Neue Buchung über Twiggli: ${bk.title}, ${bk.date} ${bk.start} (${bk.people} ${bk.people === 1 ? 'Platz' : 'Plätze'}) 🎉`, hi: 'Hallo,<br><br>gerade wurde über Twiggli gebucht und bezahlt:', ws: 'Workshop', when: 'Wann', where: 'Wo', spots: 'Plätze', voucher: 'Gutschein', paid: 'Bezahlt', guest: 'Gast', payout: 'Auszahlung',
+      stripe: (net, gross) => `<b>${net}</b> über Stripe (${gross} minus ${bk.commissionPct} % Twiggli${bk.commissionPct ? '' : ', erste Buchung provisionsfrei'}, abzüglich Stripe-Gebühren)`, vc: (net, gross) => `<b>${net}</b> für den Gutschein (${gross} minus 15 %), zahlt Twiggli bis zum 10. des Folgemonats aus`,
+      msg: `Nachricht von ${first_}:`, there: 'Das Geld liegt schon auf deinem Stripe-Konto. ', reply: `Antworte auf diese E-Mail, um ${esc(first_)} direkt zu schreiben, oder in deinem Twiggli-Konto unter Nachrichten.`, bye: 'Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b>' },
+    en: { subj: `New booking through Twiggli: ${bk.title}, ${bk.date} ${bk.start} (${bk.people} ${bk.people === 1 ? 'spot' : 'spots'}) 🎉`, hi: 'Hi,<br><br>someone just booked and paid through Twiggli:', ws: 'Workshop', when: 'When', where: 'Where', spots: 'Spots', voucher: 'Voucher', paid: 'Paid', guest: 'Guest', payout: 'Payout',
+      stripe: (net, gross) => `<b>${net}</b> via Stripe (${gross} minus ${bk.commissionPct}% Twiggli${bk.commissionPct ? '' : ', first booking commission-free'}, less Stripe fees)`, vc: (net, gross) => `<b>${net}</b> for the voucher (${gross} minus 15%), paid out by Twiggli by the 10th of next month`,
+      msg: `Message from ${first_}:`, there: 'The money is already in your Stripe account. ', reply: `Reply to this email to write to ${esc(first_)} directly, or in your Twiggli account under Messages.`, bye: 'Warm regards<br>Jirel, Founder @ <b>Twiggli</b>' },
+    fr: { subj: `Nouvelle réservation via Twiggli : ${bk.title}, ${bk.date} ${bk.start} (${bk.people} ${bk.people === 1 ? 'place' : 'places'}) 🎉`, hi: 'Bonjour,<br><br>quelqu’un vient de réserver et de payer via Twiggli :', ws: 'Atelier', when: 'Quand', where: 'Où', spots: 'Places', voucher: 'Bon cadeau', paid: 'Payé', guest: 'Participant·e', payout: 'Versement',
+      stripe: (net, gross) => `<b>${net}</b> via Stripe (${gross} moins ${bk.commissionPct} % Twiggli${bk.commissionPct ? '' : ', première réservation sans commission'}, moins les frais Stripe)`, vc: (net, gross) => `<b>${net}</b> pour le bon cadeau (${gross} moins 15 %), versé par Twiggli avant le 10 du mois suivant`,
+      msg: `Message de ${first_} :`, there: 'L’argent est déjà sur ton compte Stripe. ', reply: `Réponds à cet e-mail pour écrire directement à ${esc(first_)}, ou dans ton compte Twiggli, rubrique Messages.`, bye: 'Belle journée<br>Jirel, fondatrice @ <b>Twiggli</b>' },
+  };
+  const h = HM[hl] ?? HM.de;
+  const hDay = new Date(`${bk.date}T12:00:00Z`).toLocaleDateString(hl === 'de' ? 'de-DE' : hl === 'fr' ? 'fr-FR' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const hRows = [[h.ws, bk.title], [h.when, `${hDay}, ${bk.start}`], [h.where, bk.location], [h.spots, String(bk.people)], ...(vc ? [[h.voucher, `−${eur(vc)}`]] : []), [h.paid, eur(charged)]].filter(([, v]) => v);
+  const hTable = hRows.map(([k, v]) => `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">${esc(k)}</td><td style="padding:5px 0"><b>${esc(v)}</b></td></tr>`).join('');
   try {
     await mail.sendMail({
       from: { name: 'Twiggli', address: SENDER }, replyTo: bk.email, to: bk.hostEmail, cc: INBOX,
-      subject: `Neue Buchung über Twiggli: ${bk.title}, ${bk.date} ${bk.start} (${bk.people} ${bk.people === 1 ? 'Platz' : 'Plätze'}) 🎉`,
-      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:560px">Hallo,<br><br>gerade wurde über Twiggli gebucht und bezahlt:<table style="margin:16px 0;font-size:14px">${table}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Gast</td><td style="padding:5px 0"><b>${esc(bk.name)}</b>, ${esc(bk.email)}${bk.phone ? `, ${esc(bk.phone)}` : ''}</td></tr>${bk.message ? `<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Nachricht</td><td style="padding:5px 0">${esc(bk.message)}</td></tr>` : ''}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">Auszahlung</td><td style="padding:5px 0">${charged ? `<b>${eur(charged - bk.fee)}</b> über Stripe (${eur(charged)} minus ${bk.commissionPct} % Twiggli${bk.commissionPct ? '' : ', erste Buchung provisionsfrei'}, abzüglich Stripe-Gebühren)` : ''}${charged && vc ? '<br>' : ''}${vc ? `<b>${eur(Math.round(vc * 0.85))}</b> für den Gutschein (${eur(vc)} minus 15 %), zahlt Twiggli bis zum 10. des Folgemonats aus` : ''}</td></tr></table>${charged ? 'Das Geld liegt schon auf deinem Stripe-Konto. ' : ''} Antworte auf diese E-Mail, um ${esc(first_)} direkt zu schreiben.<br><br>Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b></div>`,
+      subject: h.subj,
+      html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:560px">${h.hi}${msgBox(h.msg)}<table style="margin:16px 0;font-size:14px">${hTable}<tr><td style="padding:5px 16px 5px 0;color:#8b87a0">${h.guest}</td><td style="padding:5px 0"><b>${esc(bk.name)}</b>, ${esc(bk.email)}${bk.phone ? `, ${esc(bk.phone)}` : ''}</td></tr><tr><td style="padding:5px 16px 5px 0;color:#8b87a0">${h.payout}</td><td style="padding:5px 0">${charged ? h.stripe(eur(charged - bk.fee), eur(charged)) : ''}${charged && vc ? '<br>' : ''}${vc ? h.vc(eur(Math.round(vc * 0.85)), eur(vc)) : ''}</td></tr></table>${charged ? h.there : ''}${h.reply}<br><br>${h.bye}</div>`,
     });
   } catch (err) { console.error('booking host mail failed', id, err?.message); }
 };
