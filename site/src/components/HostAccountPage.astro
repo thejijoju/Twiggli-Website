@@ -11,7 +11,7 @@
  * Vouchers and requests are announced as tabs and come next.
  */
 import Base from '../layouts/Base.astro';
-import { getHosts } from '../data/content.ts';
+import { getHosts, isPreviewHost } from '../data/content.ts';
 import { hostAccountCopy } from '../data/hostAccount.ts';
 import { berlinDistricts } from '../data/berlinPostcodes.ts';
 import WhereFields from './WhereFields.astro';
@@ -19,7 +19,7 @@ import { firebaseConfig, firebaseReady, functionsBase } from '../data/firebase.t
 import { contactEmail, requestEmail } from '../data/site.ts';
 import liveData from '../data/live-workshops.json';
 import { workshopsFor, onRequestFor } from '../data/seo.ts';
-import { previewSessionsFor, slugify, DAYS_AHEAD } from '../data/sessions.ts';
+import { previewOnRequestFor, previewSessionsFor, slugify, DAYS_AHEAD } from '../data/sessions.ts';
 import { hostDates } from '../data/hostDates.ts';
 import { availabilityNotes } from '../data/availability.ts';
 import { withHostSlots } from '../data/hostEdits.ts';
@@ -113,11 +113,15 @@ const hosts = Object.fromEntries(
       try {
         for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`));
         for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.workshopKey, s.price, s.image);
-        for (const o of onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price);
+        // A preview host is out of the on-request lists (seo.ts), so their
+        // formats come from hosts/preview.ts.
+        for (const o of isPreviewHost(h.slug) ? previewOnRequestFor(h.slug, lang) : onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price);
       } catch { /* a host without listings: own dates only */ }
       return out;
     })(),
     site: siteFor(h.slug),
+    // Still a hidden draft (hosts/preview.ts): the Overview offers "Publish my page".
+    draft: isPreviewHost(h.slug),
     en: pick(h as unknown as Record<string, unknown>),
     de: pick((de.get(h.slug) ?? h) as unknown as Record<string, unknown>),
     slots: recurring.filter((r) => r.slug === h.slug).map((r) => ({
@@ -771,6 +775,20 @@ const fields = [
               <button type="button" aria-pressed="false" data-w="past">{t.wPast}</button>
             </div>
           </div>
+          {/* A page Claude built as a hidden draft (hosts/preview.ts): only
+              people with the link see it until Jirel approves the host's
+              "Publish" (functions hostPublish). */}
+          <div class="ha-draft" data-ha-draft hidden>
+            <div class="ha-draft-t">
+              <b>{L('Deine Seite ist noch ein Entwurf', 'Your page is still a draft', 'Ta page est encore un brouillon')}</b>
+              <p>{L('Nur wer den Link hat, sieht sie: Sie steht noch nicht in den Listen, in der Suche oder bei Google. Schau sie dir an, pass Texte, Workshops, Preise und Termine an, und wenn alles passt, veröffentliche sie. Jirel schaut kurz drüber, dann geht sie live.', 'Only people with the link can see it: it is not in the listings, in search or on Google yet. Have a look, adjust the texts, workshops, prices and dates, and when everything is right, publish it. Jirel takes a quick look, then it goes live.', 'Seules les personnes qui ont le lien la voient : elle n’est pas encore dans les listes, la recherche ou sur Google. Regarde-la, ajuste les textes, ateliers, prix et dates, et quand tout est bon, publie-la. Jirel jette un œil, puis elle passe en ligne.')}</p>
+              <p class="ha-draft-msg" data-ha-publish-msg role="status"></p>
+            </div>
+            <div class="ha-draft-act">
+              <a class="ha-btn ha-btn-ghost" data-ha-draft-view target="_blank" rel="noopener">{L('Entwurf ansehen', 'View draft', 'Voir le brouillon')}</a>
+              <button type="button" class="ha-btn" data-ha-publish>{L('Meine Seite veröffentlichen', 'Publish my page', 'Publier ma page')}</button>
+            </div>
+          </div>
           <button type="button" class="hd-add-big hd-add-phone" data-ha-new>+ {t.newDate}</button>
           <!-- Open requests as cards with the time left (as the Airbnb app's Today). -->
           <div class="hd-reqs" data-ha-reqs hidden>
@@ -967,7 +985,7 @@ const fields = [
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
-  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[] };
+  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean };
 
   const root = document.querySelector<HTMLElement>('[data-ha]');
   if (root) {
@@ -2264,6 +2282,7 @@ const fields = [
         root.querySelectorAll<HTMLElement>('[data-ha-hostonly]').forEach((x) => { x.hidden = false; });
         const first = (auth.currentUser?.displayName || '').split(' ')[0] || (h?.name ?? '').split(' ')[0];
         $('[data-ha-hello]').textContent = `${t.hello} ${first} 👋`;
+        void paintDraft(s);
         paintAvatars();
         if (!auth.currentUser?.displayName && h?.name) $('[data-ha-menu-name]').textContent = h.name;
         loadInbox();
@@ -2276,6 +2295,41 @@ const fields = [
           else if (back === 'failed') alert(t.stripeFail);
         });
       };
+
+      // ── A draft page (hosts/preview.ts): "Publish my page" asks Jirel
+      // (functions hostPublish); once she approves, the next build lists it.
+      const PL = (de: string, en: string, fr: string) => (document.documentElement.lang === 'de' ? de : document.documentElement.lang === 'fr' ? fr : en);
+      const PUB = {
+        pending: PL('Gesendet! Jirel schaut sich deine Seite an und gibt sie frei, meist innerhalb eines Tages. Du bekommst eine E-Mail, sobald sie live geht.', 'Sent! Jirel is having a look at your page and will approve it, usually within a day. You will get an email as soon as it goes live.', 'Envoyé ! Jirel regarde ta page et la valide, en général sous un jour. Tu reçois un e-mail dès qu’elle passe en ligne.'),
+        approved: PL('Freigegeben! Deine Seite geht mit dem nächsten Update der Website live (spätestens morgen).', 'Approved! Your page goes live with the next website update (tomorrow at the latest).', 'Validée ! Ta page passe en ligne à la prochaine mise à jour du site (demain au plus tard).'),
+        ask: PL('Seite jetzt zur Freigabe an Jirel schicken? Du kannst danach weiter alles bearbeiten.', 'Send your page to Jirel for approval now? You can keep editing everything afterwards.', 'Envoyer ta page à Jirel pour validation ? Tu pourras tout modifier ensuite.'),
+        fail: PL('Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib Jirel.', 'That did not work. Please try again or write to Jirel.', 'Ça n’a pas marché. Réessaie ou écris à Jirel.'),
+      };
+      const showPublish = (status: string) => {
+        const btn = $<HTMLButtonElement>('[data-ha-publish]');
+        const done = status === 'pending' || status === 'approved';
+        btn.hidden = done;
+        $('[data-ha-publish-msg]').textContent = done ? PUB[status as 'pending' | 'approved'] : '';
+      };
+      const paintDraft = async (s: string) => {
+        const h = hosts[s];
+        const box = $('[data-ha-draft]');
+        box.hidden = !h?.draft;
+        if (!h?.draft) return;
+        $<HTMLAnchorElement>('[data-ha-draft-view]').href = h.page;
+        showPublish(new URLSearchParams(location.search).get('publish') ?? 'draft');
+        if (DEMO) return;
+        try { showPublish((await api('hostPublish', { slug: s, check: true })).status); } catch { /* the button stays */ }
+      };
+      $('[data-ha-publish]').addEventListener('click', async () => {
+        if (!confirm(PUB.ask)) return;
+        const btn = $<HTMLButtonElement>('[data-ha-publish]');
+        btn.disabled = true;
+        try {
+          showPublish(DEMO ? 'pending' : (await api('hostPublish', { slug, name: auth.currentUser?.displayName || hosts[slug]?.name || '', page: new URL(hosts[slug]?.page ?? '/', location.origin).pathname })).status);
+        } catch { $('[data-ha-publish-msg]').textContent = PUB.fail; }
+        btn.disabled = false;
+      });
 
       // ── Messages and Today: the requests for this host (functions hostInbox) ──
       type Req = { id: string; subject: string; fields: Record<string, string>; status: string; thread: { action: string; when?: string; message?: string; at: number }[]; createdAt: number };
@@ -4764,7 +4818,8 @@ const fields = [
           $('[data-cal-demo]').hidden = false;
           ownEvents = []; reqs = []; calBookings = [];
           calDemo = { workshops: null };
-          showTab('calendar');
+          void paintDraft(slug);
+          showTab(q.get('tab') === 'overview' ? 'overview' : 'calendar');
           return;
         }
         signin.hidden = true;
@@ -5561,6 +5616,16 @@ const fields = [
   .hd-set-name button { font: inherit; font-weight: 600; font-size: 0.88rem; color: #fff; background: #6a3eec; border: 0; border-radius: 12px; padding: 0 16px; cursor: pointer; }
   .hd-set-name small { font-size: 0.8rem; color: #1f7a3f; }
   .hd-menu-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.08); margin: 6px 0; }
+  .ha-draft { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin: 0 0 18px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, #ffc94d 28%, #fff); border: 1px solid color-mix(in srgb, #e0a800 40%, transparent); }
+  .ha-draft[hidden] { display: none; }
+  .ha-draft-t b { font-size: 1rem; }
+  .ha-draft-t p { margin: 4px 0 0; font-size: 0.9rem; line-height: 1.45; }
+  .ha-draft-msg:empty { display: none; }
+  .ha-draft-msg { font-weight: 600; }
+  .ha-draft-act { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+  .ha-draft-act .ha-btn { text-decoration: none; text-align: center; }
+  .ha-draft-act .ha-btn-ghost { color: #1d1d1f; background: #fff; border: 1px solid rgba(0, 0, 0, 0.16); }
+  @media (max-width: 720px) { .ha-draft { flex-direction: column; align-items: stretch; } }
   .hd-hi { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
   .hd-hi h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
   .hd-hi .ha-sub { margin: 4px 0 0; }

@@ -10,9 +10,11 @@
  *  only someone with the link sees them. Their dated sessions sit in
  *  hostDates.ts like anyone's and likewise reach only their own page.
  *
- *  To put a host live: move their copy into hostsCopyBase (content.ts),
- *  their facets/first name/area into the tables there, and delete their
- *  slug from preview-slugs.json. Copy is English and German; the other
+ *  To put a host live: the host presses "Publish my page" in the dashboard
+ *  and Jirel approves it from her email; the next build drops them from
+ *  previewSlugs below. By hand it is one line: delete their slug from
+ *  preview-slugs.json. (Their copy can stay here; content.ts reads it for
+ *  live hosts too.) Copy is English and German; the other
  *  languages fall back to the English (content.ts `align`).
  *
  *  Everything below is from the host's own website, their listings on
@@ -21,6 +23,7 @@
  *  go-ahead; they still need the host's OK before the page goes live. */
 import type { Host, HostCopy } from '../content.ts';
 import slugs from './preview-slugs.json';
+import edits from '../host-edits.json';
 
 type Facets = Pick<Host, 'activity' | 'alsoIn' | 'groupRange' | 'hourRange' | 'groupPrice'>;
 
@@ -35,7 +38,11 @@ export type PreviewOffer = {
   url: string;
 };
 
-export const previewSlugs = new Set<string>(slugs);
+/** Pages still in preview: preview-slugs.json, less those Jirel approved
+ *  when the host pressed "Publish my page" in the dashboard (functions
+ *  hostPublish → _config/publishedHosts → host-edits.json `published`). */
+const published = new Set<string>((edits as { published?: string[] }).published ?? []);
+export const previewSlugs = new Set<string>(slugs.filter((s) => !published.has(s)));
 
 const en: HostCopy[] = [
   // Jirel's own test page (29.10.26): hidden for good, never goes live. She
@@ -178,6 +185,15 @@ const en: HostCopy[] = [
     blurb: 'A relaxed Christmas painting session with Glühwein, tea and time together. Join with your team, friends or family: everyone paints with acrylics on their own 15 × 15 cm canvas and adds decorative extras, for a personal Christmas gift or a festive touch on a shelf or desk. You brainstorm together first, then everyone picks an idea: the Grinch, your favourite Christmas food, a decorated TV tower, your favourite saying of the year, or Santa on holiday. A snowflake, Rudolph or something all your own works too. No experience needed.',
     group: '4–10', duration: '2 h', place: 'Friedrichshain', languages: 'EN · DE',
     priceNote: 'canvas, paint, extras, Glühwein and tea included' },
+  // Ingo Thomas, 19.11.26, via Jirel: glass art in his workshop in Pankow.
+  // Draft for him to claim with an invite link and finish in the dashboard.
+  // Languages: only German is confirmed (English not known yet). The full
+  // address stays out of this repo: he enters it under Settings → Your
+  // studio, and the page shows the district only. Photos are his own.
+  { slug: 'ingo-thomas', name: 'Ingo Thomas', specialty: 'Tiffany glass & lead glazing workshops',
+    blurb: 'Ingo studied glass design and restoration and has years of experience teaching seminars. In his fully equipped glass workshop in Pankow he teaches the Tiffany technique and classic lead glazing: you cut antique glass, grind it, wrap the edges in copper foil and solder the pieces together, step by step until your piece holds the light. Depending on the format you make window pictures, Christmas stars or small objects: five or six small pieces of three to five parts each, or one larger three-dimensional piece. No experience needed; tools and all materials are provided. Small groups of four to eight, so there is time for everyone at the workbench. Teams and private groups can book their own date.',
+    group: '4–8', duration: '8 h day workshop · evening workshops from 18:00', place: 'Glass workshop in Pankow', languages: 'DE',
+    priceNote: 'tools and materials included', photoCredit: 'Ingo Thomas' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making, fabric & wax seals',
     blurb: 'Marija studied art history and comes from education, and she upcycles: fabric and materials left behind on the street are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper, scraps of coloured card and old bags, blended and poured with flowers or a little glitter; you seal it with wax, or fold paper Christmas stars. Calm, hands-on and good-looking, and she has run it with kindergarten children and older people alike. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
     group: 'Groups and teams', duration: 'On request', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE' },
@@ -250,6 +266,10 @@ const de: HostCopy[] = [
     blurb: 'Ein entspannter Weihnachts-Malabend mit Glühwein, Tee und Zeit miteinander. Kommt mit eurem Team, Freund:innen oder Familie: Alle malen mit Acryl auf ihrer eigenen 15 × 15 cm Leinwand und ergänzen dekorative Extras, als persönliches Weihnachtsgeschenk oder festlichen Akzent fürs Regal oder den Schreibtisch. Zuerst sammelt ihr gemeinsam Ideen, dann sucht sich jede:r eine aus: der Grinch, euer liebstes Weihnachtsessen, ein geschmückter Fernsehturm, euer Lieblingsspruch des Jahres oder der Weihnachtsmann im Urlaub. Eine Schneeflocke, Rudolph oder etwas ganz Eigenes geht natürlich auch. Keine Vorkenntnisse nötig.',
     group: '4–10', duration: '2 Std.', place: 'Friedrichshain', languages: 'EN · DE',
     priceNote: 'Leinwand, Farben, Extras, Glühwein und Tee inklusive' },
+  { slug: 'ingo-thomas', name: 'Ingo Thomas', specialty: 'Tiffany-Glas & Bleiverglasung',
+    blurb: 'Ingo hat Glasgestaltung und Restaurierung studiert und bringt langjährige Seminarerfahrung mit. In seiner voll ausgestatteten Glaswerkstatt in Pankow zeigt er die Tiffany-Technik und die klassische Bleiverglasung: Ihr schneidet Echtantikglas zu, schleift es, umwickelt die Kanten mit Kupferfolie und verlötet die Teile, Schritt für Schritt, bis euer Stück das Licht einfängt. Je nach Format entstehen Fensterbilder, Weihnachtssterne oder kleine Objekte: fünf bis sechs kleine Stücke aus drei bis fünf Teilen oder ein größeres dreidimensionales Objekt. Keine Vorkenntnisse nötig, Werkzeug und alle Materialien werden gestellt. Kleine Gruppen von vier bis acht Personen, damit an der Werkbank Zeit für alle bleibt. Teams und private Gruppen können einen eigenen Termin buchen.',
+    group: '4–8', duration: '8 Std. Tagesworkshop · Abendworkshops ab 18 Uhr', place: 'Glaswerkstatt in Pankow', languages: 'DE',
+    priceNote: 'Werkzeug und Material inklusive', photoCredit: 'Ingo Thomas' },
   { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen, Stoff & Wachssiegel',
     blurb: 'Marija hat Kunstgeschichte studiert, kommt aus dem Erziehungsbereich und macht Upcycling: Stoffe und Material, die auf der Straße liegen gelassen wurden, werden gewaschen und zu Kissenbezügen und anderen Unikaten. In ihren Workshops schöpft ihr Papier aus Altpapier, Resten von farbigem Karton und alten Tüten, gemixt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs oder Weihnachtssterne aus Papier. Ruhig, handfest und schick, und sie hat es schon mit Kindergartenkindern wie mit älteren Menschen gemacht. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
     group: 'Gruppen und Teams', duration: 'Auf Anfrage', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE' },
@@ -306,6 +326,7 @@ const facets: Record<string, Facets> = {
   'fave-studio':         { activity: 'craft',       groupRange: [2, 10],   hourRange: [3, 3],   groupPrice: 50 },
   pigi:                  { activity: 'food',        groupRange: [1, 10],   hourRange: [5, 5],   groupPrice: 80 },
   'pia-christmas':       { activity: 'art',         groupRange: [4, 10],   hourRange: [2, 2],   groupPrice: 45 },
+  'ingo-thomas':         { activity: 'craft', alsoIn: ['art'], groupRange: [4, 8], hourRange: [8, 8], groupPrice: 149 },
 };
 
 const firstNames: Record<string, string> = {
@@ -313,10 +334,12 @@ const firstNames: Record<string, string> = {
   rtmis: 'Diana', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
   'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija', 'fave-studio': 'Elena & Giulia', pigi: 'Pigi', 'pia-christmas': 'Pia',
+  'ingo-thomas': 'Ingo',
 };
 
 const areas: Record<string, { area: string; onSite?: boolean }> = {
   'test-jirel': { area: 'Berlin' },
+  'ingo-thomas': { area: 'Pankow' },
   rtmis: { area: 'Wedding', onSite: true }, strassenbraeu: { area: 'Kreuzberg' }, 'beavis-bar': { area: 'Mitte' }, 'schoppe-braeu': { area: 'Kreuzberg' },
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
   yahelis: { area: 'Friedrichshain' }, 'groove-in-focus': { area: 'Neukölln', onSite: true },
@@ -400,6 +423,13 @@ const onRequest: Record<string, PreviewOffer[]> = {
   ],
   'pia-christmas': [
     { title: 'Weihnachtsmalen & Glühwein für eure Gruppe (4–10 Personen)', titleEn: 'Christmas painting & Glühwein for your group (4–10 people)', duration: '2 h', price: '€45', district: 'Friedrichshain', url: '' },
+  ],
+  'ingo-thomas': [
+    // Preis vorläufig (Ingo bestätigt den Endpreis): 99 € Kurs + ca. 50 €
+    // Material. No dates yet: he adds them himself in the dashboard.
+    { title: 'Tiffany-Tagesworkshop: Fensterbilder & Weihnachtssterne', titleEn: 'Tiffany day workshop: window pictures & Christmas stars', duration: '8 h', price: '€149', district: 'Pankow', url: '' },
+    { title: 'Tiffany-Abendworkshop (unter der Woche ab 18 Uhr)', titleEn: 'Tiffany evening workshop (weekdays from 18:00)', district: 'Pankow', url: '' },
+    { title: 'Private Gruppen & Firmenevents (4–8 Personen)', titleEn: 'Private groups & company events (4–8 people)', district: 'Pankow', url: '' },
   ],
   pigi: [
     { title: 'Griechischer Kochabend für eure Gruppe (bis 10 Personen, unter der Woche ab 18 Uhr)', titleEn: 'Greek cooking evening for your group (up to 10 people, weekdays from 18:00)', duration: '5 h', price: '€80', district: 'Kreuzberg', url: '' },

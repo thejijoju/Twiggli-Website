@@ -283,11 +283,13 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
       request: true,
     });
   }
-  // A host's own title, price and line for the workshop (dashboard edit).
-  return out.map((o) => {
-    const e = o.key ? listingEdit(o.host.slug, o.key) : undefined;
-    return e ? { ...o, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}), ...(e.duration ? { duration: e.duration } : {}) } : o;
-  });
+  return out.map(withOfferEdit);
+}
+
+/** A host's own title, price and line for the workshop (dashboard edit). */
+function withOfferEdit(o: OnRequestWorkshop): OnRequestWorkshop {
+  const e = o.key ? listingEdit(o.host.slug, o.key) : undefined;
+  return e ? { ...o, ...(e.title ? { title: e.title } : {}), ...(e.price ? { price: `€${e.price}` } : {}), ...(e.note ? { usp: e.note } : {}), ...(e.duration ? { duration: e.duration } : {}) } : o;
 }
 
 export function getOnRequest(lang: Lang): OnRequestWorkshop[] {
@@ -713,5 +715,5 @@ export function previewOnRequestFor(slug: string, lang: Lang): OnRequestWorkshop
     ...(o.duration ? { duration: o.duration } : {}),
     ...(o.price ? { price: o.price } : {}),
     request: true,
-  }));
+  } satisfies OnRequestWorkshop)).map(withOfferEdit);
 }

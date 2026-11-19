@@ -15,6 +15,8 @@
 //   hostClaim        a signed-in host asks to edit a page: Jirel (ADMIN)
 //                    gets access at once, anyone else waits for her Approve
 //   hostApprove      the one-click Approve link in Jirel's email
+//   hostPublish      a host asks to put their draft (preview) page live;
+//                    hostPublishApprove is Jirel's Approve link for it
 //
 // The Stripe secret key lives in Firebase Secret Manager, never in this
 // file or in the repo:  firebase functions:secrets:set STRIPE_SECRET_KEY
@@ -1460,6 +1462,81 @@ export const hostInviteLinks = onRequest({ region: 'europe-west3', maxInstances:
   return res.status(200).json({ links: slugs.map((s) => ({ slug: s, invite: sign(key, 'invite', s), claimedBy: claimed[s] ?? '' })) });
 });
 
+// ── Draft pages going live (Jirel 19.11.26) ─────────────────────────────
+// A page Claude built as a preview (site/src/data/hosts/preview.ts) is the
+// host's to finish in the dashboard. When they are happy with it they press
+// "Publish my page": Jirel gets an email with an Approve link (the same
+// signed GET-asks / POST-acts pattern as hostApprove), and once she approves,
+// the slug goes into _config/publishedHosts. publicEvents hands that list to
+// the build (scripts/fetch-host-edits.mjs), which takes the page out of
+// preview: listed, searchable and in the sitemap from the next build on.
+// pagePublish/{slug} (server-only, firestore.rules) remembers who asked.
+const publishedSlugs = async () => (await getFirestore().doc('_config/publishedHosts').get()).data()?.slugs ?? [];
+
+export const hostPublish = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const slug = String(req.body?.slug ?? '');
+  if (!SLUG.test(slug)) return res.status(400).json({ error: 'Bad page' });
+  if (!(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
+  const ref = getFirestore().doc(`pagePublish/${slug}`);
+  const old = (await ref.get()).data();
+  const status = (await publishedSlugs()).includes(slug) ? 'approved' : old?.status === 'pending' ? 'pending' : 'draft';
+  // The dashboard asks first, to show the right line under the button.
+  if (req.body?.check || status !== 'draft') return res.status(200).json({ status });
+  const name = text(req.body?.name, 120);
+  // The page's path on the site, for Jirel to look at it first.
+  const path = /^\/[a-z0-9/-]{1,120}\/$/.test(String(req.body?.page ?? '')) ? req.body.page : '';
+  await ref.set({ slug, email, name, status: 'pending', askedAt: FieldValue.serverTimestamp() });
+  const link = `${FUNCTIONS_URL}/hostPublishApprove?s=${slug}&k=${sign(await approveKey(), 'publish', slug)}`;
+  try {
+    await mailJirel({
+      subject: `Publish request: ${name || email} wants "${slug}" live`,
+      replyTo: email,
+      text: `${name || email} (${email}) finished their draft page "${slug}" and asks to publish it.${path ? `\n\nThe draft: ${SITE}${path}` : ''}\n\nApprove: ${link}\n\nIgnore this email to keep it a draft.`,
+      html: `<div style="font-family:Tahoma,sans-serif;font-size:15px"><p><b>${esc(name || email)}</b> (${esc(email)}) finished their draft page <b>${esc(slug)}</b> and asks to publish it.</p>${path ? `<p>The draft: <a href="${SITE}${path}">${SITE}${path}</a></p>` : ''}<p><a href="${link}" style="display:inline-block;background:#1f6f43;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Approve and publish</a></p><p style="color:#777">Not ready yet? Just ignore this email: the page stays a hidden draft.</p></div>`,
+    });
+  } catch (err) { console.error('hostPublish mail failed', err?.message); }
+  return res.status(200).json({ status: 'pending' });
+});
+
+export const hostPublishApprove = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5 }, async (req, res) => {
+  const slug = String(req.query.s ?? '');
+  const k = String(req.query.k ?? '');
+  const page = (msg) => res.status(200).set('Content-Type', 'text/html; charset=utf-8')
+    .send(`<!doctype html><meta name="viewport" content="width=device-width"><body style="font-family:Tahoma,sans-serif;max-width:520px;margin:60px auto;padding:0 16px"><h2>Twiggli host pages</h2><p>${msg}</p></body>`);
+  if (!SLUG.test(slug) || !/^[0-9a-f]{64}$/.test(k)) return page('This link is not valid.');
+  const want = Buffer.from(sign(await approveKey(), 'publish', slug), 'hex');
+  if (!timingSafeEqual(want, Buffer.from(k, 'hex'))) return page('This link is not valid.');
+  const db = getFirestore();
+  const ask = (await db.doc(`pagePublish/${slug}`).get()).data();
+  // Opening the link only asks (mail scanners open links): the button acts.
+  if (req.method !== 'POST') return page(`Publish the page <b>${esc(slug)}</b>${ask?.email ? ` (asked by ${esc(ask.email)})` : ''}? It goes into the listings, search and the sitemap with the next site build (daily, or run the deploy).<form method="post"><button style="font-size:16px;background:#1f6f43;color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer">Publish</button></form>`);
+  await db.doc('_config/publishedHosts').set({ slugs: FieldValue.arrayUnion(slug), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  await db.doc(`pagePublish/${slug}`).set({ slug, status: 'approved', decidedAt: FieldValue.serverTimestamp() }, { merge: true });
+  if (ask?.email) {
+    try {
+      const prefs = await hostPrefs(slug).catch(() => null);
+      const lang = prefs?.lang === 'de' || prefs?.lang === 'fr' ? prefs.lang : 'de';
+      const first = String(ask.name || '').split(' ')[0];
+      const T = {
+        de: [`Deine Seite geht live${first ? `, ${first}` : ''}!`, 'Jirel hat deine Twiggli-Seite freigegeben. Mit dem nächsten Update der Website (spätestens morgen) steht sie in den Listen, in der Suche und im Kalender. Du kannst sie weiter jederzeit in deinem Konto bearbeiten.'],
+        en: [`Your page is going live${first ? `, ${first}` : ''}!`, 'Jirel approved your Twiggli page. With the next website update (tomorrow at the latest) it shows up in the listings, in search and in the calendar. You can keep editing it in your account any time.'],
+        fr: [`Ta page passe en ligne${first ? `, ${first}` : ''} !`, 'Jirel a validé ta page Twiggli. À la prochaine mise à jour du site (demain au plus tard), elle apparaît dans les listes, la recherche et le calendrier. Tu peux continuer à la modifier dans ton compte.'],
+      }[lang];
+      const sig = lang === 'de' ? 'Jirel, Gründerin @ Twiggli' : lang === 'fr' ? 'Jirel, fondatrice @ Twiggli' : 'Jirel, Founder @ Twiggli';
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      await mail.sendMail({
+        from: { name: 'Twiggli', address: SENDER }, to: ask.email, subject: T[0],
+        text: `${T[1]}\n\n💛\n${sig}`,
+        html: `<div style="font-family:Tahoma,sans-serif;font-size:15px;line-height:1.55;color:#1d1d1f;max-width:560px"><img src="${SITE}/img/logo.png" alt="Twiggli" width="110" style="display:block;margin-bottom:18px"><h2 style="font-size:20px;margin:0 0 12px">${esc(T[0])}</h2><p>${T[1]}</p><p>💛<br>${sig}</p></div>`,
+      });
+    } catch (err) { console.error('publish mail', err?.message); }
+  }
+  return page(`Approved: <b>${esc(slug)}</b> leaves preview with the next site build.${ask?.email ? ` ${esc(ask.email)} got an email.` : ''}`);
+});
+
 // ── Dates hosts create in their dashboard ("Neuer Termin") ──────────────
 // Saved in Firestore hostEvents; publicEvents hands the upcoming ones to the
 // website build (scripts/fetch-host-edits.mjs), which turns them into
@@ -2062,7 +2139,9 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
     const { place: _p, ...pub } = edit;
     return { slug, key, ...pub, ...(edit.where ? lineFor({ ...edit, slug }) : {}) };
   });
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios });
+  // Draft pages Jirel approved for going live (hostPublishApprove).
+  const published = await publishedSlugs().catch(() => []);
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
