@@ -21,6 +21,11 @@ export interface HostDate {
   /** The host's booking page for it. */
   url: string;
   onHostSite?: boolean;
+  /** Booked through Twiggli (request form, or pay now once the host takes
+   *  the date over in her dashboard), never sent off to another box office. */
+  request?: boolean;
+  /** The date's own picture. */
+  image?: string;
 }
 
 export const hostDates: HostDate[] = [
@@ -212,4 +217,18 @@ export const hostDates: HostDate[] = [
   { slug: 'atelier-sinn', title: 'Weihnachtsworkshop: Festliches Tablescaping', titleEn: 'Christmas workshop: festive tablescaping', date: '2026-11-29', time: '15:00', duration: '3 h', price: '€59', district: 'Prenzlauer Berg', url: 'https://www.atelier.korasinn.de/experiences', onHostSite: true },
   { slug: 'atelier-sinn', title: 'Weihnachtsworkshop: Festliches Tablescaping', titleEn: 'Christmas workshop: festive tablescaping', date: '2026-12-05', time: '15:00', duration: '3 h', price: '€59', district: 'Prenzlauer Berg', url: 'https://www.atelier.korasinn.de/experiences', onHostSite: true },
   { slug: 'atelier-sinn', title: 'Weihnachtsworkshop: Festliches Tablescaping', titleEn: 'Christmas workshop: festive tablescaping', date: '2026-12-17', time: '18:00', duration: '3 h', price: '€59', district: 'Prenzlauer Berg', url: 'https://www.atelier.korasinn.de/experiences', onHostSite: true },
+  // ── Evelyn (Tuka Creative Club) ───────────────────────────────────────
+  // Jirel 19.11.26: Evelyn manages her dates in Twiggli. Her Luma calendar
+  // is no longer read (scripts/update-workshops.mjs); these are the dates
+  // it had on 19.11.26, booked through Twiggli from now on. In her dashboard
+  // they are her own dates: the first change there makes them dashboard dates.
+  { slug: 'evelyn', title: 'Christmas Embroidery Bookmarks', date: '2026-11-29', time: '12:00', duration: '3 h', price: '€25', spots: 4, district: 'Friedrichshain',
+    image: 'https://images.lumacdn.com/uploads/d7/b0c54873-99ef-426d-a5d5-26d7fb50f1e6.png', url: '', request: true },
+  // The second session of the day was sold through foreveryone.berlin; its listing gave no length, price or spots, so those are the 12:00 session's.
+  { slug: 'evelyn', title: 'Christmas Embroidery Bookmarks', date: '2026-11-29', time: '17:00', duration: '3 h', price: '€25', district: 'Friedrichshain',
+    image: 'https://images.lumacdn.com/uploads/d7/b0c54873-99ef-426d-a5d5-26d7fb50f1e6.png', url: '', request: true },
+  { slug: 'evelyn', title: 'Nikolaus Workshop: Glühwein Cup Painting', date: '2026-12-06', time: '12:00', duration: '3 h', price: '€25', spots: 6, district: 'Friedrichshain',
+    image: 'https://images.lumacdn.com/uploads/3h/209561d8-ea4e-4f3c-abec-8f596147f2b8.png', url: '', request: true },
+  { slug: 'evelyn', title: 'Glühwein Cup Painting Workshop', date: '2026-12-13', time: '12:00', duration: '3 h', price: '€25', spots: 4, district: 'Friedrichshain',
+    image: 'https://images.lumacdn.com/uploads/7l/9fad6074-79d3-4707-b53c-041c1e465b66.png', url: '', request: true },
 ];
