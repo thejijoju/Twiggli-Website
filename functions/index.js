@@ -17,6 +17,7 @@
 //   hostApprove      the one-click Approve link in Jirel's email
 //   hostPublish      a host asks to put their draft (preview) page live;
 //                    hostPublishApprove is Jirel's Approve link for it
+//   hostTips         the dashboard's tips: dismissed ones, Jirel's notes
 //
 // The Stripe secret key lives in Firebase Secret Manager, never in this
 // file or in the repo:  firebase functions:secrets:set STRIPE_SECRET_KEY
@@ -1556,6 +1557,51 @@ export const hostPublishApprove = onRequest({ region: 'europe-west3', secrets: [
     } catch (err) { console.error('publish mail', err?.message); }
   }
   return page(`Approved: <b>${esc(slug)}</b> leaves preview with the next site build.${ask?.email ? ` ${esc(ask.email)} got an email.` : ''}`);
+});
+
+// ── Tips for a host's page (Jirel 19.11.26) ─────────────────────────────
+// The dashboard checks a host's page itself (small photos, no studio
+// address, Stripe, dates, video, descriptions, prices) and shows what the
+// host can fix. Kept here, server-side: which tips each person dismissed
+// (hostTipsSeen/{email}__{slug}: { dismissed: { id: level } }, a tip comes
+// back when its level rises), and the notes Jirel writes for a host
+// (hostTips/{slug}: { notes: [{ id, text, at }] }; only admins write them).
+// Both collections are server-only (firestore.rules: no browser access).
+export const hostTips = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const slug = String(req.body?.slug ?? '');
+  if (!SLUG.test(slug)) return res.status(400).json({ error: 'Bad page' });
+  if (!(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
+  const db = getFirestore();
+  const tipsRef = db.doc(`hostTips/${slug}`);
+  const seenRef = db.doc(`hostTipsSeen/${email}__${slug}`);
+  const ID = /^[a-z0-9:_-]{1,60}$/;
+  const action = String(req.body?.action ?? 'get');
+  const notesOf = async () => ((await tipsRef.get()).data()?.notes ?? []).filter((x) => x && x.id && x.text);
+  if (action === 'dismiss') {
+    const id = String(req.body?.id ?? '');
+    const level = Math.max(1, Math.min(999, Math.round(Number(req.body?.level) || 1)));
+    if (!ID.test(id)) return res.status(400).json({ error: 'Bad tip' });
+    await seenRef.set({ dismissed: { [id]: level }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  } else if (action === 'forget') {
+    // Tips that are fixed now: dismissing them again later starts afresh.
+    const ids = (Array.isArray(req.body?.ids) ? req.body.ids : []).map(String).filter((x) => ID.test(x)).slice(0, 30);
+    if (ids.length) await seenRef.set({ dismissed: Object.fromEntries(ids.map((x) => [x, FieldValue.delete()])) }, { merge: true });
+  } else if (action === 'note' || action === 'unnote') {
+    if (!ADMINS.includes(email)) return res.status(403).json({ error: 'Admins only' });
+    const notes = await notesOf();
+    if (action === 'note') {
+      const body = String(req.body?.text ?? '').trim().slice(0, 600);
+      if (!body) return res.status(400).json({ error: 'Empty note' });
+      notes.push({ id: randomBytes(6).toString('hex'), text: body, at: Date.now() });
+    }
+    const keep = action === 'unnote' ? notes.filter((x) => x.id !== String(req.body?.id ?? '')) : notes;
+    await tipsRef.set({ notes: keep.slice(-20), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  } else if (action !== 'get') return res.status(400).json({ error: 'Bad action' });
+  const dismissed = (await seenRef.get()).data()?.dismissed ?? {};
+  return res.status(200).json({ notes: await notesOf(), dismissed });
 });
 
 // ── Dates hosts create in their dashboard ("Neuer Termin") ──────────────

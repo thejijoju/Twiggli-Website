@@ -101,22 +101,28 @@ const hosts = Object.fromEntries(
     page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
     // Their own pictures, to pick a cover for a new date without uploading.
     photos: [...new Set([h.photo, ...(h.gallery ?? [])].filter((x): x is string => !!x))].slice(0, 8),
+    // The square card picture (cropped small on purpose) and whether the page has a video.
+    card: h.photo ?? '',
+    video: !!h.video,
     // Their workshops with a picture and price, for the offer's workshop picker.
     workshops: (() => {
       const seen = new Set<string>();
-      const out: { title: string; price: string; image: string; key: string; dates: number; url: string }[] = [];
-      const add = (title: string, key: string, price?: string, image?: string, dates = 0, url = '') => {
+      // duration/desc/request: for the tips on the Overview (is a length,
+      // an own description there; runs on request, without dates).
+      type W = { title: string; price: string; image: string; key: string; dates: number; url: string; duration?: string; desc?: boolean; request?: boolean };
+      const out: W[] = [];
+      const add = (title: string, key: string, price?: string, image?: string, dates = 0, url = '', more: Partial<W> = {}) => {
         const k = title.trim().toLowerCase();
         if (!title || seen.has(k)) return;
         seen.add(k);
-        out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates, url });
+        out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates, url, ...more });
       };
       try {
-        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`));
-        for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.workshopKey, s.price, s.image);
+        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`), { duration: w.sessions[0]?.duration ?? '', desc: w.sessions.some((x) => !!x.description) });
+        for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.workshopKey, s.price, s.image, 1, '', { duration: s.duration ?? '', desc: !!s.description });
         // A preview host is out of the on-request lists (seo.ts), so their
         // formats come from hosts/preview.ts.
-        for (const o of isPreviewHost(h.slug) ? previewOnRequestFor(h.slug, lang) : onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price);
+        for (const o of isPreviewHost(h.slug) ? previewOnRequestFor(h.slug, lang) : onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price, '', 0, '', { duration: o.duration ?? '', request: true });
       } catch { /* a host without listings: own dates only */ }
       return out;
     })(),
@@ -317,6 +323,14 @@ const fields = [
               <div class="ha-adm-invite" data-ha-invite-admin hidden>
                 <button type="button" class="hd-item" data-ha-invite-copy>{t.cal.inviteBtn}</button>
                 <p class="ha-adm-note" data-ha-invite-msg role="status"></p>
+              </div>
+              {/* Jirel only: a note for the host picked above; it shows as a tip in their dashboard (functions hostTips). */}
+              <div class="tp-adm" data-tp-adm hidden>
+                <label class="tp-adm-l"><span>{L('Notiz für Host', 'Note for host', 'Note pour l’hôte')}</span>
+                  <textarea rows="2" maxlength="600" data-tp-note placeholder={L('z. B. Bitte bestätige den Preis für den Tagesworkshop.', 'e.g. Please confirm the price for the day workshop.', 'p. ex. Merci de confirmer le prix de l’atelier.')}></textarea>
+                </label>
+                <button type="button" class="hd-item" data-tp-note-add>{L('Notiz speichern', 'Save note', 'Enregistrer la note')}</button>
+                <ul class="tp-adm-list" data-tp-note-list></ul>
               </div>
               <hr class="hd-menu-sep" />
               <button type="button" class="hd-item hd-out" data-ha-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56z"/></svg></button>
@@ -777,20 +791,16 @@ const fields = [
               <button type="button" aria-pressed="false" data-w="past">{t.wPast}</button>
             </div>
           </div>
-          {/* A page Claude built as a hidden draft (hosts/preview.ts): only
-              people with the link see it until Jirel approves the host's
-              "Publish" (functions hostPublish). */}
-          <div class="ha-draft" data-ha-draft hidden>
-            <div class="ha-draft-t">
-              <b>{L('Deine Seite ist noch ein Entwurf', 'Your page is still a draft', 'Ta page est encore un brouillon')}</b>
-              <p>{L('Nur wer den Link hat, sieht sie: Sie steht noch nicht in den Listen, in der Suche oder bei Google. Schau sie dir an, pass Texte, Workshops, Preise und Termine an, und wenn alles passt, veröffentliche sie. Jirel schaut kurz drüber, dann geht sie live.', 'Only people with the link can see it: it is not in the listings, in search or on Google yet. Have a look, adjust the texts, workshops, prices and dates, and when everything is right, publish it. Jirel takes a quick look, then it goes live.', 'Seules les personnes qui ont le lien la voient : elle n’est pas encore dans les listes, la recherche ou sur Google. Regarde-la, ajuste les textes, ateliers, prix et dates, et quand tout est bon, publie-la. Jirel jette un œil, puis elle passe en ligne.')}</p>
-              <p class="ha-draft-msg" data-ha-publish-msg role="status"></p>
+          {/* Tips for the page (Jirel 19.11.26): what the host can fix, each with
+              a button to the place to fix it; the draft page's "Publish" and
+              Jirel's notes too. Filled by renderTips() below. */}
+          <section class="tp" data-tp hidden aria-labelledby="tp-h">
+            <div class="tp-head">
+              <h2 id="tp-h">{L('Tipps für deine Seite', 'Tips for your page', 'Conseils pour ta page')}</h2>
+              <button type="button" class="tp-all" data-tp-all hidden data-more={L('Alle anzeigen ({n})', 'Show all ({n})', 'Tout afficher ({n})')} data-less={L('Weniger anzeigen', 'Show less', 'Afficher moins')}></button>
             </div>
-            <div class="ha-draft-act">
-              <a class="ha-btn ha-btn-ghost" data-ha-draft-view target="_blank" rel="noopener">{L('Entwurf ansehen', 'View draft', 'Voir le brouillon')}</a>
-              <button type="button" class="ha-btn" data-ha-publish>{L('Meine Seite veröffentlichen', 'Publish my page', 'Publier ma page')}</button>
-            </div>
-          </div>
+            <ul class="tp-list" data-tp-list></ul>
+          </section>
           <button type="button" class="hd-add-big hd-add-phone" data-ha-new>+ {t.newDate}</button>
           <!-- Open requests as cards with the time left (as the Airbnb app's Today). -->
           <div class="hd-reqs" data-ha-reqs hidden>
@@ -987,7 +997,7 @@ const fields = [
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
-  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean };
+  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
 
   const root = document.querySelector<HTMLElement>('[data-ha]');
   if (root) {
@@ -1631,7 +1641,8 @@ const fields = [
       };
       const loadStudio = async () => {
         if (DEMO || !slug) return;
-        try { myStudio = (await api('hostAddress', { slug, action: 'get' })).studio ?? null; } catch { myStudio = null; }
+        try { myStudio = (await api('hostAddress', { slug, action: 'get' })).studio ?? null; studioKnown = true; } catch { myStudio = null; }
+        scheduleTips();
         putStudio(myStudio);
         root.querySelectorAll<HTMLElement>('[data-wh]').forEach((b) => whereUI(b).paint());
       };
@@ -1657,6 +1668,7 @@ const fields = [
           if (DEMO) await new Promise((r) => setTimeout(r, 300));
           else place = (await api('hostAddress', { slug, action: 'save', ...addr, studioName: studio })).visible ?? place;
           myStudio = addr;
+          scheduleTips();
           for (const l of ['en', 'de'] as const) texts[l] = { ...texts[l], studio, place };
           root.querySelectorAll<HTMLElement>('[data-wh]').forEach((b) => whereUI(b).paint());
           if (textLang) showText();
@@ -1870,6 +1882,7 @@ const fields = [
         if (name === 'listings') void renderListings();
         if (name === 'messages') renderMsgPanel();
         if (name === 'calendar') { renderCal(); void calLoadListings(); }
+        if (name === 'overview') { try { scheduleTips(); } catch { /* still starting */ } }
         if (name === 'profile') renderProfile();
         setPath();
       };
@@ -1942,7 +1955,9 @@ const fields = [
       let hasPending = false;
       // The first four count as new until opened.
       const ntUnread = () => { const r = ntRead(); return NT_DEMO.slice(0, 4).filter((n) => !r.includes(n.id)); };
-      const paintDot = () => { $('[data-ha-dot]').hidden = !hasPending && !ntUnread().length; };
+      /** The page's tips on show (renderTips below); the bell lists them too. */
+      let tipsNow: { id: string; level: number; title: string; body: string; soft?: boolean; note?: boolean; fix?: { label: string; run: () => void }; link?: { label: string; href: string } }[] = [];
+      const paintDot = () => { $('[data-ha-dot]').hidden = !hasPending && !ntUnread().length && !tipsNow.length; };
       const ntEsc = (x: string) => x.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
       const ICON: Record<string, string> = {
         approved: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
@@ -1999,6 +2014,22 @@ const fields = [
       const ntPaint = () => {
         const unread = ntUnread().map((n) => n.id);
         ntList.innerHTML = '';
+        // The page's tips first (renderTips), with their own × to dismiss.
+        for (const x of tipsNow) {
+          const li = document.createElement('li');
+          li.className = 'nt-tip';
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'nt-item is-tip';
+          b.innerHTML = `<span class="nt-av nt-ic nt-tip-ic" aria-hidden="true">${ntEsc(tipIcon(x))}</span><span class="nt-txt"><span class="nt-line"><b>${ntEsc(x.title)}</b></span><span class="nt-meta">${ntEsc(x.fix?.label ?? TL('Tipp für deine Seite', 'Tip for your page', 'Conseil pour ta page'))}</span></span>`;
+          b.addEventListener('click', () => {
+            ntBox.hidden = true; ntBell.setAttribute('aria-expanded', 'false');
+            if (x.fix) x.fix.run(); else showTab('overview');
+          });
+          const xb = document.createElement('button');
+          xb.type = 'button'; xb.className = 'tp-x nt-tip-x'; xb.textContent = '×'; xb.title = TT.dismiss; xb.setAttribute('aria-label', `${TT.dismiss}: ${x.title}`);
+          xb.addEventListener('click', (e) => { e.stopPropagation(); dismissTip(x); });
+          li.append(b, xb); ntList.append(li);
+        }
         for (const n of NT_DEMO) {
           const li = document.createElement('li');
           const b = document.createElement('button');
@@ -2284,7 +2315,9 @@ const fields = [
         root.querySelectorAll<HTMLElement>('[data-ha-hostonly]').forEach((x) => { x.hidden = false; });
         const first = (auth.currentUser?.displayName || '').split(' ')[0] || (h?.name ?? '').split(' ')[0];
         $('[data-ha-hello]').textContent = `${t.hello} ${first} 👋`;
+        studioKnown = false;
         void paintDraft(s);
+        void calLoadListings();
         paintAvatars();
         if (!auth.currentUser?.displayName && h?.name) $('[data-ha-menu-name]').textContent = h.name;
         loadInbox();
@@ -2298,39 +2331,282 @@ const fields = [
         });
       };
 
-      // ── A draft page (hosts/preview.ts): "Publish my page" asks Jirel
-      // (functions hostPublish); once she approves, the next build lists it.
-      const PL = (de: string, en: string, fr: string) => (document.documentElement.lang === 'de' ? de : document.documentElement.lang === 'fr' ? fr : en);
-      const PUB = {
-        pending: PL('Gesendet! Jirel schaut sich deine Seite an und gibt sie frei, meist innerhalb eines Tages. Du bekommst eine E-Mail, sobald sie live geht.', 'Sent! Jirel is having a look at your page and will approve it, usually within a day. You will get an email as soon as it goes live.', 'Envoyé ! Jirel regarde ta page et la valide, en général sous un jour. Tu reçois un e-mail dès qu’elle passe en ligne.'),
-        approved: PL('Freigegeben! Deine Seite geht mit dem nächsten Update der Website live (spätestens morgen).', 'Approved! Your page goes live with the next website update (tomorrow at the latest).', 'Validée ! Ta page passe en ligne à la prochaine mise à jour du site (demain au plus tard).'),
-        ask: PL('Seite jetzt zur Freigabe an Jirel schicken? Du kannst danach weiter alles bearbeiten.', 'Send your page to Jirel for approval now? You can keep editing everything afterwards.', 'Envoyer ta page à Jirel pour validation ? Tu pourras tout modifier ensuite.'),
-        fail: PL('Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib Jirel.', 'That did not work. Please try again or write to Jirel.', 'Ça n’a pas marché. Réessaie ou écris à Jirel.'),
+      // ── Tips for the page (Jirel 19.11.26) ──────────────────────────────
+      // What the dashboard notices about the host's page, each said where it
+      // is fixed, with a button that opens that place. Only what the host can
+      // change (never the commission). A dismissed tip stays away until its
+      // level rises (a third small photo after two) or it comes back after
+      // being fixed; fixed tips leave by themselves. Dismissed tips and
+      // Jirel's notes live server-side (functions hostTips); localStorage is
+      // the fallback when that can't be reached (and in the demos).
+      type Tip = { id: string; level: number; title: string; body: string; soft?: boolean; note?: boolean;
+        fix?: { label: string; run: () => void }; link?: { label: string; href: string } };
+      type TipNote = { id: string; text: string; at: number };
+      const TL = (de: string, en: string, fr: string) => (document.documentElement.lang === 'de' ? de : document.documentElement.lang === 'fr' ? fr : en);
+      const TT = {
+        fixPhotos: TL('Fotos hochladen', 'Upload photos', 'Ajouter des photos'),
+        fixEdit: TL('Workshop bearbeiten', 'Edit workshop', 'Modifier l’atelier'),
+        fixStudio: TL('Adresse eintragen', 'Add address', 'Ajouter l’adresse'),
+        fixStripe: TL('Stripe verbinden', 'Connect Stripe', 'Connecter Stripe'),
+        fixDates: TL('Termin hinzufügen', 'Add a date', 'Ajouter une date'),
+        fixVideo: TL('Video hinzufügen', 'Add a video', 'Ajouter une vidéo'),
+        publish: TL('Meine Seite veröffentlichen', 'Publish my page', 'Publier ma page'),
+        view: TL('Entwurf ansehen', 'View draft', 'Voir le brouillon'),
+        dismiss: TL('Ausblenden', 'Dismiss', 'Masquer'),
+        and: TL('und', 'and', 'et'),
       };
-      const showPublish = (status: string) => {
-        const btn = $<HTMLButtonElement>('[data-ha-publish]');
-        const done = status === 'pending' || status === 'approved';
-        btn.hidden = done;
-        $('[data-ha-publish-msg]').textContent = done ? PUB[status as 'pending' | 'approved'] : '';
+      const PUB = {
+        pending: TL('Gesendet! Jirel schaut sich deine Seite an und gibt sie frei, meist innerhalb eines Tages. Du bekommst eine E-Mail, sobald sie live geht.', 'Sent! Jirel is having a look at your page and will approve it, usually within a day. You will get an email as soon as it goes live.', 'Envoyé ! Jirel regarde ta page et la valide, en général sous un jour. Tu reçois un e-mail dès qu’elle passe en ligne.'),
+        approved: TL('Freigegeben! Deine Seite geht mit dem nächsten Update der Website live (spätestens morgen).', 'Approved! Your page goes live with the next website update (tomorrow at the latest).', 'Validée ! Ta page passe en ligne à la prochaine mise à jour du site (demain au plus tard).'),
+        ask: TL('Seite jetzt zur Freigabe an Jirel schicken? Du kannst danach weiter alles bearbeiten.', 'Send your page to Jirel for approval now? You can keep editing everything afterwards.', 'Envoyer ta page à Jirel pour validation ? Tu pourras tout modifier ensuite.'),
+        fail: TL('Das hat nicht geklappt. Versuch es bitte noch einmal oder schreib Jirel.', 'That did not work. Please try again or write to Jirel.', 'Ça n’a pas marché. Réessaie ou écris à Jirel.'),
+      };
+      const quoted = (x: string) => TL(`„${x}“`, `“${x}”`, `« ${x} »`);
+      const listOf = (xs: string[]) => {
+        const q = xs.slice(0, 3).map(quoted);
+        const more = xs.length - q.length;
+        if (more > 0) q.push(TL(`${more} weitere`, `${more} more`, `${more} autres`));
+        return q.length > 1 ? `${q.slice(0, -1).join(', ')} ${TT.and} ${q[q.length - 1]}` : (q[0] ?? '');
+      };
+      let isAdmin = false;
+      let draftStatus = 'draft'; // draft | pending | approved (functions hostPublish)
+      let studioKnown = false; // the studio address was asked from the server
+      let tipNotes: TipNote[] = [];
+      let tipSeen: Record<string, number> = {};
+      let tipsFor = '';
+      let tipsOpen = false;
+      const TIPS_LOCAL = (s: string) => `twiggli-tips-${s}`;
+      const readLocalSeen = (s: string): Record<string, number> => { try { return JSON.parse(localStorage.getItem(TIPS_LOCAL(s)) || '{}'); } catch { return {}; } };
+      const saveLocalSeen = () => { try { localStorage.setItem(TIPS_LOCAL(slug), JSON.stringify(tipSeen)); } catch { /* private window */ } };
+      const loadTips = async (s: string) => {
+        tipsFor = s;
+        tipSeen = readLocalSeen(s);
+        tipNotes = [];
+        if (DEMO) {
+          const n = new URLSearchParams(location.search).get('note');
+          tipNotes = n ? [{ id: 'demo', text: n, at: Date.now() }] : [];
+        } else {
+          try {
+            const r = await api('hostTips', { slug: s, action: 'get' });
+            if (tipsFor !== s) return;
+            tipSeen = { ...tipSeen, ...(r.dismissed ?? {}) };
+            tipNotes = r.notes ?? [];
+          } catch { /* the local copy stands in */ }
+        }
+        paintAdminNotes();
+        scheduleTips();
+      };
+      // Photo sizes, measured in the browser (site pictures and uploads alike).
+      const photoSize = new Map<string, [number, number] | null>();
+      const measure = (url: string) => {
+        if (photoSize.has(url)) return;
+        photoSize.set(url, null);
+        const img = new Image();
+        img.addEventListener('load', () => { photoSize.set(url, [img.naturalWidth, img.naturalHeight]); scheduleTips(); });
+        img.src = url;
+      };
+      const SMALL = 1000; // long side in px below which a photo looks blurry on a big screen
+      const small = (url: string) => { const z = photoSize.get(url); return z && Math.max(z[0], z[1]) < SMALL ? z : null; };
+      const ownPicture = (url: string) => !!url && (url.startsWith('/') || url.includes('firebasestorage') || url.includes('storage.googleapis'));
+      const goStudio = () => {
+        openView('settings');
+        setPath();
+        if (slug) studioForm.hidden = false;
+        setTimeout(() => {
+          studioForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          sf('street').focus({ preventScroll: true });
+        }, 60);
+      };
+      const goWs = (w?: Ws) => {
+        showTab('calendar');
+        if (w) { calSel = w.key; renderCal(); calEditWs(w); }
+      };
+      const checks = (): Tip[] => {
+        const h = hosts[slug];
+        if (!h) return [];
+        const out: Tip[] = [];
+        // Jirel's notes for this host.
+        for (const n of tipNotes) out.push({ id: `note:${n.id}`, level: 1, note: true, title: TL('Notiz von Jirel', 'Note from Jirel', 'Note de Jirel'), body: n.text });
+        // The page is still a hidden draft.
+        if (h.draft && draftStatus !== 'approved') {
+          out.push({
+            id: 'draft', level: 1, title: TL('Deine Seite ist noch ein Entwurf', 'Your page is still a draft', 'Ta page est encore un brouillon'),
+            body: draftStatus === 'pending' ? PUB.pending : TL('Nur wer den Link hat, sieht sie: Sie steht noch nicht in den Listen, in der Suche oder bei Google. Wenn Texte, Workshops, Preise und Termine passen, veröffentliche sie. Jirel schaut kurz drüber, dann geht sie live.', 'Only people with the link can see it: it is not in the listings, in search or on Google yet. When the texts, workshops, prices and dates are right, publish it. Jirel takes a quick look, then it goes live.', 'Seules les personnes qui ont le lien la voient : elle n’est pas encore dans les listes, la recherche ou sur Google. Quand textes, ateliers, prix et dates sont bons, publie-la. Jirel jette un œil, puis elle passe en ligne.'),
+            ...(draftStatus === 'pending' ? {} : { fix: { label: TT.publish, run: () => { void publishPage(); } } }),
+            link: { label: TT.view, href: h.page },
+          });
+        }
+        // Stripe: only once the server said it isn't connected.
+        if (stripeReady === false) {
+          out.push({ id: 'stripe', level: 1, title: TL('Gäste können noch nicht direkt bezahlen', 'Guests can’t pay straight away yet', 'Les invités ne peuvent pas encore payer directement'),
+            body: TL('Ohne Stripe können Gäste dir nur Anfragen schicken. Verbinde Stripe unter Einstellungen → Zahlungen, dann buchen und bezahlen sie sofort.', 'Without Stripe, guests can only send you requests. Connect Stripe in Settings → Payment and they can book and pay at once.', 'Sans Stripe, les invités peuvent seulement t’envoyer des demandes. Connecte Stripe dans Réglages → Paiement et ils réservent et paient tout de suite.'),
+            fix: { label: TT.fixStripe, run: () => { openView('settings/payments'); setPath(); } } });
+        }
+        // No studio address.
+        if (studioKnown && !myStudio) {
+          out.push({ id: 'studio', level: 1, title: TL('Deine Studio-Adresse fehlt', 'Your studio address is missing', 'L’adresse de ton studio manque'),
+            body: TL('Gäste bekommen sie mit der Buchungsbestätigung, auf deiner Seite steht nur der Bezirk. Trag sie unter Einstellungen → Dein Studio ein.', 'Guests get it with their booking confirmation; your page only shows the district. Add it in Settings → Your studio.', 'Les invités la reçoivent avec la confirmation ; ta page n’affiche que le quartier. Ajoute-la dans Réglages → Ton studio.'),
+            fix: { label: TT.fixStudio, run: goStudio } });
+        }
+        // Workshops and their dates (the calendar's own data).
+        const ws = calWorkshops();
+        const state = calListings.slug === slug ? calListings.items : [];
+        const built = (h as unknown as { workshops?: { key: string; title: string; duration?: string; desc?: boolean; request?: boolean; price?: string }[] }).workshops ?? [];
+        const info = (w: Ws) => built.find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)));
+        const editOf = (w: Ws) => state.find((x) => x.key === w.key)?.edit ?? null;
+        const live = ws.filter((w) => state.find((x) => x.key === w.key)?.status !== 'paused');
+        const today = calToday();
+        const until = iso(new Date(calNoon(today).getTime() + 365 * 86400000));
+        const evs = [...ownEvents.filter((e) => !['deleted', 'declined'].includes((e as { status?: string }).status ?? '')), ...calSiteEvents()];
+        const evsOf = (w: Ws) => evs.filter((e) => e.wkey === w.key || calKey(e.title) === w.key || w.alias?.includes(calKey(e.title)));
+        // A weekly slot guests ask for (onRequest) counts: it has dates they can pick.
+        const upcoming = (list: Ev[]) => list.some((e) => calOcc(e, today, until).length);
+        if (!upcoming(evs)) {
+          out.push({ id: 'dates', level: 1, title: TL('Du hast noch keine kommenden Termine', 'You have no upcoming dates', 'Tu n’as pas de dates à venir'),
+            body: TL('Ohne Termin können Gäste nur anfragen. Leg im Kalender einen Termin an, dann können sie direkt buchen.', 'Without a date, guests can only send requests. Add one in the Calendar and they can book straight away.', 'Sans date, les invités peuvent seulement faire une demande. Ajoute une date dans le Calendrier et ils peuvent réserver directement.'),
+            fix: { label: TT.fixDates, run: () => { showTab('calendar'); calAdd(); } } });
+        } else {
+          const dry = live.filter((w) => !info(w)?.request && !upcoming(evsOf(w)));
+          if (dry.length) out.push({ id: 'wsdates', level: dry.length, title: TL('Workshops ohne kommende Termine', 'Workshops without upcoming dates', 'Ateliers sans dates à venir'),
+            body: TL(`${listOf(dry.map((w) => w.title))}: keine Termine mehr. Leg neue an oder stell den Workshop im Editor auf „auf Anfrage“.`, `${listOf(dry.map((w) => w.title))}: no more dates. Add new ones, or set the workshop to “on request” in the editor.`, `${listOf(dry.map((w) => w.title))} : plus de dates. Ajoutes-en ou passe l’atelier « sur demande » dans l’éditeur.`),
+            fix: { label: TT.fixDates, run: () => { calSel = dry[0].key; showTab('calendar'); } } });
+        }
+        // Small photos: the page's pictures (not the square card) and the workshops' own.
+        const shots: { url: string; ws?: Ws }[] = [];
+        for (const url of h.photos ?? []) if (url !== h.card) shots.push({ url });
+        for (const w of live) {
+          const e = editOf(w);
+          for (const m of e?.media ?? []) if (m.type === 'photo') shots.push({ url: m.url, ws: w });
+          if (!e?.media?.length && w.image && w.image !== h.card && !(h.photos ?? []).includes(w.image)) shots.push({ url: w.image, ws: w });
+        }
+        for (const e of ownEvents) for (const m of e.media ?? []) if (m.type === 'photo') shots.push({ url: m.url, ws: ws.find((w) => w.key === (e.wkey || calKey(e.title))) });
+        const mine = shots.filter((x) => ownPicture(x.url));
+        mine.forEach((x) => measure(x.url));
+        const tiny = [...new Map(mine.filter((x) => small(x.url)).map((x) => [x.url, x])).values()];
+        if (tiny.length) {
+          const z = small(tiny[0].url)!;
+          const onPage = tiny.filter((x) => !x.ws).length;
+          const names = [...new Set(tiny.filter((x) => x.ws).map((x) => x.ws!.title))];
+          const where = [
+            onPage ? TL(`${onPage} ${onPage === 1 ? 'Foto' : 'Fotos'} auf deiner Seite`, `${onPage} ${onPage === 1 ? 'photo' : 'photos'} on your page`, `${onPage} photo${onPage === 1 ? '' : 's'} sur ta page`) : '',
+            names.length ? TL(`die Fotos von ${listOf(names)}`, `the photos of ${listOf(names)}`, `les photos de ${listOf(names)}`) : '',
+          ].filter(Boolean).join(TL(' und ', ' and ', ' et '));
+          out.push({ id: 'photos', level: tiny.length, title: TL(`Einige deiner Fotos sind klein (${z[0]} × ${z[1]})`, `Some of your photos are small (${z[0]} × ${z[1]})`, `Certaines de tes photos sont petites (${z[0]} × ${z[1]})`),
+            body: TL(`Betrifft ${where}. Auf großen Bildschirmen wirken sie dadurch unscharf. Lade die Originalfotos von deinem Handy oder deiner Kamera hoch (mindestens 1200 px breit), im Workshop-Editor unter Fotos & Video.`, `That’s ${where}. On big screens they look blurry. Upload the original photos from your phone or camera (at least 1200 px wide) in the workshop editor, under Photos & video.`, `Cela concerne ${where}. Sur grand écran, elles paraissent floues. Ajoute les photos originales de ton téléphone ou appareil photo (au moins 1200 px de large) dans l’éditeur d’atelier, sous Photos & vidéo.`),
+            fix: { label: TT.fixPhotos, run: () => goWs(tiny.find((x) => x.ws)?.ws ?? live[0]) } });
+        }
+        // Price and length: a bookable workshop needs a price; every workshop a length.
+        const gaps = live.map((w) => {
+          const e = editOf(w); const b = info(w); const mine2 = evsOf(w);
+          const price = !b?.request && !(e?.price || calNum(w.price) || mine2.some((x) => (x.price ?? 0) > 0));
+          const dur = !(e?.duration || b?.duration || mine2.some((x) => x.start && x.end));
+          return { w, price, dur };
+        }).filter((g) => g.price || g.dur);
+        if (gaps.length) {
+          const line = gaps.slice(0, 3).map((g) => `${quoted(g.w.title)}: ${[g.price ? TL('Preis', 'price', 'prix') : '', g.dur ? TL('Dauer', 'length', 'durée') : ''].filter(Boolean).join(', ')}`).join(' · ');
+          out.push({ id: 'price', level: gaps.length, title: TL('Preis oder Dauer fehlen', 'Price or length missing', 'Prix ou durée manquants'),
+            body: TL(`Es fehlt: ${line}. Gäste wollen beides wissen, bevor sie anfragen. Trag es im Workshop-Editor ein.`, `Missing: ${line}. Guests want to know both before they ask. Add it in the workshop editor.`, `Il manque : ${line}. Les invités veulent les connaître avant de demander. Ajoute-les dans l’éditeur d’atelier.`),
+            fix: { label: TT.fixEdit, run: () => goWs(gaps[0].w) } });
+        }
+        // An own description: without one the workshop page shows a general text.
+        const bare = live.filter((w) => !(editOf(w)?.description || info(w)?.desc));
+        if (bare.length) out.push({ id: 'desc', level: bare.length, title: TL('Workshops ohne eigene Beschreibung', 'Workshops without their own description', 'Ateliers sans description propre'),
+          body: TL(`${listOf(bare.map((w) => w.title))}: Dort steht bisher ein allgemeiner Text. Ein paar Sätze dazu, was passiert und was Gäste mitnehmen, helfen bei der Entscheidung.`, `${listOf(bare.map((w) => w.title))}: guests see a general text there so far. A few lines on what happens and what they take home help them decide.`, `${listOf(bare.map((w) => w.title))} : un texte général s’affiche pour l’instant. Quelques lignes sur ce qui se passe et ce qu’on emporte aident à se décider.`),
+          fix: { label: TT.fixEdit, run: () => goWs(bare[0]) } });
+        // A video (optional, said softly).
+        const hasVideo = h.video || state.some((x) => x.edit?.media?.some((m) => m.type === 'video')) || ownEvents.some((e) => e.media?.some((m) => m.type === 'video'));
+        if (!hasVideo && live.length) out.push({ id: 'video', level: 1, soft: true, title: TL('Ein kurzes Video? (optional)', 'A short video? (optional)', 'Une petite vidéo ? (facultatif)'),
+          body: TL('Workshops mit Video werden am häufigsten gebucht. 20–60 Sekunden vom Handy reichen, im Workshop-Editor unter Fotos & Video.', 'Workshops with a video get the most bookings. 20–60 seconds from your phone is enough, in the workshop editor under Photos & video.', 'Les ateliers avec vidéo sont les plus réservés. 20 à 60 secondes au téléphone suffisent, dans l’éditeur d’atelier sous Photos & vidéo.'),
+          fix: { label: TT.fixVideo, run: () => goWs(live[0]) } });
+        return out;
+      };
+      const tipIcon = (x: Tip) => (x.note ? '✉' : x.id === 'draft' ? '✎' : x.soft ? '✦' : 'i');
+      const dismissTip = (x: Tip) => {
+        tipSeen[x.id] = x.level;
+        saveLocalSeen();
+        if (!DEMO) void api('hostTips', { slug, action: 'dismiss', id: x.id, level: x.level }).catch(() => {});
+        renderTips();
+      };
+      let forgetting = '';
+      const renderTips = () => {
+        if (!slug || tipsFor !== slug) return;
+        const all = checks();
+        // Fixed since they were dismissed: forget them, so they can come back.
+        const gone = Object.keys(tipSeen).filter((id) => !all.some((x) => x.id === id) && (id !== 'studio' || studioKnown) && (id !== 'stripe' || stripeReady !== null) && (id !== 'photos' || [...photoSize.values()].every(Boolean)));
+        if (gone.length && forgetting !== gone.join()) {
+          forgetting = gone.join();
+          for (const id of gone) delete tipSeen[id];
+          saveLocalSeen();
+          if (!DEMO) void api('hostTips', { slug, action: 'forget', ids: gone }).catch(() => {});
+        }
+        tipsNow = all.filter((x) => !(x.id in tipSeen) || x.level > tipSeen[x.id]);
+        const box = $('[data-tp]');
+        box.hidden = !tipsNow.length;
+        const shown = tipsOpen ? tipsNow : tipsNow.slice(0, 3);
+        const more = $<HTMLButtonElement>('[data-tp-all]');
+        more.hidden = tipsNow.length <= 3;
+        more.textContent = tipsOpen ? more.dataset.less! : say(more.dataset.more!, { n: String(tipsNow.length) });
+        $('[data-tp-list]').replaceChildren(...shown.map((x) => {
+          const li = el('li', `tp-item${x.soft ? ' is-soft' : ''}${x.note ? ' is-note' : ''}`);
+          const txt = el('div', 'tp-txt');
+          txt.append(el('b', '', x.title), el('p', '', x.body));
+          const act = el('div', 'tp-act');
+          if (x.fix) { const b = el('button', 'tp-fix', x.fix.label) as HTMLButtonElement; b.type = 'button'; b.addEventListener('click', x.fix.run); act.append(b); }
+          if (x.link) { const a = el('a', 'tp-link', x.link.label) as HTMLAnchorElement; a.href = x.link.href; a.target = '_blank'; a.rel = 'noopener'; act.append(a); }
+          if (act.childElementCount) txt.append(act);
+          const xb = el('button', 'tp-x', '×') as HTMLButtonElement; xb.type = 'button'; xb.setAttribute('aria-label', `${TT.dismiss}: ${x.title}`); xb.title = TT.dismiss;
+          xb.addEventListener('click', () => dismissTip(x));
+          li.append(el('span', 'tp-ic', tipIcon(x)), txt, xb);
+          return li;
+        }));
+        paintDot();
+        if (!ntBox.hidden) ntPaint();
+      };
+      let tipsTimer = 0;
+      const scheduleTips = () => { window.clearTimeout(tipsTimer); tipsTimer = window.setTimeout(renderTips, 60); };
+      $('[data-tp-all]').addEventListener('click', () => { tipsOpen = !tipsOpen; renderTips(); });
+      // The draft's "Publish my page" (functions hostPublish).
+      const publishPage = async () => {
+        if (!confirm(PUB.ask)) return;
+        try {
+          draftStatus = DEMO ? 'pending' : (await api('hostPublish', { slug, name: auth.currentUser?.displayName || hosts[slug]?.name || '', page: new URL(hosts[slug]?.page ?? '/', location.origin).pathname })).status;
+        } catch { alert(PUB.fail); }
+        renderTips();
       };
       const paintDraft = async (s: string) => {
-        const h = hosts[s];
-        const box = $('[data-ha-draft]');
-        box.hidden = !h?.draft;
-        if (!h?.draft) return;
-        $<HTMLAnchorElement>('[data-ha-draft-view]').href = h.page;
-        showPublish(new URLSearchParams(location.search).get('publish') ?? 'draft');
-        if (DEMO) return;
-        try { showPublish((await api('hostPublish', { slug: s, check: true })).status); } catch { /* the button stays */ }
+        draftStatus = new URLSearchParams(location.search).get('publish') ?? 'draft';
+        void loadTips(s);
+        if (DEMO || !hosts[s]?.draft) return;
+        try { draftStatus = (await api('hostPublish', { slug: s, check: true })).status; } catch { /* stays a draft */ }
+        scheduleTips();
       };
-      $('[data-ha-publish]').addEventListener('click', async () => {
-        if (!confirm(PUB.ask)) return;
-        const btn = $<HTMLButtonElement>('[data-ha-publish]');
-        btn.disabled = true;
+      // Jirel: notes for the host she has open (shown to them as a tip).
+      const paintAdminNotes = () => {
+        $('[data-tp-adm]').hidden = !isAdmin;
+        if (!isAdmin) return;
+        $('[data-tp-note-list]').replaceChildren(...tipNotes.map((n) => {
+          const li = el('li', '', n.text);
+          const x = el('button', 'tp-x', '×') as HTMLButtonElement; x.type = 'button'; x.title = TT.dismiss;
+          x.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try { if (!DEMO) tipNotes = (await api('hostTips', { slug, action: 'unnote', id: n.id })).notes ?? []; else tipNotes = tipNotes.filter((y) => y.id !== n.id); } catch { /* stays */ }
+            paintAdminNotes(); renderTips();
+          });
+          li.append(x);
+          return li;
+        }));
+      };
+      $('[data-tp-note-add]').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const box = $<HTMLTextAreaElement>('[data-tp-note]');
+        const text = box.value.trim();
+        if (!text) { box.focus(); return; }
         try {
-          showPublish(DEMO ? 'pending' : (await api('hostPublish', { slug, name: auth.currentUser?.displayName || hosts[slug]?.name || '', page: new URL(hosts[slug]?.page ?? '/', location.origin).pathname })).status);
-        } catch { $('[data-ha-publish-msg]').textContent = PUB.fail; }
-        btn.disabled = false;
+          if (DEMO) tipNotes = [...tipNotes, { id: `demo${Date.now()}`, text, at: Date.now() }];
+          else tipNotes = (await api('hostTips', { slug, action: 'note', text })).notes ?? tipNotes;
+          box.value = '';
+        } catch { alert(PUB.fail); }
+        paintAdminNotes(); renderTips();
       });
 
       // ── Messages and Today: the requests for this host (functions hostInbox) ──
@@ -3131,6 +3407,7 @@ const fields = [
           stripeReady = !!s.chargesEnabled;
           stripeStarted = !!s.connected && !s.chargesEnabled;
           renderTodo();
+          scheduleTips();
           const hl = document.documentElement.lang;
           if (stripeReady) {
             $('[data-hs-pay]').textContent = hl === 'en' ? '✓ Stripe is connected. Payments go straight to your account.' : hl === 'fr' ? '✓ Stripe est connecté. Les paiements arrivent directement sur ton compte.' : '✓ Stripe ist verbunden. Zahlungen gehen direkt auf dein Konto.';
@@ -4554,6 +4831,7 @@ const fields = [
         const s = slug;
         try { calListings = { slug: s, items: (await api('hostListing', { slug: s, action: 'list' })).items ?? [] }; } catch { calListings = { slug: s, items: [] }; }
         renderCal();
+        scheduleTips();
       };
       {
         const wd = $('[data-cal-wd]');
@@ -4693,6 +4971,7 @@ const fields = [
           if (Number.isFinite(pct)) feePct = Math.max(0, Math.min(30, pct));
         } catch { /* not a member: no read access */ }
         const admin = await whoami;
+        isAdmin = admin;
         if (admin) {
           // Jirel: every host in the picker; opening one asks the server to
           // add it to her hostMembers first, so the rules let her save.
@@ -4783,6 +5062,7 @@ const fields = [
           pick.value = s;
           $('[data-ha-pick-wrap]').hidden = false;
           $('[data-ha-invite-admin]').hidden = false;
+          isAdmin = true;
         }
         if (q.get('demo') === 'addr') {
           slug = hosts.pia ? 'pia' : slug;
@@ -4826,6 +5106,12 @@ const fields = [
           $('[data-cal-demo]').hidden = false;
           ownEvents = []; reqs = []; calBookings = [];
           calDemo = { workshops: null };
+          // The tips' demo: a made-up studio and Stripe for a live host, none
+          // for a draft (?studio=0|1, ?stripe=0|1 to try the others).
+          const draft = !!hosts[slug]?.draft;
+          studioKnown = true;
+          myStudio = (q.get('studio') ?? (draft ? '0' : '1')) === '1' ? { street: 'Musterstr. 12', zip: '10245', district: 'Friedrichshain', vis: 'district', howTo: '' } : null;
+          stripeReady = (q.get('stripe') ?? (draft ? '0' : '1')) === '1';
           void paintDraft(slug);
           showTab(q.get('tab') === 'overview' ? 'overview' : 'calendar');
           return;
@@ -5624,16 +5910,37 @@ const fields = [
   .hd-set-name button { font: inherit; font-weight: 600; font-size: 0.88rem; color: #fff; background: #6a3eec; border: 0; border-radius: 12px; padding: 0 16px; cursor: pointer; }
   .hd-set-name small { font-size: 0.8rem; color: #1f7a3f; }
   .hd-menu-sep { border: 0; border-top: 1px solid rgba(36, 39, 46, 0.08); margin: 6px 0; }
-  .ha-draft { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin: 0 0 18px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, #ffc94d 28%, #fff); border: 1px solid color-mix(in srgb, #e0a800 40%, transparent); }
-  .ha-draft[hidden] { display: none; }
-  .ha-draft-t b { font-size: 1rem; }
-  .ha-draft-t p { margin: 4px 0 0; font-size: 0.9rem; line-height: 1.45; }
-  .ha-draft-msg:empty { display: none; }
-  .ha-draft-msg { font-weight: 600; }
-  .ha-draft-act { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
-  .ha-draft-act .ha-btn { text-decoration: none; text-align: center; }
-  .ha-draft-act .ha-btn-ghost { color: #1d1d1f; background: #fff; border: 1px solid rgba(0, 0, 0, 0.16); }
-  @media (max-width: 720px) { .ha-draft { flex-direction: column; align-items: stretch; } }
+  /* Tips for the page: small, friendly, lilac (not alarm red). */
+  .tp { margin: 0 0 18px; padding: 14px 16px 6px; border-radius: 16px; background: color-mix(in srgb, #6a3eec 6%, #fff); border: 1px solid color-mix(in srgb, #6a3eec 18%, transparent); }
+  .tp[hidden] { display: none; }
+  .tp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .tp-head h2 { margin: 0; font-size: 0.98rem; }
+  .tp-all { font: inherit; font-size: 0.85rem; font-weight: 600; color: #6a3eec; background: none; border: 0; padding: 4px 0; cursor: pointer; }
+  .tp-list { list-style: none; margin: 0; padding: 0; }
+  .tp-item { display: grid; grid-template-columns: 26px 1fr 28px; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px solid color-mix(in srgb, #6a3eec 12%, transparent); }
+  .tp-item:first-child { border-top: 0; }
+  .tp-ic { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; font-style: italic; font-family: Georgia, serif; color: #6a3eec; background: color-mix(in srgb, #6a3eec 14%, #fff); }
+  .tp-item.is-note .tp-ic, .tp-item.is-soft .tp-ic { font-style: normal; font-family: inherit; }
+  .tp-item.is-note .tp-ic { color: #2f6fed; background: color-mix(in srgb, #2f6fed 14%, #fff); }
+  .tp-txt b { display: block; font-size: 0.92rem; }
+  .tp-txt p { margin: 2px 0 0; font-size: 0.86rem; line-height: 1.45; color: var(--color-text-muted); }
+  .tp-item.is-note .tp-txt p { color: inherit; white-space: pre-line; }
+  .tp-act { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin-top: 8px; }
+  .tp-fix { font: inherit; font-size: 0.84rem; font-weight: 600; color: #fff; background: #6a3eec; border: 0; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+  .tp-item.is-soft .tp-fix { color: #6a3eec; background: #fff; border: 1px solid color-mix(in srgb, #6a3eec 35%, transparent); }
+  .tp-link { font-size: 0.84rem; font-weight: 600; color: #6a3eec; }
+  .tp-x { font: inherit; font-size: 1.1rem; line-height: 1; width: 28px; height: 28px; border-radius: 50%; border: 0; background: none; color: var(--color-text-muted); cursor: pointer; }
+  .tp-x:hover, .tp-x:focus-visible { background: color-mix(in srgb, #6a3eec 10%, #fff); color: #1d1d1f; }
+  .nt-tip { display: flex; align-items: flex-start; background: color-mix(in srgb, #6a3eec 5%, #fff); }
+  .nt-tip .nt-item { flex: 1; min-width: 0; }
+  .nt-tip-x { margin: 10px 8px 0 0; flex-shrink: 0; }
+  .nt-tip-ic { color: #6a3eec; font-weight: 700; }
+  .tp-adm { display: grid; gap: 6px; padding: 6px 16px; }
+  .tp-adm[hidden] { display: none; }
+  .tp-adm-l { display: grid; gap: 4px; font-size: 0.85rem; font-weight: 600; }
+  .tp-adm-l textarea { font: inherit; font-size: 0.86rem; font-weight: 400; width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid rgba(0, 0, 0, 0.16); border-radius: 10px; resize: vertical; }
+  .tp-adm-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 0.82rem; }
+  .tp-adm-list li { display: flex; justify-content: space-between; gap: 6px; align-items: start; padding: 6px 8px; border-radius: 8px; background: color-mix(in srgb, #2f6fed 8%, #fff); }
   .hd-hi { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
   .hd-hi h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
   .hd-hi .ha-sub { margin: 4px 0 0; }
