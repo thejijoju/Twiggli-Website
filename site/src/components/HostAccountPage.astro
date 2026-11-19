@@ -4183,7 +4183,9 @@ const fields = [
         wsF('seats').value = String(e.seats ?? first?.seats ?? '');
         wsF('note').value = e.note ?? '';
         wsMedia = e.media?.length ? [...e.media] : (w.image ? [{ type: 'photo', url: w.image }] : []);
-        const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || (first?.price ?? 0) > 0 ? 'instant' : 'request');
+        // As the site decides (sessions.ts takesRequests): dates from the site's own data,
+        // and dates taken over from it, take requests unless the workshop says otherwise.
+        const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || ((first?.price ?? 0) > 0 && !first?.virtual && !first?.replaces) ? 'instant' : 'request');
         (wsForm.querySelector<HTMLInputElement>(`[name="booking"][value="${booking}"]`))!.checked = true;
         wsDrawMedia();
         whereUI($('[data-wh="ws"]')).set({ where: e.where ?? 'studio', place: e.place });

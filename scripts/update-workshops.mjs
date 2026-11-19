@@ -660,18 +660,16 @@ const SOURCES = [
   // Ohma Studio (Boxhagener Str. 110, Friedrichshain) is a venue, not a
   // host: Olivia rents out a cosy co-working room and four makers teach
   // there, each selling their own tickets. Evelyn Cseh is already a host
-  // here and her card already names Ohma; her own dates come from her Luma
-  // calendar, the first source below. The three after it are the other
+  // here and her card already names Ohma; her own dates are kept in Twiggli now
+  // (hostDates.ts and her dashboard, Jirel 19.11.26). The three below are the other
   // three makers, on their own box offices. Sina's and Cèlia's Eventbrite pages render their lists in the
   // browser and CloudFront 403s the JSON behind them, so both go through
   // the relay. Each session's venue is checked before the district is
   // applied, since none of them teaches only here.
-  // Evelyn's own dates live on her Luma calendar (Jirel, 17.11.26). A
-  // session she sells through another box office appears there too, with
-  // that page's link.
-  { slug: 'evelyn', name: 'Tuka Creative Club (Evelyn) — Luma', mode: 'luma',
-    calendarId: 'cal-1gRSd95pNo5ySaP', url: 'https://luma.com/tukacreativeclub',
-    district: 'Friedrichshain' },
+  // Evelyn's Luma calendar (cal-1gRSd95pNo5ySaP, luma.com/tukacreativeclub,
+  // which also listed her foreveryone.berlin sessions) is no longer read:
+  // Jirel 19.11.26: Evelyn manages her dates in Twiggli. Her dates of that day
+  // moved to site/src/data/hostDates.ts; new ones she adds in her dashboard.
   { slug: 'sina', name: 'Sina Becker — Eventbrite box office', mode: 'eventbrite',
     url: 'https://www.eventbrite.de/o/sinamaker-99895128061',
     district: 'Friedrichshain', venue: 'Ohma Studio', detail: true },
@@ -1609,8 +1607,8 @@ async function fromKonfetti(source) {
 /** A Luma calendar embed (lu.ma / luma.com). The embed's public API serves
  *  every upcoming event as JSON with UTC start/end, ticket price and spots —
  *  nothing to render or click. An empty calendar simply parses to zero events
- *  until the host publishes dates. Evelyn (Tuka Creative Club) runs her dates
- *  off Luma since Nov 2026. */
+ *  until the host publishes dates. Evelyn (Tuka Creative Club) ran her dates
+ *  off Luma until 19.11.26 (now kept in Twiggli). */
 async function fromLuma(source) {
   const res = await fetch(
     `https://api.lu.ma/calendar/get-items?calendar_api_id=${source.calendarId}&period=future&pagination_limit=100`,
