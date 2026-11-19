@@ -10,6 +10,7 @@
  *
  * Vouchers and requests are announced as tabs and come next.
  */
+import { hostLang } from '../data/hostLang';
 import Base from '../layouts/Base.astro';
 import { getHosts, isPreviewHost } from '../data/content.ts';
 import { hostAccountCopy } from '../data/hostAccount.ts';
@@ -185,6 +186,7 @@ const fields = [
     data-view={view}
     data-config={JSON.stringify(config)}
     data-hosts={JSON.stringify(hosts)}
+    data-host-lang={JSON.stringify(hostLang)}
     data-copy={JSON.stringify(t)}
   >
     <header class="ha-head">
@@ -4654,7 +4656,7 @@ const fields = [
         $('[data-ha-who]').textContent = email;
         $('[data-hs-email]').textContent = email;
         void loadStats();
-        void loadSettings();
+        const settingsReady = loadSettings();
         void loadTfa();
         void loadPayments();
         // Say hello for "Active devices"; a device signed out elsewhere leaves here.
@@ -4725,6 +4727,12 @@ const fields = [
           claimForm.hidden = false;
           return;
         }
+        // Until the host picks a language in Präferenzen, the dashboard opens
+        // in theirs: German or English, as we write to them (Jirel 19.11.26).
+        void settingsReady.then(() => {
+          const want = (JSON.parse(root.dataset.hostLang || '{}') as Record<string, string>)[slugs[0]];
+          if (want && !(us.langAt && us.lang) && want !== root.dataset.lang) void switchLang(want);
+        });
         if (slugs.length > 1) {
           pick.replaceChildren(...slugs.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
           pick.addEventListener('change', () => { openHost(pick.value).catch(failed); });
