@@ -691,6 +691,7 @@ const issueVoucher = async (pi, m, buyer) => {
   const pdf = await voucherPdf({
     lang: m.lang, amount, code, validUntil, date: isoDay(today), order: String(m.ref ?? '').toUpperCase(),
     host, workshop: m.workshop, recipient: m.recipient, message: m.message, company: COMPANY,
+    photos: host ? await voucherPhotos(String(m.host_slug)) : [],
   });
   const toThem = m.deliver_to === 'recipient' && isEmail(m.recipient_email);
   const common = { lang: m.lang, buyerName: m.buyer_name, amount, code, validUntil, order: String(m.ref ?? '').toUpperCase(), date: isoDay(today), payment, host, site: SITE, company: COMPANY };
@@ -704,6 +705,24 @@ const issueVoucher = async (pi, m, buyer) => {
   await getFirestore().doc(`vouchers/${pi.id}`).update({ pdfSent: true, codeLast4: cleanCode(code).slice(-4), sentTo: toThem ? m.recipient_email : buyer });
   try { await notifyVoucherHost(pi.id, m, code, amount); } catch (err) { console.error('voucher host note failed', pi.id, err?.message); }
   return toThem ? 'recipient' : 'buyer';
+};
+
+/** Up to three of the host's photos from their page, for a host voucher
+ *  (Jirel 19.11.26: "pictures that fit the voucher"); none: the collage. */
+const voucherPhotos = async (slug) => {
+  if (!SLUG.test(slug)) return [];
+  // Their photos, then their video's poster; tiny files are the plain
+  // placeholders some hosts still have.
+  const paths = [`/img/hosts/${slug}.jpg`, ...[1, 2, 3, 4, 5, 6].map((n) => `/img/hosts/${slug}-${n}.jpg`), `/video/${slug}-poster.jpg`, `/img/hosts/${slug}-wide.jpg`];
+  const got = await Promise.all(paths.map(async (p) => {
+    try {
+      const r = await fetch(`${SITE}${p}`, { signal: AbortSignal.timeout(5000) });
+      if (!r.ok || !/jpe?g/.test(r.headers.get('content-type') ?? '')) return null;
+      const b = Buffer.from(await r.arrayBuffer());
+      return b.length > 8000 ? b : null;
+    } catch { return null; }
+  }));
+  return got.filter(Boolean).slice(0, 3);
 };
 
 /** A test voucher email to Jirel's own inbox only, to see what buyers
@@ -724,6 +743,8 @@ export const voucherPreview = onRequest({ region: 'europe-west3', secrets: [GMAI
     lang, amount: 50, code, validUntil: legalUntil(today), date: isoDay(today), order: 'VC-TEST', company: COMPANY,
     recipient: gift ? 'Lena' : '', message: gift ? (lang === 'de' ? 'Alles Liebe zum Geburtstag! Such dir was Schönes aus.' : 'Happy birthday! Pick something lovely.') : '',
   };
+  const ph = typeof req.query.host === 'string' && SLUG.test(req.query.host) ? req.query.host : '';
+  if (ph) { v.host = ph; v.photos = await voucherPhotos(ph); }
   const pdf = await voucherPdf({ ...v, test: true });
   const base = { ...v, test: true, buyerName: 'Jirel', payment: 'Visa •••• 4242', site: SITE };
   if (gift) {

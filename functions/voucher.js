@@ -6,7 +6,7 @@
 // Fonts are Poppins and Caveat (SIL Open Font License), kept in assets/.
 import { readFileSync } from 'node:fs';
 import { randomInt } from 'node:crypto';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, rgb, pushGraphicsState, popGraphicsState, moveTo, lineTo, appendBezierCurve, closePath, clip, endPath } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
 const asset = (name) => readFileSync(new URL(`./assets/${name}`, import.meta.url));
@@ -54,7 +54,31 @@ export const voucherPdf = async (v) => {
   const page = doc.addPage([W, H]);
   // The photo collage of the first vouchers (Jirel, 06.11.26: "keep that
   // design"), on the warm background; everything below it is drawn here.
-  page.drawImage(await doc.embedJpg(asset('bg-photos.jpg')), { x: 0, y: 0, width: W, height: H });
+  // A host voucher shows the host's own photos (Jirel 19.11.26) in the
+  // same rounded frames; a general voucher keeps the first collage.
+  const photos = [];
+  for (const b of (v.photos ?? []).slice(0, 3)) { try { photos.push(await doc.embedJpg(Uint8Array.from(b))); } catch { /* not a JPEG: skip */ } }
+  page.drawImage(await doc.embedJpg(asset(photos.length ? 'bg-plain.jpg' : 'bg-photos.jpg')), { x: 0, y: 0, width: W, height: H });
+  if (photos.length) {
+    const L = 14.1, R = 195.7, T = 14.3, B = 134, G = 4.1, split = 114.3;
+    const frames = photos.length === 1 ? [[L, T, R, B]]
+      : photos.length === 2 ? [[L, T, split, B], [split + G, T, R, B]]
+      : [[L, T, split, B], [split + G, T, R, (T + B - G) / 2], [split + G, (T + B + G) / 2, R, B]];
+    photos.forEach((img, i) => {
+      const [x1, y1, x2, y2] = frames[i];
+      const fx = x1 * MM, fy = H - y2 * MM, fw = (x2 - x1) * MM, fh = (y2 - y1) * MM, r = 3.6 * MM, k = 0.5523 * r;
+      // Cover the frame, cropped by a rounded clip.
+      const sc = Math.max(fw / img.width, fh / img.height);
+      const iw = img.width * sc, ih = img.height * sc;
+      page.pushOperators(pushGraphicsState(),
+        moveTo(fx + r, fy), lineTo(fx + fw - r, fy), appendBezierCurve(fx + fw - r + k, fy, fx + fw, fy + r - k, fx + fw, fy + r),
+        lineTo(fx + fw, fy + fh - r), appendBezierCurve(fx + fw, fy + fh - r + k, fx + fw - r + k, fy + fh, fx + fw - r, fy + fh),
+        lineTo(fx + r, fy + fh), appendBezierCurve(fx + r - k, fy + fh, fx, fy + fh - r + k, fx, fy + fh - r),
+        lineTo(fx, fy + r), appendBezierCurve(fx, fy + r - k, fx + r - k, fy, fx + r, fy), closePath(), clip(), endPath());
+      page.drawImage(img, { x: fx + (fw - iw) / 2, y: fy + (fh - ih) / 2, width: iw, height: ih });
+      page.pushOperators(popGraphicsState());
+    });
+  }
   const regular = await doc.embedFont(asset('Poppins-Regular.ttf'), { subset: true });
   const semi = await doc.embedFont(asset('Poppins-SemiBold.ttf'), { subset: true });
   const bold = await doc.embedFont(asset('Poppins-Bold.ttf'), { subset: true });
@@ -86,13 +110,21 @@ export const voucherPdf = async (v) => {
   if (recipient) { centre(`${de ? 'Für' : 'For'} ${recipient}`, hand, 20, top, PURPLE); top += 8; }
   if (message) { wrap(message, hand, 15, 140 * MM).slice(0, 2).forEach((l, i) => centre(l, hand, 15, top + i * 6.5, INK)); top += message ? 6.5 * Math.min(2, wrap(message, hand, 15, 140 * MM).length) : 0; }
 
-  // The code, in a dashed box.
-  const boxTop = Math.max(top + 4, 218);
-  const bw = 92 * MM, bh = 19 * MM;
-  page.drawRectangle({ x: (W - bw) / 2, y: H - (boxTop * MM) - bh, width: bw, height: bh, color: rgb(1, 1, 1), opacity: 0.85,
-    borderColor: PURPLE, borderWidth: 1.1, borderDashArray: [3, 2.5], borderOpacity: 0.9 });
-  centre(de ? 'GUTSCHEINCODE' : 'VOUCHER CODE', regular, 6.5, boxTop + 6, MUTED);
-  centre(v.code, semi, 19, boxTop + 14.5);
+  // The code, in a rounded dashed box right under the text (no gap; the
+  // first vouchers' look, Jirel 19.11.26).
+  const lines = wrap(what, regular, 10, 130 * MM).slice(0, 2).length;
+  const boxTop = Math.max(top + 4, 193 + (lines - 1) * 5 + 8);
+  const bw = 66 * MM, bh = 18 * MM;
+  const bx = (W - bw) / 2, by = H - boxTop * MM - bh, br = 3 * MM;
+  const box = `M ${br} 0 H ${bw - br} A ${br} ${br} 0 0 1 ${bw} ${br} V ${bh - br} A ${br} ${br} 0 0 1 ${bw - br} ${bh} H ${br} A ${br} ${br} 0 0 1 0 ${bh - br} V ${br} A ${br} ${br} 0 0 1 ${br} 0 Z`;
+  page.drawSvgPath(box, { x: bx, y: by + bh, color: rgb(1, 1, 1), opacity: 0.85, borderColor: PURPLE, borderWidth: 0.9, borderDashArray: [2.5, 2], borderOpacity: 0.9 });
+  const spaced = (text, font, size, topMm, gap, color) => {
+    const w = [...text].reduce((a, c) => a + font.widthOfTextAtSize(c, size) + gap, -gap);
+    let x = (W - w) / 2;
+    for (const c of text) { page.drawText(c, { x, y: H - topMm * MM, size, font, color }); x += font.widthOfTextAtSize(c, size) + gap; }
+  };
+  spaced(de ? 'GUTSCHEINCODE' : 'VOUCHER CODE', regular, 6.5, boxTop + 6, 0.9, MUTED);
+  spaced(v.code, semi, 18, boxTop + 14, 1.6, INK);
   if (v.test) centre(de ? 'TESTGUTSCHEIN · NICHT EINLÖSBAR' : 'TEST VOUCHER · NOT REDEEMABLE', bold, 9, boxTop - 2, rgb(0.76, 0.2, 0.3));
 
   const how = v.host
