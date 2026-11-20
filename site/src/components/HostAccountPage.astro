@@ -4465,16 +4465,17 @@ const fields = [
           calSel = (next && ws.find((w) => w.key === calKey(next.title))?.key) || ws[0]?.key || '';
         }
         const w = ws.find((x) => x.key === calSel);
-        // Pills, one per workshop, then "+ New workshop".
+        // Pills, one per workshop. Workshops are edited and created only on the
+        // Listings page (Pia's feedback 20.11.26, Jirel: "only one place to edit").
         const pills = $('[data-cal-pills]');
+        void w;
         pills.replaceChildren(...ws.map((x) => {
           const b = calBtn('cal-pill', '', () => { calSel = x.key; calSlot = ''; renderCal(); });
           b.setAttribute('aria-pressed', String(x.key === calSel));
           b.dataset.calF = `p:${x.key}`;
           b.append(calPic(x), el('span', '', x.title));
           return b;
-        }), ...(w ? [(() => { const b = calBtn('cal-pill cal-pill-edit', `✎ ${t.cal.editWs}`, () => calEditWs(w)); b.dataset.calF = 'ews'; return b; })()] : []),
-        calBtn('cal-pill cal-pill-new', t.cal.newWorkshop, () => openCreate()));
+        }));
         // No workshop and no date yet: one friendly way in.
         const empty = !ws.length;
         panel.classList.toggle('is-empty', empty);
