@@ -4836,7 +4836,22 @@ const fields = [
           if (img) pic.style.backgroundImage = `url("${img}")`;
           const nPhotos = (e.media ?? []).filter((m) => m.type === 'photo').length;
           const hasVid = (e.media ?? []).some((m) => m.type === 'video');
-          if (nPhotos || hasVid) pic.append(el('span', 'lst-badge', [hasVid ? TL('▶ Video', '▶ Video', '▶ Vidéo') : '', nPhotos ? `${nPhotos} ${TL('Fotos', 'photos', 'photos')}` : ''].filter(Boolean).join(' · ')));
+          // A workshop video plays on hover (mouse) or on tap (phone), muted (Jirel 20.11.26).
+          const vid = (e.media ?? []).find((m) => m.type === 'video' && !encoding.has(m.url));
+          if (vid) {
+            const v = document.createElement('video');
+            Object.assign(v, { muted: true, loop: true, playsInline: true, preload: 'none' });
+            v.poster = vid.thumb || img || '';
+            playHls(v, vid.url);
+            pic.classList.add('has-vid');
+            const go = () => { pic.classList.add('is-playing'); void v.play().catch(() => pic.classList.remove('is-playing')); };
+            const stop = () => { v.pause(); v.currentTime = 0; pic.classList.remove('is-playing'); };
+            pic.addEventListener('mouseenter', go);
+            pic.addEventListener('mouseleave', stop);
+            pic.addEventListener('click', () => (v.paused ? go() : stop()));
+            pic.append(v, el('span', 'lst-play', '▶'));
+          }
+          if (nPhotos || hasVid) pic.append(el('span', 'lst-badge', [hasVid ? TL('▶ Video', '▶ Video', '▶ Vidéo') : '', nPhotos ? `${nPhotos} ${nPhotos === 1 ? TL('Foto', 'photo', 'photo') : TL('Fotos', 'photos', 'photos')}` : ''].filter(Boolean).join(' · ')));
           const body = el('div', 'lst-body');
           body.append(el('h3', '', e.title || w.title));
           const meta = el('div', 'lst-meta');
@@ -6923,7 +6938,7 @@ const fields = [
   .lst-body h3 { margin: 0 0 14px; font-size: 1.3rem; line-height: 1.25; }
   .lst-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
   .lst-pill { font-size: .74rem; background: #f3eefe; color: #5b33d6; border-radius: 999px; padding: 3px 10px; font-weight: 500; }
-  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-del { color: #b3261e; } .lst-del-tick { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; font-size: .9rem; cursor: pointer; } .lst-del-tick input { width: 18px; height: 18px; margin-top: 2px; accent-color: #b3261e; } .hl-del-yes:disabled { opacity: .35; cursor: not-allowed; } .lst-card.is-paused { opacity: .7; } .lst-sec { margin: 18px 0 2px; font-size: .95rem; font-weight: 600; color: #6b6478; }
+  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-del { color: #b3261e; } .lst-pic { overflow: hidden; } .lst-pic.has-vid { cursor: pointer; } .lst-pic video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .2s; } .lst-pic.is-playing video { opacity: 1; } .lst-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: rgba(20, 16, 30, .55); color: #fff; font-size: 1rem; transition: opacity .2s; pointer-events: none; } .lst-pic.is-playing .lst-play { opacity: 0; } .lst-del-tick { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; font-size: .9rem; cursor: pointer; } .lst-del-tick input { width: 18px; height: 18px; margin-top: 2px; accent-color: #b3261e; } .hl-del-yes:disabled { opacity: .35; cursor: not-allowed; } .lst-card.is-paused { opacity: .7; } .lst-sec { margin: 18px 0 2px; font-size: .95rem; font-weight: 600; color: #6b6478; }
   .lst-desc { margin: 0; font-size: .82rem; color: #666; max-width: 560px; }
   .lst-hint { margin: 6px 0 0; font-size: .75rem; color: #b25d00; }
   .lst-act { grid-column: 2; align-self: end; display: flex; flex-wrap: wrap; gap: 6px; }
