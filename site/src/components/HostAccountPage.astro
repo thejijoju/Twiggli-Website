@@ -124,6 +124,16 @@ const hosts = Object.fromEntries(
         // formats come from hosts/preview.ts.
         for (const o of isPreviewHost(h.slug) ? previewOnRequestFor(h.slug, lang) : onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price, '', 0, '', { duration: o.duration ?? '', request: true });
       } catch { /* a host without listings: own dates only */ }
+      // Every host has at least one listing (Jirel 20.11.26): a host whose page has
+      // no workshop of its own yet gets one made from the page itself (what they
+      // do, the page's text and group price), on request, so they can edit it.
+      if (!out.length && h.specialty) {
+        const gp = (h as unknown as { groupPrice?: number | [number, number] }).groupPrice;
+        const price = Array.isArray(gp) ? `€${gp[0]}–${gp[1]}` : gp ? `€${gp}` : '';
+        const key = h.specialty.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/, '');
+        add(h.specialty, key, price, '', 0, href(lang, `/workshops/${h.activity}/${h.slug}/`), { duration: h.duration ?? '', request: true, desc: !!h.blurb, text: String(h.blurb ?? '').slice(0, 1500) });
+      }
       return out;
     })(),
     site: siteFor(h.slug),
@@ -4721,28 +4731,60 @@ const fields = [
         if (!slug) { list.replaceChildren(); return; }
         try { await calLoadListings(); } catch { /* cards from the site's data */ }
         const ws = calWorkshops();
-        // The other page(s) of the same host: one click to switch.
+        // The workshops of the host's other page(s), as normal cards (Jirel 20.11.26:
+        // Pia's Christmas painting should be a listing like the others). Edit and
+        // Dates open that page first, then the workshop, since each page saves its own.
         const LINKED: Record<string, string[]> = { pia: ['pia-christmas'], 'pia-christmas': ['pia'] };
-        const switcher = (LINKED[slug] ?? []).filter((o) => hosts[o]).map((o) => {
-          const bar = el('div', 'lst-other');
-          bar.append(el('span', '', `${TL('Deine weitere Seite', 'Your other page', 'Ton autre page')}: ${hosts[o].name} · ${hosts[o].en.specialty}`));
-          const go = el('button', 'lst-btn2', TL('Öffnen', 'Open', 'Ouvrir')) as HTMLButtonElement;
-          go.type = 'button';
-          go.addEventListener('click', async () => { const pk = root.querySelector<HTMLSelectElement>('[data-ha-pick]'); if (pk) pk.value = o; await openHost(o); showTab('listings'); });
-          bar.append(go);
-          return bar;
+        type BuiltWs = { key: string; title: string; duration?: string; url?: string; text?: string; request?: boolean; price?: string; image?: string };
+        const switcher = (LINKED[slug] ?? []).filter((o) => hosts[o]).flatMap((o) => {
+          const other = ((hosts[o] as unknown as { workshops?: BuiltWs[] }).workshops) ?? [];
+          const goTo = async (then: (ws: Ws[]) => void) => {
+            const pk = root.querySelector<HTMLSelectElement>('[data-ha-pick]'); if (pk) pk.value = o;
+            await openHost(o);
+            try { await calLoadListings(); } catch { /* site data */ }
+            then(calWorkshops());
+          };
+          const pick = (ws: Ws[], b: BuiltWs) => ws.find((x) => x.key === b.key || x.alias?.includes(calKey(b.title)));
+          return other.map((b) => {
+            const card = el('article', 'lst-card');
+            const pic = el('div', 'lst-pic');
+            const img = b.image || hosts[o].photos?.[0] || '';
+            if (img) pic.style.backgroundImage = `url("${img}")`;
+            const body = el('div', 'lst-body');
+            body.append(el('h3', '', b.title));
+            const meta = el('div', 'lst-meta');
+            const pill = (txt: string, cls = '') => { if (txt) meta.append(el('span', `lst-pill ${cls}`, txt)); };
+            pill(b.duration || '');
+            pill(b.price ? `${b.price} ${TL('pro Person', 'per person', 'par personne')}` : '');
+            if (b.request) pill(TL('✉ Auf Anfrage', '✉ On request', '✉ Sur demande'), 'is-req');
+            pill(`${TL('Eigene Seite', 'Own page', 'Page à part')}: ${hosts[o].en.specialty}`, 'is-page');
+            body.append(meta);
+            const desc = (b.text || '').trim();
+            if (desc) body.append(el('p', 'lst-desc', desc.length > 180 ? `${desc.slice(0, 180)}…` : desc));
+            const act = el('div', 'lst-act');
+            const edit = el('button', 'lst-btn', TL('Bearbeiten', 'Edit', 'Modifier')) as HTMLButtonElement;
+            edit.type = 'button';
+            edit.addEventListener('click', () => goTo((ws) => { showTab('listings'); const w = pick(ws, b); if (w) calEditWs(w); }));
+            const dates = el('button', 'lst-btn2', TL('Termine', 'Dates', 'Dates')) as HTMLButtonElement;
+            dates.type = 'button';
+            dates.addEventListener('click', () => goTo((ws) => { calSel = pick(ws, b)?.key ?? calSel; calSlot = ''; showTab('calendar'); setPath(); }));
+            act.append(edit, dates);
+            if (b.url) { const a = el('a', 'lst-btn2', TL('Seite ansehen', 'View page', 'Voir la page')) as HTMLAnchorElement; a.href = b.url; a.target = '_blank'; a.rel = 'noopener'; act.append(a); }
+            card.append(pic, body, act);
+            return card;
+          });
         });
         const state = calListings.slug === slug ? calListings.items : [];
-        const built = ((hosts[slug] as unknown as { workshops?: { key: string; title: string; duration?: string; url?: string; text?: string; request?: boolean; price?: string }[] }).workshops) ?? [];
+        const built = ((hosts[slug] as unknown as { workshops?: { key: string; title: string; duration?: string; url?: string; text?: string; request?: boolean; price?: string; dates?: number }[] }).workshops) ?? [];
         const info = (w: Ws) => built.find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)));
         const today = calToday();
         const until = new Date(Date.now() + 180 * 86400000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
         if (!ws.length) {
           const p = el('p', 'lst-empty', TL('Noch keine Workshops. Leg deinen ersten an!', 'No workshops yet. Create your first one!', 'Pas encore d’ateliers. Crée ton premier !'));
-          list.replaceChildren(...switcher, p);
+          list.replaceChildren(p, ...(switcher.length ? [el('h3', 'lst-sec', TL('Auf deiner weiteren Seite', 'On your other page', 'Sur ton autre page')), ...switcher] : []));
           return;
         }
-        list.replaceChildren(...switcher, ...ws.map((w) => {
+        const cards = ws.map((w) => {
           const st = state.find((x) => x.key === w.key);
           const e = (st?.edit ?? {}) as WsEdit;
           const b = info(w);
@@ -4781,8 +4823,18 @@ const fields = [
           act.append(edit, dates);
           if (b?.url) { const a = el('a', 'lst-btn2', TL('Seite ansehen', 'View page', 'Voir la page')) as HTMLAnchorElement; a.href = b.url; a.target = '_blank'; a.rel = 'noopener'; act.append(a); }
           card.append(pic, body, act);
+          // Where guests find it: with dates (page and calendar), or on request for groups.
+          card.dataset.sec = n || (booking !== 'request' && (b?.dates ?? 0) > 0) ? 'cal' : 'group';
           return card;
-        }));
+        });
+        // Grouped under titles (Jirel 20.11.26): every listing shows, each under where it appears.
+        const sec = (title: string, items: HTMLElement[]) => (items.length ? [el('h3', 'lst-sec', title), ...items] : []);
+        const others = (LINKED[slug] ?? []).filter((o) => hosts[o]);
+        list.replaceChildren(
+          ...sec(TL('Mit Terminen: auf deiner Seite und im Kalender', 'With dates: on your page and in the calendar', 'Avec dates : sur ta page et dans le calendrier'), cards.filter((c) => c.dataset.sec === 'cal')),
+          ...sec(TL('Für Gruppen und Firmen: auf Anfrage', 'For groups and companies: on request', 'Pour groupes et entreprises : sur demande'), cards.filter((c) => c.dataset.sec === 'group')),
+          ...sec(`${TL('Auf deiner weiteren Seite', 'On your other page', 'Sur ton autre page')}: ${others.map((o) => hosts[o].en.specialty).join(', ')}`, switcher),
+        );
       };
       $('[data-lst-new]').addEventListener('click', () => openCreate());
       wsDlg.addEventListener('close', () => { if (!$('[data-lst-list]').closest<HTMLElement>('[data-ha-panel]')!.hidden) void renderLst(); });
@@ -6816,7 +6868,7 @@ const fields = [
   .lst-body h3 { margin: 0 0 6px; font-size: 1.05rem; }
   .lst-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
   .lst-pill { font-size: .74rem; background: #f3eefe; color: #5b33d6; border-radius: 999px; padding: 3px 10px; font-weight: 500; }
-  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; }
+  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-sec { margin: 18px 0 2px; font-size: .95rem; font-weight: 600; color: #6b6478; }
   .lst-desc { margin: 0; font-size: .82rem; color: #666; max-width: 560px; }
   .lst-hint { margin: 6px 0 0; font-size: .75rem; color: #b25d00; }
   .lst-act { display: flex; flex-direction: column; gap: 8px; }
