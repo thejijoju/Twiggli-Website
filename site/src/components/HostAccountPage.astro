@@ -2382,11 +2382,13 @@ const fields = [
         loadInbox();
         void loadStripe().then(() => {
           // Back from Stripe's onboarding: say how it went, then tidy the address.
-          const back = new URLSearchParams(location.search).get('stripe');
+          const q = new URLSearchParams(location.search);
+          const back = q.get('stripe');
+          const why = (q.get('why') || '').slice(0, 160);
           if (!back) return;
           history.replaceState(null, '', location.pathname);
           if (back === 'return' || back === 'linked') alert(stripeReady ? (back === 'linked' ? `${t.stripeLinked} ${t.stripeDone}` : t.stripeDone) : t.stripePending);
-          else if (back === 'failed') alert(t.stripeFail);
+          else if (back === 'failed') alert(why ? `${t.stripeFail}\n\nStripe: ${why}` : t.stripeFail);
         });
       };
 
