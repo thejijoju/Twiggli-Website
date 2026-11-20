@@ -73,7 +73,14 @@ const wc = hostWorkshopsCopy[lang] ?? hostWorkshopsCopy.en;
 // With one block per workshop, the on-request rows take the blocks' titles
 // (in the page's language) and prices.
 const onRequest = (preview ? previewOnRequestFor(host.slug, lang) : onRequestFor(host.slug, lang))
-  .map((o, i) => (cards?.[i] ? { ...o, title: cards[i].title, price: `€${cards[i].price}` } : o));
+  .map((o, i) => (cards?.[i] ? { ...o, title: cards[i].title, price: `€${cards[i].price}` } : o))
+  // The host's other page(s) too, linking there (Jirel 20.11.26: Pia's
+  // Christmas painting belongs on her profile as well).
+  .concat(((({ pia: ['pia-christmas'] }) as Record<string, string[]>)[host.slug] ?? []).flatMap((o) => {
+    const lh = getHosts(lang, { withPreview: true }).find((h) => h.slug === o);
+    if (!lh) return [];
+    return (isPreviewHost(o) ? previewOnRequestFor(o, lang) : onRequestFor(o, lang)).map((x) => ({ ...x, bookUrl: hostHref(lang, lh) }));
+  }));
 const next = nextSessionByHost(lang);
 const others = hostsIn(host.activity, lang).filter((h) => h.slug !== host.slug);
 // The host's own words and logo, where they sent us some (hostAbout.ts).
