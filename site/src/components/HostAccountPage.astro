@@ -291,6 +291,7 @@ const fields = [
     <div class="ha-app" data-ha-app hidden>
       <p class="ha-back" data-ha-back hidden role="status">{L('Willkommen zurück! Dein Konto ist wieder aktiv. Deine Seite ist bis morgen früh wieder auf Twiggli zu sehen.', "Welcome back! Your account is active again. Your page will be back on Twiggli by tomorrow morning.", 'Bon retour ! Ton compte est de nouveau actif. Ta page sera de retour sur Twiggli d’ici demain matin.')}</p>
       <header class="hd-top">
+        <span class="hd-beta" title={L('Twiggli-Konten sind neu und noch in der Testphase', 'Twiggli accounts are new and still being tested', 'Les comptes Twiggli sont nouveaux et encore en test')}>BETA</span>
         <nav class="ha-tabs" role="tablist" data-ha-tabs hidden>
           <button type="button" role="tab" aria-selected="true" data-ha-tab="overview"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>{t.tabOverview}</button>
           <button type="button" role="tab" aria-selected="false" data-ha-tab="calendar"><svg class="hd-i" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>{t.tabCalendar}</button>
@@ -732,6 +733,31 @@ const fields = [
         <section class="msg" data-ha-panel="messages" hidden>
           <h2 class="cal-h">{t.tabMessages}</h2>
           <p class="ha-sub msg-lede">{t.cal.msgLede}</p>
+          {/* Twiggli Support, pinned (Jirel 20.11.26): problems, missing things, questions (functions hostSupport). */}
+          <div class="sp" data-sp>
+            <button type="button" class="sp-head" data-sp-toggle aria-expanded="false">
+              <span class="sp-av" aria-hidden="true">✦</span>
+              <span class="sp-t"><small>📌 {L('Angeheftet', 'Pinned', 'Épinglé')}</small><b>Twiggli Support</b><span>{L('Problem melden oder Frage stellen', 'Report a problem or ask a question', 'Signaler un problème ou poser une question')}</span></span>
+              <i class="sp-dot" data-sp-dot hidden></i>
+            </button>
+            <div class="sp-body" data-sp-body hidden>
+              <p class="sp-sub">{L('Jirel antwortet meist am selben Tag', 'Jirel usually replies the same day', 'Jirel répond en général le jour même')}</p>
+              <div class="sp-msgs" data-sp-msgs>
+                <div class="sp-b sp-them">{L('Hier kannst du uns jederzeit schreiben, wenn etwas nicht funktioniert oder fehlt. Ein Screenshot hilft uns sehr. 💛', 'Write to us here any time something doesn’t work or is missing. A screenshot helps a lot. 💛', 'Écris-nous ici dès que quelque chose ne marche pas ou manque. Une capture d’écran aide beaucoup. 💛')}</div>
+              </div>
+              <div class="sp-chips">
+                <button type="button" data-sp-kind="bug" aria-pressed="false">🐞 {L('Etwas funktioniert nicht', 'Something doesn’t work', 'Quelque chose ne marche pas')}</button>
+                <button type="button" data-sp-kind="idea" aria-pressed="false">💡 {L('Mir fehlt etwas', 'Something is missing', 'Il me manque quelque chose')}</button>
+                <button type="button" data-sp-kind="question" aria-pressed="false">❓ {L('Ich habe eine Frage', 'I have a question', 'J’ai une question')}</button>
+              </div>
+              <form class="sp-comp" data-sp-form>
+                <label class="sp-att" title={L('Screenshot anhängen', 'Attach a screenshot', 'Joindre une capture')}>📎<input type="file" accept="image/*" data-sp-file hidden /></label>
+                <textarea name="text" rows="2" maxlength="2000" placeholder={L('Beschreib kurz, was passiert ist…', 'Briefly describe what happened…', 'Décris brièvement ce qui s’est passé…')}></textarea>
+                <button type="submit" class="sp-send">{L('Senden', 'Send', 'Envoyer')}</button>
+              </form>
+              <p class="sp-note" data-sp-note role="status"></p>
+            </div>
+          </div>
           <div class="msg-list" data-msg-list></div>
         </section>
         <section class="hd-blank" data-ha-panel="listings" hidden><h2>{t.tabListings}</h2></section>
@@ -791,6 +817,16 @@ const fields = [
               <button type="button" aria-pressed="false" data-w="past">{t.wPast}</button>
             </div>
           </div>
+          {/* Beta note (Jirel 20.11.26): accounts are new, problems go to Twiggli Support in Messages. */}
+          <section class="bt" data-bt hidden>
+            <div class="bt-ic" aria-hidden="true">✦</div>
+            <div>
+              <h3>{L('Dein Twiggli-Konto ist neu (Beta)', 'Your Twiggli account is new (beta)', 'Ton compte Twiggli est nouveau (bêta)')}</h3>
+              <p>{L('Du gehörst zu den Ersten, die es testen, danke dir! Wenn etwas nicht klappt, fehlt oder umständlich ist, sag uns Bescheid. Wir kümmern uns schnell darum.', "You're one of the first to try it, thank you! If something doesn't work, is missing or feels clumsy, let us know. We'll sort it out quickly.", 'Tu fais partie des premiers à le tester, merci ! Si quelque chose ne marche pas, manque ou est compliqué, dis-le-nous. On s’en occupe vite.')}</p>
+              <button type="button" class="bt-btn" data-bt-report>{L('Problem melden', 'Report a problem', 'Signaler un problème')}</button>
+            </div>
+            <button type="button" class="bt-x" data-bt-x aria-label={L('Schließen', 'Close', 'Fermer')}>×</button>
+          </section>
           {/* Tips for the page (Jirel 19.11.26): what the host can fix, each with
               a button to the place to fix it; the draft page's "Publish" and
               Jirel's notes too. Filled by renderTips() below. */}
@@ -1875,12 +1911,15 @@ const fields = [
           return row;
         }));
       };
+      let spWhere = '';
       const showTab = (name: string) => {
+        const was = root.querySelector<HTMLElement>('[data-ha-tab][aria-selected="true"]')?.dataset.haTab;
+        if (name === 'messages' && was && was !== 'messages') spWhere = was;
         root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.haTab === name)));
         root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== name; });
         window.scrollTo({ top: 0 });
         if (name === 'listings') void renderListings();
-        if (name === 'messages') renderMsgPanel();
+        if (name === 'messages') { renderMsgPanel(); void spLoad(); }
         if (name === 'calendar') { renderCal(); void calLoadListings(); }
         if (name === 'overview') { try { scheduleTips(); } catch { /* still starting */ } }
         if (name === 'profile') renderProfile();
@@ -2343,6 +2382,80 @@ const fields = [
         fix?: { label: string; run: () => void }; link?: { label: string; href: string } };
       type TipNote = { id: string; text: string; at: number };
       const TL = (de: string, en: string, fr: string) => (document.documentElement.lang === 'de' ? de : document.documentElement.lang === 'fr' ? fr : en);
+      // ── Beta note and Twiggli Support (Jirel 20.11.26) ──────────────────
+      type SpMsg = { id: string; from: string; text: string; kind?: string; shot?: string; where?: string; device?: string; at: number };
+      let spKind = '';
+      let spShot = '';
+      const spDevice = () => { const ua = navigator.userAgent; return /iPhone|iPad/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Mac OS/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Browser'; };
+      const SP_KIND: Record<string, string> = { bug: '🐞', idea: '💡', question: '❓' };
+      const spTabName = (w: string) => ({ overview: TL('Übersicht', 'Overview', 'Aperçu'), calendar: TL('Kalender', 'Calendar', 'Calendrier'), listings: TL('Angebote', 'Listings', 'Offres'), settings: TL('Einstellungen', 'Settings', 'Réglages'), profile: TL('Profil', 'Profile', 'Profil') } as Record<string, string>)[w] || w;
+      const spRender = (msgs: SpMsg[]) => {
+        const box = $('[data-sp-msgs]');
+        box.querySelectorAll('.sp-b:not(:first-child)').forEach((n) => n.remove());
+        for (const m of msgs) {
+          const b = el('div', `sp-b ${m.from === 'host' ? 'sp-me' : 'sp-them'}`);
+          if (m.kind && SP_KIND[m.kind]) b.append(el('span', 'sp-kind', `${SP_KIND[m.kind]} `));
+          if (m.text) b.append(el('span', '', m.text));
+          if (m.shot) { const a = el('a', 'sp-shot') as HTMLAnchorElement; a.href = m.shot; a.target = '_blank'; a.rel = 'noopener'; const im = el('img') as HTMLImageElement; im.src = m.shot; im.alt = 'Screenshot'; a.append(im); b.append(a); }
+          const meta = [m.from === 'host' && m.where ? `${TL('Gesendet von', 'Sent from', 'Envoyé depuis')}: ${spTabName(m.where)}` : '', m.from === 'host' ? m.device : '', new Date(m.at).toLocaleString(document.documentElement.lang || 'en', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })].filter(Boolean).join(' · ');
+          b.append(el('div', 'sp-meta', meta));
+          box.append(b);
+        }
+        box.scrollTop = box.scrollHeight;
+      };
+      const spLoad = async () => {
+        if (!slug || DEMO) return;
+        try { const r = await api('hostSupport', { slug, action: 'list' }); spRender((r.msgs ?? []) as SpMsg[]); } catch { /* the welcome stays */ }
+      };
+      const spOpen = (open = true) => {
+        $('[data-sp-body]').hidden = !open;
+        $('[data-sp-toggle]').setAttribute('aria-expanded', String(open));
+        if (open) { void spLoad(); $<HTMLTextAreaElement>('[data-sp-form] textarea').focus({ preventScroll: true }); }
+      };
+      $('[data-sp-toggle]').addEventListener('click', () => spOpen($('[data-sp-body]').hidden));
+      root.querySelectorAll<HTMLButtonElement>('[data-sp-kind]').forEach((b) => b.addEventListener('click', () => {
+        spKind = spKind === b.dataset.spKind ? '' : (b.dataset.spKind || '');
+        root.querySelectorAll<HTMLButtonElement>('[data-sp-kind]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.spKind === spKind)));
+        $<HTMLTextAreaElement>('[data-sp-form] textarea').focus();
+      }));
+      $<HTMLInputElement>('[data-sp-file]').addEventListener('change', async (e) => {
+        const f = (e.target as HTMLInputElement).files?.[0];
+        const note = $('[data-sp-note]');
+        if (!f || !slug) return;
+        note.textContent = t.uploading;
+        try {
+          const r = storageRef(getStorage(app0), `hostMedia/${slug}/support-${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`);
+          await uploadBytes(r, f, { contentType: f.type });
+          spShot = await getDownloadURL(r);
+          note.textContent = TL('Screenshot angehängt ✓', 'Screenshot attached ✓', 'Capture jointe ✓');
+        } catch { note.textContent = TL('Der Screenshot konnte nicht hochgeladen werden.', 'The screenshot could not be uploaded.', 'La capture n’a pas pu être envoyée.'); }
+      });
+      $<HTMLFormElement>('[data-sp-form]').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const ta = $<HTMLTextAreaElement>('[data-sp-form] textarea');
+        const note = $('[data-sp-note]');
+        const text = ta.value.trim();
+        if (!text && !spShot) { ta.focus(); return; }
+        if (DEMO) { note.textContent = TL('Demo: wird nicht gesendet.', 'Demo: not sent.', 'Démo : non envoyé.'); return; }
+        note.textContent = '…';
+        try {
+          const r = await api('hostSupport', { slug, action: 'send', text, kind: spKind, shot: spShot, where: spWhere || 'messages', device: spDevice() });
+          ta.value = ''; spShot = ''; spKind = '';
+          root.querySelectorAll<HTMLButtonElement>('[data-sp-kind]').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+          note.textContent = TL('Danke! Wir melden uns bald.', 'Thank you! We’ll get back to you soon.', 'Merci ! On revient vers toi vite.');
+          spRender((r.msgs ?? []) as SpMsg[]);
+        } catch { note.textContent = fill(t.uploadFail, cfg.contact); }
+      });
+      // The beta note on the Overview: until closed (per browser).
+      const BT_KEY = 'twiggli-beta-note-closed';
+      try { $('[data-bt]').hidden = localStorage.getItem(BT_KEY) === '1'; } catch { $('[data-bt]').hidden = false; }
+      $('[data-bt-x]').addEventListener('click', () => { $('[data-bt]').hidden = true; try { localStorage.setItem(BT_KEY, '1'); } catch { /* private mode */ } });
+      $('[data-bt-report]').addEventListener('click', () => {
+        spWhere = 'overview';
+        root.querySelector<HTMLButtonElement>('[data-ha-tab="messages"]')?.click();
+        spOpen(true);
+        $('[data-sp]').scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
       const TT = {
         fixPhotos: TL('Fotos hochladen', 'Upload photos', 'Ajouter des photos'),
         fixEdit: TL('Workshop bearbeiten', 'Edit workshop', 'Modifier l’atelier'),
@@ -6524,4 +6637,34 @@ const fields = [
     .cal-f-row { grid-template-columns: 1fr 1fr; }
     .cal-f-row .cal-f:first-child { grid-column: 1 / -1; }
   }
+  /* Beta (Jirel 20.11.26) */
+  .hd-beta { align-self: center; font-size: .66rem; font-weight: 700; letter-spacing: .06em; color: #6a3eec; background: #f1eaff; border: 1px solid #d9c9ff; border-radius: 999px; padding: 2px 9px; margin-right: 6px; }
+  .bt { position: relative; display: flex; gap: 14px; align-items: flex-start; margin: 0 0 18px; padding: 16px 44px 16px 18px; border-radius: 16px; background: #fff; border: 1.5px solid #d9c9ff; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); }
+  .bt[hidden] { display: none; }
+  .bt-ic { flex: none; width: 38px; height: 38px; border-radius: 50%; background: #f1eaff; color: #6a3eec; display: grid; place-items: center; font-size: 18px; }
+  .bt h3 { margin: 0 0 4px; font-size: .95rem; }
+  .bt p { margin: 0; font-size: .86rem; color: #555; line-height: 1.5; }
+  .bt-btn { margin-top: 10px; border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 7px 16px; font: 600 .82rem inherit; font-family: inherit; cursor: pointer; }
+  .bt-x { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 20px; color: #999; cursor: pointer; }
+  .sp { max-width: 760px; margin: 0 0 16px; border-radius: 16px; background: #fff; border: 1px solid #e6dcff; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); overflow: hidden; }
+  .sp-head { width: 100%; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 0; background: #f6f2ff; text-align: left; font-family: inherit; cursor: pointer; }
+  .sp-av { flex: none; width: 38px; height: 38px; border-radius: 50%; background: #6a3eec; color: #fff; display: grid; place-items: center; }
+  .sp-t { display: grid; } .sp-t small { font-size: .62rem; font-weight: 700; color: #6a3eec; letter-spacing: .04em; text-transform: uppercase; } .sp-t b { font-size: .92rem; } .sp-t span { font-size: .8rem; color: #777; }
+  .sp-dot { margin-left: auto; width: 9px; height: 9px; border-radius: 50%; background: #e2457a; }
+  .sp-body { padding: 10px 14px 14px; } .sp-body[hidden] { display: none; }
+  .sp-sub { margin: 0 0 8px; font-size: .75rem; color: #888; }
+  .sp-msgs { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; padding: 10px; background: #fbf9ff; border-radius: 12px; }
+  .sp-b { max-width: 80%; padding: 9px 13px; border-radius: 14px; font-size: .86rem; line-height: 1.45; white-space: pre-wrap; }
+  .sp-them { background: #fff; border: 1px solid #eee; align-self: flex-start; }
+  .sp-me { background: #6a3eec; color: #fff; align-self: flex-end; }
+  .sp-meta { margin-top: 4px; font-size: .68rem; opacity: .7; }
+  .sp-shot img { display: block; margin-top: 8px; max-width: 220px; max-height: 160px; border-radius: 8px; }
+  .sp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .sp-chips button { border: 1px solid #d9c9ff; color: #6a3eec; background: #fff; border-radius: 999px; padding: 5px 12px; font: .78rem inherit; font-family: inherit; cursor: pointer; }
+  .sp-chips button[aria-pressed="true"] { background: #6a3eec; color: #fff; border-color: #6a3eec; }
+  .sp-comp { display: flex; gap: 8px; align-items: flex-end; }
+  .sp-comp textarea { flex: 1; resize: vertical; min-height: 42px; border: 1px solid #ddd; border-radius: 14px; padding: 9px 12px; font: .86rem inherit; font-family: inherit; }
+  .sp-att { font-size: 20px; cursor: pointer; padding: 6px 2px; }
+  .sp-send { border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 9px 18px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .sp-note { margin: 6px 0 0; font-size: .78rem; color: #6a3eec; min-height: 1em; }
 </style>
