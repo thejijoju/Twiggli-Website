@@ -1604,6 +1604,58 @@ export const hostTips = onRequest({ region: 'europe-west3', maxInstances: 5, cor
   return res.status(200).json({ notes: await notesOf(), dismissed });
 });
 
+// ── Twiggli Support in Messages (Jirel 20.11.26: the dashboard is in beta,
+// hosts report problems in one pinned conversation). Each host page has its
+// own thread (hostSupport/{slug}/msgs); a host's message is emailed to the
+// inbox, Jirel's reply (as admin) is emailed to the host.
+export const hostSupport = onRequest({ region: 'europe-west3', maxInstances: 5, cors: false, secrets: [GMAIL_APP_PASSWORD] }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email) return res.status(401).json({ error: 'Not signed in' });
+  const slug = String(req.body?.slug ?? '');
+  if (!SLUG.test(slug)) return res.status(400).json({ error: 'Bad page' });
+  if (!(await mayEdit(email, slug))) return res.status(403).json({ error: 'Not your page' });
+  const admin = ADMINS.includes(email);
+  const db = getFirestore();
+  const col = db.collection(`hostSupport/${slug}/msgs`);
+  const action = String(req.body?.action ?? 'list');
+  if (action === 'send') {
+    const text = String(req.body?.text ?? '').trim().slice(0, 2000);
+    const KINDS = ['bug', 'idea', 'question'];
+    const kind = KINDS.includes(String(req.body?.kind)) ? String(req.body.kind) : '';
+    const shot = String(req.body?.shot ?? '');
+    const okShot = /^https:\/\/firebasestorage\.googleapis\.com\//.test(shot) ? shot.slice(0, 600) : '';
+    if (!text && !okShot) return res.status(400).json({ error: 'Empty message' });
+    const where = String(req.body?.where ?? '').slice(0, 40);
+    const device = String(req.body?.device ?? '').slice(0, 40);
+    await col.add({ from: admin ? 'twiggli' : 'host', by: email, text, kind, shot: okShot, where, device, at: FieldValue.serverTimestamp() });
+    await db.doc(`hostSupport/${slug}`).set({ last: Date.now(), [admin ? 'hostUnread' : 'adminUnread']: true }, { merge: true });
+    try {
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      if (!admin) {
+        const label = { bug: 'Problem report', idea: 'Missing feature', question: 'Question' }[kind] || 'Support message';
+        await mail.sendMail({ from: { name: 'Twiggli Support', address: SENDER }, to: INBOX, replyTo: email, subject: `${label}: ${slug} (${email})`,
+          text: `${email} (page ${slug}) wrote in Twiggli Support:\n\n${text}\n\n${where ? `Sent from: ${where}` : ''}${device ? ` · ${device}` : ''}${okShot ? `\nScreenshot: ${okShot}` : ''}\n\nReply in their dashboard: Host öffnen → ${slug} → Nachrichten → Twiggli Support.` });
+      } else {
+        let who = null;
+        try { who = await hostContact(slug); } catch { /* sheet unreadable: no email */ }
+        const members = (await db.collection('hostMembers').where('slugs', 'array-contains', slug).limit(5).get()).docs.map((d) => d.id).filter((x) => !ADMINS.includes(x));
+        const to = members[0] || who?.emails?.[0];
+        if (to) {
+          const de = (who?.lang || 'de') === 'de';
+          const html = `<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.6;color:#24272e;max-width:560px"><p>${de ? 'Hallo' : 'Hi'}${who?.firstName ? ` ${esc(who.firstName)}` : ''},</p><p>${de ? 'du hast eine neue Antwort vom <b>Twiggli</b> Support:' : 'you have a new reply from <b>Twiggli</b> Support:'}</p><blockquote style="margin:0 0 14px;padding:10px 14px;border-left:3px solid #6A3EEC;background:#f6f2ff">${esc(text).replace(/\n/g, '<br>')}</blockquote><p>${de ? 'Du findest sie in deinem Konto unter Nachrichten → Twiggli Support.' : 'You will find it in your account under Messages → Twiggli Support.'}</p><p>${de ? 'Liebe Grüße 💛<br>Jirel, Gründerin @ <b>Twiggli</b>' : 'Warm regards 💛<br>Jirel, Founder @ <b>Twiggli</b>'}</p></div>`;
+          await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to, subject: de ? 'Neue Antwort vom Twiggli Support' : 'New reply from Twiggli Support', html, text: text });
+        }
+      }
+    } catch (err) { console.error('hostSupport mail', err?.message); }
+  } else if (action !== 'list') return res.status(400).json({ error: 'Bad action' });
+  if (!admin) await db.doc(`hostSupport/${slug}`).set({ hostUnread: false }, { merge: true });
+  else await db.doc(`hostSupport/${slug}`).set({ adminUnread: false }, { merge: true });
+  const snap = await col.orderBy('at', 'asc').limitToLast(100).get();
+  const msgs = snap.docs.map((d) => { const x = d.data(); return { id: d.id, from: x.from, text: x.text, kind: x.kind, shot: x.shot, where: x.where, device: x.device, at: x.at?.toMillis?.() ?? Date.now() }; });
+  return res.status(200).json({ msgs });
+});
+
 // ── Dates hosts create in their dashboard ("Neuer Termin") ──────────────
 // Saved in Firestore hostEvents; publicEvents hands the upcoming ones to the
 // website build (scripts/fetch-host-edits.mjs), which turns them into
