@@ -6917,19 +6917,19 @@ const fields = [
   .lst-top .ha-sub { margin: 0; }
   .lst-new { border: 2px solid #6a3eec; color: #6a3eec; background: #fff; border-radius: 999px; padding: 8px 18px; font-family: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; }
   .lst-list { display: grid; gap: 14px; max-width: 980px; }
-  .lst-card { display: grid; grid-template-columns: 200px 1fr; gap: 10px 18px; align-items: center; background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); }
-  .lst-pic { position: relative; width: 200px; height: 140px; border-radius: 12px; background: #f1eaff center / cover no-repeat; }
+  .lst-card { display: grid; grid-template-columns: 200px 1fr; grid-template-rows: 1fr auto; gap: 12px 18px; align-items: start; background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); }
+  .lst-pic { position: relative; grid-row: 1 / 3; align-self: stretch; width: 200px; min-height: 150px; height: 100%; border-radius: 12px; background: #f1eaff center / cover no-repeat; }
   .lst-badge { position: absolute; left: 8px; bottom: 8px; background: rgba(0, 0, 0, .6); color: #fff; font-size: .7rem; border-radius: 999px; padding: 3px 9px; }
-  .lst-body h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .lst-body h3 { margin: 0 0 14px; font-size: 1.3rem; line-height: 1.25; }
   .lst-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
   .lst-pill { font-size: .74rem; background: #f3eefe; color: #5b33d6; border-radius: 999px; padding: 3px 10px; font-weight: 500; }
   .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-del { color: #b3261e; } .lst-del-tick { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; font-size: .9rem; cursor: pointer; } .lst-del-tick input { width: 18px; height: 18px; margin-top: 2px; accent-color: #b3261e; } .hl-del-yes:disabled { opacity: .35; cursor: not-allowed; } .lst-card.is-paused { opacity: .7; } .lst-sec { margin: 18px 0 2px; font-size: .95rem; font-weight: 600; color: #6b6478; }
   .lst-desc { margin: 0; font-size: .82rem; color: #666; max-width: 560px; }
   .lst-hint { margin: 6px 0 0; font-size: .75rem; color: #b25d00; }
-  .lst-act { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
+  .lst-act { grid-column: 2; align-self: end; display: flex; flex-wrap: wrap; gap: 6px; }
   .lst-btn { border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 5px 12px; font-family: inherit; font-size: .74rem; font-weight: 600; cursor: pointer; }
   .lst-btn2 { border: 1px solid #ddd; background: #fff; color: #444; border-radius: 999px; padding: 4px 11px; font-family: inherit; font-size: .72rem; font-weight: 500; line-height: 1.3; cursor: pointer; text-align: center; text-decoration: none; }
   .lst-empty { color: #777; }
   .lst-other { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: #f6f2ff; border: 1px solid #e6dcff; font-size: .86rem; color: #5b33d6; }
-  @media (max-width: 720px) { .lst-card { grid-template-columns: 1fr; } .lst-pic { width: 100%; height: 180px; } .lst-act { grid-column: 1; } }
+  @media (max-width: 720px) { .lst-card { grid-template-columns: 1fr; grid-template-rows: auto; } .lst-pic { grid-row: auto; width: 100%; height: 180px; } .lst-act { grid-column: 1; } }
 </style>
