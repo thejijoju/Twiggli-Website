@@ -109,7 +109,7 @@ const hosts = Object.fromEntries(
       const seen = new Set<string>();
       // duration/desc/request: for the tips on the Overview (is a length,
       // an own description there; runs on request, without dates).
-      type W = { title: string; price: string; image: string; key: string; dates: number; url: string; duration?: string; desc?: boolean; request?: boolean };
+      type W = { title: string; price: string; image: string; key: string; dates: number; url: string; duration?: string; desc?: boolean; request?: boolean; text?: string };
       const out: W[] = [];
       const add = (title: string, key: string, price?: string, image?: string, dates = 0, url = '', more: Partial<W> = {}) => {
         const k = title.trim().toLowerCase();
@@ -118,8 +118,8 @@ const hosts = Object.fromEntries(
         out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates, url, ...more });
       };
       try {
-        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`), { duration: w.sessions[0]?.duration ?? '', desc: w.sessions.some((x) => !!x.description) });
-        for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.workshopKey, s.price, s.image, 1, '', { duration: s.duration ?? '', desc: !!s.description });
+        for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`), { duration: w.sessions[0]?.duration ?? '', desc: w.sessions.some((x) => !!x.description), text: String(w.sessions.find((x) => !!x.description)?.description ?? '').slice(0, 1500) });
+        for (const s of previewSessionsFor(h.slug, lang)) add(s.title, s.workshopKey, s.price, s.image, 1, '', { duration: s.duration ?? '', desc: !!s.description, text: String(s.description ?? '').slice(0, 1500) });
         // A preview host is out of the on-request lists (seo.ts), so their
         // formats come from hosts/preview.ts.
         for (const o of isPreviewHost(h.slug) ? previewOnRequestFor(h.slug, lang) : onRequestFor(h.slug, lang)) add(o.title, o.key ?? '', o.price, '', 0, '', { duration: o.duration ?? '', request: true });
@@ -760,7 +760,14 @@ const fields = [
           </div>
           <div class="msg-list" data-msg-list></div>
         </section>
-        <section class="hd-blank" data-ha-panel="listings" hidden><h2>{t.tabListings}</h2></section>
+        {/* Angebote (Jirel 20.11.26): every workshop as a card; Bearbeiten opens the same editor as the Calendar. */}
+        <section class="lst" data-ha-panel="listings" hidden>
+          <div class="lst-top">
+            <div><h2 class="cal-h">{t.tabListings}</h2><p class="ha-sub">{L('Deine Workshops, so wie Gäste sie auf Twiggli sehen. Tippe auf „Bearbeiten“, um alles zu ändern.', 'Your workshops as guests see them on Twiggli. Tap “Edit” to change anything.', 'Tes ateliers tels que les invités les voient sur Twiggli. Touche « Modifier » pour tout changer.')}</p></div>
+            <button type="button" class="lst-new" data-lst-new>{t.cal.newWorkshop}</button>
+          </div>
+          <div class="lst-list" data-lst-list></div>
+        </section>
 
         <!-- Messages, as on Airbnb (functions hostInbox / hostReply): the list
              (needs your answer, recent), the conversation with its request card
@@ -1918,7 +1925,7 @@ const fields = [
         root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.haTab === name)));
         root.querySelectorAll<HTMLElement>('[data-ha-panel]').forEach((p) => { p.hidden = p.dataset.haPanel !== name; });
         window.scrollTo({ top: 0 });
-        if (name === 'listings') void renderListings();
+        if (name === 'listings') { void renderListings(); void renderLst(); }
         if (name === 'messages') { renderMsgPanel(); void spLoad(); }
         if (name === 'calendar') { renderCal(); void calLoadListings(); }
         if (name === 'overview') { try { scheduleTips(); } catch { /* still starting */ } }
@@ -4604,6 +4611,8 @@ const fields = [
       // ── The whole workshop: title, description, length, price, places, pictures and
       //    video, and how guests book (functions hostListing edit, Jirel 18.11.26) ──
       const wsDlg = $<HTMLDialogElement>('[data-cal-ws]');
+      // The editor opens from Angebote too, so it can't live inside the (hidden) Calendar panel.
+      if (wsDlg.parentElement !== root) root.append(wsDlg);
       const wsForm = $<HTMLFormElement>('[data-cal-ws-form]');
       const wsF = <T extends HTMLElement = HTMLInputElement>(n: string) => wsForm.elements.namedItem(n) as unknown as T;
       let wsCur: Ws | null = null;
@@ -4667,6 +4676,77 @@ const fields = [
         } catch { note.textContent = fill(t.uploadFail, cfg.contact); }
         inp.value = '';
       }));
+      // ── Angebote: one card per workshop (Jirel 20.11.26) ─────────────────
+      const renderLst = async () => {
+        const list = $('[data-lst-list]');
+        if (!slug) { list.replaceChildren(); return; }
+        try { await calLoadListings(); } catch { /* cards from the site's data */ }
+        const ws = calWorkshops();
+        // The other page(s) of the same host: one click to switch.
+        const LINKED: Record<string, string[]> = { pia: ['pia-christmas'], 'pia-christmas': ['pia'] };
+        const switcher = (LINKED[slug] ?? []).filter((o) => hosts[o]).map((o) => {
+          const bar = el('div', 'lst-other');
+          bar.append(el('span', '', `${TL('Deine weitere Seite', 'Your other page', 'Ton autre page')}: ${hosts[o].name} · ${hosts[o].en.specialty}`));
+          const go = el('button', 'lst-btn2', TL('Öffnen', 'Open', 'Ouvrir')) as HTMLButtonElement;
+          go.type = 'button';
+          go.addEventListener('click', async () => { const pk = root.querySelector<HTMLSelectElement>('[data-ha-pick]'); if (pk) pk.value = o; await openHost(o); showTab('listings'); });
+          bar.append(go);
+          return bar;
+        });
+        const state = calListings.slug === slug ? calListings.items : [];
+        const built = ((hosts[slug] as unknown as { workshops?: { key: string; title: string; duration?: string; url?: string; text?: string; request?: boolean; price?: string }[] }).workshops) ?? [];
+        const info = (w: Ws) => built.find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)));
+        const today = calToday();
+        const until = new Date(Date.now() + 180 * 86400000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+        if (!ws.length) {
+          const p = el('p', 'lst-empty', TL('Noch keine Workshops. Leg deinen ersten an!', 'No workshops yet. Create your first one!', 'Pas encore d’ateliers. Crée ton premier !'));
+          list.replaceChildren(...switcher, p);
+          return;
+        }
+        list.replaceChildren(...switcher, ...ws.map((w) => {
+          const st = state.find((x) => x.key === w.key);
+          const e = (st?.edit ?? {}) as WsEdit;
+          const b = info(w);
+          const card = el('article', 'lst-card');
+          const pic = el('div', 'lst-pic');
+          const img = (e.media ?? []).find((m) => m.type === 'photo')?.url || w.image;
+          if (img) pic.style.backgroundImage = `url("${img}")`;
+          const nPhotos = (e.media ?? []).filter((m) => m.type === 'photo').length;
+          const hasVid = (e.media ?? []).some((m) => m.type === 'video');
+          if (nPhotos || hasVid) pic.append(el('span', 'lst-badge', [hasVid ? TL('▶ Video', '▶ Video', '▶ Vidéo') : '', nPhotos ? `${nPhotos} ${TL('Fotos', 'photos', 'photos')}` : ''].filter(Boolean).join(' · ')));
+          const body = el('div', 'lst-body');
+          body.append(el('h3', '', e.title || w.title));
+          const meta = el('div', 'lst-meta');
+          const pill = (txt: string, cls = '') => { if (txt) meta.append(el('span', `lst-pill ${cls}`, txt)); };
+          pill(e.duration || b?.duration || '');
+          const price = e.price ? `€${e.price}` : (w.price || b?.price || '');
+          pill(price ? `${price} ${TL('pro Person', 'per person', 'par personne')}` : '');
+          if (e.seats) pill(`${e.seats} ${TL('Plätze', 'spots', 'places')}`);
+          const booking = e.booking || w.booking || (b?.request ? 'request' : '');
+          if (booking === 'instant') pill(TL('✓ Sofort buchbar', '✓ Instant booking', '✓ Réservation directe'), 'is-go');
+          else if (booking === 'request') pill(TL('✉ Auf Anfrage', '✉ On request', '✉ Sur demande'), 'is-req');
+          const n = calSlots(w.key, today, until).length;
+          pill(n ? `${n} ${TL(n === 1 ? 'kommender Termin' : 'kommende Termine', n === 1 ? 'upcoming date' : 'upcoming dates', n === 1 ? 'date à venir' : 'dates à venir')}` : TL('Keine kommenden Termine', 'No upcoming dates', 'Aucune date à venir'), n ? '' : 'is-warn');
+          if (st?.status === 'paused') pill(TL('Pausiert', 'Paused', 'En pause'), 'is-warn');
+          body.append(meta);
+          const desc = (e.description || b?.text || '').trim();
+          if (desc) body.append(el('p', 'lst-desc', desc.length > 180 ? `${desc.slice(0, 180)}…` : desc));
+          if (!hasVid) body.append(el('p', 'lst-hint', TL('Noch kein Video. Workshops mit Video werden öfter gebucht.', 'No video yet. Workshops with a video get booked more often.', 'Pas encore de vidéo. Les ateliers avec vidéo sont plus réservés.')));
+          const act = el('div', 'lst-act');
+          const edit = el('button', 'lst-btn', TL('Bearbeiten', 'Edit', 'Modifier')) as HTMLButtonElement;
+          edit.type = 'button';
+          edit.addEventListener('click', () => calEditWs(w));
+          const dates = el('button', 'lst-btn2', TL('Termine', 'Dates', 'Dates')) as HTMLButtonElement;
+          dates.type = 'button';
+          dates.addEventListener('click', () => { calSel = w.key; calSlot = ''; showTab('calendar'); setPath(); });
+          act.append(edit, dates);
+          if (b?.url) { const a = el('a', 'lst-btn2', TL('Seite ansehen', 'View page', 'Voir la page')) as HTMLAnchorElement; a.href = b.url; a.target = '_blank'; a.rel = 'noopener'; act.append(a); }
+          card.append(pic, body, act);
+          return card;
+        }));
+      };
+      $('[data-lst-new]').addEventListener('click', () => openCreate());
+      wsDlg.addEventListener('close', () => { if (!$('[data-lst-list]').closest<HTMLElement>('[data-ha-panel]')!.hidden) void renderLst(); });
       const calEditWs = (w: Ws) => {
         wsCur = w;
         wsForm.reset();
@@ -4677,7 +4757,7 @@ const fields = [
         const evs = [...ownEvents, ...calSiteEvents()].filter((x) => x.wkey === w.key || calKey(x.title) === w.key || w.alias?.includes(calKey(x.title)));
         const first = evs.find((x) => !x.synced) ?? evs[0];
         wsF('title').value = e.title || w.title;
-        wsF<HTMLTextAreaElement>('description').value = e.description ?? '';
+        wsF<HTMLTextAreaElement>('description').value = e.description ?? ((hosts[slug] as unknown as { workshops?: { key: string; title: string; text?: string }[] }).workshops ?? []).find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)))?.text ?? '';
         wsF('duration').value = e.duration || (first ? calHours(first.start, first.end).replace(/\s/g, ' ') : '');
         wsF('price').value = String(e.price ?? (first?.price ?? calNum(w.price) ?? '') ?? '');
         wsF('seats').value = String(e.seats ?? first?.seats ?? '');
@@ -5092,6 +5172,9 @@ const fields = [
         try {
           const m = await getDoc(doc(db, 'hostMembers', email));
           slugs = ((m.data()?.slugs as string[] | undefined) ?? []).filter((s) => hosts[s]);
+          // A second page of the same host (Pia's Christmas painting) comes along.
+          const LINKED: Record<string, string[]> = { pia: ['pia-christmas'] };
+          slugs = [...new Set([...slugs, ...slugs.flatMap((s) => LINKED[s] ?? []).filter((s) => hosts[s])])];
           const pct = Number(m.data()?.commissionPct);
           if (Number.isFinite(pct)) feePct = Math.max(0, Math.min(30, pct));
         } catch { /* not a member: no read access */ }
@@ -6678,4 +6761,25 @@ const fields = [
   .sp-att { font-size: 20px; cursor: pointer; padding: 6px 2px; }
   .sp-send { border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 9px 18px; font-weight: 600; font-family: inherit; cursor: pointer; }
   .sp-note { margin: 6px 0 0; font-size: .78rem; color: #6a3eec; min-height: 1em; }
+  /* Angebote (Jirel 20.11.26) */
+  .lst-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .lst-top .cal-h { margin: 0 0 10px; }
+  .lst-top .ha-sub { margin: 0; }
+  .lst-new { border: 2px solid #6a3eec; color: #6a3eec; background: #fff; border-radius: 999px; padding: 8px 18px; font-family: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; }
+  .lst-list { display: grid; gap: 14px; max-width: 980px; }
+  .lst-card { display: grid; grid-template-columns: 200px 1fr auto; gap: 18px; align-items: center; background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); }
+  .lst-pic { position: relative; width: 200px; height: 140px; border-radius: 12px; background: #f1eaff center / cover no-repeat; }
+  .lst-badge { position: absolute; left: 8px; bottom: 8px; background: rgba(0, 0, 0, .6); color: #fff; font-size: .7rem; border-radius: 999px; padding: 3px 9px; }
+  .lst-body h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .lst-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .lst-pill { font-size: .74rem; background: #f3eefe; color: #5b33d6; border-radius: 999px; padding: 3px 10px; font-weight: 500; }
+  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; }
+  .lst-desc { margin: 0; font-size: .82rem; color: #666; max-width: 560px; }
+  .lst-hint { margin: 6px 0 0; font-size: .75rem; color: #b25d00; }
+  .lst-act { display: flex; flex-direction: column; gap: 8px; }
+  .lst-btn { border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 9px 20px; font-family: inherit; font-size: .86rem; font-weight: 600; cursor: pointer; }
+  .lst-btn2 { border: 1px solid #ddd; background: #fff; color: #444; border-radius: 999px; padding: 7px 16px; font-family: inherit; font-size: .8rem; font-weight: 500; line-height: 1.3; cursor: pointer; text-align: center; text-decoration: none; }
+  .lst-empty { color: #777; }
+  .lst-other { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: #f6f2ff; border: 1px solid #e6dcff; font-size: .86rem; color: #5b33d6; }
+  @media (max-width: 720px) { .lst-card { grid-template-columns: 1fr; } .lst-pic { width: 100%; height: 180px; } .lst-act { flex-direction: row; flex-wrap: wrap; } }
 </style>

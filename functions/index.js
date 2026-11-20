@@ -1324,7 +1324,13 @@ export const hostApprove = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
 });
 
 /** Requests for the pages the caller manages (Jirel: any page she asks for). */
-const mySlugs = async (email) => ((await getFirestore().doc(`hostMembers/${email}`).get()).data()?.slugs ?? []);
+// A host with a second page (Jirel 20.11.26: Pia's Christmas painting is its
+// own page, pia-christmas) manages both from one account.
+const LINKED_PAGES = { pia: ['pia-christmas'] };
+const mySlugs = async (email) => {
+  const own = (await getFirestore().doc(`hostMembers/${email}`).get()).data()?.slugs ?? [];
+  return [...new Set([...own, ...own.flatMap((s) => LINKED_PAGES[s] ?? [])])];
+};
 
 export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
