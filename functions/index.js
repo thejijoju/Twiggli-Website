@@ -712,9 +712,9 @@ const issueVoucher = async (pi, m, buyer) => {
  *  (Jirel 19.11.26: "pictures that fit the voucher"); none: the collage. */
 const voucherPhotos = async (slug) => {
   if (!SLUG.test(slug)) return [];
-  // Their photos, then their video's poster; tiny files are the plain
-  // placeholders some hosts still have.
-  const paths = [`/img/hosts/${slug}.jpg`, ...[1, 2, 3, 4, 5, 6].map((n) => `/img/hosts/${slug}-${n}.jpg`), `/video/${slug}-poster.jpg`, `/img/hosts/${slug}-wide.jpg`];
+  // Their photos only (a video still is often blurry: then the collage,
+  // Jirel 20.11.26); tiny files are the plain placeholders some hosts have.
+  const paths = [`/img/hosts/${slug}.jpg`, ...[1, 2, 3, 4, 5, 6].map((n) => `/img/hosts/${slug}-${n}.jpg`), `/img/hosts/${slug}-wide.jpg`];
   const got = await Promise.all(paths.map(async (p) => {
     try {
       const r = await fetch(`${SITE}${p}`, { signal: AbortSignal.timeout(5000) });

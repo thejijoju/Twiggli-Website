@@ -2518,7 +2518,10 @@ const fields = [
         if (!hasVideo && live.length) out.push({ id: 'video', level: 1, soft: true, title: TL('Ein kurzes Video? (optional)', 'A short video? (optional)', 'Une petite vidéo ? (facultatif)'),
           body: TL('Workshops mit Video werden am häufigsten gebucht. 20–60 Sekunden vom Handy reichen, im Workshop-Editor unter Fotos & Video.', 'Workshops with a video get the most bookings. 20–60 seconds from your phone is enough, in the workshop editor under Photos & video.', 'Les ateliers avec vidéo sont les plus réservés. 20 à 60 secondes au téléphone suffisent, dans l’éditeur d’atelier sous Photos & vidéo.'),
           fix: { label: TT.fixVideo, run: () => goWs(live[0]) } });
-        return out;
+        // For now only Stripe is shown (Jirel 20.11.26: "the only notification
+        // for now should be stripe, everything else second"), plus the draft
+        // (it carries the Publish button) and Jirel's own notes.
+        return out.filter((x) => x.note || x.id === 'stripe' || x.id === 'draft');
       };
       const tipIcon = (x: Tip) => (x.note ? '✉' : x.id === 'draft' ? '✎' : x.soft ? '✦' : 'i');
       const dismissTip = (x: Tip) => {
