@@ -6632,3 +6632,10 @@ body.is-bare { padding-bottom: 0; }
 .hd-pay-link { margin-top: 10px; width: 100%; padding: 12px; border: 1.5px solid currentColor; border-radius: 12px; background: transparent; font: inherit; font-weight: 700; cursor: pointer; opacity: .85; }
 .hd-pay-link:hover { opacity: 1; }
 .hd-pay-link:disabled { opacity: .5; cursor: wait; }
+
+/* Team vouchers on the corporate page (Jirel 20.11.26) */
+.team-vouchers { display: grid; grid-template-columns: minmax(0,1fr) 260px; gap: 32px; align-items: center; margin: 0 0 48px; padding: 28px 30px; border-radius: 24px; background: color-mix(in srgb, #6A3EEC 6%, #fff); border: 1px solid color-mix(in srgb, #6A3EEC 18%, transparent); max-width: 920px; }
+.team-vouchers .split-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.team-vouchers-note { margin: 12px 0 0; font-size: .78rem; color: var(--color-text-muted); }
+.team-vouchers-img { width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 40px rgba(40, 20, 90, .18); transform: rotate(3deg); background: #fff; }
+@media (max-width: 760px) { .team-vouchers { grid-template-columns: 1fr; padding: 22px 18px; } .team-vouchers-img { order: -1; max-width: 170px; margin: 0 auto 4px; transform: rotate(2deg); } }
