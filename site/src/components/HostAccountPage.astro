@@ -751,7 +751,7 @@ const fields = [
                 <button type="button" data-sp-kind="question" aria-pressed="false">❓ {L('Ich habe eine Frage', 'I have a question', 'J’ai une question')}</button>
               </div>
               <form class="sp-comp" data-sp-form>
-                <label class="sp-att" title={L('Screenshot anhängen', 'Attach a screenshot', 'Joindre une capture')}>📎<input type="file" accept="image/*" data-sp-file hidden /></label>
+                <label class="sp-att" title={L('Screenshot oder Dokument anhängen', 'Attach a screenshot or document', 'Joindre une capture ou un document')}>📎<input type="file" accept="image/*,application/pdf,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" multiple data-sp-file hidden /></label>
                 <textarea name="text" rows="2" maxlength="2000" placeholder={L('Beschreib kurz, was passiert ist…', 'Briefly describe what happened…', 'Décris brièvement ce qui s’est passé…')}></textarea>
                 <button type="submit" class="sp-send">{L('Senden', 'Send', 'Envoyer')}</button>
               </form>
@@ -2383,9 +2383,9 @@ const fields = [
       type TipNote = { id: string; text: string; at: number };
       const TL = (de: string, en: string, fr: string) => (document.documentElement.lang === 'de' ? de : document.documentElement.lang === 'fr' ? fr : en);
       // ── Beta note and Twiggli Support (Jirel 20.11.26) ──────────────────
-      type SpMsg = { id: string; from: string; text: string; kind?: string; shot?: string; where?: string; device?: string; at: number };
+      type SpMsg = { id: string; from: string; text: string; kind?: string; shot?: string; files?: { url: string; name: string; type: string }[]; where?: string; device?: string; at: number };
       let spKind = '';
-      let spShot = '';
+      let spFiles: { url: string; name: string; type: string }[] = [];
       const spDevice = () => { const ua = navigator.userAgent; return /iPhone|iPad/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Mac OS/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Browser'; };
       const SP_KIND: Record<string, string> = { bug: '🐞', idea: '💡', question: '❓' };
       const spTabName = (w: string) => ({ overview: TL('Übersicht', 'Overview', 'Aperçu'), calendar: TL('Kalender', 'Calendar', 'Calendrier'), listings: TL('Angebote', 'Listings', 'Offres'), settings: TL('Einstellungen', 'Settings', 'Réglages'), profile: TL('Profil', 'Profile', 'Profil') } as Record<string, string>)[w] || w;
@@ -2396,7 +2396,12 @@ const fields = [
           const b = el('div', `sp-b ${m.from === 'host' ? 'sp-me' : 'sp-them'}`);
           if (m.kind && SP_KIND[m.kind]) b.append(el('span', 'sp-kind', `${SP_KIND[m.kind]} `));
           if (m.text) b.append(el('span', '', m.text));
-          if (m.shot) { const a = el('a', 'sp-shot') as HTMLAnchorElement; a.href = m.shot; a.target = '_blank'; a.rel = 'noopener'; const im = el('img') as HTMLImageElement; im.src = m.shot; im.alt = 'Screenshot'; a.append(im); b.append(a); }
+          const fs = m.files?.length ? m.files : m.shot ? [{ url: m.shot, name: 'Screenshot', type: 'image/' }] : [];
+          for (const f of fs) {
+            const a = el('a', f.type.startsWith('image/') ? 'sp-shot' : 'sp-doc') as HTMLAnchorElement; a.href = f.url; a.target = '_blank'; a.rel = 'noopener';
+            if (f.type.startsWith('image/')) { const im = el('img') as HTMLImageElement; im.src = f.url; im.alt = f.name; a.append(im); } else a.textContent = `📄 ${f.name}`;
+            b.append(a);
+          }
           const meta = [m.from === 'host' && m.where ? `${TL('Gesendet von', 'Sent from', 'Envoyé depuis')}: ${spTabName(m.where)}` : '', m.from === 'host' ? m.device : '', new Date(m.at).toLocaleString(document.documentElement.lang || 'en', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })].filter(Boolean).join(' · ');
           b.append(el('div', 'sp-meta', meta));
           box.append(b);
@@ -2419,28 +2424,32 @@ const fields = [
         $<HTMLTextAreaElement>('[data-sp-form] textarea').focus();
       }));
       $<HTMLInputElement>('[data-sp-file]').addEventListener('change', async (e) => {
-        const f = (e.target as HTMLInputElement).files?.[0];
+        const list = Array.from((e.target as HTMLInputElement).files ?? []).slice(0, 5 - spFiles.length);
         const note = $('[data-sp-note]');
-        if (!f || !slug) return;
+        if (!list.length || !slug) return;
         note.textContent = t.uploading;
         try {
-          const r = storageRef(getStorage(app0), `hostMedia/${slug}/support-${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`);
-          await uploadBytes(r, f, { contentType: f.type });
-          spShot = await getDownloadURL(r);
-          note.textContent = TL('Screenshot angehängt ✓', 'Screenshot attached ✓', 'Capture jointe ✓');
-        } catch { note.textContent = TL('Der Screenshot konnte nicht hochgeladen werden.', 'The screenshot could not be uploaded.', 'La capture n’a pas pu être envoyée.'); }
+          for (const f of list) {
+            if (f.size > 15e6) throw new Error('big');
+            const r = storageRef(getStorage(app0), `hostSupport/${slug}/${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`);
+            await uploadBytes(r, f, { contentType: f.type || 'application/octet-stream' });
+            spFiles.push({ url: await getDownloadURL(r), name: f.name, type: f.type || 'application/octet-stream' });
+          }
+          note.textContent = `${TL('Angehängt', 'Attached', 'Joint')} ✓ ${spFiles.map((x) => x.name).join(', ')}`;
+        } catch { note.textContent = TL('Die Datei konnte nicht hochgeladen werden (max. 15 MB).', 'The file could not be uploaded (max 15 MB).', 'Le fichier n’a pas pu être envoyé (15 Mo max).'); }
+        (e.target as HTMLInputElement).value = '';
       });
       $<HTMLFormElement>('[data-sp-form]').addEventListener('submit', async (e) => {
         e.preventDefault();
         const ta = $<HTMLTextAreaElement>('[data-sp-form] textarea');
         const note = $('[data-sp-note]');
         const text = ta.value.trim();
-        if (!text && !spShot) { ta.focus(); return; }
+        if (!text && !spFiles.length) { ta.focus(); return; }
         if (DEMO) { note.textContent = TL('Demo: wird nicht gesendet.', 'Demo: not sent.', 'Démo : non envoyé.'); return; }
         note.textContent = '…';
         try {
-          const r = await api('hostSupport', { slug, action: 'send', text, kind: spKind, shot: spShot, where: spWhere || 'messages', device: spDevice() });
-          ta.value = ''; spShot = ''; spKind = '';
+          const r = await api('hostSupport', { slug, action: 'send', text, kind: spKind, files: spFiles, where: spWhere || 'messages', device: spDevice() });
+          ta.value = ''; spFiles = []; spKind = '';
           root.querySelectorAll<HTMLButtonElement>('[data-sp-kind]').forEach((x) => x.setAttribute('aria-pressed', 'false'));
           note.textContent = TL('Danke! Wir melden uns bald.', 'Thank you! We’ll get back to you soon.', 'Merci ! On revient vers toi vite.');
           spRender((r.msgs ?? []) as SpMsg[]);
@@ -6658,6 +6667,8 @@ const fields = [
   .sp-them { background: #fff; border: 1px solid #eee; align-self: flex-start; }
   .sp-me { background: #6a3eec; color: #fff; align-self: flex-end; }
   .sp-meta { margin-top: 4px; font-size: .68rem; opacity: .7; }
+  .sp-doc { display: inline-block; margin-top: 8px; padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,.18); color: inherit; font-size: .8rem; }
+  .sp-them .sp-doc { background: #f1eaff; color: #6a3eec; }
   .sp-shot img { display: block; margin-top: 8px; max-width: 220px; max-height: 160px; border-radius: 8px; }
   .sp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
   .sp-chips button { border: 1px solid #d9c9ff; color: #6a3eec; background: #fff; border-radius: 999px; padding: 5px 12px; font: .78rem inherit; font-family: inherit; cursor: pointer; }

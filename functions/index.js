@@ -1623,19 +1623,31 @@ export const hostSupport = onRequest({ region: 'europe-west3', maxInstances: 5, 
     const text = String(req.body?.text ?? '').trim().slice(0, 2000);
     const KINDS = ['bug', 'idea', 'question'];
     const kind = KINDS.includes(String(req.body?.kind)) ? String(req.body.kind) : '';
-    const shot = String(req.body?.shot ?? '');
-    const okShot = /^https:\/\/firebasestorage\.googleapis\.com\//.test(shot) ? shot.slice(0, 600) : '';
-    if (!text && !okShot) return res.status(400).json({ error: 'Empty message' });
+    // Screenshots and documents (Jirel 20.11.26): up to 5, uploaded to Storage first.
+    const files = (Array.isArray(req.body?.files) ? req.body.files : []).slice(0, 5)
+      .map((f) => ({ url: String(f?.url ?? '').slice(0, 600), name: String(f?.name ?? 'file').replace(/[^\w. ()-]/g, '_').slice(0, 80), type: String(f?.type ?? '').slice(0, 60) }))
+      .filter((f) => /^https:\/\/firebasestorage\.googleapis\.com\//.test(f.url));
+    const okShot = files.find((f) => f.type.startsWith('image/'))?.url ?? '';
+    if (!text && !files.length) return res.status(400).json({ error: 'Empty message' });
     const where = String(req.body?.where ?? '').slice(0, 40);
     const device = String(req.body?.device ?? '').slice(0, 40);
-    await col.add({ from: admin ? 'twiggli' : 'host', by: email, text, kind, shot: okShot, where, device, at: FieldValue.serverTimestamp() });
+    await col.add({ from: admin ? 'twiggli' : 'host', by: email, text, kind, shot: okShot, files, where, device, at: FieldValue.serverTimestamp() });
     await db.doc(`hostSupport/${slug}`).set({ last: Date.now(), [admin ? 'hostUnread' : 'adminUnread']: true }, { merge: true });
     try {
       const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
       if (!admin) {
         const label = { bug: 'Problem report', idea: 'Missing feature', question: 'Question' }[kind] || 'Support message';
-        await mail.sendMail({ from: { name: 'Twiggli Support', address: SENDER }, to: INBOX, replyTo: email, subject: `${label}: ${slug} (${email})`,
-          text: `${email} (page ${slug}) wrote in Twiggli Support:\n\n${text}\n\n${where ? `Sent from: ${where}` : ''}${device ? ` · ${device}` : ''}${okShot ? `\nScreenshot: ${okShot}` : ''}\n\nReply in their dashboard: Host öffnen → ${slug} → Nachrichten → Twiggli Support.` });
+        // The files themselves come along as attachments (and as links).
+        const attachments = [];
+        for (const f of files) {
+          try {
+            const r = await fetch(f.url, { signal: AbortSignal.timeout(10000) });
+            const b = Buffer.from(await r.arrayBuffer());
+            if (r.ok && b.length < 15e6) attachments.push({ filename: f.name, content: b, contentType: f.type || undefined });
+          } catch { /* the link is in the text */ }
+        }
+        await mail.sendMail({ from: { name: 'Twiggli Support', address: SENDER }, to: INBOX, replyTo: email, subject: `${label}: ${slug} (${email})`, attachments,
+          text: `${email} (page ${slug}) wrote in Twiggli Support:\n\n${text}\n\n${where ? `Sent from: ${where}` : ''}${device ? ` · ${device}` : ''}${files.length ? `\nFiles:\n${files.map((f) => `- ${f.name}: ${f.url}`).join('\n')}` : ''}\n\nReply by email (goes straight to them), or in their dashboard: Host öffnen → ${slug} → Nachrichten → Twiggli Support.` });
       } else {
         let who = null;
         try { who = await hostContact(slug); } catch { /* sheet unreadable: no email */ }
@@ -1652,7 +1664,7 @@ export const hostSupport = onRequest({ region: 'europe-west3', maxInstances: 5, 
   if (!admin) await db.doc(`hostSupport/${slug}`).set({ hostUnread: false }, { merge: true });
   else await db.doc(`hostSupport/${slug}`).set({ adminUnread: false }, { merge: true });
   const snap = await col.orderBy('at', 'asc').limitToLast(100).get();
-  const msgs = snap.docs.map((d) => { const x = d.data(); return { id: d.id, from: x.from, text: x.text, kind: x.kind, shot: x.shot, where: x.where, device: x.device, at: x.at?.toMillis?.() ?? Date.now() }; });
+  const msgs = snap.docs.map((d) => { const x = d.data(); return { id: d.id, from: x.from, text: x.text, kind: x.kind, shot: x.shot, files: x.files ?? [], where: x.where, device: x.device, at: x.at?.toMillis?.() ?? Date.now() }; });
   return res.status(200).json({ msgs });
 });
 
