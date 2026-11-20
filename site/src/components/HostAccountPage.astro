@@ -789,6 +789,7 @@ const fields = [
             <div><h2 class="cal-h">{t.tabListings}</h2><p class="ha-sub">{L('Deine Workshops, so wie Gäste sie auf Twiggli sehen. Tippe auf „Bearbeiten“, um alles zu ändern.', 'Your workshops as guests see them on Twiggli. Tap “Edit” to change anything.', 'Tes ateliers tels que les invités les voient sur Twiggli. Touche « Modifier » pour tout changer.')}</p></div>
             <button type="button" class="lst-new" data-lst-new>{t.cal.newWorkshop}</button>
           </div>
+          <p class="lst-note" data-lst-note aria-live="polite"></p>
           <div class="lst-list" data-lst-list></div>
         </section>
 
@@ -4010,7 +4011,7 @@ const fields = [
         };
         const state = calListings.slug === slug ? calListings.items : [];
         for (const w of hosts[slug]?.workshops ?? []) {
-          const st = state.find((x) => x.key && x.key === w.key);
+          const st = state.find((x) => x.key && x.key === (w.key || calKey(w.title)));
           if (st?.status === 'deleted') continue;
           add(st?.edit?.title || w.title, (st?.edit?.media ?? []).find((m) => m.type === 'photo')?.url || w.image, w.price, w.key, [w.title]);
           const ws = out.find((x) => x.key === (w.key || calKey(w.title)));
@@ -4640,6 +4641,7 @@ const fields = [
       const wsDlg = $<HTMLDialogElement>('[data-cal-ws]');
       // The editor opens from Angebote too, so it can't live inside the (hidden) Calendar panel.
       if (wsDlg.parentElement !== root) root.append(wsDlg);
+      { const hl = root.querySelector<HTMLDialogElement>('[data-hl-confirm]'); if (hl && hl.parentElement !== root) root.append(hl); }
       const wsForm = $<HTMLFormElement>('[data-cal-ws-form]');
       const wsF = <T extends HTMLElement = HTMLInputElement>(n: string) => wsForm.elements.namedItem(n) as unknown as T;
       let wsCur: Ws | null = null;
@@ -4735,6 +4737,37 @@ const fields = [
           }
         });
       }
+      const lstSet = async (w: Ws, status: 'live' | 'paused' | 'deleted') => {
+        const lnote = $('[data-lst-note]');
+        try {
+          if (!calDemo) await api('hostListing', { slug, key: w.key, title: w.title, price: w.price || '', image: w.image || '', status });
+          const items = calListings.slug === slug ? calListings.items.filter((x) => x.key !== w.key) : [];
+          items.push({ key: w.key, title: w.title, price: w.price || '', image: w.image || '', status } as (typeof calListings.items)[number]);
+          calListings = { slug, items };
+          if (lnote) lnote.textContent = status === 'live' ? t.ib.lsDoneLive : status === 'paused' ? t.ib.lsDonePaused : t.ib.lsDoneDeleted;
+        } catch { if (lnote) lnote.textContent = t.ib.lsFail; }
+        renderCal();
+        await renderLst();
+      };
+      const lstAskDelete = (w: Ws, paused: boolean) => {
+        const dlg = $<HTMLDialogElement>('[data-hl-confirm]');
+        const dbody = dlg.querySelector<HTMLElement>('[data-hl-confirm-body]')!;
+        const yes = el('button', 'ib-act ib-act-main hl-del-yes', t.ib.lsDeleteYes) as HTMLButtonElement; yes.type = 'button';
+        // A tick first, then the button comes alive (Jirel 20.11.26).
+        yes.disabled = true;
+        const tick = el('label', 'lst-del-tick');
+        const cb = document.createElement('input'); cb.type = 'checkbox';
+        cb.addEventListener('change', () => { yes.disabled = !cb.checked; });
+        tick.append(cb, el('span', '', TL('Ja, ich möchte diesen Workshop endgültig löschen.', 'Yes, I want to delete this workshop for good.', 'Oui, je veux supprimer cet atelier définitivement.')));
+        yes.addEventListener('click', () => { if (!cb.checked) return; dlg.close(); void lstSet(w, 'deleted'); });
+        const pause = el('button', 'ib-act', t.ib.lsPauseInstead) as HTMLButtonElement; pause.type = 'button';
+        pause.addEventListener('click', () => { dlg.close(); void lstSet(w, 'paused'); });
+        const two = el('div', 'ib-confirm-acts'); two.append(yes, ...(paused ? [] : [pause]));
+        dbody.classList.add('is-confirm');
+        dlg.addEventListener('close', () => dbody.classList.remove('is-confirm'), { once: true });
+        dbody.replaceChildren(el('h2', 'ib-offer-h', say(t.ib.lsDeleteQ, { title: w.title })), el('p', 'ib-hint', t.ib.lsDeleteNote), tick, two);
+        dlg.showModal();
+      };
       const renderLst = async () => {
         const list = $('[data-lst-list]');
         if (!slug) { list.replaceChildren(); return; }
@@ -4831,6 +4864,16 @@ const fields = [
           dates.addEventListener('click', () => { calSel = w.key; calSlot = ''; showTab('calendar'); setPath(); });
           act.append(edit, dates);
           if (b?.url) { const a = el('a', 'lst-btn2', TL('Seite ansehen', 'View page', 'Voir la page')) as HTMLAnchorElement; a.href = b.url; a.target = '_blank'; a.rel = 'noopener'; act.append(a); }
+          // Pause (off the site for a while) or delete for good (Pia 20.11.26).
+          const paused = st?.status === 'paused';
+          const pz = el('button', 'lst-btn2', paused ? TL('Wieder online', 'Put back online', 'Remettre en ligne') : TL('Pausieren', 'Pause', 'Mettre en pause')) as HTMLButtonElement;
+          pz.type = 'button';
+          pz.addEventListener('click', () => void lstSet(w, paused ? 'live' : 'paused'));
+          const del = el('button', 'lst-btn2 lst-del', TL('Löschen', 'Delete', 'Supprimer')) as HTMLButtonElement;
+          del.type = 'button';
+          del.addEventListener('click', () => lstAskDelete(w, paused));
+          act.append(pz, del);
+          if (paused) card.classList.add('is-paused');
           card.append(pic, body, act);
           // Where guests find it: with dates (page and calendar), or on request for groups.
           card.dataset.sec = n || (booking !== 'request' && (b?.dates ?? 0) > 0) ? 'cal' : 'group';
@@ -6874,19 +6917,19 @@ const fields = [
   .lst-top .ha-sub { margin: 0; }
   .lst-new { border: 2px solid #6a3eec; color: #6a3eec; background: #fff; border-radius: 999px; padding: 8px 18px; font-family: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; }
   .lst-list { display: grid; gap: 14px; max-width: 980px; }
-  .lst-card { display: grid; grid-template-columns: 200px 1fr auto; gap: 18px; align-items: center; background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); }
+  .lst-card { display: grid; grid-template-columns: 200px 1fr; gap: 10px 18px; align-items: center; background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 14px rgba(80, 40, 140, .07); }
   .lst-pic { position: relative; width: 200px; height: 140px; border-radius: 12px; background: #f1eaff center / cover no-repeat; }
   .lst-badge { position: absolute; left: 8px; bottom: 8px; background: rgba(0, 0, 0, .6); color: #fff; font-size: .7rem; border-radius: 999px; padding: 3px 9px; }
   .lst-body h3 { margin: 0 0 6px; font-size: 1.05rem; }
   .lst-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
   .lst-pill { font-size: .74rem; background: #f3eefe; color: #5b33d6; border-radius: 999px; padding: 3px 10px; font-weight: 500; }
-  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-sec { margin: 18px 0 2px; font-size: .95rem; font-weight: 600; color: #6b6478; }
+  .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-del { color: #b3261e; } .lst-del-tick { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; font-size: .9rem; cursor: pointer; } .lst-del-tick input { width: 18px; height: 18px; margin-top: 2px; accent-color: #b3261e; } .hl-del-yes:disabled { opacity: .35; cursor: not-allowed; } .lst-card.is-paused { opacity: .7; } .lst-sec { margin: 18px 0 2px; font-size: .95rem; font-weight: 600; color: #6b6478; }
   .lst-desc { margin: 0; font-size: .82rem; color: #666; max-width: 560px; }
   .lst-hint { margin: 6px 0 0; font-size: .75rem; color: #b25d00; }
-  .lst-act { display: flex; flex-direction: column; gap: 8px; }
-  .lst-btn { border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 9px 20px; font-family: inherit; font-size: .86rem; font-weight: 600; cursor: pointer; }
-  .lst-btn2 { border: 1px solid #ddd; background: #fff; color: #444; border-radius: 999px; padding: 7px 16px; font-family: inherit; font-size: .8rem; font-weight: 500; line-height: 1.3; cursor: pointer; text-align: center; text-decoration: none; }
+  .lst-act { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
+  .lst-btn { border: 0; background: #6a3eec; color: #fff; border-radius: 999px; padding: 5px 12px; font-family: inherit; font-size: .74rem; font-weight: 600; cursor: pointer; }
+  .lst-btn2 { border: 1px solid #ddd; background: #fff; color: #444; border-radius: 999px; padding: 4px 11px; font-family: inherit; font-size: .72rem; font-weight: 500; line-height: 1.3; cursor: pointer; text-align: center; text-decoration: none; }
   .lst-empty { color: #777; }
   .lst-other { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: #f6f2ff; border: 1px solid #e6dcff; font-size: .86rem; color: #5b33d6; }
-  @media (max-width: 720px) { .lst-card { grid-template-columns: 1fr; } .lst-pic { width: 100%; height: 180px; } .lst-act { flex-direction: row; flex-wrap: wrap; } }
+  @media (max-width: 720px) { .lst-card { grid-template-columns: 1fr; } .lst-pic { width: 100%; height: 180px; } .lst-act { grid-column: 1; } }
 </style>

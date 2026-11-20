@@ -271,9 +271,11 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
   // at the company's own space.
   for (const o of teamOffers) {
     const host = bySlug.get(o.slug);
-    if (!host) continue;
+    // Paused or deleted in the host's dashboard (Pia 20.11.26): off the site too.
+    if (!host || isHiddenListing(o.slug, slugify(o.title))) continue;
     out.push({
       id: `req-${o.slug}-${hash(o.title)}`,
+      key: slugify(o.title),
       host,
       title: lang !== 'de' ? o.titleEn : o.title,
       district: lang === 'de' ? 'bei euch vor Ort' : 'at your venue',
