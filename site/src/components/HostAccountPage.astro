@@ -333,6 +333,19 @@ const fields = [
                 <button type="button" class="hd-item" data-tp-note-add>{L('Notiz speichern', 'Save note', 'Enregistrer la note')}</button>
                 <ul class="tp-adm-list" data-tp-note-list></ul>
               </div>
+              {/* Jirel only: a voucher sold by invoice (not via the website checkout) gets its code here (functions voucherCreate). */}
+              <div class="tp-adm vc-adm" data-vc-adm hidden>
+                <b class="tp-adm-l">{L('Gutschein anlegen', 'Add a voucher', 'Ajouter un bon')}</b>
+                <label class="vc-f"><span>Code</span><input data-vc-code placeholder="TW-XXXX-XXXX" maxlength="20" /></label>
+                <div class="vc-row">
+                  <label class="vc-f"><span>{L('Betrag (€)', 'Amount (€)', 'Montant (€)')}</span><input data-vc-amount type="number" min="1" max="2000" step="1" /></label>
+                  <label class="vc-f"><span>{L('Gültig bis', 'Valid until', 'Valable jusqu’au')}</span><input data-vc-until type="date" /></label>
+                </div>
+                <label class="vc-f"><span>{L('Nur bei Host (leer = alle Hosts)', 'Only at host (empty = all hosts)', 'Seulement chez (vide = tous)')}</span><select data-vc-host></select></label>
+                <label class="vc-f"><span>{L('Bestell-/Rechnungsnr.', 'Order / invoice no.', 'N° de commande / facture')}</span><input data-vc-ref maxlength="40" placeholder="TW-2026-11-001" /></label>
+                <button type="button" class="hd-item" data-vc-save>{L('Gutschein anlegen', 'Add voucher', 'Ajouter le bon')}</button>
+                <p class="ha-adm-note" data-vc-msg role="status"></p>
+              </div>
               <hr class="hd-menu-sep" />
               <button type="button" class="hd-item hd-out" data-ha-signout><span>{t.signOut}</span><svg class="hd-door" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56z"/></svg></button>
             </div>
@@ -2715,6 +2728,7 @@ const fields = [
       // Jirel: notes for the host she has open (shown to them as a tip).
       const paintAdminNotes = () => {
         $('[data-tp-adm]').hidden = !isAdmin;
+        $('[data-vc-adm]').hidden = !isAdmin;
         if (!isAdmin) return;
         $('[data-tp-note-list]').replaceChildren(...tipNotes.map((n) => {
           const li = el('li', '', n.text);
@@ -4677,6 +4691,29 @@ const fields = [
         inp.value = '';
       }));
       // ── Angebote: one card per workshop (Jirel 20.11.26) ─────────────────
+      // ── Admin: a voucher sold by invoice gets its code (Jirel 20.11.26) ──
+      {
+        const vcHost = $<HTMLSelectElement>('[data-vc-host]');
+        vcHost.replaceChildren(new Option(TL('Alle Hosts (allgemein)', 'All hosts (general)', 'Tous les hôtes (général)'), ''),
+          ...Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name)).map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
+        const y = new Date().getFullYear() + 3;
+        $<HTMLInputElement>('[data-vc-until]').value = `${y}-12-31`;
+        $('[data-vc-save]').addEventListener('click', async () => {
+          const msg = $('[data-vc-msg]');
+          const code = $<HTMLInputElement>('[data-vc-code]').value.trim().toUpperCase();
+          const amount = Number($<HTMLInputElement>('[data-vc-amount]').value);
+          const validUntil = $<HTMLInputElement>('[data-vc-until]').value;
+          if (code.replace(/[^A-Z0-9]/g, '').length < 8 || !(amount > 0) || !validUntil) { msg.textContent = TL('Bitte Code, Betrag und Datum ausfüllen.', 'Please fill in code, amount and date.', 'Merci de remplir code, montant et date.'); return; }
+          msg.textContent = '…';
+          try {
+            await api('voucherCreate', { code, amount, validUntil, hostSlug: vcHost.value, ref: $<HTMLInputElement>('[data-vc-ref]').value.trim() });
+            msg.textContent = `✓ ${code} ${TL('angelegt, jetzt einlösbar.', 'added, ready to redeem.', 'ajouté, utilisable maintenant.')}`;
+            $<HTMLInputElement>('[data-vc-code]').value = '';
+          } catch (err) {
+            msg.textContent = String(err).includes('409') ? TL('Diesen Code gibt es schon.', 'This code already exists.', 'Ce code existe déjà.') : TL('Hat nicht geklappt, bitte nochmal.', 'Didn’t work, please try again.', 'Ça n’a pas marché, réessaie.');
+          }
+        });
+      }
       const renderLst = async () => {
         const list = $('[data-lst-list]');
         if (!slug) { list.replaceChildren(); return; }
@@ -6636,6 +6673,10 @@ const fields = [
   .wh-note { font-size: 0.78rem; color: var(--color-text-muted); padding-top: 6px; }
   .wh-ws .wh-pick:last-of-type { border-bottom: 0; }
   .ha-adm-invite { display: grid; gap: 4px; }
+  .vc-adm { display: grid; gap: 6px; }
+  .vc-f { display: grid; gap: 2px; font-size: 0.78rem; color: #555; }
+  .vc-f input, .vc-f select { font: inherit; font-size: 0.84rem; padding: 6px 8px; border: 1px solid rgba(0, 0, 0, 0.16); border-radius: 8px; width: 100%; box-sizing: border-box; }
+  .vc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .ha-adm-note { margin: 0 12px 6px; font-size: 0.78rem; color: var(--color-text-muted); display: grid; gap: 4px; }
   .ha-adm-note:empty { display: none; }
   .ha-adm-note .is-warn { color: #b3261e; font-weight: 600; }
