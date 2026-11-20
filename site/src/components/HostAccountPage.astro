@@ -4644,6 +4644,8 @@ const fields = [
       const wsF = <T extends HTMLElement = HTMLInputElement>(n: string) => wsForm.elements.namedItem(n) as unknown as T;
       let wsCur: Ws | null = null;
       let wsMedia: { type: string; url: string; thumb?: string }[] = [];
+      // Pictures and videos the host removed from this workshop with ✕ (Pia 20.11.26).
+      let wsGone = new Set<string>();
       let wsBusy = false;
       const wsNote = (text: string, ok = true) => { const n = $('[data-cal-ws-note]'); n.textContent = text; n.hidden = !text; n.classList.toggle('is-bad', !ok); };
       /** "2,5", "2.5 h", "90 min" → "2.5 h" / "90 min"; '' when it can't be read. */
@@ -4656,7 +4658,7 @@ const fields = [
       const wsDrawMedia = () => {
         const box = $('[data-cal-ws-media]');
         const page = (hosts[slug]?.photos ?? []).map((url) => ({ type: 'photo', url }));
-        const all: Media[] = [...wsMedia, ...page.filter((p) => !wsMedia.some((m) => m.url === p.url))];
+        const all: Media[] = [...wsMedia, ...page.filter((p) => !wsMedia.some((m) => m.url === p.url) && !wsGone.has(p.url))];
         box.replaceChildren(...all.map((m) => {
           const on = wsMedia.findIndex((x) => x.url === m.url);
           const b = calBtn(`cal-ws-pic${on >= 0 ? ' is-on' : ''}`, '', () => {
@@ -4670,6 +4672,12 @@ const fields = [
           else if (m.type === 'video') { const v = document.createElement('video'); v.src = m.url; v.muted = true; v.preload = 'metadata'; b.append(v, el('span', 'cal-ws-vid', '▶')); }
           else { const i = document.createElement('img'); i.src = m.url; i.alt = ''; i.loading = 'lazy'; b.append(i); }
           if (on >= 0) b.append(el('span', 'cal-ws-n', on === 0 ? t.cal.wsCover : String(on + 1)));
+          // ✕ deletes it from this workshop (photo or video).
+          const x = el('span', 'cal-ws-x', '✕');
+          x.setAttribute('role', 'button');
+          x.title = TL('Löschen', 'Delete', 'Supprimer');
+          x.addEventListener('click', (ev) => { ev.stopPropagation(); ev.preventDefault(); wsMedia = wsMedia.filter((y) => y.url !== m.url); wsGone.add(m.url); wsDrawMedia(); });
+          b.append(x);
           return b;
         }));
       };
@@ -4855,6 +4863,7 @@ const fields = [
         wsF('seats').value = String(e.seats ?? first?.seats ?? '');
         wsF('note').value = e.note ?? '';
         wsMedia = e.media?.length ? [...e.media] : (w.image ? [{ type: 'photo', url: w.image }] : []);
+        wsGone = new Set();
         // As the site decides (sessions.ts takesRequests): dates from the site's own data,
         // and dates taken over from it, take requests unless the workshop says otherwise.
         const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || ((first?.price ?? 0) > 0 && !first?.virtual && !first?.replaces) ? 'instant' : 'request');
@@ -6773,6 +6782,8 @@ const fields = [
   .cal-ws-pic { position: relative; aspect-ratio: 1; padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: #f3eeff; opacity: 0.55; }
   .cal-ws-pic.is-on { border-color: #6a3eec; opacity: 1; }
   .cal-ws-pic img, .cal-ws-pic video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cal-ws-x { position: absolute; right: 4px; top: 4px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: rgba(20, 16, 30, .72); color: #fff; font-size: .72rem; line-height: 1; cursor: pointer; }
+  .cal-ws-x:hover { background: #d93025; }
   .cal-ws-n { position: absolute; left: 4px; top: 4px; padding: 1px 7px; border-radius: 999px; background: #6a3eec; color: #fff; font-size: 0.7rem; font-weight: 600; }
   .ha-vid-bar { display: block; width: 100%; max-width: 280px; height: 6px; margin-top: 6px; border: 0; border-radius: 99px; overflow: hidden; background: #ece6dc; accent-color: var(--color-accent); appearance: none; }
   .ha-vid-bar::-webkit-progress-bar { background: #ece6dc; border-radius: 99px; }
