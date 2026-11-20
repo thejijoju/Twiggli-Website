@@ -30,7 +30,14 @@ const xmasHref = href(lang === 'de' ? 'de' : 'en', '/weihnachtsfeier/');
 // both open the booking form with every host on the page to pick from.
 const big = bigEventsCopy[lang];
 const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${h.specialty}`));
----
+
+// Team vouchers (Jirel 20.11.26): a Christmas gift for employees, up to 50 € tax-free.
+const VC = {
+  de: { kicker: 'Für euer Team', title: 'Twiggli-Gutscheine als Weihnachtsgeschenk', copy: 'Ein Workshop, den sich jede*r selbst aussucht: Töpfern, Kerzen gießen, Siebdruck, Kochen und vieles mehr bei Berliner Hosts. Gutscheine bis 50 € pro Mitarbeitende*r und Monat sind steuerfrei.', points: ['Eine Rechnung auf eure Firma', 'Gutschein als PDF, auf Wunsch mit Namen und Gruß', '3 Jahre gültig, einlösbar bei allen teilnehmenden Hosts'], cta: 'Gutscheine anfragen', cta2: 'Zur Gutscheinseite', note: 'Keine Steuerberatung: Bitte stimmt die steuerliche Behandlung mit eurer Steuerberatung ab.' },
+  en: { kicker: 'For your team', title: 'Twiggli vouchers as a Christmas gift', copy: 'A workshop everyone picks for themselves: pottery, candle making, screen printing, cooking and much more with Berlin hosts. Vouchers up to €50 per employee per month are tax-free.', points: ['One invoice to your company', 'Voucher as a PDF, with a name and message if you like', 'Valid for 3 years, redeemable at all participating hosts'], cta: 'Request vouchers', cta2: 'See vouchers', note: 'Not tax advice: please check the tax treatment with your tax advisor.' },
+  fr: { kicker: 'Pour votre équipe', title: 'Des bons Twiggli comme cadeau de Noël', copy: 'Un atelier que chacun choisit soi-même : poterie, bougies, sérigraphie, cuisine et bien plus avec des hôtes berlinois. Les bons jusqu’à 50 € par salarié et par mois sont exonérés d’impôt (en Allemagne).', points: ['Une facture au nom de votre entreprise', 'Bon en PDF, avec un nom et un message si vous voulez', 'Valable 3 ans, chez tous les hôtes participants'], cta: 'Demander des bons', cta2: 'Voir les bons', note: 'Pas un conseil fiscal : merci de vérifier avec votre conseiller fiscal.' },
+};
+const vc = VC[lang as 'de' | 'en' | 'fr'] ?? VC.en;---
 
 <Base title={c.title} description={c.description} lang={lang} pageClass="page-flush">
   {/* The headline's display serif, loaded here only — no other page pays
@@ -99,6 +106,22 @@ const pickable = JSON.stringify(hosts.map((h) => `${h.firstName ?? h.name} · ${
       '@type': 'FAQPage',
       mainEntity: big.faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
     })} />
+
+    {/* Vouchers as a Christmas gift for the team (Jirel 20.11.26: up to 50 € per employee tax-free). */}
+    <section class="team-vouchers" id="gutscheine">
+      <div>
+        <span class="kicker">{vc.kicker}</span>
+        <h2 class="split-title">{vc.title}</h2>
+        <p class="split-copy">{vc.copy}</p>
+        <ul class="big-points">{vc.points.map((x) => <li>{x}</li>)}</ul>
+        <div class="split-actions">
+          <a class="btn btn-primary" href={href(lang, '/contact/')} data-book="special" data-book-title={vc.title} data-book-hosts={pickable}>{vc.cta}</a>
+          <a class="btn btn-secondary" href={href(lang, lang === 'de' ? '/gutschein/' : '/voucher/')}>{vc.cta2}</a>
+        </div>
+        <p class="team-vouchers-note">{vc.note}</p>
+      </div>
+      <img class="team-vouchers-img" src={lang === 'de' ? '/img/team-voucher-de.jpg' : '/img/team-voucher-en.jpg'} alt={vc.title} width="662" height="936" loading="lazy" decoding="async" />
+    </section>
 
     {(lang === 'en' || lang === 'de') && (
       <ul class="activity-links">
