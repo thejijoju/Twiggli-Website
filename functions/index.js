@@ -2795,8 +2795,11 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
     const want = createHmac('sha256', await approveKey()).update(`stripe-oauth\n${raw}`).digest('base64url');
     if (want.length === sig.length && timingSafeEqual(Buffer.from(want), Buffer.from(sig))) st = JSON.parse(Buffer.from(raw, 'base64url').toString());
   } catch { st = null; }
-  const back = (lang, how) => res.redirect(302, `${stripeBack(stripeLang(lang))}?stripe=${how}`);
-  if (!st || Date.now() - st.t > 60 * 60 * 1000 || !isEmail(st.e)) return back('de', 'failed');
+  // On failure the reason goes along (short, plain text), so the dashboard
+  // can show Stripe's own words instead of only "could not be opened"
+  // (Jirel 20.11.26, after Pia's link failed on a key without OAuth rights).
+  const back = (lang, how, why = '') => res.redirect(302, `${stripeBack(stripeLang(lang))}?stripe=${how}${why ? `&why=${encodeURIComponent(String(why).replace(/[^\w .,:;'()\-\/]/g, '').slice(0, 160))}` : ''}`);
+  if (!st || Date.now() - st.t > 60 * 60 * 1000 || !isEmail(st.e)) return back('de', 'failed', 'link expired, please start again');
   if (req.query.error || !req.query.code) return back(st.l, 'cancelled');
   const r = await fetch('https://connect.stripe.com/oauth/token', {
     method: 'POST',
@@ -2806,7 +2809,7 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
   const tok = await r.json().catch(() => ({}));
   if (!r.ok || !/^acct_\w+$/.test(String(tok.stripe_user_id ?? ''))) {
     console.error('hostStripeOAuth token failed', tok?.error, tok?.error_description);
-    return back(st.l, 'failed');
+    return back(st.l, 'failed', tok?.error_description || tok?.error || `Stripe status ${r.status}`);
   }
   const accountId = tok.stripe_user_id;
   let chargesEnabled = false;
