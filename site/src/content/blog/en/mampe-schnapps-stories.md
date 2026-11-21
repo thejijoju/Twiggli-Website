@@ -4,6 +4,7 @@ description: "Berlin's oldest liquor manufacturer runs tours of its Kreuzberg di
 date: 2026-09-27
 lang: en
 category: Host profile
+draft: true # Mampe archived 21.11.26 (Jirel)
 ---
 
 Mampe has been pouring since 1831. That is nineteen years before the first

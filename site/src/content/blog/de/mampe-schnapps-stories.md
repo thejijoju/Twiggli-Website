@@ -4,6 +4,7 @@ description: "Berlins älteste Spirituosenmanufaktur führt durch ihre Kreuzberg
 date: 2026-09-27
 lang: de
 category: Gastgeberporträt
+draft: true # Mampe archived 21.11.26 (Jirel)
 ---
 
 Mampe schenkt seit 1831 aus. Das ist neunzehn Jahre vor dem ersten Berliner
