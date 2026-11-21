@@ -9,7 +9,7 @@ import { withBase } from '../../lib/url.ts';
  * Berlin-based workshop marketplace. Every <span class="fill-in"> is a
  * value only the operator knows. Have a German lawyer review before
  * publishing — the platform / intermediary construction in section 2 and
- * the withdrawal-right carve-out in section 12 are the two clauses that
+ * the withdrawal-right carve-out in section 13 are the two clauses that
  * most need checking against how Twiggli actually contracts and charges.
  */
 const toc = [
@@ -18,16 +18,17 @@ const toc = [
   { id: 'account', label: '3. Dein Konto' },
   { id: 'booking', label: '4. Einen Workshop buchen' },
   { id: 'payment', label: '5. Preise und Zahlung' },
-  { id: 'cancellation', label: '6. Stornierung und Erstattung' },
-  { id: 'hosting', label: '7. Wenn du einen Workshop anbietest' },
-  { id: 'content', label: '8. Videos und Inhalte, die du postest' },
-  { id: 'conduct', label: '9. Was du nicht tun darfst' },
-  { id: 'availability', label: '10. Verfügbarkeit des Dienstes' },
-  { id: 'liability', label: '11. Unsere Haftung' },
-  { id: 'withdrawal', label: '12. Widerrufsrecht' },
-  { id: 'termination', label: '13. Sperrung und Kündigung' },
-  { id: 'changes', label: '14. Änderungen dieser Bedingungen' },
-  { id: 'law', label: '15. Anwendbares Recht und Streitigkeiten' },
+  { id: 'vouchers', label: '6. Gutscheine' },
+  { id: 'cancellation', label: '7. Stornierung und Erstattung' },
+  { id: 'hosting', label: '8. Wenn du einen Workshop anbietest' },
+  { id: 'content', label: '9. Videos und Inhalte, die du postest' },
+  { id: 'conduct', label: '10. Was du nicht tun darfst' },
+  { id: 'availability', label: '11. Verfügbarkeit des Dienstes' },
+  { id: 'liability', label: '12. Unsere Haftung' },
+  { id: 'withdrawal', label: '13. Widerrufsrecht' },
+  { id: 'termination', label: '14. Sperrung und Kündigung' },
+  { id: 'changes', label: '15. Änderungen dieser Bedingungen' },
+  { id: 'law', label: '16. Anwendbares Recht und Streitigkeiten' },
 ];
 ---
 
@@ -106,7 +107,7 @@ const toc = [
   <p>
     Erscheine pünktlich. Gastgeber sind nicht verpflichtet, einen Platz für eine verspätete
     Ankunft freizuhalten, und ein verpasster Workshop wird nicht automatisch erstattet — siehe
-    Abschnitt 6.
+    Abschnitt 7.
   </p>
 
   <h2 id="payment">5. Preise und Zahlung</h2>
@@ -131,7 +132,34 @@ const toc = [
     Angebot angegeben sein.
   </p>
 
-  <h2 id="cancellation">6. Stornierung und Erstattung</h2>
+  <h2 id="vouchers">6. Gutscheine</h2>
+  <p>
+    Twiggli-Gutscheine sind Wertgutscheine: Sie haben einen Geldwert und gelten nicht nur
+    für ein bestimmtes Erlebnis. Du kannst sie über 25 €, 50 € oder 75 € kaufen oder über
+    einen Wunschbetrag ab 20 €.
+  </p>
+  <ul>
+    <li>Ein Gutschein kann auf twiggli.com für Workshops bei Gastgebern eingelöst werden,
+      die Twiggli-Gutscheine annehmen. Gib dafür den Code beim Bezahlen ein.</li>
+    <li>Kostet ein Workshop weniger als der Gutschein, bleibt das Restguthaben auf dem
+      Code und kann bis zum Ablauf für weitere Buchungen genutzt werden.</li>
+    <li>Kostet ein Workshop mehr, kannst du den Gutschein trotzdem einsetzen und die
+      Differenz mit Karte bezahlen.</li>
+    <li>Gutscheine sind drei Jahre gültig, bis zum 31. Dezember des dritten Jahres nach
+      dem Kauf. Das Ablaufdatum steht auf dem Gutschein.</li>
+    <li>Gutscheine können nicht in Bargeld umgetauscht werden, und Restguthaben wird nicht
+      bar ausgezahlt.</li>
+    <li>Ein Gutschein für einen bestimmten Gastgeber wird bei diesem Gastgeber eingelöst. Ist
+      dieser Gastgeber nicht mehr bei Twiggli, gilt der Gutschein bei allen anderen teilnehmenden
+      Gastgebern.</li>
+  </ul>
+  <p>
+    Bitte bewahre deinen Code sicher auf: Wer ihn hat, kann ihn einlösen. Wenn du das PDF
+    verlierst, schreib uns, und wir schicken es erneut an die E-Mail-Adresse der Käuferin
+    oder des Käufers.
+  </p>
+
+  <h2 id="cancellation">7. Stornierung und Erstattung</h2>
   <h3>Wenn du stornierst</h3>
   <p>
     Du kannst eine Buchung in der App stornieren. Was du zurückbekommst, hängt vom Zeitpunkt der
@@ -154,7 +182,7 @@ const toc = [
     Session tatsächlich beinhaltet — kannst du für eine volle Erstattung stornieren.
   </p>
 
-  <h2 id="hosting">7. Wenn du einen Workshop anbietest</h2>
+  <h2 id="hosting">8. Wenn du einen Workshop anbietest</h2>
   <p>Wenn du einen Workshop veröffentlichst, bestätigst du, dass:</p>
   <ul>
     <li>du rechtlich befugt bist, ihn durchzuführen, und über jede dafür nötige Lizenz,
@@ -173,7 +201,7 @@ const toc = [
     informiere deine Teilnehmenden direkt.
   </p>
 
-  <h2 id="content">8. Videos und Inhalte, die du postest</h2>
+  <h2 id="content">9. Videos und Inhalte, die du postest</h2>
   <p>
     Deine Inhalte bleiben deine. Indem du sie auf Twiggli veröffentlichst, räumst du uns eine
     nicht-exklusive, weltweite, gebührenfreie Lizenz ein, sie zu hosten, anzuzeigen, in der
@@ -187,7 +215,7 @@ const toc = [
     {contactEmail}, um etwas zu melden.
   </p>
 
-  <h2 id="conduct">9. Was du nicht tun darfst</h2>
+  <h2 id="conduct">10. Was du nicht tun darfst</h2>
   <ul>
     <li>Gegen geltendes Recht verstoßen, oder Twiggli nutzen, um etwas Illegales oder Unsicheres
       zu organisieren.</li>
@@ -201,7 +229,7 @@ const toc = [
       Workshops nutzen.</li>
   </ul>
 
-  <h2 id="availability">10. Verfügbarkeit des Dienstes</h2>
+  <h2 id="availability">11. Verfügbarkeit des Dienstes</h2>
   <p>
     Wir bemühen uns, Twiggli am Laufen zu halten, versprechen aber keine unterbrechungsfreie
     Verfügbarkeit. Wir können Funktionen ändern, den Dienst für Wartungsarbeiten pausieren, oder
@@ -209,7 +237,7 @@ const toc = [
     Vorlauf.
   </p>
 
-  <h2 id="liability">11. Unsere Haftung</h2>
+  <h2 id="liability">12. Unsere Haftung</h2>
   <p>
     Wir haften uneingeschränkt für vorsätzlich oder grob fahrlässig verursachte Schäden, für
     Verletzungen von Leben, Körper oder Gesundheit, sowie nach dem deutschen
@@ -226,7 +254,7 @@ const toc = [
     Nichts hier schränkt Rechte ein, die dir nach zwingendem Verbraucherrecht zustehen.
   </p>
 
-  <h2 id="withdrawal">12. Widerrufsrecht</h2>
+  <h2 id="withdrawal">13. Widerrufsrecht</h2>
   <p>
     Verbraucher in der EU haben normalerweise 14 Tage, um einen online geschlossenen Vertrag zu
     widerrufen. Dieses Recht gilt <strong>nicht</strong> für Freizeitdienstleistungen, die für
@@ -234,12 +262,12 @@ const toc = [
     betrifft (§ 312g Abs. 2 Nr. 9 BGB).
   </p>
   <p>
-    Stattdessen gilt unsere Stornierungsregelung aus Abschnitt 6, die oft großzügiger ist. Sollte
+    Stattdessen gilt unsere Stornierungsregelung aus Abschnitt 7, die oft großzügiger ist. Sollte
     das Widerrufsrecht bei einem Kauf bei uns doch anwendbar sein, informieren wir dich beim
     Bezahlvorgang und stellen dir die übliche Widerrufsbelehrung zur Verfügung.
   </p>
 
-  <h2 id="termination">13. Sperrung und Kündigung</h2>
+  <h2 id="termination">14. Sperrung und Kündigung</h2>
   <p>
     Du kannst dein Konto jederzeit schließen. Bereits erfolgte Buchungen bleiben bestehen — erfülle
     sie oder storniere sie zuerst ordnungsgemäß.
@@ -250,7 +278,7 @@ const toc = [
     angemessen, teilen wir dir den Grund mit und geben dir Gelegenheit zur Stellungnahme.
   </p>
 
-  <h2 id="changes">14. Änderungen dieser Bedingungen</h2>
+  <h2 id="changes">15. Änderungen dieser Bedingungen</h2>
   <p>
     Wir können diese Bedingungen aktualisieren. Betrifft dich eine Änderung wesentlich,
     benachrichtigen wir dich mindestens <span class="fill-in">[30]</span> Tage vorher per E-Mail
@@ -258,7 +286,7 @@ const toc = [
     weitere Nutzung von Twiggli nach diesem Datum gilt als Zustimmung zu den neuen Bedingungen.
   </p>
 
-  <h2 id="law">15. Anwendbares Recht und Streitigkeiten</h2>
+  <h2 id="law">16. Anwendbares Recht und Streitigkeiten</h2>
   <p>
     Es gilt deutsches Recht. Bist du Verbraucher, entzieht dir das nicht den Schutz zwingender
     Vorschriften deines Wohnsitzlandes.
