@@ -922,7 +922,7 @@ export const formRequest = onRequest(
 
 /** Hosts who have left Twiggli (site/src/data/hosts/archived.ts): their
  *  requests go to Jirel only. */
-const ARCHIVED_HOSTS = new Set(['sabine', 'celia']);
+const ARCHIVED_HOSTS = new Set(['sabine', 'celia', 'mampe', 'dirt', 'munio', 'loam', 'tufttuft']);
 
 /** "New booking request": the request goes straight to the host the moment
  *  the guest sends it (Jirel, 09.11.26), in the designed layout of the
@@ -3493,6 +3493,8 @@ export const reviewAsk = onCron({ schedule: 'every 60 minutes', timeZone: 'Europ
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   for (const t of todo.slice(0, 20)) {
     const rows = sheet.filter((r) => r.toLowerCase().includes(t.email));
+    // No review request for a host who has left Twiggli (Mampe, La HoCo: Jirel 22.11.26).
+    if (ARCHIVED_HOSTS.has(t.slug)) { await t.ref.update({ reviewAskedAt: 'skipped' }); continue; }
     if (rows.some((r) => /\blost\b|verloren|cancel|abgesagt|storniert|did not happen|nicht stattgefunden|waiting list|warteliste|\bill\b|krank|rescheduled|verschoben/i.test(r))) { await t.ref.update({ reviewAskedAt: 'skipped' }); continue; }
     const key = createHash('sha256').update(`${t.email}|${t.slug}`).digest('hex').slice(0, 32);
     const askRef = db.doc(`reviewAsks/${key}`);
