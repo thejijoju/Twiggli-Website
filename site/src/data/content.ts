@@ -1168,6 +1168,17 @@ type Reel = { video: string; poster: string };
 /** A workshop with more than one reel shows them in turn across its dates —
  *  see `pick` on getWorkshopReel below. */
 const workshopReels: Record<string, Record<string, Reel | Reel[]>> = {
+  // Angelo's second film (sent 22.11.26): a roasting class in full swing,
+  // guests smelling the beans, the hot plates and the pot. His own, filmed
+  // landscape: cut square for the square players, the full height in the
+  // middle of a blurred copy of itself; audio stripped. It plays on his workshop dates, while
+  // his first reel (the roast start to finish) stays on his host page.
+  angelo: {
+    'rösten': {
+      video: '/video/angelo-roesten-gruppe.mp4',
+      poster: '/video/angelo-roesten-gruppe-poster.jpg',
+    },
+  },
   nina: {
     'Klang & Farbe': {
       video: '/video/nina-klang-farbe.mp4',
