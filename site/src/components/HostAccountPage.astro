@@ -3059,6 +3059,32 @@ const fields = [
         try { reqs = (await api('hostInbox', { slug })).items ?? []; } catch { reqs = []; }
         renderMsgs();
         renderCal();
+        openFromMail();
+      };
+      // The Accept / Decline buttons in the "New booking request" email
+      // (functions notifyHostRequest, Jirel 22.11.26) land here with
+      // ?req=<id>&act=accept|decline: open that request in Messages and its
+      // accept or decline popup, so the host only confirms.
+      let mailDone = false;
+      const openFromMail = () => {
+        if (mailDone) return;
+        const q = new URLSearchParams(location.search);
+        const id = q.get('req');
+        const act = q.get('act');
+        if (!id) return;
+        const r = reqs.find((x) => x.id === id);
+        if (!r) return;
+        mailDone = true;
+        q.delete('req'); q.delete('act');
+        history.replaceState(history.state, '', location.pathname + (q.toString() ? `?${q}` : '') + location.hash);
+        showTab('messages');
+        openDetail(r);
+        // The "Respond" button openDetail puts on the request card opens the popup.
+        $('[data-ib-conv]').querySelector<HTMLButtonElement>('.ib-respond')?.click();
+        const body = $<HTMLDialogElement>('[data-ib-modal]').querySelector<HTMLElement>('[data-ib-modal-body]')!;
+        const acts = body.querySelectorAll<HTMLButtonElement>('.ib-acts .ib-act');
+        const btn = act === 'accept' ? acts[0] : act === 'decline' ? acts[acts.length - 1] : null;
+        if (btn) btn.click(); else acts[0]?.focus();
       };
       // Saved replies, kept on this device; three starters until the host saves their own.
       const SAVED = `twiggli-replies-${slug}`;
@@ -5536,6 +5562,7 @@ const fields = [
         if (variant === 'empty') { calDemo.workshops = []; ownEvents = []; reqs = []; calBookings = []; }
         calSel = calKey(VULVA);
         showTab('calendar');
+        openFromMail();
       };
       if (DEMO) startDemo();
       else finishSignIn().finally(() => {

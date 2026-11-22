@@ -931,6 +931,13 @@ const ARCHIVED_HOSTS = new Set(['sabine', 'celia', 'mampe', 'dirt', 'munio', 'lo
  *  request to one host (booking, group, date request) with a date not in
  *  the past; anything else stays with Jirel. Returns what happened, for
  *  the note to Jirel's inbox. */
+/** Whether a page's host has a Twiggli account with Stripe connected
+ *  (hostMembers/{email}.stripe.accountId, set by hostStripe / hostStripeOAuth). */
+const hostStripeReady = async (slug) => {
+  const members = await getFirestore().collection('hostMembers').where('slugs', 'array-contains', slug).limit(5).get();
+  return members.docs.some((m) => /^acct_\w+$/.test(String(m.data()?.stripe?.accountId ?? '')));
+};
+
 const notifyHostRequest = async (doc, email, f) => {
   const data = (await doc.get()).data() ?? {};
   const slug = String(data.hostSlug ?? '');
@@ -962,6 +969,13 @@ const notifyHostRequest = async (doc, email, f) => {
   const eur = (n) => `€${(Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, '')}`;
   const when = String(f.Date ?? '').replace(/^(?:preferred: )?\d{4}-\d\d-\d\d \((.*?)\)$/, '$1').replace(/^flexible: /, '');
   const often = /regular/i.test(String(f['How often'] ?? ''));
+  // Accept / Decline buttons (Jirel 22.11.26), only for hosts with an account
+  // and Stripe connected: each opens this request in their dashboard
+  // (Messages), where the same confirm popup as there takes the answer.
+  let buttons = false;
+  if (type === 'Booking request' || type === 'Group booking request') {
+    try { buttons = await hostStripeReady(slug); } catch (err) { console.error('stripe check failed', slug, err?.message); }
+  }
   const T = {
     de: {
       kicker: `Neue ${studio ? 'Raumanfrage' : type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
@@ -976,6 +990,7 @@ const notifyHostRequest = async (doc, email, f) => {
         : [['Workshop', what], ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
       msg: 'Nachricht', earn: 'Mögliche Einnahmen', earnNote: (g) => `${eur(g)} gesamt, ${eur(g * 0.85)} nach 15 % Twiggli-Provision (falls für dich vereinbart)`,
       contact: 'Kontakt', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
+      yes: 'Annehmen', no: 'Ablehnen', act: `Beides öffnet die Anfrage direkt in deinem <b>Twiggli</b>-Konto, und ${esc(gFirst)} bekommt deine Antwort automatisch.`,
       subject: `Neue ${studio ? 'Raumanfrage' : 'Anfrage'} über Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'Person' : 'Personen'})` : ''}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''} 💌`,
     },
     en: {
@@ -991,6 +1006,7 @@ const notifyHostRequest = async (doc, email, f) => {
         : [['Workshop', what], ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
       msg: 'Message', earn: 'Your earnings', earnNote: (g) => `${eur(g)} in total, ${eur(g * 0.85)} after the 15% Twiggli commission (where agreed with you)`,
       contact: 'Contact', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
+      yes: 'Accept', no: 'Decline', act: `Both open the request straight in your <b>Twiggli</b> account, and ${esc(gFirst)} gets your answer automatically.`,
       subject: `New ${studio ? 'studio request' : 'request'} via Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'person' : 'people'})` : ''}${soon ? ` · ${soon}` : ''} 💌`,
     },
     fr: {
@@ -1006,6 +1022,7 @@ const notifyHostRequest = async (doc, email, f) => {
         : [['Atelier', what], ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
       msg: 'Message', earn: 'Revenus possibles', earnNote: (g) => `${eur(g)} au total, ${eur(g * 0.85)} après la commission Twiggli de 15 % (si convenue avec toi)`,
       contact: 'Contact', bye: 'Bises', sig: 'Jirel, fondatrice @ <b>Twiggli</b>',
+      yes: 'Accepter', no: 'Refuser', act: `Les deux ouvrent la demande directement dans ton espace <b>Twiggli</b>, et ${esc(gFirst)} reçoit ta réponse automatiquement.`,
       subject: `Nouvelle ${studio ? 'demande de location' : 'demande'} via Twiggli : ${what}${when ? `, ${when}` : ''}${people ? ` (${people} pers.)` : ''} 💌`,
     },
   }[lang] ?? null;
@@ -1015,6 +1032,12 @@ const notifyHostRequest = async (doc, email, f) => {
   const table = T.rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="${cell};color:#6b7076">${esc(k)}</td><td align="right" style="${cell};font-weight:bold">${esc(v)}</td></tr>`).join('');
   const message = String((studio ? f['Special notes'] : f.Message) ?? '').trim();
   const contact = [guest && `<b>${esc(guest)}</b>`, isEmail(email) && `<a href="mailto:${esc(email)}" style="color:#6a3eec">${esc(email)}</a>`, f.Phone && `<a href="tel:${esc(String(f.Phone).replace(/\s/g, ''))}" style="color:#6a3eec">${esc(f.Phone)}</a>`].filter(Boolean).join('<br>');
+  const answerUrl = (act) => `${SITE}${lang === 'en' ? '' : `/${lang}`}/host/account/messages/?req=${encodeURIComponent(doc.id)}&act=${act}`;
+  const actRow = buttons ? `<tr><td style="padding:18px 30px 0"><table cellpadding="0" cellspacing="0"><tr>
+<td style="border-radius:10px;background:#6a3eec"><a href="${answerUrl('accept')}" style="display:inline-block;padding:12px 26px;font-size:15px;font-weight:bold;color:#fff;text-decoration:none;border-radius:10px">${T.yes}</a></td>
+<td style="width:10px"></td>
+<td style="border-radius:10px;border:1px solid #6a3eec"><a href="${answerUrl('decline')}" style="display:inline-block;padding:11px 24px;font-size:15px;font-weight:bold;color:#6a3eec;text-decoration:none;border-radius:10px">${T.no}</a></td>
+</tr></table><p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:#6b7076">${T.act}</p></td></tr>` : '';
   const html = `<div style="padding:24px 0;font-family:Tahoma,Arial,sans-serif;color:#24272e">
 <table width="600" align="center" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;border-radius:14px;overflow:hidden">
 <tr><td style="padding:22px 30px 4px"><table cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle"><img src="${SITE}/img/logo.png" width="34" height="34" alt="" style="display:block"></td><td style="padding-left:10px;vertical-align:middle;font-weight:bold;font-size:20px">Twiggli</td></tr></table></td></tr>
@@ -1026,6 +1049,7 @@ const notifyHostRequest = async (doc, email, f) => {
 ${T.date ? `<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#454a50">${T.date}</p>` : ''}
 </td></tr>
 <tr><td style="padding:6px 30px 0"><table width="100%" cellpadding="0" cellspacing="0">${table}</table></td></tr>
+${actRow}
 ${message ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7076;font-weight:bold">${T.msg}</p><p style="margin:0;padding:10px 14px;border-left:3px solid #6a3eec;font-size:14px;line-height:1.6;color:#454a50;white-space:pre-wrap">${esc(message)}</p></td></tr>` : ''}
 ${gross ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1f8a4c;font-weight:bold">${T.earn}</p><p style="margin:0;font-size:15px;color:#1f8a4c;font-weight:bold">${T.earnNote(gross)}</p></td></tr>` : ''}
 <tr><td style="padding:16px 30px 0"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7076;font-weight:bold">${T.contact}</p><p style="margin:0;font-size:14px;line-height:1.7">${contact}</p>
@@ -1033,7 +1057,7 @@ ${gross ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 4px;font-siz
 <tr><td style="padding:14px 30px;font-size:11px;color:#888;line-height:1.6"><a href="${SITE}" style="color:#888">www.twiggli.com</a></td></tr>
 </table></div>`;
   const strip = (h) => String(h).replace(/<[^>]+>/g, '');
-  const text = [T.hi, strip(T.intro), strip(T.date), '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${[guest, email, f.Phone].filter(Boolean).join(', ')}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
+  const text = [T.hi, strip(T.intro), strip(T.date), '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), buttons ? `\n${T.yes}: ${answerUrl('accept')}\n${T.no}: ${answerUrl('decline')}` : '', message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${[guest, email, f.Phone].filter(Boolean).join(', ')}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
     from: { name: 'Twiggli', address: SENDER }, to: who.emails, ...(INBOX ? { cc: INBOX } : {}),
