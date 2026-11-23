@@ -12,7 +12,7 @@ import { teamOffers } from './teamOffers.ts';
 import { getHosts, getWorkshopReel, getWorkshopUsp, type Host } from './content.ts';
 import type { Lang } from '../lib/url.ts';
 import liveData from './live-workshops.json';
-import { withHostSlots, accountDates, isHiddenListing, isReplaced, isReplacedSlot, listingEdit, studioOf } from './hostEdits.ts';
+import { withHostSlots, accountDates, isHiddenListing, isReplaced, isReplacedSlot, listingEdit, studioOf, groupListings } from './hostEdits.ts';
 import { availabilityNotes } from './availability.ts';
 
 /** Places left on a date: the feed's or the host's count (or one the host
@@ -282,6 +282,29 @@ export function getOnRequestAll(lang: Lang): OnRequestWorkshop[] {
       bookUrl: 'https://www.twiggli.com/corporatebookings/',
       ...(o.duration ? { duration: o.duration } : {}),
       ...(o.price ? { price: o.price } : {}),
+      request: true,
+    });
+  }
+  // Workshops a host also offers to private groups and teams on request
+  // (their listing's switch in the dashboard, fave studio 23.11.26).
+  const dated = getSessions(lang);
+  for (const e of groupListings()) {
+    const host = bySlug.get(e.slug);
+    if (!host || isHiddenListing(e.slug, e.key) || out.some((o) => o.host.slug === e.slug && o.key === e.key)) continue;
+    const s = dated.find((x) => x.host.slug === e.slug && x.workshopKey === e.key);
+    const title = e.title || s?.title;
+    if (!title) continue;
+    const size = e.groups?.min || e.groups?.max ? ` (${[e.groups?.min, e.groups?.max].filter(Boolean).join('–')} ${lang === 'de' ? 'Personen' : 'people'})` : '';
+    out.push({
+      id: `req-${e.slug}-${hash(`${title}-groups`)}`,
+      // Its own key, so the workshop's edit (its title) doesn't overwrite "… for groups".
+      key: `${e.key}-groups`,
+      host,
+      title: `${title}: ${lang === 'de' ? 'für Gruppen' : 'for groups'}${size}`,
+      district: host.area ?? host.place,
+      bookUrl: 'https://www.twiggli.com/corporatebookings/',
+      ...(e.duration || s?.duration ? { duration: e.duration || s?.duration } : {}),
+      ...(e.price ? { price: `€${e.price}` } : s?.price ? { price: s.price } : {}),
       request: true,
     });
   }
