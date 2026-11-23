@@ -33,12 +33,16 @@ export type ListingEdit = {
   media?: { type: string; url: string; thumb?: string }[]; booking?: '' | 'request' | 'instant';
   /** Page pictures and the page's video the host removed from this workshop (✕). */
   hidden?: string[];
+  /** Also offered to private groups and teams on request, with their size. */
+  groups?: { on?: boolean; min?: number | null; max?: number | null };
   /** Where it usually happens: 'other' with its visible line, or at the guest's. */
   where?: 'studio' | 'other' | 'guest'; location?: string; locExact?: boolean; district?: string;
 };
 const listingEdits = new Map(((edits as { listingEdits?: ListingEdit[] }).listingEdits ?? []).map((e) => [`${e.slug}|${e.key}`, e]));
 /** A host's own title, price per person and short line for a workshop. */
 export const listingEdit = (slug: string, key: string): ListingEdit | undefined => listingEdits.get(`${slug}|${key}`);
+/** Every workshop a host also offers to groups on request (their listing's switch). */
+export const groupListings = (): ListingEdit[] => [...listingEdits.values()].filter((e) => e.groups?.on);
 const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.active !== false);
 /** Entries of the site's own schedule a host took over in the Calendar tab
  *  (functions REPLACES): "rec|<slug>|<workshop key>|<HH:MM>" for a weekly

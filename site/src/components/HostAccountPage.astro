@@ -792,6 +792,15 @@ const fields = [
                 <label class="cal-radio"><input type="radio" name="booking" value="request" /><span><b>{t.cal.wsReq}</b><small>{t.cal.wsReqHint}</small></span></label>
                 <label class="cal-radio"><input type="radio" name="booking" value="instant" /><span><b>{t.cal.wsInstant}</b><small>{t.cal.wsInstantHint}</small></span></label>
               </fieldset>
+              {/* Also for private groups and teams, on request (fave studio 23.11.26). */}
+              <fieldset class="cal-f">
+                <legend>{L('Für Gruppen', 'For groups', 'Pour les groupes')}</legend>
+                <label class="cal-radio ws-grp"><input type="checkbox" name="groups" /><span><b>{L('Auch für private Gruppen und Teams auf Anfrage', 'Also for private groups and teams on request', 'Aussi pour groupes privés et équipes, sur demande')}</b><small>{L('Erscheint auf deiner Seite unter „Auf Anfrage“: Gruppen schicken dir eine Anfrage mit Wunschtermin, und du nimmst sie an oder lehnst sie ab.', 'Shows on your page under "On request": groups send you a request with the date they’d like, and you accept or decline.', 'Apparaît sur ta page sous « Sur demande » : les groupes t’envoient une demande avec la date souhaitée, et tu acceptes ou refuses.')}</small></span></label>
+                <div class="cal-f-row" data-ws-grp-size hidden>
+                  <label class="cal-f"><span>{L('Gruppe ab (Personen)', 'Group from (people)', 'Groupe à partir de (personnes)')}</span><input type="number" name="grpMin" min="1" max="500" step="1" placeholder="5" /></label>
+                  <label class="cal-f"><span>{L('bis (Personen)', 'up to (people)', 'jusqu’à (personnes)')}</span><input type="number" name="grpMax" min="1" max="500" step="1" placeholder="15" /></label>
+                </div>
+              </fieldset>
               <p class="cal-msg" data-cal-ws-note role="status" hidden></p>
               <footer class="cal-ws-foot">
                 <button type="button" class="cal-btn2" data-cal-ws-close>{t.cal.wsCancel}</button>
@@ -5465,12 +5474,18 @@ const fields = [
         // and dates taken over from it, take requests unless the workshop says otherwise.
         const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || ((first?.price ?? 0) > 0 && !first?.virtual && !first?.replaces) ? 'instant' : 'request');
         (wsForm.querySelector<HTMLInputElement>(`[name="booking"][value="${booking}"]`))!.checked = true;
+        const grp = (e as { groups?: { on?: boolean; min?: number | null; max?: number | null } }).groups;
+        wsF('groups').checked = !!grp?.on;
+        wsF('grpMin').value = grp?.min ? String(grp.min) : '';
+        wsF('grpMax').value = grp?.max ? String(grp.max) : '';
+        $('[data-ws-grp-size]').hidden = !grp?.on;
         wsDrawMedia();
         whereUI($('[data-wh="ws"]')).set({ where: e.where ?? 'studio', place: e.place });
         wsDlg.showModal();
         wsF('title').focus();
       };
       root.querySelectorAll<HTMLElement>('[data-cal-ws-close]').forEach((b) => b.addEventListener('click', () => wsDlg.close()));
+      wsF('groups').addEventListener('change', () => { $('[data-ws-grp-size]').hidden = !wsF('groups').checked; });
       wsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!wsCur || wsBusy) return;
@@ -5484,6 +5499,7 @@ const fields = [
           slug, action: 'edit', key: wsCur.key, title: wsCur.title, newTitle: title,
           price: Number(wsF('price').value) || null, seats: Number(wsF('seats').value) || null, note: wsF('note').value.trim(),
           description: wsF<HTMLTextAreaElement>('description').value.trim(), duration, media: wsMedia, booking, hidden: [...wsGone],
+          groups: wsF('groups').checked ? { on: true, min: Number(wsF('grpMin').value) || null, max: Number(wsF('grpMax').value) || null } : { on: false },
           ...(() => { const w = whereUI($('[data-wh="ws"]')).get(); return { where: w.where, place: w.place ?? null }; })(),
         };
         const btn = $<HTMLButtonElement>('[data-cal-ws-save]');
@@ -5504,7 +5520,7 @@ const fields = [
           // Shown at once here; the public page follows with the next hourly build.
           const items = calListings.slug === slug ? calListings.items : [];
           const had = items.find((x) => x.key === wsCur!.key);
-          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], partner: (had?.edit as { partner?: unknown } | null | undefined)?.partner, where: body.where, place: body.place };
+          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], groups: body.groups, partner: (had?.edit as { partner?: unknown } | null | undefined)?.partner, where: body.where, place: body.place };
           if (had) had.edit = edit;
           else items.push({ key: wsCur.key, title: wsCur.title, status: 'live', image: wsCur.image, price: wsCur.price ?? '', edit });
           calListings = { slug, items };

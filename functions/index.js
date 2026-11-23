@@ -2269,6 +2269,8 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
       seats: Number.isFinite(seats) && seats >= 1 && seats <= 500 ? seats : null,
       media: cleanMedia(b.media, slug, '', await bunnyAllowed(b.media, { email, slug })),
       booking: ['request', 'instant'].includes(b.booking) ? b.booking : '',
+      // Also offered to private groups and teams on request (fave studio 23.11.26), with a group size.
+      groups: b.groups?.on === true ? { on: true, min: Math.max(1, Math.min(500, Math.round(Number(b.groups.min)) || 0)) || null, max: Math.max(1, Math.min(500, Math.round(Number(b.groups.max)) || 0)) || null } : { on: false },
       // Page pictures the host removed with ✕, so they stay away when the editor opens again (Jirel 23.11.26).
       hidden: (Array.isArray(b.hidden) ? b.hidden : []).filter((u) => typeof u === 'string' && u.length <= 400).slice(0, 60),
       // Where it usually happens (dates can differ): its own address stays private (publicEvents).
