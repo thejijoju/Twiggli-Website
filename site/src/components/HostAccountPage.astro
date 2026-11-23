@@ -809,7 +809,7 @@ const fields = [
           {/* Partner workshops (Jirel 23.11.26): hotels and companies in our network book workshops at their own place. */}
           <section class="pw" data-pw>
             <h3 class="lst-sec">{L('Partner-Workshops: bei Hotels und Firmen vor Ort', 'Partner workshops: on site at hotels and companies', 'Ateliers partenaires : sur place chez des hôtels et entreprises')}</h3>
-            <p class="pw-intro">{L('Hotels und Firmen aus unserem Partner-Netzwerk buchen Workshops direkt bei sich. Trag hier ein, welche Workshops du dort anbietest. Wir nehmen dich in unsere Anbieterliste auf und schicken dir passende Anfragen, zum Beispiel: Hotel in Charlottenburg, 12. Dezember, 18 Uhr, 15 Personen.', 'Hotels and companies in our partner network book workshops at their own place. Enter the workshops you offer there. We add you to our list of providers and send you matching requests, for example: hotel in Charlottenburg, 12 December, 6 pm, 15 people.', 'Des hôtels et entreprises de notre réseau réservent des ateliers chez eux. Indique ici les ateliers que tu y proposes. On t’ajoute à notre liste et on t’envoie des demandes adaptées, par exemple : hôtel à Charlottenburg, 12 décembre, 18 h, 15 personnes.')}</p>
+            <p class="pw-intro">{L('Hotels und Firmen aus unserem Partner-Netzwerk buchen Workshops direkt bei sich. Trag hier ein, welche Workshops du dort anbietest. Du kannst dafür auch ein neues Konzept anlegen. Wir nehmen dich in unsere Anbieterliste auf und schicken dir passende Anfragen, zum Beispiel: Hotel in Charlottenburg, 12. Dezember, 18 Uhr, 15 Personen. Du nimmst sie an oder lehnst sie ab. Von deinem Preis gehen 15 % Twiggli-Provision ab.', 'Hotels and companies in our partner network book workshops at their own place. Enter the workshops you offer there. You can also create a new concept for it. We add you to our list of providers and send you matching requests, for example: hotel in Charlottenburg, 12 December, 6 pm, 15 people. You accept or decline them. Twiggli’s 15% commission is taken from your price.', 'Des hôtels et entreprises de notre réseau réservent des ateliers chez eux. Indique ici les ateliers que tu y proposes. Tu peux aussi créer un nouveau concept pour ça. On t’ajoute à notre liste et on t’envoie des demandes adaptées, par exemple : hôtel à Charlottenburg, 12 décembre, 18 h, 15 personnes. Tu les acceptes ou les refuses. La commission Twiggli de 15 % est déduite de ton prix.')}</p>
             <div class="pw-list" data-pw-list></div>
             <button type="button" class="lst-new" data-pw-add>{L('+ Partner-Workshop eingeben', '+ Enter a partner workshop', '+ Ajouter un atelier partenaire')}</button>
           </section>
@@ -818,17 +818,46 @@ const fields = [
               <h2>{L('Partner-Workshop', 'Partner workshop', 'Atelier partenaire')}</h2>
               <div class="cal-partner">
                 <label class="cal-f-lbl"><span>{L('Welcher Workshop?', 'Which workshop?', 'Quel atelier ?')}</span><select name="pKey" data-pw-key></select></label>
+                <div class="pw-concept" data-pw-concept hidden>
+                  <label class="cal-f-lbl"><span>{L('Name des Konzepts', 'Name of the concept', 'Nom du concept')}</span><input name="pTitle" maxlength="120" placeholder={L('z. B. Mini-Keramik für Hotelgäste', 'e.g. mini ceramics for hotel guests', 'p. ex. mini céramique pour clients d’hôtel')} /></label>
+                  <label class="cal-f-lbl"><span>{L('Was passiert im Workshop?', 'What happens in the workshop?', 'Que se passe-t-il pendant l’atelier ?')}</span><textarea name="pAbout" rows="3" maxlength="1500"></textarea></label>
+                </div>
                 <div class="cal-partner-row">
                   <label class="cal-f-lbl"><span>{L('Preis pro Person (€)', 'Price per person (€)', 'Prix par personne (€)')}</span><input type="number" name="pPrice" min="0" max="2000" step="1" placeholder="55" required /><small>{L('inkl. Anreise, Material und allem, was du mitbringst', 'incl. travel, materials and everything you bring', 'déplacement, matériel et tout ce que tu apportes compris')}</small></label>
                   <label class="cal-f-lbl"><span>{L('Gruppengröße', 'Group size', 'Taille du groupe')}</span><span class="cal-partner-pair"><input type="number" name="pMin" min="1" max="500" placeholder={L('von', 'from', 'de')} /><input type="number" name="pMax" min="1" max="500" placeholder={L('bis', 'to', 'à')} /></span><small>{L('von – bis Personen', 'from – to people', 'de – à personnes')}</small></label>
                   <label class="cal-f-lbl"><span>{L('Dauer', 'Length', 'Durée')}</span><input name="pDuration" maxlength="30" placeholder="1.5 h" /></label>
                 </div>
+                <p class="pw-fee" data-pw-fee>{L('Von diesem Preis gehen 15 % Twiggli-Provision ab.', 'Twiggli’s 15% commission is taken from this price.', 'La commission Twiggli de 15 % est déduite de ce prix.')}</p>
                 <label class="cal-f-lbl"><span>{L('Was brauchst du vor Ort?', 'What do you need on site?', 'De quoi as-tu besoin sur place ?')}</span><textarea name="pNeeds" rows="2" maxlength="500" placeholder={L('z. B. Tische, Strom, Wasser, etwa 1 Stunde Aufbau', 'e.g. tables, power, water, about 1 hour to set up', 'p. ex. tables, électricité, eau, environ 1 h d’installation')}></textarea></label>
               </div>
               <p class="cal-msg" data-pw-note role="status" hidden></p>
               <footer class="cal-ws-foot">
                 <button type="button" class="cal-btn2" data-pw-close>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
                 <button type="submit" class="cal-btn">{L('Speichern', 'Save', 'Enregistrer')}</button>
+              </footer>
+            </form>
+          </dialog>
+          <dialog class="cal-ws pw-dlg" data-pr-dlg>
+            <form class="cal-ws-form" data-pr-form>
+              <h2>{L('Partner-Anfrage senden', 'Send a partner request', 'Envoyer une demande partenaire')}</h2>
+              <p class="pw-intro" data-pr-title></p>
+              <div class="cal-partner">
+                <div class="cal-partner-row">
+                  <label class="cal-f-lbl"><span>{L('Partner', 'Partner', 'Partenaire')}</span><input name="partner" maxlength="120" placeholder={L('z. B. Hotel in Charlottenburg', 'e.g. hotel in Charlottenburg', 'p. ex. hôtel à Charlottenburg')} required /></label>
+                  <label class="cal-f-lbl"><span>{L('Wo', 'Where', 'Où')}</span><input name="where" maxlength="160" placeholder="Charlottenburg" /></label>
+                  <label class="cal-f-lbl"><span>{L('Personen', 'People', 'Personnes')}</span><input type="number" name="people" min="1" max="500" required /></label>
+                </div>
+                <div class="cal-partner-row">
+                  <label class="cal-f-lbl"><span>{L('Datum', 'Date', 'Date')}</span><input type="date" name="date" required /></label>
+                  <label class="cal-f-lbl"><span>{L('Uhrzeit', 'Time', 'Heure')}</span><input type="time" name="time" required /></label>
+                  <label class="cal-f-lbl"><span>{L('Preis pro Person (€)', 'Price per person (€)', 'Prix par personne (€)')}</span><input type="number" name="price" min="0" max="2000" /></label>
+                </div>
+                <label class="cal-f-lbl"><span>{L('Nachricht an den Host (optional)', 'Message to the host (optional)', 'Message à l’hôte (facultatif)')}</span><textarea name="message" rows="3" maxlength="1500"></textarea></label>
+              </div>
+              <p class="cal-msg" data-pr-note role="status" hidden></p>
+              <footer class="cal-ws-foot">
+                <button type="button" class="cal-btn2" data-pr-close>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
+                <button type="submit" class="cal-btn">{L('Senden', 'Send', 'Envoyer')}</button>
               </footer>
             </form>
           </dialog>
@@ -2977,7 +3006,8 @@ const fields = [
       const markSeen = (id: string) => { seen.add(id); try { localStorage.setItem(SEEN, JSON.stringify([...seen].slice(-300))); } catch { /* storage off */ } };
       const waiting = (r: Req) => r.status === 'pending';
       const unread = (r: Req) => !seen.has(r.id) && waiting(r);
-      const firstName = (r: Req) => (r.fields.Name || r.fields.Email || t.guest).trim().split(/\s+/)[0];
+      // A partner request names a hotel or company: kept whole ("Hotel in Charlottenburg", not "Hotel").
+      const firstName = (r: Req) => (r.fields.Type === 'Partner request' && r.fields.Name ? r.fields.Name.trim() : (r.fields.Name || r.fields.Email || t.guest).trim().split(/\s+/)[0]);
       const fmtDay = (iso: string) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString(({ de: 'de-DE', fr: 'fr-FR' } as Record<string, string>)[document.documentElement.lang] ?? 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
       let openId = '';
       const row = (r: Req) => {
@@ -3047,16 +3077,27 @@ const fields = [
         const sorted = [...pending].sort((a, b) => a.createdAt - b.createdAt);
         const lefts: [HTMLElement, number][] = [];
         row.replaceChildren(...sorted.map((r) => {
-          const card = el('button', 'hd-req') as HTMLButtonElement; card.type = 'button';
+          const card = el('div', 'hd-req');
+          card.setAttribute('role', 'button'); card.tabIndex = 0;
+          card.addEventListener('keydown', (ev) => { if ((ev as KeyboardEvent).key === 'Enter' && ev.target === card) card.click(); });
           const left = el('span', 'hd-req-left');
           lefts.push([left, r.createdAt + 48 * 3600 * 1000]);
           const d = dateOf(r);
           const day = d ? new Date(`${d}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
           const n = peopleOf(r);
           const txt = el('span', 'hd-req-txt');
+          // A partner request (a hotel or company of our network, sent by Twiggli): said plainly.
+          if (r.fields.Type === 'Partner request') txt.append(el('span', 'hd-req-pt', `🤝 ${TL('Partner-Anfrage', 'Partner request', 'Demande partenaire')}${r.fields.Name ? `: ${r.fields.Name}` : ''}${r.fields.Where ? ` · ${r.fields.Where}` : ''}`));
           txt.append(el('b', 'hd-req-what', day ? say(t.ib.reqFor, { date: day }) : t.ib.inquiry),
-            el('span', 'hd-req-n', [n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) }), r.fields.Workshop].filter(Boolean).join(' · ')));
-          card.append(el('span', 'hd-req-av', firstName(r).charAt(0).toUpperCase()), txt, left);
+            el('span', 'hd-req-n', [n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) }), r.fields.Time, r.fields.Workshop].filter(Boolean).join(' · ')));
+          // Accept or decline right here (Jirel 23.11.26): the same popups as in Messages.
+          const acts = el('span', 'hd-req-acts');
+          const yes = el('button', 'hd-req-yes', TL('Annehmen', 'Accept', 'Accepter')) as HTMLButtonElement; yes.type = 'button';
+          const no = el('button', 'hd-req-no', TL('Ablehnen', 'Decline', 'Refuser')) as HTMLButtonElement; no.type = 'button';
+          yes.addEventListener('click', (ev) => { ev.stopPropagation(); openReq(r, 'accept'); });
+          no.addEventListener('click', (ev) => { ev.stopPropagation(); openReq(r, 'decline'); });
+          acts.append(yes, no);
+          card.append(el('span', 'hd-req-av', firstName(r).charAt(0).toUpperCase()), txt, left, acts);
           card.addEventListener('click', () => {
             // The request with its money and buttons (Messages).
             msgFocus = `r:${r.id}`;
@@ -3176,6 +3217,10 @@ const fields = [
         mailDone = true;
         q.delete('req'); q.delete('act');
         history.replaceState(history.state, '', location.pathname + (q.toString() ? `?${q}` : '') + location.hash);
+        openReq(r, act);
+      };
+      /** A request with its accept or decline popup open (from the email buttons, or the Overview's cards). */
+      const openReq = (r: Req, act: string | null) => {
         showTab('messages');
         openDetail(r);
         // The "Respond" button openDetail puts on the request card opens the popup.
@@ -5048,6 +5093,7 @@ const fields = [
           const row = el('div', 'pw-row');
           const info = el('div', 'pw-info');
           info.append(el('b', '', (x.edit as WsEdit | null)?.title || x.title));
+          if (pt.concept) info.append(el('small', 'pw-tag', TL('Eigenes Konzept für Partner-Events', 'Own concept for partner events', 'Concept propre aux événements partenaires')));
           const facts = [pt.price ? `€${pt.price} ${TL('pro Person inkl. Anreise & Material', 'per person incl. travel & materials', 'par personne, déplacement et matériel compris')}` : '', pt.min || pt.max ? `${pt.min ?? '?'}–${pt.max ?? '?'} ${TL('Personen', 'people', 'personnes')}` : '', pt.duration ?? ''].filter(Boolean).join(' · ');
           info.append(el('span', '', facts));
           if (pt.needs) info.append(el('small', '', `${TL('Vor Ort', 'On site', 'Sur place')}: ${pt.needs}`));
@@ -5056,12 +5102,18 @@ const fields = [
           const rm = el('button', 'lst-btn2', TL('Entfernen', 'Remove', 'Retirer')) as HTMLButtonElement; rm.type = 'button';
           rm.addEventListener('click', () => void pwSave(x.key, x.title, { ...pt, on: false }));
           const acts = el('div', 'pw-acts'); acts.append(ed, rm);
+          // Jirel (admin): send this host a request from a partner (hotel, company).
+          if (isAdmin) {
+            const send = el('button', 'lst-btn', TL('Partner-Anfrage senden', 'Send partner request', 'Envoyer une demande')) as HTMLButtonElement; send.type = 'button';
+            send.addEventListener('click', () => prOpen(x.key, (x.edit as WsEdit | null)?.title || x.title, pt));
+            acts.prepend(send);
+          }
           row.append(info, acts);
           return row;
         });
         $('[data-pw-list]').replaceChildren(...rows);
       };
-      type Pw = { on?: boolean; price?: number | null; min?: number | null; max?: number | null; duration?: string; needs?: string };
+      type Pw = { on?: boolean; price?: number | null; min?: number | null; max?: number | null; duration?: string; needs?: string; concept?: boolean; about?: string };
       let pwWs: { key: string; title: string }[] = [];
       const pwDlg = $<HTMLDialogElement>('[data-pw-dlg]');
       if (pwDlg.parentElement !== root) root.append(pwDlg);
@@ -5070,10 +5122,18 @@ const fields = [
       const pwOpen = (key = '') => {
         const items = calListings.slug === slug ? calListings.items : [];
         const sel = $<HTMLSelectElement>('[data-pw-key]');
-        sel.replaceChildren(...pwWs.map((w) => new Option(w.title, w.key)));
+        // The site's workshops, the host's own partner concepts, and "new concept" (Jirel 23.11.26).
+        const concepts = items.filter((x) => (x.edit as { partner?: Pw } | null)?.partner?.concept && !pwWs.some((w) => w.key === x.key));
+        sel.replaceChildren(...pwWs.map((w) => new Option(w.title, w.key)), ...concepts.map((x) => new Option(x.title, x.key)), new Option(TL('+ Neues Konzept nur für Partner-Events', '+ New concept just for partner events', '+ Nouveau concept pour les événements partenaires'), '__new'));
         if (key) sel.value = key;
         const fillFrom = () => {
-          const pt = ((items.find((x) => x.key === sel.value)?.edit as { partner?: Pw } | null)?.partner) ?? {};
+          const cur = items.find((x) => x.key === sel.value);
+          const pt = ((cur?.edit as { partner?: Pw } | null)?.partner) ?? {};
+          const isConcept = sel.value === '__new' || !!pt.concept;
+          $('[data-pw-concept]').hidden = !isConcept;
+          pwF('pTitle').required = isConcept;
+          pwF('pTitle').value = isConcept && cur ? cur.title : '';
+          pwF<HTMLTextAreaElement>('pAbout').value = pt.about ?? '';
           pwF('pPrice').value = pt.price ? String(pt.price) : '';
           pwF('pMin').value = pt.min ? String(pt.min) : '';
           pwF('pMax').value = pt.max ? String(pt.max) : '';
@@ -5082,9 +5142,18 @@ const fields = [
         };
         sel.onchange = fillFrom;
         fillFrom();
+        pwFee();
         $('[data-pw-note]').hidden = true;
         pwDlg.showModal();
       };
+      // What the host keeps: the price minus Twiggli's 15 %, said under the price.
+      const pwFee = () => {
+        const p = Number(pwF('pPrice').value) || 0;
+        $('[data-pw-fee]').textContent = p
+          ? TL(`Von diesem Preis gehen 15 % Twiggli-Provision ab: Du bekommst €${(p * 0.85).toFixed(2).replace('.', ',').replace(',00', '')} pro Person.`, `Twiggli’s 15% commission is taken from this price: you get €${(p * 0.85).toFixed(2).replace('.00', '')} per person.`, `La commission Twiggli de 15 % est déduite de ce prix : tu reçois ${(p * 0.85).toFixed(2).replace('.', ',').replace(',00', '')} € par personne.`)
+          : TL('Von diesem Preis gehen 15 % Twiggli-Provision ab.', 'Twiggli’s 15% commission is taken from this price.', 'La commission Twiggli de 15 % est déduite de ce prix.');
+      };
+      pwF('pPrice').addEventListener('input', pwFee);
       const pwSave = async (key: string, title: string, pt: Pw) => {
         if (!calDemo) await api('hostListing', { slug, action: 'partner', key, title, partner: pt });
         else await new Promise((r) => setTimeout(r, 300));
@@ -5096,15 +5165,54 @@ const fields = [
         void renderLst();
       };
       $('[data-pw-add]').addEventListener('click', () => pwOpen());
+      // ── Partner request (admin): a hotel or company asks for this partner workshop. ──
+      const prDlg = $<HTMLDialogElement>('[data-pr-dlg]');
+      if (prDlg.parentElement !== root) root.append(prDlg);
+      const prForm = $<HTMLFormElement>('[data-pr-form]');
+      const prF = <T extends HTMLElement = HTMLInputElement>(n: string) => prForm.elements.namedItem(n) as unknown as T;
+      let prCur: { key: string; title: string } | null = null;
+      const prOpen = (key: string, title: string, pt: Pw) => {
+        prCur = { key, title };
+        $('[data-pr-title]').textContent = title;
+        prForm.reset();
+        prF('price').value = pt.price ? String(pt.price) : '';
+        $('[data-pr-note]').hidden = true;
+        prDlg.showModal();
+      };
+      root.querySelectorAll<HTMLElement>('[data-pr-close]').forEach((b) => b.addEventListener('click', () => prDlg.close()));
+      prForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        if (!prCur) return;
+        const body = { slug, key: prCur.key, title: prCur.title, partner: prF('partner').value.trim(), where: prF('where').value.trim(), date: prF('date').value, time: prF('time').value, people: Number(prF('people').value) || 1, price: Number(prF('price').value) || null, message: prF<HTMLTextAreaElement>('message').value.trim() };
+        const note = $('[data-pr-note]'); note.hidden = false; note.textContent = TL('Wird gesendet …', 'Sending …', 'Envoi …');
+        try {
+          if (calDemo || DEMO) {
+            await new Promise((ok) => setTimeout(ok, 300));
+            reqs = [{ id: `demoPr${Date.now()}`, subject: '', status: 'pending', thread: [], createdAt: Date.now(), email: 'hello@twiggli.com', fields: { Type: 'Partner request', Name: body.partner, Where: body.where, Workshop: prCur.title, Date: body.date, Time: body.time, People: String(body.people), Price: body.price ? `€${body.price}` : '', Message: body.message } } as unknown as Req, ...reqs];
+            renderMsgs();
+          } else {
+            await api('partnerRequest', body);
+            await loadInbox();
+          }
+          prDlg.close();
+          calNote(TL('Partner-Anfrage gesendet.', 'Partner request sent.', 'Demande envoyée.'));
+        } catch { note.textContent = fill(t.error, cfg.contact); }
+      });
       root.querySelectorAll<HTMLElement>('[data-pw-close]').forEach((b) => b.addEventListener('click', () => pwDlg.close()));
       pwForm.addEventListener('submit', async (ev) => {
         ev.preventDefault();
-        const key = $<HTMLSelectElement>('[data-pw-key]').value;
-        const w = pwWs.find((x) => x.key === key);
-        if (!w) return;
-        const pt: Pw = { on: true, price: Number(pwF('pPrice').value) || null, min: Number(pwF('pMin').value) || null, max: Number(pwF('pMax').value) || null, duration: pwF('pDuration').value.trim(), needs: pwF<HTMLTextAreaElement>('pNeeds').value.trim() };
-        const note = $('[data-pw-note]'); note.hidden = false; note.textContent = t.saving;
-        try { await pwSave(key, w.title, pt); pwDlg.close(); }
+        const picked = $<HTMLSelectElement>('[data-pw-key]').value;
+        const items = calListings.slug === slug ? calListings.items : [];
+        const old = items.find((x) => x.key === picked);
+        const concept = picked === '__new' || !!((old?.edit as { partner?: Pw } | null)?.partner?.concept);
+        const title = concept ? pwF('pTitle').value.trim() : pwWs.find((x) => x.key === picked)?.title ?? '';
+        if (!title) return;
+        // A new concept gets its own key ("partner-…"); it has no page on the site.
+        const key = picked === '__new' ? `partner-${Date.now().toString(36)}` : picked;
+        const pt: Pw = { on: true, price: Number(pwF('pPrice').value) || null, min: Number(pwF('pMin').value) || null, max: Number(pwF('pMax').value) || null, duration: pwF('pDuration').value.trim(), needs: pwF<HTMLTextAreaElement>('pNeeds').value.trim(), ...(concept ? { concept: true, about: pwF<HTMLTextAreaElement>('pAbout').value.trim() } : {}) };
+        if (old && concept) old.title = title;
+        const note = $('[data-pw-note]'); note.hidden = false; note.textContent = TL('Wird gespeichert …', 'Saving …', 'Enregistrement …');
+        try { await pwSave(key, title, pt); pwDlg.close(); }
         catch { note.textContent = fill(t.error, cfg.contact); }
       });
       $('[data-lst-new]').addEventListener('click', () => openCreate());
@@ -6811,7 +6919,7 @@ const fields = [
   /* ── Calendar: one calendar per workshop (Jirel 18.11.26) ── */
   /* The calendar needs room: the account is wider while it is open. */
   .ha.is-in:has([data-cal-panel]:not([hidden])) { max-width: 1240px; }
-  .cal { --cal-line: #e6dff2; --cal-grad: linear-gradient(90deg, #fd6f31, #f4c424, #7f14a0); }
+  .cal, .pw-dlg { --cal-line: #e6dff2; --cal-grad: linear-gradient(90deg, #fd6f31, #f4c424, #7f14a0); }
   .cal button { font-family: inherit; color: inherit; cursor: pointer; }
   .cal-h { margin: 8px 0 2px; font-size: clamp(1.7rem, 4vw, 2.1rem); letter-spacing: -0.02em; }
   .cal-lede { margin: 0 0 16px; }
@@ -7079,6 +7187,14 @@ const fields = [
   .cal-radio input[type="checkbox"] { width: auto; flex: none; margin-top: 3px; accent-color: #6a3eec; }
   .cal-partner { display: grid; gap: 10px; margin-top: 10px; }
   .pw { margin-top: 28px; }
+  .pw-fee { margin: 2px 0 10px; font-size: .82rem; color: #1d8a4a; font-weight: 600; }
+  .pw-concept { display: grid; gap: 10px; margin-bottom: 6px; }
+  .pw-tag { color: #6a3eec; font-weight: 600; }
+  .hd-req-pt { display: block; font-size: .78rem; font-weight: 600; color: #1d8a4a; margin-bottom: 2px; }
+  .hd-req-acts { display: flex; gap: 6px; margin-left: auto; flex: none; }
+  .hd-req-yes, .hd-req-no { border-radius: 999px; padding: 6px 12px; font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+  .hd-req-yes { border: 0; background: #6a3eec; color: #fff; }
+  .hd-req-no { border: 1px solid #ddd; background: #fff; color: #444; }
   .pw-intro { margin: 4px 0 12px; font-size: .88rem; line-height: 1.5; color: #6b7076; max-width: 720px; }
   .pw-list { display: grid; gap: 10px; margin-bottom: 12px; }
   .pw-row { display: flex; justify-content: space-between; gap: 14px; align-items: center; padding: 12px 16px; border: 1px solid #ece6f7; border-radius: 14px; background: #fff; }
