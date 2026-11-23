@@ -806,6 +806,32 @@ const fields = [
           </div>
           <p class="lst-note" data-lst-note aria-live="polite"></p>
           <div class="lst-list" data-lst-list></div>
+          {/* Partner workshops (Jirel 23.11.26): hotels and companies in our network book workshops at their own place. */}
+          <section class="pw" data-pw>
+            <h3 class="lst-sec">{L('Partner-Workshops: bei Hotels und Firmen vor Ort', 'Partner workshops: on site at hotels and companies', 'Ateliers partenaires : sur place chez des hôtels et entreprises')}</h3>
+            <p class="pw-intro">{L('Hotels und Firmen aus unserem Partner-Netzwerk buchen Workshops direkt bei sich. Trag hier ein, welche Workshops du dort anbietest. Wir nehmen dich in unsere Anbieterliste auf und schicken dir passende Anfragen, zum Beispiel: Hotel in Charlottenburg, 12. Dezember, 18 Uhr, 15 Personen.', 'Hotels and companies in our partner network book workshops at their own place. Enter the workshops you offer there. We add you to our list of providers and send you matching requests, for example: hotel in Charlottenburg, 12 December, 6 pm, 15 people.', 'Des hôtels et entreprises de notre réseau réservent des ateliers chez eux. Indique ici les ateliers que tu y proposes. On t’ajoute à notre liste et on t’envoie des demandes adaptées, par exemple : hôtel à Charlottenburg, 12 décembre, 18 h, 15 personnes.')}</p>
+            <div class="pw-list" data-pw-list></div>
+            <button type="button" class="lst-new" data-pw-add>{L('+ Partner-Workshop eingeben', '+ Enter a partner workshop', '+ Ajouter un atelier partenaire')}</button>
+          </section>
+          <dialog class="cal-ws pw-dlg" data-pw-dlg>
+            <form class="cal-ws-form" data-pw-form>
+              <h2>{L('Partner-Workshop', 'Partner workshop', 'Atelier partenaire')}</h2>
+              <div class="cal-partner">
+                <label class="cal-f-lbl"><span>{L('Welcher Workshop?', 'Which workshop?', 'Quel atelier ?')}</span><select name="pKey" data-pw-key></select></label>
+                <div class="cal-partner-row">
+                  <label class="cal-f-lbl"><span>{L('Preis pro Person (€)', 'Price per person (€)', 'Prix par personne (€)')}</span><input type="number" name="pPrice" min="0" max="2000" step="1" placeholder="55" required /><small>{L('inkl. Anreise, Material und allem, was du mitbringst', 'incl. travel, materials and everything you bring', 'déplacement, matériel et tout ce que tu apportes compris')}</small></label>
+                  <label class="cal-f-lbl"><span>{L('Gruppengröße', 'Group size', 'Taille du groupe')}</span><span class="cal-partner-pair"><input type="number" name="pMin" min="1" max="500" placeholder={L('von', 'from', 'de')} /><input type="number" name="pMax" min="1" max="500" placeholder={L('bis', 'to', 'à')} /></span><small>{L('von – bis Personen', 'from – to people', 'de – à personnes')}</small></label>
+                  <label class="cal-f-lbl"><span>{L('Dauer', 'Length', 'Durée')}</span><input name="pDuration" maxlength="30" placeholder="1.5 h" /></label>
+                </div>
+                <label class="cal-f-lbl"><span>{L('Was brauchst du vor Ort?', 'What do you need on site?', 'De quoi as-tu besoin sur place ?')}</span><textarea name="pNeeds" rows="2" maxlength="500" placeholder={L('z. B. Tische, Strom, Wasser, etwa 1 Stunde Aufbau', 'e.g. tables, power, water, about 1 hour to set up', 'p. ex. tables, électricité, eau, environ 1 h d’installation')}></textarea></label>
+              </div>
+              <p class="cal-msg" data-pw-note role="status" hidden></p>
+              <footer class="cal-ws-foot">
+                <button type="button" class="cal-btn2" data-pw-close>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
+                <button type="submit" class="cal-btn">{L('Speichern', 'Save', 'Enregistrer')}</button>
+              </footer>
+            </form>
+          </dialog>
         </section>
 
         <!-- Messages, as on Airbnb (functions hostInbox / hostReply): the list
@@ -4977,6 +5003,8 @@ const fields = [
           const n = calSlots(w.key, today, until).length;
           pill(n ? `${n} ${TL(n === 1 ? 'kommender Termin' : 'kommende Termine', n === 1 ? 'upcoming date' : 'upcoming dates', n === 1 ? 'date à venir' : 'dates à venir')}` : TL('Keine kommenden Termine', 'No upcoming dates', 'Aucune date à venir'), n ? '' : 'is-warn');
           if (st?.status === 'paused') pill(TL('Pausiert', 'Paused', 'En pause'), 'is-warn');
+          const pn = (e as { partner?: { on?: boolean; price?: number | null } }).partner;
+          if (pn?.on) pill(`🤝 ${TL('Partner vor Ort', 'On site at partners', 'Sur place chez nos partenaires')}${pn.price ? ` · €${pn.price}` : ''}`, 'is-go');
           body.append(meta);
           const desc = (e.description || b?.text || '').trim();
           if (desc) body.append(el('p', 'lst-desc', desc.length > 180 ? `${desc.slice(0, 180)}…` : desc));
@@ -5013,7 +5041,72 @@ const fields = [
           ...sec(TL('Für Gruppen und Firmen: auf Anfrage', 'For groups and companies: on request', 'Pour groupes et entreprises : sur demande'), cards.filter((c) => c.dataset.sec === 'group')),
           ...sec(`${TL('Auf deiner weiteren Seite', 'On your other page', 'Sur ton autre page')}: ${others.map((o) => hosts[o].en.specialty).join(', ')}`, switcher),
         );
+        // Partner workshops: the ones this host offers on site at hotels and companies.
+        pwWs = ws.map((w) => ({ key: w.key, title: (state.find((x) => x.key === w.key)?.edit as WsEdit | null)?.title || w.title }));
+        const rows = state.filter((x) => (x.edit as { partner?: Pw } | null)?.partner?.on).map((x) => {
+          const pt = (x.edit as { partner: Pw }).partner;
+          const row = el('div', 'pw-row');
+          const info = el('div', 'pw-info');
+          info.append(el('b', '', (x.edit as WsEdit | null)?.title || x.title));
+          const facts = [pt.price ? `€${pt.price} ${TL('pro Person inkl. Anreise & Material', 'per person incl. travel & materials', 'par personne, déplacement et matériel compris')}` : '', pt.min || pt.max ? `${pt.min ?? '?'}–${pt.max ?? '?'} ${TL('Personen', 'people', 'personnes')}` : '', pt.duration ?? ''].filter(Boolean).join(' · ');
+          info.append(el('span', '', facts));
+          if (pt.needs) info.append(el('small', '', `${TL('Vor Ort', 'On site', 'Sur place')}: ${pt.needs}`));
+          const ed = el('button', 'lst-btn2', TL('Ändern', 'Edit', 'Modifier')) as HTMLButtonElement; ed.type = 'button';
+          ed.addEventListener('click', () => pwOpen(x.key));
+          const rm = el('button', 'lst-btn2', TL('Entfernen', 'Remove', 'Retirer')) as HTMLButtonElement; rm.type = 'button';
+          rm.addEventListener('click', () => void pwSave(x.key, x.title, { ...pt, on: false }));
+          const acts = el('div', 'pw-acts'); acts.append(ed, rm);
+          row.append(info, acts);
+          return row;
+        });
+        $('[data-pw-list]').replaceChildren(...rows);
       };
+      type Pw = { on?: boolean; price?: number | null; min?: number | null; max?: number | null; duration?: string; needs?: string };
+      let pwWs: { key: string; title: string }[] = [];
+      const pwDlg = $<HTMLDialogElement>('[data-pw-dlg]');
+      if (pwDlg.parentElement !== root) root.append(pwDlg);
+      const pwForm = $<HTMLFormElement>('[data-pw-form]');
+      const pwF = <T extends HTMLElement = HTMLInputElement>(n: string) => pwForm.elements.namedItem(n) as unknown as T;
+      const pwOpen = (key = '') => {
+        const items = calListings.slug === slug ? calListings.items : [];
+        const sel = $<HTMLSelectElement>('[data-pw-key]');
+        sel.replaceChildren(...pwWs.map((w) => new Option(w.title, w.key)));
+        if (key) sel.value = key;
+        const fillFrom = () => {
+          const pt = ((items.find((x) => x.key === sel.value)?.edit as { partner?: Pw } | null)?.partner) ?? {};
+          pwF('pPrice').value = pt.price ? String(pt.price) : '';
+          pwF('pMin').value = pt.min ? String(pt.min) : '';
+          pwF('pMax').value = pt.max ? String(pt.max) : '';
+          pwF('pDuration').value = pt.duration ?? '';
+          pwF<HTMLTextAreaElement>('pNeeds').value = pt.needs ?? '';
+        };
+        sel.onchange = fillFrom;
+        fillFrom();
+        $('[data-pw-note]').hidden = true;
+        pwDlg.showModal();
+      };
+      const pwSave = async (key: string, title: string, pt: Pw) => {
+        if (!calDemo) await api('hostListing', { slug, action: 'partner', key, title, partner: pt });
+        else await new Promise((r) => setTimeout(r, 300));
+        const items = calListings.slug === slug ? calListings.items : [];
+        const had = items.find((x) => x.key === key);
+        if (had) had.edit = { ...(had.edit ?? {}), partner: pt } as WsEdit;
+        else items.push({ key, title, status: 'live', image: '', price: '', edit: { partner: pt } as unknown as WsEdit });
+        calListings = { slug, items };
+        void renderLst();
+      };
+      $('[data-pw-add]').addEventListener('click', () => pwOpen());
+      root.querySelectorAll<HTMLElement>('[data-pw-close]').forEach((b) => b.addEventListener('click', () => pwDlg.close()));
+      pwForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const key = $<HTMLSelectElement>('[data-pw-key]').value;
+        const w = pwWs.find((x) => x.key === key);
+        if (!w) return;
+        const pt: Pw = { on: true, price: Number(pwF('pPrice').value) || null, min: Number(pwF('pMin').value) || null, max: Number(pwF('pMax').value) || null, duration: pwF('pDuration').value.trim(), needs: pwF<HTMLTextAreaElement>('pNeeds').value.trim() };
+        const note = $('[data-pw-note]'); note.hidden = false; note.textContent = t.saving;
+        try { await pwSave(key, w.title, pt); pwDlg.close(); }
+        catch { note.textContent = fill(t.error, cfg.contact); }
+      });
       $('[data-lst-new]').addEventListener('click', () => openCreate());
       wsDlg.addEventListener('close', () => { if (!$('[data-lst-list]').closest<HTMLElement>('[data-ha-panel]')!.hidden) void renderLst(); });
       const calEditWs = (w: Ws) => {
@@ -5082,8 +5175,8 @@ const fields = [
           }
           // Shown at once here; the public page follows with the next hourly build.
           const items = calListings.slug === slug ? calListings.items : [];
-          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], where: body.where, place: body.place };
           const had = items.find((x) => x.key === wsCur!.key);
+          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], partner: (had?.edit as { partner?: unknown } | null | undefined)?.partner, where: body.where, place: body.place };
           if (had) had.edit = edit;
           else items.push({ key: wsCur.key, title: wsCur.title, status: 'live', image: wsCur.image, price: wsCur.price ?? '', edit });
           calListings = { slug, items };
@@ -6983,6 +7076,22 @@ const fields = [
   .cal-ws-vid { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 1.2rem; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
   .cal-ws-up { display: flex; flex-wrap: wrap; gap: 8px; }
   .cal-ws-up label { cursor: pointer; font-size: 0.82rem; padding: 7px 14px; }
+  .cal-radio input[type="checkbox"] { width: auto; flex: none; margin-top: 3px; accent-color: #6a3eec; }
+  .cal-partner { display: grid; gap: 10px; margin-top: 10px; }
+  .pw { margin-top: 28px; }
+  .pw-intro { margin: 4px 0 12px; font-size: .88rem; line-height: 1.5; color: #6b7076; max-width: 720px; }
+  .pw-list { display: grid; gap: 10px; margin-bottom: 12px; }
+  .pw-row { display: flex; justify-content: space-between; gap: 14px; align-items: center; padding: 12px 16px; border: 1px solid #ece6f7; border-radius: 14px; background: #fff; }
+  .pw-info { display: grid; gap: 2px; font-size: .88rem; } .pw-info b { font-size: .98rem; } .pw-info small { color: #6b7076; }
+  .pw-acts { display: flex; gap: 6px; flex: none; }
+  .pw-dlg h2 { margin: 0 0 6px; font-size: 1.2rem; }
+  .pw-dlg select { font: inherit; padding: 9px 11px; border: 1.5px solid #e6dff2; border-radius: 10px; }
+  .cal-partner-row { display: grid; grid-template-columns: 1.4fr 1fr 0.8fr; gap: 10px; align-items: start; }
+  .cal-partner .cal-f-lbl { display: grid; gap: 4px; align-content: start; margin: 0; font-size: .85rem; font-weight: 600; }
+  .cal-partner .cal-f-lbl small { font-weight: 400; color: #6b7076; font-size: .75rem; }
+  .cal-partner input, .cal-partner textarea { font: inherit; font-weight: 400; padding: 9px 11px; border: 1.5px solid #e6dff2; border-radius: 10px; width: 100%; box-sizing: border-box; }
+  .cal-partner-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  @media (max-width: 640px) { .cal-partner-row { grid-template-columns: 1fr; } }
   .cal-radio { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1.5px solid #e6dff2; border-radius: 12px; cursor: pointer; }
   .cal-radio:has(input:checked) { border-color: #6a3eec; background: #f8f5ff; }
   .cal-radio input { margin-top: 4px; accent-color: #6a3eec; }

@@ -2143,6 +2143,26 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
   const title = text(b.title, 160);
   // Edit: the host's own title, price per person and a short line for the
   // workshop, laid over what the site shows (the page address stays).
+  // Partner workshops (Listings, Jirel 23.11.26): on site at hotels and companies of our
+  // network, with a group price incl. travel and materials. Kept apart from the
+  // workshop's own edit and never published (publicEvents leaves it out).
+  if (b.action === 'partner') {
+    const p = b.partner ?? {};
+    const n = (v, max) => { const x = Math.round(Number(v)); return x > 0 && x <= max ? x : null; };
+    const partner = { on: p.on === true, price: n(p.price, 2000), min: n(p.min, 500), max: n(p.max, 500), duration: text(p.duration, 30), needs: text(p.needs, 500) };
+    const prev = (await ref.get()).data();
+    await ref.set({ slug, key, title: prev?.title ?? title, status: prev?.status ?? 'live', edit: { ...(prev?.edit ?? {}), partner }, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    try {
+      const was = prev?.edit?.partner?.on;
+      await mailJirel({
+        subject: partner.on ? `${slug}: "${title || key}" ${was ? 'partner terms changed' : 'joins the partner network'} 🤝` : `${slug}: "${title || key}" left the partner network`,
+        text: partner.on
+          ? `${email} offers "${title || key}" (${slug}) on site at partners: €${partner.price ?? '?'} per person incl. travel and materials, ${partner.min ?? '?'}–${partner.max ?? '?'} people, ${partner.duration || '?'}; needs on site: ${partner.needs || '-'}.`
+          : `${email} no longer offers "${title || key}" (${slug}) on site at partners.`,
+      });
+    } catch {}
+    return res.status(200).json({ ok: true });
+  }
   if (b.action === 'edit') {
     const n = Math.round(Number(b.price));
     const seats = Math.round(Number(b.seats));
@@ -2162,6 +2182,8 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
       ...(WHERE.includes(b.where) ? { where: b.where, place: b.where === 'other' ? cleanAddress(b.place) : null } : {}),
     };
     const prev = (await ref.get()).data();
+    // The partner-workshop terms are set in their own section (action 'partner'): kept here.
+    if (prev?.edit?.partner) edit.partner = prev.edit.partner;
     await ref.set({ slug, key, title, status: prev?.status ?? 'live', edit, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     // "Book and pay straight away": dates taken over from an on-request weekly
     // class lose that flag, so they are real dates (Pia 23.11.26).
@@ -2326,7 +2348,7 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   const hidden = listings.filter((x) => LISTING_STATES.includes(x.status)).map(({ slug, key, status }) => ({ slug, key, status }));
   // And the hosts' own title, price and line for a workshop (hostListing edit).
   const edits = listings.filter((x) => x.edit && !LISTING_STATES.includes(x.status)).map(({ slug, key, edit }) => {
-    const { place: _p, ...pub } = edit;
+    const { place: _p, partner: _pt, ...pub } = edit; // partner terms stay between host and Twiggli
     return { slug, key, ...pub, ...(edit.where ? lineFor({ ...edit, slug }) : {}) };
   });
   // Draft pages Jirel approved for going live (hostPublishApprove).
