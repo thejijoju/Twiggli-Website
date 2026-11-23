@@ -12,7 +12,7 @@
  */
 import { hostLang } from '../data/hostLang';
 import Base from '../layouts/Base.astro';
-import { getHosts, isPreviewHost } from '../data/content.ts';
+import { getHosts, isPreviewHost, getWorkshopReel } from '../data/content.ts';
 import { hostAccountCopy } from '../data/hostAccount.ts';
 import { berlinDistricts } from '../data/berlinPostcodes.ts';
 import WhereFields from './WhereFields.astro';
@@ -109,13 +109,16 @@ const hosts = Object.fromEntries(
       const seen = new Set<string>();
       // duration/desc/request: for the tips on the Overview (is a length,
       // an own description there; runs on request, without dates).
-      type W = { title: string; price: string; image: string; key: string; dates: number; url: string; duration?: string; desc?: boolean; request?: boolean; text?: string };
+      type W = { title: string; price: string; image: string; key: string; dates: number; url: string; duration?: string; desc?: boolean; request?: boolean; text?: string; reel?: { video: string; poster: string } };
       const out: W[] = [];
       const add = (title: string, key: string, price?: string, image?: string, dates = 0, url = '', more: Partial<W> = {}) => {
         const k = title.trim().toLowerCase();
         if (!title || seen.has(k)) return;
         seen.add(k);
-        out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates, url, ...more });
+        // The video the site plays on this workshop: its own footage, else the
+        // host's reel (sessions.ts withWorkshopReel), shown in its listing too (Jirel 23.11.26).
+        const reel = getWorkshopReel(h.slug, title) ?? (h.video ? { video: h.video, poster: h.poster ?? '' } : undefined);
+        out.push({ title, key, price: price ?? '', image: image || h.photo || h.poster || '', dates, url, ...(reel ? { reel } : {}), ...more });
       };
       try {
         for (const w of workshopsFor(h.slug, lang)) add(w.title, w.key, w.sessions[0]?.price, w.sessions[0]?.image, w.sessions.length, href(lang, `/workshops/${h.activity}/${h.slug}/${w.key}/`), { duration: w.sessions[0]?.duration ?? '', desc: w.sessions.some((x) => !!x.description), text: String(w.sessions.find((x) => !!x.description)?.description ?? '').slice(0, 1500) });
@@ -4672,6 +4675,11 @@ const fields = [
       let wsMedia: { type: string; url: string; thumb?: string }[] = [];
       // Pictures and videos the host removed from this workshop with ✕ (Pia 20.11.26).
       let wsGone = new Set<string>();
+      /** The video the site plays on a workshop (frontmatter "reel"): its own footage, else the host's reel. */
+      const wsReel = (w: Ws): { video: string; poster: string } | undefined =>
+        ((hosts[slug] as unknown as { workshops?: { key: string; title: string; reel?: { video: string; poster: string } }[] }).workshops ?? [])
+          .find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)))?.reel;
+      let wsReelNow: { video: string; poster: string } | undefined;
       let wsBusy = false;
       const wsNote = (text: string, ok = true) => { const n = $('[data-cal-ws-note]'); n.textContent = text; n.hidden = !text; n.classList.toggle('is-bad', !ok); };
       /** "2,5", "2.5 h", "90 min" → "2.5 h" / "90 min"; '' when it can't be read. */
@@ -4683,7 +4691,7 @@ const fields = [
       };
       const wsDrawMedia = () => {
         const box = $('[data-cal-ws-media]');
-        const page = (hosts[slug]?.photos ?? []).map((url) => ({ type: 'photo', url }));
+        const page = [...(wsReelNow ? [{ type: 'video', url: wsReelNow.video, thumb: wsReelNow.poster }] : []), ...(hosts[slug]?.photos ?? []).map((url) => ({ type: 'photo', url }))];
         const all: Media[] = [...wsMedia, ...page.filter((p) => !wsMedia.some((m) => m.url === p.url) && !wsGone.has(p.url))];
         box.replaceChildren(...all.map((m) => {
           const on = wsMedia.findIndex((x) => x.url === m.url);
@@ -4861,9 +4869,11 @@ const fields = [
           const nPhotos = (e.media ?? []).filter((m) => m.type === 'photo').length;
           // The workshop's own video, else the host's reel, which the site plays on
           // this workshop's cards when it has none of its own (sessions.ts).
-          const hasVid = (e.media ?? []).some((m) => m.type === 'video') || !!(hosts[slug] as { video?: string } | undefined)?.video;
+          const reel = wsReel(w);
+          const reelOn = !!reel && !((e as { hidden?: string[] }).hidden ?? []).includes(reel.video);
+          const hasVid = (e.media ?? []).some((m) => m.type === 'video') || reelOn;
           // A workshop video plays on hover (mouse) or on tap (phone), muted (Jirel 20.11.26).
-          const vid = (e.media ?? []).find((m) => m.type === 'video' && !encoding.has(m.url));
+          const vid = (e.media ?? []).find((m) => m.type === 'video' && !encoding.has(m.url)) ?? (reelOn ? { type: 'video', url: reel!.video, thumb: reel!.poster } : undefined);
           if (vid) {
             const v = document.createElement('video');
             Object.assign(v, { muted: true, loop: true, playsInline: true, preload: 'none' });
@@ -4948,6 +4958,10 @@ const fields = [
         wsF('note').value = e.note ?? '';
         wsMedia = e.media?.length ? [...e.media] : (w.image ? [{ type: 'photo', url: w.image }] : []);
         wsGone = new Set((e as { hidden?: string[] }).hidden ?? []);
+        // The video the page plays on this workshop shows in its listing, chosen,
+        // unless the host removed it here (then the site leaves it off too).
+        wsReelNow = wsReel(w);
+        if (wsReelNow && !wsGone.has(wsReelNow.video) && !wsMedia.some((m) => m.type === 'video')) wsMedia = [...wsMedia, { type: 'video', url: wsReelNow.video, thumb: wsReelNow.poster }];
         // As the site decides (sessions.ts takesRequests): dates from the site's own data,
         // and dates taken over from it, take requests unless the workshop says otherwise.
         const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || ((first?.price ?? 0) > 0 && !first?.virtual && !first?.replaces) ? 'instant' : 'request');

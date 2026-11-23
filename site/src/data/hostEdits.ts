@@ -31,6 +31,8 @@ export type ListingEdit = {
   description?: string; duration?: string; seats?: number | null;
   /** thumb: Bunny Stream's thumbnail of a video uploaded there (functions hostVideo). */
   media?: { type: string; url: string; thumb?: string }[]; booking?: '' | 'request' | 'instant';
+  /** Page pictures and the page's video the host removed from this workshop (✕). */
+  hidden?: string[];
   /** Where it usually happens: 'other' with its visible line, or at the guest's. */
   where?: 'studio' | 'other' | 'guest'; location?: string; locExact?: boolean; district?: string;
 };
