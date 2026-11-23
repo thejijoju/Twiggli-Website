@@ -104,6 +104,8 @@ const hosts = Object.fromEntries(
     // The square card picture (cropped small on purpose) and whether the page has a video.
     card: h.photo ?? '',
     video: !!h.video,
+    // The page video itself, for the Profile tab (replace or remove it, Jirel 23.11.26).
+    pageVideo: h.video ? { video: h.video, poster: h.poster ?? '' } : null,
     // Their workshops with a picture and price, for the offer's workshop picker.
     workshops: (() => {
       const seen = new Set<string>();
@@ -423,6 +425,16 @@ const fields = [
             </div>
           </div>
         </header>
+        <section class="hd-pv" data-ha-pv hidden>
+          <h2>{L('Video auf deiner Seite', 'Video on your page', 'Vidéo sur ta page')}</h2>
+          <p class="hd-pv-hint">{L('Läuft oben auf deiner Seite und bei Workshops ohne eigenes Video.', 'Plays at the top of your page and on workshops without a video of their own.', 'Passe en haut de ta page et sur les ateliers sans vidéo à eux.')}</p>
+          <div class="hd-pv-box" data-ha-pv-box></div>
+          <div class="hd-pv-act">
+            <label class="lst-btn">{L('Neues Video hochladen', 'Upload a new video', 'Importer une nouvelle vidéo')}<input type="file" accept="video/*" data-ha-pv-file hidden /></label>
+            <button type="button" class="lst-btn2" data-ha-pv-remove>{L('Entfernen', 'Remove', 'Supprimer')}</button>
+          </div>
+          <p class="hd-pv-note" data-ha-pv-note role="status"></p>
+        </section>
         <div class="hd-prof-list" data-ha-prof-list></div>
         <p class="hd-prof-empty" data-ha-prof-empty hidden>{L('Noch keine Workshops auf deiner Seite.', 'No workshops on your page yet.', 'Pas encore d’ateliers sur ta page.')}</p>
       </section>
@@ -1955,7 +1967,7 @@ const fields = [
         if (name === 'messages') { renderMsgPanel(); void spLoad(); }
         if (name === 'calendar') { renderCal(); void calLoadListings(); }
         if (name === 'overview') { try { scheduleTips(); } catch { /* still starting */ } }
-        if (name === 'profile') renderProfile();
+        if (name === 'profile') { renderProfile(); void pvDraw(); }
         setPath();
       };
       root.querySelectorAll<HTMLButtonElement>('[data-ha-tab]').forEach((tab) => tab.addEventListener('click', () => showTab(tab.dataset.haTab!)));
@@ -2163,6 +2175,8 @@ const fields = [
         $('[data-ha-prof-attended]').textContent = stats?.attended == null ? '0' : String(stats.attended);
       };
       const loadStats = () => api('profileStats', {}).then((st) => { stats = st; paintStats(); }).catch(() => {});
+      // The page video section (filled in once the uploader below exists).
+      let pvDraw: () => Promise<void> = async () => {};
       const renderProfile = () => {
         const de = document.documentElement.lang !== 'en';
         const u = auth.currentUser;
@@ -2868,6 +2882,63 @@ const fields = [
           return m;
         } catch (err) { encoding.delete(m.url); throw err; }
       };
+      // ── The page's general video (Profile tab, Jirel 23.11.26): see it,
+      //    replace it with an upload, or remove it (functions hostListing pageVideo). ──
+      let pvNow: { video: string; poster: string } | null | undefined;
+      pvDraw = async () => {
+        const box = $('[data-ha-pv-box]');
+        const sec = $('[data-ha-pv]');
+        if (!slug) { sec.hidden = true; return; }
+        sec.hidden = false;
+        if (pvNow === undefined) {
+          const built = (hosts[slug] as unknown as { pageVideo?: { video: string; poster: string } | null }).pageVideo ?? null;
+          pvNow = built;
+          if (!DEMO) {
+            try {
+              const r = await api('hostListing', { slug, action: 'pageVideoGet' });
+              if (r.set) pvNow = r.video ? { video: r.video, poster: r.poster ?? '' } : null;
+            } catch { /* the built page's video */ }
+          }
+        }
+        $<HTMLButtonElement>('[data-ha-pv-remove]').hidden = !pvNow;
+        if (!pvNow) { box.replaceChildren(el('p', 'hd-pv-none', TL('Kein Video auf deiner Seite.', 'No video on your page.', 'Pas de vidéo sur ta page.'))); return; }
+        const v = document.createElement('video');
+        Object.assign(v, { muted: true, loop: true, playsInline: true, controls: true, preload: 'metadata' });
+        v.poster = pvNow.poster || '';
+        if (encoding.has(pvNow.video)) box.replaceChildren(el('p', 'hd-pv-none', t.vidBusy));
+        else { playHls(v, pvNow.video); box.replaceChildren(v); }
+      };
+      const pvSave = async (video: { url: string; thumb?: string } | null) => {
+        if (DEMO) { await sleep(300); return; }
+        await api('hostListing', { slug, action: 'pageVideo', video });
+      };
+      $<HTMLInputElement>('[data-ha-pv-file]').addEventListener('change', async (ev) => {
+        const inp = ev.target as HTMLInputElement;
+        const f = inp.files?.[0];
+        inp.value = '';
+        if (!f) return;
+        const note = $('[data-ha-pv-note]');
+        try {
+          await videoUp(f, (st, pct) => vidSay(note, st, pct), (m) => {
+            pvNow = { video: m.url, poster: m.thumb ?? '' };
+            void pvSave({ url: m.url, thumb: m.thumb }).catch(() => vidSay(note, 'fail'));
+            void pvDraw();
+          });
+          void pvDraw();
+          note.textContent = TL('Gespeichert. Deine Seite zeigt das neue Video innerhalb einer Stunde.', 'Saved. Your page shows the new video within the hour.', 'Enregistré. Ta page montre la nouvelle vidéo dans l’heure.');
+        } catch { vidSay(note, 'fail'); void pvDraw(); }
+      });
+      $<HTMLButtonElement>('[data-ha-pv-remove]').addEventListener('click', async () => {
+        if (!confirm(TL('Das Video von deiner Seite entfernen? Workshops ohne eigenes Video zeigen dann ein Foto.', 'Remove the video from your page? Workshops without a video of their own then show a photo.', 'Retirer la vidéo de ta page ? Les ateliers sans vidéo à eux montrent alors une photo.'))) return;
+        const note = $('[data-ha-pv-note]');
+        note.textContent = t.saving;
+        try {
+          await pvSave(null);
+          pvNow = null;
+          void pvDraw();
+          note.textContent = TL('Entfernt. Deine Seite folgt innerhalb einer Stunde.', 'Removed. Your page follows within the hour.', 'Retirée. Ta page suit dans l’heure.');
+        } catch { note.textContent = fill(t.error, cfg.contact); }
+      });
       /** A video tile for the previews: Bunny's thumbnail, or "Preparing" while it encodes. */
       const vidThumb = (m: Media, cls: string) => {
         if (encoding.has(m.url)) return [el('span', `${cls} is-busy`, t.vidBusy)];
@@ -4241,7 +4312,7 @@ const fields = [
        *  whole slot, 'fix' turns the day into a real date with places. Optimistic, undone on failure. */
       const calSlotAction = async (ev: Ev, date: string, what: 'day' | 'weekly' | 'fix', confirmText = '') => {
         if (calIsBusy(ev)) return;
-        if (what === 'day' && !window.confirm(say(t.cal.removeSlotQ, { date: confirmText }))) return;
+        // One day off: no question first, so several go quickly (Jirel 23.11.26).
         if (what === 'weekly' && !window.confirm(confirmText)) return;
         const fake = async () => { await new Promise((r) => setTimeout(r, 350)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); };
         const before = { own: ownEvents, replaced: new Set(calReplaced), slot: calSlot, snap: calSnap(ev) };
@@ -4442,7 +4513,7 @@ const fields = [
           const cancel = calBtn('cal-btn2', t.cal.cancelDate, async () => {
             if (calIsBusy(ev)) return;
             const series = ev.repeat && ev.repeat !== 'once';
-            if (!window.confirm(series ? say(t.cal.cancelOneQ, { date: d }) : t.cal.cancelQ)) return;
+            // No question first: removing dates one after another should be quick (Jirel 23.11.26).
             // A series, or a date from the site (kept, so the site's entry stays replaced): one date off.
             if (series || ev.virtual || ev.replaces) { calSlot = ''; calSave(ev, { exceptions: [...new Set([...(ev.exceptions ?? []), s.date])].sort() }); return; }
             // A single date: gone at once, back if the server says no.
@@ -4469,6 +4540,10 @@ const fields = [
         calOpenSheet(true);
       };
       const renderCal = () => {
+        // Workshops set to "book and pay straight away": their dates taken over from an
+        // on-request weekly class are real dates now, not slots (Pia 23.11.26).
+        const instantKeys = new Set((calListings.slug === slug ? calListings.items : []).filter((x) => (x.edit as { booking?: string } | undefined)?.booking === 'instant').map((x) => x.key));
+        for (const ev of ownEvents) if (ev.onRequest && ev.wkey && instantKeys.has(ev.wkey)) ev.onRequest = false;
         const panel = root.querySelector<HTMLElement>('[data-cal-panel]');
         if (!panel) return;
         const focusKey = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('[data-cal-panel] [data-cal-f]')?.dataset.calF;
@@ -6097,6 +6172,14 @@ const fields = [
   .hd-prof-pub { font-size: 0.88rem; font-weight: 500; color: #6a3eec; text-decoration: none; }
   .hd-prof-pub:hover { color: #16181d; }
   .hd-prof-pub[hidden] { display: none; }
+  .hd-pv { margin-top: 28px; padding: 18px 20px; border: 1px solid #ece6f7; border-radius: 16px; background: #fff; }
+  .hd-pv h2 { margin: 0 0 4px; font-size: 1.05rem; }
+  .hd-pv-hint { margin: 0 0 12px; font-size: .85rem; color: #6b7076; }
+  .hd-pv-box video { display: block; width: 100%; max-width: 320px; aspect-ratio: 9 / 16; max-height: 420px; object-fit: cover; border-radius: 12px; background: #f3eeff; }
+  .hd-pv-none { margin: 0; font-size: .9rem; color: #6b7076; }
+  .hd-pv-act { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
+  .hd-pv-act label { cursor: pointer; }
+  .hd-pv-note { margin: 8px 0 0; font-size: .85rem; color: #444; }
   .hd-prof-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding-top: 28px; }
   .hd-prof-card { display: grid; gap: 4px; text-decoration: none; color: var(--color-text); }
   .hd-prof-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; margin-bottom: 6px; transition: transform .2s ease; }

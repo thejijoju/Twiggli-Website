@@ -3,6 +3,7 @@
  *  terms — so the reel can appear as a video result. The video leads, the
  *  host's own blurb and facts follow, then the next dates and the way back
  *  to booking (videoPages.ts). */
+import { videoSrc } from '../lib/videoSrc.ts';
 import Base from '../layouts/Base.astro';
 import {
   absolute, activityCopy, formatWhen, hostDurationText, hostGroupText, hostHref, hostLanguagesText, sessionsFor, workshopHref,
@@ -67,7 +68,7 @@ const facts: [string, string][] = [
     <section class="section video-watch">
       <div class="video-frame">
         <video
-          src={host.video}
+          {...videoSrc(host.video)}
           poster={host.poster}
           controls
           muted

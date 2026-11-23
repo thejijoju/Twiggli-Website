@@ -47,6 +47,13 @@ const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.act
  *  entry is left out: one source per date, never shown twice. */
 const replaced = new Set<string>((edits as { replaced?: string[] }).replaced ?? []);
 export const isReplaced = (key: string): boolean => replaced.has(key);
+/** The page video a host replaced or removed in the Profile tab (functions
+ *  hostListing pageVideo): undefined = untouched, null = removed. */
+const pageVideos = new Map(((edits as { pageVideos?: { slug: string; video: string; poster: string }[] }).pageVideos ?? []).map((v) => [v.slug, v]));
+export const pageVideoFor = (slug: string): { video: string; poster: string } | null | undefined => {
+  const v = pageVideos.get(slug);
+  return v === undefined ? undefined : v.video ? { video: v.video, poster: v.poster } : null;
+};
 /** A weekly class of this host at this time was taken over, whatever key it
  *  was taken over under: the feed's title and the dashboard's workshop key can
  *  differ ("Vulva Painting mit Pia" vs "vulva-painting-workshop", Pia 23.11.26),

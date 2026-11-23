@@ -1,4 +1,5 @@
 ---
+import { videoSrc } from '../lib/videoSrc.ts';
 import { studioOf } from '../data/hostEdits.ts';
 /** One host's page: the search phrase in the title and heading, the reel,
  *  the blurb and the practical facts, then every upcoming date and time
@@ -163,7 +164,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
         {host.video ? (
           <video
             class="host-video"
-            src={host.video}
+            {...videoSrc(host.video)}
             poster={host.poster}
             muted
             loop
@@ -309,7 +310,7 @@ const inquireAttrs = (o: { title: string; price?: string; bookUrl: string }) => 
                 <article class="hw-card">
                   <div class="hw-media">
                     {w.video ? (
-                      <video src={w.video} poster={w.poster} muted loop playsinline autoplay preload="metadata" aria-label={w.title}></video>
+                      <video {...videoSrc(w.video)} poster={w.poster} muted loop playsinline autoplay preload="metadata" aria-label={w.title}></video>
                     ) : w.photo ? (
                       <img src={w.photo} alt={w.title} loading="lazy" decoding="async" />
                     ) : null}

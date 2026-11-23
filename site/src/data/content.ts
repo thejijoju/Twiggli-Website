@@ -15,7 +15,7 @@ import { hosts as hostsTr } from './hosts/tr.ts';
 import { preview, previewSlugs } from './hosts/preview.ts';
 import { archivedSlugs } from './hosts/archived.ts';
 import { goneSlugs } from './hostEdits.ts';
-import { withHostEdits } from './hostEdits.ts';
+import { withHostEdits, pageVideoFor } from './hostEdits.ts';
 
 /** The blank cream squares the design export dropped in for hosts whose
  *  photography had not been shot yet — byte-identical fillers, two sizes and
@@ -1648,7 +1648,9 @@ export const getHosts = (lang: Lang, opts: { withPreview?: boolean } = {}): Host
 
 const allHosts = (lang: Lang): Host[] =>
   hostsCopy[lang].map((h, i) => {
-    const reel = reels[h.slug];
+    // The host's own choice in the Profile tab wins over the reel in this repo.
+    const own = pageVideoFor(h.slug);
+    const reel = own === undefined ? reels[h.slug] : own ?? undefined;
     const photo = shipped(`/img/hosts/${h.slug}.jpg`);
     const wide = shipped(`/img/hosts/${h.slug}-wide.jpg`);
     // Numbered pictures, in order, stopping at the first gap so a missing
@@ -1670,7 +1672,7 @@ const allHosts = (lang: Lang): Host[] =>
       ...(wide ? { wide } : {}),
       ...(gallery.length ? { gallery } : {}),
       ...(reel
-        ? { video: withBase(reel.video), poster: withBase(reel.poster) }
+        ? { video: /^https?:/.test(reel.video) ? reel.video : withBase(reel.video), poster: !reel.poster || /^https?:/.test(reel.poster) ? reel.poster : withBase(reel.poster) }
         : {}),
     };
   });

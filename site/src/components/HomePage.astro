@@ -105,7 +105,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                     {hostMedia(h).video ? (
                       <>
                         <img class="maker-still" src={hostMedia(h).poster} alt="" loading="lazy" decoding="async" />
-                        <video class="maker-video" src={hostMedia(h).video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                        <video class="maker-video" {...videoSrc(hostMedia(h).video)} muted loop playsinline preload="none" aria-hidden="true"></video>
                       </>
                     ) : (hostMedia(h).stills?.length ?? 0) > 1 ? (
                       <PhotoFade photos={hostMedia(h).stills!} alt="" />
@@ -190,7 +190,7 @@ const heroPics = (['ceramics', 'food', 'craft', 'art'] as const).map((a) => ({ s
                     {hostMedia(h).video ? (
                       <>
                         <img class="maker-still" src={hostMedia(h).poster} alt="" loading="lazy" decoding="async" />
-                        <video class="maker-video" src={hostMedia(h).video} muted loop playsinline preload="none" aria-hidden="true"></video>
+                        <video class="maker-video" {...videoSrc(hostMedia(h).video)} muted loop playsinline preload="none" aria-hidden="true"></video>
                       </>
                     ) : (hostMedia(h).stills?.length ?? 0) > 1 ? (
                       <PhotoFade photos={hostMedia(h).stills!} alt="" />
