@@ -25,6 +25,7 @@ import { hostDates } from '../data/hostDates.ts';
 import { availabilityNotes } from '../data/availability.ts';
 import { withHostSlots } from '../data/hostEdits.ts';
 import { voucherHosts } from '../data/vouchers.ts';
+import { writtenSpaces } from '../data/spaces.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
 /** view: the part of the account the address opens (settings/preferences …), see pages/host/account/[...view].astro. */
@@ -102,6 +103,16 @@ const hosts = Object.fromEntries(
     first: (h as unknown as { firstName?: string }).firstName ?? '',
     // Takes Twiggli vouchers now (written yes or their own choice in Settings → Payment).
     voucher: voucherHosts.includes(h.slug),
+    // The room they rent out as the "Raum mieten" page has it, to start the dashboard form from.
+    space: (() => {
+      const w = writtenSpaces.find((x) => x.slug === h.slug);
+      if (!w) return null;
+      const l = hostLang[h.slug] === 'en' ? 'en' : 'de';
+      const p = Number((w.price?.en ?? '').match(/€\s?(\d+)/)?.[1]);
+      return { name: w.name, district: w.district, capacity: w.capacity ?? null, size: typeof w.size === 'string' ? w.size : w.size?.[l] ?? '', price: Number.isFinite(p) && p > 0 ? p : null,
+        // What their rate says beyond the hourly figure ("zzgl. MwSt."), kept when they save.
+        priceNote: (w.price?.[l] ?? '').replace(/^\s*(\d+\s*€\s*pro Stunde|€\s?\d+\s*per hour)\s*/i, '').trim(), included: w.included?.[l] ?? '', suits: w.suits[l], about: w.copy[l], access: w.access?.[l] ?? '', photos: w.photos ?? [] };
+    })(),
     place: (h as unknown as { place?: string }).place ?? '',
     page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
     // Their own pictures, to pick a cover for a new date without uploading.
@@ -835,6 +846,45 @@ const fields = [
             <div class="pw-list" data-pw-list></div>
             <button type="button" class="lst-new" data-pw-add>{L('+ Partner-Workshop eingeben', '+ Enter a partner workshop', '+ Ajouter un atelier partenaire')}</button>
           </section>
+          {/* A room to rent (Jirel 23.11.26): shown on the "Raum mieten" page as the host enters it. */}
+          <section class="pw rm" data-rm>
+            <h3 class="lst-sec">{L('Raum vermieten', 'Rent out your space', 'Louer ton espace')}</h3>
+            <p class="pw-intro">{L('Vermietest du deinen Raum, wenn du selbst keinen Workshop gibst? Dann trag ihn hier ein: Er erscheint auf unserer Seite „Raum mieten“ mit deinen Fotos, deinem Preis und allem, was dazugehört. Anfragen kommen per E-Mail und in deine Nachrichten. Twiggli nimmt auf Raumvermietungen keine Provision.', 'Do you rent out your space when you are not teaching? Enter it here: it appears on our "Rent a space" page with your photos, your price and everything that comes with it. Requests come by email and to your messages. Twiggli takes no commission on room rentals.', 'Tu loues ton espace quand tu n’animes pas d’atelier ? Indique-le ici : il apparaît sur notre page « Louer un espace » avec tes photos, ton prix et tout ce qui va avec. Les demandes arrivent par e-mail et dans tes messages. Twiggli ne prend aucune commission sur les locations d’espace.')}</p>
+            <div class="pw-list" data-rm-card></div>
+            <button type="button" class="lst-new" data-rm-add>{L('+ Raum zum Vermieten eintragen', '+ Enter a space to rent out', '+ Ajouter un espace à louer')}</button>
+          </section>
+          <dialog class="cal-ws pw-dlg rm-dlg" data-rm-dlg>
+            <form class="cal-ws-form" data-rm-form>
+              <h2>{L('Raum vermieten', 'Rent out your space', 'Louer ton espace')}</h2>
+              <div class="cal-partner">
+                <div class="cal-partner-row rm-row2">
+                  <label class="cal-f-lbl"><span>{L('Name des Raums', 'Name of the space', 'Nom de l’espace')}</span><input name="name" maxlength="80" required /></label>
+                  <label class="cal-f-lbl"><span>{L('Bezirk', 'District', 'Quartier')}</span><select name="district"><option value="">–</option>{berlinDistricts.map((d) => <option>{d}</option>)}</select></label>
+                </div>
+                <div class="cal-partner-row">
+                  <label class="cal-f-lbl"><span>{L('Personen (max.)', 'People (max.)', 'Personnes (max.)')}</span><input type="number" name="capacity" min="1" max="500" placeholder="20" /></label>
+                  <label class="cal-f-lbl"><span>{L('Größe', 'Size', 'Surface')}</span><input name="size" maxlength="40" placeholder="60 m²" /></label>
+                  <label class="cal-f-lbl"><span>{L('Preis pro Stunde (€)', 'Price per hour (€)', 'Prix par heure (€)')}</span><input type="number" name="price" min="1" max="5000" placeholder="25" /></label>
+                </div>
+                <label class="cal-f-lbl"><span>{L('Zum Preis (optional)', 'About the price (optional)', 'À propos du prix (facultatif)')}</span><input name="priceNote" maxlength="80" placeholder={L('zzgl. MwSt., mind. 3 Stunden', '+ VAT, at least 3 hours', 'HT, 3 heures minimum')} /></label>
+                <p class="pw-fee" data-rm-fee></p>
+                <label class="cal-f-lbl"><span>{L('Wofür eignet sich der Raum?', 'What does the space suit?', 'Pour quoi convient l’espace ?')}</span><input name="suits" maxlength="300" placeholder={L('Workshops, Teamevents, Fotoshootings', 'Workshops, team events, photo shoots', 'Ateliers, événements d’équipe, shootings')} /></label>
+                <label class="cal-f-lbl"><span>{L('Beschreibung', 'Description', 'Description')}</span><textarea name="about" rows="4" maxlength="1500"></textarea></label>
+                <label class="cal-f-lbl"><span>{L('Was ist inklusive?', 'What is included?', 'Qu’est-ce qui est inclus ?')}</span><input name="included" maxlength="400" placeholder={L('Tische, Stühle, Küche, WLAN, Beamer', 'Tables, chairs, kitchen, Wi-Fi, projector', 'Tables, chaises, cuisine, Wi-Fi, projecteur')} /></label>
+                <label class="cal-f-lbl"><span>{L('Anfahrt und Zugang (optional)', 'Getting there and access (optional)', 'Accès (facultatif)')}</span><input name="access" maxlength="300" placeholder={L('U7 Eisenacher Str., barrierefrei', 'U7 Eisenacher Str., step-free', 'U7 Eisenacher Str., accessible')} /></label>
+                <span class="cal-f-lbl"><span>{L('Fotos vom Raum', 'Photos of the space', 'Photos de l’espace')}</span></span>
+                <div class="rm-photos" data-rm-photos></div>
+                <label class="cal-btn2 rm-up">{L('Fotos hochladen', 'Upload photos', 'Ajouter des photos')}<input type="file" accept="image/*" multiple data-rm-up hidden /></label>
+                <p class="cal-ws-hint" data-rm-up-note role="status"></p>
+                <p class="cal-ws-hint">{L('Die genaue Adresse steht nicht auf der Seite, nur der Bezirk. Wer anfragt, bekommt sie von dir.', 'The exact address isn’t shown on the page, only the district. You give it to whoever asks.', 'L’adresse exacte n’apparaît pas sur la page, seulement le quartier. Tu la donnes à qui te contacte.')}</p>
+              </div>
+              <p class="cal-msg" data-rm-note role="status" hidden></p>
+              <footer class="cal-ws-foot">
+                <button type="button" class="cal-btn2" data-rm-close>{L('Abbrechen', 'Cancel', 'Annuler')}</button>
+                <button type="submit" class="cal-btn">{L('Speichern', 'Save', 'Enregistrer')}</button>
+              </footer>
+            </form>
+          </dialog>
           <dialog class="cal-ws pw-dlg" data-pw-dlg>
             <form class="cal-ws-form" data-pw-form>
               <h2>{L('Partner-Workshop', 'Partner workshop', 'Atelier partenaire')}</h2>
@@ -1155,7 +1205,8 @@ const fields = [
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
-  type HostData = { name: string; first?: string; voucher?: boolean; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
+  type Sp = { on?: boolean; name?: string; district?: string; capacity?: number | null; size?: string; price?: number | null; priceNote?: string; included?: string; suits?: string; about?: string; access?: string; photos?: string[] };
+  type HostData = { name: string; first?: string; voucher?: boolean; space?: Sp | null; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
 
   const root = document.querySelector<HTMLElement>('[data-ha]');
   if (root) {
@@ -5139,6 +5190,8 @@ const fields = [
           return row;
         });
         $('[data-pw-list]').replaceChildren(...rows);
+        // The room they rent out, loaded once per host (defined further down).
+        queueMicrotask(() => { try { void roomLoad(); } catch { /* not ready yet */ } });
       };
       type Pw = { on?: boolean; price?: number | null; min?: number | null; max?: number | null; duration?: string; needs?: string; concept?: boolean; about?: string };
       let pwWs: { key: string; title: string }[] = [];
@@ -5192,6 +5245,112 @@ const fields = [
         void renderLst();
       };
       $('[data-pw-add]').addEventListener('click', () => pwOpen());
+      // ── A room to rent (Listings → "Raum vermieten", Jirel 23.11.26). ──
+      const spDlg = $<HTMLDialogElement>('[data-rm-dlg]');
+      if (spDlg.parentElement !== root) root.append(spDlg);
+      const spForm = $<HTMLFormElement>('[data-rm-form]');
+      const spF = <T extends HTMLElement = HTMLInputElement>(n: string) => spForm.elements.namedItem(n) as unknown as T;
+      let spCur: Sp | null = null; // what is saved (null: nothing yet)
+      let spPhotos: string[] = [];
+      let spSlug = '';
+      const spStart = (): Sp | null => spCur ?? (hosts[slug]?.space ? { ...hosts[slug]!.space!, on: true } : null);
+      // No commission on room rentals (Jirel 23.11.26): the whole rate is the host's.
+      const spFee = () => {
+        $('[data-rm-fee]').textContent = TL('Twiggli nimmt auf Raumvermietungen keine Provision: Der ganze Mietpreis gehört dir.', 'Twiggli takes no commission on room rentals: the whole rate is yours.', 'Twiggli ne prend aucune commission sur les locations d’espace : tout le prix est pour toi.');
+      };
+      spF('price').addEventListener('input', spFee);
+      const spPhotosDraw = () => {
+        $('[data-rm-photos]').replaceChildren(...spPhotos.map((u) => {
+          const f = el('figure', 'rm-ph');
+          const img = document.createElement('img'); img.src = u; img.alt = ''; img.loading = 'lazy';
+          const x = el('button', 'rm-ph-x', '✕') as HTMLButtonElement; x.type = 'button'; x.setAttribute('aria-label', TL('Foto entfernen', 'Remove photo', 'Retirer la photo'));
+          x.addEventListener('click', () => { spPhotos = spPhotos.filter((y) => y !== u); spPhotosDraw(); });
+          f.append(img, x);
+          return f;
+        }));
+      };
+      const spDraw = () => {
+        const sp = spStart();
+        const box = $('[data-rm-card]');
+        $('[data-rm-add]').hidden = !!(sp && sp.on);
+        if (!sp || !sp.on) { box.replaceChildren(); return; }
+        const row = el('div', 'pw-row');
+        const info = el('div', 'pw-info');
+        info.append(el('b', '', sp.name ?? ''));
+        info.append(el('span', '', [sp.district, sp.capacity ? TL(`bis ${sp.capacity} Personen`, `up to ${sp.capacity} people`, `jusqu’à ${sp.capacity} personnes`) : '', sp.size, sp.price ? TL(`${sp.price} € pro Stunde`, `€${sp.price} per hour`, `${sp.price} € de l’heure`) : TL('Preis auf Anfrage', 'Price on request', 'Prix sur demande')].filter(Boolean).join(' · ')));
+        if (sp.photos?.length) info.append(el('small', '', TL(`${sp.photos.length} Fotos`, `${sp.photos.length} photos`, `${sp.photos.length} photos`)));
+        const ed = el('button', 'lst-btn2', TL('Ändern', 'Edit', 'Modifier')) as HTMLButtonElement; ed.type = 'button';
+        ed.addEventListener('click', () => roomOpen());
+        const rm = el('button', 'lst-btn2', TL('Nicht mehr vermieten', 'Stop renting out', 'Ne plus louer')) as HTMLButtonElement; rm.type = 'button';
+        rm.addEventListener('click', () => void spSave({ ...sp, on: false }));
+        const acts = el('div', 'pw-acts'); acts.append(ed, rm);
+        row.append(info, acts);
+        box.replaceChildren(row);
+      };
+      const roomLoad = async () => {
+        if (spSlug === slug) return;
+        spSlug = slug; spCur = null; spDraw();
+        if (calDemo || DEMO || !slug) return;
+        try { const r = await api('hostListing', { slug, action: 'spaceGet' }); if (r.set) { spCur = r.space as Sp; spDraw(); } } catch { /* shown from the page */ }
+      };
+      const roomOpen = () => {
+        const sp = spStart() ?? {};
+        spForm.reset();
+        spF('name').value = sp.name ?? hosts[slug]?.name ?? '';
+        spF<HTMLSelectElement>('district').value = sp.district ?? '';
+        spF('capacity').value = sp.capacity ? String(sp.capacity) : '';
+        spF('size').value = sp.size ?? '';
+        spF('price').value = sp.price ? String(sp.price) : '';
+        spF('priceNote').value = sp.priceNote ?? '';
+        spF('suits').value = sp.suits ?? '';
+        spF<HTMLTextAreaElement>('about').value = sp.about ?? '';
+        spF('included').value = sp.included ?? '';
+        spF('access').value = sp.access ?? '';
+        spPhotos = [...(sp.photos ?? [])];
+        spPhotosDraw(); spFee();
+        $('[data-rm-note]').hidden = true; $('[data-rm-up-note]').textContent = '';
+        spDlg.showModal();
+      };
+      const spSave = async (sp: Sp) => {
+        if (!(calDemo || DEMO)) await api('hostListing', { slug, action: 'space', space: sp });
+        else await new Promise((r) => setTimeout(r, 300));
+        spCur = sp; spDraw();
+        $('[data-lst-note]').textContent = sp.on ? TL('Gespeichert. Dein Raum steht innerhalb einer Stunde auf der Seite „Raum mieten“.', 'Saved. Your space will be on the "Rent a space" page within the hour.', 'Enregistré. Ton espace sera sur la page « Louer un espace » d’ici une heure.') : TL('Dein Raum ist bald nicht mehr auf der Seite „Raum mieten“.', 'Your space will soon be off the "Rent a space" page.', 'Ton espace sera bientôt retiré de la page « Louer un espace ».');
+      };
+      $<HTMLInputElement>('[data-rm-up]').addEventListener('change', async (e) => {
+        const inp = e.target as HTMLInputElement;
+        const files = inp.files;
+        const note = $('[data-rm-up-note]');
+        if (!files?.length) return;
+        note.textContent = t.uploading;
+        try {
+          if (calDemo || DEMO) { for (const f of Array.from(files).slice(0, 8)) spPhotos.push(URL.createObjectURL(f)); }
+          else {
+            if (!cfg.firebase.storageBucket) throw new Error('no bucket');
+            const store = getStorage(app0);
+            for (const f of Array.from(files).slice(0, 8)) {
+              const r = storageRef(store, `hostMedia/${slug}/${Date.now()}-${f.name.replace(/[^\w.-]/g, '_')}`);
+              await uploadBytes(r, f, { contentType: f.type });
+              spPhotos.push(await getDownloadURL(r));
+            }
+          }
+          spPhotos = spPhotos.slice(0, 10);
+          note.textContent = t.uploadDone; spPhotosDraw();
+        } catch { note.textContent = fill(t.uploadFail, cfg.contact); }
+        inp.value = '';
+      });
+      $('[data-rm-add]').addEventListener('click', () => roomOpen());
+      root.querySelectorAll<HTMLElement>('[data-rm-close]').forEach((b) => b.addEventListener('click', () => spDlg.close()));
+      spForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const sp: Sp = { on: true, name: spF('name').value.trim(), district: spF<HTMLSelectElement>('district').value, capacity: Number(spF('capacity').value) || null, size: spF('size').value.trim(),
+          price: Number(spF('price').value) || null, priceNote: spF('priceNote').value.trim(), suits: spF('suits').value.trim(), about: spF<HTMLTextAreaElement>('about').value.trim(),
+          included: spF('included').value.trim(), access: spF('access').value.trim(), photos: spPhotos };
+        const note = $('[data-rm-note]');
+        if (!sp.name) { note.hidden = false; note.textContent = TL('Bitte gib dem Raum einen Namen.', 'Please give the space a name.', 'Donne un nom à l’espace.'); return; }
+        note.hidden = false; note.textContent = TL('Wird gespeichert …', 'Saving …', 'Enregistrement …');
+        try { await spSave(sp); spDlg.close(); } catch { note.textContent = fill(t.error, cfg.contact); }
+      });
       // ── Twiggli vouchers: yes or no (Settings → Payment, Jirel 23.11.26). ──
       let vcOn: boolean | null = null;
       const vcPaint = () => {
@@ -7248,6 +7407,11 @@ const fields = [
   .cal-radio input[type="checkbox"] { width: auto; flex: none; margin-top: 3px; accent-color: #6a3eec; }
   .cal-partner { display: grid; gap: 10px; margin-top: 10px; }
   .pw { margin-top: 28px; }
+  .rm-photos { display: flex; flex-wrap: wrap; gap: 8px; }
+  .rm-ph { position: relative; margin: 0; width: 96px; height: 72px; border-radius: 10px; overflow: hidden; background: #eee; }
+  .rm-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .rm-ph-x { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; cursor: pointer; }
+  .rm-up { justify-self: start; cursor: pointer; }
   .vc-state { margin: 0; font-weight: 600; color: #454a50; }
   .vc-state.is-on { color: #1d8a4a; }
   .vc-terms { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: .9rem; color: #454a50; }

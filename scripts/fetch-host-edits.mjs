@@ -69,11 +69,13 @@ if (!projectId || !apiKey) {
     let pageVideos = [];
     // Hosts' own yes or no to Twiggli vouchers (Settings → Payment).
     let vouchers = [];
+    // Rooms hosts rent out, entered in their Listings ("Raum vermieten").
+    let spaces = [];
     try {
       const r = await fetch(`https://europe-west3-${projectId}.cloudfunctions.net/publicEvents`);
-      if (r.ok) { const j = await r.json(); events = j.items ?? []; hidden = j.hidden ?? []; listingEdits = j.edits ?? []; gone = j.gone ?? []; replaced = j.replaced ?? []; studios = j.studios ?? []; published = j.published ?? []; pageVideos = j.pageVideos ?? []; vouchers = j.vouchers ?? []; }
+      if (r.ok) { const j = await r.json(); events = j.items ?? []; hidden = j.hidden ?? []; listingEdits = j.edits ?? []; gone = j.gone ?? []; replaced = j.replaced ?? []; studios = j.studios ?? []; published = j.published ?? []; pageVideos = j.pageVideos ?? []; vouchers = j.vouchers ?? []; spaces = j.spaces ?? []; }
     } catch (err) { console.log(`host dates not fetched: ${err.message}`); }
-    writeFileSync(OUT, `${JSON.stringify({ fetched: new Date().toISOString(), profiles, slots: active, events, hidden, listingEdits, gone, replaced, studios, published, pageVideos, vouchers }, null, 2)}\n`);
+    writeFileSync(OUT, `${JSON.stringify({ fetched: new Date().toISOString(), profiles, slots: active, events, hidden, listingEdits, gone, replaced, studios, published, pageVideos, vouchers, spaces }, null, 2)}\n`);
     console.log(`host edits: ${profiles.length} profile(s), ${active.length} slot(s), ${events.length} date(s), ${hidden.length} hidden workshop(s)`);
   } catch (err) {
     console.log(`host edits not fetched, keeping the file as it is: ${err.message}`);

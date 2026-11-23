@@ -205,3 +205,8 @@ export function accountDates(daysAhead = 100): {
 const voucherChoices = new Map(((edits as { vouchers?: { slug: string; on: boolean }[] }).vouchers ?? []).map((v) => [v.slug, v.on]));
 export const voucherChoice = (slug: string): boolean | undefined => voucherChoices.get(slug);
 export const voucherChoiceSlugs = (): string[] => [...voucherChoices.keys()];
+
+/** Rooms hosts rent out, as they entered them in their Listings ("Raum vermieten",
+ *  Jirel 23.11.26). on: false means they took it off the page. */
+export type HostSpace = { slug: string; on?: boolean; name?: string; district?: string; capacity?: number | null; size?: string; price?: number | null; priceNote?: string; included?: string; suits?: string; about?: string; access?: string; photos?: string[] };
+export const hostSpaces: HostSpace[] = (edits as { spaces?: HostSpace[] }).spaces ?? [];
