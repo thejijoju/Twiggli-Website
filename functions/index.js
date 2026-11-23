@@ -2052,6 +2052,13 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
     if (!old.exists || old.data().slug !== ev.slug) return res.status(404).json({ error: 'Not found' });
     // The date stays the host's (payments, bookingCheckout), whoever edits it.
     await col.doc(id).set({ ...ev, by: old.data().by || owner, editedBy: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    // What changed, for Jirel (23.11.26: she only heard about new dates, not about edits).
+    try {
+      const o = old.data();
+      const labels = { title: 'title', date: 'date', start: 'start', end: 'end', price: 'price €', seats: 'places', minGuests: 'runs from', repeat: 'repeat', until: 'until', location: 'place' };
+      const diff = Object.entries(labels).filter(([k]) => ev[k] !== undefined && String(o[k] ?? '') !== String(ev[k] ?? '')).map(([k, l]) => `${l}: ${o[k] ?? '–'} → ${ev[k] ?? '–'}`);
+      if (diff.length) await mailJirel({ subject: `Date changed by ${ev.slug}: ${ev.title}, ${ev.date} ${ev.start}`, text: `${email} changed "${ev.title}":\n${diff.join('\n')}` });
+    } catch {}
     return res.status(200).json({ id });
   }
   const doc = await col.add({ ...ev, by: owner, editedBy: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
@@ -2090,9 +2097,11 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
   // Site entries the host took over (also when they deleted them since).
   const replaced = [...new Set(all.map((x) => x.replaces).filter(Boolean))];
   // Paid bookings per date, for the Calendar tab (no guest contact details).
-  const paid = await getFirestore().collection('bookings').where('slug', '==', slug).where('status', '==', 'paid').get().catch(() => ({ docs: [] }));
+  // With reservations for dates that wait for their minimum (status reserved; marked so).
+  const paid = await getFirestore().collection('bookings').where('slug', '==', slug).get()
+    .then((q) => ({ docs: q.docs.filter((d) => ['paid', 'reserved', 'charging'].includes(d.data().status)) })).catch(() => ({ docs: [] }));
   // The guest's first name and message, and the replies (no email or phone: the dashboard never needs them).
-  const bookings = paid.docs.map((d) => { const x = d.data(); return { id: d.id, eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100, message: x.message ?? '', thread: (x.thread ?? []).map((t) => ({ from: t.from, message: t.message, at: t.at })), paidAt: x.paidAt?.toMillis?.() ?? 0,
+  const bookings = paid.docs.map((d) => { const x = d.data(); return { id: d.id, ...(x.status !== 'paid' ? { reserved: true } : {}), eventId: x.eventId ?? '', date: x.date, start: x.start, title: x.title, people: x.people ?? 1, name: String(x.name ?? '').split(' ')[0], amount: (x.amount ?? 0) / 100, message: x.message ?? '', thread: (x.thread ?? []).map((t) => ({ from: t.from, message: t.message, at: t.at })), paidAt: x.paidAt?.toMillis?.() ?? 0,
     // Twiggli's fee as bookingCheckout charged it (the host's rate then), and a voucher's part.
     fee: (x.fee ?? 0) / 100, pct: Number.isFinite(x.commissionPct) ? x.commissionPct : null, voucher: (x.voucherCents ?? 0) / 100 }; });
   return res.status(200).json({ items, bookings, replaced });
@@ -2694,7 +2703,7 @@ const placesTaken = async (eventId, date) => {
   const fresh = Date.now() - 31 * 60 * 1000;
   return snap.docs.reduce((n, d) => {
     const b = d.data();
-    const live = b.status === 'paid' || (b.status === 'pending' && (b.createdAt?.toMillis?.() ?? 0) > fresh);
+    const live = b.status === 'paid' || b.status === 'reserved' || b.status === 'charging' || (b.status === 'pending' && (b.createdAt?.toMillis?.() ?? 0) > fresh);
     return n + (live ? b.people : 0);
   }, 0);
 };
@@ -2737,6 +2746,23 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
     const left = seats - (await placesTaken(eventId, date));
     if (people > left) return res.status(409).json({ error: 'full', left: Math.max(0, left) });
   }
+  // A date that runs from a minimum (Jirel 23.11.26): until enough people have
+  // booked, a guest only leaves their card (a Stripe setup, nothing taken). The
+  // moment the minimum is reached every card is charged (chargeReserved); if it
+  // isn't reached by the deadline (decideHours before the start, 48 h unless
+  // the host chose otherwise), nobody pays and everyone hears (minGuestsCheck).
+  const minG = Number(ev.minGuests) > 1 ? Number(ev.minGuests) : 0;
+  let reserve = false;
+  if (minG) {
+    const committed = await placesCommitted(eventId, date);
+    if (committed < minG) {
+      const decideAt = new Date(`${date}T${ev.start}:00+01:00`).getTime() - (Number.isFinite(ev.decideHours) ? ev.decideHours : 48) * 3600000;
+      if (committed + people < minG) {
+        if (Date.now() > decideAt) return res.status(409).json({ error: 'min-closed' });
+        reserve = true;
+      }
+    }
+  }
   const pct = Number.isFinite(member.commissionPct) ? Math.max(0, Math.min(30, member.commissionPct)) : DEFAULT_COMMISSION;
   const total = ev.price * 100 * people;
   // A Twiggli voucher (07.11.26): its value comes off the price. The guest
@@ -2764,6 +2790,37 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
     hostEmail: ev.by, account, amount: total, fee, commissionPct: pct, status: 'pending', createdAt: FieldValue.serverTimestamp(),
     ...(voucherCents ? { voucherHash, voucherCents } : {}),
   };
+  if (reserve) {
+    // The card is kept on the host's Stripe account (a customer there), so the
+    // charge later is the host's own direct charge, as for any other booking.
+    const cp = new URLSearchParams();
+    cp.set('email', email); cp.set('name', name);
+    cp.set('metadata[kind]', 'twiggli reservation'); cp.set('metadata[event_id]', eventId); cp.set('metadata[date]', date);
+    const cr = await stripeAs(key, account, 'customers', cp);
+    const cust = await cr.json();
+    if (!cr.ok) { console.error('reserve customer', cust?.error?.message); return res.status(502).json({ error: 'stripe', message: cust?.error?.message }); }
+    const left = minG - (await placesCommitted(eventId, date)) - people;
+    const sp = new URLSearchParams();
+    sp.set('mode', 'setup');
+    sp.set('locale', lang);
+    sp.set('customer', cust.id);
+    sp.set('payment_method_types[0]', 'card');
+    sp.set('success_url', `${page}?session_id={CHECKOUT_SESSION_ID}&e=${eventId}`);
+    sp.set('cancel_url', back);
+    sp.set('expires_at', String(Math.floor(Date.now() / 1000) + 30 * 60));
+    const euro = `€${(charge / 100).toFixed(2).replace(/\.00$/, '')}`;
+    sp.set('custom_text[submit][message]', de
+      ? `${ev.title}, ${when}: Es wird noch nichts abgebucht. Die ${euro} werden erst eingezogen, wenn ${minG} Personen gebucht haben (noch ${Math.max(1, left)}). Kommt der Kurs nicht zustande, zahlst du nichts.`
+      : `${ev.title}, ${when}: nothing is charged now. The ${euro} is only taken once ${minG} people have booked (${Math.max(1, left)} to go). If the class doesn't run, you pay nothing.`);
+    sp.set('setup_intent_data[description]', `Twiggli reservation: ${ev.title}, ${date} ${ev.start}, ${people}× (${name})`);
+    const meta = { kind: 'twiggli reservation', event_id: eventId, date, start: ev.start, people: String(people), name, slug: ev.slug };
+    for (const [k, v] of Object.entries(meta)) { sp.set(`metadata[${k}]`, v); sp.set(`setup_intent_data[metadata][${k}]`, v); }
+    const r = await stripeAs(key, account, 'checkout/sessions', sp);
+    const s = await r.json();
+    if (!r.ok) { console.error('reserve checkout', s?.error?.message); return res.status(502).json({ error: 'stripe', message: s?.error?.message }); }
+    await db.doc(`bookings/${s.id}`).set({ ...booking, mode: 'reserve', customer: cust.id, minGuests: minG, decideHours: Number.isFinite(ev.decideHours) ? ev.decideHours : 48 });
+    return res.status(200).json({ url: s.url });
+  }
   // The voucher covers everything: booked at once, no Stripe.
   if (!charge) {
     const id = `vb${randomBytes(12).toString('hex')}`;
@@ -2814,11 +2871,31 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY,
   const snap = await ref.get();
   if (!snap.exists) return res.status(404).json({ error: 'not-found' });
   let bk = snap.data();
-  const out = () => ({ status: bk.status, title: bk.title, date: bk.date, start: bk.start, location: bk.location, people: bk.people, amount: bk.amount / 100, voucher: (bk.voucherCents ?? 0) / 100, name: bk.name, cancel: bk.cancel, slug: bk.slug });
-  if (bk.status === 'paid') return res.status(200).json(out());
+  const out = () => ({ status: bk.status, title: bk.title, date: bk.date, start: bk.start, location: bk.location, people: bk.people, amount: bk.amount / 100, voucher: (bk.voucherCents ?? 0) / 100, name: bk.name, cancel: bk.cancel, slug: bk.slug,
+    ...(bk.mode === 'reserve' ? { minGuests: bk.minGuests } : {}) });
+  if (bk.status === 'paid' || bk.status === 'reserved' || bk.status === 'charging') return res.status(200).json(out());
   const r = await stripeAs(STRIPE_CONNECT_KEY.value(), bk.account, `checkout/sessions/${id}`);
   const s = await r.json();
   if (!r.ok) return res.status(502).json({ error: 'stripe' });
+  // A reservation (minimum not reached yet): the card is saved, nothing taken.
+  if (bk.mode === 'reserve') {
+    if (s.status !== 'complete') return res.status(200).json({ ...out(), status: 'unpaid' });
+    const si = await (await stripeAs(STRIPE_CONNECT_KEY.value(), bk.account, `setup_intents/${s.setup_intent}`)).json();
+    if (!si?.payment_method) return res.status(200).json({ ...out(), status: 'unpaid' });
+    const firstR = await getFirestore().runTransaction(async (t) => {
+      const cur = (await t.get(ref)).data();
+      if (cur.status !== 'pending') return false;
+      t.update(ref, { status: 'reserved', reservedAt: FieldValue.serverTimestamp(), paymentMethod: String(si.payment_method) });
+      return true;
+    });
+    bk = { ...bk, status: 'reserved', paymentMethod: String(si.payment_method) };
+    if (firstR) {
+      await sendReserveMails(id, bk);
+      try { await chargeReserved(bk.eventId, bk.date); } catch (err) { console.error('chargeReserved', err?.message); }
+      bk = (await ref.get()).data() ?? bk;
+    }
+    return res.status(200).json(out());
+  }
   if (s.payment_status !== 'paid') return res.status(200).json({ ...out(), status: 'unpaid' });
   // Paid: mark it once (two tabs could confirm at the same moment).
   const first = await getFirestore().runTransaction(async (t) => {
@@ -2839,8 +2916,114 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY,
   bk = { ...bk, status: 'paid' };
   if (!first) return res.status(200).json(out());
   await sendBookingMails(id, bk);
+  // This booking may be the one that reached a date's minimum: charge the others now.
+  try { await chargeReserved(bk.eventId, bk.date); } catch (err) { console.error('chargeReserved', err?.message); }
   return res.status(200).json(out());
 });
+
+/** Places that count towards a date's minimum: paid, and cards waiting for it. */
+const placesCommitted = async (eventId, date) => {
+  const snap = await getFirestore().collection('bookings').where('eventId', '==', eventId).where('date', '==', date).get();
+  return snap.docs.reduce((n, d) => (['paid', 'reserved', 'charging'].includes(d.data().status) ? n + (d.data().people ?? 0) : n), 0);
+};
+
+/** Once a date has its minimum, every waiting card is charged (a direct charge
+ *  on the host's Stripe account, off session, Twiggli's commission as the fee). */
+const chargeReserved = async (eventId, date) => {
+  if (!eventId) return;
+  const db = getFirestore();
+  const ev = (await db.doc(`hostEvents/${eventId}`).get()).data();
+  const minG = Number(ev?.minGuests) > 1 ? Number(ev.minGuests) : 0;
+  const snap = await db.collection('bookings').where('eventId', '==', eventId).where('date', '==', date).get();
+  const committed = snap.docs.reduce((n, d) => (['paid', 'reserved', 'charging'].includes(d.data().status) ? n + (d.data().people ?? 0) : n), 0);
+  if (minG && committed < minG) return;
+  for (const d of snap.docs.filter((x) => x.data().status === 'reserved')) {
+    // Claimed first, so two runs never charge one card twice.
+    const claimed = await db.runTransaction(async (t) => {
+      const cur = (await t.get(d.ref)).data();
+      if (cur?.status !== 'reserved') return false;
+      t.update(d.ref, { status: 'charging' });
+      return true;
+    });
+    if (!claimed) continue;
+    const bk = d.data();
+    const charge = bk.amount - (bk.voucherCents ?? 0);
+    let pi = null;
+    if (charge > 0) {
+      const p = new URLSearchParams();
+      p.set('amount', String(charge)); p.set('currency', 'eur');
+      p.set('customer', bk.customer); p.set('payment_method', bk.paymentMethod);
+      p.set('off_session', 'true'); p.set('confirm', 'true');
+      if (bk.fee > 0) p.set('application_fee_amount', String(bk.fee));
+      p.set('description', `Twiggli: ${bk.title}, ${bk.date} ${bk.start}, ${bk.people}× (${bk.name}), minimum reached`);
+      for (const [k, v] of Object.entries({ kind: 'twiggli booking', event_id: eventId, date, start: bk.start, people: String(bk.people), name: bk.name, slug: bk.slug, booking_id: d.id })) p.set(`metadata[${k}]`, v);
+      const r = await stripeAs(STRIPE_CONNECT_KEY.value(), bk.account, 'payment_intents', p);
+      pi = await r.json();
+      if (!r.ok || pi.status !== 'succeeded') {
+        await d.ref.update({ status: 'charge_failed', chargeError: String(pi?.error?.message ?? pi?.status ?? 'failed').slice(0, 300) });
+        await mailChargeFailed(d.id, bk);
+        continue;
+      }
+    }
+    await db.runTransaction(async (t) => {
+      let short = false;
+      if (bk.voucherHash && bk.voucherCents) {
+        const vRef = db.doc(`voucherCodes/${bk.voucherHash}`);
+        const vd = (await t.get(vRef)).data();
+        const have = Math.round((vd?.balance ?? 0) * 100);
+        short = have < bk.voucherCents;
+        if (vd) t.update(vRef, { balance: Math.max(0, have - bk.voucherCents) / 100, redemptions: FieldValue.arrayUnion({ bookingId: d.id, hostSlug: bk.slug, amount: bk.voucherCents / 100, at: Date.now(), status: 'redeemed' }) });
+      }
+      t.update(d.ref, { status: 'paid', paidAt: FieldValue.serverTimestamp(), paymentIntent: String(pi?.id ?? ''), paidBy: charge > 0 ? 'reserve' : 'voucher', ...(short ? { voucherShort: true } : {}) });
+    });
+    await sendBookingMails(d.id, { ...bk, status: 'paid' });
+  }
+};
+
+const mailText = (html) => `<div style="font-family:Tahoma,Arial,sans-serif;font-size:15px;line-height:1.6;color:#24272e;max-width:520px">${html}</div>`;
+const dayOf = (bk, de) => new Date(`${bk.date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+
+/** A reservation: the guest hears nothing is taken yet; the host and Jirel see the count. */
+const sendReserveMails = async (id, bk) => {
+  const de = bk.lang === 'de';
+  const first_ = String(bk.name).split(/\s+/)[0];
+  const n = await placesCommitted(bk.eventId, bk.date);
+  const euro = `€${((bk.amount - (bk.voucherCents ?? 0)) / 100).toFixed(2).replace(/\.00$/, '')}`;
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  try {
+    await mail.sendMail({
+      from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: bk.email,
+      subject: de ? `Reserviert: ${bk.title} am ${dayOf(bk, true)}` : `Reserved: ${bk.title} on ${dayOf(bk, false)}`,
+      html: mailText(de
+        ? `Hallo ${esc(first_)},<br><br>dein Platz bei <b>${esc(bk.title)}</b> am ${esc(dayOf(bk, true))} um ${esc(bk.start)} ist reserviert (${bk.people} ${bk.people === 1 ? 'Platz' : 'Plätze'}).<br><br>Der Kurs findet ab <b>${bk.minGuests} Personen</b> statt, gebucht sind jetzt ${n}. Deshalb wird noch <b>nichts abgebucht</b>. Sobald ${bk.minGuests} Personen dabei sind, ziehen wir ${euro} von deiner Karte ein und du bekommst die Bestätigung. Kommt der Kurs nicht zustande, zahlst du nichts und wir sagen dir rechtzeitig Bescheid.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>`
+        : `Hi ${esc(first_)},<br><br>your place at <b>${esc(bk.title)}</b> on ${esc(dayOf(bk, false))} at ${esc(bk.start)} is reserved (${bk.people} ${bk.people === 1 ? 'spot' : 'spots'}).<br><br>The class runs from <b>${bk.minGuests} people</b>; ${n} have booked so far. So <b>nothing is charged yet</b>. As soon as ${bk.minGuests} people are in, we take ${euro} from your card and you get your confirmation. If the class doesn't run, you pay nothing and we let you know in good time.<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`),
+    });
+  } catch (err) { console.error('reserve guest mail', id, err?.message); }
+  try {
+    await mail.sendMail({
+      from: { name: 'Twiggli', address: SENDER }, replyTo: bk.email, to: bk.hostEmail, cc: INBOX,
+      subject: `Reservierung über Twiggli: ${bk.title}, ${bk.date} ${bk.start} (${n}/${bk.minGuests}) 🎟️`,
+      html: mailText(`Hallo,<br><br><b>${esc(bk.name)}</b> hat ${bk.people} ${bk.people === 1 ? 'Platz' : 'Plätze'} für <b>${esc(bk.title)}</b> am ${esc(dayOf(bk, true))}, ${esc(bk.start)} reserviert.<br><br>Damit sind <b>${n} von mindestens ${bk.minGuests}</b> Personen dabei. Noch ist nichts bezahlt: Sobald ${bk.minGuests} erreicht sind, werden alle Karten belastet und das Geld geht auf dein Stripe-Konto (abzüglich ${bk.commissionPct} % Twiggli). Kommen bis ${bk.decideHours ?? 48} Stunden vor Beginn nicht genug zusammen, fällt der Termin aus und niemand zahlt. Wir sagen dir dann Bescheid.<br><br>Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b>`),
+    });
+  } catch (err) { console.error('reserve host mail', id, err?.message); }
+};
+
+/** The card couldn't be charged when the minimum was reached: the guest is asked to book again, Jirel is told. */
+const mailChargeFailed = async (id, bk) => {
+  const de = bk.lang === 'de';
+  const first_ = String(bk.name).split(/\s+/)[0];
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  try {
+    await mail.sendMail({
+      from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: bk.email,
+      subject: de ? `Bitte kurz bestätigen: ${bk.title} am ${dayOf(bk, true)}` : `Please confirm: ${bk.title} on ${dayOf(bk, false)}`,
+      html: mailText(de
+        ? `Hallo ${esc(first_)},<br><br>gute Nachricht: <b>${esc(bk.title)}</b> am ${esc(dayOf(bk, true))} findet statt! Leider hat deine Bank die Abbuchung nicht freigegeben. Bitte antworte kurz auf diese E-Mail, dann schicke ich dir einen Link, um deinen Platz zu bezahlen.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>`
+        : `Hi ${esc(first_)},<br><br>good news: <b>${esc(bk.title)}</b> on ${esc(dayOf(bk, false))} is on! Unfortunately your bank didn't approve the charge. Please reply to this email and I'll send you a link to pay for your place.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`),
+    });
+  } catch (err) { console.error('charge failed guest mail', id, err?.message); }
+  try { await mailJirel({ subject: `Charge failed: ${bk.title}, ${bk.date} ${bk.start} (${bk.name})`, text: `The minimum was reached but ${bk.name} (${bk.email}) could not be charged on ${bk.slug}'s Stripe (booking ${id}). They were asked to reply for a payment link.` }); } catch {}
+};
 
 /** The emails for a paid booking: the guest's confirmation, and the host's
  *  note (Jirel in CC), with the voucher part shown where there is one. */
@@ -3618,6 +3801,50 @@ const reviewMail = ({ lang, first, workshop, hostLabel, hostFirst, studio, slug 
   const text = `${de ? 'Hallo' : 'Hi'} ${first},\n\n${html.replace(/<li>/g, '- ').replace(/<br>/g, '\n').replace(/<\/p>|<\/li>/g, '\n').replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').split('\n').slice(2).join('\n').trim()}\n\n${link}`;
   return { subject, html, text };
 };
+// Dates with a minimum (Jirel 23.11.26): charge the waiting cards once it is
+// reached; at the deadline (decideHours before the start) without it, the
+// reservations lapse, nobody is charged, and guests, host and Jirel hear.
+export const minGuestsCheck = onCron({ schedule: 'every 30 minutes', timeZone: 'Europe/Berlin', region: 'europe-west3', secrets: [STRIPE_CONNECT_KEY, GMAIL_APP_PASSWORD] }, async () => {
+  const db = getFirestore();
+  const snap = await db.collection('bookings').where('status', '==', 'reserved').get();
+  const groups = new Map();
+  for (const d of snap.docs) { const b = d.data(); const k = `${b.eventId}|${b.date}`; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(d); }
+  for (const [k, docs] of groups) {
+    const [eventId, date] = k.split('|');
+    try {
+      const first = docs[0].data();
+      const committed = await placesCommitted(eventId, date);
+      if (committed >= (first.minGuests ?? 0)) { await chargeReserved(eventId, date); continue; }
+      const decideAt = new Date(`${date}T${first.start}:00+01:00`).getTime() - (first.decideHours ?? 48) * 3600000;
+      if (Date.now() < decideAt) continue;
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      for (const d of docs) {
+        const bk = d.data();
+        const ok = await db.runTransaction(async (t) => { const cur = (await t.get(d.ref)).data(); if (cur?.status !== 'reserved') return false; t.update(d.ref, { status: 'cancelled_min', cancelledAt: FieldValue.serverTimestamp() }); return true; });
+        if (!ok) continue;
+        const de = bk.lang === 'de';
+        const first_ = String(bk.name).split(/\s+/)[0];
+        try {
+          await mail.sendMail({
+            from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: bk.email,
+            subject: de ? `Leider abgesagt: ${bk.title} am ${dayOf(bk, true)}` : `Cancelled: ${bk.title} on ${dayOf(bk, false)}`,
+            html: mailText(de
+              ? `Hallo ${esc(first_)},<br><br>leider haben sich für <b>${esc(bk.title)}</b> am ${esc(dayOf(bk, true))} nicht genug Personen angemeldet (mindestens ${bk.minGuests}), deshalb findet der Termin nicht statt. Es wurde <b>nichts abgebucht</b>.<br><br>Schau gern nach einem anderen Termin auf <b>Twiggli</b>, oder antworte auf diese E-Mail, wenn ich dir helfen kann.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>`
+              : `Hi ${esc(first_)},<br><br>unfortunately not enough people signed up for <b>${esc(bk.title)}</b> on ${esc(dayOf(bk, false))} (it needs at least ${bk.minGuests}), so it won't take place. <b>Nothing was charged.</b><br><br>Have a look for another date on <b>Twiggli</b>, or reply to this email if I can help.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`),
+          });
+        } catch (err) { console.error('min cancel guest mail', d.id, err?.message); }
+      }
+      try {
+        await mail.sendMail({
+          from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: first.hostEmail, cc: INBOX,
+          subject: `Termin fällt aus: ${first.title}, ${date} ${first.start} (${committed}/${first.minGuests})`,
+          html: mailText(`Hallo,<br><br>für <b>${esc(first.title)}</b> am ${esc(dayOf(first, true))}, ${esc(first.start)} haben bis ${first.decideHours ?? 48} Stunden vorher nur ${committed} von mindestens ${first.minGuests} Personen gebucht. Die Reservierungen sind aufgehoben, <b>niemand hat bezahlt</b>, und die Gäste wissen Bescheid.<br><br>Möchtest du den Termin trotzdem machen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b>`),
+        });
+      } catch (err) { console.error('min cancel host mail', k, err?.message); }
+    } catch (err) { console.error('minGuestsCheck', k, err?.message); }
+  }
+});
+
 export const reviewAsk = onCron({ schedule: 'every 60 minutes', timeZone: 'Europe/Berlin', region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 1 }, async () => {
   const hour = Number(new Date().toLocaleString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hour12: false }));
   if (hour < 9 || hour > 20) return;
