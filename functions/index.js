@@ -942,7 +942,7 @@ const notifyHostRequest = async (doc, email, f) => {
   const data = (await doc.get()).data() ?? {};
   const slug = String(data.hostSlug ?? '');
   const type = String(f.Type ?? '');
-  if (!SLUG.test(slug) || !/^(Booking request|Group booking request|Date request|Studio rental request)$/.test(type)) return '';
+  if (!SLUG.test(slug) || !/^(Booking request|Group booking request|Date request|Studio rental request|Partner request)$/.test(type)) return '';
   // Studio requests go to whoever runs the room, the same way (Jirel 17.11.26).
   const studio = type === 'Studio rental request';
   if (data.hostMailedAt) return 'already sent';
@@ -973,12 +973,13 @@ const notifyHostRequest = async (doc, email, f) => {
   // and Stripe connected: each opens this request in their dashboard
   // (Messages), where the same confirm popup as there takes the answer.
   let buttons = false;
-  if (type === 'Booking request' || type === 'Group booking request') {
+  if (type === 'Partner request') buttons = true;
+  else if (type === 'Booking request' || type === 'Group booking request') {
     try { buttons = await hostStripeReady(slug); } catch (err) { console.error('stripe check failed', slug, err?.message); }
   }
   const T = {
     de: {
-      kicker: `Neue ${studio ? 'Raumanfrage' : type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
+      kicker: `Neue ${studio ? 'Raumanfrage' : type === 'Partner request' ? 'Partner-Anfrage 🤝' : type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
       head: `Antworte auf ${esc(gFirst)}s Anfrage`,
       hi: `Hallo${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
@@ -987,14 +988,14 @@ const notifyHostRequest = async (doc, email, f) => {
         : `${esc(guest)} hat über <b>Twiggli</b> bei dir angefragt. Bitte melde dich direkt bei ${esc(gFirst)}, am einfachsten mit Antwort auf diese E-Mail (ich bin in CC).`,
       date: type === 'Date request' ? `${esc(gFirst)} hat keinen passenden Termin gefunden. Magst du einen öffnen oder einen anderen vorschlagen?` : '',
       rows: studio ? [['Raum', what], ['Datum', when], ['Beginn', f['Start time']], ['Stunden', f.Hours], ['Wie oft', often ? 'Regelmäßig' : 'Einmalig'], ['Personen', f.People]]
-        : [['Workshop', what], ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
-      msg: 'Nachricht', earn: 'Mögliche Einnahmen', earnNote: (g) => `${eur(g)} gesamt, ${eur(g * 0.85)} nach 15 % Twiggli-Provision (falls für dich vereinbart)`,
+        : [['Workshop', what], ...(f.Where ? [['Wo', f.Where]] : []), ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
+      msg: 'Nachricht', earn: 'Mögliche Einnahmen', earnNote: (g) => `${eur(g)} gesamt, ${eur(g * 0.85)} nach 15 % Twiggli-Provision${type === 'Partner request' ? '' : ' (falls für dich vereinbart)'}`,
       contact: 'Kontakt', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
       yes: 'Annehmen', no: 'Ablehnen', act: `Beides öffnet die Anfrage direkt in deinem <b>Twiggli</b>-Konto, und ${esc(gFirst)} bekommt deine Antwort automatisch.`,
       subject: `Neue ${studio ? 'Raumanfrage' : 'Anfrage'} über Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'Person' : 'Personen'})` : ''}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''} 💌`,
     },
     en: {
-      kicker: `New ${studio ? 'studio request' : type === 'Group booking request' ? 'group request' : type === 'Date request' ? 'date request' : 'booking request'}${soon === 'today' ? ' · today' : soon === 'tomorrow' ? ' · tomorrow' : ''}`,
+      kicker: `New ${studio ? 'studio request' : type === 'Partner request' ? 'partner request 🤝' : type === 'Group booking request' ? 'group request' : type === 'Date request' ? 'date request' : 'booking request'}${soon === 'today' ? ' · today' : soon === 'tomorrow' ? ' · tomorrow' : ''}`,
       head: `Reply to ${esc(gFirst)}'s request`,
       hi: `Hi${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
@@ -1003,8 +1004,8 @@ const notifyHostRequest = async (doc, email, f) => {
         : `${esc(guest)} sent you a request on <b>Twiggli</b>. Please get in touch with ${esc(gFirst)} directly, easiest by replying to this email (I'm in CC).`,
       date: type === 'Date request' ? `${esc(gFirst)} didn't find a date that works. Could you open one, or suggest another?` : '',
       rows: studio ? [['Space', what], ['Date', when], ['Start', f['Start time']], ['Hours', f.Hours], ['How often', often ? 'Regularly' : 'One time'], ['People', f.People]]
-        : [['Workshop', what], ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
-      msg: 'Message', earn: 'Your earnings', earnNote: (g) => `${eur(g)} in total, ${eur(g * 0.85)} after the 15% Twiggli commission (where agreed with you)`,
+        : [['Workshop', what], ...(f.Where ? [['Where', f.Where]] : []), ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
+      msg: 'Message', earn: 'Your earnings', earnNote: (g) => `${eur(g)} in total, ${eur(g * 0.85)} after the 15% Twiggli commission${type === 'Partner request' ? '' : ' (where agreed with you)'}`,
       contact: 'Contact', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
       yes: 'Accept', no: 'Decline', act: `Both open the request straight in your <b>Twiggli</b> account, and ${esc(gFirst)} gets your answer automatically.`,
       subject: `New ${studio ? 'studio request' : 'request'} via Twiggli: ${what}${when ? `, ${when}` : ''}${people ? ` (${people} ${people === 1 ? 'person' : 'people'})` : ''}${soon ? ` · ${soon}` : ''} 💌`,
@@ -1019,8 +1020,8 @@ const notifyHostRequest = async (doc, email, f) => {
         : `${esc(guest)} t’a envoyé une demande sur <b>Twiggli</b>. Contacte ${esc(gFirst)} directement, le plus simple en répondant à ce mail (je suis en copie).`,
       date: type === 'Date request' ? `${esc(gFirst)} n’a pas trouvé de date qui convient. Tu peux en ouvrir une ou en proposer une autre ?` : '',
       rows: studio ? [['Espace', what], ['Date', when], ['Début', f['Start time']], ['Heures', f.Hours], ['Fréquence', often ? 'Régulièrement' : 'Une fois'], ['Personnes', f.People]]
-        : [['Atelier', what], ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
-      msg: 'Message', earn: 'Revenus possibles', earnNote: (g) => `${eur(g)} au total, ${eur(g * 0.85)} après la commission Twiggli de 15 % (si convenue avec toi)`,
+        : [['Atelier', what], ...(f.Where ? [['Où', f.Where]] : []), ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
+      msg: 'Message', earn: 'Revenus possibles', earnNote: (g) => `${eur(g)} au total, ${eur(g * 0.85)} après la commission Twiggli de 15 %${type === 'Partner request' ? '' : ' (si convenue avec toi)'}`,
       contact: 'Contact', bye: 'Bises', sig: 'Jirel, fondatrice @ <b>Twiggli</b>',
       yes: 'Accepter', no: 'Refuser', act: `Les deux ouvrent la demande directement dans ton espace <b>Twiggli</b>, et ${esc(gFirst)} reçoit ta réponse automatiquement.`,
       subject: `Nouvelle ${studio ? 'demande de location' : 'demande'} via Twiggli : ${what}${when ? `, ${when}` : ''}${people ? ` (${people} pers.)` : ''} 💌`,
@@ -2106,6 +2107,39 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
 const LISTING_KEY = /^[a-z0-9-]{1,120}$/;
 const LISTING_STATES = ['paused', 'deleted'];
 
+/** Partner requests (Jirel 23.11.26): a hotel or company in our network wants one
+ *  of a host's partner workshops at its own place. Jirel sends it from the admin
+ *  dashboard; it reaches the host like any request (email with Accept / Decline,
+ *  Messages, the Overview's requests), and the host's answer comes back to her. */
+export const partnerRequest = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 3, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email || !ADMINS.includes(email)) return res.status(403).json({ error: 'Admins only' });
+  const b = req.body ?? {};
+  const slug = String(b.slug ?? '');
+  const key = String(b.key ?? '');
+  const date = String(b.date ?? '');
+  if (!SLUG.test(slug) || !LISTING_KEY.test(key) || !/^\d{4}-\d\d-\d\d$/.test(date)) return res.status(400).json({ error: 'Bad request' });
+  const listing = (await getFirestore().doc(`hostListings/${slug}__${key}`).get()).data();
+  const pt = listing?.edit?.partner;
+  const title = text(b.title, 160) || listing?.edit?.title || listing?.title || key;
+  const day = new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const price = Math.round(Number(b.price)) || pt?.price || 0;
+  const fields = {
+    Type: 'Partner request', Workshop: title, Host: slug, Date: `${date} (${day})`, Time: text(b.time, 10),
+    People: String(Math.max(1, Math.min(500, Math.round(Number(b.people)) || 1))), ...(price ? { Price: `€${price}` } : {}),
+    Name: text(b.partner, 120) || 'Twiggli partner', Where: text(b.where, 160), ...(text(b.message, 1500) ? { Message: text(b.message, 1500) } : {}),
+    Language: 'en', 'Partner workshop': key,
+  };
+  const subject = `Partner request: ${title} · ${slug} — ${date} ${fields.Time} (${fields.People})`;
+  const doc = await getFirestore().collection('formRequests').add({
+    subject, email: INBOX, fields, origin: 'admin', createdAt: FieldValue.serverTimestamp(), mailed: true, hostSlug: slug, status: 'pending', thread: [], partner: true, by: email,
+  });
+  let sent = '';
+  try { sent = await notifyHostRequest(doc, INBOX, fields); } catch (err) { sent = `NOT sent: ${err?.message ?? err}`; }
+  return res.status(200).json({ ok: true, id: doc.id, sent });
+});
+
 export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 5, cors: false }, async (req, res) => {
   if (!allow(req, res)) return;
   const email = await caller(req);
@@ -2149,7 +2183,8 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
   if (b.action === 'partner') {
     const p = b.partner ?? {};
     const n = (v, max) => { const x = Math.round(Number(v)); return x > 0 && x <= max ? x : null; };
-    const partner = { on: p.on === true, price: n(p.price, 2000), min: n(p.min, 500), max: n(p.max, 500), duration: text(p.duration, 30), needs: text(p.needs, 500) };
+    // A new concept only for partner events (no page on the site): its own title and a short description.
+    const partner = { on: p.on === true, price: n(p.price, 2000), min: n(p.min, 500), max: n(p.max, 500), duration: text(p.duration, 30), needs: text(p.needs, 500), ...(p.concept === true ? { concept: true, about: String(p.about ?? '').replace(/\r/g, '').trim().slice(0, 1500) } : {}) };
     const prev = (await ref.get()).data();
     await ref.set({ slug, key, title: prev?.title ?? title, status: prev?.status ?? 'live', edit: { ...(prev?.edit ?? {}), partner }, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     try {
@@ -2157,7 +2192,7 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
       await mailJirel({
         subject: partner.on ? `${slug}: "${title || key}" ${was ? 'partner terms changed' : 'joins the partner network'} 🤝` : `${slug}: "${title || key}" left the partner network`,
         text: partner.on
-          ? `${email} offers "${title || key}" (${slug}) on site at partners: €${partner.price ?? '?'} per person incl. travel and materials, ${partner.min ?? '?'}–${partner.max ?? '?'} people, ${partner.duration || '?'}; needs on site: ${partner.needs || '-'}.`
+          ? `${email} offers "${title || key}" (${slug}) on site at partners: €${partner.price ?? '?'} per person incl. travel and materials, ${partner.min ?? '?'}–${partner.max ?? '?'} people, ${partner.duration || '?'}; needs on site: ${partner.needs || '-'}.${partner.concept ? ` New concept: ${partner.about || '-'}` : ''}`
           : `${email} no longer offers "${title || key}" (${slug}) on site at partners.`,
       });
     } catch {}
