@@ -4107,6 +4107,9 @@ const fields = [
           visibility: fld<HTMLSelectElement>('visibility').value, media,
         };
         const note = $('[data-ha-create-note]');
+        // Places that make sense (Jirel 23.11.26: a date went up with 0 places, then 2 places from 5).
+        if (body.seats !== null && body.seats < 1) { note.textContent = TL('Bitte gib mindestens 1 Platz an.', 'Please give at least 1 place.', 'Indique au moins 1 place.'); fld('seats').focus(); return; }
+        if (body.seats && body.minGuests && body.minGuests > body.seats) { note.textContent = TL(`Du hast ${body.seats} Plätze, der Termin findet aber erst ab ${body.minGuests} Personen statt. So kommt er nie zustande. Bitte prüf die beiden Zahlen.`, `You have ${body.seats} places, but the date only runs from ${body.minGuests} people, so it could never run. Please check both numbers.`, `Tu as ${body.seats} places, mais la date n’a lieu qu’à partir de ${body.minGuests} personnes : elle ne pourrait jamais avoir lieu. Vérifie les deux chiffres.`); fld('seats').focus(); return; }
         if ((body.price ?? 0) > 0 && stripeReady !== true) {
           note.textContent = t.stripeNeeded;
           showStripe();

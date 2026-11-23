@@ -11,8 +11,8 @@ import { functionsBase } from '../data/firebase.ts';
 interface Props { lang: 'en' | 'de' }
 const { lang } = Astro.props;
 const t = {
-  en: { title: 'You’re booked!', checking: 'Checking your payment…', body: 'Your spot is confirmed. A confirmation is on its way to your inbox.', unpaid: 'Your payment hasn’t come through yet. If you were charged, reply to our email and we’ll sort it out.', error: 'We couldn’t check your booking just now. Your confirmation email will follow; if not, write to hello@twiggli.com.', more: 'Discover more workshops', when: 'When', where: 'Where', places: 'Spots', voucher: 'Voucher', paid: 'Paid', holdTitle: 'Reserved!', holdBody: 'Your request is with the host. Your voucher and card are only charged once they confirm, usually within 48 hours. If they can’t, nothing is taken.', held: 'Held on your card', people: 'People' },
-  de: { title: 'Gebucht!', checking: 'Wir prüfen deine Zahlung…', body: 'Dein Platz ist sicher. Die Bestätigung ist auf dem Weg in dein Postfach.', unpaid: 'Deine Zahlung ist noch nicht angekommen. Falls schon abgebucht wurde, antworte einfach auf unsere E-Mail.', error: 'Wir konnten deine Buchung gerade nicht prüfen. Die Bestätigung kommt per E-Mail; sonst schreib an hello@twiggli.com.', more: 'Weitere Workshops entdecken', when: 'Wann', where: 'Wo', places: 'Plätze', voucher: 'Gutschein', paid: 'Bezahlt', holdTitle: 'Reserviert!', holdBody: 'Deine Anfrage ist beim Gastgeber. Gutschein und Karte werden erst belastet, wenn er bestätigt, meist innerhalb von 48 Stunden. Klappt es nicht, wird nichts abgebucht.', held: 'Auf deiner Karte vorgemerkt', people: 'Personen' },
+  en: { title: 'You’re booked!', checking: 'Checking your payment…', body: 'Your spot is confirmed. A confirmation is on its way to your inbox.', unpaid: 'Your payment hasn’t come through yet. If you were charged, reply to our email and we’ll sort it out.', error: 'We couldn’t check your booking just now. Your confirmation email will follow; if not, write to hello@twiggli.com.', more: 'Discover more workshops', when: 'When', where: 'Where', places: 'Spots', voucher: 'Voucher', paid: 'Paid', resTitle: 'Reserved!', resBody: 'Nothing is charged yet. This class runs from {n} people: as soon as they have booked, your card is charged and you get your confirmation. If it doesn’t run, you pay nothing.', holdTitle: 'Reserved!', holdBody: 'Your request is with the host. Your voucher and card are only charged once they confirm, usually within 48 hours. If they can’t, nothing is taken.', held: 'Held on your card', people: 'People' },
+  de: { title: 'Gebucht!', checking: 'Wir prüfen deine Zahlung…', body: 'Dein Platz ist sicher. Die Bestätigung ist auf dem Weg in dein Postfach.', unpaid: 'Deine Zahlung ist noch nicht angekommen. Falls schon abgebucht wurde, antworte einfach auf unsere E-Mail.', error: 'Wir konnten deine Buchung gerade nicht prüfen. Die Bestätigung kommt per E-Mail; sonst schreib an hello@twiggli.com.', more: 'Weitere Workshops entdecken', when: 'Wann', where: 'Wo', places: 'Plätze', voucher: 'Gutschein', paid: 'Bezahlt', resTitle: 'Reserviert!', resBody: 'Es wird noch nichts abgebucht. Der Kurs findet ab {n} Personen statt: Sobald sie gebucht haben, wird deine Karte belastet und du bekommst die Bestätigung. Kommt er nicht zustande, zahlst du nichts.', holdTitle: 'Reserviert!', holdBody: 'Deine Anfrage ist beim Gastgeber. Gutschein und Karte werden erst belastet, wenn er bestätigt, meist innerhalb von 48 Stunden. Klappt es nicht, wird nichts abgebucht.', held: 'Auf deiner Karte vorgemerkt', people: 'Personen' },
 }[lang];
 ---
 
@@ -54,11 +54,12 @@ const t = {
   } else fetch(box.dataset.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: q.get('session_id') || q.get('b') || '' }) })
     .then((r) => r.json())
     .then((b) => {
-      if (b.status !== 'paid') { title.textContent = t.checking.replace('…', ''); body.textContent = t.unpaid; return; }
-      title.textContent = t.title;
-      body.textContent = t.body;
+      const res = b.status === 'reserved' || (b.status === 'charging');
+      if (b.status !== 'paid' && !res) { title.textContent = t.checking.replace('…', ''); body.textContent = t.unpaid; return; }
+      title.textContent = res ? t.resTitle : t.title;
+      body.textContent = res ? t.resBody.replace('{n}', String(b.minGuests ?? '')) : t.body;
       const day = new Date(`${b.date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
-      facts.innerHTML = [['', b.title], [t.when, `${day}, ${b.start}`], [t.where, b.location], [t.places, b.people], ...(b.voucher ? [[t.voucher, `−€${b.voucher}`]] : []), [t.paid, `€${Math.round((b.amount - (b.voucher || 0)) * 100) / 100}`]]
+      facts.innerHTML = [['', b.title], [t.when, `${day}, ${b.start}`], [t.where, b.location], [t.places, b.people], ...(b.voucher ? [[t.voucher, `−€${b.voucher}`]] : []), [res ? '' : t.paid, res ? '' : `€${Math.round((b.amount - (b.voucher || 0)) * 100) / 100}`]]
         .filter(([, v]) => v).map(([k, v]) => (k ? `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>` : `<div class="booked-what"><dd>${esc(v)}</dd></div>`)).join('');
       facts.hidden = false;
     })

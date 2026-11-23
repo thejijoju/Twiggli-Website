@@ -565,6 +565,7 @@ const vc = lang === 'de'
           }
           if (error) {
             error.textContent = out.error === 'full' ? pc.full(out.left ?? 0)
+              : out.error === 'min-closed' ? (dialog.dataset.lang === 'de' ? 'Für diesen Termin kamen nicht genug Anmeldungen zusammen, er findet leider nicht statt.' : 'Not enough people signed up for this date, so it won’t take place.')
               : out.error === 'voucher' ? (({ expired: copy.voucherExpired, used: copy.voucherUsed, host: copy.voucherHost } as Record<string, string>)[out.reason] ?? copy.voucherInvalid)
               : pc.failed;
             error.hidden = false;
