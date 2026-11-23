@@ -4945,7 +4945,7 @@ const fields = [
         wsF('seats').value = String(e.seats ?? first?.seats ?? '');
         wsF('note').value = e.note ?? '';
         wsMedia = e.media?.length ? [...e.media] : (w.image ? [{ type: 'photo', url: w.image }] : []);
-        wsGone = new Set();
+        wsGone = new Set((e as { hidden?: string[] }).hidden ?? []);
         // As the site decides (sessions.ts takesRequests): dates from the site's own data,
         // and dates taken over from it, take requests unless the workshop says otherwise.
         const booking = e.booking || (first?.request === true ? 'request' : first?.request === false || ((first?.price ?? 0) > 0 && !first?.virtual && !first?.replaces) ? 'instant' : 'request');
@@ -4968,7 +4968,7 @@ const fields = [
         const body = {
           slug, action: 'edit', key: wsCur.key, title: wsCur.title, newTitle: title,
           price: Number(wsF('price').value) || null, seats: Number(wsF('seats').value) || null, note: wsF('note').value.trim(),
-          description: wsF<HTMLTextAreaElement>('description').value.trim(), duration, media: wsMedia, booking,
+          description: wsF<HTMLTextAreaElement>('description').value.trim(), duration, media: wsMedia, booking, hidden: [...wsGone],
           ...(() => { const w = whereUI($('[data-wh="ws"]')).get(); return { where: w.where, place: w.place ?? null }; })(),
         };
         const btn = $<HTMLButtonElement>('[data-cal-ws-save]');
@@ -4988,7 +4988,7 @@ const fields = [
           }
           // Shown at once here; the public page follows with the next hourly build.
           const items = calListings.slug === slug ? calListings.items : [];
-          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, where: body.where, place: body.place };
+          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], where: body.where, place: body.place };
           const had = items.find((x) => x.key === wsCur!.key);
           if (had) had.edit = edit;
           else items.push({ key: wsCur.key, title: wsCur.title, status: 'live', image: wsCur.image, price: wsCur.price ?? '', edit });
