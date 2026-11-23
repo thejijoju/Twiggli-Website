@@ -1,4 +1,5 @@
 ---
+import { videoSrc } from '../lib/videoSrc.ts';
 import type { Host } from '../data/content.ts';
 import { getHostPriceRanges } from '../data/sessions.ts';
 import { activitiesOf, filterCopy, requestMin } from '../data/content.ts';
@@ -133,7 +134,7 @@ const searchText = (host: Host) => [
               loading="lazy"
               decoding="async"
             />
-            <video class="maker-video" src={host.video} muted loop playsinline preload="none"></video>
+            <video class="maker-video" {...videoSrc(host.video)} muted loop playsinline preload="none"></video>
           </>
         ) : host.gallery && host.gallery.length > 1 ? (
           <PhotoFade photos={host.gallery} alt={host.specialty} />

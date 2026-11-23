@@ -1,4 +1,5 @@
 ---
+import { videoSrc } from '../lib/videoSrc.ts';
 import PageCircles from './PageCircles.astro';
 import { circlesFor } from '../data/pageCircles.ts';
 import { bookingCopy } from '../data/bookingCopy.ts';
@@ -110,7 +111,7 @@ const marks = spaces.map((space) => ({
               {host?.video ? (
                 <video
                   class="space-video"
-                  src={host.video}
+                  {...videoSrc(host.video)}
                   poster={host.poster}
                   muted
                   loop

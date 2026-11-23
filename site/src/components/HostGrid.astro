@@ -1,4 +1,5 @@
 ---
+import { videoSrc } from '../lib/videoSrc.ts';
 import ImageSlot from './ImageSlot.astro';
 import type { Host } from '../data/content.ts';
 import { hostHref as hostPageHref } from '../data/seo.ts';
@@ -51,7 +52,7 @@ const videoPlaceholder = ui(lang).hostGrid.placeholder;
           {host.video ? (
             <video
               class="host-coverflow-video"
-              src={host.video}
+              {...videoSrc(host.video)}
               poster={host.poster}
               muted
               loop

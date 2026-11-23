@@ -2118,6 +2118,25 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
     const snap = await col.where('slug', '==', slug).get();
     return res.status(200).json({ items: snap.docs.map((d) => { const x = d.data(); return { key: x.key, title: x.title, status: x.status, price: x.price ?? '', image: x.image ?? '', edit: x.edit ?? null }; }) });
   }
+  // The page's general video (Profile tab, Jirel 23.11.26): replace it with an
+  // uploaded one, or remove it. Saved in hostPageVideo/{slug}; publicEvents
+  // hands it to the build, which plays it instead of the site's own reel.
+  if (b.action === 'pageVideo') {
+    const pref = getFirestore().doc(`hostPageVideo/${slug}`);
+    if (b.video === null) {
+      await pref.set({ slug, video: '', poster: '', by: email, updatedAt: FieldValue.serverTimestamp() });
+    } else {
+      const m = cleanMedia([{ type: 'video', url: b.video?.url, thumb: b.video?.thumb }], slug, '', await bunnyAllowed([{ type: 'video', url: b.video?.url }], { email, slug }))[0];
+      if (!m || m.type !== 'video') return res.status(400).json({ error: 'Bad video' });
+      await pref.set({ slug, video: m.url, poster: m.thumb ?? '', by: email, updatedAt: FieldValue.serverTimestamp() });
+    }
+    try { await mailJirel({ subject: `${slug}: page video ${b.video === null ? 'removed' : 'replaced'}`, text: `${email} ${b.video === null ? 'removed the page video' : 'uploaded a new page video'} for "${slug}". The site follows within the hour.` }); } catch {}
+    return res.status(200).json({ ok: true });
+  }
+  if (b.action === 'pageVideoGet') {
+    const x = (await getFirestore().doc(`hostPageVideo/${slug}`).get()).data();
+    return res.status(200).json(x ? { set: true, video: x.video ?? '', poster: x.poster ?? '' } : { set: false });
+  }
   const key = String(b.key ?? '');
   if (!LISTING_KEY.test(key)) return res.status(400).json({ error: 'Bad workshop' });
   const ref = col.doc(`${slug}__${key}`);
@@ -2144,6 +2163,14 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
     };
     const prev = (await ref.get()).data();
     await ref.set({ slug, key, title, status: prev?.status ?? 'live', edit, by: email, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    // "Book and pay straight away": dates taken over from an on-request weekly
+    // class lose that flag, so they are real dates (Pia 23.11.26).
+    if (edit.booking === 'instant') {
+      try {
+        const evs = await getFirestore().collection('hostEvents').where('slug', '==', slug).where('wkey', '==', key).get();
+        await Promise.all(evs.docs.filter((d) => d.data().onRequest === true).map((d) => d.ref.update({ onRequest: false, updatedAt: FieldValue.serverTimestamp() })));
+      } catch (err) { console.error('instant: clear onRequest', err?.message); }
+    }
     try {
       await mailJirel({ subject: `${slug}: "${title || key}" edited`, text: `${email} edited "${title || key}" (${slug}): title "${edit.title}", price ${edit.price ?? '-'}, note "${edit.note}". The site follows within the hour.` });
     } catch (err) { console.error('listing note failed', err?.message); }
@@ -2304,7 +2331,11 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   });
   // Draft pages Jirel approved for going live (hostPublishApprove).
   const published = await publishedSlugs().catch(() => []);
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published });
+  // Page videos hosts replaced or removed in their Profile tab ('' = removed).
+  const pageVideos = (await getFirestore().collection('hostPageVideo').get().catch(() => ({ docs: [] }))).docs
+    .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, video: x.video ?? '', poster: x.poster ?? '' }; })
+    .filter((x) => x.slug && !gone.includes(x.slug));
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published, pageVideos });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
