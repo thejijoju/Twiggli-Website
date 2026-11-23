@@ -204,3 +204,8 @@ export const bookingCopy: Record<Lang, {
     extras: 'Ekstralar', extraHour: 'Daha uzun seans (+1 sa)', extraCustom: 'Özel tasarım ya da motif',
   },
 };
+
+/** Hosts who take no date requests from single guests ("Termin anfragen"):
+ *  guests book one of their own dates, groups still send a group request.
+ *  - pastamadre: Maria-Lucrezia, only group requests (Jirel 23.11.26). */
+export const noDateRequests = new Set<string>(['pastamadre']);

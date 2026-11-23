@@ -2106,6 +2106,8 @@ export const hostEvents = onRequest({ region: 'europe-west3', maxInstances: 10, 
 // within the hour (host-dates.yml).
 const LISTING_KEY = /^[a-z0-9-]{1,120}$/;
 const LISTING_STATES = ['paused', 'deleted'];
+/** The voucher terms a host accepts in Settings → Payment (kept with their yes). */
+const VOUCHER_TERMS = 'Twiggli sells vouchers for your workshops (for 1–2 people) and general Twiggli vouchers; guests redeem them when booking on Twiggli; payout by the 10th of the following month, minus 15% commission; valid for 3 years; if your price went up, the guest pays the difference to you.';
 
 /** Partner requests (Jirel 23.11.26): a hotel or company in our network wants one
  *  of a host's partner workshops at its own place. Jirel sends it from the admin
@@ -2166,6 +2168,23 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
     }
     try { await mailJirel({ subject: `${slug}: page video ${b.video === null ? 'removed' : 'replaced'}`, text: `${email} ${b.video === null ? 'removed the page video' : 'uploaded a new page video'} for "${slug}". The site follows within the hour.` }); } catch {}
     return res.status(200).json({ ok: true });
+  }
+  // Twiggli vouchers (Settings → Payment, Jirel 23.11.26): the host says yes or
+  // no to the voucher terms themselves, and can change it. Saved with who and
+  // when in hostVoucher/{slug} (the written proof); publicEvents hands the
+  // choice to the build, which shows or hides their vouchers.
+  if (b.action === 'vouchers') {
+    if (typeof b.on !== 'boolean') return res.status(400).json({ error: 'Bad choice' });
+    const vref = getFirestore().doc(`hostVoucher/${slug}`);
+    const prev = (await vref.get()).data();
+    const log = [...(prev?.log ?? []), { on: b.on, by: email, at: new Date().toISOString() }].slice(-20);
+    await vref.set({ slug, on: b.on, by: email, terms: VOUCHER_TERMS, log, updatedAt: FieldValue.serverTimestamp() });
+    try { await mailJirel({ subject: `${slug}: ${b.on ? 'joins the voucher program 🎁' : 'left the voucher program'}`, text: `${email} ${b.on ? `accepted the voucher terms for "${slug}" in their dashboard: ${VOUCHER_TERMS}` : `no longer takes Twiggli vouchers for "${slug}". Vouchers already sold stay valid.`} The site follows within the hour.` }); } catch {}
+    return res.status(200).json({ ok: true, on: b.on });
+  }
+  if (b.action === 'vouchersGet') {
+    const x = (await getFirestore().doc(`hostVoucher/${slug}`).get()).data();
+    return res.status(200).json(x ? { set: true, on: x.on === true, at: x.log?.at(-1)?.at ?? '' } : { set: false });
   }
   if (b.action === 'pageVideoGet') {
     const x = (await getFirestore().doc(`hostPageVideo/${slug}`).get()).data();
@@ -2392,7 +2411,10 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   const pageVideos = (await getFirestore().collection('hostPageVideo').get().catch(() => ({ docs: [] }))).docs
     .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, video: x.video ?? '', poster: x.poster ?? '' }; })
     .filter((x) => x.slug && !gone.includes(x.slug));
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published, pageVideos });
+  // Hosts' own yes or no to vouchers (hostListing vouchers).
+  const vouchers = (await getFirestore().collection('hostVoucher').get().catch(() => ({ docs: [] }))).docs
+    .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, on: x.on === true }; });
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published, pageVideos, vouchers });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──
