@@ -2612,7 +2612,12 @@ export const bookingCheckout = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY
   const db = getFirestore();
   const evSnap = await db.doc(`hostEvents/${eventId}`).get();
   const ev = evSnap.data();
-  if (!evSnap.exists || ev.visibility === 'private' || ev.request === true || ev.onRequest === true || ev.status === 'deleted' || !(ev.price > 0) || !onSchedule(ev, date)) return res.status(404).json({ error: 'not-bookable' });
+  // A weekly class taken over with its old "on request" flag is payable once its
+  // workshop is set to "book and pay straight away" (sessions.ts takesRequests).
+  const instant = ev?.onRequest === true && ev.wkey
+    ? (await db.doc(`hostListings/${ev.slug}__${ev.wkey}`).get().catch(() => null))?.data()?.edit?.booking === 'instant'
+    : false;
+  if (!evSnap.exists || ev.visibility === 'private' || ev.request === true || (ev.onRequest === true && !instant) || ev.status === 'deleted' || !(ev.price > 0) || !onSchedule(ev, date)) return res.status(404).json({ error: 'not-bookable' });
   if (new Date(`${date}T${ev.start}:00+01:00`).getTime() < Date.now()) return res.status(409).json({ error: 'past' });
   const member = (await db.doc(`hostMembers/${ev.by}`).get()).data() ?? {};
   const account = member.stripe?.accountId;

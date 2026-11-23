@@ -45,6 +45,12 @@ const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.act
  *  entry is left out: one source per date, never shown twice. */
 const replaced = new Set<string>((edits as { replaced?: string[] }).replaced ?? []);
 export const isReplaced = (key: string): boolean => replaced.has(key);
+/** A weekly class of this host at this time was taken over, whatever key it
+ *  was taken over under: the feed's title and the dashboard's workshop key can
+ *  differ ("Vulva Painting mit Pia" vs "vulva-painting-workshop", Pia 23.11.26),
+ *  and a host never runs two weekly classes at the same time. */
+const replacedSlots = new Set([...replaced].filter((k) => k.startsWith('rec|')).map((k) => { const [, slug, , time] = k.split('|'); return `${slug}|${time}`; }));
+export const isReplacedSlot = (slug: string, time: string): boolean => replacedSlots.has(`${slug}|${time}`);
 /** A host's studio as guests see it before booking (Settings → Your studio):
  *  the visible line ("Friedrichshain", "Boxhagener Str., Friedrichshain" or
  *  the full address), the district, and whether that is the exact address.
