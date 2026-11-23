@@ -43,6 +43,7 @@ const t = {
     thanks: 'Thank you so much!',
     thanksBody: 'Your review is on its way. It means a lot to the host, and to us.',
     more: 'Find your next workshop',
+    saved: 'Thank you, your {n} stars are saved! ⭐ Would you add a sentence or two? That helps other guests most.',
   },
   de: {
     title: 'Wie war dein Workshop?',
@@ -66,6 +67,7 @@ const t = {
     thanks: 'Vielen, vielen Dank!',
     thanksBody: 'Deine Bewertung ist unterwegs. Sie bedeutet dem Gastgeber sehr viel, und uns auch.',
     more: 'Deinen nächsten Workshop finden',
+    saved: 'Danke, deine {n} Sterne sind gespeichert! ⭐ Magst du noch ein, zwei Sätze dazuschreiben? Das hilft anderen Gästen am meisten.',
   },
 }[lang];
 const reviewEndpoint = `${functionsBase}/reviewSubmit`;
@@ -83,7 +85,8 @@ const workshopsHref = lang === 'de' ? '/de/workshops/' : '/workshops/';
           <defs><linearGradient id="rv-ink" x1="0" x2="1"><stop offset="0" stop-color="#ff8a5c" /><stop offset=".5" stop-color="#e64ab4" /><stop offset="1" stop-color="#6a3eec" /></linearGradient></defs>
           <path d="M3 9c18-7 32 5 50-1s31-6 48 1 33 5 51-2 33-4 65 1" fill="none" stroke="url(#rv-ink)" stroke-width="3.5" stroke-linecap="round" />
         </svg>
-        <p class="review-lede">{t.lede}</p>
+        <p class="review-lede" id="review-lede">{t.lede}</p>
+        <p class="review-saved" id="review-saved" role="status" hidden data-text={t.saved}></p>
       </div>
 
       <form id="review-form" class="review-form" novalidate data-endpoint={reviewEndpoint} data-names={JSON.stringify(names)} data-lang={lang}>
@@ -173,6 +176,31 @@ const workshopsHref = lang === 'de' ? '/de/workshops/' : '/workshops/';
   radios.forEach((r) => r.addEventListener('change', paint));
   const pre = Number(q.get('s'));
   if (pre >= 1 && pre <= 5) { radios[pre - 1].checked = true; paint(); }
+  // One tap on a star in the email (Jirel 23.11.26): the stars are saved right
+  // away; the words come after, into the same review (id + edit key, kept for this visit).
+  const ask = /^[0-9a-f]{32}$/.test(q.get('a') || '') ? q.get('a') : '';
+  const memo = `twiggli-review-${slug}-${ask || 'x'}`;
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem(memo) || 'null'); } catch { /* storage off */ }
+  const showSaved = (n) => {
+    const box = document.getElementById('review-saved');
+    box.textContent = box.dataset.text.replace('{n}', String(n));
+    box.hidden = false;
+    document.getElementById('review-lede').hidden = true;
+  };
+  if (pre >= 1 && pre <= 5 && slug) {
+    if (saved) showSaved(pre);
+    else fetch(form.dataset.endpoint, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ quick: true, host: slug, hostName, workshop, stars: pre, text: '', name: nameInput.value.trim(), showName: false, lang: form.dataset.lang, ask, test: q.get('test') === '1' }),
+    }).then((r) => r.json()).then((j) => {
+      if (j.success !== 'true' || !j.id) return;
+      saved = { id: j.id, edit: j.edit };
+      try { sessionStorage.setItem(memo, JSON.stringify(saved)); } catch { /* storage off */ }
+      showSaved(pre);
+      text.focus();
+    }).catch(() => { /* the full form still works */ });
+  }
 
   const err = document.getElementById('review-error');
   form.addEventListener('submit', async (e) => {
@@ -190,7 +218,8 @@ const workshopsHref = lang === 'de' ? '/de/workshops/' : '/workshops/';
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           _honey: form.querySelector('[name="_honey"]').value,
-          host: slug, hostName, workshop, stars, text: body,
+          host: slug, hostName, workshop, stars, text: body, ask,
+          ...(saved ? { id: saved.id, edit: saved.edit } : {}),
           name: nameInput.value.trim(),
           showName: document.getElementById('review-consent').checked,
           lang: form.dataset.lang,
@@ -199,6 +228,7 @@ const workshopsHref = lang === 'de' ? '/de/workshops/' : '/workshops/';
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || json.success !== 'true') throw new Error('not ok');
+      try { sessionStorage.removeItem(memo); } catch { /* storage off */ }
       document.getElementById('review-start').hidden = true;
       form.hidden = true;
       document.getElementById('review-done').hidden = false;

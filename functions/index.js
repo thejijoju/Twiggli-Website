@@ -2580,7 +2580,21 @@ export const reviewSubmit = onRequest({ region: 'europe-west3', secrets: [GMAIL_
   const stars = Math.round(Number(b.stars));
   const reviewText = String(b.text ?? '').trim().slice(0, 1200);
   const host = SLUG.test(String(b.host ?? '')) ? String(b.host) : '';
-  if (!(stars >= 1 && stars <= 5) || reviewText.length < 3 || !host) return res.status(400).json({ success: 'false', message: 'Stars, text and host are needed' });
+  // One click on a star in the email (Jirel 23.11.26) saves the stars alone;
+  // the guest can add their words afterwards on the same page (id + edit key).
+  const quick = b.quick === true;
+  const ask = /^[0-9a-f]{32}$/.test(String(b.ask ?? '')) ? String(b.ask) : '';
+  if (/^[A-Za-z0-9]{10,40}$/.test(String(b.id ?? '')) && /^[0-9a-f]{32}$/.test(String(b.edit ?? ''))) {
+    const ref = getFirestore().doc(`guestReviews/${b.id}`);
+    const cur = (await ref.get()).data();
+    if (!cur || cur.editKey !== b.edit || cur.status !== 'pending') return res.status(403).json({ success: 'false' });
+    if (!(stars >= 1 && stars <= 5) || reviewText.length < 3) return res.status(400).json({ success: 'false', message: 'Stars and text are needed' });
+    const upd = { stars, text: reviewText, name: text(b.name, 60), showName: b.showName === true || b.showName === 'true', updatedAt: FieldValue.serverTimestamp() };
+    await ref.update(upd);
+    await mailReview(b.id, { ...cur, ...upd }, false);
+    return res.status(200).json({ success: 'true', id: b.id });
+  }
+  if (!(stars >= 1 && stars <= 5) || (!quick && reviewText.length < 3) || !host) return res.status(400).json({ success: 'false', message: 'Stars, text and host are needed' });
   const review = {
     host,
     hostName: text(b.hostName, 120),
@@ -2593,9 +2607,23 @@ export const reviewSubmit = onRequest({ region: 'europe-west3', secrets: [GMAIL_
     month: new Date().toISOString().slice(0, 7),
     status: 'pending',
     test: b.test === true || b.test === 'true',
+    editKey: randomBytes(16).toString('hex'),
+    ...(ask ? { ask } : {}),
     createdAt: FieldValue.serverTimestamp(),
   };
   const doc = await getFirestore().collection('guestReviews').add(review);
+  // The review request it answers: no reminder for it any more.
+  if (ask) await getFirestore().doc(`reviewAsks/${ask}`).set({ reviewedAt: FieldValue.serverTimestamp() }, { merge: true }).catch(() => {});
+  await mailReview(doc.id, review, quick && reviewText.length < 3);
+  return res.status(200).json({ success: 'true', id: doc.id, edit: review.editKey });
+});
+
+/** The review in Jirel's inbox with Publish / Reject (also stars alone, said so). */
+const mailReview = async (id, review, starsOnly) => {
+  const doc = { id };
+  const host = review.host;
+  const stars = review.stars;
+  const reviewText = review.text ?? '';
   try {
     const [pub, rej, del] = await Promise.all([reviewLink(doc.id, 'publish'), reviewLink(doc.id, 'reject'), reviewLink(doc.id, 'delete')]);
     const starLine = '★'.repeat(stars) + '☆'.repeat(5 - stars);
@@ -2604,20 +2632,19 @@ export const reviewSubmit = onRequest({ region: 'europe-west3', secrets: [GMAIL_
     await mail.sendMail({
       from: { name: 'Twiggli Reviews', address: INBOX },
       to: INBOX,
-      subject: `${review.test ? '[TEST] ' : ''}New review ${starLine} for ${review.hostName || host} from ${review.name || 'a guest'}`,
+      subject: `${review.test ? '[TEST] ' : ''}New review ${starLine} for ${review.hostName || host} from ${review.name || 'a guest'}${starsOnly ? ' (stars only so far)' : ''}`,
       text: `${starLine}\n"${reviewText}"\n${review.name} · ${review.workshop} · ${review.hostName || host}\nShow first name: ${review.showName ? 'yes' : 'no'}\n\nPublish: ${pub}\nReject: ${rej}\nRemove later: ${del}`,
       html: `<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.6;color:#24272e;max-width:560px">
 <p style="margin:0 0 4px;color:#8a8a8a">New review for <b>${esc(review.hostName || host)}</b>${review.workshop ? ` · ${esc(review.workshop)}` : ''}</p>
 <p style="margin:0 0 8px;font-size:24px;color:#ffb72b;letter-spacing:2px">${starLine}</p>
-<p style="margin:0 0 8px;font-size:16px">“${esc(reviewText)}”</p>
+<p style="margin:0 0 8px;font-size:16px">${starsOnly ? '<i>Only the stars so far (one click in the email). If they add a few words, you get this email again with the text.</i>' : `“${esc(reviewText)}”`}</p>
 <p style="margin:0 0 18px;color:#555">${esc(review.name || 'No name')} · show first name: <b>${review.showName ? 'yes' : 'no'}</b></p>
 <p style="margin:0 0 6px">Nothing is shown on twiggli.com until you publish it.</p>
 ${btn(pub, 'Publish on the host’s page', '#6a3eec', '#ffffff')}${btn(rej, 'Reject', '#eeeeee', '#24272e')}
 <p style="margin:14px 0 0;font-size:12px;color:#8a8a8a">Take it down later (also deletes it): <a href="${del}" style="color:#8a8a8a">remove this review</a></p></div>`,
     });
   } catch (err) { console.error('review mail failed', doc.id, err?.message); }
-  return res.status(200).json({ success: 'true', id: doc.id });
-});
+};
 
 /** "New review on your page" for the host, once Jirel publishes it
  *  (Jirel 15.11.26), unless they switched it off in Einstellungen. */
@@ -3813,22 +3840,63 @@ const hostCard = async (slug) => {
   }
   return { first: '', studio: '' };
 };
-const reviewMail = ({ lang, first, workshop, hostLabel, hostFirst, studio, slug }) => {
+/** Reminders for review requests 3–10 days old with no review yet: the same
+ *  email with the stars, sent once ("Kurze Erinnerung"). Requests sent before
+ *  details were kept (until 23.11.26) get them from the request or booking. */
+const remindReviews = async (db, now, isTest) => {
+  const asks = await db.collection('reviewAsks').get();
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  let sent = 0;
+  for (const d of asks.docs) {
+    if (sent >= 10) break;
+    const x = d.data();
+    const at = x.at?.toMillis?.() ?? 0;
+    if (!at || x.reviewedAt || x.remindedAt || at > now - 3 * 24 * 3600e3 || at < now - 10 * 24 * 3600e3) continue;
+    if (!isEmail(x.email) || isTest(x.email, '') || ARCHIVED_HOSTS.has(x.slug)) { await d.ref.set({ remindedAt: 'skipped' }, { merge: true }); continue; }
+    // A review for this host from them since (sent without the link's key): no reminder.
+    let det = x.details;
+    if (!det) {
+      let name = '', lang = '', workshop = '';
+      const fr = await db.collection('formRequests').where('email', '==', x.email).get().catch(() => ({ docs: [] }));
+      const r = fr.docs.map((y) => y.data()).find((y) => y.hostSlug === x.slug);
+      if (r) { name = String(r.fields?.Name ?? ''); lang = String(r.fields?.Language ?? ''); workshop = String(r.fields?.Workshop ?? ''); }
+      if (!r) {
+        const bk = await db.collection('bookings').where('email', '==', x.email).get().catch(() => ({ docs: [] }));
+        const b = bk.docs.map((y) => y.data()).find((y) => y.slug === x.slug);
+        if (b) { name = String(b.name ?? ''); lang = b.lang ?? ''; workshop = String(b.title ?? ''); }
+      }
+      let card = { first: '', studio: '' };
+      try { card = await hostCard(x.slug); } catch { /* fine without */ }
+      const de = String(lang).startsWith('de');
+      const hostLabel = card.studio || card.first || x.slug;
+      det = { lang: de ? 'de' : 'en', first: name.trim().split(/\s+/)[0] || (de ? 'du' : 'there'), workshop: workshop || hostLabel, hostLabel, hostFirst: card.first, studio: card.studio, slug: x.slug };
+    }
+    const m = reviewMail({ ...det, ask: d.id, reminder: true });
+    try {
+      await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: x.email, subject: m.subject, text: m.text, html: m.html });
+      await d.ref.set({ remindedAt: FieldValue.serverTimestamp() }, { merge: true });
+      sent += 1;
+    } catch (err) { console.error('review reminder failed', x.email, err?.message); }
+  }
+};
+
+const reviewMail = ({ lang, first, workshop, hostLabel, hostFirst, studio, slug, ask = '', reminder = false }) => {
   const de = lang === 'de';
-  const link = `${SITE}${de ? '/de' : ''}/review/?${new URLSearchParams({ h: slug, n: first, w: workshop.slice(0, 60) })}`;
+  const base = { h: slug, n: first, w: workshop.slice(0, 60), ...(ask ? { a: ask } : {}) };
+  const link = `${SITE}${de ? '/de' : ''}/review/?${new URLSearchParams(base)}`;
+  // Five stars to tap right in the email (Jirel 23.11.26): one click saves them.
+  const starUrl = (n) => `${SITE}${de ? '/de' : ''}/review/?${new URLSearchParams({ ...base, s: String(n) })}`;
+  const starRow = `<table cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 4px"><tr>${[1, 2, 3, 4, 5].map((n) => `<td style="padding:0 4px 0 0"><a href="${esc(starUrl(n))}" style="display:inline-block;font-size:34px;line-height:40px;color:#ffb72b;text-decoration:none" title="${n}">★</a></td>`).join('')}</tr></table>
+<p style="margin:0 0 14px;font-size:12px;color:#8a8d96">${de ? 'Tipp einfach auf einen Stern: 1 = naja, 5 = großartig.' : 'Just tap a star: 1 = meh, 5 = wonderful.'}</p>`;
   const a = (t) => `<a href="${esc(link)}" style="color:#6A3EEC;font-weight:bold;text-decoration:none">${t}</a>`;
   const at = hostFirst && studio && studio !== hostFirst ? (de ? ` mit ${esc(hostFirst)} bei ${esc(studio)}` : ` with ${esc(hostFirst)} at ${esc(studio)}`) : hostFirst ? (de ? ` mit ${esc(hostFirst)}` : ` with ${esc(hostFirst)}`) : '';
-  const subject = de ? `Wie war's bei ${hostLabel}? ⭐` : `How was it at ${hostLabel}? ⭐`;
+  const subject = reminder ? (de ? `Kurze Erinnerung: Wie war's bei ${hostLabel}? ⭐` : `Quick reminder: how was it at ${hostLabel}? ⭐`) : de ? `Wie war's bei ${hostLabel}? ⭐` : `How was it at ${hostLabel}? ⭐`;
   const html = `<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;line-height:1.6;color:#24272e;max-width:560px">
 <p>${de ? 'Hallo' : 'Hi'} ${esc(first)},</p>
 <p>${de ? `ich hoffe, es war schön bei <b>${esc(workshop)}</b>${at}!` : `I hope you had a lovely time at <b>${esc(workshop)}</b>${at}!`}</p>
-<p>${de ? 'Magst du uns kurz erzählen, wie es war?' : 'Would you tell us briefly how it was?'}</p>
-<ol style="padding-left:20px;margin:0 0 14px">
-<li>${de ? 'Wie viele Sterne gibst du, 1 bis 5 ⭐?' : 'How many stars would you give, 1 to 5 ⭐?'}</li>
-<li>${de ? 'Was hat dir am besten gefallen?' : 'What did you like most?'}</li>
-<li>${de ? `Ein, zwei Sätze, die wir auf ${esc(hostLabel)}s Profil veröffentlichen dürfen?` : `One or two sentences we may publish on ${esc(hostLabel)}'s profile?`}</li>
-</ol>
-<p>${de ? `Antworte einfach auf diese E-Mail, oder schreib es ${a('hier')}.` : `Just reply to this email, or write it ${a('here')}.`}</p>
+<p>${reminder ? (de ? 'Hast du kurz einen Moment? Wie viele Sterne gibst du?' : 'Do you have a quick moment? How many stars would you give?') : (de ? 'Wie viele Sterne gibst du?' : 'How many stars would you give?')}</p>
+${starRow}
+<p>${de ? `Wenn du magst, schreib danach noch ein, zwei Sätze dazu, die wir auf ${esc(hostLabel)}s Profil zeigen dürfen. Oder antworte einfach auf diese E-Mail. ${a('Hier geht es auch direkt zur Bewertung.')}` : `If you like, add a sentence or two afterwards that we may show on ${esc(hostLabel)}'s profile. Or just reply to this email. ${a('You can also go straight to the review here.')}`}</p>
 <p>${de ? 'Bewertungen sind Gold für kleine Studios und helfen ihnen, gefunden zu werden.' : 'Reviews are gold for small studios and help them get found.'}</p>
 <p>${de ? 'Danke dir und liebe Grüße 💛<br>Jirel, Gründerin @ <b>Twiggli</b>' : 'Thank you and warm regards 💛<br>Jirel, Founder @ <b>Twiggli</b>'}</p>
 <p style="font-size:12px;color:#8a8d96">${de ? 'Falls es doch nicht geklappt hat, antworte einfach kurz auf diese E-Mail, dann finden wir einen neuen Termin.' : "If it didn't work out in the end, just reply to this email and we'll find you a new date."}</p>
@@ -3908,6 +3976,8 @@ export const reviewAsk = onCron({ schedule: 'every 60 minutes', timeZone: 'Europ
     if (b.reviewAskedAt || !(String(b.date ?? '') >= REVIEW_FROM) || !due(startOf(b.date, b.start)) || !isEmail(b.email) || isTest(b.email, b.name)) continue;
     todo.push({ ref: d.ref, email: String(b.email).toLowerCase(), slug: b.slug, name: String(b.name ?? '').trim(), workshop: String(b.title ?? '').trim(), hostLabel: '', lang: b.lang === 'de' ? 'de' : 'en' });
   }
+  // A reminder, once, 3 days after the request when no review came (Jirel 23.11.26).
+  try { await remindReviews(db, now, isTest); } catch (err) { console.error('reviewAsk: reminders', err?.message); }
   if (!todo.length) return;
   let sheet = [];
   try { sheet = await reviewSheetText(); } catch (err) { console.error('reviewAsk: sheet unreadable, waiting', err?.message); return; }
@@ -3925,10 +3995,11 @@ export const reviewAsk = onCron({ schedule: 'every 60 minutes', timeZone: 'Europ
     try { card = await hostCard(t.slug); } catch { /* the email works without */ }
     const first = t.name.split(/\s+/)[0] || (t.lang === 'de' ? 'du' : 'there');
     const hostLabel = t.hostLabel || card.studio || card.first || t.slug;
-    const m = reviewMail({ lang: t.lang, first, workshop: t.workshop || hostLabel, hostLabel, hostFirst: card.first, studio: card.studio, slug: t.slug });
+    const details = { lang: t.lang, first, workshop: t.workshop || hostLabel, hostLabel, hostFirst: card.first, studio: card.studio, slug: t.slug };
+    const m = reviewMail({ ...details, ask: key });
     try {
       await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: t.email, subject: m.subject, text: m.text, html: m.html });
-      await askRef.set({ email: t.email, slug: t.slug, at: FieldValue.serverTimestamp() });
+      await askRef.set({ email: t.email, slug: t.slug, at: FieldValue.serverTimestamp(), details });
       await t.ref.update({ reviewAskedAt: FieldValue.serverTimestamp() });
     } catch (err) { console.error('reviewAsk: send failed', t.email, err?.message); }
   }
