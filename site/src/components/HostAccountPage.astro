@@ -5026,7 +5026,10 @@ const fields = [
         const evs = [...ownEvents, ...calSiteEvents()].filter((x) => x.wkey === w.key || calKey(x.title) === w.key || w.alias?.includes(calKey(x.title)));
         const first = evs.find((x) => !x.synced) ?? evs[0];
         wsF('title').value = e.title || w.title;
-        wsF<HTMLTextAreaElement>('description').value = e.description ?? ((hosts[slug] as unknown as { workshops?: { key: string; title: string; text?: string }[] }).workshops ?? []).find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)))?.text ?? '';
+        // What the workshop page shows today (WorkshopPage: own text, else the host's blurb),
+        // so the host edits that rather than starting from an empty box (Pia 23.11.26).
+        const pageBlurb = (document.documentElement.lang === 'de' ? hosts[slug]?.de : hosts[slug]?.en)?.blurb ?? hosts[slug]?.en?.blurb ?? '';
+        wsF<HTMLTextAreaElement>('description').value = e.description || ((hosts[slug] as unknown as { workshops?: { key: string; title: string; text?: string }[] }).workshops ?? []).find((b) => b.key === w.key || calKey(b.title) === w.key || w.alias?.includes(calKey(b.title)))?.text || pageBlurb;
         wsF('duration').value = e.duration || (first ? calHours(first.start, first.end).replace(/\s/g, ' ') : '');
         wsF('price').value = String(e.price ?? (first?.price ?? calNum(w.price) ?? '') ?? '');
         wsF('seats').value = String(e.seats ?? first?.seats ?? '');
