@@ -2857,7 +2857,9 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
     chargesEnabled = !!a.charges_enabled;
   } catch { /* checked again on the dashboard */ }
   await getFirestore().doc(`hostMembers/${st.e.toLowerCase()}`).set({ stripe: { accountId, chargesEnabled, linked: true, linkedAt: FieldValue.serverTimestamp() } }, { merge: true });
-  await mailStripeNews(st.e.toLowerCase(), chargesEnabled ? 'linked, ready for payments' : 'linked (payments not enabled yet)');
+  // Right after linking, Stripe often still reports the account as not ready;
+  // the dashboard checks again on return and sends "ready for payments" then.
+  await mailStripeNews(st.e.toLowerCase(), chargesEnabled ? 'linked, ready for payments' : 'linked (status is confirmed the next time their dashboard loads)');
   return back(st.l, 'linked');
 });
 
