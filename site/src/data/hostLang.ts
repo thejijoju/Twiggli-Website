@@ -75,6 +75,7 @@ export const hostLang: Record<string, 'de' | 'en' | 'fr'> = {
   'jeannette-tolksdorff': 'de',
   'schoppe-braeu': 'de',
   'rtmis': 'de',
+  'runningpapaya': 'de',
   'luc-demissy': 'de',
   'strassenbraeu': 'de',
   'chelti': 'de',
