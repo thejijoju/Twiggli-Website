@@ -2323,7 +2323,19 @@ const callerIds = async (req) => {
   } catch { return null; }
 };
 
-export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, async (req, res) => {
+/** Tells Jirel when a host's Stripe gets connected or ready for payments
+ *  (Jirel 23.11.26: "did Celina connect to Stripe?" had no answer). */
+const mailStripeNews = async (email, what) => {
+  try {
+    const pages = await mySlugs(email);
+    await mailJirel({
+      subject: `Stripe ${what}: ${email}${pages.length ? ` (host: ${pages.join(', ')})` : ''}`,
+      text: `${email}${pages.length ? ` (${pages.join(', ')})` : ''}: Stripe ${what}.`,
+    });
+  } catch (err) { console.error('stripe news mail', err?.message); }
+};
+
+export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY, GMAIL_APP_PASSWORD] }, async (req, res) => {
   if (!allow(req, res)) return;
   const who = await callerIds(req);
   if (!who) return res.status(401).json({ error: 'Not signed in' });
@@ -2361,6 +2373,9 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY] }, 
     const a = await r.json();
     if (!r.ok) return res.status(502).json({ error: a?.error?.message ?? 'Stripe error' });
     const state = { accountId, chargesEnabled: !!a.charges_enabled, detailsSubmitted: !!a.details_submitted };
+    const before = (await memberRef.get()).data()?.stripe ?? {};
+    if (state.chargesEnabled && !before.chargesEnabled) await mailStripeNews(email, 'ready for payments');
+    else if (state.detailsSubmitted && !before.detailsSubmitted && !before.linked) await mailStripeNews(email, 'connected (payments not enabled yet)');
     await memberRef.set({ stripe: { ...state, checkedAt: FieldValue.serverTimestamp() } }, { merge: true });
     return res.status(200).json({ connected: true, chargesEnabled: state.chargesEnabled, detailsSubmitted: state.detailsSubmitted });
   }
@@ -2812,7 +2827,7 @@ const oauthState = async (email, lang) => {
   return `${raw}.${sig}`;
 };
 
-export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STRIPE_CONNECT_KEY], maxInstances: 5 }, async (req, res) => {
+export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STRIPE_CONNECT_KEY, GMAIL_APP_PASSWORD], maxInstances: 5 }, async (req, res) => {
   const [raw = '', sig = ''] = String(req.query.state ?? '').split('.');
   let st = null;
   try {
@@ -2842,6 +2857,7 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
     chargesEnabled = !!a.charges_enabled;
   } catch { /* checked again on the dashboard */ }
   await getFirestore().doc(`hostMembers/${st.e.toLowerCase()}`).set({ stripe: { accountId, chargesEnabled, linked: true, linkedAt: FieldValue.serverTimestamp() } }, { merge: true });
+  await mailStripeNews(st.e.toLowerCase(), chargesEnabled ? 'linked, ready for payments' : 'linked (payments not enabled yet)');
   return back(st.l, 'linked');
 });
 
