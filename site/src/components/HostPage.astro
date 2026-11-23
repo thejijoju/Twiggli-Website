@@ -20,7 +20,7 @@ import { followCopy } from '../data/follow.ts';
 import { tagsFor } from '../data/hostTags.ts';
 import { requestEmail } from '../data/site.ts';
 import { isVoucherHost, takesIndividuals } from '../data/vouchers.ts';
-import { bookingCopy } from '../data/bookingCopy.ts';
+import { bookingCopy, noDateRequests } from '../data/bookingCopy.ts';
 import { getHostPriceRanges, previewOnRequestFor, previewSessionsFor } from '../data/sessions.ts';
 import {
   activityCopy, activityHref, formatWhen, hostDescription, hostDurationText, hostGroupText, hostH1, hostHref, hostImage,
@@ -93,7 +93,7 @@ const bc = bookingCopy[lang];
    none suits: hosts open a date or answer with another one (hosts asked
    for this, 04.11.26). Every host has it (Jirel, 04.11.26); a group-only
    host's form asks for their usual group size, as the group request does. */
-const wishOn = true;
+const wishOn = !noDateRequests.has(host.slug); // except hosts who take none (bookingCopy.ts)
 const tags = tagsFor(host.slug, lang);
 
 // The price the host gave for groups, as the group page shows it; otherwise

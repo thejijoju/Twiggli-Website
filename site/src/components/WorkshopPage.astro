@@ -84,7 +84,7 @@ const schema = {
 };
 import Voucher from './Voucher.astro';
 import NoticeCard from './NoticeCard.astro';
-import { bookingCopy } from '../data/bookingCopy.ts';
+import { bookingCopy, noDateRequests } from '../data/bookingCopy.ts';
 import { href } from '../lib/url.ts';
 const bc = bookingCopy[lang];
 // None of this class's dates suits: ask for one (BookingDialog kind "wish").
@@ -150,10 +150,12 @@ const wishAttrs = {
     <section class="section" id="dates">
       <h2 class="section-title">{t.upcoming}</h2>
       <DateRows sessions={w.sessions} lang={lang} linkTitlesTo="booking" />
-      <div class="wish-row">
-        <p>{bc.wishOther}</p>
-        <a class="maker-wish" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`} {...wishAttrs}>{bc.wishAsk}</a>
-      </div>
+      {!noDateRequests.has(host.slug) && (
+        <div class="wish-row">
+          <p>{bc.wishOther}</p>
+          <a class="maker-wish" href={`${href(lang, '/contact/')}?host=${encodeURIComponent(host.name)}`} {...wishAttrs}>{bc.wishAsk}</a>
+        </div>
+      )}
       <p class="section-more"><a href={activityHref(lang, host.activity)}>{t.moreIn(activity.short)} →</a></p>
     </section>
 

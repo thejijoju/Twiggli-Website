@@ -24,6 +24,7 @@ import { previewOnRequestFor, previewSessionsFor, slugify, DAYS_AHEAD } from '..
 import { hostDates } from '../data/hostDates.ts';
 import { availabilityNotes } from '../data/availability.ts';
 import { withHostSlots } from '../data/hostEdits.ts';
+import { voucherHosts } from '../data/vouchers.ts';
 import { href, withBase, type Lang } from '../lib/url.ts';
 
 /** view: the part of the account the address opens (settings/preferences …), see pages/host/account/[...view].astro. */
@@ -97,6 +98,10 @@ const recurring = (liveData as { recurring?: { slug: string; title: string; week
 const hosts = Object.fromEntries(
   getHosts('en', { withPreview: true }).map((h) => [h.slug, {
     name: h.name,
+    // The person behind a studio name, so Jirel finds "Diana" in the picker (RtmiS).
+    first: (h as unknown as { firstName?: string }).firstName ?? '',
+    // Takes Twiggli vouchers now (written yes or their own choice in Settings → Payment).
+    voucher: voucherHosts.includes(h.slug),
     place: (h as unknown as { place?: string }).place ?? '',
     page: href(lang, `/workshops/${h.activity}/${h.slug}/`),
     // Their own pictures, to pick a cover for a new date without uploading.
@@ -668,6 +673,23 @@ const fields = [
             <p class="hd-set-sub" data-hs-pay>{L('Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.', 'Connect Stripe so guests can pay you directly.', 'Connecte Stripe pour que les participants te paient directement.')}</p>
             <button type="button" class="hd-set-btn" data-hs-pay-btn>{L('Stripe verbinden', 'Connect Stripe', 'Connecter Stripe')}</button>
           </div>
+          {/* Twiggli vouchers (Jirel 23.11.26): the host says yes or no here, and can change it any time. */}
+          <div class="hd-set-block vc-opt" data-vc-opt>
+            <h2>{L('Twiggli-Gutscheine 🎁', 'Twiggli vouchers 🎁', 'Bons cadeaux Twiggli 🎁')}</h2>
+            <p class="vc-state" data-vc-state></p>
+            <ul class="vc-terms">
+              <li>{L('Gäste kaufen auf Twiggli Gutscheine für deinen Workshop (für 1–2 Personen) oder allgemeine Twiggli-Gutscheine.', 'Guests buy vouchers for your workshop on Twiggli (for 1–2 people), or general Twiggli vouchers.', 'Les participants achètent sur Twiggli des bons pour ton atelier (pour 1–2 personnes) ou des bons Twiggli généraux.')}</li>
+              <li>{L('Sie lösen den Gutschein beim Buchen auf deiner Twiggli-Seite ein. Die Buchung kommt zu dir, markiert mit „mit Gutschein bezahlt“.', 'They redeem it when booking on your Twiggli page. The booking comes to you, marked “paid with voucher”.', 'Ils l’utilisent en réservant sur ta page Twiggli. La réservation t’arrive, marquée « payé avec un bon ».')}</li>
+              <li>{L('Auszahlung bis zum 10. des Folgemonats, abzüglich 15 % Twiggli-Provision.', 'Payout by the 10th of the following month, minus 15% Twiggli commission.', 'Versement avant le 10 du mois suivant, moins 15 % de commission Twiggli.')}</li>
+              <li>{L('Ein Gutschein gilt 3 Jahre. Ist dein Preis inzwischen gestiegen, zahlt der Gast die Differenz direkt an dich.', 'A voucher is valid for 3 years. If your price has gone up, the guest pays the difference directly to you.', 'Un bon est valable 3 ans. Si ton prix a augmenté, le participant te paie la différence directement.')}</li>
+            </ul>
+            <div class="vc-acts">
+              <button type="button" class="hd-set-btn" data-vc-yes>{L('Ich mache mit', 'I’m in', 'Je participe')}</button>
+              <button type="button" class="vc-no" data-vc-no>{L('Nein danke', 'No thanks', 'Non merci')}</button>
+            </div>
+            <p class="vc-msg" data-vc-opt-msg role="status"></p>
+            <small class="vc-small">{L('Du kannst das jederzeit hier ändern. Schon verkaufte Gutscheine bleiben gültig und werden weiter bei dir eingelöst.', 'You can change this here any time. Vouchers already sold stay valid and are still redeemed with you.', 'Tu peux changer ça ici à tout moment. Les bons déjà vendus restent valables et s’utilisent toujours chez toi.')}</small>
+          </div>
           <div class="hd-set-block" data-hs-paid
             data-voucher={L('Gutschein', 'Voucher', 'Bon cadeau')}
             data-for={L('für {h}', 'for {h}', 'pour {h}')}
@@ -1133,12 +1155,14 @@ const fields = [
 
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
-  type HostData = { name: string; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
+  type HostData = { name: string; first?: string; voucher?: boolean; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
 
   const root = document.querySelector<HTMLElement>('[data-ha]');
   if (root) {
     const cfg = JSON.parse(root.dataset.config || '{}');
     const hosts: Record<string, HostData> = JSON.parse(root.dataset.hosts || '{}');
+    /** "RtmiS (Diana) · Terrazzo…": the studio name, the person when it differs, and what they do. */
+    const hostLabel = (s: string) => { const h = hosts[s]; const f = h?.first ?? ''; return `${h?.name ?? s}${f && !(h?.name ?? '').toLowerCase().includes(f.toLowerCase()) ? ` (${f})` : ''} · ${h?.en.specialty ?? ''}`; };
     const t: Record<string, string> = JSON.parse(root.dataset.copy || '{}');
     const $ = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
     const fill = (s: string, email: string) => s.replace('{email}', email);
@@ -4896,7 +4920,7 @@ const fields = [
       {
         const vcHost = $<HTMLSelectElement>('[data-vc-host]');
         vcHost.replaceChildren(new Option(TL('Alle Hosts (allgemein)', 'All hosts (general)', 'Tous les hôtes (général)'), ''),
-          ...Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name)).map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
+          ...Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name)).map((s) => new Option(hostLabel(s), s)));
         const y = new Date().getFullYear() + 3;
         $<HTMLInputElement>('[data-vc-until]').value = `${y}-12-31`;
         $('[data-vc-save]').addEventListener('click', async () => {
@@ -5165,6 +5189,40 @@ const fields = [
         void renderLst();
       };
       $('[data-pw-add]').addEventListener('click', () => pwOpen());
+      // ── Twiggli vouchers: yes or no (Settings → Payment, Jirel 23.11.26). ──
+      let vcOn: boolean | null = null;
+      const vcPaint = () => {
+        const on = vcOn ?? !!hosts[slug]?.voucher;
+        const chosen = vcOn !== null || !!hosts[slug]?.voucher;
+        $('[data-vc-state]').textContent = !chosen
+          ? TL('Möchtest du mitmachen? Du entscheidest.', 'Would you like to join? It’s up to you.', 'Tu veux participer ? C’est toi qui décides.')
+          : on ? TL('✓ Du bist dabei: Gäste können Gutscheine für deine Workshops kaufen.', '✓ You’re in: guests can buy vouchers for your workshops.', '✓ Tu participes : les participants peuvent acheter des bons pour tes ateliers.')
+          : TL('Du bist nicht dabei: Für deine Workshops werden keine Gutscheine verkauft.', 'You’re not in: no vouchers are sold for your workshops.', 'Tu ne participes pas : aucun bon n’est vendu pour tes ateliers.');
+        $('[data-vc-state]').classList.toggle('is-on', chosen && on);
+        $('[data-vc-yes]').hidden = chosen && on;
+        $('[data-vc-no]').hidden = chosen && !on;
+        $('[data-vc-no]').textContent = chosen && on ? TL('Nicht mehr mitmachen', 'Leave the program', 'Ne plus participer') : TL('Nein danke', 'No thanks', 'Non merci');
+      };
+      const vcLoad = async () => {
+        vcOn = null; vcMsg(''); vcPaint();
+        if (calDemo || DEMO || !slug) return;
+        try { const r = await api('hostListing', { slug, action: 'vouchersGet' }); if (r.set) { vcOn = r.on === true; vcPaint(); } } catch { /* shown from the site's list */ }
+      };
+      const vcMsg = (text: string) => { $('[data-vc-opt-msg]').textContent = text; };
+      const vcSet = async (on: boolean) => {
+        const btns = [$<HTMLButtonElement>('[data-vc-yes]'), $<HTMLButtonElement>('[data-vc-no]')];
+        btns.forEach((x) => { x.disabled = true; });
+        try {
+          if (!(calDemo || DEMO)) await api('hostListing', { slug, action: 'vouchers', on });
+          else await new Promise((r) => setTimeout(r, 300));
+          vcOn = on; vcPaint();
+          vcMsg(on ? TL('Danke! Deine Gutscheine sind bald auf der Seite.', 'Thank you! Your vouchers will be on the site shortly.', 'Merci ! Tes bons seront bientôt sur le site.') : TL('Gespeichert: keine neuen Gutscheine mehr für dich.', 'Saved: no new vouchers for you.', 'Enregistré : plus de nouveaux bons pour toi.'));
+        } catch { vcMsg(fill(t.error, cfg.contact)); }
+        btns.forEach((x) => { x.disabled = false; });
+      };
+      $('[data-vc-yes]').addEventListener('click', () => void vcSet(true));
+      $('[data-vc-no]').addEventListener('click', () => void vcSet(false));
+      root.querySelectorAll<HTMLElement>('[data-hs-tab="pay"], [data-ha-go="settings"]').forEach((x) => x.addEventListener('click', () => void vcLoad()));
       // ── Partner request (admin): a hotel or company asks for this partner workshop. ──
       const prDlg = $<HTMLDialogElement>('[data-pr-dlg]');
       if (prDlg.parentElement !== root) root.append(prDlg);
@@ -5195,7 +5253,7 @@ const fields = [
             await loadInbox();
           }
           prDlg.close();
-          calNote(TL('Partner-Anfrage gesendet.', 'Partner request sent.', 'Demande envoyée.'));
+          $('[data-lst-note]').textContent = TL('Partner-Anfrage gesendet.', 'Partner request sent.', 'Demande envoyée.');
         } catch { note.textContent = fill(t.error, cfg.contact); }
       });
       root.querySelectorAll<HTMLElement>('[data-pw-close]').forEach((b) => b.addEventListener('click', () => pwDlg.close()));
@@ -5662,7 +5720,7 @@ const fields = [
           // Jirel: every host in the picker; opening one asks the server to
           // add it to her hostMembers first, so the rules let her save.
           const all = Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name));
-          pick.replaceChildren(...all.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
+          pick.replaceChildren(...all.map((s) => new Option(hostLabel(s), s)));
           $('[data-ha-pick-wrap] span').textContent = document.documentElement.lang === 'en' ? 'Open a host' : 'Host öffnen';
           $('[data-ha-pick-wrap]').dataset.admin = '1';
           $('[data-ha-invite-admin]').hidden = false;
@@ -5699,7 +5757,7 @@ const fields = [
           if (want && !(us.langAt && us.lang) && want !== root.dataset.lang) void switchLang(want);
         });
         if (slugs.length > 1) {
-          pick.replaceChildren(...slugs.map((s) => new Option(`${hosts[s].name} · ${hosts[s].en.specialty}`, s)));
+          pick.replaceChildren(...slugs.map((s) => new Option(hostLabel(s), s)));
           pick.addEventListener('change', () => { openHost(pick.value).catch(failed); });
           $('[data-ha-pick-wrap]').hidden = false;
         }
@@ -7187,6 +7245,14 @@ const fields = [
   .cal-radio input[type="checkbox"] { width: auto; flex: none; margin-top: 3px; accent-color: #6a3eec; }
   .cal-partner { display: grid; gap: 10px; margin-top: 10px; }
   .pw { margin-top: 28px; }
+  .vc-state { margin: 0; font-weight: 600; color: #454a50; }
+  .vc-state.is-on { color: #1d8a4a; }
+  .vc-terms { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: .9rem; color: #454a50; }
+  .vc-acts { display: flex; gap: 10px; flex-wrap: wrap; }
+  .vc-no { font: inherit; font-weight: 600; font-size: .9rem; color: #444; background: #fff; border: 1px solid #ddd; border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+  .vc-small { color: #6b7076; }
+  .vc-msg { margin: 0; font-size: .88rem; color: #1d8a4a; font-weight: 600; }
+  .vc-msg:empty { display: none; }
   .pw-fee { margin: 2px 0 10px; font-size: .82rem; color: #1d8a4a; font-weight: 600; }
   .pw-concept { display: grid; gap: 10px; margin-bottom: 6px; }
   .pw-tag { color: #6a3eec; font-weight: 600; }

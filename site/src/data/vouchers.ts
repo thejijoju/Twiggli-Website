@@ -1,6 +1,7 @@
 import { getHosts, type Host } from './content.ts';
 import { VOUCHERS_ON_FIREBASE, functionsBase } from './firebase.ts';
 import { getHostPriceRanges, getSessions } from './sessions.ts';
+import { voucherChoice, voucherChoiceSlugs } from './hostEdits.ts';
 import { withBase, type Lang } from '../lib/url.ts';
 
 /**
@@ -61,7 +62,7 @@ export const voucherHostsAgreed: string[] = [
 /** Live: only hosts who confirmed the voucher terms in writing by email
  *  ("no confirmation, no proof", Jirel 27.10). Move a slug here when their
  *  yes arrives (column I of 'Hosts & Emails'). */
-export const voucherHosts: string[] = [
+const voucherHostsWritten: string[] = [
   'anne', // Anna Martynenko, "Yes, I agree", 27.10.26
   'studio32', // Fred, studio32 Berlin, "I agree", 27.10.26
   'pia', // Pia Simonsen, "Yes, I agree", 27.10.26 (not her Christmas group card: group only)
@@ -80,6 +81,11 @@ export const voucherHosts: string[] = [
   'chelti', // Karolina & Mamuka (Chelti), "Das passt für uns.", 12.11.26 (email); shows once they have dates for 1–2 people
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
+
+/** Who takes vouchers now: the written yeses above, then each host's own
+ *  choice in their dashboard (Settings → Payment, Jirel 23.11.26), which wins. */
+export const voucherHosts: string[] = [...new Set([...voucherHostsWritten, ...voucherChoiceSlugs()])]
+  .filter((s) => voucherChoice(s) ?? voucherHostsWritten.includes(s));
 
 /**
  * Master switch. Off (25.10.26): vouchers are hidden on the site until the

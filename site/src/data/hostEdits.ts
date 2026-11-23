@@ -199,3 +199,9 @@ export function accountDates(daysAhead = 100): {
   }
   return out;
 }
+
+/** A host's own yes (true) or no (false) to Twiggli vouchers, from Settings → Payment;
+ *  undefined = not chosen there (the written list in vouchers.ts counts). */
+const voucherChoices = new Map(((edits as { vouchers?: { slug: string; on: boolean }[] }).vouchers ?? []).map((v) => [v.slug, v.on]));
+export const voucherChoice = (slug: string): boolean | undefined => voucherChoices.get(slug);
+export const voucherChoiceSlugs = (): string[] => [...voucherChoices.keys()];
