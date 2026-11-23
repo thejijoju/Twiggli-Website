@@ -4859,7 +4859,9 @@ const fields = [
           const img = (e.media ?? []).find((m) => m.type === 'photo')?.url || w.image;
           if (img) pic.style.backgroundImage = `url("${img}")`;
           const nPhotos = (e.media ?? []).filter((m) => m.type === 'photo').length;
-          const hasVid = (e.media ?? []).some((m) => m.type === 'video');
+          // The workshop's own video, else the host's reel, which the site plays on
+          // this workshop's cards when it has none of its own (sessions.ts).
+          const hasVid = (e.media ?? []).some((m) => m.type === 'video') || !!(hosts[slug] as { video?: string } | undefined)?.video;
           // A workshop video plays on hover (mouse) or on tap (phone), muted (Jirel 20.11.26).
           const vid = (e.media ?? []).find((m) => m.type === 'video' && !encoding.has(m.url));
           if (vid) {

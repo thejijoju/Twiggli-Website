@@ -167,7 +167,7 @@ const wishAttrs = {
               <li>
                 <a href={workshopHref(lang, host, o.key)}>
                   {o.title}
-                  <span class="activity-links-count">{t.next}: {formatWhen(o.sessions[0], lang)}{priceSummary(o.sessions.map((s) => s.price)) && <> · <strong class="activity-links-price">{showFree(priceSummary(o.sessions.map((s) => s.price))!)}</strong></>} · {t.dates(o.sessions.length)}</span>
+                  <span class="activity-links-count">{t.next}: {formatWhen(o.sessions[0], lang)}{priceSummary(o.sessions.map((s) => s.price)) && <> · <strong class="activity-links-price">{showFree(priceSummary(o.sessions.map((s) => s.price))!)}</strong></>}</span>
                 </a>
               </li>
             ))}

@@ -1022,7 +1022,9 @@ export const hostLede = (host: Host, sessions: Session[], lang: Lang): string =>
   const where = host.studio && host.studio !== host.name ? `${host.studio}, ${host.place}` : host.place;
   const open = p.hostOpen(host.specialty, host.name, namesFormat(host.specialty));
   const when = next
-    ? p.hostWhen(sessions.length, formatWhen(next, lang), next.price ? `, ${next.price}` : '')
+    // Only the next date, never how many there are (Jirel 23.11.26: a long
+    // count makes guests feel they can always book later, so they never do).
+    ? p.hostWhen(1, formatWhen(next, lang), next.price ? `, ${next.price}` : '')
     : p.onRequest;
   const t = pageCopy[lang];
   const c = lang === 'fr' ? ' : ' : ': ';
@@ -1117,7 +1119,7 @@ export const workshopLede = (w: Workshop, lang: Lang): string => {
   const c = lang === 'fr' ? ' : ' : ': ';
   const facts = `${t.duration}${c}${spellDuration(next.duration ?? w.host.duration, lang)}. ${t.languages}${c}${spellLanguages(next.languages ?? w.host.languages, lang)}`;
   const open = p.workshopOpen(w.title, w.host.specialty, w.host.name, next.district, namesFormat(w.host.specialty));
-  return `${open}. ${p.workshopWhen(w.sessions.length, formatWhen(next, lang), price)} ${facts}.`;
+  return `${open}. ${p.hostWhen(1, formatWhen(next, lang), price)} ${facts}.`;
 };
 
 export const clip = (text: string, max = 158): string => {

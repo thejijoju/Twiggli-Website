@@ -139,7 +139,6 @@ import Voucher from './Voucher.astro';
                 <span class="host-card-next">
                   {n ? `${t.next}: ${formatWhen(n, lang)}${n.price ? ` · ${n.price}` : ''}` : t.onRequest}
                 </span>
-                {count > 1 && <span class="host-card-count">{t.dates(count)}</span>}
               </a>
               <Voucher kind="tile" host={h} lang={lang} />
             </li>
