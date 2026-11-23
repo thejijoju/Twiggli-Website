@@ -619,6 +619,8 @@ function withListingEdit(s: Session, today: number, lang: Lang): Session {
   }
   // A video on Bunny Stream (HLS, lib/videoSrc.ts) brings its own frame as the poster.
   if (video) out.host = { ...out.host, video, poster: clip?.thumb ?? photo ?? out.host.poster };
+  // The host removed the page's video from this workshop in its listing (✕): no video here.
+  else if (out.host.video && (e.hidden ?? []).includes(out.host.video)) out.host = { ...out.host, video: undefined };
   // Request-only workshop: its other dates take requests too (dashboard
   // dates decided this already, with their own choice first).
   if (e.booking === 'request' && s.source !== 'account') {
