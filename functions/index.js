@@ -2191,6 +2191,36 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
     try { await mailJirel({ subject: `${slug}: ${b.on ? 'joins the voucher program 🎁' : 'left the voucher program'}`, text: `${email} ${b.on ? `accepted the voucher terms for "${slug}" in their dashboard: ${VOUCHER_TERMS}` : `no longer takes Twiggli vouchers for "${slug}". Vouchers already sold stay valid.`} The site follows within the hour.` }); } catch {}
     return res.status(200).json({ ok: true, on: b.on });
   }
+  // A room the host rents out (Listings → "Raum vermieten", Jirel 23.11.26):
+  // shown on the "Raum mieten" page as they enter it. Saved in hostSpace/{slug};
+  // publicEvents hands it to the build. No street address: the page shows the
+  // district, the host gives the rest to whoever asks.
+  if (b.action === 'space') {
+    const p = b.space ?? {};
+    const n = (v, max) => { const x = Math.round(Number(v)); return x > 0 && x <= max ? x : null; };
+    const long = (v, max) => String(v ?? '').replace(/\r/g, '').trim().slice(0, max);
+    const photos = (Array.isArray(p.photos) ? p.photos : []).map(String)
+      .filter((u) => /^\/img\/(spaces|hosts)\/[a-z0-9-]+\.(jpg|png|webp)$/.test(u) || (u.startsWith('https://firebasestorage.googleapis.com/v0/b/') && u.includes(`hostMedia%2F${slug}%2F`))).slice(0, 10);
+    const space = {
+      on: p.on === true, name: text(p.name, 80), district: text(p.district, 40), capacity: n(p.capacity, 500), size: text(p.size, 40),
+      price: n(p.price, 5000), priceNote: text(p.priceNote, 80), included: long(p.included, 400), suits: long(p.suits, 300),
+      about: long(p.about, 1500), access: long(p.access, 300), photos,
+    };
+    const sref = getFirestore().doc(`hostSpace/${slug}`);
+    const prev = (await sref.get()).data();
+    await sref.set({ slug, space, by: email, updatedAt: FieldValue.serverTimestamp() });
+    try {
+      await mailJirel({
+        subject: space.on ? `${slug}: ${prev?.space?.on ? 'room for rent changed' : 'offers a room for rent'} 🏠` : `${slug}: no longer rents out a room`,
+        text: space.on ? `${email} (${slug}) rents out "${space.name}" in ${space.district || '?'}: up to ${space.capacity ?? '?'} people, ${space.size || '?'}, €${space.price ?? '?'}/h ${space.priceNote}. Suits: ${space.suits}. Included: ${space.included}. ${space.photos.length} photo(s). The "Raum mieten" page follows within the hour.` : `${email} took "${prev?.space?.name ?? slug}" off the "Raum mieten" page.`,
+      });
+    } catch {}
+    return res.status(200).json({ ok: true });
+  }
+  if (b.action === 'spaceGet') {
+    const x = (await getFirestore().doc(`hostSpace/${slug}`).get()).data();
+    return res.status(200).json(x ? { set: true, space: x.space } : { set: false });
+  }
   if (b.action === 'vouchersGet') {
     const x = (await getFirestore().doc(`hostVoucher/${slug}`).get()).data();
     return res.status(200).json(x ? { set: true, on: x.on === true, at: x.log?.at(-1)?.at ?? '' } : { set: false });
@@ -2423,7 +2453,10 @@ export const publicEvents = onRequest({ region: 'europe-west3', maxInstances: 5 
   // Hosts' own yes or no to vouchers (hostListing vouchers).
   const vouchers = (await getFirestore().collection('hostVoucher').get().catch(() => ({ docs: [] }))).docs
     .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, on: x.on === true }; });
-  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published, pageVideos, vouchers });
+  // Rooms hosts rent out (hostListing space), as they entered them.
+  const spaces = (await getFirestore().collection('hostSpace').get().catch(() => ({ docs: [] }))).docs
+    .map((d) => { const x = d.data(); updated = Math.max(updated, x.updatedAt?.toMillis?.() ?? 0); return { slug: x.slug, ...(x.space ?? {}) }; });
+  res.set('Cache-Control', 'no-store').status(200).json({ updated, items, hidden, edits, gone, replaced, studios, published, pageVideos, vouchers, spaces });
 });
 
 // ── Payouts: Stripe Connect, as Luma does it ──

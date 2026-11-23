@@ -8,7 +8,9 @@
  *  the booking comes through us.
  */
 
-import type { Lang } from '../lib/url.ts';
+import { LANGS, type Lang } from '../lib/url.ts';
+import { hostSpaces, studioOf } from './hostEdits.ts';
+import { previewSlugs } from './hosts/preview.ts';
 
 export type Space = {
   /** The host who owns the room — their slug in content.ts, so the card can
@@ -60,7 +62,7 @@ export type Space = {
   terms?: Record<Lang, string>;
 };
 
-export const spaces: Space[] = [
+const written: Space[] = [
   {
     slug: 'celina',
     name: 'Gestaltwandel',
@@ -411,3 +413,54 @@ export const spaces: Space[] = [
     },
   },
 ];
+
+/** Roughly the middle of each part of town, for the map pin of a room a host
+ *  entered in their dashboard (no street address is published). */
+const DISTRICT_AT: Record<string, [number, number]> = {
+  Mitte: [13.4049, 52.5200], 'Prenzlauer Berg': [13.4232, 52.5389], Friedrichshain: [13.4542, 52.5158], Kreuzberg: [13.4034, 52.4986],
+  Neukölln: [13.4359, 52.4811], Schöneberg: [13.3532, 52.4823], Wilmersdorf: [13.3149, 52.4875], Charlottenburg: [13.3042, 52.5167],
+  Moabit: [13.3426, 52.5302], Wedding: [13.3664, 52.5502], Gesundbrunnen: [13.3846, 52.5486], Pankow: [13.4011, 52.5693],
+  Weißensee: [13.4661, 52.5536], Lichtenberg: [13.4993, 52.5156], Friedrichsfelde: [13.5106, 52.5065], Treptow: [13.4693, 52.4930],
+  'Alt-Treptow': [13.4580, 52.4928], Tempelhof: [13.3853, 52.4709], Steglitz: [13.3201, 52.4566], Friedenau: [13.3284, 52.4708],
+  Spandau: [13.2004, 52.5363], Köpenick: [13.5770, 52.4458], Friedrichshagen: [13.6181, 52.4552], Zehlendorf: [13.2585, 52.4340],
+  Reinickendorf: [13.3277, 52.5884], Marzahn: [13.5617, 52.5446], Hellersdorf: [13.6046, 52.5340], Karlshorst: [13.5274, 52.4807],
+  Rummelsburg: [13.4930, 52.4997], Mariendorf: [13.3890, 52.4380], Britz: [13.4340, 52.4485], Adlershof: [13.5426, 52.4350],
+};
+const all = (v: string): Record<Lang, string> => Object.fromEntries(LANGS.map((l) => [l, v])) as Record<Lang, string>;
+const perHour = (p: number, note: string): Record<Lang, string> => Object.fromEntries(LANGS.map((l) => [l,
+  `${l === 'de' ? `${p} € pro Stunde` : l === 'fr' ? `${p} € de l’heure` : `€${p} per hour`}${note ? ` ${note}` : ''}`])) as Record<Lang, string>;
+
+/** The page's rooms: the ones written above, with each host's own entry from
+ *  their dashboard laid over theirs (or added), and taken away when they
+ *  switched it off. A host's own words read the same in every language. */
+export const spaces: Space[] = (() => {
+  const list = [...written];
+  for (const h of hostSpaces) {
+    const i = list.findIndex((x) => x.slug === h.slug);
+    if (h.on === false) { if (i >= 0) list.splice(i, 1); continue; }
+    // A host whose page is still a preview: their room waits until the page is live too.
+    if (!h.on || !h.name || previewSlugs.has(h.slug)) continue;
+    const base = i >= 0 ? list[i] : undefined;
+    const district = h.district || studioOf(h.slug)?.district || base?.district || 'Berlin';
+    const next: Space = {
+      slug: h.slug,
+      name: h.name,
+      address: district,
+      district,
+      at: DISTRICT_AT[district] ?? base?.at ?? [13.405, 52.52],
+      ...(h.photos?.length ? { photos: h.photos } : base?.photos ? { photos: base.photos } : {}),
+      ...(h.size ? { size: h.size } : {}),
+      ...(h.capacity ? { capacity: h.capacity } : {}),
+      suits: h.suits ? all(h.suits) : base?.suits ?? all(''),
+      copy: h.about ? all(h.about) : base?.copy ?? all(''),
+      ...(h.price ? { price: perHour(h.price, h.priceNote ?? '') } : {}),
+      ...(h.included ? { included: all(h.included) } : {}),
+      ...(h.access ? { access: all(h.access) } : {}),
+    };
+    if (i >= 0) list[i] = next; else list.push(next);
+  }
+  return list;
+})();
+
+/** The rooms as written here, for the host's dashboard to start from. */
+export const writtenSpaces = written;
