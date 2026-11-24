@@ -2929,7 +2929,7 @@ const fields = [
       });
 
       // ── Messages and Today: the requests for this host (functions hostInbox) ──
-      type Req = { id: string; subject: string; fields: Record<string, string>; status: string; thread: { action: string; when?: string; message?: string; at: number }[]; createdAt: number };
+      type Req = { id: string; subject: string; fields: Record<string, string>; status: string; thread: { action: string; when?: string; message?: string; at: number; prepay?: boolean; total?: number }[]; createdAt: number; pre?: { total: number; until: number } };
       /** The thread to open in Messages (from the Calendar, the Overview or after an answer). */
       let msgFocus = '';
       let reqs: Req[] = [];
@@ -2950,9 +2950,18 @@ const fields = [
       };
       const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested, offered: t.ib.offer };
       // A confirmed request is not paid unless a card or voucher hold was taken with it (Diana 24.11.26).
-      const stOf = (r: Req) => (r.status === 'accepted' && !(r as { hold?: unknown }).hold
-        ? TL('Zugesagt · noch nicht bezahlt', 'Confirmed · not paid yet', 'Confirmée · pas encore payée')
-        : statusText[r.status] ?? '');
+      // Pre-approved (Jirel 24.11.26): the guest has a payment link for 48 hours; paid, or lapsed.
+      const stOf = (r: Req) => {
+        if (r.status === 'preapproved') {
+          const u = r.pre?.until ? new Date(r.pre.until).toLocaleString(document.documentElement.lang === 'de' ? 'de-DE' : document.documentElement.lang === 'fr' ? 'fr-FR' : 'en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+          return TL(`Vorab zugesagt · wartet auf Zahlung${u ? ` bis ${u}` : ''}`, `Pre-approved · waiting for payment${u ? ` until ${u}` : ''}`, `Pré-acceptée · en attente du paiement${u ? ` jusqu’à ${u}` : ''}`);
+        }
+        if (r.status === 'paid') return TL('Bezahlt', 'Paid', 'Payé');
+        if (r.status === 'expired') return TL('Zusage verfallen · nicht bezahlt', 'Pre-approval lapsed · not paid', 'Pré-acceptation expirée · non payée');
+        return r.status === 'accepted' && !(r as { hold?: unknown }).hold
+          ? TL('Zugesagt · noch nicht bezahlt', 'Confirmed · not paid yet', 'Confirmée · pas encore payée')
+          : statusText[r.status] ?? '';
+      };
       const dateOf = (r: Req) => (r.fields.Date || '').slice(0, 10);
       const el = (tag: string, cls = '', text = '') => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
       // ── Videos go to Bunny Stream (functions hostVideo, Jirel 18.11.26): the
@@ -3188,7 +3197,7 @@ const fields = [
             el('span', 'hd-req-n', [n === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(n) }), r.fields.Time, r.fields.Workshop].filter(Boolean).join(' · ')));
           // Accept or decline right here (Jirel 23.11.26): the same popups as in Messages.
           const acts = el('span', 'hd-req-acts');
-          const yes = el('button', 'hd-req-yes', TL('Annehmen', 'Accept', 'Accepter')) as HTMLButtonElement; yes.type = 'button';
+          const yes = el('button', 'hd-req-yes', (r as { hold?: unknown }).hold ? TL('Annehmen', 'Accept', 'Accepter') : TL('Vorab zusagen', 'Pre-approve', 'Pré-accepter')) as HTMLButtonElement; yes.type = 'button';
           const no = el('button', 'hd-req-no', TL('Ablehnen', 'Decline', 'Refuser')) as HTMLButtonElement; no.type = 'button';
           yes.addEventListener('click', (ev) => { ev.stopPropagation(); openReq(r, 'accept'); });
           no.addEventListener('click', (ev) => { ev.stopPropagation(); openReq(r, 'decline'); });
@@ -3246,7 +3255,7 @@ const fields = [
         const reqLabel = (r: Req) => r.status === 'pending' ? TL('Wartet auf deine Antwort', 'Waiting for your reply', 'Attend ta réponse')
           : r.status === 'suggested' || r.status === 'offered' ? TL('Vorschlag gesendet', 'Suggestion sent', 'Proposition envoyée') : stOf(r);
         if (when === 'upcoming') {
-          for (const r of reqs) if (r.status !== 'declined') items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Name || t.guest, reqLabel(r)].filter(Boolean).join(' · '), people: peopleOf(r), key: `r:${r.id}`, past: false, req: r });
+          for (const r of reqs) if (!['declined', 'paid', 'expired'].includes(r.status)) items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Name || t.guest, reqLabel(r)].filter(Boolean).join(' · '), people: peopleOf(r), key: `r:${r.id}`, past: false, req: r });
           for (const b of calBookings) if (b.date && b.date >= today) items.push({ date: b.date, time: b.start ?? '', title: b.title ?? '', sub: [b.name || t.guest, TL('Bezahlt', 'Paid', 'Payé')].join(' · '), people: b.people || 1, key: b.id ? `b:${b.id}` : '', past: false });
         } else {
           for (const r of pastReqs) items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Name || t.guest, TL('Vergangene Anfrage', 'Past request', 'Demande passée')].join(' · '), people: peopleOf(r), key: `r:${r.id}`, past: true });
@@ -3275,7 +3284,8 @@ const fields = [
           if (it.req && it.req.status === 'pending') {
             const r = it.req;
             const acts = el('div', 'hd-ev-btns');
-            const yes = el('button', 'hd-req-yes', TL('Annehmen', 'Accept', 'Accepter')) as HTMLButtonElement; yes.type = 'button';
+            // Nothing paid yet: the host pre-approves and the guest gets a payment link.
+            const yes = el('button', 'hd-req-yes', (r as { hold?: unknown }).hold ? TL('Annehmen', 'Accept', 'Accepter') : TL('Vorab zusagen', 'Pre-approve', 'Pré-accepter')) as HTMLButtonElement; yes.type = 'button';
             const no = el('button', 'hd-req-no', TL('Ablehnen', 'Decline', 'Refuser')) as HTMLButtonElement; no.type = 'button';
             yes.addEventListener('click', (ev) => { ev.stopPropagation(); openReq(r, 'accept'); });
             no.addEventListener('click', (ev) => { ev.stopPropagation(); openReq(r, 'decline'); });
@@ -3352,6 +3362,7 @@ const fields = [
             const STATUS: Record<string, string> = { accept: 'accepted', decline: 'declined', suggest: 'suggested', offer: 'offered' };
             r.thread = [...(r.thread ?? []), { action, ...extra, at: Date.now() } as Req['thread'][number]];
             if (STATUS[action]) r.status = STATUS[action];
+            if (action === 'accept' && extra.prepay) { r.status = 'preapproved'; r.pre = { total: Number(extra.total), until: Date.now() + 48 * 3600 * 1000 }; }
             const hold = (r as Req & { hold?: { settled?: string } }).hold;
             if (hold && (action === 'accept' || action === 'decline')) hold.settled = action === 'accept' ? 'taken' : 'released';
           } else {
@@ -3369,7 +3380,15 @@ const fields = [
           if (again && openId === r.id) openDetail(again);
         } catch (err) {
           // A voucher request whose card hold lapsed (7 days): say so plainly.
-          note.textContent = /payment/.test(String((err as Error)?.message)) ? t.ib.holdLapsed : fill(t.error, cfg.contact);
+          const why = String((err as Error)?.message);
+          const PRE: Record<string, string> = {
+            stripe: TL('Stripe ist noch nicht verbunden. Verbinde es unter Einstellungen → Zahlungen, dann geht es.', 'Stripe isn’t connected yet. Connect it in Settings → Payment and try again.', 'Stripe n’est pas encore connecté. Connecte-le dans Réglages → Paiement et réessaie.'),
+            price: TL('Gib den Preis gesamt an (mindestens € 5).', 'Enter the total price (at least €5).', 'Indique le prix total (au moins 5 €).'),
+            date: TL('Das Datum der Anfrage ist schon vorbei.', 'The requested date has already passed.', 'La date demandée est déjà passée.'),
+            email: TL('Für diesen Gast haben wir keine E-Mail-Adresse. Schreib uns kurz, wir kümmern uns.', 'We have no email address for this guest. Write to us and we’ll sort it out.', 'Nous n’avons pas d’e-mail pour ce participant. Écris-nous, on s’en occupe.'),
+          };
+          const pre = /^409: (stripe|price|date|email)$/.exec(why)?.[1];
+          note.textContent = pre ? PRE[pre] : /payment/.test(why) ? t.ib.holdLapsed : fill(t.error, cfg.contact);
           btns.forEach((b) => { b.disabled = false; });
         }
       };
@@ -3420,7 +3439,8 @@ const fields = [
         }
         thread.append(card);
         for (const h of r.thread) {
-          const line = h.action === 'accept' ? t.ib.accepted : h.action === 'decline' ? t.ib.declined : h.action === 'suggest' ? say(t.ib.suggested, { when: h.when ?? '' })
+          const line = h.action === 'accept' && h.prepay ? TL(`Vorab zugesagt. ${name} hat einen Zahlungslink über € ${(h.total ?? 0).toLocaleString(loc)} bekommen (48 Stunden gültig).`, `Pre-approved. ${name} got a payment link for €${(h.total ?? 0).toLocaleString(loc)} (valid for 48 hours).`, `Pré-acceptée. ${name} a reçu un lien de paiement de ${(h.total ?? 0).toLocaleString(loc)} € (valable 48 heures).`)
+            : h.action === 'accept' ? t.ib.accepted : h.action === 'decline' ? t.ib.declined : h.action === 'suggest' ? say(t.ib.suggested, { when: h.when ?? '' })
             : h.action === 'offer' ? (() => {
               const o = h as { price?: number; total?: number; people?: number; workshop?: string };
               return say(t.ib.offered, { what: [o.workshop, h.when, o.people ? (o.people === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(o.people) })) : '',
@@ -3514,10 +3534,11 @@ const fields = [
           const acts = el('div', 'ib-acts');
           const rnote = el('p', 'ha-note'); rnote.setAttribute('role', 'status');
           const mk = (label: string) => { const b = el('button', 'ib-act', label) as HTMLButtonElement; b.type = 'button'; return b; };
-          const bAccept = mk(t.ib.accept); const bOffer = mk(t.ib.offer); const bDecline = mk(t.ib.decline);
+          const bAccept = mk(hold ? t.ib.accept : TL('Vorab zusagen', 'Pre-approve', 'Pré-accepter')); const bOffer = mk(t.ib.offer); const bDecline = mk(t.ib.decline);
           const all = [bAccept, bOffer, bDecline];
           // Accepting asks once more, in its own popup on top, with what it means.
           bAccept.addEventListener('click', () => {
+            if (!hold) { askPrepay(r, rnote, all); return; }
             const dlg = $<HTMLDialogElement>('[data-ib-decline]');
             const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
             const sumUp = el('div', 'ib-confirm-sum');
@@ -5597,6 +5618,7 @@ const fields = [
           out.push(moneyBox(hold.voucher + hold.card, 15, [el('p', 'msg-mnote', hold.settled === 'taken' ? say(t.ib.holdTaken, { v: eur2(hold.voucher + hold.card) })
             : say(hold.card ? t.ib.holdCard : t.ib.holdVoucher, { v: eur2(hold.voucher), c: eur2(hold.card) }))]));
         } else if (r.status === 'offered' && lastOf(r, 'offer')?.total) out.push(moneyBox(lastOf(r, 'offer')!.total!, feePct)); // what the offer would bring
+        else if (r.pre?.total) out.push(moneyBox(r.pre.total, feePct)); // the total the host pre-approved
         else if (each) out.push(moneyBox(each * ppl, feePct));
         else out.push(el('p', 'msg-mnote', t.cal.mNoPrice));
         // Where it stands.
@@ -5604,8 +5626,9 @@ const fields = [
         const sug = lastOf(r, 'suggest');
         const stateLine = r.status === 'offered' && offer ? say(t.cal.mOffered, { what: [offer.total ? eurC(offer.total) : offer.price ? `${eurC(offer.price)} ${t.ib.perPerson}` : '', offer.when || [offer.date, offer.time].filter(Boolean).join(' ')].filter(Boolean).join(' · ') })
           : r.status === 'suggested' && sug ? say(t.cal.mSuggested, { when: sug.when ?? '' })
-          : r.status === 'accepted' ? (hold ? t.cal.mApproved : t.ib.accepted) : r.status === 'declined' ? t.ib.declined : '';
-        if (stateLine) out.push(el('p', `msg-state${r.status === 'declined' ? ' is-off' : ''}`, `${stateLine}${['offered', 'suggested'].includes(r.status) ? ` ${say(t.cal.msgViaUs, { name: firstName(r) })}` : ''}`));
+          : r.status === 'accepted' ? (hold ? t.cal.mApproved : t.ib.accepted) : r.status === 'declined' ? t.ib.declined
+          : ['preapproved', 'paid', 'expired'].includes(r.status) ? stOf(r) : '';
+        if (stateLine) out.push(el('p', `msg-state${r.status === 'declined' || r.status === 'expired' ? ' is-off' : ''}`, `${stateLine}${['offered', 'suggested'].includes(r.status) ? ` ${say(t.cal.msgViaUs, { name: firstName(r) })}` : ''}`));
         // The buttons for that state.
         const note = el('p', 'msg-note'); note.setAttribute('role', 'status');
         const mk = (label: string, cls = 'cal-btn2') => { const b = el('button', cls, label) as HTMLButtonElement; b.type = 'button'; return b; };
@@ -5617,9 +5640,9 @@ const fields = [
           no.addEventListener('click', () => askDecline(r, note, all));
           acts.append(yes, no);
         } else if (r.status === 'pending') {
-          const yes = mk(t.ib.accept, 'cal-btn'); const no = mk(t.ib.decline); const other = mk(t.suggest); const offerB = mk(t.ib.offer);
+          const yes = mk(TL('Vorab zusagen', 'Pre-approve', 'Pré-accepter'), 'cal-btn'); const no = mk(t.ib.decline); const other = mk(t.suggest); const offerB = mk(t.ib.offer);
           const all = [yes, no, other, offerB];
-          yes.addEventListener('click', () => askAccept(r, note, all, false));
+          yes.addEventListener('click', () => askPrepay(r, note, all));
           no.addEventListener('click', () => askDecline(r, note, all));
           other.addEventListener('click', () => askSuggest(r, note, all));
           offerB.addEventListener('click', () => openOffer(r, note, all));
@@ -5633,6 +5656,60 @@ const fields = [
         }
         if (acts.childElementCount) out.push(acts, note);
         return out;
+      };
+      // "Vorab zusagen" (Jirel 24.11.26, as Airbnb's pre-approval and as group
+      // requests): nothing is paid yet, so the guest gets a link to pay the
+      // total on the host's Stripe within 48 hours (functions preapprove).
+      const askPrepay = (r: Req, rnote: HTMLElement, all: HTMLButtonElement[]) => {
+        const de = document.documentElement.lang === 'de';
+        const loc = de ? 'de-DE' : document.documentElement.lang === 'fr' ? 'fr-FR' : 'en-GB';
+        const name = firstName(r);
+        const ppl = peopleOf(r);
+        const each = priceOf(r);
+        const mk = (label: string) => { const b = el('button', 'ib-act', label) as HTMLButtonElement; b.type = 'button'; return b; };
+        const dlg = $<HTMLDialogElement>('[data-ib-decline]');
+        const body = dlg.querySelector<HTMLElement>('[data-ib-decline-body]')!;
+        const sumUp = el('div', 'ib-confirm-sum');
+        const earnLine = el('b', '');
+        sumUp.append(el('span', '', [fmtDay(dateOf(r)), r.fields.Time].filter(Boolean).join(', ')),
+          el('span', '', ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) })), earnLine);
+        const inp = document.createElement('input');
+        inp.type = 'number'; inp.min = '5'; inp.step = '1'; inp.inputMode = 'decimal';
+        if (each) inp.value = String(Math.round(each * ppl * 100) / 100);
+        const tot = el('label', 'ib-box'); tot.append(el('small', '', TL('Preis gesamt, den der Gast bezahlt (€)', 'Total the guest pays (€)', 'Total payé par le participant (€)')), inp);
+        const upd = () => { const v = Number(inp.value); earnLine.textContent = v > 0 ? say(t.ib.acEarn, { amt: `€ ${keep(v).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` }) : ''; };
+        inp.addEventListener('input', upd); upd();
+        const pnote = el('p', 'ha-note'); pnote.setAttribute('role', 'status');
+        const btns = el('div', 'ib-confirm-acts');
+        const no = mk(t.ib.acNo); no.addEventListener('click', () => dlg.close());
+        const head = el('h2', 'ib-offer-h', TL(`Anfrage von ${name} vorab zusagen?`, `Pre-approve ${name}’s request?`, `Pré-accepter la demande de ${name} ?`));
+        const parts: HTMLElement[] = [head];
+        if (stripeReady === false) {
+          parts.push(el('p', 'ib-hint', TL(`Damit ${name} direkt bei dir bezahlen kann, verbinde zuerst Stripe (dauert ein paar Minuten). Oder sag ohne Zahlung zu und kläre die Bezahlung selbst.`, `So ${name} can pay you directly, connect Stripe first (takes a few minutes). Or accept without payment and settle it yourself.`, `Pour que ${name} puisse te payer directement, connecte d’abord Stripe (quelques minutes). Ou accepte sans paiement et règle-le toi-même.`)), sumUp);
+          const go = mk(TL('Stripe verbinden', 'Connect Stripe', 'Connecter Stripe')); go.classList.add('ib-act-main', 'ib-act-grad');
+          go.addEventListener('click', () => { dlg.close(); openView('settings/payments'); setPath(); });
+          const plain = mk(TL('Ohne Zahlung zusagen', 'Accept without payment', 'Accepter sans paiement'));
+          plain.addEventListener('click', () => { dlg.close(); void send(r, 'accept', {}, rnote, all); });
+          btns.append(go, plain, no);
+          parts.push(btns);
+        } else {
+          parts.push(el('p', 'ib-hint', TL(`${name} bekommt sofort eine E-Mail mit einem Zahlungslink und hat 48 Stunden Zeit. Erst mit der Zahlung ist der Platz gebucht, das Geld geht direkt auf dein Stripe-Konto (minus ${feePct} % Twiggli). Zahlt ${name} nicht, verfällt die Zusage und der Termin ist wieder frei.`, `${name} gets an email with a payment link right away and has 48 hours. The place is booked once they pay, and the money goes straight to your Stripe account (minus ${feePct}% Twiggli). If ${name} doesn’t pay, the pre-approval lapses and the date is free again.`, `${name} reçoit tout de suite un e-mail avec un lien de paiement et a 48 heures. La place est réservée une fois payée, l’argent arrive directement sur ton compte Stripe (moins ${feePct} % Twiggli). Sans paiement, la pré-acceptation expire et la date se libère.`)), sumUp, tot);
+          const yes = mk(TL('Vorab zusagen & Zahlungslink senden', 'Pre-approve & send payment link', 'Pré-accepter et envoyer le lien'));
+          yes.classList.add('ib-act-main', 'ib-act-grad');
+          yes.addEventListener('click', () => {
+            const v = Math.round(Number(inp.value) * 100) / 100;
+            if (!(v >= 5)) { pnote.textContent = TL('Gib den Preis gesamt an (mindestens € 5).', 'Enter the total price (at least €5).', 'Indique le prix total (au moins 5 €).'); inp.focus(); return; }
+            dlg.close();
+            void send(r, 'accept', { prepay: true, total: v }, rnote, all);
+          });
+          btns.append(yes, no);
+          parts.push(btns, pnote);
+        }
+        body.classList.add('is-confirm');
+        dlg.addEventListener('close', () => body.classList.remove('is-confirm'), { once: true });
+        body.replaceChildren(...parts);
+        dlg.showModal();
+        (stripeReady === false ? btns.querySelector<HTMLButtonElement>('button') : inp)?.focus();
       };
       /** Accept (or approve a hold: card and voucher are charged), asked once more, with what it means. */
       const askAccept = (r: Req, note: HTMLElement, all: HTMLButtonElement[], hold: boolean) => {
@@ -5704,7 +5781,7 @@ const fields = [
         if (!list) return;
         type Th = { key: string; kind: 'booking' | 'request'; id: string; name: string; title: string; date: string; time: string; people: number; message: string;
           replies: { host: boolean; message: string; at: number; line?: string }[]; at: number; open: boolean; req?: Req; bk?: Bk };
-        const lineOf = (x: Req['thread'][number]) => x.action === 'suggest' ? say(t.ib.suggested, { when: x.when ?? '' }) : x.action === 'accept' ? t.ib.accepted : x.action === 'decline' ? t.ib.declined
+        const lineOf = (x: Req['thread'][number]) => x.action === 'suggest' ? say(t.ib.suggested, { when: x.when ?? '' }) : x.action === 'accept' && x.prepay ? TL(`Vorab zugesagt · Zahlungslink über € ${x.total ?? ''} gesendet`, `Pre-approved · payment link for €${x.total ?? ''} sent`, `Pré-acceptée · lien de paiement de ${x.total ?? ''} € envoyé`) : x.action === 'accept' ? t.ib.accepted : x.action === 'decline' ? t.ib.declined
           : x.action === 'offer' ? (() => { const o = x as { total?: number; price?: number; when?: string }; return say(t.ib.offered, { what: [o.total ? eurC(o.total) : o.price ? `${eurC(o.price)} ${t.ib.perPerson}` : '', o.when].filter(Boolean).join(', ') }); })() : '';
         const todayIso = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
         const thOf = (rs: Req[], bks: Bk[]): Th[] => [

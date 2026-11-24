@@ -1379,6 +1379,7 @@ export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, c
     const x = d.data();
     return {
       id: d.id, subject: x.subject, fields: x.fields, status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0,
+      ...(x.preapproval ? { pre: { total: (x.preapproval.cents ?? 0) / 100, until: x.preapproval.until ?? 0 } } : {}),
       ...(x.hold ? { hold: { voucher: (x.hold.voucherCents ?? 0) / 100, card: (x.hold.chargeCents ?? 0) / 100, settled: x.hold.settled ?? '' } } : {}),
       guest: { requests: asked[x.email] ?? 1, cameFrom: String(x.fields?.['Came from'] ?? ''), lang: String(x.fields?.Language ?? '') },
     };
@@ -1413,7 +1414,16 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
       return res.status(409).json({ error: 'payment', message: 'The card hold has lapsed (7 days). Ask the guest to pay at the studio, or write to Jirel.' });
     }
   }
-  const entry = { by: email, action, message, when, at: Date.now(),
+  // "Vorab zusagen" (Jirel 24.11.26, as Airbnb's pre-approval): a request
+  // nobody has paid for yet. The guest gets a link to pay on the host's Stripe
+  // within 48 hours; once paid it is a booking like any other (bookingConfirm).
+  let prepay = null;
+  if (action === 'accept' && !x.hold && req.body?.prepay === true) {
+    try { prepay = await preapprove(ref, x, Number(req.body?.total)); } catch (err) {
+      return res.status(409).json({ error: String(err?.message ?? 'prepay') });
+    }
+  }
+  const entry = { by: email, action, message, when, at: Date.now(), ...(prepay ? { prepay: true, total: prepay.cents / 100 } : {}),
     ...(action === 'offer' && price > 0 && price < 10000 ? { price } : {}), ...(action === 'decline' && reason ? { reason } : {}),
     // The offer in full: which workshop, when, for how many, at what total.
     ...(action === 'offer' ? {
@@ -1425,7 +1435,8 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
       extras: Array.isArray(req.body?.extras) ? req.body.extras.slice(0, 10).map((x) => ({ name: text(x?.name, 80), amt: Math.round(Number(x?.amt) * 100) / 100 })).filter((x) => x.amt > 0 && x.amt < 100000) : undefined,
     } : {}) };
   for (const k of Object.keys(entry)) if (entry[k] === undefined || entry[k] === '') delete entry[k];
-  await ref.update({ ...(ACTIONS[action] ? { status: ACTIONS[action] } : {}), thread: FieldValue.arrayUnion(entry) });
+  const status = prepay ? 'preapproved' : ACTIONS[action];
+  await ref.update({ ...(status ? { status } : {}), thread: FieldValue.arrayUnion(entry) });
   // Jirel sees every answer; the guest is NOT emailed automatically (she
   // decides about that), so she passes it on until then.
   try {
@@ -1440,12 +1451,194 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
       } catch (err) { console.error('accept address', err?.message); }
     }
     await mailJirel({
-      subject: `Host ${ACTIONS[action] || 'wrote'}: ${x.subject}`,
+      subject: `Host ${prepay ? 'pre-approved (payment link sent to the guest)' : ACTIONS[action] || 'wrote'}: ${x.subject}`,
       replyTo: isEmail(x.email) ? x.email : undefined,
       text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.workshop ? `\nWorkshop: ${entry.workshop}` : ''}${entry.people ? `\nPeople: ${entry.people}` : ''}${entry.extras?.length ? `\nExtras: ${entry.extras.map((x) => `${x.name || 'extra'} €${x.amt}`).join(', ')}` : ''}${entry.total ? `\nOffered total: €${entry.total}` : ''}${entry.price ? ` (€${entry.price} per person)` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}${where ? `\n\nFor the guest (full address, only now they are booked):\n${where}` : ''}`,
     });
   } catch (err) { console.error('hostReply note failed', err?.message); }
-  return res.status(200).json({ status: ACTIONS[action] });
+  return res.status(200).json({ status });
+});
+
+// ── Pre-approval: the guest pays a request on the host's Stripe ──────────
+const PREPAY_HOURS = 48;
+const eurStr = (c) => `€${(c / 100).toFixed(2).replace(/\.00$/, '').replace('.', ',')}`;
+const reqIso = (x) => String(x.fields?.Date ?? '').match(/(\d{4}-\d\d-\d\d)/)?.[1] ?? '';
+const reqPeople = (x) => Math.max(1, Math.min(500, Number(String(x.fields?.People ?? '').match(/\d+/)?.[0]) || 1));
+const reqLang = (x) => (String(x.fields?.Language ?? '').startsWith('de') ? 'de' : 'en');
+const payLink = async (id) => `${FUNCTIONS_URL}/requestPay?r=${id}&k=${sign(await approveKey(), 'pay', id)}`;
+
+/** Checks the request can be paid, keeps the amount and the host's Stripe
+ *  account on it, and emails the guest the payment link. Throws a short
+ *  reason (stripe, price, date, email) the dashboard explains. */
+const preapprove = async (ref, x, totalEur) => {
+  const cents = Math.round(totalEur * 100);
+  if (!(cents >= 500 && cents <= 10000000)) throw new Error('price');
+  const iso = reqIso(x);
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+  if (!iso || iso < today) throw new Error('date');
+  if (!isEmail(x.email)) throw new Error('email');
+  const members = await getFirestore().collection('hostMembers').where('slugs', 'array-contains', x.hostSlug).limit(5).get();
+  const m = members.docs.find((d) => d.data()?.stripe?.chargesEnabled && /^acct_\w+$/.test(String(d.data().stripe.accountId)));
+  if (!m) throw new Error('stripe');
+  const md = m.data();
+  const pct = Number.isFinite(md.commissionPct) ? Math.max(0, Math.min(30, md.commissionPct)) : DEFAULT_COMMISSION;
+  const until = Date.now() + PREPAY_HOURS * 3600000;
+  const pre = { cents, people: reqPeople(x), account: md.stripe.accountId, hostEmail: m.id, pct, until, at: Date.now() };
+  await ref.update({ preapproval: pre });
+  try { await mailPrepay(ref.id, x, pre, false); } catch (err) {
+    console.error('prepay mail', ref.id, err?.message);
+    try { await mailJirel({ subject: `Payment link NOT emailed: ${x.subject}`, text: `The host pre-approved, but the email to ${x.email} failed (${err?.message}). Send them this link by hand:\n${await payLink(ref.id)}` }); } catch {}
+  }
+  return pre;
+};
+
+/** The guest's email with the payment link (and the reminder a day before it lapses). */
+const mailPrepay = async (id, x, pre, reminder) => {
+  const de = reqLang(x) === 'de';
+  const first_ = String(x.fields?.Name ?? '').split(/\s+/)[0] || (de ? 'du' : 'there');
+  let host = '';
+  try { host = (await hostContact(x.hostSlug))?.firstName ?? ''; } catch { /* sheet not readable: no name */ }
+  const ws = String(x.fields?.Workshop ?? 'Workshop');
+  const iso = reqIso(x);
+  const day = new Date(`${iso}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+  const time = text(x.fields?.Time, 20);
+  const until = new Date(pre.until).toLocaleString(de ? 'de-DE' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' });
+  const link = await payLink(id);
+  const btn = `<p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6a3eec;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold">${de ? 'Jetzt bezahlen' : 'Pay now'} · ${eurStr(pre.cents)}</a></p>`;
+  const what = `<b>${esc(ws)}</b> ${de ? 'am' : 'on'} ${esc(day)}${time ? `, ${esc(time)}` : ''} (${pre.people} ${de ? (pre.people === 1 ? 'Person' : 'Personen') : (pre.people === 1 ? 'person' : 'people')})`;
+  const who = host ? esc(host) : de ? 'Deine Gastgeberin' : 'Your host';
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  await mail.sendMail({
+    from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: x.email,
+    subject: reminder
+      ? (de ? `Erinnerung: Bitte bezahle ${ws} bis ${until}` : `Reminder: please pay for ${ws} by ${until}`)
+      : (de ? `${host || 'Deine Anfrage'}: Zusage für ${ws} am ${day} 🎉` : `${host ? `${host} said yes` : 'Your request was accepted'}: ${ws} on ${day} 🎉`),
+    html: mailText(de
+      ? `Hallo ${esc(first_)},<br><br>${reminder ? `kurze Erinnerung: ${who} hat dir ${what} zugesagt. Bezahlt ist es noch nicht.` : `gute Nachricht: ${who} hat deine Anfrage für ${what} angenommen! 🎉`}<br><br>Damit dein Platz fest gebucht ist, bezahle bitte <b>bis ${esc(until)}</b>:${btn}Die Zahlung läuft sicher über Stripe. Danach bekommst du sofort deine Buchungsbestätigung mit der genauen Adresse. Ist bis dahin nicht bezahlt, verfällt die Zusage und der Termin wird wieder frei.<br><br>Fragen? Antworte einfach auf diese E-Mail.<br><br>Liebe Grüße 💛<br>Jirel von <b>Twiggli</b>`
+      : `Hi ${esc(first_)},<br><br>${reminder ? `a quick reminder: ${who} said yes to ${what}. It isn't paid yet.` : `good news: ${who} accepted your request for ${what}! 🎉`}<br><br>To book your place for sure, please pay <b>by ${esc(until)}</b>:${btn}Payment goes securely through Stripe, and you get your booking confirmation with the exact address straight away. If it isn't paid by then, the pre-approval lapses and the date is freed up again.<br><br>Questions? Just reply to this email.<br><br>Warm regards 💛<br>Jirel from <b>Twiggli</b>`),
+  });
+};
+
+/** The guest's payment link (GET, from the email): a fresh Stripe checkout on
+ *  the host's account for the amount the host confirmed, while the
+ *  pre-approval runs. Paid: back to the booking confirmation as any booking. */
+export const requestPay = onRequest({ region: 'europe-west3', secrets: [STRIPE_CONNECT_KEY], maxInstances: 5 }, async (req, res) => {
+  const id = String(req.query.r ?? '');
+  const k = String(req.query.k ?? '');
+  const page = (de) => `${SITE}${de ? '/de' : ''}/booking/confirmed/`;
+  const say = (de, msg) => res.status(200).set('Content-Type', 'text/html; charset=utf-8').send(`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>Twiggli</title><div style="font-family:Tahoma,Arial,sans-serif;max-width:480px;margin:12vh auto;padding:0 20px;font-size:16px;line-height:1.6;color:#24272e"><p style="font-size:22px;font-weight:bold;color:#6a3eec">Twiggli</p><p>${msg}</p><p><a href="${SITE}${de ? '/de' : ''}/" style="color:#6a3eec">${de ? 'Zu Twiggli' : 'Go to Twiggli'}</a></p></div>`);
+  if (!/^[A-Za-z0-9]{10,40}$/.test(id) || !/^[0-9a-f]{64}$/.test(k)) return say(false, 'This link is not valid.');
+  const key = await approveKey();
+  const a = Buffer.from(sign(key, 'pay', id)); const b = Buffer.from(k);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return say(false, 'This link is not valid.');
+  const ref = getFirestore().doc(`formRequests/${id}`);
+  const x = (await ref.get()).data();
+  const de = x ? reqLang(x) === 'de' : false;
+  const pre = x?.preapproval;
+  if (!x || !pre) return say(de, de ? 'Diese Anfrage gibt es nicht mehr.' : 'This request no longer exists.');
+  if (x.status === 'paid' && pre.booking) return res.redirect(303, `${page(de)}?session_id=${pre.booking}`);
+  const iso = reqIso(x);
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+  if (x.status !== 'preapproved' || Date.now() > pre.until || iso < today) {
+    return say(de, de ? 'Diese Zusage ist leider abgelaufen. Antworte einfach auf unsere E-Mail, dann schauen wir, ob der Termin noch frei ist.' : 'Sorry, this pre-approval has lapsed. Just reply to our email and we’ll check whether the date is still free.');
+  }
+  // A checkout opened in the last 25 minutes is reused (no second open payment).
+  if (pre.url && Date.now() - (pre.sessionAt ?? 0) < 25 * 60000) return res.redirect(303, pre.url);
+  const people = pre.people;
+  const ws = text(x.fields?.Workshop, 120) || 'Workshop';
+  const time = /^\d\d:\d\d/.test(String(x.fields?.Time ?? '')) ? String(x.fields.Time).slice(0, 5) : '';
+  const fee = Math.round(pre.cents * pre.pct / 100);
+  let listing = null;
+  try { const lk = slugify(ws); listing = lk ? (await getFirestore().doc(`hostListings/${x.hostSlug}__${lk}`).get()).data()?.edit ?? null : null; } catch { /* none */ }
+  const cancel = CANCEL_TEXT[listing?.cancel] ? listing.cancel : '7d';
+  const day = new Date(`${iso}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'long', timeZone: 'UTC' });
+  const p = new URLSearchParams();
+  p.set('mode', 'payment');
+  p.set('locale', de ? 'de' : 'en');
+  p.set('customer_email', x.email);
+  p.set('success_url', `${page(de)}?session_id={CHECKOUT_SESSION_ID}`);
+  p.set('cancel_url', `${SITE}${de ? '/de' : ''}/`);
+  p.set('expires_at', String(Math.floor(Date.now() / 1000) + 30 * 60));
+  p.set('line_items[0][quantity]', '1');
+  p.set('line_items[0][price_data][currency]', 'eur');
+  p.set('line_items[0][price_data][unit_amount]', String(pre.cents));
+  p.set('line_items[0][price_data][product_data][name]', `${people}× ${ws} · ${day}${time ? `, ${time}` : ''}`);
+  p.set('line_items[0][price_data][product_data][description]', (CANCEL_TEXT[cancel])[de ? 0 : 1]);
+  if (fee > 0) p.set('payment_intent_data[application_fee_amount]', String(fee));
+  p.set('payment_intent_data[description]', `Twiggli request ${id}: ${ws}, ${iso} ${time}, ${people}× (${text(x.fields?.Name, 60)})`);
+  const meta = { kind: 'twiggli booking', request_id: id, date: iso, start: time, people: String(people), name: text(x.fields?.Name, 100), slug: x.hostSlug, commission_pct: String(pre.pct) };
+  for (const [mk, v] of Object.entries(meta)) { p.set(`metadata[${mk}]`, v); p.set(`payment_intent_data[metadata][${mk}]`, v); }
+  const r = await stripeAs(STRIPE_CONNECT_KEY.value(), pre.account, 'checkout/sessions', p);
+  const s = await r.json();
+  if (!r.ok) {
+    console.error('requestPay', id, s?.error?.message);
+    return say(de, de ? 'Die Zahlung lässt sich gerade nicht öffnen. Bitte versuche es gleich noch einmal oder antworte auf unsere E-Mail.' : 'The payment page can’t be opened right now. Please try again in a moment, or reply to our email.');
+  }
+  await getFirestore().doc(`bookings/${s.id}`).set({
+    eventId: '', requestId: id, date: iso, start: time, slug: x.hostSlug, title: ws, location: '', cancel, listingKey: listing ? slugify(ws) : '',
+    people, name: text(x.fields?.Name, 120) || x.email, email: x.email, phone: text(x.fields?.Phone, 60), message: String(x.fields?.Message ?? '').slice(0, 1000), lang: de ? 'de' : 'en',
+    hostName: '', hostEmail: pre.hostEmail, account: pre.account, amount: pre.cents, fee, commissionPct: pre.pct, status: 'pending', createdAt: FieldValue.serverTimestamp(),
+  });
+  await ref.update({ 'preapproval.session': s.id, 'preapproval.url': s.url, 'preapproval.sessionAt': Date.now() });
+  return res.redirect(303, s.url);
+});
+
+/** Paid: the request becomes "paid" and points at its booking (the dashboard shows the booking). */
+const requestPaid = async (bk, id) => {
+  if (!bk.requestId) return;
+  await getFirestore().doc(`formRequests/${bk.requestId}`).update({ status: 'paid', 'preapproval.booking': id, paidAt: Date.now() }).catch((err) => console.error('requestPaid', err?.message));
+};
+
+/** Every hour: a reminder to the guest a day before the pre-approval lapses,
+ *  a payment that went through without the guest coming back to our page,
+ *  and pre-approvals that lapsed (the host and Jirel hear; the date is free). */
+export const preapprovalCheck = onCron({ schedule: 'every 60 minutes', timeZone: 'Europe/Berlin', region: 'europe-west3', secrets: [STRIPE_CONNECT_KEY, GMAIL_APP_PASSWORD], maxInstances: 1 }, async () => {
+  const db = getFirestore();
+  const snap = await db.collection('formRequests').where('status', '==', 'preapproved').get();
+  for (const d of snap.docs) {
+    const x = d.data();
+    const pre = x.preapproval;
+    if (!pre) continue;
+    // Paid on Stripe, but the guest closed the page before coming back.
+    if (pre.session) {
+      try {
+        const s = await (await stripeAs(STRIPE_CONNECT_KEY.value(), pre.account, `checkout/sessions/${pre.session}`)).json();
+        if (s?.payment_status === 'paid') {
+          const ref = db.doc(`bookings/${pre.session}`);
+          const first = await db.runTransaction(async (t) => {
+            const cur = (await t.get(ref)).data();
+            if (!cur || cur.status === 'paid') return false;
+            t.update(ref, { status: 'paid', paidAt: FieldValue.serverTimestamp(), paymentIntent: String(s.payment_intent ?? '') });
+            return true;
+          });
+          if (first) {
+            const bk = (await ref.get()).data();
+            await sendBookingMails(pre.session, bk);
+            await requestPaid(bk, pre.session);
+          }
+          continue;
+        }
+      } catch (err) { console.error('preapproval session', d.id, err?.message); }
+    }
+    const left = pre.until - Date.now();
+    if (left > 0) {
+      if (left < 24 * 3600000 && !pre.reminded) {
+        try { await mailPrepay(d.id, x, pre, true); await d.ref.update({ 'preapproval.reminded': Date.now() }); } catch (err) { console.error('prepay reminder', d.id, err?.message); }
+      }
+      continue;
+    }
+    await d.ref.update({ status: 'expired', 'preapproval.expiredAt': Date.now() });
+    const guest = String(x.fields?.Name ?? 'Der Gast').split(/\s+/)[0];
+    const ws = String(x.fields?.Workshop ?? 'Workshop');
+    try {
+      const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+      await mail.sendMail({
+        from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to: pre.hostEmail, cc: INBOX,
+        subject: `Nicht bezahlt: ${guest}, ${ws} am ${reqIso(x)}`,
+        html: mailText(`Hallo,<br><br>${esc(guest)} hat die Zusage für <b>${esc(ws)}</b> am ${esc(reqIso(x))} nicht innerhalb von ${PREPAY_HOURS} Stunden bezahlt. Die Zusage ist damit verfallen und der Termin ist für dich wieder frei.<br><br>Meldet sich ${esc(guest)} doch noch, kannst du die Anfrage in deinem Twiggli-Konto unter Nachrichten beantworten.<br><br>Liebe Grüße<br>Jirel, Gründerin @ <b>Twiggli</b>`),
+      });
+    } catch (err) { console.error('prepay expired mail', d.id, err?.message); }
+  }
 });
 
 /** A host's reply to a paid booking's guest (dashboard Messages and Calendar):
@@ -2982,6 +3175,7 @@ export const bookingConfirm = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY,
   bk = { ...bk, status: 'paid' };
   if (!first) return res.status(200).json(out());
   await sendBookingMails(id, bk);
+  await requestPaid(bk, id);
   // This booking may be the one that reached a date's minimum: charge the others now.
   try { await chargeReserved(bk.eventId, bk.date); } catch (err) { console.error('chargeReserved', err?.message); }
   return res.status(200).json(out());
@@ -3098,7 +3292,9 @@ const sendBookingMails = async (id, bk) => {
   // The full address, only now that the guest has booked (the date's own place, else the studio).
   let where = { html: '', text: '' };
   try {
-    const ev = bk.eventId ? (await getFirestore().doc(`hostEvents/${bk.eventId}`).get()).data() : null;
+    const ev = bk.eventId ? (await getFirestore().doc(`hostEvents/${bk.eventId}`).get()).data()
+      // A paid request: the workshop's own place, else the studio.
+      : bk.listingKey ? await getFirestore().doc(`hostListings/${bk.slug}__${bk.listingKey}`).get().then((l) => (l.data()?.edit?.where ? l.data().edit : null)).catch(() => null) : null;
     where = whereBox(await fullAddressFor(bk.slug, ev), de);
   } catch (err) { console.error('booking address', id, err?.message); }
   const day = new Date(`${bk.date}T12:00:00Z`).toLocaleDateString(de ? 'de-DE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
