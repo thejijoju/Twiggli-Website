@@ -844,25 +844,25 @@ const fields = [
         <section class="lst" data-ha-panel="listings" hidden>
           <div class="lst-top">
             <div><h2 class="cal-h">{t.tabListings}</h2><p class="ha-sub">{L('Deine Workshops, so wie Gäste sie auf Twiggli sehen. Tippe auf „Bearbeiten“, um alles zu ändern.', 'Your workshops as guests see them on Twiggli. Tap “Edit” to change anything.', 'Tes ateliers tels que les invités les voient sur Twiggli. Touche « Modifier » pour tout changer.')}</p></div>
-            <button type="button" class="lst-new" data-lst-new>{t.cal.newWorkshop}</button>
+            <button type="button" class="lst-new" data-lst-new hidden>{t.cal.newWorkshop}</button>
           </div>
           <p class="lst-note" data-lst-note aria-live="polite"></p>
           <div class="lst-list" data-lst-list></div>
           {/* Partner workshops (Jirel 23.11.26): hotels and companies in our network book workshops at their own place. */}
           <section class="pw" data-pw>
-            <h3 class="lst-sec">{L('Partner-Netzwerk', 'Partner network', 'Réseau partenaire')}</h3>
+            <h3 class="lst-sec lst-sec-h"><span>{L('Partner-Netzwerk', 'Partner network', 'Réseau partenaire')}</span><button type="button" class="lst-add-link" data-pw-add2>{L('+ Hinzufügen', '+ Add', '+ Ajouter')}</button></h3>
             <p class="pw-intro lst-short">{L('Hotels und Firmen buchen dich bei sich vor Ort.', 'Hotels and companies book you at their own place.', 'Des hôtels et entreprises te réservent chez eux.')}</p>
             <details class="lst-info"><summary>{L('So funktioniert’s', 'How it works', 'Comment ça marche')}</summary><p class="pw-intro">{L('Hotels und Firmen aus unserem Partner-Netzwerk buchen Workshops direkt bei sich. Trag hier ein, welche Workshops du dort anbietest. Du kannst dafür auch ein neues Konzept anlegen. Wir nehmen dich in unsere Anbieterliste auf und schicken dir passende Anfragen, zum Beispiel: Hotel in Charlottenburg, 12. Dezember, 18 Uhr, 15 Personen. Du nimmst sie an oder lehnst sie ab. Von deinem Preis gehen 15 % Twiggli-Provision ab.', 'Hotels and companies in our partner network book workshops at their own place. Enter the workshops you offer there. You can also create a new concept for it. We add you to our list of providers and send you matching requests, for example: hotel in Charlottenburg, 12 December, 6 pm, 15 people. You accept or decline them. Twiggli’s 15% commission is taken from your price.', 'Des hôtels et entreprises de notre réseau réservent des ateliers chez eux. Indique ici les ateliers que tu y proposes. Tu peux aussi créer un nouveau concept pour ça. On t’ajoute à notre liste et on t’envoie des demandes adaptées, par exemple : hôtel à Charlottenburg, 12 décembre, 18 h, 15 personnes. Tu les acceptes ou les refuses. La commission Twiggli de 15 % est déduite de ton prix.')}</p></details>
             <div class="pw-list" data-pw-list></div>
-            <button type="button" class="lst-new" data-pw-add>{L('+ Partner-Workshop eingeben', '+ Enter a partner workshop', '+ Ajouter un atelier partenaire')}</button>
+            <button type="button" class="lst-empty-row" data-pw-add>{L('+ Partner-Workshop eintragen', '+ Add a partner workshop', '+ Ajouter un atelier partenaire')}</button>
           </section>
           {/* A room to rent (Jirel 23.11.26): shown on the "Raum mieten" page as the host enters it. */}
           <section class="pw rm" data-rm>
-            <h3 class="lst-sec">{L('Raum vermieten', 'Rent out your space', 'Louer ton espace')}</h3>
+            <h3 class="lst-sec lst-sec-h"><span>{L('Raum vermieten', 'Rent out your space', 'Louer ton espace')}</span><button type="button" class="lst-add-link" data-rm-add2>{L('+ Hinzufügen', '+ Add', '+ Ajouter')}</button></h3>
             <p class="pw-intro lst-short">{L('Vermiete deinen Raum, wenn du nicht unterrichtest. Ohne Provision.', 'Rent out your space when you’re not teaching. No commission.', 'Loue ton espace quand tu n’animes pas. Sans commission.')}</p>
             <details class="lst-info"><summary>{L('So funktioniert’s', 'How it works', 'Comment ça marche')}</summary><p class="pw-intro">{L('Vermietest du deinen Raum, wenn du selbst keinen Workshop gibst? Dann trag ihn hier ein: Er erscheint auf unserer Seite „Raum mieten“ mit deinen Fotos, deinem Preis und allem, was dazugehört. Anfragen kommen per E-Mail und in deine Nachrichten. Twiggli nimmt auf Raumvermietungen keine Provision.', 'Do you rent out your space when you are not teaching? Enter it here: it appears on our "Rent a space" page with your photos, your price and everything that comes with it. Requests come by email and to your messages. Twiggli takes no commission on room rentals.', 'Tu loues ton espace quand tu n’animes pas d’atelier ? Indique-le ici : il apparaît sur notre page « Louer un espace » avec tes photos, ton prix et tout ce qui va avec. Les demandes arrivent par e-mail et dans tes messages. Twiggli ne prend aucune commission sur les locations d’espace.')}</p></details>
             <div class="pw-list" data-rm-card></div>
-            <button type="button" class="lst-new" data-rm-add>{L('+ Raum zum Vermieten eintragen', '+ Enter a space to rent out', '+ Ajouter un espace à louer')}</button>
+            <button type="button" class="lst-empty-row" data-rm-add>{L('+ Raum zum Vermieten eintragen', '+ Add a space to rent out', '+ Ajouter un espace à louer')}</button>
           </section>
           <dialog class="cal-ws pw-dlg rm-dlg" data-rm-dlg>
             <form class="cal-ws-form" data-rm-form>
@@ -4164,7 +4164,10 @@ const fields = [
           },
         };
       }
-      const openCreate = (ev?: Ev) => {
+      // Which section "+ Hinzufügen" was tapped in: a group offer is saved "on request" (guests ask, never pay on the spot).
+      let createKind: 'cal' | 'group' | '' = '';
+      const openCreate = (ev?: Ev, kind: 'cal' | 'group' | '' = '') => {
+        createKind = ev ? '' : kind;
         createForm.reset();
         const h = hosts[slug];
         const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -4211,6 +4214,7 @@ const fields = [
           price: num('price'), seats: num('seats'), minGuests: num('minGuests'),
           languages: fld('languages').value.trim(), cancel: fld<HTMLSelectElement>('cancel').value,
           visibility: fld<HTMLSelectElement>('visibility').value, media,
+          ...(createKind === 'group' ? { request: true } : createKind === 'cal' ? { request: false } : {}),
         };
         const note = $('[data-ha-create-note]');
         // Places that make sense (Jirel 23.11.26: a date went up with 0 places, then 2 places from 5).
@@ -5218,19 +5222,33 @@ const fields = [
           if (paused) card.classList.add('is-paused');
           card.append(pic, body, act);
           // Where guests find it: with dates (page and calendar), or on request for groups.
-          card.dataset.sec = n || (booking !== 'request' && (b?.dates ?? 0) > 0) ? 'cal' : 'group';
+          // The section follows how guests book (Jirel 24.11.26), not whether dates exist:
+          // on request = groups & companies; otherwise open dates. Adding dates never moves it.
+          card.dataset.sec = booking === 'request' ? 'group' : 'cal';
           return card;
         });
         // Grouped under titles (Jirel 20.11.26): every listing shows, each under where it appears.
         const sec = (title: string, items: HTMLElement[]) => (items.length ? [el('h3', 'lst-sec', title), ...items] : []);
-        const always = (title: string, items: HTMLElement[], empty: string) => [el('h3', 'lst-sec', title), ...(items.length ? items : [el('p', 'pw-intro', empty)])];
+        // Each section: its title with a small "+ Hinzufügen", and when empty a light dashed row saying what to create.
+        const secHead = (title: string, onAdd: () => void) => {
+          const h = el('h3', 'lst-sec lst-sec-h');
+          const add = el('button', 'lst-add-link', TL('+ Hinzufügen', '+ Add', '+ Ajouter')) as HTMLButtonElement; add.type = 'button';
+          add.addEventListener('click', onAdd);
+          h.append(el('span', '', title), add);
+          return h;
+        };
+        const always = (title: string, items: HTMLElement[], empty: string, onAdd: () => void) => {
+          const row = el('button', 'lst-empty-row', empty) as HTMLButtonElement; row.type = 'button';
+          row.addEventListener('click', onAdd);
+          return [secHead(title, onAdd), ...(items.length ? items : [row])];
+        };
         const others = (LINKED[slug] ?? []).filter((o) => hosts[o]);
         list.replaceChildren(
           // The four kinds always under their own title (Jirel 24.11.26), even when there is nothing yet.
           ...always(TL('Feste Termine', 'Open dates', 'Dates fixes'), cards.filter((c) => c.dataset.sec === 'cal'),
-            TL('Noch keine Workshops mit festen Terminen. Termine trägst du im Kalender ein.', 'No workshops with open dates yet. You add dates in the calendar.', 'Pas encore d’ateliers avec des dates. Tu ajoutes les dates dans le calendrier.')),
+            TL('+ Workshop mit festen Terminen anlegen', '+ Create a workshop with open dates', '+ Créer un atelier avec des dates'), () => openCreate(undefined, 'cal')),
           ...always(TL('Gruppen & Firmen', 'Groups & companies', 'Groupes & entreprises'), cards.filter((c) => c.dataset.sec === 'group'),
-            TL('Noch kein Angebot für Gruppen und Firmen.', 'No offer for groups and companies yet.', 'Pas encore d’offre pour les groupes et entreprises.')),
+            TL('+ Angebot für Gruppen und Firmen anlegen', '+ Create an offer for groups and companies', '+ Créer une offre pour groupes et entreprises'), () => openCreate(undefined, 'group')),
           ...sec(`${TL('Auf deiner weiteren Seite', 'On your other page', 'Sur ton autre page')}: ${others.map((o) => hosts[o].en.specialty).join(', ')}`, switcher),
         );
         // Partner workshops: the ones this host offers on site at hotels and companies.
@@ -5259,6 +5277,7 @@ const fields = [
           return row;
         });
         $('[data-pw-list]').replaceChildren(...rows);
+        $('[data-pw-add]').hidden = rows.length > 0;
         // The room they rent out, loaded once per host (defined further down).
         queueMicrotask(() => { try { void roomLoad(); } catch { /* not ready yet */ } });
       };
@@ -5314,6 +5333,7 @@ const fields = [
         void renderLst();
       };
       $('[data-pw-add]').addEventListener('click', () => pwOpen());
+      $('[data-pw-add2]').addEventListener('click', () => pwOpen());
       // ── A room to rent (Listings → "Raum vermieten", Jirel 23.11.26). ──
       const spDlg = $<HTMLDialogElement>('[data-rm-dlg]');
       if (spDlg.parentElement !== root) root.append(spDlg);
@@ -5409,6 +5429,7 @@ const fields = [
         inp.value = '';
       });
       $('[data-rm-add]').addEventListener('click', () => roomOpen());
+      $('[data-rm-add2]').addEventListener('click', () => roomOpen());
       root.querySelectorAll<HTMLElement>('[data-rm-close]').forEach((b) => b.addEventListener('click', () => spDlg.close()));
       spForm.addEventListener('submit', async (ev) => {
         ev.preventDefault();
@@ -7691,6 +7712,8 @@ const fields = [
   .lst-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
   .lst-pill { font-size: .74rem; background: #f3eefe; color: #5b33d6; border-radius: 999px; padding: 3px 10px; font-weight: 500; }
   .lst-pill.is-go { background: #e8f7ee; color: #1d8a4a; } .lst-pill.is-req { background: #fff3e2; color: #b25d00; } .lst-pill.is-warn { background: #fdecec; color: #b3261e; } .lst-pill.is-page { background: #eef6ff; color: #1f5fae; } .lst-del { color: #b3261e; } .lst-pic { overflow: hidden; } .lst-pic.has-vid { cursor: pointer; } .lst-pic video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .2s; } .lst-pic.is-playing video { opacity: 1; } .lst-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: rgba(20, 16, 30, .55); color: #fff; font-size: 1rem; transition: opacity .2s; pointer-events: none; } .lst-pic.is-playing .lst-play { opacity: 0; } .lst-del-tick { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; font-size: .9rem; cursor: pointer; } .lst-del-tick input { width: 18px; height: 18px; margin-top: 2px; accent-color: #b3261e; } .hl-del-yes:disabled { opacity: .35; cursor: not-allowed; } .lst-card.is-paused { opacity: .7; } .lst-sec { margin: 22px 0 4px; font-size: 1.1rem; font-weight: 600; color: #24272e; } .lst-short { margin: 0 0 4px; } .lst-info { margin: 0 0 12px; font-size: .84rem; } .lst-info summary { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #6a3eec; font-weight: 500; list-style: none; } .lst-info summary::-webkit-details-marker { display: none; } .lst-info summary::before { content: 'i'; display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; border: 1.3px solid currentColor; font-size: .68rem; font-weight: 700; font-style: italic; } .lst-info[open] summary { margin-bottom: 6px; }
+  .lst-sec-h { display: flex; align-items: baseline; gap: 14px; } .lst-add-link { border: 0; background: none; padding: 0; font: inherit; font-size: .84rem; font-weight: 500; color: #8b87a0; cursor: pointer; } .lst-add-link:hover { color: #6a3eec; }
+  .lst-empty-row { display: block; width: 100%; margin: 6px 0 4px; padding: 16px 18px; border: 1.5px dashed #d9d3e6; border-radius: 14px; background: rgba(255, 255, 255, .5); font: inherit; font-size: .9rem; color: #8b87a0; text-align: left; cursor: pointer; } .lst-empty-row:hover { border-color: #6a3eec; color: #6a3eec; }
   .lst .lst-new { border: 1px solid #dcd8e4; color: #4a4558; background: #fff; padding: 6px 14px; font-size: .82rem; font-weight: 500; } .lst .lst-new:hover { border-color: #6a3eec; color: #6a3eec; }
   .lst-desc { margin: 0; font-size: .82rem; color: #666; max-width: 560px; }
   .lst-hint { margin: 6px 0 0; font-size: .75rem; color: #b25d00; }
