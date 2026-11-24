@@ -3112,7 +3112,9 @@ const fields = [
         const name = el('strong', '', r.fields.Name || r.fields.Email || t.guest);
         const line = el('p', 'ha-msg-line', r.fields.Workshop || r.subject);
         const meta = el('p', 'ha-msg-meta');
-        meta.append(el('i', `ha-st ha-st-${r.status}`), stOf(r) || r.status);
+        const gone = pastReqs.includes(r);
+        meta.append(el('i', `ha-st ha-st-${gone && r.status !== 'accepted' && r.status !== 'declined' ? 'expired' : r.status}`),
+          gone && ['pending', 'suggested', 'offered'].includes(r.status) ? TL('Anfrage abgelaufen', 'Request expired', 'Demande expirée') : stOf(r) || r.status);
         body.append(top, name, line, meta);
         if (waiting(r)) { const b = el('span', 'ha-pill-btn', t.review); body.append(b); }
         li.append(av, body);
@@ -3130,6 +3132,7 @@ const fields = [
         root.querySelector<HTMLElement>('[data-ib-g="prio"]')!.hidden = !prio.length;
         root.querySelector<HTMLElement>('[data-ib-g="recent"]')!.hidden = !rest.length;
         $('[data-ha-msgs-empty]').hidden = shown.length > 0;
+
         const pending = reqs.filter(waiting);
         hasPending = pending.length > 0; paintDot();
         const count = $('[data-ha-count]');
@@ -3229,68 +3232,61 @@ const fields = [
           if (n) n.textContent = note;
         };
         set('open', String(pending.length), pending.length ? t.stOpenNote : t.stOpenNone);
-        set('bookings', String(thisMonth.length), t.stBookingsNote.replace('{n}', String(thisMonth.reduce((a, r) => a + peopleOf(r), 0))));
-        set('earnings', euro(thisMonth.reduce((a, r) => a + keep(priceOf(r) * peopleOf(r)), 0)));
-        // Dates: the weekly schedule for the next two weeks, plus confirmed bookings.
-        const slots = Array.from(slotsBox.querySelectorAll('.ha-slot')).map((n) => ({
-          title: (n.querySelector('[name="title"]') as HTMLInputElement).value,
-          time: (n.querySelector('[name="time"]') as HTMLInputElement).value,
-          duration: (n.querySelector('[name="duration"]') as HTMLInputElement).value,
-          days: Array.from(n.querySelectorAll<HTMLInputElement>('[name="day"]:checked')).map((d) => d.value),
-        }));
-        type Item = { date: string; time: string; title: string; sub: string; people: number };
+        // Bookings and earnings: only what was paid through Twiggli this month (Stripe), as the rest is not booked yet.
+        const paidMonth = calBookings.filter((b) => (b.date || '').startsWith(month));
+        void thisMonth;
+        set('bookings', String(paidMonth.length), t.stBookingsNote.replace('{n}', String(paidMonth.reduce((a, b) => a + (b.people || 1), 0))));
+        set('earnings', euro(paidMonth.reduce((a, b) => a + keep(b.amount ?? 0), 0)));
+        // Not the host's dates (they live in the Calendar) but what guests asked for
+        // and booked (Jirel 24.11.26, as Airbnb's "Today / Upcoming"): upcoming
+        // requests and paid bookings, and the past ones on their own tab, grey and
+        // neutral (whether they took place was settled by email).
+        type Item = { date: string; time: string; title: string; sub: string; people: number; key: string; past: boolean };
         const items: Item[] = [];
+        const reqLabel = (r: Req) => r.status === 'pending' ? TL('Wartet auf deine Antwort', 'Waiting for your reply', 'Attend ta réponse')
+          : r.status === 'suggested' || r.status === 'offered' ? TL('Vorschlag gesendet', 'Suggestion sent', 'Proposition envoyée') : stOf(r);
         if (when === 'upcoming') {
-          for (const ev of ownEvents) for (const date of occurrences(ev, 14)) {
-            const ppl = booked.filter((r) => dateOf(r) === date).reduce((a, r) => a + peopleOf(r), 0);
-            items.push({ date, time: ev.start, title: ev.title, sub: [ev.end ? `${ev.start}–${ev.end}` : ev.start, ev.seats ? t.seatsN.replace('{n}', String(ev.seats)) : ''].filter(Boolean).join(' · '), people: ppl });
-          }
-          for (let i = 0; i < 14; i++) {
-            const d = new Date(); d.setDate(d.getDate() + i);
-            for (const sl of slots) if (sl.days.includes(WD[d.getDay()])) {
-              const date = iso(d);
-              const ppl = booked.filter((r) => dateOf(r) === date).reduce((a, r) => a + peopleOf(r), 0);
-              items.push({ date, time: sl.time, title: sl.title, sub: [sl.time, sl.duration].filter(Boolean).join(' · '), people: ppl });
-            }
-          }
-          for (const r of booked) if (dateOf(r) >= today && !items.some((x) => x.date === dateOf(r))) {
-            items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Time, r.fields.Name].filter(Boolean).join(' · '), people: peopleOf(r) });
-          }
+          for (const r of reqs) if (r.status !== 'declined') items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Name || t.guest, reqLabel(r)].filter(Boolean).join(' · '), people: peopleOf(r), key: `r:${r.id}`, past: false });
+          for (const b of calBookings) if (b.date && b.date >= today) items.push({ date: b.date, time: b.start ?? '', title: b.title ?? '', sub: [b.name || t.guest, TL('Bezahlt', 'Paid', 'Payé')].join(' · '), people: b.people || 1, key: b.id ? `b:${b.id}` : '', past: false });
         } else {
-          for (const r of booked) if (dateOf(r) && dateOf(r) < today) {
-            items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Time, r.fields.Name].filter(Boolean).join(' · '), people: peopleOf(r) });
-          }
+          for (const r of pastReqs) items.push({ date: dateOf(r), time: r.fields.Time || '', title: r.fields.Workshop || r.subject, sub: [r.fields.Name || t.guest, TL('Vergangene Anfrage', 'Past request', 'Demande passée')].join(' · '), people: peopleOf(r), key: `r:${r.id}`, past: true });
+          for (const b of calBookings) if (b.date && b.date < today) items.push({ date: b.date, time: b.start ?? '', title: b.title ?? '', sub: [b.name || t.guest, TL('Bezahlt', 'Paid', 'Payé')].join(' · '), people: b.people || 1, key: b.id ? `b:${b.id}` : '', past: true });
         }
-        items.sort((a, b) => (when === 'past' ? -1 : 1) * `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`));
-        const next = items.find(() => when === 'upcoming');
-        set('next', next ? new Date(next.date).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '–', next ? `${next.time} · ${next.title}` : t.stNextNone);
-        $('[data-ha-list-title]').textContent = when === 'past' ? t.pastDates : t.nextDates;
+        items.sort((a, b) => (when === 'past' ? -1 : 1) * `${a.date || '9999'} ${a.time}`.localeCompare(`${b.date || '9999'} ${b.time}`));
+        const next = when === 'upcoming' ? items.find((x) => x.date) : undefined;
+        set('next', next ? new Date(`${next.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '–', next ? `${next.time} · ${next.title}`.replace(/^ · /, '') : t.stNextNone);
+        $('[data-ha-list-title]').textContent = when === 'past' ? TL('Vergangene Anfragen & Buchungen', 'Past requests & bookings', 'Demandes et réservations passées') : TL('Anstehende Anfragen & Buchungen', 'Upcoming requests & bookings', 'Demandes et réservations à venir');
         const box = $('[data-ha-days]');
         box.replaceChildren();
-        let last = '';
+        let last = '-';
         for (const it of items) {
           if (it.date !== last) {
             last = it.date;
-            const d = new Date(it.date);
-            box.append(el('p', 'hd-day', `${it.date === today ? `${t.today} · ` : ''}${d.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}`));
+            box.append(el('p', 'hd-day', it.date ? `${it.date === today ? `${t.today} · ` : ''}${new Date(`${it.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}` : TL('Ohne Datum', 'No date yet', 'Sans date')));
           }
-          const card = el('div', 'hd-ev');
+          const card = el('div', `hd-ev${it.past ? ' is-past' : ''}`);
           const img = document.createElement('img');
           img.src = `/img/hosts/${slug}.jpg`; img.alt = ''; img.loading = 'lazy';
           img.addEventListener('error', () => { img.replaceWith(el('span', 'hd-ph', hdEmoji())); });
           const txt = el('div', 'hd-ev-t');
-          txt.append(el('b', '', it.title), el('span', '', it.sub));
-          const seats = el('div', 'hd-seats', it.people ? t.bookedN.replace('{n}', String(it.people)) : t.noBookingYet);
-          card.append(img, txt, seats);
+          txt.append(el('b', '', it.title), el('span', '', [it.time, it.sub].filter(Boolean).join(' · ')));
+          card.append(img, txt, el('div', 'hd-seats', calPeople(it.people)));
+          if (it.key) { card.setAttribute('role', 'button'); card.tabIndex = 0; card.addEventListener('click', () => { msgFocus = it.key; showTab('messages'); }); }
           box.append(card);
         }
+        const empty = $('[data-ha-today-empty]');
+        empty.querySelector('h2')!.textContent = when === 'past' ? TL('Noch keine vergangenen Anfragen', 'No past requests yet', 'Pas encore de demandes passées') : TL('Du hast keine anstehenden Buchungsanfragen', 'You don’t have any upcoming booking requests', 'Tu n’as aucune demande de réservation à venir');
         $('[data-ha-today-empty]').hidden = items.length > 0;
       };
       // Only what is real and still ahead (Jirel 24.11.26): requests for a date
       // that has passed are left out of Messages, the calendar and the counts.
+      // They move to "Past conversations" in Messages, marked expired where nobody answered (as Airbnb).
+      let pastReqs: Req[] = [];
       const upcomingReqs = (items: Req[]) => {
         const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
-        return items.filter((r) => { const d = /\d{4}-\d\d-\d\d/.exec(r.fields?.Date || '')?.[0]; return !d || d >= today; });
+        const past = (r: Req) => { const d = /\d{4}-\d\d-\d\d/.exec(r.fields?.Date || '')?.[0]; return !!d && d < today; };
+        pastReqs = items.filter(past);
+        return items.filter((r) => !past(r));
       };
       const loadInbox = async () => {
         try { const r = await api('hostEvents', { slug }); ownEvents = r.items ?? []; calBookings = r.bookings ?? []; calReplaced = new Set(r.replaced ?? []); } catch { ownEvents = []; calBookings = []; }
@@ -5690,6 +5686,7 @@ const fields = [
         dlg.showModal();
         d.focus();
       };
+      let msgPastOpen = false;
       const renderMsgPanel = () => {
         const list = root.querySelector<HTMLElement>('[data-msg-list]');
         if (!list) return;
@@ -5697,30 +5694,46 @@ const fields = [
           replies: { host: boolean; message: string; at: number; line?: string }[]; at: number; open: boolean; req?: Req; bk?: Bk };
         const lineOf = (x: Req['thread'][number]) => x.action === 'suggest' ? say(t.ib.suggested, { when: x.when ?? '' }) : x.action === 'accept' ? t.ib.accepted : x.action === 'decline' ? t.ib.declined
           : x.action === 'offer' ? (() => { const o = x as { total?: number; price?: number; when?: string }; return say(t.ib.offered, { what: [o.total ? eurC(o.total) : o.price ? `${eurC(o.price)} ${t.ib.perPerson}` : '', o.when].filter(Boolean).join(', ') }); })() : '';
-        const items: Th[] = [
+        const todayIso = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+        const thOf = (rs: Req[], bks: Bk[]): Th[] => [
           // Every request (with a hold or not), then paid bookings with a message.
-          ...reqs.map((r) => ({ key: `r:${r.id}`, kind: 'request' as const, id: r.id, name: firstName(r), title: r.fields.Workshop || r.subject, date: reqDay(r), time: reqTime(r), people: peopleOf(r),
+          ...rs.map((r) => ({ key: `r:${r.id}`, kind: 'request' as const, id: r.id, name: firstName(r), title: r.fields.Workshop || r.subject, date: reqDay(r), time: reqTime(r), people: peopleOf(r),
             message: r.fields.Message ?? '', replies: (r.thread ?? []).filter((x) => x.message || lineOf(x)).map((x) => ({ host: true, message: x.message ?? '', line: lineOf(x), at: x.at })),
             at: Math.max(r.createdAt, ...(r.thread ?? []).map((x) => x.at)), open: r.status === 'pending', req: r })),
-          ...calBookings.filter((b) => b.id && (b.message || b.thread?.length)).map((b) => ({ key: `b:${b.id}`, kind: 'booking' as const, id: b.id!, name: b.name || t.guest, title: b.title ?? '', date: b.date, time: b.start ?? '', people: b.people,
+          ...bks.filter((b) => b.id && (b.message || b.thread?.length)).map((b) => ({ key: `b:${b.id}`, kind: 'booking' as const, id: b.id!, name: b.name || t.guest, title: b.title ?? '', date: b.date, time: b.start ?? '', people: b.people,
             message: b.message ?? '', replies: (b.thread ?? []).map((r) => ({ host: r.from === 'host', message: r.message, at: r.at })), at: Math.max(b.paidAt ?? 0, ...(b.thread ?? []).map((r) => r.at)), open: false, bk: b })),
         ].sort((a, b) => Number(b.open) - Number(a.open) || b.at - a.at);
-        if (!items.length) { list.replaceChildren(el('p', 'cal-empty', t.cal.msgEmpty)); return; }
-        list.replaceChildren(...items.map((it) => {
-          const card = el('article', `msg-card${msgFocus === it.key ? ' is-focus' : ''}${it.open ? ' is-open' : ''}`);
+        // Only what is still ahead up top; everything for a date that has passed is archived
+        // under "Past requests", light grey and read-only: whether it took place was settled
+        // by email, so we don't call it booked or expired (Jirel 24.11.26, as Airbnb).
+        const items = thOf(reqs, calBookings.filter((b) => !b.date || b.date >= todayIso));
+        const pastItems = thOf(pastReqs, calBookings.filter((b) => b.date && b.date < todayIso)).map((x) => ({ ...x, open: false }));
+        const pastBox = (): HTMLElement[] => {
+          if (!pastItems.length) return [];
+          const btn = calBtn(`msg-past-btn${msgPastOpen ? ' is-open' : ''}`, '', () => { msgPastOpen = !msgPastOpen; renderMsgPanel(); });
+          btn.append(el('span', '', `${TL('Vergangene Anfragen', 'Past requests', 'Demandes passées')} (${pastItems.length})`), el('b', '', '›'));
+          btn.setAttribute('aria-expanded', String(msgPastOpen));
+          const wrap = el('div', 'msg-past');
+          wrap.hidden = !msgPastOpen;
+          wrap.append(...pastItems.map((it) => cardOf(it, true)));
+          return [btn, wrap];
+        };
+        if (!items.length) { list.replaceChildren(el('p', 'cal-empty', t.cal.msgEmpty), ...pastBox()); return; }
+        const cardOf = (it: Th, past = false) => {
+          const card = el('article', `msg-card${msgFocus === it.key ? ' is-focus' : ''}${it.open ? ' is-open' : ''}${past ? ' is-past' : ''}`);
           const head = el('header', 'msg-head');
           const who = el('div', 'msg-who');
           const when = it.date ? new Date(`${it.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '';
           const hold = it.req ? holdOf(it.req) : undefined;
-          const kindLabel = it.kind === 'booking' ? t.cal.msgPaid : hold && !hold.settled ? t.cal.msgHold : t.cal.msgReq;
+          const kindLabel = past ? TL('Vergangen', 'Past', 'Passé') : it.kind === 'booking' ? t.cal.msgPaid : hold && !hold.settled ? t.cal.msgHold : t.cal.msgReq;
           who.append(el('b', '', it.name), el('span', `msg-kind${it.kind === 'booking' ? ' is-paid' : hold && !hold.settled ? ' is-hold' : ''}`, kindLabel),
             el('small', '', [it.title, [when, it.time].filter(Boolean).join(' '), calPeople(it.people)].filter(Boolean).join(' · ')));
           head.append(el('span', 'msg-av', it.name.charAt(0).toUpperCase()), who);
           card.append(head);
           // What they wrote comes first.
           if (it.message) card.append(el('p', 'msg-b msg-first', it.message));
-          // The money and the buttons.
-          if (it.req) card.append(...reqParts(it.req));
+          // The money and the buttons (not on past ones: archived, read-only).
+          if (it.req && !past) card.append(...reqParts(it.req));
           if (it.bk) {
             const b = it.bk;
             const total = b.amount ?? 0;
@@ -5733,6 +5746,7 @@ const fields = [
             if (r.message) bub.append(el('span', '', r.message));
             card.append(bub);
           }
+          if (past) return card;
           const form = document.createElement('form');
           form.className = 'msg-reply';
           const ta = document.createElement('textarea');
@@ -5764,7 +5778,8 @@ const fields = [
           });
           card.append(form);
           return card;
-        }));
+        };
+        list.replaceChildren(...items.map((it) => cardOf(it)), ...pastBox());
         if (msgFocus) {
           const card = list.querySelector<HTMLElement>('.msg-card.is-focus');
           card?.scrollIntoView({ block: 'center' });
@@ -6475,6 +6490,11 @@ const fields = [
   .ha-pills button { font: inherit; font-size: 0.9rem; border: 0; background: rgba(36, 39, 46, 0.07); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
   .ha-pills button[aria-pressed='true'] { background: var(--color-text); color: #fff; }
   .ha-msgs { list-style: none; margin: 0; padding: 0; }
+  .hd-ev.is-past { opacity: .55; filter: grayscale(1); }
+  .msg-past-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 760px; margin: 18px 0 8px; padding: 14px 4px; border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); background: none; font: inherit; font-size: .95rem; color: #888; cursor: pointer; } .msg-past-btn b { font-size: 1.3rem; transition: transform .2s; } .msg-past-btn.is-open b { transform: rotate(90deg); }
+  .msg-card.is-past { background: #f6f6f7; border-color: #ececee; color: #888; box-shadow: none; } .msg-card.is-past .msg-kind { background: #e9e9ec; color: #888; } .msg-card.is-past .msg-b { background: #efeff1; color: #888; }
+  .ha-past-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 14px; padding: 16px 4px; border: 0; border-top: 1px solid rgba(36, 39, 46, 0.1); background: none; font: inherit; font-size: 1rem; color: #666; cursor: pointer; } .ha-past-btn b { font-size: 1.4rem; transition: transform .2s; } .ha-past-btn.is-open b { transform: rotate(90deg); }
+  .ha-past .ha-msg { opacity: .75; }
   .ha-msg { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(36, 39, 46, 0.08); cursor: pointer; }
   .ha-av { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-weight: 600; color: #fff; background: var(--color-accent); }
   .ha-msg-body { flex: 1; min-width: 0; }
