@@ -29,6 +29,9 @@ export interface HostDate {
 }
 
 export const hostDates: HostDate[] = [
+  // BYUTYFUL (Lucie): her first open date, email of 24.11.26 (in German).
+  { slug: 'byutyful', title: 'Workshop: eigener Raumduft & zwei Duftsteine', titleEn: 'Workshop: your own room scent & two scent stones',
+    date: '2026-12-14', time: '18:00', duration: '2 h', price: '€59', spots: 10, district: 'Friedrichshain', url: '', request: true },
   // The Bequem (Anastasia): her open dates from The Makery (24.11.26), where
   // she keeps them current; 09.12. is sold out there. Booked here by request,
   // so she can hold the seats on The Makery.
