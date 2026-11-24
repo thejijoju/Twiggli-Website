@@ -3255,7 +3255,7 @@ const fields = [
         items.sort((a, b) => (when === 'past' ? -1 : 1) * `${a.date || '9999'} ${a.time}`.localeCompare(`${b.date || '9999'} ${b.time}`));
         const next = when === 'upcoming' ? items.find((x) => x.date) : undefined;
         set('next', next ? new Date(`${next.date}T12:00:00`).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' }) : '–', next ? `${next.time} · ${next.title}`.replace(/^ · /, '') : t.stNextNone);
-        $('[data-ha-list-title]').textContent = when === 'past' ? TL('Vergangene Anfragen & Buchungen', 'Past requests & bookings', 'Demandes et réservations passées') : TL('Anstehende Anfragen & Buchungen', 'Upcoming requests & bookings', 'Demandes et réservations à venir');
+        $('[data-ha-list-title]').textContent = when === 'past' ? TL('Vergangene Buchungsanfragen', 'Past booking requests', 'Demandes de réservation passées') : TL('Buchungsanfragen', 'Booking requests', 'Demandes de réservation');
         const box = $('[data-ha-days]');
         box.replaceChildren();
         let last = '-';
@@ -6129,6 +6129,12 @@ const fields = [
         const variant = new URLSearchParams(location.search).get('case');
         if (variant === 'one') { calDemo.workshops = calDemo.workshops.slice(0, 1); ownEvents = ownEvents.filter((e) => e.title === VULVA); reqs = reqs.filter((r) => r.fields.Workshop === VULVA); }
         if (variant === 'empty') { calDemo.workshops = []; ownEvents = []; reqs = []; calBookings = []; }
+        // As it really looks for most hosts (Jirel 24.11.26): one or two requests, a couple of bookings.
+        if (variant !== 'busy') {
+          reqs = reqs.filter((r) => ['demoLena'].includes(r.id));
+          calBookings = calBookings.filter((b) => ['Julia', 'Ben'].includes(b.name ?? ''));
+          pastReqs = [{ ...rq('demoKim', 'Kim', VULVA, '2026-11-20', '18:30', 2, 'accepted'), createdAt: Date.now() - 9 * 864e5 } as unknown as Req];
+        }
         calSel = calKey(VULVA);
         showTab('calendar');
         openFromMail();
