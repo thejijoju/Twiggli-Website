@@ -2472,6 +2472,9 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
       hidden: (Array.isArray(b.hidden) ? b.hidden : []).filter((u) => typeof u === 'string' && u.length <= 400).slice(0, 60),
       // Where it usually happens (dates can differ): its own address stays private (publicEvents).
       ...(WHERE.includes(b.where) ? { where: b.where, place: b.where === 'other' ? cleanAddress(b.place) : null } : {}),
+      // Also at the guest's place (office, home), with a flat extra in € (Anna 24.11.26).
+      atGuest: b.atGuest === true && b.where !== 'guest',
+      atGuestFee: b.atGuest === true && b.where !== 'guest' && Number.isFinite(Number(b.atGuestFee)) && Number(b.atGuestFee) > 0 ? Math.min(5000, Math.round(Number(b.atGuestFee))) : null,
     };
     const prev = (await ref.get()).data();
     // The partner-workshop terms are set in their own section (action 'partner'): kept here.

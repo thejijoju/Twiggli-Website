@@ -26,6 +26,10 @@ const c = bookingCopy[lang];
 const e = bigEventsCopy[lang].dialog;
 // Redeeming a Twiggli voucher in the form, at hosts that take them
 // (functions voucherCheck). English wherever German isn't the language.
+// A workshop also offered at the guest's place (data-book-atguest, the flat extra in €; Anna 24.11.26).
+const ag = lang === 'de' ? { where: 'Wo?', host: 'Bei {host}', me: 'Bei mir', fee: '+€{fee} Anfahrt', addr: 'Adresse', addrPh: 'Straße, PLZ' }
+  : lang === 'fr' ? { where: 'Où ?', host: 'Chez {host}', me: 'Chez moi', fee: '+€{fee} déplacement', addr: 'Adresse', addrPh: 'Rue, code postal' }
+  : { where: 'Where?', host: 'At {host}’s', me: 'At my place', fee: '+€{fee} travel', addr: 'Address', addrPh: 'Street, postcode' };
 const vc = lang === 'de'
   ? { voucherAdd: 'Gutschein hinzufügen', voucherSubtotal: 'Zwischensumme', voucherDiscount: 'Gutschein', voucherTotal: 'Gesamt', voucherRemove: 'Gutschein entfernen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.', reserveFree: 'Platz reservieren (0 €)', reserveRest: 'Weiter: {amount} reservieren', holdHint: 'Gutschein und Karte werden erst belastet, wenn der Gastgeber bestätigt. Sagt er ab, bleibt alles frei.', holdFailed: 'Die Zahlung konnte gerade nicht starten. Bitte versuch es gleich noch einmal.' }
   : { voucherAdd: 'Add a voucher', voucherSubtotal: 'Subtotal', voucherDiscount: 'Voucher', voucherTotal: 'Total', voucherRemove: 'Remove voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Apply', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.', reserveFree: 'Reserve your spot (€0)', reserveRest: 'Continue: reserve {amount}', holdHint: 'Your voucher and card are only charged once the host confirms. If they can’t, nothing is taken.', holdFailed: 'The payment could not start just now. Please try again in a moment.' };
@@ -99,6 +103,19 @@ const vc = lang === 'de'
       {/* A group request: what it's for, at the host's studio or at the
           group's own venue, and the extras a host can add (Ilinca, 26.10:
           the questions she otherwise asks back by email). */}
+      <div class="book-studio" data-book-ag hidden data-host={ag.host} data-me={ag.me} data-fee={ag.fee}>
+        <fieldset class="book-field book-field-wide book-often">
+          <legend>{ag.where}</legend>
+          <div class="book-often-chips">
+            <label><input type="radio" name="agPlace" value="host" checked /><span data-book-ag-host></span></label>
+            <label><input type="radio" name="agPlace" value="me" /><span data-book-ag-me></span></label>
+          </div>
+        </fieldset>
+        <label class="book-field book-field-wide" data-book-ag-addr hidden>
+          <span>{ag.addr}</span>
+          <input name="agAddr" type="text" autocomplete="street-address" placeholder={ag.addrPh} />
+        </label>
+      </div>
       <div class="book-studio" data-book-group-place hidden>
         <fieldset class="book-field book-field-wide book-often">
           <legend>{c.occasion} <em>({c.optional})</em></legend>
@@ -287,6 +304,10 @@ const vc = lang === 'de'
     const groupPlace = dialog.querySelector<HTMLElement>('[data-book-group-place]');
     const venueField = dialog.querySelector<HTMLElement>('[data-book-venue]');
     const placeInputs = Array.from(dialog.querySelectorAll<HTMLInputElement>('input[name="place"]'));
+    dialog.querySelectorAll<HTMLInputElement>('input[name="agPlace"]').forEach((r) => r.addEventListener('change', () => {
+      const addr = dialog.querySelector<HTMLElement>('[data-book-ag-addr]');
+      if (addr) addr.hidden = !(r.checked && r.value === 'me');
+    }));
     placeInputs.forEach((r) => r.addEventListener('change', () => {
       if (venueField) venueField.hidden = !(r.checked && r.value === 'venue');
     }));
@@ -419,6 +440,18 @@ const vc = lang === 'de'
       if (groupPlace) groupPlace.hidden = !group && !event;
       placeInputs.forEach((r) => { r.required = group; r.checked = false; });
       if (venueField) venueField.hidden = true;
+      // At the host's or at the guest's, for a workshop offered at both (Anna 24.11.26).
+      const agBox = dialog.querySelector<HTMLElement>('[data-book-ag]');
+      if (agBox) {
+        const on = picked.bookAtguest !== undefined && !group && !event && !studio;
+        agBox.hidden = !on;
+        const fee = Number(picked.bookAtguest) || 0;
+        const hostName = String(picked.bookHost ?? '').trim().split(/\s+/)[0];
+        agBox.querySelector('[data-book-ag-host]')!.textContent = String(agBox.dataset.host).replace('{host}', hostName);
+        agBox.querySelector('[data-book-ag-me]')!.textContent = `${agBox.dataset.me}${fee ? ` (${String(agBox.dataset.fee).replace('{fee}', String(fee))})` : ''}`;
+        agBox.querySelectorAll<HTMLInputElement>('input[name="agPlace"]').forEach((r) => { r.checked = r.value === 'host'; });
+        agBox.querySelector<HTMLElement>('[data-book-ag-addr]')!.hidden = true;
+      }
       // To the host by first name, wherever there is one host (pay now, hold, request, notify, wish).
       const hostFirst = !studio && !event && kind !== 'group' ? String(picked.bookHost ?? '').trim().split(/\s+/)[0] : '';
       if (messageLabel) messageLabel.textContent = studio ? copy.studioNotes : event ? copy.idea : hostFirst ? String(copy.messageTo).replaceAll('{name}', hostFirst) : copy.message;
@@ -523,6 +556,12 @@ const vc = lang === 'de'
           ...(data.get('place') === 'venue' && data.get('venue') ? { Venue: String(data.get('venue')) } : {}),
           Occasion: String(data.get('occasion') ?? '') || 'not said',
           Extras: data.getAll('extras').map(String).join(', ') || 'none',
+        } : {}),
+        // Offered at both places (Anna 24.11.26): which one, and the guest's address.
+        ...(!dialog.querySelector<HTMLElement>('[data-book-ag]')?.hidden ? {
+          Venue: data.get('agPlace') === 'me'
+            ? `At the guest’s: ${String(data.get('agAddr') ?? '').trim() || 'address not given yet'}${Number(picked.bookAtguest) ? ` (+€${Number(picked.bookAtguest)} travel)` : ''}`
+            : `At ${picked.bookHost ?? 'the host'}’s place`,
         } : {}),
         People: String(data.get('people') ?? ''),
         Name: String(data.get('name') ?? ''),

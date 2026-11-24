@@ -754,6 +754,21 @@ const fields = [
               <div class="cal-days" data-cal-days></div>
               <div class="cal-wkv" data-cal-wkv></div>
               <div class="cal-list" data-cal-list></div>
+              {/* Several days at once: tap them in the calendar (Anna 24.11.26). */}
+              <div class="cal-multi" data-cal-multi role="region" aria-label={L('Mehrere Termine', 'Several dates', 'Plusieurs dates')} hidden>
+                <div class="cal-multi-panel">
+                  <span class="cal-multi-t">
+                    <input type="time" step="900" data-cal-multi-s aria-label={L('Beginn', 'Start', 'Début')} />
+                    <span aria-hidden="true">–</span>
+                    <input type="time" step="900" data-cal-multi-e aria-label={L('Ende', 'End', 'Fin')} />
+                  </span>
+                  <button type="button" class="cal-multi-go" data-cal-multi-go>{L('Termine anlegen', 'Create dates', 'Créer les dates')}</button>
+                </div>
+                <div class="cal-multi-pill">
+                  <b data-cal-multi-n aria-live="polite"></b>
+                  <button type="button" class="cal-multi-x" data-cal-multi-x aria-label={L('Auswahl aufheben', 'Clear selection', 'Effacer la sélection')}>×</button>
+                </div>
+              </div>
               <p class="cal-legend" data-cal-legend hidden><i aria-hidden="true"></i>{t.cal.onReqLegend}</p>
               <p class="cal-saved" data-cal-note role="status"></p>
             </div>
@@ -777,6 +792,11 @@ const fields = [
               </div>
               <label class="cal-f"><span>{t.cal.wsNote}</span><input name="note" maxlength="220" placeholder={t.cal.wsNotePh} /></label>
               <WhereFields lang={lang} kind="ws" />
+              {/* The same workshop at the studio and at the guest's (Anna 24.11.26). */}
+              <div class="ws-ag" data-ws-ag>
+                <label class="cal-radio"><input type="checkbox" name="atGuest" /><span><b>{L('Auch bei Gästen vor Ort (Büro, Zuhause)', 'Also at the guest’s place (office, home)', 'Aussi chez les invités (bureau, domicile)')}</b></span></label>
+                <label class="cal-f ws-ag-fee" data-ws-ag-fee hidden><span>{L('Aufpreis vor Ort (€, pauschal)', 'Extra for coming to you (€, flat)', 'Supplément sur place (€, forfait)')} <em>({L('optional', 'optional', 'facultatif')})</em></span><input name="atGuestFee" type="number" min="0" max="5000" step="1" inputmode="numeric" placeholder="0" /></label>
+              </div>
               <fieldset class="cal-f">
                 <legend>{t.cal.wsMedia}</legend>
                 <p class="cal-ws-hint">{t.cal.wsMediaHint}</p>
@@ -4282,7 +4302,9 @@ const fields = [
       };
       const CAL_COLORS = ['#6A3EEC', '#FD6F31', '#1F9D8A', '#E0A800', '#2F6FED', '#7F14A0'];
       let calBookings: Bk[] = [];
-      type WsEdit = { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string; where?: string; place?: Addr | null };
+      type WsEdit = { title?: string; price?: number | null; note?: string; description?: string; duration?: string; seats?: number | null; media?: { type: string; url: string }[]; booking?: string; where?: string; place?: Addr | null;
+        /** Also at the guest's place, with a flat extra in € (Anna 24.11.26). */
+        atGuest?: boolean; atGuestFee?: number | null };
       let calListings: { slug: string; items: { key: string; title: string; status: string; image: string; price: string; edit: WsEdit | null }[] } = { slug: '', items: [] };
       let calDemo: { workshops: Ws[] | null } | null = null;
       // Site entries the host took over (hostEvents "replaced"), and the site's own dates as calendar dates.
@@ -4291,6 +4313,8 @@ const fields = [
       let calVirtual: Ev[] = [];
       let calSel = ''; // the selected workshop's key (lower-case title)
       let calSlot = ''; // the selected date's key
+      // Days tapped in the calendar, for several single dates at once (Anna 24.11.26).
+      const calPicks = new Set<string>();
       // Workshops happen in Berlin: "today" is Berlin's date, whatever the viewer's clock says.
       const calToday = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
       const calNoon = (day: string) => new Date(`${day}T12:00:00`);
@@ -4567,6 +4591,92 @@ const fields = [
         calPending.set(ev, p);
         renderCal();
       };
+      // ── Several dates at once: tap days, then "Termine anlegen" (Anna 24.11.26) ──
+      // Each picked day becomes a single date of the selected workshop, made like
+      // its other dates (price, places, where, request …), through hostEventSave.
+      let calMultiBusy = false;
+      /** The selected workshop's dates (own first, then the site's), its listing edit. */
+      const calMultiBase = () => {
+        const w = calWorkshops().find((x) => x.key === calSel);
+        const keys = new Set([calSel, ...(w?.alias ?? [])]);
+        const of = (e: Ev) => (e.wkey ? e.wkey === calSel : keys.has(calKey(e.title)) || (!!e.titleEn && keys.has(calKey(e.titleEn))));
+        const own = ownEvents.filter(of);
+        const tpl = [...own].reverse().find((e) => !e.onRequest) ?? own[own.length - 1] ?? calSiteEvents().find(of);
+        const edit = (calListings.slug === slug ? calListings.items : []).find((x) => x.key === calSel)?.edit ?? null;
+        return { w, tpl, edit };
+      };
+      /** The usual time: the workshop's last date, else 18:00 for its length (2 h when unknown). */
+      const calMultiTimes = () => {
+        const { tpl, edit } = calMultiBase();
+        const s = tpl?.start && Number.isFinite(mins(tpl.start)) ? tpl.start : '18:00';
+        const e = (tpl?.start === s && tpl?.end) || calEnd(s, edit?.duration) || hm(mins(s) + 120);
+        return [s, e];
+      };
+      const calPick = (day: string) => {
+        if (calMultiBusy) return;
+        if (!calPicks.size) {
+          const [s, e] = calMultiTimes();
+          $<HTMLInputElement>('[data-cal-multi-s]').value = s;
+          $<HTMLInputElement>('[data-cal-multi-e]').value = e;
+        }
+        if (calPicks.has(day)) calPicks.delete(day); else calPicks.add(day);
+        renderCal();
+      };
+      const calMultiBar = () => {
+        const bar = $('[data-cal-multi]');
+        bar.hidden = !calPicks.size;
+        // "3.–5. Dez." for days in a row (or one day), else "3 Tage".
+        const ds = [...calPicks].sort();
+        const n = ds.length;
+        const row = ds.every((d, i) => !i || iso(new Date(calNoon(ds[i - 1]).getTime() + 86400000)) === d);
+        const fmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' });
+        let txt = '';
+        if (n && row) { try { txt = n === 1 ? fmt.format(calNoon(ds[0])) : fmt.formatRange(calNoon(ds[0]), calNoon(ds[n - 1])); } catch { /* old browser */ } }
+        $('[data-cal-multi-n]').textContent = txt || TL(`${n} Tage`, `${n} days`, `${n} jours`);
+        bar.querySelectorAll<HTMLButtonElement | HTMLInputElement>('button, input').forEach((b) => { b.disabled = calMultiBusy; });
+      };
+      const calMultiSave = async () => {
+        if (calMultiBusy || !calPicks.size) return;
+        const start = $<HTMLInputElement>('[data-cal-multi-s]').value;
+        const end = $<HTMLInputElement>('[data-cal-multi-e]').value;
+        if (!/^\d\d:\d\d$/.test(start)) { $('[data-cal-multi-s]').focus(); return; }
+        const { w, tpl, edit } = calMultiBase();
+        if (!w) return;
+        const bk = (edit as { booking?: string } | null)?.booking;
+        const base: Record<string, unknown> = tpl
+          ? { ...calPayload(tpl), replaces: undefined, ...(tpl.where ? { where: tpl.where, place: tpl.place ?? null } : {}) }
+          : { slug, title: w.title, price: edit?.price ?? calNum(w.price), seats: edit?.seats ?? null, approve: true, cancel: '7d', visibility: 'public',
+            languages: hosts[slug]?.en.languages ?? '', location: hosts[slug]?.en.place ?? '', description: edit?.description ?? '',
+            media: w.image?.startsWith('/img/hosts/') ? [{ type: 'photo', url: w.image }] : [], wkey: calSel };
+        // Where the workshop usually is (its listing), as "+ Termin" fills it in.
+        if (edit?.where) Object.assign(base, { where: edit.where, place: edit.place ?? null });
+        // Pay now or ask first: as its dates, else as the workshop says; the site's own dates take requests.
+        if (typeof base.request !== 'boolean' && bk) base.request = bk === 'request';
+        if (typeof base.request !== 'boolean' && tpl?.virtual) base.request = true;
+        Object.assign(base, { id: undefined, repeat: 'once', until: '', start, end: /^\d\d:\d\d$/.test(end) ? end : '', exceptions: [], seatsByDate: {}, onRequest: false });
+        calMultiBusy = true;
+        renderCal();
+        const made: Ev[] = [];
+        let err: unknown = null;
+        for (const date of [...calPicks].sort()) {
+          const body = { ...base, date };
+          try {
+            let id = `demo${Date.now()}${made.length}`;
+            if (calDemo) { await new Promise((r) => setTimeout(r, 200)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); }
+            else id = (await api('hostEventSave', body)).id;
+            const ev = { ...body, id } as unknown as Ev;
+            delete ev.onRequest;
+            made.push(ev);
+            calPicks.delete(date);
+          } catch (e) { err = e; break; }
+        }
+        ownEvents = [...ownEvents, ...made];
+        calMultiBusy = false;
+        // What did not go through stays picked, so one more tap tries again.
+        if (err) calNote(calFailText(err), false);
+        else calNote(made.length === 1 ? TL('1 Termin angelegt', '1 date created', '1 date créée') : TL(`${made.length} Termine angelegt`, `${made.length} dates created`, `${made.length} dates créées`));
+        if (!calDemo && made.length) void loadInbox();
+      };
       const calPhone = window.matchMedia('(max-width: 700px)');
       // Week or month, remembered in this browser; month on a computer, week on a phone.
       const CAL_VIEW = 'twiggli-cal-view';
@@ -4791,7 +4901,7 @@ const fields = [
         const pills = $('[data-cal-pills]');
         void w;
         pills.replaceChildren(...ws.map((x) => {
-          const b = calBtn('cal-pill', '', () => { calSel = x.key; calSlot = ''; renderCal(); });
+          const b = calBtn('cal-pill', '', () => { if (calSel !== x.key) calPicks.clear(); calSel = x.key; calSlot = ''; renderCal(); });
           b.setAttribute('aria-pressed', String(x.key === calSel));
           b.dataset.calF = `p:${x.key}`;
           b.append(calPic(x), el('span', '', x.title));
@@ -4853,6 +4963,14 @@ const fields = [
           b.setAttribute('aria-label', `${t.cal.addDate.replace(/^\+\s*/, '')}: ${new Date(`${day}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}`);
           return b;
         };
+        // A day's number (or head) as a button that picks the day (Anna 24.11.26).
+        const pickDay = (day: string, cls: string, text = '') => {
+          const b = calBtn(cls, text, () => calPick(day));
+          b.dataset.calF = `d:${day}`;
+          b.setAttribute('aria-pressed', String(calPicks.has(day)));
+          b.setAttribute('aria-label', `${TL('Auswählen', 'Select', 'Choisir')}: ${new Date(`${day}T12:00:00`).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}`);
+          return b;
+        };
         const days = $('[data-cal-days]');
         const wkv = $('[data-cal-wkv]');
         const list = $('[data-cal-list]');
@@ -4864,8 +4982,13 @@ const fields = [
         if (!week && !phone) {
           // Month grid.
           days.replaceChildren(...dayList.map((day) => {
-            const c = el('div', `cal-day${Number(day.slice(5, 7)) !== m + 1 ? ' is-other' : ''}${day < today ? ' is-past' : ''}${day === today ? ' is-today' : ''}${sel?.date === day ? ' is-sel' : ''}`);
-            c.append(el('span', 'cal-n', String(Number(day.slice(8)))));
+            const c = el('div', `cal-day${Number(day.slice(5, 7)) !== m + 1 ? ' is-other' : ''}${day < today ? ' is-past' : ''}${day === today ? ' is-today' : ''}${sel?.date === day ? ' is-sel' : ''}${calPicks.has(day) ? ' is-pick' : ''}`);
+            // A day from today on: tap it (anywhere but on a date) to pick it.
+            if (w && day >= today) {
+              c.classList.add('can-pick');
+              c.append(pickDay(day, 'cal-n', String(Number(day.slice(8)))));
+              c.addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('button')) calPick(day); });
+            } else c.append(el('span', 'cal-n', String(Number(day.slice(8)))));
             for (const s of slots.filter((x) => x.date === day)) c.append(chip(s), ...notes(s));
             return c;
           }));
@@ -4884,8 +5007,8 @@ const fields = [
         } else if (phone) {
           // Week on a phone: one row per day, its dates or a faint "+".
           wkv.replaceChildren(...dayList.map((day) => {
-            const row = el('div', `cal-ag${day < today ? ' is-past' : ''}${day === today ? ' is-today' : ''}`);
-            const head = el('div', 'cal-ag-d');
+            const row = el('div', `cal-ag${day < today ? ' is-past' : ''}${day === today ? ' is-today' : ''}${calPicks.has(day) ? ' is-pick' : ''}`);
+            const head = w && day >= today ? pickDay(day, 'cal-ag-d') : el('div', 'cal-ag-d');
             head.append(el('small', '', dayName(day, { weekday: 'short' }).replace('.', '')), el('b', '', String(Number(day.slice(8)))));
             const body = el('div', 'cal-ag-b');
             const mine = slots.filter((x) => x.date === day);
@@ -4914,7 +5037,10 @@ const fields = [
           grid.style.setProperty('--hour', `${HOUR}px`);
           grid.append(el('span', 'cal-wg-corner'));
           for (const day of dayList) {
-            const h = el('div', `cal-wg-h${day === today ? ' is-today' : ''}${day < today ? ' is-past' : ''}`);
+            const h = w && day >= today ? pickDay(day, 'cal-wg-h') : el('div', 'cal-wg-h');
+            if (day === today) h.classList.add('is-today');
+            if (day < today) h.classList.add('is-past');
+            if (calPicks.has(day)) h.classList.add('is-pick');
             h.append(el('small', '', dayName(day, { weekday: 'short' }).replace('.', '')), el('b', '', String(Number(day.slice(8)))));
             grid.append(h);
           }
@@ -4954,6 +5080,7 @@ const fields = [
         root.querySelectorAll<HTMLButtonElement>('[data-cal-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.calView === calView)));
         // A workshop without any date: say so above the empty calendar too.
         panel.classList.toggle('no-dates', !hasDates && !slots.length);
+        calMultiBar();
         renderCalSide(sel, w);
       };
       // ── The whole workshop: title, description, length, price, places, pictures and
@@ -5562,11 +5689,22 @@ const fields = [
         $('[data-ws-grp-size]').hidden = !grp?.on;
         wsDrawMedia();
         whereUI($('[data-wh="ws"]')).set({ where: e.where ?? 'studio', place: e.place });
+        wsF('atGuest').checked = !!e.atGuest;
+        wsF('atGuestFee').value = e.atGuestFee ? String(e.atGuestFee) : '';
+        wsAgPaint();
         wsDlg.showModal();
         wsF('title').focus();
       };
       root.querySelectorAll<HTMLElement>('[data-cal-ws-close]').forEach((b) => b.addEventListener('click', () => wsDlg.close()));
       wsF('groups').addEventListener('change', () => { $('[data-ws-grp-size]').hidden = !wsF('groups').checked; });
+      // "Also at the guest's": not needed when it only happens there; its flat extra only when ticked.
+      function wsAgPaint() {
+        const onlyGuest = wsForm.querySelector<HTMLInputElement>('[name="w-where"]:checked')?.value === 'guest';
+        $('[data-ws-ag]').hidden = onlyGuest;
+        $('[data-ws-ag-fee]').hidden = onlyGuest || !wsF('atGuest').checked;
+      }
+      wsF('atGuest').addEventListener('change', wsAgPaint);
+      $('[data-wh="ws"]').addEventListener('change', wsAgPaint);
       wsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!wsCur || wsBusy) return;
@@ -5583,6 +5721,8 @@ const fields = [
           groups: wsF('groups').checked ? { on: true, min: Number(wsF('grpMin').value) || null, max: Number(wsF('grpMax').value) || null } : { on: false },
           ...(() => { const w = whereUI($('[data-wh="ws"]')).get(); return { where: w.where, place: w.place ?? null }; })(),
         };
+        const ag = body.where !== 'guest' && wsF('atGuest').checked;
+        Object.assign(body, { atGuest: ag, atGuestFee: ag ? Math.max(0, Math.round(Number(wsF('atGuestFee').value) || 0)) || null : null });
         const btn = $<HTMLButtonElement>('[data-cal-ws-save]');
         wsBusy = true; btn.disabled = true;
         wsNote(t.saving);
@@ -5601,7 +5741,7 @@ const fields = [
           // Shown at once here; the public page follows with the next hourly build.
           const items = calListings.slug === slug ? calListings.items : [];
           const had = items.find((x) => x.key === wsCur!.key);
-          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], groups: body.groups, partner: (had?.edit as { partner?: unknown } | null | undefined)?.partner, where: body.where, place: body.place };
+          const edit = { title, price: body.price, note: body.note, description: body.description, duration, seats: body.seats, media: wsMedia, booking, hidden: [...wsGone], groups: body.groups, partner: (had?.edit as { partner?: unknown } | null | undefined)?.partner, where: body.where, place: body.place, atGuest: (body as { atGuest?: boolean }).atGuest, atGuestFee: (body as { atGuestFee?: number | null }).atGuestFee };
           if (had) had.edit = edit;
           else items.push({ key: wsCur.key, title: wsCur.title, status: 'live', image: wsCur.image, price: wsCur.price ?? '', edit });
           calListings = { slug, items };
@@ -5947,6 +6087,8 @@ const fields = [
         $('[data-cal-scrim]').addEventListener('click', () => calClose());
         $('[data-cal-first] button').addEventListener('click', () => openCreate());
         $('[data-cal-add]').addEventListener('click', () => calAdd());
+        $('[data-cal-multi-go]').addEventListener('click', () => void calMultiSave());
+        $('[data-cal-multi-x]').addEventListener('click', () => { calPicks.clear(); renderCal(); });
       }
       /** "+ Add date": the new-date form with the selected workshop (and day) filled in. */
       function calAdd(day = '') {
@@ -7363,6 +7505,33 @@ const fields = [
   .cal-day.is-today .cal-n { color: #6a3eec; }
   .cal-day.is-sel { outline: 2px solid #6a3eec; background: #f3eeff; }
   .cal-n { font-weight: 600; font-size: 13px; padding-left: 2px; }
+  /* Picking several days (Anna 24.11.26), as on Airbnb's host calendar: picked days dark, a floating dark bar. */
+  .cal-day.can-pick { cursor: pointer; }
+  .cal-day.can-pick:hover { box-shadow: inset 0 0 0 1.5px #1d1b24; }
+  .cal-day.is-pick, .cal-day.is-pick:hover { background: #1d1b24; box-shadow: none; opacity: 1; }
+  .cal-day.is-pick .cal-n { color: #fff !important; }
+  button.cal-n { align-self: flex-start; border: 0; background: transparent; padding: 2px 6px; margin: -2px 0 0 -4px; border-radius: 999px; font: inherit; font-weight: 600; font-size: 13px; line-height: 1.2; }
+  button.cal-wg-h, button.cal-ag-d { border: 0; background: transparent; padding: 0 0 8px; font: inherit; border-radius: 10px; }
+  button.cal-ag-d { padding: 2px 0; }
+  .cal-wg-h.is-pick b, .cal-ag.is-pick .cal-ag-d b { background: #1d1b24; color: #fff; }
+  .cal-multi { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 40; display: grid; justify-items: center; gap: 10px; width: max-content; max-width: calc(100vw - 32px); }
+  .cal-multi[hidden] { display: none; }
+  .cal-multi-panel { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 18px; border-radius: 24px; background: #1d1b24; color: #fff; box-shadow: 0 16px 40px -12px rgba(20, 16, 40, 0.5); }
+  .cal-multi-t { display: inline-flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.6); }
+  .ha .cal-multi-t input { width: 128px; font: inherit; font-size: 0.95rem; padding: 10px 12px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.18) !important; background: rgba(255, 255, 255, 0.08) !important; color: #fff !important; color-scheme: dark; min-height: 44px; box-sizing: border-box; }
+  .cal-multi-go { min-height: 44px; padding: 0 22px; border-radius: 999px; border: 0; background: #fff; color: #1d1b24 !important; font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+  .cal-multi-go:disabled { opacity: 0.6; }
+  .cal-multi-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 6px 6px 18px; border-radius: 999px; background: #1d1b24; color: #fff; box-shadow: 0 10px 28px -10px rgba(20, 16, 40, 0.5); }
+  .cal-multi-pill b { font-size: 0.95rem; white-space: nowrap; }
+  .cal-multi-x { width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.14); color: #fff !important; font-size: 1.2rem; line-height: 1; padding: 0; display: grid; place-items: center; }
+  .cal-multi-x:hover { background: rgba(255, 255, 255, 0.24); }
+  @media (max-width: 760px) {
+    .cal-multi { width: calc(100vw - 24px); bottom: calc(78px + env(safe-area-inset-bottom)); }
+    .cal-multi-panel { width: 100%; box-sizing: border-box; flex-wrap: wrap; justify-content: center; }
+    .ha .cal-multi-t input { flex: 1; min-width: 0; width: auto; }
+    .cal-multi-t { flex: 1 1 100%; }
+    .cal-multi-go { flex: 1 1 100%; }
+  }
   .cal-chip { display: flex; justify-content: space-between; align-items: center; gap: 4px; width: 100%; border: 0; border-radius: 8px; padding: 4px 7px; font-size: 12px; line-height: 1.35; background: #6a3eec; color: #fff !important; text-align: left; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
   .cal-chip span { opacity: 0.92; overflow: hidden; text-overflow: ellipsis; }
   .cal-chip.is-full { background: #3b2580; }
@@ -7631,6 +7800,9 @@ const fields = [
   .cal-radio input { margin-top: 4px; accent-color: #6a3eec; }
   .cal-radio span { display: grid; gap: 2px; font-size: 0.9rem; }
   .cal-radio small { color: var(--color-text-muted); font-size: 0.8rem; }
+  .ws-ag { display: grid; gap: 10px; }
+  .ws-ag[hidden], .ws-ag-fee[hidden] { display: none; }
+  .ws-ag-fee { max-width: 340px; }
   .cal-ws-foot { display: flex; justify-content: flex-end; gap: 8px; position: sticky; bottom: 0; background: #fff; padding-top: 8px; }
   .cal-ws-foot button:disabled { opacity: 0.5; }
 
