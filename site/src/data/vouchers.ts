@@ -104,10 +104,14 @@ export const VOUCHERS_ON = true;
  * to vouchers — Pia, 04.11.26: "vouchers for group bookings make no sense".
  */
 let individualSlugs: Set<string> | undefined;
+/** Anna (anne, 24.11.26): Stripe connected and vouchers on; a voucher for 1–2 people at €35 (her creative photography price). */
+const VOUCHER_INDIVIDUALS = ['anne'];
 export const takesIndividuals = (slug: string): boolean => {
   if (!individualSlugs) {
     individualSlugs = new Set(getSessions('en').map((s) => s.host.slug));
     for (const h of getHosts('en', { withPreview: true })) if (h.groupRange && h.groupRange[0] <= 2) individualSlugs.add(h.slug);
+    // Hosts who said they take one or two people with a voucher although their page is for groups.
+    for (const s of VOUCHER_INDIVIDUALS) individualSlugs.add(s);
   }
   return individualSlugs.has(slug);
 };
