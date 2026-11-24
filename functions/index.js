@@ -116,7 +116,8 @@ const hostContact = async (slug) => {
     const emails = String(r[3] ?? '').split(/[\s,;/]+/).filter(isEmail);
     // Column L: the language we write to them in (de, en or fr).
     const lang = /^(de|en|fr)$/.test(String(r[11] ?? '').trim()) ? String(r[11]).trim() : '';
-    if (emails.length) return { emails, firstName: String(r[0] ?? '').trim().split(/\s+/)[0], lang };
+    // Column J: the voucher status ("No: …" when they said no to vouchers).
+    if (emails.length) return { emails, firstName: String(r[0] ?? '').trim().split(/\s+/)[0], lang, voucherNo: /^no\b/i.test(String(r[9] ?? '').trim()) };
   }
   return null;
 };
@@ -1691,6 +1692,9 @@ export const hostSupport = onRequest({ region: 'europe-west3', maxInstances: 5, 
         }
       }
     } catch (err) { console.error('hostSupport mail', err?.message); }
+  } else if (action === 'peek') {
+    // The dashboard's dot on Twiggli Support: a reply or a tip not read yet.
+    return res.status(200).json({ unread: (await db.doc(`hostSupport/${slug}`).get()).data()?.[admin ? 'adminUnread' : 'hostUnread'] === true });
   } else if (action !== 'list') return res.status(400).json({ error: 'Bad action' });
   if (!admin) await db.doc(`hostSupport/${slug}`).set({ hostUnread: false }, { merge: true });
   else await db.doc(`hostSupport/${slug}`).set({ adminUnread: false }, { merge: true });
@@ -4003,4 +4007,156 @@ export const reviewAsk = onCron({ schedule: 'every 60 minutes', timeZone: 'Europ
       await t.ref.update({ reviewAskedAt: FieldValue.serverTimestamp() });
     } catch (err) { console.error('reviewAsk: send failed', t.email, err?.message); }
   }
+});
+
+// ── Twiggli tips in Messages (Jirel 24.11.26) ────────────────────────────
+// Twiggli as the host's business partner: now and then (at most one tip
+// every two weeks, never the same one twice) a short, personal suggestion
+// lands in the host's Twiggli Support thread, to help them get more
+// bookings. Price first (only where a workshop is clearly above what
+// similar ones in Berlin cost), then the title (the words people search
+// for), the season, who books them and how they find them, groups and
+// vouchers. Built from the site's own data (host-market.json, from the last
+// build) and the host's requests; no email to the host, only the dot in
+// their dashboard. Jirel gets a copy of every tip sent.
+const TIP_GAP_DAYS = 13;
+const slugOf = (s) => String(s).toLowerCase().normalize('NFKD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').slice(0, 50);
+const round5 = (n) => Math.max(5, Math.round(n / 5) * 5);
+const hrsLabel = (h, de) => { const m = Math.round(h * 60); const t = m % 60 ? `${Math.floor(m / 60)} h ${m % 60}` : `${m / 60} h`; return de ? t.replace(' h', ' Std.') : t; };
+const SOURCE = [
+  [/google/i, 'Google'], [/instagram|ig\b/i, 'Instagram'], [/newsletter|brevo|mail/i, 'unseren Newsletter|our newsletter'],
+  [/facebook|fb/i, 'Facebook'], [/tiktok/i, 'TikTok'], [/linkedin/i, 'LinkedIn'], [/chatgpt|openai|perplexity|claude/i, 'ChatGPT & Co.'], [/^direct$/i, 'direkt über twiggli.com|twiggli.com directly'],
+];
+const sourceName = (v, de) => { for (const [re, n] of SOURCE) if (re.test(v)) { const [a, b] = n.split('|'); return de ? a : (b ?? a); } return ''; };
+
+/** Every tip that fits this host now, best first. */
+const tipsFor = (slug, m, market, reqs, lang, now = new Date()) => {
+  const de = lang === 'de';
+  const out = [];
+  const sign = de ? '\n\nDu kennst deinen Workshop am besten, also nur als Anregung. Wenn du Fragen hast, antworte einfach hier. 💛\nJirel' : '\n\nYou know your workshop best, so this is just an idea. If you have questions, simply reply here. 💛\nJirel';
+  // 1. Price: clearly above similar workshops in Berlin (per hour, so a
+  //    longer workshop may cost more). Only with at least 4 comparable hosts.
+  for (const l of m.listings ?? []) {
+    const g = market.groups?.[l.group];
+    if (!g || !l.price || !l.hours || !l.dated) continue;
+    const ph = l.price / l.hours;
+    if (!(ph > g.perHour.p75 && ph > 1.3 * g.perHour.median)) continue;
+    const lo = round5(g.perHour.p25 * l.hours), hi = round5(g.perHour.p75 * l.hours);
+    if (l.price <= hi + 5) continue;
+    out.push({ id: `price:${slugOf(l.title)}:${l.price}`, text: de
+      ? `💡 Ein kleiner Tipp zu deinen Preisen\n\n„${l.title}“ kostet bei dir ${l.price} € für ${hrsLabel(l.hours, true)}. Ähnliche Workshops in Berlin liegen für diese Länge meist bei ${lo}–${hi} €. Gäste vergleichen online sehr genau, und ein Preis in diesem Bereich bringt oft spürbar mehr Buchungen.\n\nWenn bei dir etwas Besonderes dabei ist (Getränke, besonderes Material, mehr zum Mitnehmen), schreib es gleich in den Titel oder die ersten Sätze. Dann sehen Gäste sofort, warum es sich lohnt. Du kannst auch einzelne Termine günstiger anlegen, etwa unter der Woche.${sign}`
+      : `💡 A small tip on your prices\n\n“${l.title}” is €${l.price} for ${hrsLabel(l.hours, false)}. Similar workshops in Berlin mostly cost €${lo}–${hi} for that length. Guests compare closely online, and a price in that range often brings noticeably more bookings.\n\nIf something special is included (drinks, special materials, more to take home), put it right in the title or the first sentences, so guests see straight away why it's worth it. You can also add single dates for less, on weekdays for example.${sign}` });
+    break;
+  }
+  // 2. Title: the words people type into Google for this kind of workshop.
+  const kinds = market.search ?? {};
+  for (const l of m.listings ?? []) {
+    const k = kinds[l.group];
+    if (!l.dated || !k) continue;
+    if (new RegExp(k.re, 'i').test(l.title)) continue;
+    const phrase = de ? k.de : k.en;
+    out.push({ id: `title:${slugOf(l.title)}`, text: de
+      ? `🔎 Ein Tipp, damit man dich leichter findet\n\nViele suchen auf Google nach „${phrase} Berlin“. In deinem Titel „${l.title}“ kommt das Wort noch nicht vor. Ein Titel wie „${phrase}: ${l.title}“ hilft Google und Gästen, sofort zu verstehen, was sie bei dir machen.\n\nÄndern kannst du ihn unter Angebote → Bearbeiten.${sign}`
+      : `🔎 A tip to help people find you\n\nMany people search Google for “${phrase} Berlin”. Your title “${l.title}” doesn't have those words yet. A title like “${phrase[0].toUpperCase()}${phrase.slice(1)}: ${l.title}” helps Google and guests see straight away what they'll do with you.\n\nYou can change it under Listings → Edit.${sign}` });
+    break;
+  }
+  // 3. The season: the weeks before Christmas, and the quieter start of the year.
+  const mo = now.getMonth(), day = now.getDate(), yr = now.getFullYear();
+  if (((mo === 10 && day >= 10) || (mo === 11 && day <= 8)) && m.individuals && m.upcoming30 < 4) {
+    out.push({ id: `season:${yr}-xmas`, text: de
+      ? `🎄 Die Wochen vor Weihnachten sind die buchungsstärksten des Jahres\n\nViele suchen gerade ein Erlebnis zum Verschenken oder einen Abend mit Freund:innen. Wenn du noch Kapazität hast, leg jetzt ein, zwei zusätzliche Termine an, am besten Abende unter der Woche und Wochenenden. Im Kalender geht das mit „Neuer Termin“.${sign}`
+      : `🎄 The weeks before Christmas are the busiest of the year\n\nMany people are looking for an experience to give or an evening with friends right now. If you still have room, add one or two extra dates now, ideally weekday evenings and weekends. In your calendar, that's “New date”.${sign}` });
+  }
+  if (((mo === 0 && day >= 3) || (mo === 1 && day <= 20)) && m.individuals) {
+    out.push({ id: `season:${yr}-winter`, text: de
+      ? `❄️ Januar und Februar sind in Berlin ruhigere Monate\n\nViele Hosts füllen sie mit einem etwas günstigeren Preis für diese Wochen oder einem neuen, kürzeren Format („Neujahrs-Special“, „After-Work“). Leg dafür im Kalender einfach eigene Termine mit diesem Preis an.${sign}`
+      : `❄️ January and February are quieter months in Berlin\n\nMany hosts fill them with a slightly lower price for these weeks, or a new, shorter format (a “New Year special”, an “after-work” session). Just add dates with that price in your calendar.${sign}` });
+  }
+  // 4. Who books them and how they find them (from 3 requests on).
+  const since = Date.now() - 150 * 864e5;
+  const recent = reqs.filter((r) => (r.createdAt?.toMillis?.() ?? 0) > since && !r.duplicateOf);
+  if (recent.length >= 3) {
+    const groupish = recent.filter((r) => /group|christmas|team|firmen|gruppe/i.test(String(r.subject))).length;
+    const ppl = recent.map((r) => Number(String(r.fields?.People ?? '').match(/\d+/)?.[0])).filter((n) => n > 0).sort((a, b) => a - b);
+    const midPpl = ppl.length ? ppl[ppl.length >> 1] : 0;
+    const src = {};
+    for (const r of recent) { const n = sourceName(String(r.fields?.['Came from'] ?? ''), de); if (n) src[n] = (src[n] ?? 0) + 1; }
+    const top = Object.entries(src).sort((a, b) => b[1] - a[1])[0];
+    const en = recent.filter((r) => /^en/i.test(String(r.fields?.Language ?? ''))).length;
+    const lines = [];
+    lines.push(de ? `In den letzten Monaten kamen ${recent.length} Anfragen über Twiggli zu dir${groupish ? `, ${groupish} davon von Gruppen oder Firmen` : ''}${midPpl ? `, meist für ${midPpl} ${midPpl === 1 ? 'Person' : 'Personen'}` : ''}.`
+      : `Over the last months you got ${recent.length} requests through Twiggli${groupish ? `, ${groupish} of them from groups or companies` : ''}${midPpl ? `, mostly for ${midPpl} ${midPpl === 1 ? 'person' : 'people'}` : ''}.`);
+    if (top && top[1] >= 2) lines.push(de ? `Die meisten haben dich über ${top[0]} gefunden.` : `Most found you through ${top[0]}.`);
+    let idea = '';
+    if (groupish * 2 >= recent.length && !m.groupOffer) idea = de ? 'Weil so viele Gruppen fragen: Schalte bei deinem Workshop „Auch für private Gruppen“ ein, dann steht er auch unter „Auf Anfrage“ mit deiner Gruppengröße.' : 'Since so many groups ask: switch on “Also for private groups” on your workshop, and it shows under “On request” with your group size.';
+    else if (en * 2 >= recent.length && lang === 'de') idea = de ? 'Gut die Hälfte schreibt auf Englisch. Ein, zwei Sätze auf Englisch in deiner Beschreibung oder ein englischer Termin im Monat könnten dir noch mehr Buchungen bringen.' : '';
+    else if (top && /Instagram/.test(top[0])) idea = de ? 'Teil deinen Twiggli-Link in deiner Instagram-Bio oder Story, dann können deine Follower direkt buchen und zahlen.' : 'Share your Twiggli link in your Instagram bio or story, so your followers can book and pay straight away.';
+    else idea = de ? 'Ein kurzes Video und Termine für die nächsten vier Wochen helfen am meisten, dass aus Besuchen Buchungen werden.' : 'A short video and dates for the next four weeks help most to turn visits into bookings.';
+    out.push({ id: `audience:${yr}-${mo}`, every: 60, text: `📊 ${de ? 'Ein kurzer Blick auf deine Anfragen' : 'A quick look at your requests'}\n\n${lines.join(' ')}\n\n${idea}${sign}` });
+  }
+  // 5. Groups and teams, in the busy season for them.
+  if ([8, 9, 10, 11, 0].includes(mo) && m.individuals && !m.groupOffer) {
+    out.push({ id: 'groups', text: de
+      ? `👥 Gerade fragen viele Teams nach Weihnachtsfeiern und Teamevents\n\nWenn du deinen Workshop auch für private Gruppen anbieten magst, schalte unter Angebote → Bearbeiten „Auch für private Gruppen“ ein und trag die Gruppengröße ein. Firmen sehen ihn dann auf unserer Seite für Teamevents.${sign}`
+      : `👥 Many teams are asking about Christmas parties and team events right now\n\nIf you'd like to offer your workshop to private groups too, switch on “Also for private groups” under Listings → Edit and add the group size. Companies then see it on our team events page.${sign}` });
+  }
+  // 6. Vouchers before Christmas.
+  if ((mo === 10 || (mo === 11 && day <= 15)) && m.individuals && !m.voucher) {
+    out.push({ id: `voucher:${yr}`, text: de
+      ? `🎁 Gutscheine sind vor Weihnachten sehr gefragt\n\nViele verschenken gerade Workshops. Wenn du mitmachst, können Gäste einen Twiggli-Gutschein für deinen Workshop kaufen. Du bekommst den Betrag abzüglich 15 %, sobald er bei dir eingelöst wird. Mitmachen kannst du unter Einstellungen → Zahlung.${sign}`
+      : `🎁 Vouchers are in demand before Christmas\n\nMany people give workshops as presents right now. If you join, guests can buy a Twiggli voucher for your workshop, and you get the amount minus 15% once it's redeemed with you. You can join under Settings → Payment.${sign}` });
+  }
+  return out;
+};
+
+const runInsights = async ({ dry = false, only = '' } = {}) => {
+  const db = getFirestore();
+  const market = await (await fetch(`${SITE}/host-market.json`, { signal: AbortSignal.timeout(20000) })).json();
+  const owners = only ? [only] : (await db.collection('pageOwners').get()).docs.map((d) => d.id);
+  const sent = [];
+  for (const slug of owners) {
+    if (slug === 'test-jirel' && !only) continue;
+    const m = market.hosts?.[slug];
+    if (!m) continue;
+    const ref = db.doc(`hostInsights/${slug}`);
+    const st = (await ref.get()).data() ?? {};
+    if (!dry && st.last && Date.now() - st.last < TIP_GAP_DAYS * 864e5) continue;
+    // A new host gets a week to settle in before the first tip.
+    const claimed = (await db.doc(`pageOwners/${slug}`).get()).data()?.claimedAt?.toMillis?.() ?? 0;
+    if (!only && claimed && Date.now() - claimed < 7 * 864e5) continue;
+    let who = null;
+    try { who = await hostContact(slug); } catch { /* sheet unreadable */ }
+    const prefs = await hostPrefs(slug);
+    const lang = (prefs.lang || m.lang) === 'de' ? 'de' : 'en';
+    const reqs = (await db.collection('formRequests').where('hostSlug', '==', slug).get()).docs.map((d) => d.data());
+    const done = st.sent ?? {};
+    const tip = tipsFor(slug, m, market, reqs, lang).filter((t) => !(who?.voucherNo && t.id.startsWith('voucher'))).find((t) => {
+      if (t.every) return !Object.entries(done).some(([id, at]) => id.startsWith(t.id.split(':')[0]) && Date.now() - at < t.every * 864e5);
+      return !(t.id in done);
+    });
+    if (!tip) continue;
+    sent.push({ slug, id: tip.id, text: tip.text });
+    if (dry) continue;
+    await db.collection(`hostSupport/${slug}/msgs`).add({ from: 'twiggli', by: 'tips', kind: 'tip', text: tip.text, at: FieldValue.serverTimestamp() });
+    await db.doc(`hostSupport/${slug}`).set({ last: Date.now(), hostUnread: true }, { merge: true });
+    await ref.set({ last: Date.now(), sent: { [tip.id]: Date.now() } }, { merge: true });
+  }
+  return sent;
+};
+
+export const hostInsights = onCron({ schedule: '30 10 * * 2', timeZone: 'Europe/Berlin', region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 1, timeoutSeconds: 540 }, async () => {
+  const sent = await runInsights();
+  if (sent.length) {
+    await mailJirel({ subject: `Twiggli tips sent: ${sent.length} host${sent.length > 1 ? 's' : ''}`,
+      text: `These tips went into the hosts' Twiggli Support threads today:\n\n${sent.map((s) => `── ${s.slug} (${s.id})\n${s.text}`).join('\n\n')}` }).catch((err) => console.error('tips mail', err?.message));
+  }
+});
+
+/** Jirel only: what each host would get next, without sending (or one host's, with ?slug). */
+export const hostInsightsPreview = onRequest({ region: 'europe-west3', maxInstances: 2, cors: false }, async (req, res) => {
+  if (!allow(req, res)) return;
+  const email = await caller(req);
+  if (!email || !ADMINS.includes(email)) return res.status(403).json({ error: 'Admins only' });
+  const only = SLUG.test(String(req.body?.slug ?? '')) ? String(req.body.slug) : '';
+  return res.status(200).json({ tips: await runInsights({ dry: true, only }) });
 });

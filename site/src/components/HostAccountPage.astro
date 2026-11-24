@@ -2180,7 +2180,8 @@ const fields = [
       const ntUnread = () => { const r = ntRead(); return NT_DEMO.slice(0, 4).filter((n) => !r.includes(n.id)); };
       /** The page's tips on show (renderTips below); the bell lists them too. */
       let tipsNow: { id: string; level: number; title: string; body: string; soft?: boolean; note?: boolean; fix?: { label: string; run: () => void }; link?: { label: string; href: string } }[] = [];
-      const paintDot = () => { $('[data-ha-dot]').hidden = !hasPending && !ntUnread().length && !tipsNow.length; };
+      let spUnread = false;
+      const paintDot = () => { $('[data-ha-dot]').hidden = !hasPending && !ntUnread().length && !tipsNow.length && !spUnread; };
       const ntEsc = (x: string) => x.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
       const ICON: Record<string, string> = {
         approved: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
@@ -2581,8 +2582,9 @@ const fields = [
         const box = $('[data-sp-msgs]');
         box.querySelectorAll('.sp-b:not(:first-child)').forEach((n) => n.remove());
         for (const m of msgs) {
-          const b = el('div', `sp-b ${m.from === 'host' ? 'sp-me' : 'sp-them'}`);
-          if (m.kind && SP_KIND[m.kind]) b.append(el('span', 'sp-kind', `${SP_KIND[m.kind]} `));
+          const b = el('div', `sp-b ${m.from === 'host' ? 'sp-me' : 'sp-them'}${m.kind === 'tip' ? ' sp-tip' : ''}`);
+          if (m.kind === 'tip') b.append(el('span', 'sp-kind', TL('Tipp von Twiggli', 'Tip from Twiggli', 'Conseil de Twiggli')));
+          else if (m.kind && SP_KIND[m.kind]) b.append(el('span', 'sp-kind', `${SP_KIND[m.kind]} `));
           if (m.text) b.append(el('span', '', m.text));
           const fs = m.files?.length ? m.files : m.shot ? [{ url: m.shot, name: 'Screenshot', type: 'image/' }] : [];
           for (const f of fs) {
@@ -2599,6 +2601,7 @@ const fields = [
       const spLoad = async () => {
         if (!slug || DEMO) return;
         try { const r = await api('hostSupport', { slug, action: 'list' }); spRender((r.msgs ?? []) as SpMsg[]); } catch { /* the welcome stays */ }
+        $('[data-sp-dot]').hidden = true; spUnread = false; paintDot();
       };
       const spOpen = (open = true) => {
         $('[data-sp-body]').hidden = !open;
@@ -2705,6 +2708,8 @@ const fields = [
         }
         paintAdminNotes();
         scheduleTips();
+        // A reply or a Twiggli tip not read yet: a small dot on Twiggli Support.
+        if (!DEMO) void api('hostSupport', { slug: s, action: 'peek' }).then((r) => { if (tipsFor === s) { spUnread = !!r.unread; $('[data-sp-dot]').hidden = !spUnread; paintDot(); } }).catch(() => {});
       };
       // Photo sizes, measured in the browser (site pictures and uploads alike).
       const photoSize = new Map<string, [number, number] | null>();
@@ -7515,6 +7520,9 @@ const fields = [
   .sp-b { max-width: 80%; padding: 9px 13px; border-radius: 14px; font-size: .86rem; line-height: 1.45; white-space: pre-wrap; }
   .sp-them { background: #fff; border: 1px solid #eee; align-self: flex-start; }
   .sp-me { background: #6a3eec; color: #fff; align-self: flex-end; }
+  /* Twiggli tips (functions hostInsights): soft, never loud. */
+  .sp-tip { background: #f6f2ff; border-color: #e6dcff; }
+  .sp-tip .sp-kind { display: block; font-size: .66rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #6a3eec; margin-bottom: 4px; }
   .sp-meta { margin-top: 4px; font-size: .68rem; opacity: .7; }
   .sp-doc { display: inline-block; margin-top: 8px; padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,.18); color: inherit; font-size: .8rem; }
   .sp-them .sp-doc { background: #f1eaff; color: #6a3eec; }
