@@ -92,6 +92,13 @@ const en: HostCopy[] = [
   { slug: 'thebequem', name: 'The Bequem', specialty: 'Perfumed candle making', studio: 'The Bequem',
     blurb: 'The Bequem started with Anastasia buying a candle every time she moved to a new flat, until scent became her brand and running workshops her full-time job. In her bright studio in Kreuzberg you dive into the world of perfumery and candles: you learn about the materials and the process, smell your way through her scent bottles and mix your own fragrance, choose the glass and pour two perfumed candles to take home. You also learn what to look out for the next time you buy a candle, a home scent or a perfume. All materials are included and no experience is needed. Come on your own to meet new people, or with friends for a creative catch-up. For teams, birthdays and bridal showers she runs the workshop privately, in her studio or at your place.',
     group: 'Open dates up to 10 · private groups 4–15 in the studio, up to 18 at your place', duration: '1 h 45 (about 2.5 h for 10+ people)', place: 'Kreuzberg · or at your office or venue', languages: 'EN' },
+  // Lucie Böhme (BYUTYFUL, natural skincare), emails of 05.11. and 24.11.26:
+  // air-drying modelling clay, no wet clay; 2 h, €59, up to 10 at Ohma
+  // Studio, bigger groups at the company's; open dates in German, private
+  // groups DE/EN. Photos by WeTransfer 24.11.26; video to follow.
+  { slug: 'byutyful', name: 'BYUTYFUL', specialty: 'Room scent & scent stone workshop', studio: 'BYUTYFUL',
+    blurb: 'Lucie founded BYUTYFUL, a Berlin brand of natural, certified organic skincare, and in her workshops she shares what she knows about scent. You learn how a fragrance is built from top, heart and base notes, then mix your own room scent from essential oils and take it home in your own bottle. While it rests, you shape two scent stones from air-drying clay and press in stamps, words or fresh twigs, so each one turns out different. A few drops of your scent on the stone, and it scents your room. Nothing gets messy and no experience is needed. A calm, creative two hours on your own, with friends, or with your team.',
+    group: 'Open dates up to 10 · private groups in the studio up to 10, larger at your office', duration: '2 h', place: 'Ohma Studio, Friedrichshain · or at your office', languages: 'DE · EN' },
   // Manuel, 23.10.26 ("ruf gerne durch"). From waldsamkeit.de (23.10.26).
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wild herb walks', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit runs nature walks with a scientific background: biologist Manuel Larbig and his team of young naturalists check old plant lore against the studies rather than repeating it. On the classic three-hour wild herb walk you get to know at least twenty wild plants in a Berlin park or forest: which are edible, which have a healing effect, which poisonous look-alikes to avoid, and where their names come from. Groups stay small, twelve at most. The longer walk ends with a picnic and wild-herb butter, and for companies they design team days in nature around your group.',
@@ -238,6 +245,9 @@ const de: HostCopy[] = [
   { slug: 'thebequem', name: 'The Bequem', specialty: 'Duftkerzen selbst machen', studio: 'The Bequem',
     blurb: 'The Bequem begann damit, dass Anastasia sich bei jedem Umzug eine neue Kerze kaufte, bis Duft zu ihrer Marke und Workshops zu ihrem Vollzeitjob wurden. In ihrem hellen Studio in Kreuzberg taucht ihr in die Welt von Parfum und Kerzen ein: Ihr lernt die Materialien und den Ablauf kennen, schnuppert euch durch ihre Duftfläschchen und mischt euren eigenen Duft, wählt das Glas und gießt zwei Duftkerzen, die ihr mit nach Hause nehmt. Dabei erfahrt ihr auch, worauf ihr beim nächsten Kauf von Kerzen, Raumdüften oder Parfum achten solltet. Alle Materialien sind inklusive, Vorkenntnisse braucht ihr keine. Kommt allein und lernt neue Leute kennen, oder mit Freund:innen für ein kreatives Wiedersehen. Für Teams, Geburtstage und Junggesellinnenabschiede gibt sie den Workshop privat, in ihrem Studio oder bei euch. Der Workshop ist auf Englisch.',
     group: 'Offene Termine bis 10 · private Gruppen 4–15 im Studio, bis 18 bei euch', duration: '1 Std. 45 (bei 10+ Personen ca. 2,5 Std.)', place: 'Kreuzberg · oder bei euch im Büro oder in eurer Location', languages: 'EN' },
+  { slug: 'byutyful', name: 'BYUTYFUL', specialty: 'Raumduft & Duftsteine selbst machen', studio: 'BYUTYFUL',
+    blurb: 'Lucie hat BYUTYFUL gegründet, eine Berliner Marke für zertifizierte Naturkosmetik, und in ihren Workshops teilt sie, was sie über Düfte weiß. Ihr lernt, wie ein Duft aus Kopf-, Herz- und Basisnote aufgebaut ist, mischt aus ätherischen Ölen euren eigenen Raumduft und nehmt ihn im eigenen Fläschchen mit nach Hause. Währenddessen formt ihr zwei Duftsteine aus lufttrocknender Modelliermasse und drückt Stempel, Worte oder frische Zweige hinein, sodass jeder anders wird. Ein paar Tropfen eures Dufts auf den Stein, und er beduftet euren Raum. Nichts wird matschig, Vorkenntnisse braucht ihr keine. Zwei ruhige, kreative Stunden allein, mit Freund:innen oder mit eurem Team.',
+    group: 'Offene Termine bis 10 · private Gruppen im Studio bis 10, größere bei euch im Büro', duration: '2 Std.', place: 'Ohma Studio, Friedrichshain · oder bei euch im Büro', languages: 'DE · EN' },
   { slug: 'waldsamkeit', name: 'Waldsamkeit', specialty: 'Wildkräuterwanderungen', studio: 'Waldsamkeit',
     blurb: 'Waldsamkeit macht Naturführungen mit naturwissenschaftlichem Hintergrund: Biologe Manuel Larbig und sein Team junger Naturexpert:innen prüfen altes Pflanzenwissen, statt es einfach zu übernehmen. Auf der klassischen dreistündigen Wildkräuterwanderung lernt ihr in einem Berliner Park oder Wald mindestens zwanzig Wildpflanzen kennen: was essbar ist, was heilend wirkt, welche giftigen Doppelgänger ihr meiden solltet und woher die Namen kommen. Die Gruppen bleiben klein, höchstens zwölf. Die lange Tour endet mit Picknick und Wildkräuterbutter, und für Firmen gestalten sie Teamtage in der Natur rund um eure Gruppe.',
     group: 'Bis 12 bei offenen Touren · Teams auf Anfrage', duration: '3–6 Std.', place: 'Parks und Wälder in ganz Berlin', languages: 'DE · EN' },
@@ -312,6 +322,8 @@ const facets: Record<string, Facets> = {
   runningpapaya:         { activity: 'food', groupRange: [1, 35], hourRange: [3, 4], groupPrice: 125 },
   // Anastasia, 24.11.26: €49 pp for open dates and private groups (4–15 in
   // the studio, up to 18 on-site); 1 h 45, about 2.5 h for 10+ people.
+  // Lucie, 24.11.26: €59 pp, 2 h, up to 10 in the studio, more on-site.
+  byutyful:              { activity: 'craft', groupRange: [1, 30], hourRange: [2, 2], groupPrice: 59 },
   thebequem:             { activity: 'craft', groupRange: [1, 18], hourRange: [1.75, 2.5], groupPrice: 49 },
   'test-jirel':          { activity: 'craft',       groupRange: [1, 10],   hourRange: [2, 2],   groupPrice: 45 },
   // Corporate price from Diana's email; public classes are €79.
@@ -356,7 +368,7 @@ const facets: Record<string, Facets> = {
 
 const firstNames: Record<string, string> = {
   'test-jirel': 'Jirel',
-  rtmis: 'Diana', runningpapaya: 'Michael', thebequem: 'Anastasia', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
+  rtmis: 'Diana', runningpapaya: 'Michael', thebequem: 'Anastasia', byutyful: 'Lucie', 'beavis-bar': 'Jon', 'schoppe-braeu': 'Thorsten', waldsamkeit: 'Manuel', zoenoteka: 'Máté', hobbytischlerei: 'Micha',
   yahelis: 'Yahel', 'groove-in-focus': 'Eric', 'luc-demissy': 'Luc', concreare: 'Constanze',
   'jeannette-tolksdorff': 'Jeannette', paintnow: 'Ilinca', 'atelier-sinn': 'Kora', 'lucille-guder': 'Lucille', marija: 'Marija', 'fave-studio': 'Elena & Giulia', pigi: 'Pigi', 'pia-christmas': 'Pia',
   'ingo-thomas': 'Ingo',
@@ -366,6 +378,7 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
   'test-jirel': { area: 'Berlin' },
   runningpapaya: { area: 'Wilmersdorf' },
   thebequem: { area: 'Kreuzberg', onSite: true },
+  byutyful: { area: 'Friedrichshain', onSite: true },
   'ingo-thomas': { area: 'Pankow' },
   rtmis: { area: 'Wedding', onSite: true }, strassenbraeu: { area: 'Kreuzberg' }, 'beavis-bar': { area: 'Mitte' }, 'schoppe-braeu': { area: 'Kreuzberg' },
   waldsamkeit: { area: 'Berlin' }, zoenoteka: { area: 'Neukölln' }, hobbytischlerei: { area: 'Kaulsdorf' },
@@ -377,6 +390,10 @@ const areas: Record<string, { area: string; onSite?: boolean }> = {
 /** Formats each preview host runs on request, with no public date. */
 const onRequest: Record<string, PreviewOffer[]> = {
   // Anastasia, 24.11.26: travel free within 5 km of the studio, €25 elsewhere in Berlin.
+  byutyful: [
+    { title: 'Raumduft & Duftsteine für eure Gruppe im Studio (bis 10 Personen, Deutsch oder Englisch)', titleEn: 'Room scent & scent stones for your group in the studio (up to 10 people, German or English)', duration: '2 h', price: '€59', district: 'Friedrichshain', url: '' },
+    { title: 'Raumduft & Duftsteine bei euch im Büro (größere Gruppen)', titleEn: 'Room scent & scent stones at your office (larger groups)', duration: '2 h', price: '€59', district: 'Berlin', url: '' },
+  ],
   thebequem: [
     { title: 'Duftkerzen-Workshop für eure Gruppe im Studio (4–15 Personen)', titleEn: 'Perfumed candle workshop for your group in the studio (4–15 people)', duration: '1 h 45', price: '€49', district: 'Kreuzberg', url: '' },
     { title: 'Duftkerzen-Workshop bei euch (bis 18 Personen, innerhalb von 5 km ohne Anfahrtskosten)', titleEn: 'Perfumed candle workshop at your place (up to 18 people, no travel cost within 5 km)', duration: '1 h 45–2.5 h', price: '€49', district: 'Berlin', url: '' },
