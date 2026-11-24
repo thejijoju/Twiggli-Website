@@ -1,7 +1,7 @@
 import { getHosts, type Host } from './content.ts';
 import { VOUCHERS_ON_FIREBASE, functionsBase } from './firebase.ts';
-import { getHostPriceRanges, getSessions } from './sessions.ts';
-import { voucherChoice, voucherChoiceSlugs } from './hostEdits.ts';
+import { getHostPriceRanges, getOnRequestAll, getSessions } from './sessions.ts';
+import { listingEdit, listingEditsFor, voucherChoice, voucherChoiceSlugs } from './hostEdits.ts';
 import { withBase, type Lang } from '../lib/url.ts';
 
 /**
@@ -104,7 +104,7 @@ export const VOUCHERS_ON = true;
  * to vouchers — Pia, 04.11.26: "vouchers for group bookings make no sense".
  */
 let individualSlugs: Set<string> | undefined;
-/** Anna (anne, 24.11.26): Stripe connected and vouchers on; a voucher for 1–2 people at €35 (her creative photography price). */
+/** Anna (anne, 24.11.26): Stripe connected and vouchers on; a voucher for 1–2 people at her class price (€55 since 24.11.26). */
 const VOUCHER_INDIVIDUALS = ['anne'];
 export const takesIndividuals = (slug: string): boolean => {
   if (!individualSlugs) {
@@ -139,6 +139,12 @@ const voucherPriceOverride: Record<string, number> = { studio32: 119, strassenbr
 
 export const voucherPrice = (host: Pick<Host, 'slug' | 'groupPrice'>): number | undefined => {
   if (voucherPriceOverride[host.slug]) return voucherPriceOverride[host.slug];
+  // Voucher prices match the class prices (Jirel 24.11.26): a price the host set
+  // in the dashboard for a class guests book themselves wins over the site's data.
+  // Group formats on request (e.g. "At your office") never set the voucher price.
+  const groupKeys = new Set(getOnRequestAll('en').filter((o) => o.host.slug === host.slug).map((o) => o.key ?? ''));
+  const own = listingEditsFor(host.slug).filter((e) => e.booking !== 'request' && !groupKeys.has(e.key) && (e.price ?? 0) > 0).map((e) => Number(e.price));
+  if (own.length) return Math.min(...own);
   const dated = getHostPriceRanges().get(host.slug);
   if (dated && dated[0] > 0) return dated[0];
   if (host.groupPrice == null) return undefined;
@@ -149,6 +155,8 @@ export const voucherPrice = (host: Pick<Host, 'slug' | 'groupPrice'>): number | 
  *  its dated sessions (Fred's wine tasting is €64, his cooking classes
  *  €119–127, so one host price would not fit, Jirel 27.10). */
 export const classVoucherPrice = (slug: string, key: string, lang: Lang): number | undefined => {
+  const own = listingEdit(slug, key)?.price;
+  if (own && own > 0) return Math.round(own);
   const prices = getSessions(lang)
     .filter((s) => s.host.slug === slug && s.workshopKey === key && s.price)
     .map((s) => Number(String(s.price).match(/\d+(?:[.,]\d+)?/)?.[0].replace(',', '.')))

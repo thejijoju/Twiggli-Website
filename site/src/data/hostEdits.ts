@@ -41,6 +41,8 @@ export type ListingEdit = {
 const listingEdits = new Map(((edits as { listingEdits?: ListingEdit[] }).listingEdits ?? []).map((e) => [`${e.slug}|${e.key}`, e]));
 /** A host's own title, price per person and short line for a workshop. */
 export const listingEdit = (slug: string, key: string): ListingEdit | undefined => listingEdits.get(`${slug}|${key}`);
+/** All of one host's own workshop edits (title, price, booking …). */
+export const listingEditsFor = (slug: string): ListingEdit[] => [...listingEdits.values()].filter((e) => e.slug === slug);
 /** Every workshop a host also offers to groups on request (their listing's switch). */
 export const groupListings = (): ListingEdit[] => [...listingEdits.values()].filter((e) => e.groups?.on);
 const slots = ((edits as { slots?: SlotRow[] }).slots ?? []).filter((s) => s.active !== false);

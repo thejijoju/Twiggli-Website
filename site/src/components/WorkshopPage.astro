@@ -86,7 +86,11 @@ import Voucher from './Voucher.astro';
 import NoticeCard from './NoticeCard.astro';
 import { bookingCopy, noDateRequests } from '../data/bookingCopy.ts';
 import { href } from '../lib/url.ts';
+import { atGuestFee, atGuestLine } from '../data/atGuest.ts';
 const bc = bookingCopy[lang];
+// Also at the guest's place (Anna 24.11.26): a pill here, and a "where?" in the request form.
+const agLine = atGuestLine(host.slug, key, lang);
+const agFee = atGuestFee(host.slug, key);
 // None of this class's dates suits: ask for one (BookingDialog kind "wish").
 const wishAttrs = {
   'data-book': 'wish',
@@ -94,6 +98,7 @@ const wishAttrs = {
   'data-book-host': host.name,
   'data-book-slug': host.slug,
   'data-book-price': next.price || undefined,
+  'data-book-atguest': agFee === undefined ? undefined : String(agFee),
 };
 ---
 
@@ -139,6 +144,7 @@ const wishAttrs = {
           <div><dt>{t.languages}</dt><dd>{spellLanguages(next.languages ?? host.languages, lang)}</dd></div>
           {next.price && <div><dt>{t.price}</dt><dd>{next.price} · {t.perPerson}</dd></div>}
         </dl>
+        {agLine && <p class="ag-pill">{agLine}</p>}
         <Voucher kind="pill" host={host} lang={lang} title={w.title} workshopKey={key} />
         <LiveReviews slug={host.slug} lang={lang} />
         <p class="section-more"><a href={hostHref(lang, host)}>{x.backToHost} {host.name} →</a></p>
@@ -182,4 +188,6 @@ const wishAttrs = {
 </Base>
 
 <style>
+  .ag-pill { display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 12px; padding: 5px 12px; border-radius: 999px; background: #f3eeff; color: #6a3eec; font-size: 0.85rem; font-weight: 600; }
+  .ag-pill::before { content: '📍'; font-size: 0.8rem; }
 </style>
