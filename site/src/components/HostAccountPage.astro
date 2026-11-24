@@ -2949,6 +2949,10 @@ const fields = [
         return res.json();
       };
       const statusText: Record<string, string> = { pending: t.stPending, accepted: t.stAccepted, declined: t.stDeclined, suggested: t.stSuggested, offered: t.ib.offer };
+      // A confirmed request is not paid unless a card or voucher hold was taken with it (Diana 24.11.26).
+      const stOf = (r: Req) => (r.status === 'accepted' && !(r as { hold?: unknown }).hold
+        ? TL('Zugesagt · noch nicht bezahlt', 'Confirmed · not paid yet', 'Confirmée · pas encore payée')
+        : statusText[r.status] ?? '');
       const dateOf = (r: Req) => (r.fields.Date || '').slice(0, 10);
       const el = (tag: string, cls = '', text = '') => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
       // ── Videos go to Bunny Stream (functions hostVideo, Jirel 18.11.26): the
@@ -3108,7 +3112,7 @@ const fields = [
         const name = el('strong', '', r.fields.Name || r.fields.Email || t.guest);
         const line = el('p', 'ha-msg-line', r.fields.Workshop || r.subject);
         const meta = el('p', 'ha-msg-meta');
-        meta.append(el('i', `ha-st ha-st-${r.status}`), statusText[r.status] ?? r.status);
+        meta.append(el('i', `ha-st ha-st-${r.status}`), stOf(r) || r.status);
         body.append(top, name, line, meta);
         if (waiting(r)) { const b = el('span', 'ha-pill-btn', t.review); body.append(b); }
         li.append(av, body);
@@ -3282,10 +3286,16 @@ const fields = [
         }
         $('[data-ha-today-empty]').hidden = items.length > 0;
       };
+      // Only what is real and still ahead (Jirel 24.11.26): requests for a date
+      // that has passed are left out of Messages, the calendar and the counts.
+      const upcomingReqs = (items: Req[]) => {
+        const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+        return items.filter((r) => { const d = /\d{4}-\d\d-\d\d/.exec(r.fields?.Date || '')?.[0]; return !d || d >= today; });
+      };
       const loadInbox = async () => {
         try { const r = await api('hostEvents', { slug }); ownEvents = r.items ?? []; calBookings = r.bookings ?? []; calReplaced = new Set(r.replaced ?? []); } catch { ownEvents = []; calBookings = []; }
         renderOwnDates();
-        try { reqs = (await api('hostInbox', { slug })).items ?? []; } catch { reqs = []; }
+        try { reqs = upcomingReqs((await api('hostInbox', { slug })).items ?? []); } catch { reqs = []; }
         renderMsgs();
         renderCal();
         openFromMail();
@@ -3338,7 +3348,7 @@ const fields = [
             if (hold && (action === 'accept' || action === 'decline')) hold.settled = action === 'accept' ? 'taken' : 'released';
           } else {
             await api('hostReply', { id: r.id, action, ...extra });
-            reqs = (await api('hostInbox', { slug })).items ?? reqs;
+            reqs = upcomingReqs((await api('hostInbox', { slug })).items ?? reqs);
           }
           note.textContent = t.ib.sent;
           const dlg = root.querySelector<HTMLDialogElement>('[data-ib-modal]');
@@ -3461,7 +3471,7 @@ const fields = [
         closeRes.type = 'button'; closeRes.setAttribute('aria-label', t.back);
         closeRes.addEventListener('click', () => { if (inModal) (res.closest('dialog') as HTMLDialogElement | null)?.close(); else $('[data-ib-grid]').classList.remove('show-res'); });
         const what = el('div', 'ib-what');
-        what.append(el('small', '', statusText[r.status] ?? t.ib.inquiry), el('h3', '', say(t.ib.asked, { name, what: r.fields.Workshop || t.ib.inquiry })),
+        what.append(el('small', '', stOf(r) || t.ib.inquiry), el('h3', '', say(t.ib.asked, { name, what: r.fields.Workshop || t.ib.inquiry })),
           el('p', '', [fmtDay(dateOf(r)), r.fields.Time].filter(Boolean).join(', ')),
           el('p', '', [ppl === 1 ? t.ib.guest1 : say(t.ib.guests, { n: String(ppl) }), each ? `€ ${(each * ppl).toLocaleString(loc)} ${t.ib.total}` : ''].filter(Boolean).join(' · ')));
         if (each) {
@@ -4350,10 +4360,9 @@ const fields = [
         const keyOf = (title: string) => { const k = calKey(title); return ws.find((w) => w.key === k || w.alias?.includes(k))?.key ?? k; };
         const mine = (title: string) => wkey === null || keyOf(title) === wkey;
         const slots: CalSlot[] = [];
-        const notes = hosts[slug]?.site?.notes ?? {};
         for (const ev of [...ownEvents, ...calSiteEvents()]) if ((ev.wkey && (wkey === null || ev.wkey === wkey)) || (!ev.wkey && (mine(ev.title) || (ev.titleEn && mine(ev.titleEn))))) for (const date of calOcc(ev, from, to)) {
           const bookings = calBookings.filter((b) => b.date === date && (b.eventId ? b.eventId === ev.id : calKey(b.title || '') === calKey(ev.title) && (!b.start || b.start === ev.start)));
-          slots.push({ key: `${ev.id ?? ev.vid ?? ev.title}|${date}|${ev.start}`, date, start: ev.start, end: ev.end, title: ev.title, ev, seats: ev.synced ? null : evSeats(ev, date), booked: 0, amount: 0, waiting: [], requests: [], accepted: [], bookings, known: notes[`${date}|${ev.start}`] ?? 0 });
+          slots.push({ key: `${ev.id ?? ev.vid ?? ev.title}|${date}|${ev.start}`, date, start: ev.start, end: ev.end, title: ev.title, ev, seats: ev.synced ? null : evSeats(ev, date), booked: 0, amount: 0, waiting: [], requests: [], accepted: [], bookings, known: 0 });
         }
         // Requests: onto the date of their workshop that day (the same time first), else a date of their own.
         for (const r of reqs) {
@@ -4582,6 +4591,17 @@ const fields = [
           if (full) v.append(' ', el('span', 'cal-full', t.cal.full));
           row(t.cal.places, v);
           if (s.seats) { const bar = el('div', 'cal-bar'); const i = el('i'); i.style.width = `${Math.min(100, (s.booked / s.seats) * 100)}%`; bar.append(i); side.append(bar); }
+          // Paid vs. only confirmed (Diana 24.11.26): a place counts as booked only
+          // once the guest paid through Twiggli; a confirmed request is not paid yet.
+          const paid = s.bookings.reduce((a, b) => a + (b.people || 1), 0);
+          const open = s.booked - paid;
+          if (open > 0) {
+            const p = el('p', 'cal-paidline');
+            p.append(el('b', '', say(TL('{n} bezahlt', '{n} paid', '{n} payées'), { n: String(paid) })), ' · ',
+              say(TL('{n} zugesagt, noch nicht bezahlt', '{n} confirmed, not paid yet', '{n} confirmées, pas encore payées'), { n: String(open) }));
+            p.append(el('small', '', TL('Gebucht ist ein Platz erst, wenn der Gast über Twiggli bezahlt hat. Zugesagte Plätze zählen hier schon mit, damit du nicht überbuchst.', 'A place is booked only once the guest has paid through Twiggli. Confirmed places already count here, so you don’t overbook.', 'Une place n’est réservée qu’une fois payée via Twiggli. Les places confirmées comptent déjà ici, pour éviter la surréservation.')));
+            side.append(p);
+          }
         }
         if (ev && !ev.synced && !ev.onRequest && ev.start) {
           if (ev.virtual) side.append(el('p', 'cal-from', t.cal.fromSite));
@@ -7266,6 +7286,7 @@ const fields = [
   .cal-bar { height: 6px; border-radius: 9px; background: #efeaf7; overflow: hidden; margin: 2px 0 2px; }
   .cal-bar i { display: block; height: 100%; background: #6a3eec; border-radius: 9px; }
   .cal-step { display: inline-flex; align-items: center; gap: 6px; }
+  .cal-paidline { margin: 8px 0 0; font-size: .82rem; color: #444; } .cal-paidline small { display: block; margin-top: 3px; color: var(--color-text-muted); font-size: .74rem; }
   .cal-step b { min-width: 2ch; text-align: center; }
   .cal-stepb { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--cal-line); background: #fff; padding: 0; font-size: 1rem; line-height: 1; display: grid; place-items: center; }
   .cal-stepb:hover { border-color: #6a3eec; color: #6a3eec; }
