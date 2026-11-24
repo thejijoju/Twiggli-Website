@@ -29,6 +29,19 @@ export interface HostDate {
 }
 
 export const hostDates: HostDate[] = [
+  // The Bequem (Anastasia): her open dates from The Makery (24.11.26), where
+  // she keeps them current; 09.12. is sold out there. Booked here by request,
+  // so she can hold the seats on The Makery.
+  { slug: 'thebequem', title: 'Duftkerzen-Workshop: zwei Duftkerzen selbst machen', titleEn: 'Candle making workshop: make two perfumed candles from scratch',
+    date: '2026-12-16', time: '18:30', duration: '1 h 45', price: '€49', spots: 10, district: 'Kreuzberg', url: '', request: true },
+  { slug: 'thebequem', title: 'Duftkerzen-Workshop: zwei Duftkerzen selbst machen', titleEn: 'Candle making workshop: make two perfumed candles from scratch',
+    date: '2026-12-22', time: '18:30', duration: '1 h 45', price: '€49', spots: 10, district: 'Kreuzberg', url: '', request: true },
+  { slug: 'thebequem', title: 'Duftkerzen-Workshop: zwei Duftkerzen selbst machen', titleEn: 'Candle making workshop: make two perfumed candles from scratch',
+    date: '2026-12-27', time: '11:00', duration: '1 h 45', price: '€49', spots: 10, district: 'Kreuzberg', url: '', request: true },
+  { slug: 'thebequem', title: 'Duftkerzen-Workshop: zwei Duftkerzen selbst machen', titleEn: 'Candle making workshop: make two perfumed candles from scratch',
+    date: '2027-01-09', time: '11:00', duration: '1 h 45', price: '€49', spots: 10, district: 'Kreuzberg', url: '', request: true },
+  { slug: 'thebequem', title: 'Duftkerzen-Workshop: zwei Duftkerzen selbst machen', titleEn: 'Candle making workshop: make two perfumed candles from scratch',
+    date: '2027-01-17', time: '11:00', duration: '1 h 45', price: '€49', spots: 10, district: 'Kreuzberg', url: '', request: true },
   // Qian's dates now come straight from her Acuity account in the feed.
   // ANNA-Malerlebnisse (Anna) sends her dates by email (call of 22.10.26):
   // a public session every 4–6 weeks at the Begegnungsstätte Mehr Mitte,

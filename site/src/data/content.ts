@@ -827,6 +827,9 @@ const reels: Record<string, { video: string; poster: string }> = {
      opening, the women's circle and the table from above are out, so no
      faces (Jirel: avoid showing faces in videos). */
   'lucille-guder': { video: '/video/lucille-guder.mp4', poster: '/video/lucille-guder-poster.jpg' },
+  // The Bequem: Anastasia's own reel (email 24.11.26): the studio, wax
+  // flakes, choosing scents, pouring, the finished candles. Hands only.
+  thebequem: { video: '/video/thebequem.mp4', poster: '/video/thebequem-poster.jpg' },
   // Pia's Christmas painting: the finished canvases, Glühwein and the table (WhatsApp, 03.11.26).
   'pia-christmas': { video: '/video/pia-christmas.mp4', poster: '/video/pia-christmas-poster.jpg' },
   /* Anna's own reel from the Begegnungsstätte Mehr Mitte on Torstraße,
