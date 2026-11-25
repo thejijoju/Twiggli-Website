@@ -215,9 +215,11 @@ const en: HostCopy[] = [
     blurb: 'Ingo studied glass design and restoration and has years of experience teaching seminars. In his fully equipped glass workshop in Pankow he teaches the Tiffany technique and classic lead glazing: you cut antique glass, grind it, wrap the edges in copper foil and solder the pieces together, step by step until your piece holds the light. Depending on the format you make window pictures, Christmas stars or small objects: five or six small pieces of three to five parts each, or one larger three-dimensional piece. No experience needed; tools and all materials are provided. Small groups of four to eight, so there is time for everyone at the workbench. Teams and private groups can book their own date.',
     group: '4–8', duration: '8 h day workshop · evening workshops from 18:00', place: 'Glass workshop in Pankow', languages: 'DE',
     priceNote: 'tools and materials included', photoCredit: 'Ingo Thomas' },
-  { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making, fabric & wax seals',
-    blurb: 'Marija studied art history and comes from education, and she upcycles: fabric and materials left behind on the street are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper, scraps of coloured card and old bags, blended and poured with flowers or a little glitter; you seal it with wax, or fold paper Christmas stars. Calm, hands-on and good-looking, and she has run it with kindergarten children and older people alike. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
-    group: 'Groups and teams', duration: 'On request', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE' },
+  // Marija's own text, 19.11.26 (name as little as possible; photos 20.11.26, credit Studio Marija Jaensch).
+  { slug: 'marija', name: 'Marija', specialty: 'Upcycling: paper making & wax seals / needle & thread',
+    blurb: 'Marija is a textile artist and does upcycling: fabric and materials left out to give away in her neighbourhood, or brought by from all over Berlin, are washed and turned into cushion covers and other one-of-a-kind pieces. In her workshops you make paper from waste paper and scraps of coloured card, blended and poured, with flowers or a little glitter; add wax seals and you have your own envelopes, Christmas cards and paper. You can also fold paper Christmas stars, or do small projects with needle and thread, such as Sashiko. Calm, hands-on and good-looking, and she has plenty of experience with kindergarten children as well as older people. One-off workshops for companies and groups, in her large studio in Lichtenberg near Ostkreuz, or she brings everything to you.',
+    group: 'From 5 people, groups and teams', duration: '1.5–3 h, depending on the group', place: 'Her studio in Lichtenberg near Ostkreuz, or at your place', languages: 'DE · EN · NL · SR · HR',
+    priceNote: 'group prices on request', photoCredit: 'Studio Marija Jaensch' },
 ];
 
 const de: HostCopy[] = [
@@ -301,9 +303,10 @@ const de: HostCopy[] = [
     blurb: 'Ingo hat Glasgestaltung und Restaurierung studiert und bringt langjährige Seminarerfahrung mit. In seiner voll ausgestatteten Glaswerkstatt in Pankow zeigt er die Tiffany-Technik und die klassische Bleiverglasung: Ihr schneidet Echtantikglas zu, schleift es, umwickelt die Kanten mit Kupferfolie und verlötet die Teile, Schritt für Schritt, bis euer Stück das Licht einfängt. Je nach Format entstehen Fensterbilder, Weihnachtssterne oder kleine Objekte: fünf bis sechs kleine Stücke aus drei bis fünf Teilen oder ein größeres dreidimensionales Objekt. Keine Vorkenntnisse nötig, Werkzeug und alle Materialien werden gestellt. Kleine Gruppen von vier bis acht Personen, damit an der Werkbank Zeit für alle bleibt. Teams und private Gruppen können einen eigenen Termin buchen.',
     group: '4–8', duration: '8 Std. Tagesworkshop · Abendworkshops ab 18 Uhr', place: 'Glaswerkstatt in Pankow', languages: 'DE',
     priceNote: 'Werkzeug und Material inklusive', photoCredit: 'Ingo Thomas' },
-  { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen, Stoff & Wachssiegel',
-    blurb: 'Marija hat Kunstgeschichte studiert, kommt aus dem Erziehungsbereich und macht Upcycling: Stoffe und Material, die auf der Straße liegen gelassen wurden, werden gewaschen und zu Kissenbezügen und anderen Unikaten. In ihren Workshops schöpft ihr Papier aus Altpapier, Resten von farbigem Karton und alten Tüten, gemixt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs oder Weihnachtssterne aus Papier. Ruhig, handfest und schick, und sie hat es schon mit Kindergartenkindern wie mit älteren Menschen gemacht. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
-    group: 'Gruppen und Teams', duration: 'Auf Anfrage', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE' },
+  { slug: 'marija', name: 'Marija', specialty: 'Upcycling: Papierschöpfen & Wachssiegel / Nadel & Faden',
+    blurb: 'Marija ist Textilkünstlerin und macht Upcycling: Stoffe und Material, die in ihrem Kiez zum Verschenken ausgelegt oder aus ganz Berlin vorbeigebracht werden, werden gewaschen und zu Kissenbezügen und anderen Unikaten verarbeitet. In ihren Workshops schöpft ihr Papier aus Altpapier und Resten von farbigem Karton, gemischt und gegossen, mit Blüten oder etwas Glitzer; dazu Siegel aus Wachs, und ihr habt eigene Briefumschläge, Weihnachtskarten und Papier gemacht. Ihr könnt auch Weihnachtssterne aus Papier falten oder kleine Projekte mit Nadel und Faden machen, wie Sashiko. Ruhig, handfest und schick, und sie hat viel Erfahrung mit Kindergartenkindern wie mit älteren Menschen. Einmalige Workshops für Firmen und Gruppen, in ihrem großen Studio in Lichtenberg nahe Ostkreuz, oder sie bringt alles zu euch mit.',
+    group: 'Ab 5 Personen, Gruppen und Teams', duration: '1,5–3 Std., je nach Gruppe', place: 'Ihr Studio in Lichtenberg nahe Ostkreuz, oder bei euch', languages: 'DE · EN · NL · SR · HR',
+    priceNote: 'Gruppenpreise auf Anfrage', photoCredit: 'Studio Marija Jaensch' },
 ];
 
 /** French copy, for a host who writes in French (Lucille). Every other
@@ -359,7 +362,7 @@ const facets: Record<string, Facets> = {
   'lucille-guder':       { activity: 'photography', alsoIn: ['art'], groupRange: [2, 20], hourRange: [2, 3.5], groupPrice: [50, 119] },
   // PLACEHOLDER group size and length: Marija gave no numbers yet (asked
   // in the confirmation email of 27.10.26). No price yet either.
-  marija:                { activity: 'craft',       alsoIn: ['art'], groupRange: [2, 15], hourRange: [2, 3] },
+  marija:                { activity: 'craft',       alsoIn: ['art'], groupRange: [5, 20], hourRange: [1.5, 3], groupPrice: 35 },
   'fave-studio':         { activity: 'craft',       groupRange: [2, 10],   hourRange: [3, 3],   groupPrice: 50 },
   pigi:                  { activity: 'food',        groupRange: [1, 10],   hourRange: [5, 5],   groupPrice: 80 },
   'pia-christmas':       { activity: 'art',         groupRange: [4, 10],   hourRange: [2, 2],   groupPrice: 45 },
@@ -468,8 +471,9 @@ const onRequest: Record<string, PreviewOffer[]> = {
     { title: 'Blumenkranz-Workshop bei euch (JGA, Geburtstag, auch größere Gruppen)', titleEn: 'Flower-crown workshop at your venue (hen party, birthday, larger groups too)', duration: '2 h', price: '€50', district: 'bei euch', url: 'https://www.lucilleguder.com/self-photography-and-flower-collage-workshop' },
   ],
   marija: [
-    { title: 'Papierschöpfen aus Altpapier, mit Wachssiegel', titleEn: 'Paper making from waste paper, with wax seals', district: 'Lichtenberg', url: '' },
+    { title: 'Papierschöpfen aus Altpapier, mit Wachssiegel (eigene Umschläge & Karten)', titleEn: 'Paper making from waste paper, with wax seals (your own envelopes & cards)', duration: '1.5–3 h', price: '€35', district: 'Lichtenberg', url: '' },
     { title: 'Weihnachtssterne aus Papier', titleEn: 'Paper Christmas stars', district: 'Lichtenberg', url: '' },
+    { title: 'Nadel & Faden: Sashiko und kleine Stoffprojekte', titleEn: 'Needle & thread: Sashiko and small fabric projects', district: 'Lichtenberg', url: '' },
   ],
   'fave-studio': [
     { title: 'Paper Light Night für eure Gruppe (bis 10 Personen)', titleEn: 'Paper Light Night for your group (up to 10 people)', duration: '3 h', price: '€50', district: 'Neukölln', url: '' },
