@@ -679,36 +679,54 @@ const fields = [
         </div>
 
         <div class="hd-set-pane" data-hs-pane="pay" hidden>
-          <div class="hd-set-block">
-            <h2>{L('Auszahlungen', 'Payouts', 'Versements')}</h2>
-            <p class="hd-set-sub" data-hs-pay>{L('Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.', 'Connect Stripe so guests can pay you directly.', 'Connecte Stripe pour que les participants te paient directement.')}</p>
-            <button type="button" class="hd-set-btn" data-hs-pay-btn>{L('Stripe verbinden', 'Connect Stripe', 'Connecter Stripe')}</button>
+          {/* Zahlungen as calm cards (Jirel 25.11.26: mix of A and C, Luma-style): one row per topic,
+              the voucher question short the first time, then a switch. */}
+          <p class="pc-lab">{L('Auszahlungen', 'Payouts', 'Versements')}</p>
+          <div class="pc-card">
+            <div class="pc-row">
+              <span class="pc-ic" aria-hidden="true">💳</span>
+              <div class="pc-txt"><b>Stripe</b><span data-hs-pay>{L('Verbinde Stripe, damit Gäste direkt bei dir bezahlen können.', 'Connect Stripe so guests can pay you directly.', 'Connecte Stripe pour que les participants te paient directement.')}</span></div>
+              <span class="pc-pill" data-hs-pay-ok hidden>{L('✓ Verbunden', '✓ Connected', '✓ Connecté')}</span>
+              <button type="button" class="pc-btn" data-hs-pay-btn>{L('Verbinden', 'Connect', 'Connecter')}</button>
+            </div>
           </div>
           {/* Twiggli vouchers (Jirel 23.11.26): the host says yes or no here, and can change it any time. */}
-          <div class="hd-set-block vc-opt" data-vc-opt>
-            <h2>{L('Twiggli-Gutscheine 🎁', 'Twiggli vouchers 🎁', 'Bons cadeaux Twiggli 🎁')}</h2>
-            <p class="vc-state" data-vc-state></p>
-            <ul class="vc-terms">
-              <li>{L('Gäste kaufen auf Twiggli Gutscheine für deinen Workshop (für 1–2 Personen) oder allgemeine Twiggli-Gutscheine.', 'Guests buy vouchers for your workshop on Twiggli (for 1–2 people), or general Twiggli vouchers.', 'Les participants achètent sur Twiggli des bons pour ton atelier (pour 1–2 personnes) ou des bons Twiggli généraux.')}</li>
-              <li>{L('Sie lösen den Gutschein beim Buchen auf deiner Twiggli-Seite ein. Die Buchung kommt zu dir, markiert mit „mit Gutschein bezahlt“.', 'They redeem it when booking on your Twiggli page. The booking comes to you, marked “paid with voucher”.', 'Ils l’utilisent en réservant sur ta page Twiggli. La réservation t’arrive, marquée « payé avec un bon ».')}</li>
-              <li>{L('Auszahlung bis zum 10. des Folgemonats, abzüglich 15 % Twiggli-Provision.', 'Payout by the 10th of the following month, minus 15% Twiggli commission.', 'Versement avant le 10 du mois suivant, moins 15 % de commission Twiggli.')}</li>
-              <li>{L('Ein Gutschein gilt 3 Jahre. Ist dein Preis inzwischen gestiegen, zahlt der Gast die Differenz direkt an dich.', 'A voucher is valid for 3 years. If your price has gone up, the guest pays the difference directly to you.', 'Un bon est valable 3 ans. Si ton prix a augmenté, le participant te paie la différence directement.')}</li>
-            </ul>
-            <div class="vc-acts">
-              <button type="button" class="hd-set-btn" data-vc-yes>{L('Ich mache mit', 'I’m in', 'Je participe')}</button>
-              <button type="button" class="vc-no" data-vc-no>{L('Nein danke', 'No thanks', 'Non merci')}</button>
+          <p class="pc-lab">{L('Gutscheine', 'Vouchers', 'Bons cadeaux')}</p>
+          <div class="pc-card vc-opt" data-vc-opt>
+            <div class="pc-row">
+              <span class="pc-ic" aria-hidden="true">🎁</span>
+              <div class="pc-txt"><b>{L('Twiggli-Gutscheine', 'Twiggli vouchers', 'Bons cadeaux Twiggli')}</b><span data-vc-state></span></div>
+              <button type="button" class="pc-sw" role="switch" aria-checked="false" data-vc-toggle hidden aria-label={L('Twiggli-Gutscheine', 'Twiggli vouchers', 'Bons cadeaux Twiggli')}></button>
             </div>
+            <div class="vc-ask" data-vc-ask>
+              <p class="vc-pt"><span aria-hidden="true">🎟️</span>{L('Gutscheine für 1–2 Personen', 'Vouchers for 1–2 people', 'Bons pour 1–2 personnes')}</p>
+              <p class="vc-pt"><span aria-hidden="true">💶</span>{L('Auszahlung bis zum 10., minus 15 %', 'Payout by the 10th, minus 15%', 'Versement avant le 10, moins 15 %')}</p>
+              <p class="vc-pt"><span aria-hidden="true">⏳</span>{L('3 Jahre gültig', 'Valid for 3 years', 'Valable 3 ans')}</p>
+              <div class="vc-acts">
+                <button type="button" class="pc-btn" data-vc-yes>{L('Ich mache mit', 'I’m in', 'Je participe')}</button>
+                <button type="button" class="vc-no" data-vc-no>{L('Nein danke', 'No thanks', 'Non merci')}</button>
+              </div>
+            </div>
+            <details class="vc-how">
+              <summary>{L('So funktioniert’s', 'How it works', 'Comment ça marche')} <span aria-hidden="true">ⓘ</span></summary>
+              <ul class="vc-terms">
+                <li>{L('Gäste kaufen auf Twiggli Gutscheine für deinen Workshop (für 1–2 Personen) oder allgemeine Twiggli-Gutscheine.', 'Guests buy vouchers for your workshop on Twiggli (for 1–2 people), or general Twiggli vouchers.', 'Les participants achètent sur Twiggli des bons pour ton atelier (pour 1–2 personnes) ou des bons Twiggli généraux.')}</li>
+                <li>{L('Sie lösen den Gutschein beim Buchen auf deiner Twiggli-Seite ein. Die Buchung kommt zu dir, markiert mit „mit Gutschein bezahlt“.', 'They redeem it when booking on your Twiggli page. The booking comes to you, marked “paid with voucher”.', 'Ils l’utilisent en réservant sur ta page Twiggli. La réservation t’arrive, marquée « payé avec un bon ».')}</li>
+                <li>{L('Auszahlung bis zum 10. des Folgemonats, abzüglich 15 % Twiggli-Provision.', 'Payout by the 10th of the following month, minus 15% Twiggli commission.', 'Versement avant le 10 du mois suivant, moins 15 % de commission Twiggli.')}</li>
+                <li>{L('Ein Gutschein gilt 3 Jahre. Ist dein Preis inzwischen gestiegen, zahlt der Gast die Differenz direkt an dich.', 'A voucher is valid for 3 years. If your price has gone up, the guest pays the difference directly to you.', 'Un bon est valable 3 ans. Si ton prix a augmenté, le participant te paie la différence directement.')}</li>
+              </ul>
+              <small class="vc-small">{L('Du kannst das jederzeit ändern. Schon verkaufte Gutscheine bleiben gültig.', 'You can change this any time. Vouchers already sold stay valid.', 'Tu peux changer ça à tout moment. Les bons déjà vendus restent valables.')}</small>
+            </details>
             <p class="vc-msg" data-vc-opt-msg role="status"></p>
-            <small class="vc-small">{L('Du kannst das jederzeit hier ändern. Schon verkaufte Gutscheine bleiben gültig und werden weiter bei dir eingelöst.', 'You can change this here any time. Vouchers already sold stay valid and are still redeemed with you.', 'Tu peux changer ça ici à tout moment. Les bons déjà vendus restent valables et s’utilisent toujours chez toi.')}</small>
           </div>
-          <div class="hd-set-block" data-hs-paid
+          <p class="pc-lab">{L('Zahlungsverlauf', 'Payment history', 'Historique des paiements')}</p>
+          <div class="pc-card pc-pad" data-hs-paid
             data-voucher={L('Gutschein', 'Voucher', 'Bon cadeau')}
             data-for={L('für {h}', 'for {h}', 'pour {h}')}
             data-people={L('{n} Pers.', '{n} people', '{n} pers.')}
             data-byvoucher={L('mit Gutschein', 'with voucher', 'avec bon cadeau')}>
-            <h2>{L('Zahlungsverlauf', 'Payment history', 'Historique des paiements')}</h2>
             <ul class="hd-pay-list" data-hs-paid-list></ul>
-            <p class="hd-set-sub" data-hs-paid-empty>{L('Noch keine Zahlungen.', 'No payments yet.', 'Aucun paiement pour l’instant.')}</p>
+            <p class="hd-set-sub" data-hs-paid-empty>{L('Noch keine Zahlungen. Sobald jemand bucht, siehst du es hier.', 'No payments yet. You’ll see them here as soon as someone books.', 'Aucun paiement pour l’instant. Tu les verras ici dès qu’une personne réserve.')}</p>
           </div>
         </div>
 
@@ -3889,8 +3907,9 @@ const fields = [
           scheduleTips();
           const hl = document.documentElement.lang;
           if (stripeReady) {
-            $('[data-hs-pay]').textContent = hl === 'en' ? '✓ Stripe is connected. Payments go straight to your account.' : hl === 'fr' ? '✓ Stripe est connecté. Les paiements arrivent directement sur ton compte.' : '✓ Stripe ist verbunden. Zahlungen gehen direkt auf dein Konto.';
+            $('[data-hs-pay]').textContent = hl === 'en' ? 'Guests pay you directly.' : hl === 'fr' ? 'Les participants te paient directement.' : 'Gäste zahlen direkt an dich.';
             $('[data-hs-pay-btn]').hidden = true;
+            $('[data-hs-pay-ok]').hidden = false;
           } else if (s.connected) {
             $('[data-hs-pay]').textContent = t.stripePending;
           }
@@ -5580,14 +5599,15 @@ const fields = [
       const vcPaint = () => {
         const on = vcOn ?? !!hosts[slug]?.voucher;
         const chosen = vcOn !== null || !!hosts[slug]?.voucher;
+        // First time: the short question with yes / no (C). Once chosen: one line and a switch (A).
         $('[data-vc-state]').textContent = !chosen
-          ? TL('Möchtest du mitmachen? Du entscheidest.', 'Would you like to join? It’s up to you.', 'Tu veux participer ? C’est toi qui décides.')
-          : on ? TL('✓ Du bist dabei: Gäste können Gutscheine für deine Workshops kaufen.', '✓ You’re in: guests can buy vouchers for your workshops.', '✓ Tu participes : les participants peuvent acheter des bons pour tes ateliers.')
-          : TL('Du bist nicht dabei: Für deine Workshops werden keine Gutscheine verkauft.', 'You’re not in: no vouchers are sold for your workshops.', 'Tu ne participes pas : aucun bon n’est vendu pour tes ateliers.');
-        $('[data-vc-state]').classList.toggle('is-on', chosen && on);
-        $('[data-vc-yes]').hidden = chosen && on;
-        $('[data-vc-no]').hidden = chosen && !on;
-        $('[data-vc-no]').textContent = chosen && on ? TL('Nicht mehr mitmachen', 'Leave the program', 'Ne plus participer') : TL('Nein danke', 'No thanks', 'Non merci');
+          ? TL('Mehr Gäste über Geschenke. Du entscheidest.', 'More guests through gifts. It’s up to you.', 'Plus de participants grâce aux cadeaux. C’est toi qui décides.')
+          : on ? TL('An: Gäste können Gutscheine für deine Workshops kaufen.', 'On: guests can buy vouchers for your workshops.', 'Activé : les participants peuvent acheter des bons pour tes ateliers.')
+          : TL('Aus: Für deine Workshops werden keine Gutscheine verkauft.', 'Off: no vouchers are sold for your workshops.', 'Désactivé : aucun bon n’est vendu pour tes ateliers.');
+        $('[data-vc-ask]').hidden = chosen;
+        const sw = $('[data-vc-toggle]');
+        sw.hidden = !chosen;
+        sw.setAttribute('aria-checked', String(chosen && on));
       };
       const vcLoad = async () => {
         vcOn = null; vcMsg(''); vcPaint();
@@ -5596,7 +5616,7 @@ const fields = [
       };
       const vcMsg = (text: string) => { $('[data-vc-opt-msg]').textContent = text; };
       const vcSet = async (on: boolean) => {
-        const btns = [$<HTMLButtonElement>('[data-vc-yes]'), $<HTMLButtonElement>('[data-vc-no]')];
+        const btns = [$<HTMLButtonElement>('[data-vc-yes]'), $<HTMLButtonElement>('[data-vc-no]'), $<HTMLButtonElement>('[data-vc-toggle]')];
         btns.forEach((x) => { x.disabled = true; });
         try {
           if (!(calDemo || DEMO)) await api('hostListing', { slug, action: 'vouchers', on });
@@ -5608,6 +5628,7 @@ const fields = [
       };
       $('[data-vc-yes]').addEventListener('click', () => void vcSet(true));
       $('[data-vc-no]').addEventListener('click', () => void vcSet(false));
+      $('[data-vc-toggle]').addEventListener('click', () => void vcSet($('[data-vc-toggle]').getAttribute('aria-checked') !== 'true'));
       root.querySelectorAll<HTMLElement>('[data-hs-tab="pay"], [data-ha-go="settings"]').forEach((x) => x.addEventListener('click', () => void vcLoad()));
       // ── Partner request (admin): a hotel or company asks for this partner workshop. ──
       const prDlg = $<HTMLDialogElement>('[data-pr-dlg]');
@@ -7773,14 +7794,40 @@ const fields = [
   .rm-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .rm-ph-x { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; cursor: pointer; }
   .rm-up { justify-self: start; cursor: pointer; }
-  .vc-state { margin: 0; font-weight: 600; color: #454a50; }
-  .vc-state.is-on { color: #1d8a4a; }
-  .vc-terms { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: .9rem; color: #454a50; }
-  .vc-acts { display: flex; gap: 10px; flex-wrap: wrap; }
-  .vc-no { font: inherit; font-weight: 600; font-size: .9rem; color: #444; background: #fff; border: 1px solid #ddd; border-radius: 999px; padding: 10px 18px; cursor: pointer; }
-  .vc-small { color: #6b7076; }
-  .vc-msg { margin: 0; font-size: .88rem; color: #1d8a4a; font-weight: 600; }
+  /* Zahlungen: calm cards (25.11.26) */
+  .hd-set-pane[data-hs-pane="pay"]:not([hidden]) { display: block; }
+  .pc-lab { margin: 30px 4px 8px; font-size: .74rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: #8a8f95; }
+  .hd-set-pane > .pc-lab:first-of-type { margin-top: 0; }
+  .pc-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 0 0 1px #efe9e2; }
+  .pc-pad { padding: 16px 20px; display: grid; gap: 10px; }
+  .pc-pad .hd-set-sub { margin: 0; }
+  .pc-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; }
+  .pc-ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: #f4f0ff; font-size: 18px; flex: none; }
+  .pc-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .pc-txt b { font-weight: 500; font-size: .95rem; }
+  .pc-txt span { font-size: .86rem; color: #6b7076; }
+  .pc-pill { font-size: .8rem; font-weight: 500; color: #1f8a4c; background: #e4f5ea; border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+  .pc-btn { font: inherit; font-weight: 500; font-size: .86rem; color: #fff; background: #6a3eec; border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; white-space: nowrap; }
+  .pc-sw { flex: none; width: 44px; height: 26px; border-radius: 999px; border: 0; background: #d9d4ce; position: relative; cursor: pointer; transition: background .2s; }
+  .pc-sw::after { content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.15); transition: transform .2s; }
+  .pc-sw[aria-checked="true"] { background: #6a3eec; }
+  .pc-sw[aria-checked="true"]::after { transform: translateX(18px); }
+  .pc-sw:disabled { opacity: .6; }
+  .pc-sw[hidden] { display: none; }
+  .vc-ask { padding: 0 20px 16px 72px; display: grid; gap: 6px; }
+  .vc-ask[hidden] { display: none; }
+  .vc-pt { margin: 0; display: flex; gap: 10px; font-size: .88rem; color: #454a50; }
+  .vc-pt span { width: 20px; text-align: center; }
+  .vc-acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .vc-no { font: inherit; font-weight: 500; font-size: .86rem; color: #24272e; background: #fff; border: 1px solid #e3ded8; border-radius: 999px; padding: 7px 16px; cursor: pointer; }
+  .vc-how { border-top: 1px solid #f1ece6; padding: 10px 20px 12px 72px; }
+  .vc-how summary { cursor: pointer; list-style: none; font-size: .84rem; color: #6a3eec; }
+  .vc-how summary::-webkit-details-marker { display: none; }
+  .vc-terms { margin: 10px 0 8px; padding-left: 18px; display: grid; gap: 6px; font-size: .86rem; color: #454a50; }
+  .vc-small { color: #6b7076; font-size: .8rem; }
+  .vc-msg { margin: 0; padding: 0 20px 14px 72px; font-size: .84rem; color: #1d8a4a; font-weight: 500; }
   .vc-msg:empty { display: none; }
+  @media (max-width: 560px) { .vc-ask, .vc-how, .vc-msg { padding-left: 20px; } .pc-row { padding: 14px 16px; } }
   .pw-fee { margin: 2px 0 10px; font-size: .82rem; color: #1d8a4a; font-weight: 600; }
   .pw-concept { display: grid; gap: 10px; margin-bottom: 6px; }
   .pw-tag { color: #6a3eec; font-weight: 600; }
