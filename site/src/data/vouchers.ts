@@ -56,7 +56,7 @@ import { withBase, type Lang } from '../lib/url.ts';
 export const voucherHostsAgreed: string[] = [
   'himapan-berlin',
   'petitejungle', 'rebeca',
-  'evelyn', 'nina', 'helka',
+  'evelyn', 'helka',
 ];
 
 /** Live: only hosts who confirmed the voucher terms in writing by email
@@ -79,6 +79,7 @@ const voucherHostsWritten: string[] = [
   'ceramic-kingdom', // Madeline (Ceramic Kingdom), "I confirm. We can try it out.", 09.11.26 (email)
   'maximiliana', // Maxi (Birdwatching Sketchbook), "Let's do the voucher deal!", 11.11.26 (email); on a break, no dates for now
   'chelti', // Karolina & Mamuka (Chelti), "Das passt für uns.", 12.11.26 (email); shows once they have dates for 1–2 people
+  'nina', // Nina Kranz (Kranz Art), "ich bestätige", 25.11.26 (email)
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
