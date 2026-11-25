@@ -380,6 +380,15 @@ const confirmGuest = async (to, f) => {
   const runsNote = !runs ? '' : de
     ? `Dieser Kurs findet ab ${runs} Teilnehmenden statt. Deine Anfrage wird bestätigt, sobald ${runs} Plätze gebucht sind, und erst dann zahlst du. Kommt er nicht zustande, wird nichts berechnet.`
     : `This class runs from ${runs} participants. Your request is confirmed as soon as ${runs} spots are booked, and only then do you pay. If it doesn’t fill up, nothing is charged.`;
+  // Paid with a voucher (Jirel 25.11.26: Ricardo's mail didn't say so): what
+  // is held, that it's only taken once the host confirms, and what's left.
+  const pay = String(f.Payment ?? '').match(/^Voucher (€[\d.]+) held(?: \+ (€[\d.]+) held)?/);
+  const vLeft = Number(String(f['Voucher check'] ?? '').match(/€([\d.]+) left/)?.[1] ?? NaN) - Number(pay?.[1]?.slice(1) ?? NaN);
+  const left = Number.isFinite(vLeft) && vLeft > 0 ? `€${(Math.round(vLeft * 100) / 100).toFixed(2).replace(/\.00$/, '')}` : '';
+  const hostName = host ? esc(host) : (de ? 'der Gastgeber' : 'the host');
+  const voucherNote = !pay ? '' : de
+    ? `Bezahlt mit deinem <b>Twiggli</b>-Gutschein: ${pay[1]} sind dafür reserviert${pay[2] ? `, der Rest (${pay[2]}) auf deiner Karte` : ''}. Abgebucht wird erst, wenn ${hostName} bestätigt. Klappt es nicht, bleibt alles auf deinem Code.${left ? ` Danach sind noch ${left} auf deinem Gutschein.` : ''}`
+    : `Paid with your <b>Twiggli</b> voucher: ${pay[1]} is reserved for it${pay[2] ? `, the rest (${pay[2]}) on your card` : ''}. It's only taken once ${hostName} confirms. If it doesn't work out, everything stays on your code.${left ? ` After that, ${left} is left on your voucher.` : ''}`;
   // Designed like the host's "New booking request" email (Jirel 09.11.26):
   // logo, purple kicker, one big line, a details card, what happens next.
   const t = de ? {
@@ -439,12 +448,12 @@ const confirmGuest = async (to, f) => {
 </td></tr></table></td></tr>
 <tr><td style="padding:18px 30px 0">
 <p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7076;font-weight:bold">${t.nextHead}</p>
-<p style="margin:0;font-size:14px;line-height:1.6;color:#454a50">${t.next}${runsNote ? `<br><br>${runsNote}` : ''}</p>
+<p style="margin:0;font-size:14px;line-height:1.6;color:#454a50">${t.next}${runsNote ? `<br><br>${runsNote}` : ''}${voucherNote ? `<br><br>${voucherNote}` : ''}</p>
 <p style="margin:18px 0 22px;font-size:14px;line-height:1.6;color:#454a50">${t.q}<br><br>${t.bye} 💛<br>${t.sig}</p>
 </td></tr>
 <tr><td style="padding:14px 30px;font-size:11px;color:#888;line-height:1.6"><a href="${SITE}" style="color:#888">www.twiggli.com</a></td></tr>
 </table></div>`;
-  const text = `${t.head.replace(/<[^>]+>/g, '')}\n\n${t.intro.replace(/<[^>]+>/g, '')}\n\n${what}\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${t.next}${runsNote ? `\n\n${runsNote}` : ''}\n\n${t.q}\n\n${t.bye}\n${t.sig.replace(/<[^>]+>/g, '')}`;
+  const text = `${t.head.replace(/<[^>]+>/g, '')}\n\n${t.intro.replace(/<[^>]+>/g, '')}\n\n${what}\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${t.next}${runsNote ? `\n\n${runsNote}` : ''}${voucherNote ? `\n\n${voucherNote.replace(/<[^>]+>/g, '')}` : ''}\n\n${t.q}\n\n${t.bye}\n${t.sig.replace(/<[^>]+>/g, '')}`;
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to, subject: t.subject, text, html });
 };
@@ -978,6 +987,15 @@ const notifyHostRequest = async (doc, email, f) => {
   else if (type === 'Booking request' || type === 'Group booking request') {
     try { buttons = await hostStripeReady(slug); } catch (err) { console.error('stripe check failed', slug, err?.message); }
   }
+  // Paid through Twiggli with a voucher (Jirel 25.11.26): the guest pays
+  // nothing on the day, and it's only taken once the host accepts, if the
+  // spot is free.
+  const vh = data.hold?.voucherCents ? data.hold : null;
+  const vNote = !vh ? null : {
+    de: `<b>Schon über Twiggli bezahlt:</b> ${esc(gFirst)} zahlt mit einem <b>Twiggli</b>-Gutschein${vh.chargeCents ? ' und Karte' : ''}, vor Ort also nichts. Bitte nimm die Anfrage an, wenn der Platz frei ist${buttons ? ' (Button unten)' : ' (in deinem <b>Twiggli</b>-Konto unter Nachrichten)'}. Erst dann wird der Betrag eingelöst, und <b>Twiggli</b> überweist dir deine Einnahmen. Lehnst du ab, wird nichts abgebucht.`,
+    en: `<b>Already paid through Twiggli:</b> ${esc(gFirst)} is paying with a <b>Twiggli</b> voucher${vh.chargeCents ? ' and card' : ''}, so nothing at the studio. Please accept the request if the spot is free${buttons ? ' (button below)' : ' (in your <b>Twiggli</b> account, under Messages)'}. Only then is it redeemed, and <b>Twiggli</b> transfers your earnings to you. If you decline, nothing is charged.`,
+    fr: `<b>Déjà payé via Twiggli :</b> ${esc(gFirst)} paie avec un bon <b>Twiggli</b>${vh.chargeCents ? ' et sa carte' : ''}, donc rien sur place. Accepte la demande si la place est libre${buttons ? ' (bouton ci-dessous)' : ' (dans ton espace <b>Twiggli</b>, rubrique Messages)'}. Ce n’est qu’à ce moment-là que le montant est encaissé, et <b>Twiggli</b> te verse tes revenus. Si tu refuses, rien n’est débité.`,
+  }[lang];
   const T = {
     de: {
       kicker: `Neue ${studio ? 'Raumanfrage' : type === 'Partner request' ? 'Partner-Anfrage 🤝' : type === 'Group booking request' ? 'Gruppenanfrage' : type === 'Date request' ? 'Terminanfrage' : 'Buchungsanfrage'}${soon === 'today' ? ' · heute' : soon === 'tomorrow' ? ' · morgen' : ''}`,
@@ -1049,6 +1067,7 @@ const notifyHostRequest = async (doc, email, f) => {
 <p style="margin:0 0 6px;font-size:14px;line-height:1.6;color:#454a50">${T.hi}</p>
 <p style="margin:0 0 ${T.date ? 6 : 16}px;font-size:14px;line-height:1.6;color:#454a50">${T.intro}</p>
 ${T.date ? `<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#454a50">${T.date}</p>` : ''}
+${vNote ? `<p style="margin:0 0 16px;padding:12px 14px;border-radius:10px;background:#f3eefe;font-size:14px;line-height:1.6;color:#24272e">${vNote}</p>` : ''}
 </td></tr>
 <tr><td style="padding:6px 30px 0"><table width="100%" cellpadding="0" cellspacing="0">${table}</table></td></tr>
 ${actRow}
@@ -1059,7 +1078,7 @@ ${gross ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 4px;font-siz
 <tr><td style="padding:14px 30px;font-size:11px;color:#888;line-height:1.6"><a href="${SITE}" style="color:#888">www.twiggli.com</a></td></tr>
 </table></div>`;
   const strip = (h) => String(h).replace(/<[^>]+>/g, '');
-  const text = [T.hi, strip(T.intro), strip(T.date), '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), buttons ? `\n${T.yes}: ${answerUrl('accept')}\n${T.no}: ${answerUrl('decline')}` : '', message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${[guest, email, f.Phone].filter(Boolean).join(', ')}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
+  const text = [T.hi, strip(T.intro), strip(T.date), vNote ? strip(vNote) : '', '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), buttons ? `\n${T.yes}: ${answerUrl('accept')}\n${T.no}: ${answerUrl('decline')}` : '', message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${[guest, email, f.Phone].filter(Boolean).join(', ')}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
   await mail.sendMail({
     from: { name: 'Twiggli', address: SENDER }, to: who.emails, ...(INBOX ? { cc: INBOX } : {}),
@@ -2258,7 +2277,19 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
     } catch {}
     return res.status(200).json({ id });
   }
+  // "0 places" is never a date anyone can book (25.11.26): no limit given instead.
+  if (ev.seats === 0) ev.seats = null;
   const doc = await col.add({ ...ev, by: owner, editedBy: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+  // Several dates picked at once in the calendar (Jirel 25.11.26: Anna's 60
+  // dates sent 60 emails): one email for the batch, from its last date.
+  const batch = Array.isArray(body.batchDates) ? body.batchDates.filter((d) => /^\d{4}-\d\d-\d\d$/.test(String(d))).slice(0, 400) : [];
+  if (body.batchQuiet === true) return res.status(200).json({ id: doc.id });
+  if (batch.length > 1) {
+    try {
+      await mailJirel({ subject: `${batch.length} new dates from ${ev.slug}: ${ev.title}, ${batch[0]} – ${batch[batch.length - 1]}`, text: `${email} added "${ev.title}" on ${batch.length} dates at ${ev.start}, ${ev.seats ?? '?'} seats, €${ev.price ?? '?'}${ev.minGuests ? `, runs from ${ev.minGuests}` : ''}:\n${batch.join('\n')}` });
+    } catch (err) { console.error('event note failed', err?.message); }
+    return res.status(200).json({ id: doc.id });
+  }
   try {
     await mailJirel({ subject: `New date from ${ev.slug}: ${ev.title}, ${ev.date} ${ev.start}`, text: `${email} added "${ev.title}" on ${ev.date} at ${ev.start} (${ev.repeat}), ${ev.seats ?? '?'} seats, €${ev.price ?? '?'}${ev.minGuests ? `, runs from ${ev.minGuests}` : ''}.` });
   } catch (err) { console.error('event note failed', err?.message); }

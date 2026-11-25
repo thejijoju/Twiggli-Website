@@ -4654,18 +4654,25 @@ const fields = [
         if (typeof base.request !== 'boolean' && bk) base.request = bk === 'request';
         if (typeof base.request !== 'boolean' && tpl?.virtual) base.request = true;
         Object.assign(base, { id: undefined, repeat: 'once', until: '', start, end: /^\d\d:\d\d$/.test(end) ? end : '', exceptions: [], seatsByDate: {}, onRequest: false });
+        // Never copy "0 places, €0" from a first date (Jirel 25.11.26: Anna's
+        // 60 dates came out like that): the listing's price and places win.
+        if (!(Number(base.price) > 0)) base.price = (edit?.price ?? 0) > 0 ? edit!.price : calNum(w.price) ?? base.price ?? null;
+        if (!(Number(base.seats) > 0)) base.seats = (edit?.seats ?? 0) > 0 ? edit!.seats : null;
         calMultiBusy = true;
         renderCal();
         const made: Ev[] = [];
         let err: unknown = null;
-        for (const date of [...calPicks].sort()) {
-          const body = { ...base, date };
+        const allDates = [...calPicks].sort();
+        for (const date of allDates) {
+          // One email to Jirel for the whole batch, sent with the last date.
+          const last = date === allDates[allDates.length - 1];
+          const body = { ...base, date, ...(allDates.length > 1 ? (last ? { batchDates: allDates } : { batchQuiet: true }) : {}) };
           try {
             let id = `demo${Date.now()}${made.length}`;
             if (calDemo) { await new Promise((r) => setTimeout(r, 200)); if (new URLSearchParams(location.search).has('fail')) throw new Error('demo fail'); }
             else id = (await api('hostEventSave', body)).id;
-            const ev = { ...body, id } as unknown as Ev;
-            delete ev.onRequest;
+            const ev = { ...body, id } as unknown as Ev & { batchDates?: unknown; batchQuiet?: unknown };
+            delete ev.onRequest; delete ev.batchDates; delete ev.batchQuiet;
             made.push(ev);
             calPicks.delete(date);
           } catch (e) { err = e; break; }
