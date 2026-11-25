@@ -1,0 +1,106 @@
+---
+import { contactEmail } from '../../data/site.ts';
+import LegalPage from '../../layouts/LegalPage.astro';
+import { withBase } from '../../lib/url.ts';
+
+/* Verhaltenskodex (Jirel 25.11.26): deutsche Fassung von code-of-conduct.astro, beide gleich halten. */
+const toc = [
+  { id: 'respect', label: 'Respekt für alle' },
+  { id: 'safety', label: 'Sicherheit zuerst' },
+  { id: 'honesty', label: 'Ehrlich sein' },
+  { id: 'reliability', label: 'Zuverlässig sein' },
+  { id: 'privacy', label: 'Fotos und Privatsphäre' },
+  { id: 'spaces', label: 'Räume und Material pflegen' },
+  { id: 'fair', label: 'Fair bleiben auf Twiggli' },
+  { id: 'content', label: 'Was du veröffentlichst' },
+  { id: 'report', label: 'Sag Bescheid' },
+  { id: 'consequences', label: 'Wenn Regeln gebrochen werden' },
+];
+---
+
+<LegalPage
+  title="Verhaltenskodex — Twiggli"
+  kicker="Community"
+  heading="Verhaltenskodex"
+  description="Wie Gastgeber:innen und Gäste auf Twiggli miteinander umgehen: Respekt, Sicherheit, Ehrlichkeit und Zuverlässigkeit."
+  lede="Bei Twiggli machen Menschen etwas zusammen, die sich sonst vielleicht nie getroffen hätten. Diese wenigen Regeln sorgen dafür, dass es für alle herzlich, sicher und fair bleibt, für Gastgeber:innen und Gäste. Sie gelten im Workshop, in Nachrichten und für alles, was du veröffentlichst."
+  toc={toc}
+  updated="25. November 2026"
+  lang="de"
+>
+  <h2 id="respect">1. Respekt für alle</h2>
+  <ul>
+    <li>Alle sind willkommen, egal welche Herkunft, welches Alter, Geschlecht, welche sexuelle Orientierung, Religion, welcher Körper, welche Fähigkeiten oder Vorkenntnisse.</li>
+    <li>Keine Diskriminierung, Belästigung, Mobbing, Hassrede oder ungewollte Berührungen und Annäherungen, weder vor Ort noch in Nachrichten.</li>
+    <li>Anfänger:innen sind das Herz von Twiggli: Sei geduldig und freundlich, niemand muss etwas schon können.</li>
+    <li>Nein heißt nein: Respektiere Grenzen, auch wenn jemand nichts erzählen, nicht fotografiert werden oder bei einer Übung nicht mitmachen möchte.</li>
+  </ul>
+
+  <h2 id="safety">2. Sicherheit zuerst</h2>
+  <ul>
+    <li><strong>Gastgeber:innen</strong> sorgen für einen sicheren Raum: Sie erklären Werkzeuge, Hitze, Chemikalien und Maschinen vor dem Gebrauch, stellen bei Bedarf Schutzausrüstung, haben einen Erste-Hilfe-Kasten und kennen den Notausgang.</li>
+    <li>Bei Food- und Kosmetik-Workshops fragen Gastgeber:innen nach Allergien und Ernährungswünschen und sagen klar, was im Material steckt.</li>
+    <li><strong>Gäste</strong> folgen den Sicherheitshinweisen und sagen der Gastgeberin oder dem Gastgeber, was wichtig ist (Allergien, Schwangerschaft, Verletzungen).</li>
+    <li>Alkohol gibt es nur ab 18 und nur als Teil des Workshops. Niemand nimmt betrunken oder unter Drogen teil.</li>
+    <li>Kinder nehmen nur teil, wo es im Angebot steht, und mit Einverständnis der Eltern.</li>
+  </ul>
+
+  <h2 id="honesty">3. Ehrlich sein</h2>
+  <ul>
+    <li>Angebote zeigen, was wirklich passiert: echte Fotos und Videos vom eigenen Workshop, der echte Preis, die Dauer, der Ort und die Gruppengröße.</li>
+    <li>Bewertungen schreiben nur Menschen, die dabei waren, über das, was sie erlebt haben. Keine gefälschten, bezahlten oder eigenen Bewertungen.</li>
+    <li>Niemand gibt sich als jemand anderes aus.</li>
+  </ul>
+
+  <h2 id="reliability">4. Zuverlässig sein</h2>
+  <ul>
+    <li>Sei pünktlich. Wenn sich etwas ändert, sag es so früh wie möglich, über Twiggli.</li>
+    <li>Gastgeber:innen sagen einen bestätigten Workshop nur aus gutem Grund ab und erstatten dann das Geld oder bieten einen anderen Termin an.</li>
+    <li>Gäste, die nicht kommen können, sagen innerhalb der Stornobedingungen ab, damit jemand anderes den Platz bekommt.</li>
+    <li>Gastgeber:innen beantworten Anfragen innerhalb von 48 Stunden.</li>
+  </ul>
+
+  <h2 id="privacy">5. Fotos und Privatsphäre</h2>
+  <ul>
+    <li>Frag, bevor du andere fotografierst oder filmst und bevor du Bilder veröffentlichst, auf denen sie zu erkennen sind.</li>
+    <li>Namen, E-Mails, Telefonnummern und Adressen von Gästen werden nur für den Workshop genutzt, nie für etwas anderes.</li>
+    <li>Was im Workshop geteilt wird, bleibt dort, besonders bei Wellbeing-, Schreib- oder Körper-Workshops.</li>
+  </ul>
+
+  <h2 id="spaces">6. Räume und Material pflegen</h2>
+  <ul>
+    <li>Geh sorgsam mit Ateliers, gemieteten Räumen, Werkzeug und Material um und hinterlass alles so, wie du es vorgefunden hast.</li>
+    <li>Wer absichtlich oder fahrlässig etwas beschädigt, kommt dafür auf.</li>
+    <li>Gastgeber:innen, die zu Gästen kommen (Büro, Zuhause), respektieren den Ort und seine Regeln.</li>
+  </ul>
+
+  <h2 id="fair">7. Fair bleiben auf Twiggli</h2>
+  <ul>
+    <li>Gäste, die eine Gastgeberin oder einen Gastgeber über Twiggli gefunden haben, buchen und bezahlen über Twiggli, auch wenn sie wiederkommen. Sie an der Plattform vorbei zu buchen, um die Provision zu sparen, ist nicht erlaubt.</li>
+    <li>Keine versteckten Kosten: Alles, was Gäste zahlen, steht im Preis oder ist klar angegeben (Material, Anfahrt zum Gast).</li>
+    <li>Gutscheine werden zum Preis eingelöst, der auf Twiggli steht.</li>
+  </ul>
+
+  <h2 id="content">8. Was du veröffentlichst</h2>
+  <ul>
+    <li>Keine hasserfüllten, gewalttätigen, irreführenden oder sexuell expliziten Inhalte. Künstlerische Aktarbeit nur, wo das Angebot es klar sagt, für Erwachsene und mit dem Einverständnis aller.</li>
+    <li>Veröffentliche nur Fotos, Videos, Musik und Texte, die dir gehören oder die du nutzen darfst.</li>
+    <li>Kein Spam, keine Werbung für andere Plattformen, keine politischen oder religiösen Kampagnen.</li>
+  </ul>
+
+  <h2 id="report">9. Sag Bescheid</h2>
+  <p>
+    Wenn sich etwas falsch anfühlt, sag es uns. Gastgeber:innen schreiben uns in
+    ihrem Konto unter Nachrichten → Twiggli Support, alle anderen per E-Mail an
+    <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. Wir lesen jede
+    Nachricht, behandeln sie vertraulich und antworten schnell. Im Notfall zuerst 112 anrufen.
+  </p>
+
+  <h2 id="consequences">10. Wenn Regeln gebrochen werden</h2>
+  <p>
+    Je nachdem, wie schwer es wiegt, sprechen wir mit der Person, verwarnen sie,
+    nehmen Inhalte oder ein Angebot offline oder pausieren bzw. schließen das
+    Konto. In schweren Fällen (Gewalt, Missbrauch, Betrug) handeln wir sofort und
+    schalten wenn nötig die Polizei ein. Mehr in unseren <a href={withBase('/de/terms-of-service/')}>Nutzungsbedingungen</a>.
+  </p>
+</LegalPage>

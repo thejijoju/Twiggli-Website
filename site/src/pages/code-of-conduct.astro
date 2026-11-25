@@ -1,0 +1,107 @@
+---
+import { contactEmail } from '../data/site.ts';
+import LegalPage from '../layouts/LegalPage.astro';
+import { withBase } from '../lib/url.ts';
+
+/* Code of Conduct (Jirel 25.11.26): how hosts and guests treat each other on
+   Twiggli. Plain language; keep in step with de/code-of-conduct.astro. */
+const toc = [
+  { id: 'respect', label: 'Respect everyone' },
+  { id: 'safety', label: 'Safety first' },
+  { id: 'honesty', label: 'Be honest' },
+  { id: 'reliability', label: 'Be reliable' },
+  { id: 'privacy', label: 'Photos and privacy' },
+  { id: 'spaces', label: 'Care for spaces and materials' },
+  { id: 'fair', label: 'Fair play on Twiggli' },
+  { id: 'content', label: 'What you post' },
+  { id: 'report', label: 'Speak up' },
+  { id: 'consequences', label: 'What happens if rules are broken' },
+];
+---
+
+<LegalPage
+  title="Code of Conduct — Twiggli"
+  kicker="Community"
+  heading="Code of Conduct"
+  description="How hosts and guests treat each other on Twiggli: respect, safety, honesty and reliability."
+  lede="Twiggli is about making things together with people you might not have met otherwise. These few rules keep it warm, safe and fair for everyone, hosts and guests alike. They apply in workshops, in messages and on everything you post."
+  toc={toc}
+  updated="25 November 2026"
+  lang="en"
+>
+  <h2 id="respect">1. Respect everyone</h2>
+  <ul>
+    <li>Everyone is welcome, whatever their background, age, gender, sexual orientation, religion, body, ability or skill level.</li>
+    <li>No discrimination, harassment, bullying, hate speech or unwanted touching or advances, in person or in messages.</li>
+    <li>Beginners are the heart of Twiggli: be patient and kind, nobody has to be good at it.</li>
+    <li>“No” means no: respect people’s boundaries, including when they don’t want to share, be photographed or join an exercise.</li>
+  </ul>
+
+  <h2 id="safety">2. Safety first</h2>
+  <ul>
+    <li><strong>Hosts</strong> run a safe space: explain tools, heat, chemicals and machines before use, provide protective gear where needed, keep a first-aid kit and know the way out.</li>
+    <li>Hosts ask about allergies and dietary needs for food and cosmetics workshops and say clearly what is in the materials.</li>
+    <li><strong>Guests</strong> follow the host’s safety instructions and tell the host about anything they should know (allergies, pregnancy, injuries).</li>
+    <li>Alcohol is only served to people 18 and over, and only as part of the workshop. Nobody takes part drunk or under the influence of drugs.</li>
+    <li>Children take part only where the listing says so, and with a parent or guardian’s consent.</li>
+  </ul>
+
+  <h2 id="honesty">3. Be honest</h2>
+  <ul>
+    <li>Listings show what really happens: real photos and videos of your own workshop, the real price, length, place and number of people.</li>
+    <li>Reviews are written only by people who took part, about what they experienced. No fake reviews, no paid reviews, no reviews of yourself.</li>
+    <li>Nobody pretends to be someone else.</li>
+  </ul>
+
+  <h2 id="reliability">4. Be reliable</h2>
+  <ul>
+    <li>Show up on time. If plans change, say so as early as possible, through Twiggli.</li>
+    <li>Hosts only cancel a confirmed workshop for a good reason, and then refund or offer another date.</li>
+    <li>Guests who can’t come cancel within the workshop’s cancellation policy, so someone else can take the place.</li>
+    <li>Hosts answer requests within 48 hours.</li>
+  </ul>
+
+  <h2 id="privacy">5. Photos and privacy</h2>
+  <ul>
+    <li>Ask before you photograph or film other people, and before you post pictures where they can be recognised.</li>
+    <li>Guests’ names, emails, phone numbers and addresses are only used to run the workshop, never for anything else.</li>
+    <li>What people share in a workshop stays there, especially in wellbeing, writing or body-related sessions.</li>
+  </ul>
+
+  <h2 id="spaces">6. Care for spaces and materials</h2>
+  <ul>
+    <li>Treat studios, rented rooms, tools and materials with care, and leave the place as you found it.</li>
+    <li>Damage caused on purpose or through carelessness is paid for by whoever caused it.</li>
+    <li>Hosts at a guest’s place (office, home) respect that place and its rules.</li>
+  </ul>
+
+  <h2 id="fair">7. Fair play on Twiggli</h2>
+  <ul>
+    <li>Guests who found a host through Twiggli book and pay through Twiggli, also when they come back. Moving them off the platform to avoid the commission is not allowed.</li>
+    <li>No hidden costs: everything a guest pays is in the price or clearly listed (materials, travel to the guest’s place).</li>
+    <li>Gift vouchers are accepted at the price shown on Twiggli.</li>
+  </ul>
+
+  <h2 id="content">8. What you post</h2>
+  <ul>
+    <li>No hateful, violent, misleading or sexually explicit content. Artistic nude work is only allowed where the listing says so clearly, for adults, with everyone’s consent.</li>
+    <li>Only post photos, videos, music and texts you own or may use.</li>
+    <li>No spam, no advertising for other platforms, no political or religious campaigning.</li>
+  </ul>
+
+  <h2 id="report">9. Speak up</h2>
+  <p>
+    If something feels wrong, tell us. Hosts write to us in their account under
+    Messages → Twiggli Support; everyone can email <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+    We read every message, treat it confidentially and answer quickly. In an
+    emergency, call 112 first.
+  </p>
+
+  <h2 id="consequences">10. What happens if rules are broken</h2>
+  <p>
+    Depending on how serious it is, we talk to the person, give a warning, take
+    down content or a listing, or pause or close the account. In serious cases
+    (violence, abuse, fraud) we act at once and may involve the police. More in
+    our <a href={withBase('/terms-of-service/')}>Terms of Service</a>.
+  </p>
+</LegalPage>

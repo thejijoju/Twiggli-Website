@@ -138,6 +138,8 @@ export function getSiteData(lang: Lang) {
   const legalLinks: NavLink[] = [
     { label: t.footer.terms, href: href(docLang, '/terms-of-service/') },
     { label: t.footer.privacy, href: href(docLang, '/privacy-policy/') },
+    /* Code of Conduct (Jirel 25.11.26), English and German only. */
+    { label: docLang === 'de' ? 'Verhaltenskodex' : 'Code of Conduct', href: href(docLang, '/code-of-conduct/') },
     { label: t.footer.impressum, href: href('en', '/impressum/') },
   ];
 
