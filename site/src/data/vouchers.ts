@@ -80,6 +80,7 @@ const voucherHostsWritten: string[] = [
   'maximiliana', // Maxi (Birdwatching Sketchbook), "Let's do the voucher deal!", 11.11.26 (email); on a break, no dates for now
   'chelti', // Karolina & Mamuka (Chelti), "Das passt für uns.", 12.11.26 (email); shows once they have dates for 1–2 people
   'nina', // Nina Kranz (Kranz Art), "ich bestätige", 25.11.26 (email)
+  'celina', // Celina (Gestaltwandel), "Ich bestätige", 25.11.26 (email)
   'pigi', // Pigi Psimenou, yes to vouchers on the call of 03.11.26 (Jirel); written yes asked in the confirmation email
 ];
 
