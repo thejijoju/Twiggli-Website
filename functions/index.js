@@ -3483,6 +3483,10 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
     return back(st.l, 'failed', tok?.error_description || tok?.error || `Stripe status ${r.status}`);
   }
   const accountId = tok.stripe_user_id;
+  // The same account linked again within minutes (a double click or the page
+  // opening twice; Jirel 26.11.26 got The Bequem's email twice): no second email.
+  const prevStripe = (await getFirestore().doc(`hostMembers/${st.e.toLowerCase()}`).get()).data()?.stripe;
+  const again = prevStripe?.accountId === accountId && Date.now() - (prevStripe?.linkedAt?.toMillis?.() ?? 0) < 15 * 60 * 1000;
   let chargesEnabled = false;
   try {
     const a = await (await stripe(STRIPE_CONNECT_KEY.value(), `accounts/${accountId}`)).json();
@@ -3491,7 +3495,7 @@ export const hostStripeOAuth = onRequest({ region: 'europe-west3', secrets: [STR
   await getFirestore().doc(`hostMembers/${st.e.toLowerCase()}`).set({ stripe: { accountId, chargesEnabled, linked: true, linkedAt: FieldValue.serverTimestamp() } }, { merge: true });
   // Right after linking, Stripe often still reports the account as not ready;
   // the dashboard checks again on return and sends "ready for payments" then.
-  await mailStripeNews(st.e.toLowerCase(), chargesEnabled ? 'linked, ready for payments' : 'linked (status is confirmed the next time their dashboard loads)');
+  if (!again) await mailStripeNews(st.e.toLowerCase(), chargesEnabled ? 'linked, ready for payments' : 'linked (status is confirmed the next time their dashboard loads)');
   return back(st.l, 'linked');
 });
 
