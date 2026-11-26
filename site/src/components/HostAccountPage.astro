@@ -728,6 +728,18 @@ const fields = [
             <ul class="hd-pay-list" data-hs-paid-list></ul>
             <p class="hd-set-sub" data-hs-paid-empty>{L('Noch keine Zahlungen. Sobald jemand bucht, siehst du es hier.', 'No payments yet. You’ll see them here as soon as someone books.', 'Aucun paiement pour l’instant. Tu les verras ici dès qu’une personne réserve.')}</p>
           </div>
+          {/* Sold vouchers (Jirel 25.11.26), without names: the code's last 4 characters identify them. */}
+          <div class="vl" data-vl hidden>
+            <p class="pc-lab">{L('Verkaufte Gutscheine', 'Vouchers sold', 'Bons vendus')}</p>
+            <div class="pc-card">
+              <div class="vl-sum" data-vl-sum></div>
+              <ul class="vl-list" data-vl-list></ul>
+              <details class="vc-how">
+                <summary>{L('Warum keine Namen?', 'Why no names?', 'Pourquoi pas de noms ?')} <span aria-hidden="true">ⓘ</span></summary>
+                <p class="vl-note">{L('Aus Datenschutzgründen zeigen wir keine Namen oder E-Mails der Käufer:innen. Du erkennst einen Gutschein an den letzten 4 Zeichen seines Codes.', 'For data protection we don’t show buyers’ names or emails. You recognise a voucher by the last 4 characters of its code.', 'Pour la protection des données, nous n’affichons ni noms ni e-mails des acheteurs. Tu reconnais un bon aux 4 derniers caractères de son code.')}</p>
+              </details>
+            </div>
+          </div>
         </div>
 
       </section>
@@ -5630,6 +5642,64 @@ const fields = [
       $('[data-vc-no]').addEventListener('click', () => void vcSet(false));
       $('[data-vc-toggle]').addEventListener('click', () => void vcSet($('[data-vc-toggle]').getAttribute('aria-checked') !== 'true'));
       root.querySelectorAll<HTMLElement>('[data-hs-tab="pay"], [data-ha-go="settings"]').forEach((x) => x.addEventListener('click', () => void vcLoad()));
+      // ── Vouchers sold for this host (no names: GDPR, Jirel 25.11.26). ──
+      type VL = { code: string; bought: string; general: boolean; amount: number | null; balance: number | null; held: number; used: number; usedAt: string; validUntil: string; status: string };
+      const vlDate = (d: string) => { if (!d) return ''; try { return new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: '2-digit' }).format(new Date(`${d}T12:00:00`)); } catch { return d; } };
+      const vlEur = (n: number) => `${(Math.round(n * 100) / 100).toLocaleString(locale, { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })} €`;
+      const vlPaint = (items: VL[]) => {
+        const box = $('[data-vl]');
+        box.hidden = !items.length;
+        if (!items.length) return;
+        const open = items.filter((x) => !x.general && ['open', 'held', 'partly'].includes(x.status));
+        const openEur = open.reduce((n, x) => n + (x.balance ?? 0), 0);
+        const owed = items.reduce((n, x) => n + x.used, 0) * 0.85;
+        $('[data-vl-sum]').innerHTML = '';
+        const sum = document.createElement('div'); sum.className = 'vl-tiles';
+        const tile = (k: string, v: string) => { const d = document.createElement('div'); d.className = 'vl-tile'; const a = document.createElement('span'); a.textContent = k; const b = document.createElement('b'); b.textContent = v; d.append(a, b); return d; };
+        sum.append(tile(TL('Offen', 'Open', 'Ouverts'), `${open.length} · ${vlEur(openEur)}`), tile(TL('Eingelöst bei dir', 'Redeemed with you', 'Utilisés chez toi'), vlEur(items.reduce((n, x) => n + x.used, 0))), tile(TL('Deine Auszahlung', 'Your payout', 'Ton versement'), vlEur(owed)));
+        $('[data-vl-sum]').append(sum);
+        const st: Record<string, [string, string]> = {
+          open: [TL('Offen', 'Open', 'Ouvert'), 'is-open'],
+          held: [TL('Reserviert', 'Held', 'Réservé'), 'is-held'],
+          partly: [TL('Teilweise eingelöst', 'Partly redeemed', 'Utilisé en partie'), 'is-part'],
+          redeemed: [TL('Eingelöst', 'Redeemed', 'Utilisé'), 'is-done'],
+          expired: [TL('Abgelaufen', 'Expired', 'Expiré'), 'is-exp'],
+        };
+        const list = $('[data-vl-list]'); list.innerHTML = '';
+        for (const x of items) {
+          const li = document.createElement('li'); li.className = 'vl-row';
+          const ic = document.createElement('span'); ic.className = 'pc-ic'; ic.setAttribute('aria-hidden', 'true'); ic.textContent = x.general ? '🎟️' : '🎁';
+          const tx = document.createElement('div'); tx.className = 'pc-txt';
+          const t1 = document.createElement('b');
+          t1.textContent = `•••• ${x.code}${x.general ? ` · ${TL('Allgemeiner Gutschein', 'General voucher', 'Bon général')}` : ` · ${vlEur(x.amount ?? 0)}`}`;
+          const t2 = document.createElement('span');
+          const bits = [
+            x.bought && !x.general ? TL(`gekauft ${vlDate(x.bought)}`, `bought ${vlDate(x.bought)}`, `acheté le ${vlDate(x.bought)}`) : '',
+            x.used ? TL(`${vlEur(x.used)} eingelöst ${vlDate(x.usedAt)}`, `${vlEur(x.used)} redeemed ${vlDate(x.usedAt)}`, `${vlEur(x.used)} utilisés le ${vlDate(x.usedAt)}`) : '',
+            x.held ? TL(`${vlEur(x.held)} reserviert`, `${vlEur(x.held)} held`, `${vlEur(x.held)} réservés`) : '',
+            x.status === 'partly' && x.balance ? TL(`${vlEur(x.balance)} übrig`, `${vlEur(x.balance)} left`, `${vlEur(x.balance)} restants`) : '',
+            !x.general && x.validUntil && x.status !== 'redeemed' ? TL(`gültig bis ${vlDate(x.validUntil)}`, `valid until ${vlDate(x.validUntil)}`, `valable jusqu’au ${vlDate(x.validUntil)}`) : '',
+          ].filter(Boolean);
+          t2.textContent = bits.join(' · ');
+          tx.append(t1, t2);
+          const pill = document.createElement('span'); pill.className = `vl-pill ${st[x.status]?.[1] ?? ''}`; pill.textContent = st[x.status]?.[0] ?? x.status;
+          li.append(ic, tx, pill); list.append(li);
+        }
+      };
+      const vlLoad = async () => {
+        if (calDemo || DEMO) {
+          vlPaint([
+            { code: 'B8HR', bought: '2026-11-17', general: false, amount: 65, balance: 65, held: 52, used: 0, usedAt: '', validUntil: '2029-12-31', status: 'held' },
+            { code: 'TPXZ', bought: '2026-11-18', general: false, amount: 120, balance: 120, held: 0, used: 0, usedAt: '', validUntil: '2029-12-31', status: 'open' },
+            { code: 'HVZF', bought: '2026-11-23', general: false, amount: 45, balance: 0, held: 0, used: 45, usedAt: '2026-11-24', validUntil: '2029-12-31', status: 'redeemed' },
+            { code: '7AMT', bought: '', general: true, amount: null, balance: null, held: 0, used: 60, usedAt: '2026-11-22', validUntil: '', status: 'redeemed' },
+          ]);
+          return;
+        }
+        if (!slug) return;
+        try { const r = await api('hostListing', { slug, action: 'voucherList' }); vlPaint((r.items ?? []) as VL[]); } catch { /* stays hidden */ }
+      };
+      root.querySelectorAll<HTMLElement>('[data-hs-tab="pay"], [data-ha-go="settings"]').forEach((x) => x.addEventListener('click', () => void vlLoad()));
       // ── Partner request (admin): a hotel or company asks for this partner workshop. ──
       const prDlg = $<HTMLDialogElement>('[data-pr-dlg]');
       if (prDlg.parentElement !== root) root.append(prDlg);
@@ -7827,7 +7897,21 @@ const fields = [
   .vc-small { color: #6b7076; font-size: .8rem; }
   .vc-msg { margin: 0; padding: 0 20px 14px 72px; font-size: .84rem; color: #1d8a4a; font-weight: 500; }
   .vc-msg:empty { display: none; }
-  @media (max-width: 560px) { .vc-ask, .vc-how, .vc-msg { padding-left: 20px; } .pc-row { padding: 14px 16px; } }
+  .vl[hidden] { display: none; }
+  .vl-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #f1ece6; border-radius: 16px 16px 0 0; overflow: hidden; border-bottom: 1px solid #f1ece6; }
+  .vl-tile { background: #fff; padding: 14px 20px; display: grid; gap: 2px; }
+  .vl-tile span { font-size: .78rem; color: #6b7076; }
+  .vl-tile b { font-size: 1.05rem; font-weight: 600; }
+  .vl-list { list-style: none; margin: 0; padding: 0; }
+  .vl-row { display: flex; align-items: center; gap: 14px; padding: 14px 20px; }
+  .vl-row + .vl-row { border-top: 1px solid #f1ece6; }
+  .vl-pill { font-size: .76rem; font-weight: 500; border-radius: 999px; padding: 4px 10px; white-space: nowrap; background: #f1eeea; color: #6b7076; }
+  .vl-pill.is-open { background: #efe9ff; color: #5a32d6; }
+  .vl-pill.is-held { background: #fff3d6; color: #8a5a00; }
+  .vl-pill.is-part, .vl-pill.is-done { background: #e4f5ea; color: #1f8a4c; }
+  .vl-note { margin: 8px 0 4px; font-size: .84rem; color: #6b7076; line-height: 1.5; }
+  .vl .vc-how { padding-left: 20px; }
+  @media (max-width: 560px) { .vc-ask, .vc-how, .vc-msg { padding-left: 20px; } .pc-row { padding: 14px 16px; } .vl-tile { padding: 12px 14px; } .vl-tile span { font-size: .72rem; } .vl-tile b { font-size: .95rem; } .vl-row { display: grid; grid-template-columns: 38px 1fr; padding: 12px 16px; } .vl-row .vl-pill { grid-column: 2; justify-self: start; } }
   .pw-fee { margin: 2px 0 10px; font-size: .82rem; color: #1d8a4a; font-weight: 600; }
   .pw-concept { display: grid; gap: 10px; margin-bottom: 6px; }
   .pw-tag { color: #6a3eec; font-weight: 600; }
