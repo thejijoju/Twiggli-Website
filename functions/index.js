@@ -2277,8 +2277,9 @@ export const hostEventSave = onRequest({ region: 'europe-west3', secrets: [GMAIL
     } catch {}
     return res.status(200).json({ id });
   }
-  // "0 places" is never a date anyone can book (25.11.26): no limit given instead.
-  if (ev.seats === 0) ev.seats = null;
+  // A new date needs a number of places (Jirel 26.11.26: never "?" or 0);
+  // dates taken over from the site's schedule (replaces) keep theirs.
+  if (!ev.replaces && !(ev.seats > 0)) return res.status(400).json({ error: 'seats', message: 'Please give the number of places' });
   const doc = await col.add({ ...ev, by: owner, editedBy: email, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
   // Several dates picked at once in the calendar (Jirel 25.11.26: Anna's 60
   // dates sent 60 emails): one email for the batch, from its last date.
