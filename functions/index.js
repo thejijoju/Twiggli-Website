@@ -2078,6 +2078,9 @@ const cleanEvent = (b, uid = '', bunny = new Set()) => {
     // weekly "on request" slot taken over from the site (guests ask; never paid on the spot).
     ...(typeof b.wkey === 'string' && LISTING_KEY.test(b.wkey) ? { wkey: b.wkey } : {}),
     ...(typeof b.onRequest === 'boolean' ? { onRequest: b.onRequest } : {}),
+    // Which Angebote section the host created it under ("+ Add" next to Open dates
+    // or Groups & companies; Jirel 26.11.26): it stays there, whatever the booking mode.
+    ...(b.section === 'cal' || b.section === 'group' ? { section: b.section } : {}),
     // Where: the studio, somewhere else (its own address, private) or at the guest's.
     ...(WHERE.includes(b.where) ? { where: b.where, place: b.where === 'other' ? cleanAddress(b.place) : null } : {}),
   };

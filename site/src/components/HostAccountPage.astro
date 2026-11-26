@@ -3890,6 +3890,8 @@ const fields = [
         vid?: string; virtual?: { key: string };
         /** The workshop's page key; and a weekly slot guests can ask for ("on request"), not a booked date. */
         wkey?: string; onRequest?: boolean;
+        /** The Angebote section it was created under ("+ Add" next to Open dates or Groups). */
+        section?: 'cal' | 'group';
         /** Calendar tab: read from the host's own booking page; shown, not edited. */
         synced?: { url: string; left?: number; soldOut?: boolean };
       };
@@ -4274,6 +4276,8 @@ const fields = [
           languages: fld('languages').value.trim(), cancel: fld<HTMLSelectElement>('cancel').value,
           visibility: fld<HTMLSelectElement>('visibility').value, media,
           ...(createKind === 'group' ? { request: true } : createKind === 'cal' ? { request: false } : {}),
+          // Remember where the host clicked "+ Add" (Jirel 26.11.26).
+          ...(createKind ? { section: createKind } : {}),
         };
         const note = $('[data-ha-create-note]');
         // Places that make sense (Jirel 23.11.26: a date went up with 0 places, then 2 places from 5).
@@ -4502,6 +4506,7 @@ const fields = [
         seatsByDate: ev.seatsByDate ?? {}, exceptions: ev.exceptions ?? [],
         ...(ev.titleEn ? { titleEn: ev.titleEn } : {}), ...(typeof ev.request === 'boolean' ? { request: ev.request } : {}),
         ...(ev.wkey ? { wkey: ev.wkey } : {}), ...(ev.onRequest ? { onRequest: true } : {}),
+        ...(ev.section ? { section: ev.section } : {}),
       });
       // Taking over a series of the site's own schedule: all its weekdays become
       // dashboard dates at once (functions hostEventSave adopt), marked with the
@@ -5401,7 +5406,10 @@ const fields = [
           // on request = groups & companies; otherwise open dates. Adding dates never moves it.
           // A workshop with upcoming dates belongs under "Open dates", even when its
           // dates take requests (no Stripe yet; Jirel 26.11.26, Olivia's alcohol ink).
-          card.dataset.sec = booking === 'request' && n === 0 ? 'group' : 'cal';
+          // The section the host chose (where they clicked "+ Add", Jirel 26.11.26) wins;
+          // older workshops without one: dates → Open dates, request-only → Groups.
+          const chosen = ownEvents.find((e) => e.section && (e.wkey ? e.wkey === w.key : calKey(e.title) === w.key))?.section;
+          card.dataset.sec = chosen ?? (booking === 'request' && n === 0 ? 'group' : 'cal');
           return card;
         });
         // Grouped under titles (Jirel 20.11.26): every listing shows, each under where it appears.
