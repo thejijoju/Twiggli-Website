@@ -3928,8 +3928,16 @@ const fields = [
           if (s.connected && !s.chargesEnabled) stripeBody.textContent = t.stripePending;
         } catch { stripeReady = null; }
       };
-      fld('price').addEventListener('focus', showStripe);
-      fld('price').addEventListener('pointerdown', (e) => { if (stripeReady !== true) { e.preventDefault(); showStripe(); } });
+      // Hosts without Stripe can still type their price (Jirel 26.11.26: Anna's and
+      // Olivia's dates came out as €0 because the field never let them type). The
+      // date then takes requests until Stripe is connected; a quiet hint says so.
+      const priceHint = () => {
+        let h = createForm.querySelector<HTMLElement>('[data-price-hint]');
+        if (!h) { h = document.createElement('small'); h.dataset.priceHint = ''; h.className = 'price-hint'; fld('price').closest('label')?.after(h); }
+        h.textContent = stripeReady === true ? '' : TL('Ohne Stripe fragen Gäste erst an. Verbinde Stripe unter Einstellungen → Zahlungen, dann können sie direkt bezahlen.', 'Without Stripe, guests send a request first. Connect Stripe in Settings → Payments so they can pay right away.', 'Sans Stripe, les participants envoient d’abord une demande. Connecte Stripe dans Réglages → Paiements pour qu’ils paient directement.');
+        h.hidden = !h.textContent;
+      };
+      fld('price').addEventListener('focus', priceHint);
       // One button (Jirel 16.11.26): Stripe's own page lets the host pick an
       // existing account or create a new one. A host who started setting up
       // an account here and didn't finish goes back to that set-up instead.
@@ -4269,13 +4277,12 @@ const fields = [
         };
         const note = $('[data-ha-create-note]');
         // Places that make sense (Jirel 23.11.26: a date went up with 0 places, then 2 places from 5).
-        if (body.seats !== null && body.seats < 1) { note.textContent = TL('Bitte gib mindestens 1 Platz an.', 'Please give at least 1 place.', 'Indique au moins 1 place.'); fld('seats').focus(); return; }
+        if (body.seats === null || body.seats < 1) { note.textContent = TL('Bitte gib mindestens 1 Platz an.', 'Please give at least 1 place.', 'Indique au moins 1 place.'); fld('seats').focus(); return; }
         if (body.seats && body.minGuests && body.minGuests > body.seats) { note.textContent = TL(`Du hast ${body.seats} Plätze, der Termin findet aber erst ab ${body.minGuests} Personen statt. So kommt er nie zustande. Bitte prüf die beiden Zahlen.`, `You have ${body.seats} places, but the date only runs from ${body.minGuests} people, so it could never run. Please check both numbers.`, `Tu as ${body.seats} places, mais la date n’a lieu qu’à partir de ${body.minGuests} personnes : elle ne pourrait jamais avoir lieu. Vérifie les deux chiffres.`); fld('seats').focus(); return; }
-        if ((body.price ?? 0) > 0 && stripeReady !== true) {
-          note.textContent = t.stripeNeeded;
-          showStripe();
-          return;
-        }
+        // No price at all: ask for one instead of publishing a "€0" date.
+        if (body.price === null && createKind !== 'group') { note.textContent = TL('Bitte gib einen Preis pro Person an (0 nur, wenn es kostenlos ist).', 'Please enter a price per person (0 only if it is free).', 'Indique un prix par personne (0 seulement si c’est gratuit).'); note.dataset.ok = 'false'; fld('price').focus(); return; }
+        // A price without Stripe: the date takes requests until Stripe is connected.
+        if ((body.price ?? 0) > 0 && stripeReady !== true) (body as Record<string, unknown>).request = true;
         if (!body.title || !body.date || !body.start) { note.textContent = t.titlePh; note.dataset.ok = 'false'; fld('title').focus(); return; }
         const btn = createForm.querySelector<HTMLButtonElement>('.hd-publish')!;
         btn.disabled = true;
@@ -4689,6 +4696,9 @@ const fields = [
         // 60 dates came out like that): the listing's price and places win.
         if (!(Number(base.price) > 0)) base.price = (edit?.price ?? 0) > 0 ? edit!.price : calNum(w.price) ?? base.price ?? null;
         if (!(Number(base.seats) > 0)) base.seats = (edit?.seats ?? 0) > 0 ? edit!.seats : null;
+        // Places must be a number (Jirel 26.11.26: "?" seats is never right).
+        if (!(Number(base.seats) > 0)) { calNote(TL('Bitte gib zuerst an, wie viele Plätze der Workshop hat (unter Angebote).', 'Please first set how many places the workshop has (under Offers).', 'Indique d’abord le nombre de places de l’atelier (sous Offres).'), false); return; }
+        if (Number(base.price) > 0 && stripeReady !== true) base.request = true;
         calMultiBusy = true;
         renderCal();
         const made: Ev[] = [];
@@ -7897,6 +7907,8 @@ const fields = [
   .vc-small { color: #6b7076; font-size: .8rem; }
   .vc-msg { margin: 0; padding: 0 20px 14px 72px; font-size: .84rem; color: #1d8a4a; font-weight: 500; }
   .vc-msg:empty { display: none; }
+  .price-hint { display: block; margin: -4px 0 6px; font-size: .8rem; color: #6b7076; }
+  .price-hint[hidden] { display: none; }
   .vl[hidden] { display: none; }
   .vl-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #f1ece6; border-radius: 16px 16px 0 0; overflow: hidden; border-bottom: 1px solid #f1ece6; }
   .vl-tile { background: #fff; padding: 14px 20px; display: grid; gap: 2px; }
