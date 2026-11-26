@@ -5399,7 +5399,9 @@ const fields = [
           // Where guests find it: with dates (page and calendar), or on request for groups.
           // The section follows how guests book (Jirel 24.11.26), not whether dates exist:
           // on request = groups & companies; otherwise open dates. Adding dates never moves it.
-          card.dataset.sec = booking === 'request' ? 'group' : 'cal';
+          // A workshop with upcoming dates belongs under "Open dates", even when its
+          // dates take requests (no Stripe yet; Jirel 26.11.26, Olivia's alcohol ink).
+          card.dataset.sec = booking === 'request' && n === 0 ? 'group' : 'cal';
           return card;
         });
         // Grouped under titles (Jirel 20.11.26): every listing shows, each under where it appears.
