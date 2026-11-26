@@ -2449,6 +2449,38 @@ export const hostListing = onRequest({ region: 'europe-west3', secrets: [GMAIL_A
     const x = (await getFirestore().doc(`hostSpace/${slug}`).get()).data();
     return res.status(200).json(x ? { set: true, space: x.space } : { set: false });
   }
+  // The host's own vouchers (Settings → Payment, Jirel 25.11.26), GDPR-minded:
+  // no names or emails of buyers or recipients, only what a host needs to
+  // recognise a voucher (last 4 characters of the code) and to plan payouts.
+  if (b.action === 'voucherList') {
+    const snap = await getFirestore().collection('voucherCodes').get();
+    const today = isoDay(new Date());
+    const items = [];
+    for (const d of snap.docs) {
+      const v = d.data();
+      const mine = v.hostSlug === slug;
+      const reds = Array.isArray(v.redemptions) ? v.redemptions : [];
+      const used = reds.filter((r) => r?.hostSlug === slug && r.status === 'redeemed');
+      const asked = new Set(reds.filter((r) => r?.hostSlug === slug && r.status === 'requested').map((r) => r.requestId));
+      const heldC = Object.entries(v.holds ?? {}).reduce((n, [id, h]) => n + ((mine || asked.has(id)) && Date.now() - (h?.at ?? 0) < HOLD_MS ? (h?.cents ?? 0) : 0), 0);
+      if (!mine && !used.length && !heldC) continue;
+      const usedEur = Math.round(used.reduce((n, r) => n + Number(r.amount ?? 0), 0) * 100) / 100;
+      const balance = Number(v.balance ?? 0);
+      const expired = !!v.validUntil && v.validUntil < today;
+      const status = mine
+        ? (balance <= 0 ? 'redeemed' : expired ? 'expired' : heldC ? 'held' : usedEur ? 'partly' : 'open')
+        : (heldC ? 'held' : 'redeemed');
+      const at = v.createdAt?.toDate?.() ?? null;
+      items.push({
+        code: String(v.last4 ?? '').toUpperCase(), bought: at ? isoDay(at) : '', general: !mine,
+        amount: mine ? Number(v.amount ?? 0) : null, balance: mine ? balance : null,
+        held: heldC / 100, used: usedEur, usedAt: used.length ? isoDay(new Date(Math.max(...used.map((r) => r.at ?? 0)))) : '',
+        validUntil: v.validUntil ?? '', status,
+      });
+    }
+    items.sort((a, z) => (z.bought || z.usedAt).localeCompare(a.bought || a.usedAt));
+    return res.status(200).json({ items });
+  }
   if (b.action === 'vouchersGet') {
     const x = (await getFirestore().doc(`hostVoucher/${slug}`).get()).data();
     return res.status(200).json(x ? { set: true, on: x.on === true, at: x.log?.at(-1)?.at ?? '' } : { set: false });
