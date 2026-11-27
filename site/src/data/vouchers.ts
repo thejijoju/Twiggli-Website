@@ -233,7 +233,11 @@ export const voucherPayment = {
   anonKey: voucherCheckout.anonKey,
   // Live since 26.10 (STRIPE_SECRET_KEY in Supabase is sk_live). Test
   // key, if ever needed again with sk_test: pk_test_51Pyt7jRQ5Tx7BE7RseiZobyVTmVJM8n8aVl7jVmRokqKNdJdbfyrY6oCSBOmhOYZ0v0cLxoSsbr2IAEWZGkuEZNM00ZEG3bZT0
-  publishableKey: 'pk_live_51Pyt7jRQ5Tx7BE7RD1fgKwJmYTYvPbmjjgMVDdUNZQwjxXTRN4rEyq2n4NgUD1MXZtMwP7GdB0qb79mrcI9jl77t000GDWu0V3',
+  // Since 27.11.26 the "Twiggli app" account (the Connect platform), so a
+  // redeemed voucher can be paid out to the host's Stripe (functions
+  // voucherPayout). The "Twiggli Website" key, for vouchers bought before:
+  // pk_live_51Pyt7jRQ5Tx7BE7RD1fgKwJmYTYvPbmjjgMVDdUNZQwjxXTRN4rEyq2n4NgUD1MXZtMwP7GdB0qb79mrcI9jl77t000GDWu0V3
+  publishableKey: 'pk_live_51PjLNWIx7vUfXYFskWRc3Ba54MqNB312S4GzlAJ4bbe3eK1o3YOZTz7150ygPSG484qrZyCnvGaCkTviUYYtBqvI0015xujyxS',
   live: true,
 };
 /** The checkout page exists in English and German; the other languages

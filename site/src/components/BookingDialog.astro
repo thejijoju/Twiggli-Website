@@ -31,8 +31,8 @@ const ag = lang === 'de' ? { where: 'Wo?', host: 'Bei {host}', me: 'Bei mir', fe
   : lang === 'fr' ? { where: 'Où ?', host: 'Chez {host}', me: 'Chez moi', fee: '+€{fee} déplacement', addr: 'Adresse', addrPh: 'Rue, code postal' }
   : { where: 'Where?', host: 'At {host}’s', me: 'At my place', fee: '+€{fee} travel', addr: 'Address', addrPh: 'Street, postcode' };
 const vc = lang === 'de'
-  ? { voucherAdd: 'Gutschein hinzufügen', voucherSubtotal: 'Zwischensumme', voucherDiscount: 'Gutschein', voucherTotal: 'Gesamt', voucherRemove: 'Gutschein entfernen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.', reserveFree: 'Platz reservieren (0 €)', reserveRest: 'Weiter: {amount} reservieren', holdHint: 'Gutschein und Karte werden erst belastet, wenn der Gastgeber bestätigt. Sagt er ab, bleibt alles frei.', holdFailed: 'Die Zahlung konnte gerade nicht starten. Bitte versuch es gleich noch einmal.' }
-  : { voucherAdd: 'Add a voucher', voucherSubtotal: 'Subtotal', voucherDiscount: 'Voucher', voucherTotal: 'Total', voucherRemove: 'Remove voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Apply', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.', reserveFree: 'Reserve your spot (€0)', reserveRest: 'Continue: reserve {amount}', holdHint: 'Your voucher and card are only charged once the host confirms. If they can’t, nothing is taken.', holdFailed: 'The payment could not start just now. Please try again in a moment.' };
+  ? { voucherAdd: 'Gutschein hinzufügen', voucherSubtotal: 'Zwischensumme', voucherDiscount: 'Gutschein', voucherTotal: 'Gesamt', voucherRemove: 'Gutschein entfernen', voucherPh: 'Gutscheincode, z. B. TW-AB12-CD34', voucherApply: 'Einlösen', voucherChecking: 'Wird geprüft…', voucherOk: 'Gutschein über {amount} € wird angerechnet', voucherInvalid: 'Diesen Gutscheincode kennen wir leider nicht.', voucherExpired: 'Dieser Gutschein ist abgelaufen.', voucherUsed: 'Dieser Gutschein wurde schon eingelöst.', voucherHost: 'Dieser Gutschein gilt bei einem anderen Gastgeber.', voucherError: 'Das hat gerade nicht geklappt. Schick die Anfrage trotzdem, wir prüfen den Code.', reserveFree: 'Platz reservieren (0 €)', reserveRest: 'Weiter: {amount} reservieren', holdHint: 'Gutschein und Karte werden erst belastet, wenn der Gastgeber bestätigt. Sagt er ab, bleibt alles frei.', holdFailed: 'Die Zahlung konnte gerade nicht starten. Bitte versuch es gleich noch einmal.', cardTitle: 'Bezahlt wird nur, wenn {host} zusagt', cardBody: 'Jetzt werden {amount} nur auf deiner Karte reserviert, nicht abgebucht. {host} bestätigt uns innerhalb von 48 Stunden, ob dein Platz frei ist. Erst dann wird abgebucht und du bist gebucht. Klappt es nicht, wird die Reservierung aufgehoben und du zahlst nichts.', cardTotal: 'Gesamt', cardGo: 'Weiter: {amount} reservieren', cardLede: 'Sag uns, wer kommt. Deine Karte wird nur reserviert, bezahlt wird erst, wenn {host} zusagt.' }
+  : { voucherAdd: 'Add a voucher', voucherSubtotal: 'Subtotal', voucherDiscount: 'Voucher', voucherTotal: 'Total', voucherRemove: 'Remove voucher', voucherPh: 'Voucher code, e.g. TW-AB12-CD34', voucherApply: 'Apply', voucherChecking: 'Checking…', voucherOk: 'Voucher worth €{amount} will be deducted', voucherInvalid: 'We don’t know this voucher code, sorry.', voucherExpired: 'This voucher has expired.', voucherUsed: 'This voucher has already been used.', voucherHost: 'This voucher is for a different host.', voucherError: 'That didn’t work just now. Send the request anyway and we’ll check the code.', reserveFree: 'Reserve your spot (€0)', reserveRest: 'Continue: reserve {amount}', holdHint: 'Your voucher and card are only charged once the host confirms. If they can’t, nothing is taken.', holdFailed: 'The payment could not start just now. Please try again in a moment.', cardTitle: 'You only pay if {host} accepts', cardBody: 'Right now {amount} is only reserved on your card, not charged. {host} confirms to us within 48 hours whether your spot is free. Only then are you charged and booked. If it doesn’t work out, the reservation is released and you pay nothing.', cardTotal: 'Total', cardGo: 'Continue: reserve {amount}', cardLede: 'Tell us who’s coming. Your card is only reserved: you pay once {host} accepts.' };
 ---
 
 <dialog
@@ -197,6 +197,13 @@ const vc = lang === 'de'
       {/* Left empty by people; a bot that fills it is ignored. */}
       <input class="book-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
     </div>
+    {/* A request to a host without Stripe (Jirel 27.11.26): the card is only
+        reserved; charged once the host accepts (functions formRequest, holdDecide). */}
+    <div class="book-cardhold" data-book-cardhold hidden>
+      <div class="bch-total"><span>{vc.cardTotal}</span><b data-bch-amount></b></div>
+      <p class="bch-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-bch-title></span></p>
+      <p class="bch-body" data-bch-body></p>
+    </div>
     <p class="book-error" data-book-error hidden></p>
     <button type="submit" class="btn btn-primary book-send" data-book-send>{c.send}</button>
   </form>
@@ -348,7 +355,35 @@ const vc = lang === 'de'
       // else the rest is held on the card (functions formRequest, holdConfirm).
       const hold = holdPlan();
       q('[data-bv-hold]')!.hidden = !hold;
-      if (send && !send.disabled) send.textContent = hold ? (hold.rest ? copy.reserveRest.replace('{amount}', eur(hold.rest / 100)) : copy.reserveFree) : (picked.bookPay ? payCopy().go : copy.send);
+      const card = showCard();
+      if (send && !send.disabled) send.textContent = hold ? (hold.rest ? copy.reserveRest.replace('{amount}', eur(hold.rest / 100)) : copy.reserveFree) : card ? copy.cardGo.replace('{amount}', eur(card.total / 100)) : (picked.bookPay ? payCopy().go : copy.send);
+    };
+    /** One price per person, as "€52" or "52 €" (not a range, "from", or per hour). */
+    const singlePrice = () => {
+      const m = String(picked.bookPrice ?? '').trim().match(/^(?:€\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*€)(?:\s*(?:·\s*)?(?:p\.\s*P\.|pro Person|per person|pp))?$/i);
+      return m ? Number((m[1] ?? m[2]).replace(',', '.')) : NaN;
+    };
+    /** The whole price held on the card (cents), on a request for a date at a
+     *  host without Stripe: charged only once the host accepts (Jirel 27.11.26). */
+    const cardPlan = () => {
+      const unit = singlePrice();
+      const kind = picked.book || 'book';
+      if (voucherOk || picked.bookPay || !picked.bookSlug || !picked.bookDate || picked.bookMinGuests || !['book', 'request'].includes(kind)) return null;
+      if (!dialog.querySelector<HTMLElement>('[data-book-ag]')?.hidden) return null;
+      if (!(Number.isFinite(unit) && unit >= 5)) return null;
+      return { total: Math.round(unit * Math.max(1, Number(people?.value) || 1) * 100) };
+    };
+    const showCard = () => {
+      const plan = cardPlan();
+      const box = q('[data-book-cardhold]');
+      if (box) box.hidden = !plan;
+      if (!plan) return null;
+      const amt = eur(plan.total / 100);
+      const host = picked.bookHost || (dialog.dataset.lang === 'de' ? 'der Gastgeber' : 'the host');
+      q('[data-bch-amount]')!.textContent = amt;
+      q('[data-bch-title]')!.textContent = copy.cardTitle.replaceAll('{host}', host);
+      q('[data-bch-body]')!.textContent = copy.cardBody.replaceAll('{amount}', amt).replaceAll('{host}', host);
+      return plan;
     };
     /** Total and rest (in cents) when a checked voucher pays on a request. */
     const holdPlan = () => {
@@ -501,6 +536,8 @@ const vc = lang === 'de'
       form.hidden = false;
       if (sent) sent.hidden = true;
       if (send) { send.disabled = false; send.textContent = picked.bookPay ? payCopy().go : copy.send; }
+      totals();
+      if (lede && cardPlan()) lede.textContent = copy.cardLede.replaceAll('{host}', picked.bookHost || (dialog.dataset.lang === 'de' ? 'der Gastgeber' : 'the host'));
       // A button inside another panel (the group page's quick view) hands
       // over to the form rather than stacking it on top.
       document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => { if (d !== dialog) d.close(); });
@@ -629,6 +666,8 @@ const vc = lang === 'de'
             ...(picked.bookSlug ? { _hostSlug: picked.bookSlug } : {}),
             // Paying with the voucher: held until the host confirms.
             ...(holdPlan() ? { _voucherHold: true, _totalCents: holdPlan()!.total, _back: location.href } : {}),
+            // No voucher, host without Stripe: the whole price held on the card.
+            ...(!holdPlan() && cardPlan() ? { _cardHold: true, _totalCents: cardPlan()!.total, _back: location.href } : {}),
           }),
         });
         const out = await res.json().catch(() => ({}));
