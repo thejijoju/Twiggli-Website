@@ -4818,6 +4818,14 @@ html.map-locked { overflow: hidden; }
 .bv-total { font-size: 15px; color: #8a8d92; }
 .bv-total b { font-size: 22px; font-weight: 600; color: var(--color-text); }
 .bv-hold { margin: 6px 0 0; font-size: 13px; line-height: 1.45; color: #6b7076; }
+/* Card held for a host without Stripe: calm, says plainly nothing is charged now. */
+.book-cardhold { margin: 4px 0 14px; padding: 12px 14px; border-radius: 12px; background: #f6f2ff; }
+.book-cardhold[hidden] { display: none; }
+.bch-total { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: #454a50; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid #e6defc; }
+.bch-total b { font-size: 16px; color: #24272e; }
+.bch-title { display: flex; gap: 6px; align-items: center; margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #6A3EEC; }
+.bch-title svg { flex: none; }
+.bch-body { margin: 0; font-size: 13px; line-height: 1.5; color: #555a60; }
 .bv-add { justify-self: start; padding: 0; border: 0; background: none; font: inherit; font-size: 15px; font-weight: 500; color: var(--color-accent); cursor: pointer; }
 .bv-add:hover { opacity: 0.8; }
 .bv-row { display: flex; gap: 10px; }

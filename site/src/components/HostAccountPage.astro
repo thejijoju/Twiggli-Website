@@ -4283,6 +4283,14 @@ const fields = [
         // Places that make sense (Jirel 23.11.26: a date went up with 0 places, then 2 places from 5).
         if (body.seats === null || body.seats < 1) { note.textContent = TL('Bitte gib mindestens 1 Platz an.', 'Please give at least 1 place.', 'Indique au moins 1 place.'); fld('seats').focus(); return; }
         if (body.seats && body.minGuests && body.minGuests > body.seats) { note.textContent = TL(`Du hast ${body.seats} Plätze, der Termin findet aber erst ab ${body.minGuests} Personen statt. So kommt er nie zustande. Bitte prüf die beiden Zahlen.`, `You have ${body.seats} places, but the date only runs from ${body.minGuests} people, so it could never run. Please check both numbers.`, `Tu as ${body.seats} places, mais la date n’a lieu qu’à partir de ${body.minGuests} personnes : elle ne pourrait jamais avoir lieu. Vérifie les deux chiffres.`); fld('seats').focus(); return; }
+        // A place, always (Jirel 26.11.26), unless it happens at the guest's.
+        const bw = body as unknown as { where?: string; location?: string };
+        if (bw.where !== 'guest' && !String(bw.location ?? '').trim()) {
+          note.textContent = bw.where === 'other'
+            ? TL('Bitte gib an, wo der Workshop stattfindet (Name oder Adresse).', 'Please say where the workshop takes place (name or address).', 'Indique où l’atelier a lieu (nom ou adresse).')
+            : TL('Bitte trag deine Studio-Adresse ein (Einstellungen → Konto) oder wähle „Woanders“ bzw. „Bei den Gästen“.', 'Please add your studio address (Settings → Account), or choose “Somewhere else” or “At the guests’ place”.', 'Ajoute l’adresse de ton studio (Réglages → Compte) ou choisis « Ailleurs » ou « Chez les participants ».');
+          note.dataset.ok = 'false'; return;
+        }
         // No price at all: ask for one instead of publishing a "€0" date.
         if (body.price === null && createKind !== 'group') { note.textContent = TL('Bitte gib einen Preis pro Person an (0 nur, wenn es kostenlos ist).', 'Please enter a price per person (0 only if it is free).', 'Indique un prix par personne (0 seulement si c’est gratuit).'); note.dataset.ok = 'false'; fld('price').focus(); return; }
         // A price without Stripe: the date takes requests until Stripe is connected.
@@ -4657,6 +4665,11 @@ const fields = [
       };
       const calPick = (day: string) => {
         if (calMultiBusy) return;
+        // Group offers take no dates (Jirel 26.11.26): groups send their own wish date.
+        if (ownEvents.some((e) => e.section === 'group' && (e.wkey ? e.wkey === calSel : calKey(e.title) === calSel))) {
+          calNote(TL('Gruppenangebote haben keine festen Termine: Gruppen schicken dir ihr Wunschdatum mit der Anfrage.', 'Group offers have no fixed dates: groups send you their preferred date with their request.', 'Les offres de groupe n’ont pas de dates fixes : les groupes t’envoient leur date souhaitée avec la demande.'), false);
+          return;
+        }
         if (!calPicks.size) {
           const [s, e] = calMultiTimes();
           $<HTMLInputElement>('[data-cal-multi-s]').value = s;
