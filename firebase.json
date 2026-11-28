@@ -6,8 +6,44 @@
     {
       "source": "functions",
       "codebase": "website",
-      "ignore": ["node_modules", ".git", "*.log"],
+      "ignore": [
+        "node_modules",
+        ".git",
+        "*.log"
+      ],
       "runtime": "nodejs22"
+    }
+  ],
+  "hosting": [
+    {
+      "site": "twiggli-mcp",
+      "public": "mcp-host",
+      "ignore": [],
+      "cleanUrls": false,
+      "headers": [
+        {
+          "source": "/.well-known/**",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain; charset=utf-8"
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "function": {
+            "functionId": "publicMcp",
+            "region": "europe-west3"
+          }
+        }
+      ]
     }
   ]
 }

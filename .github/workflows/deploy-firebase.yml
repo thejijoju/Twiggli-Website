@@ -5,6 +5,7 @@ name: Deploy Firebase (functions and Firestore rules)
 # "website" codebase never touches the app's own functions, and Firestore
 # rules are NOT deployed from here, because the app's database shares them
 # (firestore.rules must first be merged with the app's rules by hand).
+# Also the Hosting site twiggli-mcp (mcp.twiggli.com → publicMcp).
 # Runs when the functions change on the live branch, or by hand. Needs one repository secret, FIREBASE_SERVICE_ACCOUNT:
 # the JSON key of a service account with the roles "Firebase Admin" and
 # "Cloud Functions Admin" (functions/README.md). The Stripe key is not
@@ -15,7 +16,7 @@ name: Deploy Firebase (functions and Firestore rules)
 on:
   push:
     branches: [claude/new-session-c5222r]
-    paths: [functions/**, firebase.json, .github/workflows/deploy-firebase.yml]
+    paths: [functions/**, mcp-host/**, firebase.json, .github/workflows/deploy-firebase.yml]
   workflow_dispatch:
 
 permissions:
@@ -61,6 +62,12 @@ jobs:
             echo '::error::Secrets INBOX_EMAIL, CONTACT_EMAIL and ADMIN_EMAILS are all needed (Settings → Secrets and variables → Actions)'; exit 1
           fi
           printf 'INBOX_EMAIL=%s\nSENDER_EMAIL=%s\nADMIN_EMAILS=%s\nVOUCHER_SEEDS="%s"\nVOUCHER_AUTO=on\n' "$INBOX_EMAIL" "$SENDER_EMAIL" "$ADMIN_EMAILS" "$(printf '%s' "$VOUCHER_SEEDS" | tr '\n' ';')" > functions/.env
+      # mcp.twiggli.com: a Hosting site of its own (twiggli-mcp), never the
+      # app's, that passes everything to publicMcp and serves the domain
+      # check files in mcp-host/.well-known. Creating it again is harmless.
+      - name: Hosting site for mcp.twiggli.com
+        if: steps.project.outputs.id != ''
+        run: npx --yes firebase-tools@15.34.2 hosting:sites:create twiggli-mcp --project "${{ steps.project.outputs.id }}" --non-interactive || true
       - name: Deploy
         if: steps.project.outputs.id != ''
-        run: npx --yes firebase-tools@15.34.2 deploy --only functions:website --project "${{ steps.project.outputs.id }}" --non-interactive --force
+        run: npx --yes firebase-tools@15.34.2 deploy --only functions:website,hosting:twiggli-mcp --project "${{ steps.project.outputs.id }}" --non-interactive --force

@@ -49,7 +49,11 @@ const card = (w, dates) => ({
 });
 
 export const buildPublic = () => {
-  const s = new McpServer({ name: 'twiggli', version: '1.0.0' }, {
+  const s = new McpServer({
+    name: 'twiggli', title: 'Twiggli', version: '1.0.0', websiteUrl: 'https://www.twiggli.com/connector/',
+    // The logo directories (Claude, ChatGPT) show next to the connector.
+    icons: [{ src: 'https://www.twiggli.com/img/twiggli-512.png', mimeType: 'image/png', sizes: ['512x512'] }],
+  }, {
     instructions: 'Twiggli lists hands-on creative workshops with independent makers in Berlin (pottery, painting, candles, printmaking, cooking, crafts, wellbeing…). Use search_workshops to find classes by topic, date, district or budget, then share the "book" link: booking, private groups and gift vouchers all happen on twiggli.com. Prices are per person in euros unless stated.',
   });
   s.registerTool('search_workshops', {
