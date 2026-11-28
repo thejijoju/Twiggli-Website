@@ -101,6 +101,9 @@ const hosts = Object.fromEntries(
     name: h.name,
     // The person behind a studio name, so Jirel finds "Diana" in the picker (RtmiS).
     first: (h as unknown as { firstName?: string }).firstName ?? '',
+    // Jirel's search in the admin host picker: studio, person, slug, what they do (28.11.26).
+    find: [h.name, h.studio, (h as unknown as { firstName?: string }).firstName, h.slug, h.specialty, h.blurb]
+      .filter(Boolean).join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
     // Takes Twiggli vouchers now (written yes or their own choice in Settings → Payment).
     voucher: voucherHosts.includes(h.slug),
     // The room they rent out as the "Raum mieten" page has it, to start the dashboard form from.
@@ -349,6 +352,7 @@ const fields = [
               <button type="button" class="hd-item" data-ha-go="settings">{L('Einstellungen', 'Settings', 'Réglages')}</button>
               <label class="ha-pick" data-ha-pick-wrap hidden>
                 <span>{t.hostPick}</span>
+                <input type="search" class="ha-pick-q" data-ha-pick-q hidden autocomplete="off" placeholder={L('Name, Studio oder Workshop suchen…', 'Search name, studio or workshop…', 'Chercher un nom, un atelier…')} />
                 <select data-ha-pick></select>
               </label>
               {/* Jirel only: the personal invite link for the host picked above (functions hostInviteLinks). */}
@@ -1267,7 +1271,7 @@ const fields = [
   type Profile = Record<string, string>;
   type Slot = { title: string; weekdays: string[]; time: string; duration?: string | null; price?: number | null };
   type Sp = { on?: boolean; name?: string; district?: string; capacity?: number | null; size?: string; price?: number | null; priceNote?: string; included?: string; suits?: string; about?: string; access?: string; photos?: string[] };
-  type HostData = { name: string; first?: string; voucher?: boolean; space?: Sp | null; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
+  type HostData = { name: string; first?: string; find?: string; voucher?: boolean; space?: Sp | null; page: string; en: Profile; de: Profile; slots: Slot[]; photos: string[]; draft?: boolean; card?: string; video?: boolean };
 
   const root = document.querySelector<HTMLElement>('[data-ha]');
   if (root) {
@@ -1815,7 +1819,7 @@ const fields = [
         us = d ?? {};
         // The account opens in the language the host chose (Präferenzen), like Luma.
         fillSettings(); renderProfile();
-        if (us.langAt && us.lang && us.lang !== root.dataset.lang && ['en', 'de', 'fr'].includes(us.lang)) void switchLang(us.lang);
+        if (!isAdmin && us.langAt && us.lang && us.lang !== root.dataset.lang && ['en', 'de', 'fr'].includes(us.lang)) void switchLang(us.lang);
       }).catch(() => fillSettings());
       root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((tb) => tb.addEventListener('click', () => {
         root.querySelectorAll<HTMLButtonElement>('[data-hs-tab]').forEach((x) => x.setAttribute('aria-selected', String(x === tb)));
@@ -2561,6 +2565,8 @@ const fields = [
       // ── Loading a host ──
       const openHost = async (s: string) => {
         slug = s;
+        // Admin: Profile and Settings show this host's own account, not Jirel's.
+        if (isAdmin) void loadSettings();
         const h = hosts[s];
         $<HTMLAnchorElement>('[data-ha-view]').href = h?.page ?? '#';
         // Settings → "Your page": the full address to share, with a copy button.
@@ -2990,6 +2996,8 @@ const fields = [
       let whenChosen = false; // until the host picks a tab, open requests come first
       const api = async (name: string, body: Record<string, unknown>) => {
         if (DEMO) throw new Error('demo');
+        // Jirel (admin) sees the host's own settings and Stripe status (28.11.26).
+        if (isAdmin && slug && (name === 'userSettings' || name === 'hostStripe')) body = { ...body, asSlug: slug };
         const token = await auth.currentUser?.getIdToken();
         const res = await fetch(`${cfg.functions}/${name}`, {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body),
@@ -6330,8 +6338,10 @@ const fields = [
           pick.replaceChildren(...all.map((s) => new Option(hostLabel(s), s)));
           $('[data-ha-pick-wrap] span').textContent = document.documentElement.lang === 'en' ? 'Open a host' : 'Host öffnen';
           $('[data-ha-pick-wrap]').dataset.admin = '1';
+          adminSearch(all);
           $('[data-ha-invite-admin]').hidden = false;
           pick.addEventListener('change', async () => {
+            if (!pick.value) return;
             try { if (!slugs.includes(pick.value) && (await claim(pick.value, '', '')) === 'granted') slugs.push(pick.value); } catch (err) { console.warn('admin claim', pick.value, err); }
             openHost(pick.value).catch(failed);
           });
@@ -6371,6 +6381,28 @@ const fields = [
         await openHost(slugs[0]);
       };
 
+      // Jirel's host picker: search by name (studio, person, slug, what they do), 28.11.26.
+      const adminSearch = (all: string[]) => {
+        const q = $<HTMLInputElement>('[data-ha-pick-q]');
+        q.hidden = false;
+        const norm = (x: string) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const filter = () => {
+          const words = norm(q.value).split(/\s+/).filter(Boolean);
+          const hit = all.filter((s) => words.every((w) => (hosts[s].find ?? s).includes(w) || hostLabel(s).toLowerCase().includes(w)));
+          const keep = pick.value;
+          pick.replaceChildren(...(hit.length ? hit : all).map((s) => new Option(hostLabel(s), s)));
+          if (!hit.length) pick.prepend(new Option(document.documentElement.lang === 'en' ? 'No match' : 'Kein Treffer', '', true, true));
+          else if (hit.includes(keep)) pick.value = keep; else pick.selectedIndex = -1;
+      };
+      q.addEventListener('input', filter);
+      q.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const first = [...pick.options].find((o) => o.value);
+        if (first && first.value !== slug) { pick.value = first.value; pick.dispatchEvent(new Event('change')); }
+      });
+      q.addEventListener('click', (e) => e.stopPropagation());
+      };
       // If loading the account fails, say so (with the reason) instead of
       // leaving an empty page under the header (Jirel, 12.11.26).
       const failed = (err: unknown) => {
@@ -6411,6 +6443,7 @@ const fields = [
           const s = hosts[q.get('host') ?? ''] ? q.get('host')! : slug;
           pick.replaceChildren(new Option(`${hosts[s]?.name ?? s} · ${hosts[s]?.en.specialty ?? ''}`, s));
           pick.value = s;
+          adminSearch(Object.keys(hosts).sort((a, b) => hosts[a].name.localeCompare(hosts[b].name)));
           $('[data-ha-pick-wrap]').hidden = false;
           $('[data-ha-invite-admin]').hidden = false;
           isAdmin = true;
@@ -7006,6 +7039,8 @@ const fields = [
   .hd-menu .ha-pick[data-admin] > span::after { content: 'Admin'; font-size: 0.66rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #6a3eec; background: #f1eaff; border-radius: 999px; padding: 2px 8px; }
   .ha .hd-menu .ha-pick select { -webkit-appearance: none; appearance: none; cursor: pointer; border: 1px solid transparent; background: #f5f3f9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236a3eec' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center; padding: 10px 34px 10px 12px; transition: border-color .15s ease, background-color .15s ease; }
   .ha .hd-menu .ha-pick select:hover { border-color: rgba(106, 62, 236, 0.35); background-color: #fff; }
+  .ha .hd-menu .ha-pick .ha-pick-q { width: 100%; min-width: 0; font-size: 0.85rem; padding: 9px 12px; border-radius: 12px; border: 1px solid rgba(106, 62, 236, 0.25); background: #fff; color: var(--color-text); }
+  .ha .hd-menu .ha-pick .ha-pick-q:focus { outline: none; border-color: rgba(106, 62, 236, 0.6); }
   .ha .hd-menu .ha-pick select:focus { outline: none; border-color: rgba(106, 62, 236, 0.55); background-color: #fff; }
   /* Settings page (Jirel 14.11.26): account, profile emoji, payouts, sign out. */
   .hd-set { max-width: 560px; display: grid; gap: 16px; }
@@ -7760,7 +7795,8 @@ const fields = [
   .msg-card.is-open { border-color: #d9ccfb; }
   .msg-kind.is-hold { background: #f3eeff; color: #6a3eec; }
   .msg-first { font-size: 0.98rem; }
-  .msg-money { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; background: #faf8ff; border: 1px solid #ece6f8; font-size: 0.88rem; }
+  .msg-money { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; background: #faf8ff; border: 1px solid #ece6f8; font-size: 0.88rem; width: 88%; box-sizing: border-box; }
+  /* One width for the guest's message and the money box (Jirel 28.11.26: the message width is the right one). */
   .msg-mrow { display: flex; justify-content: space-between; gap: 12px; }
   .msg-mrow span { color: var(--color-text-muted); }
   .msg-mrow.is-you { padding-top: 4px; border-top: 1px solid #ece6f8; font-size: 0.95rem; }
@@ -7787,7 +7823,8 @@ const fields = [
   .msg-who small { flex-basis: 100%; color: var(--color-text-muted); font-size: 0.8rem; }
   .msg-kind { font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #fff7f2; color: #c2541f; }
   .msg-kind.is-paid { background: #e8f6f3; color: #157a6b; }
-  .msg-b { margin: 0; padding: 10px 12px; border-radius: 14px 14px 14px 4px; background: #f6f4fa; white-space: pre-line; font-size: 0.92rem; max-width: 88%; }
+  .msg-b { margin: 0; padding: 10px 12px; border-radius: 14px 14px 14px 4px; background: #f6f4fa; white-space: pre-line; font-size: 0.92rem; width: 88%; box-sizing: border-box; }
+  .msg-b.is-host { width: auto; max-width: 88%; margin-right: 12%; } /* right edge in line with the message and money box */
   .msg-b.is-host { justify-self: end; border-radius: 14px 14px 4px 14px; background: #6a3eec; color: #fff; }
   .msg-reply { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; margin-top: 4px; }
   .msg-reply textarea { font: inherit; font-size: 0.9rem; padding: 8px 10px; border: 1.5px solid #e6dff2; border-radius: 12px; resize: vertical; min-height: 44px; }
