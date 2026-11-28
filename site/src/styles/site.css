@@ -6648,3 +6648,12 @@ body.is-bare { padding-bottom: 0; }
 .team-vouchers-note { margin: 12px 0 0; font-size: .78rem; color: var(--color-text-muted); }
 .team-vouchers-img { width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 40px rgba(40, 20, 90, .18); transform: rotate(3deg); background: #fff; }
 @media (max-width: 760px) { .team-vouchers { grid-template-columns: 1fr; padding: 22px 18px; } .team-vouchers-img { order: -1; max-width: 170px; margin: 0 auto 4px; transform: rotate(2deg); } }
+
+/* The connector page (LegalPage soft): a lighter, whiter wash with a touch
+   of Luma lavender, the kicker as a plain purple eyebrow, a tighter head. */
+body:has(.legal-soft) { background-color: #fffdfb; background-image: linear-gradient(115deg, #fffdfa 0%, #fdf9f7 45%, #f6f1ff 100%); }
+.legal-soft .kicker { border: 0; box-shadow: none; background: none; padding: 0; font-size: 13px; font-style: normal; letter-spacing: 0.1em; color: var(--color-accent); }
+.legal-soft .rule { display: none; }
+.legal-soft .section { padding-top: 8px; }
+.legal-soft .page-head { padding-bottom: 12px; }
+.legal-soft .legal-toc { margin-top: 0; }

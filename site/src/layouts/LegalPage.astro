@@ -17,11 +17,13 @@ interface Props {
   /** The languages this page exists in — the legal pages by default, the
    *  single German-only Impressum passes just its own. */
   translations?: Lang[];
+  /** A lighter, calmer look (Luma-like): plain kicker, whiter wash, tighter head. */
+  soft?: boolean;
 }
 
 const {
   title, kicker, heading, description, lede, toc = [], updated, lang = DEFAULT_LANG,
-  translations = LEGAL_LANGS,
+  translations = LEGAL_LANGS, soft = false,
 } = Astro.props;
 const { legalUpdated } = getSiteData(lang);
 /* The legal pages exist in English and German only (LEGAL_LANGS), so
@@ -31,7 +33,7 @@ const onThisPageLabel = lang === 'de' ? 'Auf dieser Seite' : 'On this page';
 ---
 
 <Base title={title} description={description} lang={lang} translations={translations}>
-  <div class="container">
+  <div class:list={['container', { 'legal-soft': soft }]}>
     <section class="page-head">
       <span class="kicker">{kicker}</span>
       <h1 class="page-title">{heading}</h1>
