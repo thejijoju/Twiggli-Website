@@ -4863,9 +4863,22 @@ export const hostInsightsPreview = onRequest({ region: 'europe-west3', maxInstan
 
 
 // ── Twiggli connectors (MCP) for Claude, ChatGPT and other assistants (Jirel 28.11.26) ──
+/** Anonymous usage counts for the public connector (Jirel 28.11.26: see which
+ *  workshops people ask AI assistants for). Stored: time, tool, the search
+ *  words and filters (cut to 80 characters), number of results and which kind
+ *  of app called (from its User-Agent). No IP, account or conversation. */
+const statLog = (req) => {
+  const ua = String(req.get?.('user-agent') ?? '');
+  const app = /claude|anthropic/i.test(ua) ? 'claude' : /openai|chatgpt/i.test(ua) ? 'chatgpt' : /gemini|google/i.test(ua) ? 'google' : ua ? 'other' : 'unknown';
+  return (tool, args, found) => {
+    const clean = {};
+    for (const [k, v] of Object.entries(args ?? {})) if (v !== undefined && v !== '') clean[k] = typeof v === 'string' ? v.slice(0, 80) : v;
+    getFirestore().collection('mcpStats').add({ at: Date.now(), tool, args: clean, found, app }).catch((err) => console.error('mcpStats', err?.message));
+  };
+};
 // Public: https://europe-west3-twiggli-production.cloudfunctions.net/publicMcp
 export const publicMcp = onRequest({ region: 'europe-west3', maxInstances: 5, cors: true, timeoutSeconds: 30 }, async (req, res) => {
-  try { await serveMcp(req, res, buildPublic); } catch (err) {
+  try { await serveMcp(req, res, () => buildPublic(statLog(req))); } catch (err) {
     console.error('publicMcp', err?.message);
     if (!res.headersSent) res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: 'Internal error' }, id: null });
   }

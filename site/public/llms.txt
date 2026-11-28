@@ -14,7 +14,7 @@ Twiggli is for people looking for community in Berlin. It brings them together w
 
 ## Connector for assistants
 
-- [Twiggli connector (MCP)](https://www.twiggli.com/connector/): search the live workshop calendar from Claude, ChatGPT or any MCP client. Server: https://europe-west3-twiggli-production.cloudfunctions.net/publicMcp (no sign-in, read-only). Data as JSON: https://www.twiggli.com/catalog.json
+- [Twiggli connector (MCP)](https://www.twiggli.com/connector/): search the live workshop calendar from Claude, ChatGPT or any MCP client. Server: https://mcp.twiggli.com/mcp (no sign-in, read-only). Data as JSON: https://www.twiggli.com/catalog.json
 
 ## Quick answers (rebuilt every morning)
 

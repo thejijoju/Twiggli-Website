@@ -48,7 +48,10 @@ const card = (w, dates) => ({
   ...(w.onRequest ? { onRequest: true } : {}), giftVoucher: !!w.voucher, book: w.url,
 });
 
-export const buildPublic = () => {
+/** log(tool, filters, found): anonymous usage counts (see statLog in
+ *  index.js). Only the tool, the search words/filters and the number of
+ *  results; never anything about the person. */
+export const buildPublic = (log = () => {}) => {
   const s = new McpServer({
     name: 'twiggli', title: 'Twiggli', version: '1.0.0', websiteUrl: 'https://www.twiggli.com/connector/',
     // The logo directories (Claude, ChatGPT) show next to the connector.
@@ -94,6 +97,7 @@ export const buildPublic = () => {
     }
     hits.sort((x, y) => y.score - x.score || x.soon.localeCompare(y.soon));
     const list = hits.slice(0, a.limit ?? 10).map((h) => card(h.w, h.dates));
+    log('search_workshops', { query: a.query, category: a.category, district: a.district, date_from: a.date_from, date_to: a.date_to, max_price: a.max_price, language: a.language }, hits.length);
     return out({ found: hits.length, shown: list.length, workshops: list, groups: c.groupsUrl, giftVouchers: c.voucherUrl, note: 'Booking is free to request; people pay only once the host confirms, or straight away where online payment is shown.' });
   });
   s.registerTool('get_workshop', {
@@ -104,6 +108,7 @@ export const buildPublic = () => {
   }, async ({ id }) => {
     const c = await catalog();
     const w = c.workshops.find((x) => x.id === id) ?? c.workshops.find((x) => x.id.endsWith(`/${id}`));
+    log('get_workshop', { id }, w ? 1 : 0);
     if (!w) return out(`No workshop with id "${id}". Use search_workshops first.`);
     return out({ ...card(w, w.dates), next: w.dates.map((d) => `${d.date}${d.time ? ` ${d.time}` : ''}${d.soldOut ? ' (sold out)' : d.spots !== undefined ? ` (${d.spots} left)` : ''}`), about: w.about, specialty: w.specialty, groups: w.groups, book_de: w.url_de });
   });
@@ -114,6 +119,7 @@ export const buildPublic = () => {
     inputSchema: {},
   }, async () => {
     const c = await catalog();
+    log('list_categories', {}, c.workshops.length);
     const count = (key) => Object.entries(c.workshops.reduce((m, w) => { const k = w[key] || 'other'; m[k] = (m[k] ?? 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
     return out({ updated: c.updated, categories: count('category'), districts: count('district').slice(0, 30) });
   });
@@ -207,6 +213,29 @@ export const buildAdmin = (db) => {
     const h = await db.collection('formRequests').where('hold.payout', '==', 'owed').get();
     const cards = h.docs.map((d) => ({ id: d.id, ...d.data() })).map((x) => ({ request: x.id, host: x.hostSlug, net: (x.hold?.payoutCents ?? 0) / 100, gross: (x.hold?.chargeCents ?? 0) / 100, guest: x.fields?.Name ?? '', workshop: x.fields?.Workshop ?? '', settled: day(x.hold?.settledAt) }));
     return out({ voucherPayouts: vouchers, cardHoldsToTransfer: cards });
+  });
+  s.registerTool('connector_stats', {
+    title: 'Public connector usage',
+    annotations: { ...RO, title: 'Public connector usage' },
+    description: 'How the public Twiggli connector (Claude, ChatGPT…) is used: calls per tool, app and day, the most searched words, categories and districts, and searches that found nothing (demand Twiggli cannot serve yet). Anonymous counts only.',
+    inputSchema: { days: z.number().int().min(1).max(365).optional().describe('How far back (default 30)') },
+  }, async ({ days = 30 }) => {
+    const since = Date.now() - days * 864e5;
+    const snap = await db.collection('mcpStats').where('at', '>=', since).orderBy('at', 'desc').limit(5000).get();
+    const rows = snap.docs.map((d) => d.data());
+    const tally = (pick) => Object.entries(rows.reduce((m, r) => { for (const k of [pick(r)].flat()) if (k) m[k] = (m[k] ?? 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
+    const searches = rows.filter((r) => r.tool === 'search_workshops');
+    return out({
+      days, calls: rows.length, capped: rows.length === 5000,
+      byTool: tally((r) => r.tool), byApp: tally((r) => r.app), byDay: tally((r) => new Date(r.at).toISOString().slice(0, 10)).sort((a, b) => a[0].localeCompare(b[0])),
+      topQueries: tally((r) => r.tool === 'search_workshops' && r.args?.query?.toLowerCase()).slice(0, 30),
+      categories: tally((r) => r.args?.category?.toLowerCase()).slice(0, 15),
+      districts: tally((r) => r.args?.district).slice(0, 15),
+      maxPrice: tally((r) => r.args?.max_price !== undefined && `≤ €${r.args.max_price}`).slice(0, 10),
+      noResults: tally((r) => r.tool === 'search_workshops' && r.found === 0 && JSON.stringify(r.args)).slice(0, 25),
+      workshopsOpened: tally((r) => r.tool === 'get_workshop' && r.args?.id).slice(0, 20),
+      searches: searches.length,
+    });
   });
   return s;
 };
