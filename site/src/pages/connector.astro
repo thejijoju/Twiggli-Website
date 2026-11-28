@@ -1,0 +1,77 @@
+---
+import { contactEmail } from '../data/site.ts';
+import LegalPage from '../layouts/LegalPage.astro';
+
+/** /connector — the public Twiggli connector (MCP) for Claude, ChatGPT and
+ *  other assistants (Jirel 28.11.26): what it does, its address, how to add
+ *  it, and what happens with data. Linked from llms.txt and used for the
+ *  connector directory applications. Server: functions/mcp.js (publicMcp). */
+const url = 'https://europe-west3-twiggli-production.cloudfunctions.net/publicMcp';
+const toc = [
+  { id: 'what', label: 'What it does' },
+  { id: 'add', label: 'Add it' },
+  { id: 'tools', label: 'Tools' },
+  { id: 'examples', label: 'Example questions' },
+  { id: 'privacy', label: 'Privacy' },
+  { id: 'support', label: 'Support' },
+];
+---
+
+<LegalPage
+  title="Twiggli connector for Claude, ChatGPT and other assistants"
+  kicker="For AI assistants"
+  heading="The Twiggli connector"
+  description="Ask Claude, ChatGPT or any assistant that supports MCP for creative workshops in Berlin, with live dates, prices and booking links from Twiggli."
+  lede="Find hands-on creative workshops in Berlin straight from your AI assistant: real dates, free spots and prices from the live Twiggli calendar, with a link to book."
+  toc={toc}
+  updated="28 November 2026"
+  soft
+  lang="en"
+  translations={['en']}
+>
+  <h2 id="what">What it does</h2>
+  <p>
+    Twiggli lists small creative workshops run by independent makers in their own Berlin studios: pottery and ceramics,
+    painting, candle making, printmaking, crafts, cooking and tastings, wellbeing and more. The connector lets an assistant
+    search this live calendar by topic, date, district, language and budget, and show prices, free spots, group options and
+    gift vouchers. Booking always happens on twiggli.com, through the link it gives you.
+  </p>
+
+  <h2 id="add">Add it</h2>
+  <p>Server address (MCP, Streamable HTTP, no sign-in):</p>
+  <p><code>{url}</code></p>
+  <ul>
+    <li><strong>Claude:</strong> Settings → Connectors → Add custom connector. Name it “Twiggli”, paste the address, choose “No sign-in”.</li>
+    <li><strong>ChatGPT:</strong> in Settings, add a custom connector (developer mode) with the address above, without authentication.</li>
+    <li><strong>Other MCP clients:</strong> add it as a remote server with the address above.</li>
+  </ul>
+
+  <h2 id="tools">Tools</h2>
+  <p>All three tools only read; nothing is booked, changed or sent.</p>
+  <ul>
+    <li><strong>search_workshops</strong>: find workshops by topic, category, district, dates, maximum price and language.</li>
+    <li><strong>get_workshop</strong>: everything about one workshop: the host, all upcoming dates, group sizes and the booking link.</li>
+    <li><strong>list_categories</strong>: the kinds of workshops and the districts they take place in.</li>
+  </ul>
+
+  <h2 id="examples">Example questions</h2>
+  <ul>
+    <li>“Find a pottery class in Neukölln this Saturday.”</li>
+    <li>“Date night idea in Berlin under €60 per person.”</li>
+    <li>“A Christmas craft workshop for six friends in December.”</li>
+    <li>“Is there a candle-making workshop in English next week?”</li>
+  </ul>
+
+  <h2 id="privacy">Privacy</h2>
+  <p>
+    The connector needs no account and collects no personal data. It only returns public information from the Twiggli
+    calendar (rebuilt every morning). We do not store your questions. Like any web server, it keeps short technical logs
+    (time, error messages) for running and securing the service. Full privacy policy: <a href="/privacy-policy/">twiggli.com/privacy-policy</a>.
+  </p>
+
+  <h2 id="support">Support</h2>
+  <p>
+    Questions or problems: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. Twiggli UG (haftungsbeschränkt), Köln,
+    <a href="/impressum/">Impressum</a>.
+  </p>
+</LegalPage>

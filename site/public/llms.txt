@@ -12,6 +12,10 @@ Twiggli is for people looking for community in Berlin. It brings them together w
 - Full dates have a waiting list.
 - Contact: https://www.twiggli.com/contact/
 
+## Connector for assistants
+
+- [Twiggli connector (MCP)](https://www.twiggli.com/connector/): search the live workshop calendar from Claude, ChatGPT or any MCP client. Server: https://europe-west3-twiggli-production.cloudfunctions.net/publicMcp (no sign-in, read-only). Data as JSON: https://www.twiggli.com/catalog.json
+
 ## Quick answers (rebuilt every morning)
 
 - [Every workshop with dates, prices, districts and languages](https://www.twiggli.com/llms-full.txt): the full live calendar as plain text, today, tonight, tomorrow and this weekend first, then every host.
