@@ -6,7 +6,7 @@ import LegalPage from '../layouts/LegalPage.astro';
  *  other assistants (Jirel 28.11.26): what it does, its address, how to add
  *  it, and what happens with data. Linked from llms.txt and used for the
  *  connector directory applications. Server: functions/mcp.js (publicMcp). */
-const url = 'https://europe-west3-twiggli-production.cloudfunctions.net/publicMcp';
+const url = 'https://mcp.twiggli.com/mcp';
 const toc = [
   { id: 'what', label: 'What it does' },
   { id: 'add', label: 'Add it' },
@@ -65,8 +65,11 @@ const toc = [
   <h2 id="privacy">Privacy</h2>
   <p>
     The connector needs no account and collects no personal data. It only returns public information from the Twiggli
-    calendar (rebuilt every morning). We do not store your questions. Like any web server, it keeps short technical logs
-    (time, error messages) for running and securing the service. Full privacy policy: <a href="/privacy-policy/">twiggli.com/privacy-policy</a>.
+    calendar (rebuilt every morning). We never receive your conversation, name or account. To learn which workshops
+    people look for, we keep anonymous counts of each search: the tool used, the search words and filters the assistant
+    sends (for example “pottery”, “Kreuzberg”, “under €60”), how many results came back and which kind of app asked
+    (Claude, ChatGPT…), without IP addresses. Like any web server, it also keeps short technical logs (time, error
+    messages) for running and securing the service. Full privacy policy: <a href="/privacy-policy/">twiggli.com/privacy-policy</a>.
   </p>
 
   <h2 id="support">Support</h2>
