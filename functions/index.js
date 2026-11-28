@@ -33,6 +33,9 @@ import { getStorage as adminStorage } from 'firebase-admin/storage';
 import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
 import QRCode from 'qrcode';
 import nodemailer from 'nodemailer';
+import { ImapFlow } from 'imapflow';
+import { simpleParser } from 'mailparser';
+import { serveMcp, buildPublic, buildAdmin } from './mcp.js';
 import { newVoucherCode, voucherMail, voucherPdf } from './voucher.js';
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
@@ -364,7 +367,7 @@ const EMOJI = [
 ];
 const emojiFor = (title) => EMOJI.find(([re]) => re.test(String(title ?? '')))?.[1] ?? '✨';
 
-const confirmGuest = async (to, f) => {
+const confirmGuest = async (to, f, ref = '') => {
   const de = String(f.Language ?? '').startsWith('de');
   const name = String(f.Name ?? '').trim().split(/\s+/)[0];
   const what = /any space|beliebiges Studio|tout atelier/i.test(String(f.Studio ?? '')) ? (de ? 'Raum in Berlin' : 'Studio space in Berlin') : (f.Workshop || f.Studio || f.Type);
@@ -417,7 +420,7 @@ const confirmGuest = async (to, f) => {
     kicker: 'Anfrage erhalten', head: `Danke${name ? `, ${esc(name)}` : ''}! ${icon}`,
     intro: `Deine Anfrage bei <b>Twiggli</b> ist gut angekommen. Wir haben sie direkt an ${host ? esc(host) : 'den Gastgeber'} weitergegeben.`,
     nextHead: 'Wie geht’s weiter?',
-    next: `${host ? esc(host) : 'Der Gastgeber'} meldet sich direkt bei dir per E-Mail, meist innerhalb von 1–2 Tagen, um zu bestätigen oder einen anderen Termin vorzuschlagen. Du musst nichts weiter tun.`,
+    next: `${host ? esc(host) : 'Der Gastgeber'} antwortet dir per E-Mail über <b>Twiggli</b>, meist innerhalb von 1–2 Tagen, um zu bestätigen oder einen anderen Termin vorzuschlagen. Du musst nichts weiter tun.`,
     q: 'Fragen? Antworte einfach auf diese E-Mail.', bye: 'Liebe Grüße', sig: 'Jirel, Gründerin @ <b>Twiggli</b>',
     subject: `Deine Anfrage bei Twiggli: ${what} ${icon}`,
     ...(room ? {
@@ -427,7 +430,7 @@ const confirmGuest = async (to, f) => {
         : `Deine Raumanfrage bei <b>Twiggli</b> ist gut angekommen. Wir haben sie direkt an ${esc(room)} weitergegeben.`,
       next: anyRoom
         ? 'Wir melden uns innerhalb von 1–2 Tagen mit passenden Räumen bei dir. Du musst nichts weiter tun.'
-        : 'Wer den Raum betreut, meldet sich direkt bei dir per E-Mail mit Verfügbarkeit und Preis, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.',
+        : 'Wer den Raum betreut, antwortet dir per E-Mail über <b>Twiggli</b> mit Verfügbarkeit und Preis, meist innerhalb von 1–2 Tagen. Du musst nichts weiter tun.',
     } : {}),
     ...(general ? {
       intro: 'Deine Anfrage bei <b>Twiggli</b> ist gut angekommen. Wir schauen jetzt, welche unserer Gastgeber:innen sie erfüllen können: an deinem Termin, für deine Gruppengröße, in deinem Budget und am passenden Ort.',
@@ -437,7 +440,7 @@ const confirmGuest = async (to, f) => {
     kicker: 'Request received', head: `Thank you${name ? `, ${esc(name)}` : ''}! ${icon}`,
     intro: `Your request on <b>Twiggli</b> has reached us, and we've passed it straight on to ${host ? esc(host) : 'the host'}.`,
     nextHead: 'What happens next?',
-    next: `${host ? esc(host) : 'The host'} will get in touch with you directly by email, usually within 1–2 days, to confirm or suggest another date. There is nothing else you need to do.`,
+    next: `${host ? esc(host) : 'The host'} will answer you by email through <b>Twiggli</b>, usually within 1–2 days, to confirm or suggest another date. There is nothing else you need to do.`,
     q: 'Questions? Just reply to this email.', bye: 'Warm regards', sig: 'Jirel, Founder @ <b>Twiggli</b>',
     subject: `Your Twiggli request: ${what} ${icon}`,
     ...(room ? {
@@ -447,7 +450,7 @@ const confirmGuest = async (to, f) => {
         : `Your studio request on <b>Twiggli</b> has reached us, and we've passed it straight on to ${esc(room)}.`,
       next: anyRoom
         ? 'We’ll get back to you within 1–2 days with spaces that fit. There is nothing else you need to do.'
-        : 'Whoever runs the space will get in touch with you directly by email with availability and price, usually within 1–2 days. There is nothing else you need to do.',
+        : 'Whoever runs the space will answer you by email through <b>Twiggli</b> with availability and price, usually within 1–2 days. There is nothing else you need to do.',
     } : {}),
     ...(general ? {
       intro: 'Your request on <b>Twiggli</b> has reached us. We’re now checking which of our hosts can make it happen: on your date, for your group size, within your budget and in the right place.',
@@ -477,7 +480,7 @@ const confirmGuest = async (to, f) => {
 </table></div>`;
   const text = `${t.head.replace(/<[^>]+>/g, '')}\n\n${t.intro.replace(/<[^>]+>/g, '')}\n\n${what}\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${cardHeld ? '' : t.next}${runsNote ? `\n\n${runsNote}` : ''}${voucherNote ? `\n\n${voucherNote.replace(/<[^>]+>/g, '')}` : ''}\n\n${t.q}\n\n${t.bye}\n${t.sig.replace(/<[^>]+>/g, '')}`;
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-  await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to, subject: t.subject, text, html });
+  await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to, subject: ref ? `${t.subject} · #${ref}` : t.subject, text, html });
 };
 
 /** HTML-escaped, for the email table. */
@@ -1054,9 +1057,9 @@ const notifyHostRequest = async (doc, email, f) => {
       head: `Antworte auf ${esc(gFirst)}s Anfrage`,
       hi: `Hallo${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
-        ? `${esc(guest)} möchte ${soon === 'today' ? '<b>heute</b>' : '<b>morgen</b>'} zu dir kommen. Bitte ruf an oder schreib so schnell wie möglich, am besten mit Antwort auf diese E-Mail (ich bin in CC).`
-        : studio ? `${esc(guest)} möchte über <b>Twiggli</b> deinen Raum mieten. Bitte melde dich direkt bei ${esc(gFirst)} mit Verfügbarkeit und Preis, am einfachsten mit Antwort auf diese E-Mail (ich bin in CC).`
-        : `${esc(guest)} hat über <b>Twiggli</b> bei dir angefragt. Bitte melde dich direkt bei ${esc(gFirst)}, am einfachsten mit Antwort auf diese E-Mail (ich bin in CC).`,
+        ? `${esc(guest)} möchte ${soon === 'today' ? '<b>heute</b>' : '<b>morgen</b>'} zu dir kommen. Bitte antworte so schnell wie möglich, einfach mit Antwort auf diese E-Mail oder in deinem <b>Twiggli</b>-Konto. Deine Antwort geht über <b>Twiggli</b> an ${esc(gFirst)}.`
+        : studio ? `${esc(guest)} möchte über <b>Twiggli</b> deinen Raum mieten. Bitte antworte ${esc(gFirst)} mit Verfügbarkeit und Preis, einfach mit Antwort auf diese E-Mail oder in deinem <b>Twiggli</b>-Konto. Deine Antwort geht über <b>Twiggli</b> an ${esc(gFirst)}.`
+        : `${esc(guest)} hat über <b>Twiggli</b> bei dir angefragt. Bitte antworte ${esc(gFirst)} einfach mit Antwort auf diese E-Mail oder in deinem <b>Twiggli</b>-Konto. Deine Antwort geht über <b>Twiggli</b> an ${esc(gFirst)}.`,
       date: type === 'Date request' ? `${esc(gFirst)} hat keinen passenden Termin gefunden. Magst du einen öffnen oder einen anderen vorschlagen?` : '',
       rows: studio ? [['Raum', what], ['Datum', when], ['Beginn', f['Start time']], ['Stunden', f.Hours], ['Wie oft', often ? 'Regelmäßig' : 'Einmalig'], ['Personen', f.People]]
         : [['Workshop', what], ...(f.Where ? [['Wo', f.Where]] : []), ['Datum', when], ['Uhrzeit', f.Time], ['Personen', f.People], ['Preis pro Person', f.Price]],
@@ -1070,9 +1073,9 @@ const notifyHostRequest = async (doc, email, f) => {
       head: `Reply to ${esc(gFirst)}'s request`,
       hi: `Hi${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
-        ? `${esc(guest)} would like to come <b>${soon}</b>. Please call or write as soon as you can, easiest by replying to this email (I'm in CC).`
-        : studio ? `${esc(guest)} would like to rent your space through <b>Twiggli</b>. Please get in touch with ${esc(gFirst)} directly with availability and price, easiest by replying to this email (I'm in CC).`
-        : `${esc(guest)} sent you a request on <b>Twiggli</b>. Please get in touch with ${esc(gFirst)} directly, easiest by replying to this email (I'm in CC).`,
+        ? `${esc(guest)} would like to come <b>${soon}</b>. Please answer as soon as you can, simply by replying to this email or in your <b>Twiggli</b> account. Your answer reaches ${esc(gFirst)} through <b>Twiggli</b>.`
+        : studio ? `${esc(guest)} would like to rent your space through <b>Twiggli</b>. Please answer ${esc(gFirst)} with availability and price, simply by replying to this email or in your <b>Twiggli</b> account. Your answer reaches ${esc(gFirst)} through <b>Twiggli</b>.`
+        : `${esc(guest)} sent you a request on <b>Twiggli</b>. Please answer ${esc(gFirst)} simply by replying to this email or in your <b>Twiggli</b> account. Your answer reaches ${esc(gFirst)} through <b>Twiggli</b>.`,
       date: type === 'Date request' ? `${esc(gFirst)} didn't find a date that works. Could you open one, or suggest another?` : '',
       rows: studio ? [['Space', what], ['Date', when], ['Start', f['Start time']], ['Hours', f.Hours], ['How often', often ? 'Regularly' : 'One time'], ['People', f.People]]
         : [['Workshop', what], ...(f.Where ? [['Where', f.Where]] : []), ['Date', when], ['Time', f.Time], ['People', f.People], ['Price per person', f.Price]],
@@ -1086,9 +1089,9 @@ const notifyHostRequest = async (doc, email, f) => {
       head: `Réponds à la demande de ${esc(gFirst)}`,
       hi: `Coucou${who.firstName ? ` ${esc(who.firstName)}` : ''},`,
       intro: soon
-        ? `${esc(guest)} aimerait venir <b>${soon === 'today' ? 'aujourd’hui' : 'demain'}</b>. Appelle ou écris dès que possible, le plus simple en répondant à ce mail (je suis en copie).`
-        : studio ? `${esc(guest)} aimerait louer ton espace via <b>Twiggli</b>. Contacte ${esc(gFirst)} directement avec tes disponibilités et ton prix, le plus simple en répondant à ce mail (je suis en copie).`
-        : `${esc(guest)} t’a envoyé une demande sur <b>Twiggli</b>. Contacte ${esc(gFirst)} directement, le plus simple en répondant à ce mail (je suis en copie).`,
+        ? `${esc(guest)} aimerait venir <b>${soon === 'today' ? 'aujourd’hui' : 'demain'}</b>. Réponds dès que possible, simplement en répondant à ce mail ou dans ton espace <b>Twiggli</b>. Ta réponse arrive chez ${esc(gFirst)} via <b>Twiggli</b>.`
+        : studio ? `${esc(guest)} aimerait louer ton espace via <b>Twiggli</b>. Réponds à ${esc(gFirst)} avec tes disponibilités et ton prix, simplement en répondant à ce mail ou dans ton espace <b>Twiggli</b>. Ta réponse arrive chez ${esc(gFirst)} via <b>Twiggli</b>.`
+        : `${esc(guest)} t’a envoyé une demande sur <b>Twiggli</b>. Réponds à ${esc(gFirst)} simplement en répondant à ce mail ou dans ton espace <b>Twiggli</b>. Ta réponse arrive chez ${esc(gFirst)} via <b>Twiggli</b>.`,
       date: type === 'Date request' ? `${esc(gFirst)} n’a pas trouvé de date qui convient. Tu peux en ouvrir une ou en proposer une autre ?` : '',
       rows: studio ? [['Espace', what], ['Date', when], ['Début', f['Start time']], ['Heures', f.Hours], ['Fréquence', often ? 'Régulièrement' : 'Une fois'], ['Personnes', f.People]]
         : [['Atelier', what], ...(f.Where ? [['Où', f.Where]] : []), ['Date', when], ['Heure', f.Time], ['Personnes', f.People], ['Prix par personne', f.Price]],
@@ -1103,7 +1106,9 @@ const notifyHostRequest = async (doc, email, f) => {
   const cell = 'padding:9px 0;border-bottom:1px solid #efe9e2;font-size:14px';
   const table = T.rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="${cell};color:#6b7076">${esc(k)}</td><td align="right" style="${cell};font-weight:bold">${esc(v)}</td></tr>`).join('');
   const message = String((studio ? f['Special notes'] : f.Message) ?? '').trim();
-  const contact = [guest && `<b>${esc(guest)}</b>`, isEmail(email) && `<a href="mailto:${esc(email)}" style="color:#6a3eec">${esc(email)}</a>`, f.Phone && `<a href="tel:${esc(String(f.Phone).replace(/\s/g, ''))}" style="color:#6a3eec">${esc(f.Phone)}</a>`].filter(Boolean).join('<br>');
+  // No email or phone for the host (Jirel 27.11.26): everything goes through
+  // Twiggli (relayMail), so bookings stay on the platform.
+  const contact = guest ? `<b>${esc(guest)}</b>` : '';
   const answerUrl = (act) => holdLinks ? holdLinks[act] : `${SITE}${lang === 'en' ? '' : `/${lang}`}/host/account/messages/?req=${encodeURIComponent(doc.id)}&act=${act}`;
   const actRow = buttons ? `<tr><td style="padding:18px 30px 0"><table cellpadding="0" cellspacing="0"><tr>
 <td style="border-radius:10px;background:#6a3eec"><a href="${answerUrl('accept')}" style="display:inline-block;padding:12px 26px;font-size:15px;font-weight:bold;color:#fff;text-decoration:none;border-radius:10px">${T.yes}</a></td>
@@ -1130,13 +1135,14 @@ ${gross ? `<tr><td style="padding:16px 30px 0"><p style="margin:0 0 4px;font-siz
 <tr><td style="padding:14px 30px;font-size:11px;color:#888;line-height:1.6"><a href="${SITE}" style="color:#888">www.twiggli.com</a></td></tr>
 </table></div>`;
   const strip = (h) => String(h).replace(/<[^>]+>/g, '');
-  const text = [T.hi, strip(T.intro), strip(T.date), vNote ? strip(vNote) : '', '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), buttons ? `\n${T.yes}: ${answerUrl('accept')}\n${T.no}: ${answerUrl('decline')}` : '', message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${[guest, email, f.Phone].filter(Boolean).join(', ')}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
+  const text = [T.hi, strip(T.intro), strip(T.date), vNote ? strip(vNote) : '', '', ...T.rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`), buttons ? `\n${T.yes}: ${answerUrl('accept')}\n${T.no}: ${answerUrl('decline')}` : '', message ? `\n${T.msg}: ${message}` : '', gross ? `\n${T.earn}: ${T.earnNote(gross)}` : '', `\n${T.contact}: ${guest}`, `\n${T.bye}\n${strip(T.sig)}`].filter((x) => x !== '').join('\n');
   const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
-  await mail.sendMail({
+  const ref = await relayRef(doc);
+  const sent = await mail.sendMail({
     from: { name: 'Twiggli', address: SENDER }, to: who.emails, ...(INBOX ? { cc: INBOX } : {}),
-    ...(isEmail(email) ? { replyTo: [email, INBOX] } : {}), subject: T.subject, text, html,
+    replyTo: SENDER, subject: `${T.subject} · #${ref}`, text, html,
   });
-  await doc.update({ hostMailedAt: FieldValue.serverTimestamp(), hostMailedTo: who.emails });
+  await doc.update({ hostMailedAt: FieldValue.serverTimestamp(), hostMailedTo: who.emails, ...(sent?.messageId ? { relayIds: FieldValue.arrayUnion(sent.messageId) } : {}) });
   return `sent to ${who.emails.join(', ')} (${lang})`;
 };
 
@@ -1146,7 +1152,9 @@ const deliverRequest = async (doc, subject, email, fields) => {
     // The guest hears that their request arrived (Jirel, 30.10.26), so they
   // don't send it twice. Only for requests, not for notes like vouchers.
   if (isEmail(email) && /request/i.test(String(fields.Type ?? '')) && !/voucher/i.test(String(fields.Type ?? ''))) {
-    try { await confirmGuest(email, fields); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
+    let ref = '';
+    try { if ((await doc.get()).data()?.hostSlug) ref = await relayRef(doc); } catch { /* no ref: replies go to Jirel */ }
+    try { await confirmGuest(email, fields, ref); } catch (err) { console.error('guest confirmation failed', doc.id, err?.message); }
   }
   // The host hears about it straight away (Jirel, 09.11.26); the note to
   // Jirel below says whether it went out.
@@ -1247,6 +1255,127 @@ const settleHold = async (ref, x, accepted) => {
     try { await voucherPayout(h.voucherHash, x.hostSlug, h.voucherCents, ref.id, `${x.fields?.Workshop ?? ''}, ${x.fields?.Name ?? ''}`); } catch (err) { console.error('voucherPayout hold', ref.id, err?.message); }
   }
 };
+
+// ── Messages through Twiggli (Jirel 27.11.26) ─────────────────────────────
+// Host and guest never see each other's email or phone. A host's answer
+// (dashboard or a reply to our email) reaches the guest as an email from
+// hello@twiggli.com; the guest's reply to it comes back to that address,
+// inboxRelay files it under the request and mails it on to the host. Every
+// email carries "#REF" in its subject (relayRef), Jirel gets a copy (BCC).
+const REF_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+/** The request's short reference ("#K7Q2M9XA"), made once and kept on it. */
+const relayRef = async (ref) => {
+  const cur = (await ref.get()).data()?.relayRef;
+  if (cur) return cur;
+  const r = Array.from(randomBytes(8), (b) => REF_CHARS[b % REF_CHARS.length]).join('');
+  await ref.update({ relayRef: r });
+  return r;
+};
+const relaySend = async (ref, { to, subject, html, text: body, inReplyTo }) => {
+  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() } });
+  const r = await relayRef(ref);
+  const sent = await mail.sendMail({ from: { name: 'Twiggli', address: SENDER }, replyTo: SENDER, to, ...(INBOX ? { bcc: INBOX } : {}),
+    subject: `${subject} · #${r}`, html, text: body, ...(inReplyTo ? { inReplyTo, references: inReplyTo } : {}) });
+  if (sent?.messageId) await ref.update({ relayIds: FieldValue.arrayUnion(sent.messageId) }).catch(() => {});
+};
+const quoteBox = (m) => `<p style="margin:0 0 14px;padding:10px 14px;border-left:3px solid #6A3EEC;background:#f6f2ff;white-space:pre-wrap">${esc(m)}</p>`;
+
+/** The host's answer, to the guest (from Twiggli, in the guest's language). */
+const mailGuestFromHost = async (ref, x, entry) => {
+  if (!isEmail(x.email)) return;
+  const de = reqLang(x) === 'de';
+  const first_ = String(x.fields?.Name ?? '').split(/\s+/)[0] || (de ? 'du' : 'there');
+  const host = text(x.fields?.Host || x.fields?.['Studio host'] || x.fields?.Studio, 80) || (de ? 'Dein Gastgeber' : 'Your host');
+  const ws = text(x.fields?.Workshop || (x.fields?.Studio ? `${de ? 'Raum' : 'space'} ${x.fields.Studio}` : ''), 120) || 'Workshop';
+  const m = String(entry.message ?? '').trim();
+  const a = entry.action;
+  let lead = '';
+  if (a === 'accept') lead = de ? `gute Nachricht: <b>${esc(host)}</b> hat deine Anfrage für <b>${esc(ws)}</b> bestätigt! 🎉` : `good news: <b>${esc(host)}</b> confirmed your request for <b>${esc(ws)}</b>! 🎉`;
+  else if (a === 'decline') lead = de ? `<b>${esc(host)}</b> kann deine Anfrage für <b>${esc(ws)}</b> leider nicht annehmen.` : `unfortunately <b>${esc(host)}</b> can't take your request for <b>${esc(ws)}</b>.`;
+  else if (a === 'suggest') lead = de ? `<b>${esc(host)}</b> schlägt dir für <b>${esc(ws)}</b> einen anderen Termin vor${entry.when ? `: <b>${esc(entry.when)}</b>` : ''}.` : `<b>${esc(host)}</b> suggests another time for <b>${esc(ws)}</b>${entry.when ? `: <b>${esc(entry.when)}</b>` : ''}.`;
+  else if (a === 'offer') lead = de ? `<b>${esc(host)}</b> hat dir ein Angebot für <b>${esc(ws)}</b> gemacht${entry.total ? `: <b>€${entry.total}</b>${entry.people ? ` für ${entry.people} ${entry.people === 1 ? 'Person' : 'Personen'}` : ''}${entry.date ? ` am ${esc(entry.date)}${entry.time ? ` um ${esc(entry.time)}` : ''}` : ''}` : ''}.` : `<b>${esc(host)}</b> sent you an offer for <b>${esc(ws)}</b>${entry.total ? `: <b>€${entry.total}</b>${entry.people ? ` for ${entry.people} ${entry.people === 1 ? 'person' : 'people'}` : ''}${entry.date ? ` on ${esc(entry.date)}${entry.time ? ` at ${esc(entry.time)}` : ''}` : ''}` : ''}.`;
+  else lead = de ? `<b>${esc(host)}</b> hat dir zu deiner Anfrage für <b>${esc(ws)}</b> geschrieben:` : `<b>${esc(host)}</b> wrote to you about your request for <b>${esc(ws)}</b>:`;
+  let where = '';
+  if (a === 'accept') where = await requestWhere(x);
+  const tail = de ? `Antworte einfach auf diese E-Mail, wir geben deine Antwort direkt an ${esc(host)} weiter.` : `Just reply to this email and we'll pass your answer straight on to ${esc(host)}.`;
+  const html = mailText(`${de ? 'Hallo' : 'Hi'} ${esc(first_)},<br><br>${lead}<br><br>${m ? quoteBox(m) : ''}${where ? `<b>${de ? 'Wo' : 'Where'}:</b><br>${esc(where).replace(/\n/g, '<br>')}<br><br>` : ''}${tail}<br><br>${de ? 'Liebe Grüße' : 'Warm regards'} 💛<br>Jirel ${de ? 'von' : 'from'} <b>Twiggli</b>`);
+  const subject = de ? `${host}: ${a === 'accept' ? 'Zusage' : a === 'decline' ? 'Absage' : a === 'offer' ? 'Angebot' : 'Nachricht'} zu ${ws}` : `${host}: ${a === 'accept' ? 'confirmed' : a === 'decline' ? 'declined' : a === 'offer' ? 'offer' : 'message'} about ${ws}`;
+  await relaySend(ref, { to: x.email, subject, html, text: html.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '') });
+};
+
+/** The guest's reply, to the host (from Twiggli, in the host's language). */
+const mailHostFromGuest = async (ref, x, message) => {
+  const who = await hostContact(x.hostSlug).catch(() => null);
+  if (!who?.emails?.length) { await mailJirel({ subject: `Guest replied, host has no email: ${x.subject}`, text: message }); return; }
+  const lang = (await hostPrefs(x.hostSlug).catch(() => ({}))).lang || who.lang || HOST_LANG[x.hostSlug] || 'de';
+  const g = text(x.fields?.Name, 80).split(/\s+/)[0] || 'Guest';
+  const ws = text(x.fields?.Workshop || (x.fields?.Studio ? `${lang === 'de' ? 'Raum' : lang === 'fr' ? 'espace' : 'space'} ${x.fields.Studio}` : ''), 120) || 'Workshop';
+  const L = { de: [`${g} hat geantwortet`, `${esc(g)} hat dir zu <b>${esc(ws)}</b> geantwortet:`, 'Antworte einfach auf diese E-Mail oder in deinem <b>Twiggli</b>-Konto unter Nachrichten. Deine Antwort geht über <b>Twiggli</b> an', 'Liebe Grüße', 'Gründerin'],
+    fr: [`${g} a répondu`, `${esc(g)} t’a répondu au sujet de <b>${esc(ws)}</b> :`, 'Réponds simplement à ce mail ou dans ton espace <b>Twiggli</b>, rubrique Messages. Ta réponse arrive via <b>Twiggli</b> chez', 'Bises', 'fondatrice'],
+    en: [`${g} replied`, `${esc(g)} replied about <b>${esc(ws)}</b>:`, 'Just reply to this email or in your <b>Twiggli</b> account under Messages. Your answer reaches', 'Warm regards', 'Founder'] }[lang] ?? null;
+  const T = L ?? [`${g} replied`, `${esc(g)} replied:`, 'Just reply to this email. Your answer reaches', 'Warm regards', 'Founder'];
+  const html = mailText(`${lang === 'de' ? 'Hallo' : lang === 'fr' ? 'Coucou' : 'Hi'} ${esc(who.firstName || '')},<br><br>${T[1]}<br><br>${quoteBox(message)}${T[2]} ${esc(g)}${lang === 'en' ? ' through <b>Twiggli</b>' : ''}.<br><br>${T[3]} 💛<br>Jirel, ${T[4]} @ <b>Twiggli</b>`);
+  await relaySend(ref, { to: who.emails, subject: `${T[0]}: ${ws}`, html, text: html.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '') });
+};
+
+/** The text of a reply without the quoted email below it. */
+const replyOnly = (t) => {
+  const lines = String(t ?? '').replace(/\r/g, '').split('\n');
+  const out = [];
+  for (const l of lines) {
+    if (/^\s*>/.test(l)) break;
+    if (/^\s*(On|Am|Le|El|Il|Op)\s.+(wrote|schrieb|écrit|escribió|scritto|geschreven)\s*:?\s*$/i.test(l)) break;
+    if (/^-{2,}\s*(Original|Ursprüngliche)/i.test(l) || /^_{5,}/.test(l)) break;
+    if (/^(From|Von|De):\s/i.test(l) && out.length) break;
+    out.push(l);
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 4000);
+};
+
+/** Every 2 minutes: replies to "#REF" emails in the Twiggli inbox are filed
+ *  under their request and passed on (guest → host, host → guest). Reads
+ *  only, marks nothing as read; each email is handled once (relayIn). */
+export const inboxRelay = onCron({ schedule: 'every 2 minutes', timeZone: 'Europe/Berlin', region: 'europe-west3', secrets: [GMAIL_APP_PASSWORD], maxInstances: 1, timeoutSeconds: 110 }, async () => {
+  const db = getFirestore();
+  const client = new ImapFlow({ host: 'imap.gmail.com', port: 993, secure: true, auth: { user: INBOX, pass: GMAIL_APP_PASSWORD.value() }, logger: false });
+  await client.connect();
+  const lock = await client.getMailboxLock('INBOX');
+  try {
+    const uids = await client.search({ since: new Date(Date.now() - 2 * 86400000), subject: '#' }, { uid: true });
+    for (const uid of (uids || []).slice(-60)) {
+      const msg = await client.fetchOne(String(uid), { source: true, envelope: true }, { uid: true });
+      if (!msg?.source) continue;
+      const mid = String(msg.envelope?.messageId ?? `uid-${uid}`);
+      const seenRef = db.doc(`relayIn/${createHash('sha256').update(mid).digest('hex').slice(0, 40)}`);
+      if ((await seenRef.get()).exists) continue;
+      const subj = String(msg.envelope?.subject ?? '');
+      const code = subj.match(/#([A-Z2-9]{8})\b/)?.[1];
+      const from = String(msg.envelope?.from?.[0]?.address ?? '').toLowerCase();
+      if (!code || !isEmail(from) || [String(SENDER).toLowerCase(), String(INBOX).toLowerCase()].includes(from)) { await seenRef.set({ at: Date.now(), skipped: true }); continue; }
+      const q = await db.collection('formRequests').where('relayRef', '==', code).limit(1).get();
+      if (q.empty) { await seenRef.set({ at: Date.now(), skipped: 'no request' }); continue; }
+      const ref = q.docs[0].ref;
+      const x = q.docs[0].data();
+      const parsed = await simpleParser(msg.source);
+      const body = replyOnly(parsed.text || String(parsed.html ?? '').replace(/<[^>]+>/g, ' '));
+      await seenRef.set({ at: Date.now(), request: ref.id, from });
+      if (!body) continue;
+      let hostEmails = [];
+      try { hostEmails = ((await hostContact(x.hostSlug))?.emails ?? []).map((e) => e.toLowerCase()); } catch {}
+      try { const m = await db.collection('hostMembers').where('slugs', 'array-contains', x.hostSlug).limit(5).get(); hostEmails.push(...m.docs.map((d) => d.id.toLowerCase())); } catch {}
+      if (from === String(x.email ?? '').toLowerCase()) {
+        await ref.update({ thread: FieldValue.arrayUnion({ action: 'message', from: 'guest', message: body, at: Date.now(), via: 'email' }) });
+        await mailHostFromGuest(ref, x, body);
+      } else if (hostEmails.includes(from)) {
+        const entry = { action: 'message', by: from, message: body, at: Date.now(), via: 'email' };
+        await ref.update({ thread: FieldValue.arrayUnion(entry) });
+        await mailGuestFromHost(ref, x, entry);
+      } else {
+        await mailJirel({ subject: `Reply from an unknown sender (${from}) on #${code}: ${x.subject}`, text: `Not passed on, please check:\n\n${body}` });
+      }
+    }
+  } finally { lock.release(); await client.logout().catch(() => {}); }
+});
 
 // ── Voucher payouts at redemption (Jirel 27.11.26) ───────────────────────
 // Only once a voucher is redeemed (never at sale) the host gets its value
@@ -1672,7 +1801,7 @@ export const hostInbox = onRequest({ region: 'europe-west3', maxInstances: 10, c
   const items = snap.docs.filter((d) => !['awaiting_payment', 'payment_failed'].includes(d.data().status)).map((d) => {
     const x = d.data();
     return {
-      id: d.id, subject: x.subject, fields: x.fields, status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0,
+      id: d.id, subject: x.subject, fields: ADMINS.includes(email) ? x.fields : Object.fromEntries(Object.entries(x.fields ?? {}).filter(([k]) => !/^(Email|Phone|email)$/i.test(k))), status: x.status, thread: x.thread ?? [], createdAt: x.createdAt?.toMillis?.() ?? 0,
       ...(x.preapproval ? { pre: { total: (x.preapproval.cents ?? 0) / 100, until: x.preapproval.until ?? 0 } } : {}),
       ...(x.hold ? { hold: { voucher: (x.hold.voucherCents ?? 0) / 100, card: (x.hold.chargeCents ?? 0) / 100, settled: x.hold.settled ?? '' } } : {}),
       guest: { requests: asked[x.email] ?? 1, cameFrom: String(x.fields?.['Came from'] ?? ''), lang: String(x.fields?.Language ?? '') },
@@ -1758,6 +1887,11 @@ export const hostReply = onRequest({ region: 'europe-west3', secrets: [GMAIL_APP
       text: `${email} ${ACTIONS[action] || 'sent a message about'} the request from ${guest}.${when ? `\nSuggested time: ${when}` : ''}${entry.workshop ? `\nWorkshop: ${entry.workshop}` : ''}${entry.people ? `\nPeople: ${entry.people}` : ''}${entry.extras?.length ? `\nExtras: ${entry.extras.map((x) => `${x.name || 'extra'} €${x.amt}`).join(', ')}` : ''}${entry.total ? `\nOffered total: €${entry.total}` : ''}${entry.price ? ` (€${entry.price} per person)` : ''}${entry.reason ? `\nReason (not for the guest): ${entry.reason}` : ''}${message ? `\nMessage: ${message}` : ''}\n\nGuest: ${x.email || 'no email'}${where ? `\n\nFor the guest (full address, only now they are booked):\n${where}` : ''}`,
     });
   } catch (err) { console.error('hostReply note failed', err?.message); }
+  // The guest hears it straight away, through Twiggli (Jirel 27.11.26).
+  // Pre-approvals and held cards send their own email to the guest.
+  if (!prepay && !x.hold?.card) {
+    try { await mailGuestFromHost(ref, x, entry); } catch (err) { console.error('mailGuestFromHost', id, err?.message); }
+  }
   return res.status(200).json({ status });
 });
 
@@ -4725,4 +4859,46 @@ export const hostInsightsPreview = onRequest({ region: 'europe-west3', maxInstan
   if (!email || !ADMINS.includes(email)) return res.status(403).json({ error: 'Admins only' });
   const only = SLUG.test(String(req.body?.slug ?? '')) ? String(req.body.slug) : '';
   return res.status(200).json({ tips: await runInsights({ dry: true, only }) });
+});
+
+
+// ── Twiggli connectors (MCP) for Claude, ChatGPT and other assistants (Jirel 28.11.26) ──
+// Public: https://europe-west3-twiggli-production.cloudfunctions.net/publicMcp
+export const publicMcp = onRequest({ region: 'europe-west3', maxInstances: 5, cors: true, timeoutSeconds: 30 }, async (req, res) => {
+  try { await serveMcp(req, res, buildPublic); } catch (err) {
+    console.error('publicMcp', err?.message);
+    if (!res.headersSent) res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: 'Internal error' }, id: null });
+  }
+});
+
+/** The admin connector's secret, made once (like approveKey) and kept in
+ *  Firestore, which no browser can read. */
+const mcpToken = async () => {
+  const ref = getFirestore().doc('_config/mcp');
+  const cur = (await ref.get()).data();
+  if (cur?.token) return { token: cur.token, sentAt: cur.sentAt ?? 0, ref };
+  const token = randomBytes(24).toString('hex');
+  await ref.set({ token, createdAt: Date.now() }, { merge: true });
+  return { token, sentAt: 0, ref };
+};
+// Admin (read-only): .../adminMcp/<token>. Opening .../adminMcp/setup emails
+// the full link to the Twiggli inbox (at most once an hour), never to the caller.
+export const adminMcp = onRequest({ region: 'europe-west3', maxInstances: 3, timeoutSeconds: 60, secrets: [GMAIL_APP_PASSWORD] }, async (req, res) => {
+  const part = String(req.path ?? '').replace(/^\/+|\/+$/g, '');
+  const { token, sentAt, ref } = await mcpToken();
+  if (part === 'setup') {
+    if (Date.now() - sentAt > 3600000) {
+      await ref.update({ sentAt: Date.now() });
+      try {
+        await mailJirel({ subject: 'Your Twiggli admin connector link (keep it private)', text: `Add this as a custom connector in Claude (Settings → Connectors → Add custom connector), name "Twiggli Admin":\n\n${FUNCTIONS_URL}/adminMcp/${token}\n\nAnyone with this link can read Twiggli's requests, bookings, hosts and vouchers, so never share it or paste it into an email or chat. To change it, ask Claude to rotate the admin connector token.` });
+      } catch (err) { console.error('mcp link mail', err?.message); }
+    }
+    return res.status(200).set('Content-Type', 'text/plain; charset=utf-8').send('If this was the Twiggli admin, the connector link is on its way to the Twiggli inbox.');
+  }
+  const a = Buffer.from(part); const b = Buffer.from(token);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return res.status(404).send('Not found');
+  try { await serveMcp(req, res, () => buildAdmin(getFirestore())); } catch (err) {
+    console.error('adminMcp', err?.message);
+    if (!res.headersSent) res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: 'Internal error' }, id: null });
+  }
 });

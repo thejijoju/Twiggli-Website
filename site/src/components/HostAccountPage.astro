@@ -6085,7 +6085,7 @@ const fields = [
         const thOf = (rs: Req[], bks: Bk[]): Th[] => [
           // Every request (with a hold or not), then paid bookings with a message.
           ...rs.map((r) => ({ key: `r:${r.id}`, kind: 'request' as const, id: r.id, name: firstName(r), title: r.fields.Workshop || r.subject, date: reqDay(r), time: reqTime(r), people: peopleOf(r),
-            message: r.fields.Message ?? '', replies: (r.thread ?? []).filter((x) => x.message || lineOf(x)).map((x) => ({ host: true, message: x.message ?? '', line: lineOf(x), at: x.at })),
+            message: r.fields.Message ?? '', replies: (r.thread ?? []).filter((x) => x.message || lineOf(x)).map((x) => ({ host: (x as { from?: string }).from !== 'guest', message: x.message ?? '', line: lineOf(x), at: x.at })),
             at: Math.max(r.createdAt, ...(r.thread ?? []).map((x) => x.at)), open: r.status === 'pending', req: r })),
           ...bks.filter((b) => b.id && (b.message || b.thread?.length)).map((b) => ({ key: `b:${b.id}`, kind: 'booking' as const, id: b.id!, name: b.name || t.guest, title: b.title ?? '', date: b.date, time: b.start ?? '', people: b.people,
             message: b.message ?? '', replies: (b.thread ?? []).map((r) => ({ host: r.from === 'host', message: r.message, at: r.at })), at: Math.max(b.paidAt ?? 0, ...(b.thread ?? []).map((r) => r.at)), open: false, bk: b })),
