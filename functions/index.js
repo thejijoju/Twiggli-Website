@@ -140,6 +140,16 @@ const hostPrefs = async (slug) => {
 };
 // May open every host's account without approval, and approves the others.
 const ADMINS = String(process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+/** Jirel (admin) looking at a host's whole account in the dashboard (28.11.26):
+ *  the host account that owns `slug` (first non-admin member), as { email, uid }.
+ *  null when the caller is no admin, no slug was given, or nobody claimed it yet. */
+const actAsHost = async (callerEmail, slug) => {
+  if (!slug || !ADMINS.includes(String(callerEmail ?? '').toLowerCase())) return null;
+  const m = await getFirestore().collection('hostMembers').where('slugs', 'array-contains', String(slug).slice(0, 80)).limit(10).get();
+  const email = m.docs.map((d) => d.id.toLowerCase()).find((e) => !ADMINS.includes(e));
+  if (!email) return { email: '', uid: '' };
+  try { return { email, uid: (await getAuth().getUserByEmail(email)).uid }; } catch { return { email, uid: '' }; }
+};
 const FUNCTIONS_URL = 'https://europe-west3-twiggli-production.cloudfunctions.net';
 
 initializeApp();
@@ -3188,7 +3198,14 @@ export const hostStripe = onRequest({ ...OPTS, secrets: [STRIPE_CONNECT_KEY, GMA
   if (!allow(req, res)) return;
   const who = await callerIds(req);
   if (!who) return res.status(401).json({ error: 'Not signed in' });
-  const { email, uid } = who;
+  let { email, uid } = who;
+  // Admin acting as a host: only the status, never connecting in their name.
+  const as = await actAsHost(email, req.body?.asSlug);
+  if (as) {
+    if (String(req.body?.action ?? 'status') !== 'status') return res.status(403).json({ error: 'Only the host can connect Stripe' });
+    if (!as.email) return res.status(200).json({ connected: false, chargesEnabled: false, noAccount: true });
+    email = as.email; uid = as.uid;
+  }
   // Anyone signed in: new hosts connect Stripe before they can publish.
   const key = STRIPE_CONNECT_KEY.value();
   if (!key) return res.status(500).json({ error: 'Stripe key missing' });
@@ -4120,8 +4137,12 @@ export const userSettings = onRequest({ region: 'europe-west3', maxInstances: 5,
   try { user = m ? await getAuth().verifyIdToken(m[1], true) : null; } catch { user = null; }
   if (user && await mfaMissing(user)) user = null;
   if (!user?.uid) return res.status(401).json({ error: 'Sign in first' });
+  // Admin acting as a host: read and save that host's own settings.
+  const as = await actAsHost(user.email, req.body?.asSlug);
+  if (as && !as.uid) return res.status(200).json({ noAccount: true, email: as.email });
+  if (as) user = { ...user, uid: as.uid, email: as.email };
   const ref = getFirestore().doc(`userSettings/${user.uid}`);
-  if (req.body?.action !== 'save') return res.status(200).json((await ref.get()).data() ?? {});
+  if (req.body?.action !== 'save') return res.status(200).json({ ...((await ref.get()).data() ?? {}), ...(as ? { actingAs: as.email } : {}) });
   const b = req.body ?? {};
   const clean = (v, max) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
   const handle = (v) => clean(v, 80).replace(/^https?:\/\/(www\.)?[^/]+\/@?/i, '').replace(/^@/, '').replace(/\/+$/, '');
