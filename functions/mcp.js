@@ -54,7 +54,7 @@ export const buildPublic = () => {
   });
   s.registerTool('search_workshops', {
     title: 'Search Berlin workshops',
-    annotations: RO,
+    annotations: { ...RO, title: 'Search Berlin workshops' },
     description: 'Find creative workshops in Berlin on Twiggli. All filters are optional. Returns up to `limit` classes with price, district, length, next dates and the link to book.',
     inputSchema: {
       query: z.string().optional().describe('What the person wants, e.g. "pottery wheel", "candle", "date night", "kids"'),
@@ -94,7 +94,7 @@ export const buildPublic = () => {
   });
   s.registerTool('get_workshop', {
     title: 'Workshop details',
-    annotations: RO,
+    annotations: { ...RO, title: 'Workshop details' },
     description: 'Full details of one Twiggli workshop by its id (from search_workshops): about the host, all upcoming dates, languages, group sizes, link to book.',
     inputSchema: { id: z.string().describe('The id from search_workshops, e.g. "ceramic-kingdom/try-the-wheel"') },
   }, async ({ id }) => {
@@ -105,7 +105,7 @@ export const buildPublic = () => {
   });
   s.registerTool('list_categories', {
     title: 'Workshop categories',
-    annotations: RO,
+    annotations: { ...RO, title: 'Workshop categories' },
     description: 'The kinds of workshops on Twiggli and how many classes each has, plus the districts they take place in.',
     inputSchema: {},
   }, async () => {
@@ -126,7 +126,7 @@ export const buildAdmin = (db) => {
   });
   s.registerTool('requests', {
     title: 'Booking requests',
-    annotations: RO,
+    annotations: { ...RO, title: 'Booking requests' },
     description: 'Recent requests (newest first): who, which host and workshop, date, people, status, payment hold, last message.',
     inputSchema: { days: z.number().int().min(1).max(120).optional().describe('How far back (default 14)'), host: z.string().optional().describe('Host page slug, e.g. ceramic-kingdom'), status: z.string().optional().describe('pending, accepted, declined, preapproved, paid, expired…') },
   }, async ({ days = 14, host, status }) => {
@@ -141,7 +141,7 @@ export const buildAdmin = (db) => {
   });
   s.registerTool('request', {
     title: 'One request in full',
-    annotations: RO,
+    annotations: { ...RO, title: 'One request in full' },
     description: 'Every field of one request and its whole message thread (host and guest).',
     inputSchema: { id: z.string() },
   }, async ({ id }) => {
@@ -153,7 +153,7 @@ export const buildAdmin = (db) => {
   });
   s.registerTool('bookings', {
     title: 'Paid and reserved bookings',
-    annotations: RO,
+    annotations: { ...RO, title: 'Paid and reserved bookings' },
     description: 'Bookings made and paid online (newest first): workshop, date, people, amount, Twiggli fee, voucher part, status.',
     inputSchema: { days: z.number().int().min(1).max(365).optional().describe('Created within the last N days (default 30)'), host: z.string().optional() },
   }, async ({ days = 30, host }) => {
@@ -167,7 +167,7 @@ export const buildAdmin = (db) => {
   });
   s.registerTool('hosts', {
     title: 'Host accounts',
-    annotations: RO,
+    annotations: { ...RO, title: 'Host accounts' },
     description: 'Everyone with a Twiggli host account: email, pages, Stripe connected or not, commission rate.',
     inputSchema: { host: z.string().optional().describe('Only this page slug') },
   }, async ({ host }) => {
@@ -180,7 +180,7 @@ export const buildAdmin = (db) => {
   });
   s.registerTool('vouchers', {
     title: 'Vouchers',
-    annotations: RO,
+    annotations: { ...RO, title: 'Vouchers' },
     description: 'All Twiggli voucher codes (only their last 4 characters): value, balance, host, valid until, held for pending requests, redemptions, and which Stripe account the money is on.',
     inputSchema: { open_only: z.boolean().optional().describe('Only vouchers with money left') },
   }, async ({ open_only }) => {
@@ -194,7 +194,7 @@ export const buildAdmin = (db) => {
   });
   s.registerTool('payouts', {
     title: 'What Twiggli owes hosts',
-    annotations: RO,
+    annotations: { ...RO, title: 'What Twiggli owes hosts' },
     description: 'Voucher payouts (paid automatically to Stripe, or to transfer by bank) and card holds charged for hosts without Stripe that still need a bank transfer.',
     inputSchema: {},
   }, async () => {
