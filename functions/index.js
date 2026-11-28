@@ -4890,13 +4890,25 @@ export const adminMcp = onRequest({ region: 'europe-west3', maxInstances: 3, tim
     if (Date.now() - sentAt > 3600000) {
       await ref.update({ sentAt: Date.now() });
       try {
-        await mailJirel({ subject: 'Your Twiggli admin connector link (keep it private)', text: `Add this as a custom connector in Claude (Settings → Connectors → Add custom connector), name "Twiggli Admin":\n\n${FUNCTIONS_URL}/adminMcp/${token}\n\nAnyone with this link can read Twiggli's requests, bookings, hosts and vouchers, so never share it or paste it into an email or chat. To change it, ask Claude to rotate the admin connector token.` });
+        await mailJirel({ subject: 'Your Twiggli admin connector link (keep it private)', text: `Add this as a custom connector in Claude (Settings → Connectors → Add custom connector), name "Twiggli Admin":\n\n${FUNCTIONS_URL}/adminMcp/${token}\n\nAnyone with this link can read Twiggli's requests, bookings, hosts and vouchers, so never share it or paste it into an email or chat. To make a new link (the old one then stops working), open this link with /rotate at the end in your browser.` });
       } catch (err) { console.error('mcp link mail', err?.message); }
     }
     return res.status(200).set('Content-Type', 'text/plain; charset=utf-8').send('If this was the Twiggli admin, the connector link is on its way to the Twiggli inbox.');
   }
-  const a = Buffer.from(part); const b = Buffer.from(token);
+  // .../adminMcp/<current token>/rotate: a fresh link, the old one stops
+  // working at once. Only someone holding the current link can do it, and
+  // the new link only ever goes to the Twiggli inbox.
+  const [tok, cmd] = part.split('/');
+  const a = Buffer.from(tok ?? ''); const b = Buffer.from(token);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return res.status(404).send('Not found');
+  if (cmd === 'rotate') {
+    const fresh = randomBytes(24).toString('hex');
+    await ref.set({ token: fresh, rotatedAt: Date.now(), sentAt: Date.now() }, { merge: true });
+    try {
+      await mailJirel({ subject: 'Your NEW Twiggli admin connector link (keep it private)', text: `The old link no longer works. In Claude: Settings → Connectors → Twiggli Admin → remove it, then "Add custom connector" again with this link (No sign-in):\n\n${FUNCTIONS_URL}/adminMcp/${fresh}\n\nTo make another new link later, open the link with /rotate at the end.` });
+    } catch (err) { console.error('mcp rotate mail', err?.message); }
+    return res.status(200).set('Content-Type', 'text/plain; charset=utf-8').send('Done: the old link no longer works. The new link is on its way to the Twiggli inbox.');
+  }
   try { await serveMcp(req, res, () => buildAdmin(getFirestore())); } catch (err) {
     console.error('adminMcp', err?.message);
     if (!res.headersSent) res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: 'Internal error' }, id: null });
